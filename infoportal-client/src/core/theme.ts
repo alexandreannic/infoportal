@@ -111,6 +111,10 @@ export const muiTheme = ({
         focus: alpha(mainColor, .1),
         focusOpacity: .1,
       },
+      ...dark ? {
+        primary: '#d3e3fd',
+        secondary: '#d3e3fd',
+      } : {},
       warning: orange,
       primary: colorPrimary,
       secondary: colorSecondary,
@@ -118,8 +122,8 @@ export const muiTheme = ({
       mode: dark ? 'dark' : 'light',
       background: {
         // default: dark ? 'black' : 'white',
-        default: backgroundDefault ?? (dark ? '#000' : '#f6f8fc'/*'#f8f9fa'*/),
-        paper: backgroundPaper ?? (dark ? '#1e1e22' : '#fff'),
+        default: backgroundDefault ?? (dark ? '#061426' : '#f6f8fc'/*'#f8f9fa'*/),
+        paper: backgroundPaper ?? (dark ? '#0d2136' : '#fff'),
       }
     },
     shape: {

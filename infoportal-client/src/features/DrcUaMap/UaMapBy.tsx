@@ -28,6 +28,6 @@ export const UaMapBy = <D extends Record<string, any>>({
     })
   }, [data, value, getOblast])
   return (
-    <UkraineMap data={res} fillBaseOn={fillBaseOn} {...props}/>
+    <UkraineMap sx={{minWidth: 200}} data={res} fillBaseOn={fillBaseOn} {...props}/>
   )
 }

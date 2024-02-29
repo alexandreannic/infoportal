@@ -4,6 +4,7 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
+    "dev": "rm tsconfig.tsbuildinfo; tsc -w",
     "build": "rm tsconfig.tsbuildinfo; tsc"
   },
   "author": "",
@@ -12,5 +13,8 @@
     "@alexandreannic/ts-utils": "^2.1.1",
     "date-fns": "^3.3.1",
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }

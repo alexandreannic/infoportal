@@ -8,6 +8,7 @@ export enum AppFeatureId {
   meal = 'meal',
   kobo_database = 'kobo_database',
   mpca = 'mpca',
+  ecrec = 'ecrec',
   shelter = 'shelter',
   partnership = 'partnership',
   wfp_deduplication = 'wfp_deduplication',
@@ -66,6 +67,15 @@ export const appFeaturesIndex: Record<AppFeatureId, AppFeature> = {
         .find(_ => _.params?.koboFormId === KoboIndex.byName('bn_re').id)
       // return u?.admin || accesses && !!accesses.find(_ => _.featureId === AppFeatureId.mpca)
     }
+  },
+  ecrec: {
+    id: AppFeatureId.ecrec,
+    name: 'Economic Recovery',
+    materialIcons: 'agriculture',
+    color: '#daba00',
+    category: 'programs',
+    path: '/ecrec',
+    showIf: (u, accesses) => true,
   },
   protection: {
     id: AppFeatureId.protection,

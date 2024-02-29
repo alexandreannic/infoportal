@@ -23,6 +23,7 @@ import {LicenseInfo} from '@mui/x-license-pro'
 import {useRouter} from 'next/router'
 import {initSentry} from '@/plugins/Sentry'
 import {KoboSchemaProvider} from '@/features/KoboSchema/KoboSchemaContext'
+import {darkTheme} from '@/features/Ecrec/EcrecDashboard'
 
 LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -71,7 +72,7 @@ const AppWithConfig = (props: AppProps) => {
       // _ => <StyledEngineProvider injectFirst children={_}/>,
       _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns}/>,
       _ => <ToastProvider children={_}/>,
-      _ => <ThemeProvider theme={muiTheme({dark: false && settings.darkTheme})} children={_}/>,
+      _ => <ThemeProvider theme={muiTheme({dark: darkTheme})} children={_}/>,
       _ => <CssBaseline children={_}/>,
       _ => <I18nProvider children={_}/>,
       _ => <MsalProvider children={_} instance={msal}/>,

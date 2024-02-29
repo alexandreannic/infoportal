@@ -29,7 +29,7 @@ export const AgeGroupTable = ({
       header={
         <ScRadioGroup value={tableAgeGroup} onChange={setTableAgeGroup} dense inline>
           {Person.ageGroups.map(_ =>
-            <ScRadioGroupItem key={_} value={_} title={m._ageGroup[_]} hideRadio/>
+            <ScRadioGroupItem key={_} value={_} title={m._ageGroup[_] ?? _} hideRadio/>
           )}
         </ScRadioGroup>
       }

@@ -7,7 +7,7 @@ import {subDays} from 'date-fns'
 
 export type UseProtHHS2Data = ReturnType<typeof useProtectionDashboardMonitoData>
 
-export const protectionDashboardMonitoPreviousPeriodDeltaDays = 90
+export const previousPeriodDeltaDays = 90
 
 export const useProtectionDashboardMonitoData = ({
   data,
@@ -25,7 +25,7 @@ export const useProtectionDashboardMonitoData = ({
     const start = sorted[0].end
     const end = sorted[sorted.length - 1].end
     // const currentMonth = data.filter(_ => _.end >= startOfMonth(end))
-    const lastMonth = data.filter(_ => _.end < subDays(end, protectionDashboardMonitoPreviousPeriodDeltaDays))
+    const lastMonth = data.filter(_ => _.end < subDays(end, previousPeriodDeltaDays))
 
     const flatData = data.flatMap(_ => _.persons.map(p => ({..._, ...p})))
 

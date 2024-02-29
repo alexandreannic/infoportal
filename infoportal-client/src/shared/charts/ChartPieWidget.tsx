@@ -7,7 +7,7 @@ import {PanelProps} from '../Panel/Panel'
 import {useI18n} from '@/core/i18n'
 import {LightTooltip, TooltipRow} from '@/shared/LightTooltip'
 import {toPercent} from '@infoportal-common'
-import {protectionDashboardMonitoPreviousPeriodDeltaDays} from '@/features/Protection/DashboardMonito/useProtectionDashboardMonitoData'
+import {previousPeriodDeltaDays} from '@/features/Protection/DashboardMonito/useProtectionDashboardMonitoData'
 
 export interface ChartPieIndicatorProps extends Omit<PanelProps, 'title'> {
   fractionDigits?: number
@@ -87,7 +87,7 @@ export const ChartPieWidget = ({
                   </Box>
                   {children}
                 </Txt>
-                <Tooltip title={tooltip ?? m.comparedToPreviousMonth(protectionDashboardMonitoPreviousPeriodDeltaDays)}>
+                <Tooltip title={tooltip ?? m.comparedToPreviousMonth(previousPeriodDeltaDays)}>
                   <Icon sx={{fontSize: '15px !important'}} color="disabled">info</Icon>
                 </Tooltip>
               </>
