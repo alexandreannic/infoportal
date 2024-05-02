@@ -420,11 +420,11 @@ const tableTheme = (t: Theme, colorOverOpaque: string) => ({
     fontWeight: 'bold',
     // fontWeight: t.typography.fontWeightBold,
   },
-  '.table .MuiInputBase-root, .table .MuiFormControl-root': {
+  '.table .MuiInputBase-root, .table .MuiFormControl-root, .table .input-table': {
     margin: 0,
     height: '100%',
   },
-  '.table .MuiInputBase-input': {
+  '.table .MuiInputBase-input, .table .input-table': {
     paddingTop: '0 !important',
     paddingBottom: '0 !important',
   },
@@ -438,7 +438,7 @@ const tableTheme = (t: Theme, colorOverOpaque: string) => ({
   '.table tr': {
     whiteSpace: 'nowrap',
   },
-  'table td:has(.MuiOutlinedInput-notchedOutline)': {
+  '.table td:has(.MuiOutlinedInput-notchedOutline), .table td:has(.input-table)': {
     padding: 0,
   },
   // '.table .td-sub-head .MuiButtonBase-root': {
