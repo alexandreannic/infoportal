@@ -272,7 +272,13 @@ const _Datatable = <T extends DatatableRow>({
             ctx.data.setSearch(prev => ({...prev, offset: newPage * ctx.data.search.limit}))
           }}
           onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            ctx.data.setSearch(prev => ({...prev, limit: event.target.value as any}))
+            const newLimit = parseInt(event.target.value, 10)
+            const newPage = Math.floor(ctx.data.search.offset / newLimit)
+            ctx.data.setSearch(prev => ({
+              ...prev,
+              limit: newLimit,
+              offset: newPage * newLimit
+            }))
           }}
         />
       )}
