@@ -23,10 +23,12 @@ export const SnapshotProtMonitoEchoDisplacement = () => {
         <Div>
           <Div column>
             <SlideTxt sx={{mb: .5}} block>
-              Compared to the previous monitoring month, a substantially higher proportion of IDPs have indicated their intention to return
+              {/* Compared to the previous monitoring month, a substantially higher proportion of IDPs have indicated their intention to return
               <Txt bold sx={{color: t.palette.success.main}}> (+12%)</Txt>.
               This can be linked with Resolution 332 that introduced changes in payment of IDP benefits, with a substantial number of IDPs who lost their eligibility or need to
-              re-apply, possibly influencing decisions regarding their place of residence.
+              re-apply, possibly influencing decisions regarding their place of residence. */}
+              While access to livelihoods and economic opportunities remains a key factor for the integration of IDPs, social cohesion also plays a significant role. In eastern and southern oblasts, tensions between community members 
+              often stem from perceived disparities in the distribution of humanitarian aid. There are concerns that stricter criteria for aid, especially cash assistance, could worsen these tensions, leading to apprehension among community members about future assistance provision.
             </SlideTxt>
 
             <SlidePanel>

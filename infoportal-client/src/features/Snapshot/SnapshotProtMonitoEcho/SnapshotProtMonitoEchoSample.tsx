@@ -53,10 +53,8 @@ export const SnapshotProtMonitoEchoSample = () => {
               </ul>
             </SlideTxt>
             <SlideTxt sx={{mb: 2}}>
-              DRC protection monitoring targeted internally displaced persons (IDPs) and people
-              directly exposed to and affected by the current armed conflict in order to understand
-              the protection needs facing affected populations; informing DRC and the protection
-              communities' response.
+            DRC protection monitoring targeted internally displaced persons (IDPs) and people directly exposed to and affected by the current 
+            armed conflict in order to understand the protection needs facing affected populations; informing DRC and the humanitarian community's response
             </SlideTxt>
             <UkraineMap data={Obj.filter(computed.byCurrentOblast, (k, v) => v.value > 5)} sx={{mx: 1}}/>
           </Div>

@@ -32,11 +32,8 @@ export const SnapshotProtMonitoEchoRegistration = () => {
             }}>
               {_ =>
                 <SlideTxt>
-                  Access to compensation mechanisms for damaged and destroyed property continues to pose challenges. While persons of concern can apply for the housing recovery
-                  programme on the Diya online platform, the application process is complex, especially for applicants lacking ownership documents, technical certificates or facing
-                  inheritance issues.
-                  In addition, following Resolution 332, there has been a significant number of requests for legal information and support concerning the cancellation of payments
-                  and the entitlement to ongoing assistance.
+                  The recent enactment of Government Resolution No. 332, starting March 1, 2024, signifies substantial alterations in the provision of accommodation assistance to IDPs in Ukraine, 
+                  a key form of support since the conflict escalation. Monitoring findings highlight that these changes have strained administrative services, leading to lengthy queues for re-registration, alongside a surge in requests for legal information and support.
                 </SlideTxt>
               }
             </Lazy>

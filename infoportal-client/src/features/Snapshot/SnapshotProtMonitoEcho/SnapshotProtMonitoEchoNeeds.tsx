@@ -72,9 +72,8 @@ export const SnapshotProtMonitoEchoNeeds = () => {
               }}>
                 {_ =>
                   <p>
-                    Compared to the previous monitoring month, a substantially higher percentage of respondents indicated facing barriers to accessing healthcare
-                    <Txt bold sx={{color: t.palette.success.main}}> (+19%)</Txt>.
-                    Residents in rural areas are significantly more affected, with <b>56%</b> of respondents indicating barriers to accessing healthcare.
+                    Barriers to access healthcare, including due to a lack of available (specialized) health care services, continue to be significantly reported, particularly affecting persons 
+                    with reduced mobility, while the lack of available and affordable transportation further compounds the challenges faced by vulnerable populations in reaching essential services.
                   </p>
                 }
               </Lazy>

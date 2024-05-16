@@ -106,9 +106,9 @@ export const SnapshotProtMonitoEchoSafety = () => {
                     //   })
                     // }}
                   >
-                    Reports persist of substantial stress and declining mental health and well-being across Ukraine.
-                    Older individuals and people with disabilities are particularly susceptible to psychological distress, often triggered by feelings of heightened loneliness,
-                    reduced social interaction, and a shortage of communal spaces for social engagement and connection.
+                    The lack of transportation remains a significant barrier to freedom of movement, particularly for inhabitants of remote settlements and villages and for persons with reduced mobility. 
+                    Without regular or accessible public transport connections to larger urban centers, individuals residing in these areas face significant challenges in accessing livelihood opportunities, essential services, and maintaining overall mobility. 
+                    Moreover, mobilization efforts significantly affect the male population, resulting in self-imposed restrictions of movement and isolation. 
                   </p>
                 }
               </Lazy>

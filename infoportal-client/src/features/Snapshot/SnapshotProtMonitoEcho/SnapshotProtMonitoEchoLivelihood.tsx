@@ -32,9 +32,8 @@ export const SnapshotProtMonitoEchoLivelihood = () => {
                     // __html: m.snapshotProtMonito.echo.livelihood({
                     //   outOfWork: toPercent(_.percent, 0),
                   >
-                    The primary reasons for unemployment remain unchanged from previous reports, with a shortage of job opportunities identified as the key factor.
-                    To address gaps in meeting basic needs, individuals are resorting to depleting savings and cutting back on expenses related to food and healthcare, a situation
-                    that may be exacerbated by Resolution 332.
+                    Limited economic opportunities have led to a significant reliance on social protection schemes and humanitarian aid. This reliance is even higher among IDPs (78%). Housing assistance is crucial for many IDPs, and 
+                    while changes in the assistance system according to Resolution No. 332 will result in a large number of IDPs losing their primary source of income, they often struggle to find well-paying jobs that match their skills and experience.
                   </p>
                 }
               </Lazy>
@@ -113,6 +112,10 @@ export const SnapshotProtMonitoEchoLivelihood = () => {
                   reducing_consumption_of_food: m.protHHS2.reducing_consumption_of_food,
                 }}
                 filterValue={['unable_unwilling_to_answer']}
+                mergeOptions={{
+                  sending_children_into_employment:'other_specify',
+                  selling_off_received_humanitarian_assistance:'other_specify'
+                }}
               />
             </SlidePanel>
           </Div>
