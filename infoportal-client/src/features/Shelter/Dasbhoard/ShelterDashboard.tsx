@@ -146,7 +146,7 @@ export const ShelterDashboard = () => {
         icon: 'gavel',
         label: m._shelter.contractor,
         customFilter: (filters, _) => filters.includes(_.ta?.tags?.contractor1!) || filters.includes(_.ta?.tags?.contractor2!),
-        getOptions: (get) => DataFilter.buildOptionsFromObject(ShelterContractor),
+        getOptions: (get) => ctx.contractors.map(_ => _.),
       },
       vulnerabilities: {
         icon: appConfig.icons.disability,

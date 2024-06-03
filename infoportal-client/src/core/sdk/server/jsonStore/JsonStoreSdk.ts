@@ -18,8 +18,14 @@ export type JsonStoreMpcaBudget = {
   budget: number
 }[]
 
+export type JsonStoreShelterContractor = {
+  office: DrcOffice
+  name: string
+}
+
 export enum JsonStoreKey {
-  MpcaBudget = 'MpcaBudget'
+  MpcaBudget = 'MpcaBudget',
+  ShelterContractor = 'ShelterContractor',
 }
 
 export class JsonStoreSdk {
@@ -27,16 +33,20 @@ export class JsonStoreSdk {
   constructor(private client: ApiClient) {
   }
 
-  private readonly getRaw = <T>(key: JsonStoreKey.MpcaBudget): Promise<JsonStore<T>> => {
+  private readonly getRaw = <T>(key: string): Promise<JsonStore<T>> => {
     return this.client.get(`/json-store/${key}`)
   }
 
   readonly getValue: {
     (key: JsonStoreKey.MpcaBudget): Promise<JsonStoreMpcaBudget>
+    (key: JsonStoreKey.ShelterContractor): Promise<JsonStoreShelterContractor[]>
   } = async (key) => {
     const data = await this.getRaw<any>(key).then(_ => _.value)
     if (key === JsonStoreKey.MpcaBudget && !Array.isArray(data)) {
       throw new Error(`Except JsonStoreKey.MpcaBudget value to be of type Array`)
+    }
+    if (key === JsonStoreKey.ShelterContractor && !Array.isArray(data)) {
+      throw new Error(`Except JsonStoreKey.ShelterContractor value to be of type Array`)
     }
     return data
   }
