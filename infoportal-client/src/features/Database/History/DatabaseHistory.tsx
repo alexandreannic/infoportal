@@ -105,7 +105,7 @@ export const DatabaseHistory = () => {
                   value: _.by,
                   label: (
                     <span style={{display: 'inline-flex', alignItems: 'center', verticalAlign: 'middle'}}>
-                      <AppAvatar size={24} sx={{verticalAlign: 'middle', mr: .5}} email={_.by}/>
+                      <AppAvatar size={26} sx={{verticalAlign: 'middle', mr: .5}} email={_.by}/>
                       <div>{_.by}</div>
                     </span>
                   ),

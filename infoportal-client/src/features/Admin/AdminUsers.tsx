@@ -55,7 +55,7 @@ export const AdminUsers = () => {
               width: 0,
               id: 'avatar',
               head: '',
-              renderQuick: _ => <AppAvatar size={24} email={_.email}/>,
+              renderQuick: _ => <AppAvatar size={26} email={_.email}/>,
             },
             {
               type: 'string',

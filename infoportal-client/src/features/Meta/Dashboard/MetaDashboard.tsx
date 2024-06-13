@@ -1,5 +1,5 @@
-import React from 'react'
-import {DisplacementStatus, KoboIndex, KoboMetaStatus, OblastIndex} from '@infoportal-common'
+import React, {ReactNode, useMemo} from 'react'
+import {DisplacementStatus, KoboIndex, koboIndex, KoboMetaStatus, OblastIndex} from '@infoportal-common'
 import {AgeGroupTable} from '@/shared/AgeGroupTable'
 import {useI18n} from '@/core/i18n'
 import {Page} from '@/shared/Page'
@@ -16,15 +16,35 @@ import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {usePersistentState} from '@/shared/hook/usePersistantState'
 import {useMetaContext} from '@/features/Meta/MetaContext'
 import {Panel, PanelBody} from '@/shared/Panel'
-import {Obj} from '@alexandreannic/ts-utils'
+import {Obj, seq} from '@alexandreannic/ts-utils'
 import {ChartLine} from '@/shared/charts/ChartLine'
 import {Map} from '@/shared/maps/Map'
+import Link from 'next/link'
+import {AppFeatureId} from '@/features/appFeatureId'
+import {databaseIndex} from '@/features/Database/databaseIndex'
+import {useAppSettings} from '@/core/context/ConfigContext'
 
 export const MetaDashboard = () => {
   const t = useTheme()
+  const {conf} = useAppSettings()
   const {m, formatLargeNumber} = useI18n()
   const [showProjectsBy, setShowProjectsBy] = usePersistentState<'donor' | 'project'>('donor', {storageKey: 'meta-dashboard-showProject'})
   const {data: ctx, fetcher} = useMetaContext()
+  const koboFormTransalations = useMemo(() => {
+    return seq(KoboIndex.names).reduceObject<Record<string, ReactNode>>(id => {
+      const label = KoboIndex.searchById(id)?.translation ?? id
+      return [
+        id,
+        <Link
+          key={id}
+          href={conf.linkToFeature(AppFeatureId.kobo_database, databaseIndex.siteMap.access.absolute(koboIndex.drcUa.server.prod, KoboIndex.byName('shelter_nta').id))}
+        >
+          {label}
+        </Link>
+      ]
+    })
+  }, [])
+  console.log(koboFormTransalations)
   return (
     <Page width="lg" loading={fetcher.loading}>
       <Grid container sx={{mb: 2}} columnSpacing={2}>
@@ -83,7 +103,11 @@ export const MetaDashboard = () => {
             </PanelBody>
           </Panel>
           <SlidePanel title={m.form}>
-            <ChartBarSingleBy data={ctx.filteredData} by={_ => KoboIndex.searchById(_.formId)?.translation ?? _.formId}/>
+            <ChartBarSingleBy
+              data={ctx.filteredData}
+              by={_ => _.formId}
+              label={koboFormTransalations}
+            />
           </SlidePanel>
         </Div>
         <Div column>

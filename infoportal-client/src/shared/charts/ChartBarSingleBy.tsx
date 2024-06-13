@@ -50,18 +50,19 @@ export const ChartBarSingleBy = <
     <ChartBar
       data={res}
       onClickData={_ => onClickData?.(_ as K)}
-      labels={!onToggle ? undefined :
-        seq(Enum.keys(res)).reduceObject((option => [
-            option,
-            <Checkbox
-              key={option as string}
-              size="small"
-              checked={checked?.[option] ?? false}
-              onChange={() => onToggle(option)}
-            />
-          ]
-        ))
-      }
+      labels={label}
+      // labels={!onToggle ? undefined :
+      //   seq(Enum.keys(res)).reduceObject((option => [
+      //       option,
+      //       <Checkbox
+      //         key={option as string}
+      //         size="small"
+      //         checked={checked?.[option] ?? false}
+      //         onChange={() => onToggle(option)}
+      //       />
+      //     ]
+      //   ))
+      // }
     />
   )
 }
