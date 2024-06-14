@@ -42,7 +42,7 @@ export class App {
         eol: '\n',
       })] : [],
       new winston.transports.Console({
-        level: (process.env.NODE_ENV === 'dev') ? 'debug' : undefined
+        level: (!this.config.production) ? 'debug' : undefined
       })
     ],
   })
@@ -77,6 +77,7 @@ const initServices = (
 }
 
 const startApp = async (conf: AppConf) => {
+  console.log(appConf)
   // await new BuildKoboType().build('safety_incident')
   // await ActivityInfoBuildType.fslc()
   // await KoboMigrateHHS2({
