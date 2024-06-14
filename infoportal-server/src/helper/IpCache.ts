@@ -1,5 +1,5 @@
 import {duration, Duration, filterUndefined, hashArgs} from '@alexandreannic/ts-utils'
-import {logger, Logger} from './Logger'
+import {AppLogger} from '../index'
 
 export interface CacheData<V> {
   lastUpdate: Date;
@@ -22,7 +22,7 @@ export class GlobalCache {
 
   constructor(
     private cache: IpCache<IpCache<any>>,
-    private log: Logger = logger('GlobalCache')
+    private log: AppLogger,
   ) {
     // setInterval(() => {
     //   console.log(this.cache.getAllKeys().map(k =>

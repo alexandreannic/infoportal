@@ -2,14 +2,14 @@ import {lazy} from '@alexandreannic/ts-utils'
 import {KoboSdk, UUID} from '@infoportal-common'
 import {PrismaClient} from '@prisma/client'
 import {appConf} from '../../core/conf/AppConf'
-import {logger} from '../../helper/Logger'
+import {app} from '../../index'
 
 export class KoboSdkGenerator {
 
   constructor(
     private pgClient: PrismaClient,
     private conf = appConf,
-    private log = logger('KoboSdkGenerator')
+    private log = app.logger('KoboSdkGenerator')
   ) {
   }
 

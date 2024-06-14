@@ -1,4 +1,4 @@
-import {logger, Logger} from '../helper/Logger'
+import {app, AppLogger} from '../index'
 import {map} from '@alexandreannic/ts-utils'
 
 export interface MemoryDatabaseInterface<T, TID> {
@@ -12,7 +12,7 @@ export interface MemoryDatabaseInterface<T, TID> {
 export class MemoryDatabase {
 
   private constructor(
-    private log: Logger = logger('MpcaCachedDb')
+    private log: AppLogger = app.logger('MpcaCachedDb')
   ) {
   }
 

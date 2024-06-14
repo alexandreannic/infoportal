@@ -1,14 +1,14 @@
 import {appConf, AppConf} from '../core/conf/AppConf'
 // import * as Sentry from '@sentry/node'
 // import {ProfilingIntegration} from '@sentry/profiling-node'
-import {logger} from '../helper/Logger'
+import {app} from '../index'
 
 export class IpSentry {
 
   constructor(
     private conf: AppConf = appConf,
     private expressApp: any,
-    private log = logger('Sentry'),
+    private log = app.logger('Sentry'),
   ) {
   }
 

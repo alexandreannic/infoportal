@@ -1,8 +1,8 @@
 import {PrismaClient} from '@prisma/client'
-import {logger, Logger} from '../helper/Logger'
 import {KoboSyncServer} from '../feature/kobo/KoboSyncServer'
 import {KoboApiService} from '../feature/kobo/KoboApiService'
 import {Protection_hhs} from '@infoportal-common'
+import {app, AppLogger} from '../index'
 
 export const KoboMigrateHHS2 = ({
     prisma,
@@ -11,7 +11,7 @@ export const KoboMigrateHHS2 = ({
     newFormId,
     service = new KoboApiService(prisma),
     syncService = new KoboSyncServer(prisma),
-    log = logger('KoboMigrateHHS2'),
+    log = app.logger('KoboMigrateHHS2'),
   }: {
     prisma: PrismaClient,
     serverId: string
@@ -19,7 +19,7 @@ export const KoboMigrateHHS2 = ({
     newFormId: string
     service?: KoboApiService
     syncService?: KoboSyncServer
-    log?: Logger
+    log?: AppLogger
   }
 ) => {
 

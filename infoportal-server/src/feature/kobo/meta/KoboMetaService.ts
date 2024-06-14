@@ -2,9 +2,9 @@ import {Prisma, PrismaClient} from '@prisma/client'
 import {GlobalEvent} from '../../../core/GlobalEvent'
 import {KoboMetaBasicneeds} from './KoboMetaMapperBasicneeds'
 import {KoboMetaCreate} from './KoboMetaType'
-import {logger, Logger} from '../../../helper/Logger'
+import {app, AppLogger} from '../../../index'
 import {KoboService} from '../KoboService'
-import {duration, map, Obj, seq, Seq} from '@alexandreannic/ts-utils'
+import {map, Obj, seq, Seq} from '@alexandreannic/ts-utils'
 import {KoboMetaMapperEcrec} from './KoboMetaMapperEcrec'
 import {KoboMetaMapperShelter} from './KoboMetaMapperShelter'
 import {DrcDonor, DrcProgram, DrcProject, IKoboMeta, KoboAnswerId, KoboId, KoboIndex, KoboMetaStatus, PersonDetails, UUID} from '@infoportal-common'
@@ -13,7 +13,6 @@ import {genUUID, yup} from '../../../helper/Utils'
 import {InferType} from 'yup'
 import {KoboMetaMapperProtection} from './KoboMetaMapperProtection'
 import {SytemCache} from '../../../helper/IpCache'
-import {app} from '../../../index'
 import {PromisePool} from '@supercharge/promise-pool'
 import Event = GlobalEvent.Event
 
@@ -73,7 +72,7 @@ export class KoboMetaService {
     private kobo = new KoboService(prisma),
     private event = GlobalEvent.Class.getInstance(),
     private conf = appConf,
-    private log: Logger = logger('KoboMetaService'),
+    private log: AppLogger = app.logger('KoboMetaService'),
   ) {
   }
 

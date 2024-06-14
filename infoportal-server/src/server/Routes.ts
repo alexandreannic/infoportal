@@ -1,5 +1,5 @@
 import express, {NextFunction, Request, Response} from 'express'
-import {Logger} from '../helper/Logger'
+import {AppLogger} from '../index'
 import {ControllerMain} from './controller/ControllerMain'
 import {Services} from './services'
 import {PrismaClient} from '@prisma/client'
@@ -47,7 +47,7 @@ export const getRoutes = (
   // ecrecSdk: EcrecSdk,
   // legalAidSdk: LegalaidSdk,
   services: Services,
-  logger: Logger,
+  logger: AppLogger,
 ) => {
   const cache = apicache.middleware
 

@@ -1,11 +1,10 @@
 import {KoboAnswer, KoboId, koboIndex, KoboIndex, UUID} from '@infoportal-common'
 import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
-import {logger, Logger} from '../../helper/Logger'
+import {app, AppLogger} from '../../index'
 import {createdBySystem} from '../../db/DbInit'
 import {seq} from '@alexandreannic/ts-utils'
 import {GlobalEvent} from '../../core/GlobalEvent'
-import {app} from '../../index'
 import {SytemCache} from '../../helper/IpCache'
 import {KoboService} from './KoboService'
 import {AppError} from '../../helper/Errors'
@@ -24,7 +23,7 @@ export class KoboSyncServer {
     private koboSdkGenerator: KoboSdkGenerator = new KoboSdkGenerator(prisma),
     private event = GlobalEvent.Class.getInstance(),
     private appCache = app.cache,
-    private log: Logger = logger('KoboSyncServer'),
+    private log: AppLogger = app.logger('KoboSyncServer'),
   ) {
   }
 

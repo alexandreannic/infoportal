@@ -1,7 +1,7 @@
 import express, {NextFunction, Request, Response} from 'express'
 import * as bodyParser from 'body-parser'
 import {getRoutes} from './Routes'
-import {logger} from '../helper/Logger'
+import {app} from '../index'
 import {appConf, AppConf} from '../core/conf/AppConf'
 import {genUUID} from '../helper/Utils'
 import {HttpError} from './controller/Controller'
@@ -26,7 +26,7 @@ export class Server {
     // private ecrecSdk: EcrecSdk,
     // private legalaidSdk: LegalaidSdk,
     private services: Services,
-    private log = logger('Server'),
+    private log = app.logger('Server'),
   ) {
   }
 

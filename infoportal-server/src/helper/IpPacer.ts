@@ -1,7 +1,7 @@
-import {logger, Logger} from './Logger'
+import {app, AppLogger} from '../index'
 
 export class IpPacer {
-  constructor(private log: Logger = logger('IpQueue')) {
+  constructor(private log: AppLogger = app.logger('IpQueue')) {
   }
 
   readonly create = <T>({

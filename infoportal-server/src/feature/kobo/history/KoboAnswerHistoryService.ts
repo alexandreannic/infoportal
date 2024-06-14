@@ -1,5 +1,5 @@
 import {Prisma, PrismaClient} from '@prisma/client'
-import {logger, Logger} from '../../../helper/Logger'
+import {app, AppLogger} from '../../../index'
 import {KoboAnswerHistory} from './KoboAnswerHistoryType'
 import {DbHelper} from '../../../db/DbHelper'
 import {KoboAnswerId, KoboId} from '@infoportal-common'
@@ -10,7 +10,7 @@ export class KoboAnswerHistoryService {
 
   constructor(
     private prisma: PrismaClient,
-    private log: Logger = logger('KoboAnswerHistoryService')
+    private log: AppLogger = app.logger('KoboAnswerHistoryService')
   ) {
   }
 

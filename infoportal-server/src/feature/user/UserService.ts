@@ -1,12 +1,12 @@
 import {PrismaClient} from '@prisma/client'
-import {logger, Logger} from '../../helper/Logger'
+import {app, AppLogger} from '../../index'
 import {DrcOffice} from '@infoportal-common'
 
 export class UserService {
 
   constructor(
     private prisma: PrismaClient,
-    private log: Logger = logger('UserService'),
+    private log: AppLogger = app.logger('UserService'),
   ) {
   }
 

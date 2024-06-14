@@ -1,5 +1,5 @@
 import {PrismaClient, User as PUser} from '@prisma/client'
-import {logger, Logger} from '../../helper/Logger'
+import {app, AppLogger} from '../../index'
 import {AuthenticationProvider} from '@microsoft/microsoft-graph-client/src/IAuthenticationProvider'
 import {AuthenticationProviderOptions} from '@microsoft/microsoft-graph-client/src/IAuthenticationProviderOptions'
 import {Client} from '@microsoft/microsoft-graph-client'
@@ -15,7 +15,7 @@ export class SessionService {
 
   constructor(
     private prisma: PrismaClient,
-    private log: Logger = logger('SessionService'),
+    private log: AppLogger = app.logger('SessionService'),
   ) {
   }
 

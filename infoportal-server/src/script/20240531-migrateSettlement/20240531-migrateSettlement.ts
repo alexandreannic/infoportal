@@ -1,7 +1,7 @@
 import {KoboSdkGenerator} from '../../feature/kobo/KoboSdkGenerator'
 import {scriptConf} from '../ScriptConf'
 import {PrismaClient} from '@prisma/client'
-import {AILocationHelper, Ecrec_cashRegistration, Ecrec_cashRegistrationBha, KeyOf, KoboIndex, KoboSchemaHelper, OblastIndex} from '@infoportal-common'
+import {AILocationHelper, Ecrec_cashRegistrationBha, KeyOf, KoboIndex, KoboSchemaHelper, OblastIndex} from '@infoportal-common'
 import {KoboService} from '../../feature/kobo/KoboService'
 import {map, Obj, seq} from '@alexandreannic/ts-utils'
 import {PromisePool} from '@supercharge/promise-pool'

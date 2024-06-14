@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express'
 import {ActivityInfoSdk} from '../../feature/activityInfo/sdk/ActivityInfoSdk'
-import {logger, Logger} from '../../helper/Logger'
+import {app, AppLogger} from '../../index'
 import {appConf} from '../../core/conf/AppConf'
 import {AppError} from '../../helper/Errors'
 import {Util} from '../../helper/Utils'
@@ -10,7 +10,7 @@ export class ControllerActivityInfo {
   constructor(
     private api = new ActivityInfoSdk(),
     private conf = appConf,
-    private log: Logger = logger('ControllerActivityInfo')
+    private log: AppLogger = app.logger('ControllerActivityInfo')
   ) {
 
   }

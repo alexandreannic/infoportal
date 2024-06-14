@@ -5,7 +5,7 @@ import {Enum} from '@alexandreannic/ts-utils'
 import {InferType} from 'yup'
 import {DrcOffice, UUID} from '@infoportal-common'
 import {UserSession} from '../session/UserSession'
-import {logger, Logger} from '../../helper/Logger'
+import {app, AppLogger} from '../../index'
 
 export type AccessCreateParams = InferType<typeof AccessService.createSchema>
 
@@ -23,7 +23,7 @@ export class AccessService {
 
   constructor(
     private prisma: PrismaClient,
-    private log: Logger = logger('AccessService'),
+    private log: AppLogger = app.logger('AccessService'),
   ) {
   }
 

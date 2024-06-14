@@ -6,7 +6,7 @@ import {addMinutes, addSeconds, parse, subMinutes} from 'date-fns'
 import {ApiPaginate, DrcOffice} from '@infoportal-common'
 import {appConf, AppConf} from '../../core/conf/AppConf'
 import {WfpBuildingBlockClient} from '../connector/wfpBuildingBlock/WfpBuildingBlockClient'
-import {logger, Logger} from '../../helper/Logger'
+import {app, AppLogger} from '../../index'
 import {AppError} from '../../helper/Errors'
 
 export class WfpDeduplicationUpload {
@@ -15,7 +15,7 @@ export class WfpDeduplicationUpload {
     private prisma: PrismaClient,
     private wfpSdk: WFPBuildingBlockSdk,
     private conf: AppConf,
-    private log: Logger = logger('WfpDeduplicationUpload'),
+    private log: AppLogger = app.logger('WfpDeduplicationUpload'),
   ) {
 
   }

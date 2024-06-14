@@ -4,21 +4,59 @@ import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
 import {MpcaPaymentService} from './feature/mpca/mpcaPayment/MpcaPaymentService'
 import {DbInit} from './db/DbInit'
-import {logger} from './helper/Logger'
 import {ScheduledTask} from './scheduledTask/ScheduledTask'
 import {MpcaCachedDb} from './feature/mpca/db/MpcaCachedDb'
 import {ShelterCachedDb} from './feature/shelter/db/ShelterCachedDb'
 import {KoboMetaService} from './feature/kobo/meta/KoboMetaService'
 import {GlobalCache, IpCache} from './helper/IpCache'
 import {duration} from '@alexandreannic/ts-utils'
-import {ActivityInfoBuildType} from './feature/activityInfo/databaseInterface/ActivityInfoBuildType'
+import * as winston from 'winston'
+import {format, Logger as WinstonLogger} from 'winston'
+import {Syslog} from 'winston-syslog'
+import os from 'os'
 
-export const app = {
-  cache: new GlobalCache(new IpCache<IpCache<any>>({
-    ttlMs: duration(20, 'day'),
-    cleaningCheckupInterval: duration(20, 'day',)
-  }))
+export type AppLogger = WinstonLogger;
+
+export class App {
+
+  constructor(private config: AppConf = appConf) {
+  }
+
+  readonly logger = (label?: string) => winston.createLogger({
+    level: appConf.logLevel ?? 'debug',
+    format: winston.format.combine(
+      format.label({label}),
+      winston.format.timestamp({
+        format: 'YYYY-MM-DD hh:mm:ss'
+      }),
+      winston.format.colorize(),
+      winston.format.simple(),
+      format.printf((props) => `${props.timestamp} [${props.label}] ${props.level}: ${props.message}`)
+    ),
+    transports: [
+      ...this.config.production && !this.config.cors.allowOrigin.includes('localhost') ? [new Syslog({
+        host: 'logs.papertrailapp.com',
+        port: 32079,
+        protocol: 'tls4',
+        localhost: os.hostname(),
+        eol: '\n',
+      })] : [],
+      new winston.transports.Console({
+        level: (process.env.NODE_ENV === 'dev') ? 'debug' : undefined
+      })
+    ],
+  })
+
+  readonly cache = new GlobalCache(
+    new IpCache<IpCache<any>>({
+      ttlMs: duration(20, 'day'),
+      cleaningCheckupInterval: duration(20, 'day',)
+    }),
+    this.logger('GlobalCache')
+  )
 }
+
+export const app = new App()
 
 const initServices = (
   // koboClient: v2,
@@ -39,27 +77,24 @@ const initServices = (
 }
 
 const startApp = async (conf: AppConf) => {
-  // await migrateSettlement()
-  // return
   // await new BuildKoboType().build('safety_incident')
-  // return
-  // await migrateHhsTags()
-  // await cleanMpca()
-  // return
-  // @ts-ignore
-  // await Promise.all([
-  //   ActivityInfoBuildType.fslc(),
-  //   ActivityInfoBuildType.gbv(),
-  // //   ActivityInfoBuildType.mineAction(),
-  //   ActivityInfoBuildType.snfi(),
-  // //   ActivityInfoBuildType.mpca(),
-  //   ActivityInfoBuildType.wash(),
-  // ])
-  // return
+  // await ActivityInfoBuildType.fslc()
+  // await KoboMigrateHHS2({
+  //   prisma,
+  //   serverId: koboServerId.prod,
+  //   oldFormId: KoboIndex.byName('protectionHh_2').id,
+  //   newFormId: KoboIndex.byName('protectionHh_2_1').id,
+  // }).run()
+  // const legalAidSdk = new LegalaidSdk(new ApiClient({
+  //   baseUrl: 'https://api.lau-crm.org.ua',
+  //   headers: {
+  //     'x-auth-token': appConf.legalAid.apiToken,
+  //   }
+  // }))
+
   const prisma = new PrismaClient({
     // log: ['query']
   })
-
   const services = initServices(
     // koboSdk,
     // ecrecAppSdk,
@@ -67,44 +102,12 @@ const startApp = async (conf: AppConf) => {
     prisma,
   )
   const init = async () => {
-    const log = logger('')
+    const log = app.logger('')
     log.info(`Starting... v5.0`)
 
     log.info(`Initialize database ${conf.db.url.split('@')[1]}...`)
     await new DbInit(conf, prisma).initializeDatabase()
     log.info(`Database initialized.`)
-
-    // process.exit()
-    // await KoboMigrateHHS2({
-    //   prisma,
-    //   serverId: koboServerId.prod,
-    //   oldFormId: KoboIndex.byName('protectionHh_2').id,
-    //   newFormId: KoboIndex.byName('protectionHh_2_1').id,
-    // }).run()
-
-    // try {
-    //   await new KoboService(prisma).generateXLSForHHS({
-    //     // start: new Date(2023, 5, 1),
-    //     // end: new Date(2023, 6, 1),
-    // })
-    // } catch (e) {
-    //   console.error(e)
-    // }
-
-    // const wfpSdk = new WFPBuildingBlockSdk(await new WfpBuildingBlockClient({
-    //   login: appConf.buildingBlockWfp.login,
-    //   password: appConf.buildingBlockWfp.password,
-    //   otpUrl: appConf.buildingBlockWfp.otpURL,
-    // }).generate())
-    // await new WfpDeduplicationUpload(prisma, wfpSdk).saveAll()
-
-    // const ecrecAppSdk = new EcrecSdk(new EcrecClient(appConf.ecrecApp))
-    // const legalAidSdk = new LegalaidSdk(new ApiClient({
-    //   baseUrl: 'https://api.lau-crm.org.ua',
-    //   headers: {
-    //     'x-auth-token': appConf.legalAid.apiToken,
-    //   }
-    // }))
 
     // console.log(`Master ${process.pid} is running`)
     // const core = conf.production ? os.cpus().length : 1
@@ -126,8 +129,6 @@ const startApp = async (conf: AppConf) => {
     new Server(
       conf,
       prisma,
-      // ecrecAppSdk,
-      // legalAidSdk,
       services,
     ).start()
   }

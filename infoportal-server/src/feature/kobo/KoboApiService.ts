@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
-import {logger, Logger} from '../../helper/Logger'
+import {app, AppLogger} from '../../index'
 import {KoboAnswerParams, KoboSdk} from '@infoportal-common'
 
 export class KoboApiService {
@@ -8,7 +8,7 @@ export class KoboApiService {
   constructor(
     private prisma: PrismaClient,
     private koboSdkGenerator: KoboSdkGenerator = new KoboSdkGenerator(prisma),
-    private log: Logger = logger('KoboApiService')
+    private log: AppLogger = app.logger('KoboApiService')
   ) {
   }
 

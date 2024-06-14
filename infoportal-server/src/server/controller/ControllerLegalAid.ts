@@ -1,14 +1,13 @@
 import {NextFunction, Request, Response} from 'express'
-import {Logger} from '../../helper/Logger'
 import {LegalaidSdk} from '../../feature/connector/legalaid/LegalaidSdk'
 import {Controller} from './Controller'
-
+import {AppLogger} from '../../index'
 
 export class ControllerLegalAid extends Controller {
 
   constructor(
     private legalAidSdk: LegalaidSdk,
-    private logger: Logger,
+    private logger: AppLogger,
   ) {
     super({errorKey: 'monitoring'})
   }

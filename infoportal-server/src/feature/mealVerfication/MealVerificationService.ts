@@ -1,5 +1,5 @@
 import {MealVerificationStatus, PrismaClient} from '@prisma/client'
-import {logger, Logger} from '../../helper/Logger'
+import {app, AppLogger} from '../../index'
 import {InferType} from 'yup'
 import {MealVerificationSchema} from '../../server/controller/ControllerMealVerification'
 import {UUID} from '@infoportal-common'
@@ -13,7 +13,7 @@ export class MealVerificationService {
 
   constructor(
     private prisma: PrismaClient,
-    private log: Logger = logger('MealVerificationService'),
+    private log: AppLogger = app.logger('MealVerificationService'),
   ) {
   }
 

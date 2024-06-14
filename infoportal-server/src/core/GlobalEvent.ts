@@ -1,6 +1,6 @@
 import {KoboAnswerId, KoboId} from '@infoportal-common'
 import {EventEmitter} from 'events'
-import {logger} from '../helper/Logger'
+import {app} from '../index'
 
 export namespace GlobalEvent {
 
@@ -60,7 +60,7 @@ export namespace GlobalEvent {
 
     private constructor(
       private emitter: EventEmitter = new EventEmitter(),
-      private log = logger('GlobalEvent')
+      private log = app.logger('GlobalEvent')
     ) {
       this.log.info(`Initialize GlobalEvent.`)
       this.listen = this.emitter.on.bind(this.emitter)
