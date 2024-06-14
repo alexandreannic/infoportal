@@ -12,51 +12,51 @@ import {GlobalCache, IpCache} from './helper/IpCache'
 import {duration} from '@alexandreannic/ts-utils'
 import * as winston from 'winston'
 import {format, Logger as WinstonLogger} from 'winston'
+import * as os from 'os'
 import {Syslog} from 'winston-syslog'
-import os from 'os'
 
 export type AppLogger = WinstonLogger;
 
-export class App {
+export const App = (config: AppConf = appConf) => {
 
-  constructor(private config: AppConf = appConf) {
+  const logger = (label?: string) => {
+    return winston.createLogger({
+      level: appConf.logLevel ?? 'debug',
+      format: winston.format.combine(
+        format.label({label}),
+        winston.format.timestamp({
+          format: 'YYYY-MM-DD hh:mm:ss'
+        }),
+        winston.format.colorize(),
+        winston.format.simple(),
+        format.printf((props) => `${props.timestamp} [${props.label}] ${props.level}: ${props.message}`)
+      ),
+      transports: [
+        ...(config.production && !config.cors.allowOrigin.includes('localhost')) ? [new Syslog({
+          host: 'logs.papertrailapp.com',
+          port: 32079,
+          protocol: 'tls4',
+          localhost: os.hostname(),
+          eol: '\n',
+        })] : [],
+        new winston.transports.Console({
+          level: (!config.production) ? 'debug' : undefined
+        })
+      ],
+    })
   }
 
-  readonly logger = (label?: string) => winston.createLogger({
-    level: appConf.logLevel ?? 'debug',
-    format: winston.format.combine(
-      format.label({label}),
-      winston.format.timestamp({
-        format: 'YYYY-MM-DD hh:mm:ss'
-      }),
-      winston.format.colorize(),
-      winston.format.simple(),
-      format.printf((props) => `${props.timestamp} [${props.label}] ${props.level}: ${props.message}`)
-    ),
-    transports: [
-      ...this.config.production && !this.config.cors.allowOrigin.includes('localhost') ? [new Syslog({
-        host: 'logs.papertrailapp.com',
-        port: 32079,
-        protocol: 'tls4',
-        localhost: os.hostname(),
-        eol: '\n',
-      })] : [],
-      new winston.transports.Console({
-        level: (!this.config.production) ? 'debug' : undefined
-      })
-    ],
-  })
-
-  readonly cache = new GlobalCache(
+  const cache = new GlobalCache(
     new IpCache<IpCache<any>>({
       ttlMs: duration(20, 'day'),
       cleaningCheckupInterval: duration(20, 'day',)
     }),
-    this.logger('GlobalCache')
+    logger('GlobalCache')
   )
+  return {logger, cache}
 }
 
-export const app = new App()
+export const app = App()
 
 const initServices = (
   // koboClient: v2,
@@ -77,7 +77,6 @@ const initServices = (
 }
 
 const startApp = async (conf: AppConf) => {
-  console.log(appConf)
   // await new BuildKoboType().build('safety_incident')
   // await ActivityInfoBuildType.fslc()
   // await KoboMigrateHHS2({
