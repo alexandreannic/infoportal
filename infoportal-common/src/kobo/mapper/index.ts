@@ -1,6 +1,7 @@
 export * from './KoboShelterTA'
 export * from './KoboBnRe'
 export * from './KoboProtection_hhs3'
+export * from './KoboProtection'
 export * from './KoboEcrecCashRegistration'
 export * from './KoboMealCfm'
 export * from './Common'
