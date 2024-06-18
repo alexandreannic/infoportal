@@ -47,6 +47,7 @@ export class KoboMetaBasicneeds {
       echo322_lwo: DrcProject['UKR-000322 ECHO2'],
       echo322_hrk: DrcProject['UKR-000322 ECHO2'],
       echo322_nlv: DrcProject['UKR-000322 ECHO2'],
+      echo2_dnk: DrcProject['UKR-000322 ECHO2'],
       echo_chj: DrcProject['UKR-000269 ECHO1'],
       echo_dnk: DrcProject['UKR-000269 ECHO1'],
       echo_hrk: DrcProject['UKR-000269 ECHO1'],
