@@ -1,5 +1,5 @@
 import {Box, Collapse, Icon, useTheme} from '@mui/material'
-import React, {ReactNode} from 'react'
+import React, {ReactNode, useEffect} from 'react'
 import {Txt} from 'mui-extension'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {usePersistentState} from '@/shared/hook/usePersistantState'
@@ -13,6 +13,7 @@ export const SidebarSubSection = ({
   dense,
   keepOpen,
   defaultOpen,
+  isCollapsed,
 }: {
   icon?: string
   id?: string
@@ -21,10 +22,18 @@ export const SidebarSubSection = ({
   dense?: boolean
   title: ReactNode
   children: ReactNode
+  isCollapsed?: boolean
 }) => {
   const t = useTheme()
   const [open, setOpen] = usePersistentState(defaultOpen ?? false, {storageKey: 'sidebar-section-' + (id ?? '') + title})
   const margin = 1 / (dense ? 4 : 2)
+
+  useEffect(() => {
+    if (isCollapsed !== undefined) {
+      setOpen(!isCollapsed)
+    }
+  }, [isCollapsed])
+
   return (
     <Box sx={{
       my: margin,

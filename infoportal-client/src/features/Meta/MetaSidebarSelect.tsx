@@ -30,6 +30,7 @@ export const MetaSidebarSelect = ({
   addBlankOption,
   icon,
   onChange,
+  isCollapsed,
   ...props
 }: {
   addBlankOption?: boolean
@@ -38,6 +39,7 @@ export const MetaSidebarSelect = ({
   label: string
   options: () => undefined | DatatableOptions[]// {value: string, label?: string}[]
   onChange?: (_: string[]) => void
+  isCollapsed: boolean
 } & Pick<BoxProps, 'sx'>) => {
   const {m} = useI18n()
   const t = useTheme()
@@ -54,6 +56,10 @@ export const MetaSidebarSelect = ({
   const allChecked = useCallback(() => allValues().length === value?.length, [value, allValues])
 
   const toggleAll = useCallback(() => onChange?.(value?.length === 0 ? allValues() : []), [onChange, allValues])
+
+  if (isCollapsed) {
+    return null
+  }
 
   return (
     <>

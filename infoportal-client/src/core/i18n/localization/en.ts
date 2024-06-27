@@ -238,6 +238,8 @@ export const en = Object.freeze({
     taxID: 'Tax ID',
     submittedAt: 'Submitted at',
     clearAll: 'Clear all',
+    expandAll: 'Expand All',
+    collapseAll: 'Collapse All',
     committedAt: 'Committed at',
     id: 'ID',
     back: 'Back',
