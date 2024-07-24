@@ -4,7 +4,7 @@ import {Txt} from 'mui-extension'
 import {appFeatures} from '@/features/appFeatureId'
 import {FeatureLogo} from '@/features/FeatureLogo'
 import {Page} from '@/shared/Page'
-import React from 'react'
+import React, {useEffect} from 'react'
 import {useI18n} from '@/core/i18n'
 import {useSession} from '@/core/Session/SessionContext'
 import {Layout} from '@/shared/Layout'
@@ -12,6 +12,8 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {AppHeader} from '@/shared/Layout/Header/AppHeader'
 import {fnSwitch, Obj, seq} from '@alexandreannic/ts-utils'
 import {styleUtils} from '@/core/theme'
+import {Form} from 'enketo-core'
+import {modelStr} from '@/features/Home/deleteme'
 
 export const Home = () => {
   return (
@@ -26,8 +28,41 @@ const _Home = () => {
   const {session, accesses} = useSession()
   const layoutCtx = useLayoutContext()
   const t = useTheme()
+  useEffect(() => {
+    const formEl = document.querySelector('form.or')
+    const data = {
+      // required string of the default instance defined in the XForm
+      modelStr: modelStr,
+      // optional string of an existing instance to be edited
+      instanceStr: null,
+      // optional boolean whether this instance has ever been submitted before
+      submitted: false,
+      // optional array of external data objects containing:
+      // {id: 'someInstanceId', xml: XMLDocument}
+      external: [],
+      // optional object of session properties
+      // 'deviceid', 'username', 'email', 'phonenumber', 'simserial', 'subscriberid'
+      session: {},
+    }
+    const options = {}
+    let form = new Form(formEl, data, options)
+    let loadErrors = form.init()
+    const el: HTMLButtonElement = document.querySelector('#submit')!
+    el.onclick = function () {
+      form.validate().then(function (valid: boolean) {
+        if (!valid) {
+          alert('Form contains errors. Please see fields marked in red.')
+        } else {
+          const record = form.getDataStr()
+          form.resetView()
+          form = new Form(formEl, {modelStr: modelStr}, {})
+        }
+      })
+    }
+  }, [])
   return (
     <Page>
+      <form className="or"/>
       <Box sx={{textAlign: 'center'}}>
         <DRCLogo/>
         <Txt sx={{textAlign: 'center'}} size="title" block>{m.title}</Txt>
