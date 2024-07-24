@@ -13,6 +13,7 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
+    "importHelpers": true,
     "module": "esnext",
     "moduleResolution": "node",
     "downlevelIteration": true,

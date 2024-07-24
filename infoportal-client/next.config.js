@@ -1,3 +1,5 @@
+const path = require('path')
+
 /** @type {import('next').NextConfig} */
 module.exports = {
   swcMinify: true,
@@ -5,7 +7,7 @@ module.exports = {
   reactStrictMode: true,
   staticPageGenerationTimeout: 200,
   output: 'standalone',
-  transpilePackages: ['mui-extension'],
+  transpilePackages: ['mui-extension', 'enketo-core'],
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
@@ -16,4 +18,19 @@ module.exports = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  webpack: (config, context) => {
+    //   console.log('=========', path.resolve(__dirname, 'enketo-config'))
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'enketo/config': path.resolve(__dirname, 'enketo-config'),
+      'enketo/translator': path.resolve(__dirname + 'node_modules/enketo-core/src/js/fake-translator'),
+      'libxslt': false,
+
+      //     "enketo/widgets": root + "widgets.js",
+      //     "enketo/dialog": root + "fake-dialog",
+      //     "enketo/file-manager": root + "file-manager",
+      //     "enketo/xpath-evaluator-binding": root + "xpath-evaluator-binding"
+    }
+    return config
+  }
 }
