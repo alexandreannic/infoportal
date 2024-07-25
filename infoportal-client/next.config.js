@@ -23,7 +23,7 @@ module.exports = {
     config.resolve.alias = {
       ...config.resolve.alias,
       'enketo/config': path.resolve(__dirname, 'enketo-config'),
-      'enketo/translator': path.resolve(__dirname + 'node_modules/enketo-core/src/js/fake-translator'),
+      'enketo/translator': path.resolve(__dirname + 'enketo-translator'),
       'libxslt': false,
 
       //     "enketo/widgets": root + "widgets.js",
