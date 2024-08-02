@@ -19,6 +19,7 @@ import {
 } from '@infoportal-common'
 import {KoboMetaOrigin} from './KoboMetaType'
 import {KoboMetaMapper, MetaMapped, MetaMapperInsert} from './KoboMetaService'
+import { ActivityInfoBuildType } from 'src/feature/activityInfo/databaseInterface/ActivityInfoBuildType'
 
 const nfisPrograms = [DrcProgram.NFI, DrcProgram.ESK, DrcProgram.InfantWinterClothing, DrcProgram.InfantWinterClothing]
 
@@ -166,15 +167,36 @@ export class KoboMetaBasicneeds {
         esk: {program: DrcProgram.ESK, project: DrcProjectHelper.search(answer.esk_donor)},
       })
     })
+    const status = row.tags?.status ?? (DrcSectorHelper.isAutoValidatedActivity(activity) ? CashStatus.Paid : undefined)
     return activities.map(activity => {
+      
       return KoboMetaMapper.make({
+        enumerator: Bn_rapidResponse2.options.back_enum[answer.back_enum!],
+        office,
         oblast: oblastName,
+        raion: Bn_rapidResponse2.options.ben_det_raion[answer.ben_det_raion!],
+        hromada: Bn_rapidResponse2.options.ben_det_hromada[answer.ben_det_hromada!],
+        settlement: answer.ben_det_settlement,
+        personsCount: safeNumber(answer.ben_det_hh_size),
+        persons: group.map(KoboGeneralMapping.mapPersonDetails),
         sector: DrcSectorHelper.findByProgram(activity.program)!,
         activity: activity.program,
         project: activity.project ? [activity.project] : [],
         donor: activity.project ? [DrcProjectHelper.donorByProject[activity.project!]] : [],
-        office,
         firstName: answer.ben_det_first_name,
+        lastName: answer.ben_det_surname,
+        patronymicName: answer.ben_det_pat_name,
+        taxId: answer.pay_det_tax_id_num,
+        phone: answer.ben_det_ph_number ? '' + answer.ben_det_ph_number : undefined,
+        
+        status: KoboMetaHelper.mapCashStatus(status),
+        lastStatusUpdate: row.tags?.lastStatusUpdate ?? (status === CashStatus.Paid || nfisPrograms.includes(activity) ? row.date : undefined),
+        passportNum: map((answer.pay_det_pass_ser ?? '') + (answer.pay_det_pass_num ?? ''), _ => _ === '' ? undefined : _),
+        taxIdFileName: answer.pay_det_tax_id_ph,
+        taxIdFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
+        idFileName: answer.pay_det_id_ph,
+        idFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_id_ph),
+
       }) as any
     })
   }

@@ -1,6 +1,7 @@
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/Kobo'
 import {
   Bn_rapidResponse,
+  Bn_rapidResponse2,
   Bn_re,
   currentProtectionProjects,
   DrcProgram,
@@ -307,6 +308,12 @@ export const getColumnsCustom = ({
     [KoboIndex.byName('bn_rapidResponse').id]: [
       ...getPaymentStatusByEnum({
         showIf: (_: KoboAnswerFlat<Bn_rapidResponse.T>) => !!(_.back_prog_type ?? _.back_prog_type_l)?.find(_ => /mpca|cf|csf/.test(_))
+      }),
+      ...individualsBreakdown,
+    ],
+    [KoboIndex.byName('bn_rapidResponse2').id]: [
+      ...getPaymentStatusByEnum({
+        showIf: (_: KoboAnswerFlat<Bn_rapidResponse2.T>) => !!(_.back_prog_type ?? _.back_prog_type)?.find(_ => 'mpca' === _)
       }),
       ...individualsBreakdown,
     ],
