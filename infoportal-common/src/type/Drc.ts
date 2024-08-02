@@ -64,7 +64,7 @@ export enum DrcProgram {
 
 export class DrcSectorHelper {
 
-  private static readonly byProgram = {
+  private static readonly byProgram: Record<DrcProgram, DrcSector> = {
     CashForFuel: DrcSector.Shelter,
     CashForUtilities: DrcSector.Shelter,
     CashForRent: DrcSector.Shelter,
@@ -76,8 +76,21 @@ export class DrcSectorHelper {
     ESK: DrcSector.Shelter,
     InfantWinterClothing: DrcSector.NFI,
     HygieneKit: DrcSector.NFI,
-    SectoralCash: DrcSector.NFI,
-
+    Referral: DrcSector.Protection,
+    SectoralCashForAgriculture: DrcSector.Livelihoods,
+    VET: DrcSector.Livelihoods,
+    MSME: DrcSector.Livelihoods,
+    SectoralCashForAnimalShelterRepair: DrcSector.Livelihoods,
+    SectoralCashForAnimalFeed: DrcSector.Livelihoods,
+    Counselling: DrcSector.Protection,
+    PSS: DrcSector.Protection,
+    GBV: DrcSector.Protection,
+    ProtectionMonitoring: DrcSector.Protection,
+    AwarenessRaisingSession: DrcSector.Protection,
+    CommunityLevelPm: DrcSector.Protection,
+    Legal: DrcSector.Protection,
+    FGD: DrcSector.Protection,
+    Observation: DrcSector.Protection,
   } as const
 
   private static readonly autoValidatedActivity = new Set([
