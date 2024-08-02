@@ -1,6 +1,7 @@
 import {fnSwitch, map, seq} from '@alexandreannic/ts-utils'
 import {
   Bn_rapidResponse,
+  Bn_rapidResponse2,
   Bn_re,
   CashStatus,
   DrcOffice,
@@ -17,7 +18,8 @@ import {
   safeNumber
 } from '@infoportal-common'
 import {KoboMetaOrigin} from './KoboMetaType'
-import {MetaMapped, MetaMapperInsert} from './KoboMetaService'
+import {KoboMetaMapper, MetaMapped, MetaMapperInsert} from './KoboMetaService'
+import f from 'session-file-store'
 
 const nfisPrograms = [DrcProgram.NFI, DrcProgram.ESK, DrcProgram.InfantWinterClothing, DrcProgram.InfantWinterClothing]
 
@@ -145,7 +147,35 @@ export class KoboMetaBasicneeds {
       _.project ?? KoboMetaBasicneeds.getBnreProject(answer.back_donor?.[0]),
     ))
   }
-
+  static readonly bn_rrm2: MetaMapperInsert<KoboMetaOrigin<Bn_rapidResponse2.T, KoboTagStatus>> = (row) => {
+    const answer = Bn_rapidResponse2.map(row.answers)
+    const group = KoboGeneralMapping.collectXlsKoboIndividuals(answer)
+    const oblast = OblastIndex.byKoboName(answer.ben_det_oblast!)
+    const office= fnSwitch(answer.back_office!,{
+      chj: DrcOffice.Chernihiv,
+      dnk: DrcOffice.Dnipro,
+      hrk: DrcOffice.Kharkiv,
+      lwo: DrcOffice.Lviv,
+      nlv: DrcOffice.Mykolaiv,
+      umy: DrcOffice.Sumy,
+      }, () => undefined)
+    const oblastName = oblast.name
+    const activities = (answer.back_prog_type?? []).map(prog => {
+      fnSwitch(prog,{
+      mpca: DrcProgram.MPCA,
+      nfi: DrcProgram.NFI,
+      esk: DrcProgram.ESK,
+    }))
+  }
+    const sector = DrcSectorHelper.findByProgram(activity)
+    return KoboMetaMapper.make({
+      oblast: oblastName,
+      activity,
+      sector,
+    }) as any
+  }
+  
+  
   static readonly bn_rrm: MetaMapperInsert<KoboMetaOrigin<Bn_rapidResponse.T, KoboTagStatus>> = (row) => {
     const answer = Bn_rapidResponse.map(row.answers)
     if (answer.form_length === 'short') return
