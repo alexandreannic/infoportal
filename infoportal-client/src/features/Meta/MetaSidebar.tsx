@@ -2,7 +2,7 @@ import {Sidebar, SidebarBody, SidebarHr, SidebarItem} from '@/shared/Layout/Side
 import {useMetaContext} from '@/features/Meta/MetaContext'
 import {Obj, seq} from '@alexandreannic/ts-utils'
 import {DebouncedInput} from '@/shared/DebouncedInput'
-import React, {ReactNode} from 'react'
+import React, {ReactNode, useState} from 'react'
 import {today} from '@/features/Mpca/Dashboard/MpcaDashboard'
 import {PeriodPicker} from '@/shared/PeriodPicker/PeriodPicker'
 import {useI18n} from '@/core/i18n'
@@ -49,6 +49,12 @@ export const MetaSidebar = () => {
   const asyncKillCache = useAsync(api.koboMeta.killCache)
   const {toastInfo} = useIpToast()
   const {session} = useSession()
+
+  const [isCollapsed, setIsCollapsed] = useState(false)
+
+  const handleCollapseAll = () => {
+    setIsCollapsed((prev) => !prev)
+  }
 
   return (
     <Sidebar>
@@ -100,6 +106,12 @@ export const MetaSidebar = () => {
             <SidebarTitle sx={{display: 'block', mb: 1}}>
               <Box sx={{display: 'flex', alignItems: 'center'}}>
                 {m.filters}
+                <IpBtn
+                  color="primary"
+                  size="small"
+                  onClick={handleCollapseAll}
+                  children={isCollapsed ? m.expandAll : m.collapseAll}
+                  sx={{marginLeft: 'auto'}}/>
                 <IpBtn
                   color="primary"
                   size="small"
@@ -174,6 +186,7 @@ export const MetaSidebar = () => {
               filters={ctx.shapeFilters}
               shapes={ctx.shape}
               setFilters={ctx.setShapeFilters}
+              isCollapsed={isCollapsed}
               onClear={(name?: string) => {
                 if (name) {
                   ctx.setShapeFilters(_ => ({
@@ -193,9 +206,7 @@ export const MetaSidebar = () => {
   )
 }
 
-export const MetaDashboardSidebarBody = (
-  props: FilterLayoutProps
-) => {
+export const MetaDashboardSidebarBody = (props: FilterLayoutProps & {isCollapsed: boolean}) => {
   const t = useTheme()
   const getFilteredOptions = (name: string) => {
     const filtersCopy = {...filters}
@@ -209,6 +220,7 @@ export const MetaDashboardSidebarBody = (
     setFilters,
     data,
     onClear,
+    isCollapsed
   } = props
   return (
     <>
@@ -228,7 +240,7 @@ export const MetaDashboardSidebarBody = (
               <IpIconBtn children="clear" size="small" onClick={() => onClear?.(name)}/>
             </Badge>
           </Box>
-        } key={name} defaultOpen={filters[name] !== undefined}>
+        } key={name} isCollapsed={isCollapsed} defaultOpen={filters[name] !== undefined}>
           {filters[name] !== undefined}
           <DebouncedInput<string[]>
             key={name}
@@ -244,6 +256,7 @@ export const MetaDashboardSidebarBody = (
                 addBlankOption={shape.addBlankOption}
                 options={() => shapes[name].getOptions(() => getFilteredOptions(name))}
                 onChange={onChange}
+                isCollapsed={isCollapsed}
                 sx={{mb: .5}}
               />
             }
