@@ -193,7 +193,7 @@ export namespace AiFslcType {
       [DrcProgram.SectoralCashForAgriculture]: 'cv58tzkluclbdwv3',
       [DrcProgram.SectoralCashForAnimalFeed]: 'cx8imqaluclbdwv7',
       [DrcProgram.SectoralCashForAnimalShelterRepair]: 'cy77eh2luclbdwvb',
-      [DrcProgram.VET]: 'cyatasals348s0bv',
+      [DrcProgram.VET]: 'ca0kvknluclbdwvy', // Found manually from AI
       // [DrcProgram.SectoralCashForAgriculture]: activities['Agriculture and livestock inputs (cash)']['Agricultural grants']['# of individuals receiving sectoral cash to contributing to household food security'],
       // [DrcProgram.SectoralCashForAnimalFeed]: activities['Agriculture and livestock inputs (cash)']['Sectoral cash for animal feed']['# of individuals receiving sectoral cash to contributing to household food security'],
       // [DrcProgram.SectoralCashForAnimalShelterRepair]: activities['Temporary rehabilitation of the agricultural infrastructure, cooperative support, and value chain']['Temporary repair of livestock shelter/barns']['# of individual farmers supported with repairs of their livestock shelter, grain, and vegetable storage'],

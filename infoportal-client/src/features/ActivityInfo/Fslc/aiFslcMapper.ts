@@ -1,6 +1,6 @@
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {AiFslcType} from '@/features/ActivityInfo/Fslc/aiFslcType'
-import {DrcProgram, DrcProject, groupBy, KoboMetaStatus, PeriodHelper} from '@infoportal-common'
+import {add, DrcProgram, DrcProject, groupBy, KoboMetaStatus, PeriodHelper, safeNumber} from '@infoportal-common'
 import {fnSwitch} from '@alexandreannic/ts-utils'
 import {ActivityInfoSdk} from '@/core/sdk/server/activity-info/ActiviftyInfoSdk'
 import {activitiesConfig} from '@/features/ActivityInfo/ActivityInfo'
@@ -51,7 +51,16 @@ export namespace AiFslcMapper {
             },
           ],
           finalTransform: async (grouped, [activity, project, oblast, raion, hromada, settlment, displacement]) => {
-            const disaggregation = AiMapper.disaggregatePersons(grouped.flatMap(_ => _.persons).compact())
+            let disaggregation = AiMapper.disaggregatePersons(grouped.flatMap(_ => _.persons).compact())
+            if (activity === DrcProgram.VET) {
+              const total = add(disaggregation['Adult Men (18-59)'] + disaggregation['Adult Women (18-59)'])
+              disaggregation = {
+                'Adult Men (18-59)': safeNumber(disaggregation['Adult Men (18-59)']),
+                'Adult Women (18-59)': safeNumber(disaggregation['Adult Women (18-59)']),
+                'Total Individuals Reached': total,
+                'People with Disability': Math.min(total, disaggregation['People with Disability']),
+              }
+            }
             const ai: AiFslcType.Type = {
               'Reporting Month': fnSwitch(periodStr, {
                 '2024-01': '2024-03',
@@ -86,7 +95,7 @@ export namespace AiFslcMapper {
             })
 
             return {
-              submit: checkAiValid(ai.Oblast, ai.Raion, ai.Hromada, ai.Settlement, ai['Activity Plan Code']),
+              submit: checkAiValid(ai.Oblast, ai.Raion, ai.Hromada, ai['Activity Plan Code']),
               recordId: request.changes[0].recordId,
               data: grouped,
               activity: ai,
