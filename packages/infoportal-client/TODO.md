@@ -1,16 +1,16 @@
-- Remove sortObject and others since new Enum()
 - Harmonize files component names like MpcaData or MpcaTable.
 - Find consistent name for types over component
-- Delete chartHelperOld
 - Harmonize dashboards
 - Rename ScRadioGroupItem
 
-Started
+  Started
 
 - Use <TableInput/> whenever possible
 
-DONE:
+  DONE:
 
+- Remove sortObject and others since new Enum()
+- Delete chartHelperOld
 - Remove deprecated AaSelect
 - Remove ScLineChart2?
 - Harmonize all fetchAll to getAll in SDK

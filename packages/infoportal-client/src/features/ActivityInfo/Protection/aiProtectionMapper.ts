@@ -88,11 +88,28 @@ export namespace AiProtectionMapper {
                     'Reporting Month': periodStr === '2024-01' ? '2024-02' : periodStr,
                     ...fnSwitch<DrcProgram, Partial<AiProtectionType.TypeSub>>(activity, {
                       [DrcProgram.FGD]: {
-                        'Non-individuals Reached/Quantity': 1,
+                        'Total Individuals Reached': null as unknown as number,
+                        'Girls (0-17)': null as unknown as number,
+                        'Boys (0-17)': null as unknown as number,
+                        'Older Women (60+)': null as unknown as number,
+                        'Older Men (60+)': null as unknown as number,
+                        'Non-individuals Reached/Quantity': grouped.length,
+                      },
+                      [DrcProgram.CommunityLevelPm]: {
+                        'Total Individuals Reached': null as unknown as number,
+                        'Girls (0-17)': null as unknown as number,
+                        'Boys (0-17)': null as unknown as number,
+                        'Adult Women (18-59)': null as unknown as number,
+                        'Adult Men (18-59)': null as unknown as number,
+                        'Older Women (60+)': null as unknown as number,
+                        'People with Disability': null as unknown as number,
+                        'Older Men (60+)': null as unknown as number,
+                        'Non-individuals Reached/Quantity': grouped.length,
                       },
                     }, () => {
                       return {
-                        'Non-individuals Reached/Quantity': null,
+                        'People with Disability': null as unknown as number,
+                        'Non-individuals Reached/Quantity': null as unknown as undefined,
                         'Total Individuals Reached': disaggregation['Total Individuals Reached'] ?? 0,
                         'Girls (0-17)': disaggregation['Girls (0-17)'] ?? 0,
                         'Boys (0-17)': disaggregation['Boys (0-17)'] ?? 0,
