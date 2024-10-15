@@ -1,18 +1,20 @@
-# Installs Node.js image
-FROM node:16.13.1-alpine3.14
+FROM node:18-alpine
+WORKDIR /app
+# Install Git for packages installed from Git.
+RUN apk update && apk add --no-cache git
 
-# sets the working directory for any RUN, CMD, COPY command
-# all files we put in the Docker container running the server will be in /usr/src/app (e.g. /usr/src/app/package.json)
-WORKDIR /usr/src/app
+COPY package*.json ./
+COPY ../../package.json ../../package-lock.json ./
+COPY ../../packages/infoportal-server/package.json ./packages/infoportal-server/
+COPY ../../packages/infoportal-common/package.json ./packages/infoportal-common/
 
-# Copies package.json, package.json, tsconfig.json, .env to the root of WORKDIR
-COPY ["package.json", "package-lock.json", "tsconfig.json", ".env", "./"]
+RUN npm install --only=production
 
-# Copies everything in the src directory to WORKDIR/src
-COPY ./src ./src
+COPY ../../packages/infoportal-server ./packages/infoportal-server/
+COPY ../../packages/infoportal-common ./packages/infoportal-common/
 
-# Installs all packages
 RUN npm install
-
-# Runs the dev npm script to build & start the server
-CMD npm run start
+RUN npm run --prefix ./packages/infoportal-server build
+RUN npm run db-migrate-f
+EXPOSE 3000
+RUN npm run dev
