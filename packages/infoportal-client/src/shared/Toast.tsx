@@ -1,3 +1,4 @@
+'use client'
 // import * as React from 'react'
 import {createContext, ReactNode, useContext, useState} from 'react'
 import {Box, CircularProgress, Icon, IconButton, Snackbar, SnackbarCloseReason, SnackbarProps, useTheme} from '@mui/material'

@@ -1,3 +1,4 @@
+'use client'
 import * as React from 'react'
 import {ReactNode, useContext, useEffect, useMemo, useState} from 'react'
 import {en} from './localization/en'

@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import {Seq, seq} from '@alexandreannic/ts-utils'
-import {useMetaContext} from '@/features/Meta/MetaContext'
+import {useMetaContext} from '@/app/meta/MetaContext'
 import {useShelterData} from '@/features/Shelter/useShelterData'
 import {DrcProgram, Person} from 'infoportal-common'
 import {expect} from 'chai'

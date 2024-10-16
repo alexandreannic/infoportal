@@ -36,7 +36,7 @@ export interface AppFeature {
 export const appFeaturesIndex: Record<AppFeatureId, AppFeature> = {
   metaDashboard: {
     id: AppFeatureId.metaDashboard,
-    name: 'Meta Dashboard',
+    name: 'Meta dashboard',
     materialIcons: 'language',
     color: '#7300d7',
     path: '/meta-dashboard',

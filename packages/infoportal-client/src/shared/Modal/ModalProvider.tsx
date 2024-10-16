@@ -1,3 +1,4 @@
+'use client'
 import * as React from 'react'
 import {ReactNode, useCallback, useMemo, useState} from 'react'
 import {ModalContext, ModalType} from './ModalContext'

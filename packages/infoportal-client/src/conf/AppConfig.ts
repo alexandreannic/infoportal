@@ -1,5 +1,6 @@
+'use client'
 import {bool, defaultValue, env, required} from '@alexandreannic/ts-utils'
-import {AppFeatureId, appFeaturesIndex} from '@/features/appFeatureId'
+import {AppFeatureId} from '@/features/appFeatureId'
 
 enum Env {
   NEXT_PUBLIC_SENTRY_DNS = 'NEXT_PUBLIC_SENTRY_DNS',
@@ -39,8 +40,9 @@ export const appConfig = {
   uahToUsd: .027,
   muiProLicenseKey: e()(Env.NEXT_PUBLIC_MUI_PRO_LICENSE_KEY),
   linkToFeature: (feature: AppFeatureId, path: string) => {
-    const featurePath = appFeaturesIndex[feature]?.path ?? feature
-    return featurePath + '/#' + path
+    // TODO
+    // const featurePath = appFeaturesIndex[feature]?.path ?? feature
+    // return featurePath + '/#' + path
   },
   koboServerUrl: 'https://eu.kobotoolbox.org',
   contact: 'alexandre.annic@drc.ngo',
@@ -71,13 +73,13 @@ export const appConfig = {
   icons: {
     sector: 'category',
     program: 'book',
-    koboForm: appFeaturesIndex.kobo_database.materialIcons,
+    koboForm: 'fact_check',
     donor: 'handshake',
     disability: 'assist_walker',
     project: 'inventory_2',
     oblast: 'location_on',
     matrix: 'hub',
-    koboFormLink: appFeaturesIndex.kobo_database.materialIcons,
+    koboFormLink: 'fact_check',
     office: 'business',
     displacementStatus: 'directions_run',
     dataTable: 'table_view',

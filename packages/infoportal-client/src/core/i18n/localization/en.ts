@@ -245,7 +245,7 @@ export const en = Object.freeze({
     householdSize: 'Household size',
     occurrences: 'Occurrences',
     hhSize: 'HH size',
-    dashboard: 'Dashboard',
+    dashboard: 'dashboard',
     loading: 'Loading',
     passportSerie: 'Passport serie',
     price: 'Price',
@@ -440,7 +440,7 @@ export const en = Object.freeze({
       pdm: 'PDM'
     },
     _protection: {
-      cocCasesDashboard: 'CoC PowerBi Dashboard',
+      cocCasesDashboard: 'CoC PowerBi dashboard',
       trainings: 'Trainings',
       participants: 'Participants',
       avgParticipants: 'Avg Participants',

@@ -1,3 +1,4 @@
+'use client'
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useState} from 'react'
 import {KoboEditModalAnswer} from '@/shared/koboEdit/KoboEditModal'
 import {KoboUpdateAnswers} from '@/core/sdk/server/kobo/KoboAnswerSdk'

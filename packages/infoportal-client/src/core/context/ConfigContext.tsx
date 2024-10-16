@@ -1,3 +1,4 @@
+'use client'
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
 import {ApiSdk} from '../sdk/server/ApiSdk'
 import {appConfig, AppConfig} from '@/conf/AppConfig'
@@ -18,9 +19,9 @@ export interface ConfigContext {
   }
 }
 
-export const _ConfigContext = React.createContext({} as ConfigContext)
+export const _ConfigContext = React.createContext<ConfigContext>({} as ConfigContext)
 
-export const useAppSettings = () => useContext(_ConfigContext)
+export const useAppSettings = (): ConfigContext => useContext(_ConfigContext)
 
 type LightTheme = 'auto' | 'dark' | 'light'
 

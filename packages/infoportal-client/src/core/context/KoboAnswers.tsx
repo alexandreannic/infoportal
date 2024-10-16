@@ -1,3 +1,4 @@
+'use client'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {KoboAnswerFlat, KoboAnswerId, KoboFormName, KoboId, KoboIndex, KoboSchemaHelper} from 'infoportal-common'
 import {InferTypedAnswer, KoboFormNameMapped} from '@/core/sdk/server/kobo/KoboTypedAnswerSdk'
@@ -6,6 +7,8 @@ import React, {ReactNode, useContext, useMemo, useState} from 'react'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
 import {Kobo, KoboMappedAnswer} from '@/core/sdk/server/kobo/Kobo'
+export const useKoboAnswersContext = () => useContext<KoboAnswersContext>(Context)
+
 import {DatabaseKoboAnswerViewDialog} from '@/features/Database/KoboEntry/DatabaseKoboAnswerView'
 
 const Context = React.createContext({} as KoboAnswersContext)
@@ -106,5 +109,3 @@ export const KoboAnswersProvider = ({
     </Context.Provider>
   )
 }
-
-export const useKoboAnswersContext = () => useContext<KoboAnswersContext>(Context)

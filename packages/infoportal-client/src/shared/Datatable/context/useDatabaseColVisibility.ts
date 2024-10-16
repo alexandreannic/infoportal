@@ -1,4 +1,4 @@
-import {isServerSide} from '@/pages/_app'
+'use client'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {useCallback, useEffect, useMemo, useState} from 'react'
 import {DatatableColumn, DatatableRow, DatatableTableProps} from '@/shared/Datatable/util/datatableType'
@@ -18,7 +18,7 @@ export const useDatabaseColVisibility = <T extends DatatableRow>({
   columns: DatatableColumn.InnerProps<T>[]
 } & DatatableTableProps<T>['columnsToggle']) => {
   const [hiddenColumns, setHiddenColumns] = useState<string[]>(() => {
-    const saved = isServerSide || disableAutoSave ? undefined : localStorage.getItem(DatatableUtils.localStorageKey.column + id)
+    const saved = disableAutoSave ? undefined : localStorage.getItem(DatatableUtils.localStorageKey.column + id)
     return saved ? JSON.parse(saved) as string[] : hidden ?? defaultHidden ?? []
   })
 

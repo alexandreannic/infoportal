@@ -1,3 +1,5 @@
+'use client'
+
 import React, {Dispatch, ReactNode, SetStateAction, useCallback, useContext, useEffect} from 'react'
 import {useEffectFn} from '@alexandreannic/react-hooks-lib'
 import {useI18n} from '@/core/i18n'

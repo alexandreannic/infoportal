@@ -8,6 +8,9 @@ module.exports = {
   reactStrictMode: true,
   staticPageGenerationTimeout: 200,
   output: 'standalone',
+  experimental: {
+    typedRoutes: true,
+  },
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if

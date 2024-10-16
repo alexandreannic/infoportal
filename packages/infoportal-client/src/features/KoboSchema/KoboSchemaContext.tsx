@@ -1,3 +1,4 @@
+'use client'
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
 import {KoboApiSchema, KoboFormName, KoboId, KoboIndex, KoboSchemaHelper} from 'infoportal-common'
 import {useI18n} from '@/core/i18n'

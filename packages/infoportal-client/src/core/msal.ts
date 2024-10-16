@@ -1,3 +1,4 @@
+'use client'
 import {AuthenticationResult, Configuration, EventMessage, EventType, PopupRequest, PublicClientApplication} from '@azure/msal-browser'
 import type {AppConfig} from '@/conf/AppConfig'
 
