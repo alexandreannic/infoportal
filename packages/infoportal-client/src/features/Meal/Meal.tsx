@@ -20,13 +20,15 @@ import {MealVerification} from '@/features/Meal/Verification/MealVerification'
 import {Access} from '@/core/sdk/server/access/Access'
 import {appConfig} from '@/conf/AppConfig'
 import {MealPdm} from '@/features/Meal/Pdm/MealPdm'
-import {MealPdmDashboard} from '@/features/Meal/Pdm/MealPdmDashboard'
+import {MealPdmCashDashboard} from '@/features/Meal/Pdm/MealPdmCashDashboard'
+import {MealPdmShelterDashboard} from '@/features/Meal/Pdm/MealPdmShelterDashboard'
 
 const relatedKoboForms: KoboFormName[] = [
   'meal_verificationWinterization',
   'meal_verificationEcrec',
   'meal_visitMonitoring',
-  'meal_cashPdm'
+  'meal_cashPdm',
+  'meal_shelterPdm'
 ]
 
 export const mealIndex = {
@@ -45,7 +47,8 @@ export const mealIndex = {
     },
     pdm: {
       _: '/pdm',
-      dashboard: `/pdm/dashboard`,
+      cashPdmDashboard: `/pdm/cash/dashboard`,
+      shelterPdmDashboard: `/pdm/shelter/dashboard`,
     },
     form: (id: KoboFormName = ':id' as any) => '/form/' + id,
   },
@@ -97,6 +100,7 @@ const MealSidebar = ({
             )}
           </NavLink>
           <SidebarKoboLink path={path(mealIndex.siteMap.form('meal_cashPdm'))} name="meal_cashPdm"/>
+          <SidebarKoboLink path={path(mealIndex.siteMap.form('meal_shelterPdm'))} name="meal_shelterPdm"/>
         </SidebarSection>
       </SidebarBody>
     </Sidebar>
@@ -114,7 +118,8 @@ export const Meal = () => {
           return _.params?.koboFormId === KoboIndex.byName('bn_re').id ||
             _.params?.koboFormId === KoboIndex.byName('ecrec_cashRegistration').id ||
             _.params?.koboFormId === KoboIndex.byName('meal_visitMonitoring').id ||
-            _.params?.koboFormId === KoboIndex.byName('meal_cashPdm').id
+            _.params?.koboFormId === KoboIndex.byName('meal_cashPdm').id ||
+            _.params?.koboFormId === KoboIndex.byName('meal_shelterPdm').id
         })
     }
   }, [accesses, session])
@@ -145,9 +150,10 @@ export const Meal = () => {
             <Route path={mealIndex.siteMap.verification.data()} element={<MealVerificationTable/>}/>
           </Route>
         )}
-        <Route path={mealIndex.siteMap.pdm._} element={<MealPdm/>}>
-          <Route index element={<Navigate to={mealIndex.siteMap.pdm.dashboard}/>}/>
-          <Route path={mealIndex.siteMap.pdm.dashboard} element={<MealPdmDashboard/>}/>
+        <Route path={mealIndex.siteMap.pdm._} element={<MealPdm formName="meal_cashPdm"/>}>
+          <Route index element={<Navigate to={mealIndex.siteMap.pdm.cashPdmDashboard} replace/>}/>
+          <Route path={mealIndex.siteMap.pdm.cashPdmDashboard} element={<MealPdmCashDashboard/>}/>
+          <Route path={mealIndex.siteMap.pdm.shelterPdmDashboard} element={<MealPdmShelterDashboard/>}/>
         </Route>
         <Route index element={<Navigate to={mealIndex.siteMap.visit.dashboard}/>}/>
         {relatedKoboForms.map(_ =>
