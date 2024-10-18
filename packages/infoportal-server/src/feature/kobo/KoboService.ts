@@ -479,7 +479,7 @@ export class KoboService {
          WHERE id IN (${KoboService.safeIds(answerIds).join(',')})
         `),
     ])
-    this.event.emit(Event.KOBO_ANSWER_EDITED, {formId, answerIds, answer: {[question]: answer}})
+    this.event.emit(Event.KOBO_ANSWER_EDITED_FROM_IP, {formId, answerIds, answer: {[question]: answer}})
   }
 
   readonly updateTags = async ({formId, answerIds, tags, authorEmail}: {formId: KoboId, answerIds: KoboAnswerId[], tags: Record<string, any>, authorEmail: string}) => {

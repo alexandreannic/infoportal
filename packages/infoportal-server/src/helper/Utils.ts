@@ -63,6 +63,53 @@ export async function processBatches<T>({
 
 export namespace Util {
 
+  export const getObjectDiff = ({
+    skipProperties = [],
+    before,
+    after,
+  }: {
+    skipProperties?: string[]
+    before: Record<string, any>,
+    after: Record<string, any>
+  }): Record<string, any> => {
+    const updatedAnswers: Record<any, any> = {}
+
+    function compareValues(key: string, oldValue: Record<any, any>, newValue: Record<any, any>): void {
+      if (Array.isArray(oldValue) && Array.isArray(newValue)) {
+        if (oldValue.length !== newValue.length) {
+          updatedAnswers[key] = newValue
+        } else {
+          for (let i = 0; i < oldValue.length; i++) {
+            if (JSON.stringify(oldValue[i]) !== JSON.stringify(newValue[i])) {
+              updatedAnswers[key] = newValue
+              break
+            }
+          }
+        }
+      } else if (typeof oldValue === 'object' && oldValue !== null &&
+        typeof newValue === 'object' && newValue !== null) {
+        const nestedUpdates = Util.getObjectDiff({before: oldValue, after: newValue, skipProperties})
+        if (Object.keys(nestedUpdates).length > 0) {
+          updatedAnswers[key] = newValue
+        }
+      } else if (oldValue !== newValue) {
+        updatedAnswers[key] = newValue
+      }
+    }
+
+    for (const key in before) {
+      if (after.hasOwnProperty(key) && !skipProperties.includes(key)) {
+        compareValues(key, before[key], after[key])
+      }
+    }
+    for (const key in after) {
+      if (!before.hasOwnProperty(key) && !skipProperties.includes(key)) {
+        updatedAnswers[key] = after[key]
+      }
+    }
+    return updatedAnswers
+  }
+
   export const promiseSequentially = async <T>(promises: (() => Promise<T>)[]): Promise<T[]> => {
     const results: T[] = []
     for (const promise of promises) {

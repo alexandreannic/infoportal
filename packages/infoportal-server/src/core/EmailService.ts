@@ -27,6 +27,7 @@ export class EmailService {
   initializeListeners() {
     this.log.info(`Start listening to KOBO_TAG_EDITED`)
     this.event.listen(GlobalEvent.Event.KOBO_TAG_EDITED, this.handleTagEdited)
+    this.event.listen(GlobalEvent.Event.KOBO_ANSWER_EDITED_FROM_KOBO, console.log)
   }
 
   private handleTagEdited = async (params: GlobalEvent.KoboTagEditedParams) => {
