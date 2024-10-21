@@ -13,7 +13,6 @@ import {
   KoboFormName,
   KoboIndex,
   KoboMealCfmHelper,
-  KoboMealPdmDashboard,
   KoboProtection_hhs3,
   KoboSafetyIncidentHelper,
   Meal_cashPdm,
@@ -38,6 +37,7 @@ import {
 } from 'infoportal-common'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {fnSwitch, seq} from '@alexandreannic/ts-utils'
+import {Meal_shelterPdm} from "infoportal-common/lib/kobo/generated/Meal_shelterPdm";
 
 /** @deprecated should be coming from the unified database */
 type Meta = {
@@ -191,7 +191,11 @@ export class KoboTypedAnswerSdk {
       ...make('meal_cashPdm', (filters?: KoboAnswerFilter) => req({
         formId: KoboIndex.byName('meal_cashPdm').id,
         fnMapKobo: Meal_cashPdm.map,
-        fnMapCustom: KoboMealPdmDashboard.map,
+        ...filters,
+      })),
+      ...make('meal_shelterPdm', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('meal_shelterPdm').id,
+        fnMapKobo: Meal_shelterPdm.map,
         ...filters,
       })),
       ...make('protection_hhs3', (filters?: KoboAnswerFilter) => req({

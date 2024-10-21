@@ -14,7 +14,8 @@ export enum DrcOffice {
   Sloviansk = 'Sloviansk',
   Ivankiv = 'Ivankiv',
   Ichna = 'Ichna',
-  Kherson = 'Kherson'
+  Kherson = 'Kherson',
+  Zaporizhzhya = 'Zaporizhzhya'
 }
 
 export const oblastByDrcOffice: Record<DrcOffice, OblastName> = {
@@ -30,7 +31,8 @@ export const oblastByDrcOffice: Record<DrcOffice, OblastName> = {
   Sloviansk: 'Donetska',
   Ivankiv: 'Ivano-Frankivska',
   Ichna: 'Chernihivska',
-  Kherson: 'Khersonska'
+  Kherson: 'Khersonska',
+  Zaporizhzhya: 'Zaporizka'
 }
 
 export const drcOffices = Obj.values(DrcOffice)
@@ -155,7 +157,8 @@ export const drcOfficeShort: Record<DrcOffice, string> = {
   [DrcOffice.Sloviansk]: 'Sloviansk',
   [DrcOffice.Ivankiv]: 'Ivankiv',
   [DrcOffice.Ichna]: 'Ichna',
-  [DrcOffice.Kherson]: 'Kherson'
+  [DrcOffice.Kherson]: 'Kherson',
+  [DrcOffice.Zaporizhzhya]: 'Zaporizhzhya',
 }
 
 export enum DrcDonor {

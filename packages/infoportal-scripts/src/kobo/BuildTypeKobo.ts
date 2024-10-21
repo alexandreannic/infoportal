@@ -183,6 +183,12 @@ export class BuildKoboType {
         'ben_det_raion',
       ]
     },
+    meal_shelterPdm: {
+      formId: KoboIndex.byName('meal_shelterPdm').id, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
     meal_cfmInternal: {
       formId: KoboIndex.byName('meal_cfmInternal').id, skipQuestionTyping: [
         'ben_det_hromada',
