@@ -25,6 +25,18 @@ export type MealVerificationActivity<
     koboFormId: KoboId,
     joinColumn: (KeyOf<InferTypedAnswer<TCheck>>)
   },
+  registration2: {
+    koboFormId: KoboId,
+    fetch: TData
+    filters?: (_: InferTypedAnswer<TData>) => boolean
+    joinBy: (_: InferTypedAnswer<TData>) => string
+  }
+  verification2: {
+    fetch: TCheck
+    koboFormId: KoboId,
+    joinBy: (_: InferTypedAnswer<TCheck>) => string
+  },
+  verifiedColumns2: Record<string, {reg: (_: InferTypedAnswer<TData>) => any, verif: (_: InferTypedAnswer<TCheck>) => any}>
   verifiedColumns: (KeyOf<InferTypedAnswer<TCheck>> & KeyOf<InferTypedAnswer<TData>>)[]
   // joinColumn: (KeyOf<InferTypedAnswer<TCheck>> & KeyOf<InferTypedAnswer<TData>>)
   dataColumns?: KeyOf<InferTypedAnswer<TData>>[]
@@ -127,6 +139,9 @@ export const mealVerificationActivities = seq([
       'back_donor',
       'back_prog_type',
     ],
+    verifiedColumns2: {
+      surname: {reg: _ => _.back_consent, verif: _ => _.back_consent,},
+    },
     verifiedColumns: [
       'back_consent',
       'back_consen_no_reas',

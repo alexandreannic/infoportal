@@ -1,5 +1,5 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {fnSwitch, map, seq} from '@alexandreannic/ts-utils'
+import {fnSwitch, map, Obj, seq} from '@alexandreannic/ts-utils'
 import React, {useEffect, useMemo, useState} from 'react'
 import {Page, PageTitle} from '@/shared/Page'
 import {alpha, Box, Icon, Tooltip, useTheme} from '@mui/material'
@@ -25,7 +25,7 @@ import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
 import {DatatableSkeleton} from '@/shared/Datatable/DatatableSkeleton'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {IpAlert} from '@/shared/Alert'
-import {KoboFormNameMapped} from '@/core/sdk/server/kobo/KoboTypedAnswerSdk'
+import {InferTypedAnswer, KoboFormNameMapped} from '@/core/sdk/server/kobo/KoboTypedAnswerSdk'
 import {useToast} from '@/shared/Toast'
 import {KoboApiQuestionSchema} from 'infoportal-common/kobo'
 import {NonNullableKey} from 'infoportal-common/type/Generic'
@@ -41,6 +41,21 @@ interface MergedData {
   dataCheck?: KoboAnswerFlat<any>
   data: KoboAnswerFlat<any>
   score: number
+}
+
+interface ComputedCell {
+  name: string
+  valueReg: any
+  valueVerif: any
+  equals?: boolean
+}
+
+interface ComputedRow {
+  score: number
+  rowReg: KoboAnswerFlat<any>
+  rowVerif: KoboAnswerFlat<any>
+  verifiedData: ComputedCell[]
+  status: MergedDataStatus
 }
 
 const paramSchema = yup.object({id: yup.string().required()})
@@ -150,9 +165,25 @@ export const MealVerificationTable = () => {
   )
 }
 
+const areEquals = (a: any, b: any): boolean => {
+  if (typeof a !== typeof b) false
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a === undefined || b === undefined) return a === b
+    return a.every(c => (b.find(d => c === d)))
+  }
+  switch (typeof a) {
+    case 'number':
+      return Math.abs(a - b) <= b * mealVerificationConf.numericToleranceMargin
+    case 'string':
+      return a?.trim() === b?.trim()
+    default:
+      return a === b
+  }
+}
+
 const MealVerificationTableContent = <
-  TData extends KoboFormNameMapped = any,
-  TCheck extends KoboFormNameMapped = any,
+  TReg extends KoboFormNameMapped = any,
+  TVerif extends KoboFormNameMapped = any,
 >({
   schema,
   activity,
@@ -160,7 +191,7 @@ const MealVerificationTableContent = <
   verificationAnswersRefresh,
 }: {
   schema: KoboSchemaHelper.Bundle
-  activity: MealVerificationActivity<TData, TCheck>
+  activity: MealVerificationActivity<TReg, TVerif>
   verificationAnswers: MealVerificationAnsers[]
   verificationAnswersRefresh: () => Promise<any>
 }) => {
@@ -172,76 +203,82 @@ const MealVerificationTableContent = <
 
   const indexVerification = useMemo(() => seq(verificationAnswers).groupByFirst(_ => _.koboAnswerId), [verificationAnswers])
 
-  const reqDataOrigin = () => api.kobo.typedAnswers.searchByAccess[activity.registration.fetch]({}).then(_ => _.data as unknown as KoboAnswerFlat[])
-  const reqDataVerified = () => api.kobo.typedAnswers.searchByAccess[activity.verification.fetch]({}).then(_ => _.data as unknown as KoboAnswerFlat[])
-  const fetcherDataOrigin = useFetcher(reqDataOrigin)
-  const fetcherDataVerified = useFetcher(reqDataVerified)
+  const reqDataReg = () => api.kobo.typedAnswers.searchByAccess[activity.registration.fetch]({}).then(_ => _.data as unknown as InferTypedAnswer<TReg>[])
+  const reqDataVerif = () => api.kobo.typedAnswers.searchByAccess[activity.verification.fetch]({}).then(_ => _.data as unknown as InferTypedAnswer<TVerif>[])
+  const fetcherDataReg = useFetcher(reqDataReg)
+  const fetcherDataVerif = useFetcher(reqDataVerif)
   const asyncUpdateAnswer = useAsync(api.mealVerification.updateAnswers, {requestKey: _ => _[0]})
 
   const [openModalAnswer, setOpenModalAnswer] = useState<KoboAnswerFlat<any> | undefined>()
   const [display, setDisplay] = useState<'data' | 'dataCheck' | 'all'>('all')
 
   useEffect(() => {
-    fetcherDataVerified.fetch()
-    fetcherDataOrigin.fetch()
+    fetcherDataVerif.fetch()
+    fetcherDataReg.fetch()
   }, [])
 
-  const areEquals = (c: string, _: Pick<MergedData, 'data' | 'dataCheck'>) => {
-    if (!_.dataCheck) return true
-    if (_.dataCheck[c] === undefined && _.data?.[c] === undefined) return true
-    switch (schema.schemaHelper.questionIndex[c].type) {
-      case 'select_multiple':
-        const checkArr = [_.dataCheck[c]].flat() as string[]
-        const dataArr = [_.data?.[c]].flat() as string[]
-        if (_.dataCheck[c] === undefined || _.data?.[c] === undefined) return _.dataCheck[c] === _.data?.[c]
-        return checkArr.every(c => (dataArr.find(d => c === d)))
-      case 'decimal':
-      case 'integer':
-        return Math.abs(_.dataCheck[c] - _.data?.[c]) <= _.data?.[c] * mealVerificationConf.numericToleranceMargin
-      case 'text':
-        return _.dataCheck[c]?.trim() === _.data?.[c]?.trim()
-      default:
-        return _.dataCheck[c] === _.data?.[c]
-    }
-  }
+  // const areEquals = (type: KoboApiQuestionType, c: string) => {
+  //   switch (type) {
+  //     case 'select_multiple':
+  //       const checkArr = [_.dataCheck[c]].flat() as string[]
+  //       const dataArr = [_.data?.[c]].flat() as string[]
+  //       if (_.dataCheck[c] === undefined || _.data?.[c] === undefined) return _.dataCheck[c] === _.data?.[c]
+  //       return checkArr.every(c => (dataArr.find(d => c === d)))
+  //     case 'decimal':
+  //     case 'integer':
+  //       return Math.abs(_.dataCheck[c] - _.data?.[c]) <= _.data?.[c] * mealVerificationConf.numericToleranceMargin
+  //     case 'text':
+  //       return _.dataCheck[c]?.trim() === _.data?.[c]?.trim()
+  //     default:
+  //       return _.dataCheck[c] === _.data?.[c]
+  //   }
+  // }
 
   const {mergedData, duplicateErrors} = useMemo(() => {
     const duplicateErrors = new Set<string>()
-    const newMergedData = map(fetcherDataOrigin.get, fetcherDataVerified.get, (origin, verified) => {
-      const indexDataVerified: Record<any, KoboAnswerFlat[]> = seq(verified).groupBy(_ => _[activity.verification.joinColumn] ?? '')
-      return seq(origin)
+    const newMergedData = map(fetcherDataReg.get, fetcherDataVerif.get, (dataReg, dataVerif) => {
+      const indexDataVerif: Record<any, InferTypedAnswer<TVerif>[]> = seq(dataVerif).groupBy(_ => activity.verification2.joinBy(_) ?? '')
+      return seq(dataReg)
         .filter(_ => indexVerification[_.id])
-        .flatMap((_: any) => {
-          const dataVerified = indexDataVerified[_[activity.registration.joinColumn]]
-          if (dataVerified && dataVerified.length > 1 && !duplicateErrors.has(_[activity.registration.joinColumn])) {
-            duplicateErrors.add(_[activity.registration.joinColumn])
+        .flatMap((rowReg: InferTypedAnswer<TReg>) => {
+          const joinValue = activity.registration2.joinBy(rowReg)
+          const rowVerifs = indexDataVerif[joinValue]
+          if (rowVerifs && rowVerifs.length > 1 && !duplicateErrors.has(joinValue)) {
+            duplicateErrors.add(joinValue)
           }
-          if (dataVerified)
-            return dataVerified.map(dv => {
-              const mergedData: Omit<MergedData, 'score'> = {
-                data: _,
-                dataCheck: dv,
+          if (rowVerifs)
+            return rowVerifs.map(rowVerif => {
+              const mergedData: Omit<ComputedRow, 'score'> = {
+                rowReg,
+                rowVerif,
+                verifiedData: Obj.entries(activity.verifiedColumns2).map(([name, x]) => {
+                  const valueReg = x.reg(rowReg)
+                  const valueVerif = x.verif(rowVerif)
+                  return {name, valueReg, valueVerif, equals: areEquals(valueVerif, valueReg)}
+                }),
                 status: (() => {
-                  if (!!dataVerified) return MergedDataStatus.Completed
-                  if (indexVerification[_.id]?.status === MealVerificationAnswersStatus.Selected) return MergedDataStatus.Selected
+                  if (!!rowVerif) return MergedDataStatus.Completed
+                  if (indexVerification[rowReg.id]?.status === MealVerificationAnswersStatus.Selected) return MergedDataStatus.Selected
                   return MergedDataStatus.NotSelected
                 })(),
               }
-              const res: MergedData = {
+              const res: ComputedRow = {
                 ...mergedData,
-                score: seq(activity.verifiedColumns).sum(c => areEquals(c, mergedData) ? 1 : 0),
+                score: seq(mergedData.verifiedData).sum(_ => _.equals ? 1 : 0),
               }
               return res
             })
-          return {
-            data: _,
-            dataCheck: undefined,
+          const res: ComputedRow = {
+            verifiedData: [],
+            rowReg,
+            rowVerif: undefined,
             score: 0,
             status: (() => {
-              if (indexVerification[_.id]?.status === MealVerificationAnswersStatus.Selected) return MergedDataStatus.Selected
+              if (indexVerification[rowReg.id]?.status === MealVerificationAnswersStatus.Selected) return MergedDataStatus.Selected
               return MergedDataStatus.NotSelected
             })()
           }
+          return res
         }).sortByNumber(_ => fnSwitch(_.status, {
           [MergedDataStatus.Completed]: 1,
           [MergedDataStatus.NotSelected]: 2,
@@ -250,8 +287,8 @@ const MealVerificationTableContent = <
     })
     return {mergedData: newMergedData, duplicateErrors}
   }, [
-    fetcherDataVerified.get,
-    fetcherDataOrigin.get,
+    fetcherDataVerif.get,
+    fetcherDataReg.get,
     indexVerification,
     activity
   ])
@@ -305,7 +342,7 @@ const MealVerificationTableContent = <
         <Datatable
           showExportBtn
           id="meal-verif-ecrec"
-          loading={fetcherDataVerified.loading || fetcherDataOrigin.loading}
+          loading={fetcherDataVerif.loading || fetcherDataReg.loading}
           data={mergedData}
           header={
             <>
@@ -420,7 +457,7 @@ const MealVerificationTableContent = <
             },
             ...activity.dataColumns?.flatMap(c => {
               const q = schema.schemaHelper.questionIndex[c] as NonNullableKey<KoboApiQuestionSchema, 'name'>
-              if(!q.name) return []
+              if (!q.name) return []
               const w = getColumnByQuestionSchema({
                 formId: activity.registration.koboFormId,
                 data: mergedData,
@@ -435,9 +472,9 @@ const MealVerificationTableContent = <
               })
               return w as any
             }) ?? [],
-            ...activity.verifiedColumns.map(c => {
+            ...Obj.entries(activity.verifiedColumns2).map(([id, c]) => {
               return {
-                id: c,
+                id,
                 type: 'select_one',
                 head: schema.translate.question(c),
                 style: (_: MergedData) => {
@@ -478,7 +515,7 @@ const MealVerificationTableContent = <
               align: 'right',
               style: _ => ({fontWeight: t.typography.fontWeightBold}),
               renderQuick: _ => (
-                _.dataCheck ? toPercent(_.score / activity.verifiedColumns.length) : ''
+                _.dataCheck ? toPercent(_.score / Object.keys(activity.verifiedColumns2).length) : ''
               )
             }
           ]}/>
