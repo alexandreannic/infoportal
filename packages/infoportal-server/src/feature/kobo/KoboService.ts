@@ -146,6 +146,24 @@ export class KoboService {
               {date: 'desc',},
               {submissionTime: 'desc',},
             ],
+            select: {
+              // TODO NOT SAFE but never used so far in the code so let's get some perf improvements
+              start: true,
+              end: true,
+              date: true,
+              attachments: true,
+              submissionTime: true,
+              id: true,
+              answers: true,
+              formId: true,
+              tags: true,
+              version: false,
+              geolocation: false,
+              uuid: false,
+              validationStatus: false,
+              validatedBy: false,
+              lastValidatedTimestamp: false,
+            },
             // ...includeMeta ? {
             //   include: {
             //     meta: includeMeta,
@@ -175,19 +193,19 @@ export class KoboService {
             start: d.start,
             end: d.end,
             date: d.date,
-            version: d.version ?? undefined,
             attachments: d.attachments as KoboAttachment[],
-            geolocation: d.geolocation as any,
             submissionTime: d.submissionTime,
             id: d.id,
-            uuid: d.uuid,
-            validationStatus: d.validationStatus as any,
-            validatedBy: d.validatedBy ?? undefined,
-            lastValidatedTimestamp: d.lastValidatedTimestamp ?? undefined,
             answers: d.answers as any,
             formId: d.formId,
             tags: d.tags,
-          })))
+            // geolocation: d.geolocation as any,
+            // uuid: d.uuid,
+            // validationStatus: d.validationStatus as any,
+            // validatedBy: d.validatedBy ?? undefined,
+            // lastValidatedTimestamp: d.lastValidatedTimestamp ?? undefined,
+            // version: d.version ?? undefined,
+          }) as DbKoboAnswer))
             // .then(_ => {
             //   if (_?.[0].answers.date)
             //     return _.sort((a, b) => {
