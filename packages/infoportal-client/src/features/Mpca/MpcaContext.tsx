@@ -1,7 +1,6 @@
 import React, {ReactNode, useContext, useEffect, useMemo} from 'react'
 import {CashStatus, KoboAnswerId, KoboId, MpcaEntity, NonNullableKey} from 'infoportal-common'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {MpcaPayment} from '@/core/sdk/server/mpcaPaymentTool/MpcaPayment'
 import {KoboAnswerFilter} from '@/core/sdk/server/kobo/KoboAnswerSdk'
 import {MpcaTypeTag} from '@/core/sdk/server/mpca/MpcaEntity'
 import {Obj, Seq, seq} from '@alexandreannic/ts-utils'
@@ -29,8 +28,6 @@ export interface MpcaContext {
   data?: Seq<MpcaEntity>
   asyncUpdates: UseAsyncSimple<<K extends keyof MpcaTypeTag>(_: UpdateTag<K>) => Promise<void>>
   fetcherData: UseFetcher<(filters?: KoboAnswerFilter) => Promise<Seq<MpcaEntity>>>
-  _getPayments: UseFetcher<() => Promise<MpcaPayment[]>>
-  _create: UseAsyncSimple<(_: string[]) => Promise<MpcaPayment>>
 }
 
 const Context = React.createContext({} as MpcaContext)
@@ -43,8 +40,6 @@ export const MpcaProvider = ({
   children: ReactNode
 }) => {
   const {api} = useAppSettings()
-  const _getPayments = useFetcher(api.mpcaPayment.getAll)
-  const _create = useAsync(api.mpcaPayment.create)//
 
   const fetcherData = useFetcher((_?: KoboAnswerFilter) => api.mpca.search(_).then(_ => seq(_.data)) as Promise<Seq<MpcaEntity>>)
   const dataIndex = useMemo(() => {
@@ -127,8 +122,6 @@ export const MpcaProvider = ({
     <Context.Provider value={{
       data: mappedData,
       fetcherData,
-      _getPayments,
-      _create,
       refresh: asyncRefresh,
       asyncUpdates,
     }}>

@@ -44,7 +44,6 @@ export const MpcaData = () => {
   const {session, accesses} = useSession()
   const ctx = useMpcaContext()
   const [selected, setSelected] = useState<string[]>([])
-  const _payment = useAsync(api.mpcaPayment.create)
 
   useEffect(() => {
     ctx.fetcherData.fetch({force: false})
@@ -129,18 +128,6 @@ export const MpcaData = () => {
                   variant="outlined"
                 >
                   {m.mpca.generateDeduplicationFile}
-                </IpBtn>
-                <IpBtn
-                  disabled
-                  color="primary"
-                  icon="create_new_folder"
-                  variant="outlined"
-                  loading={_payment.loading}
-                  onClick={() => {
-                    _payment.call(selected)
-                  }}
-                >
-                  {m.mpca.makePaymentTool}
                 </IpBtn>
               </>
             )

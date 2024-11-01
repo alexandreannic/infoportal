@@ -3,7 +3,6 @@ import {NfiMPcaSdk} from './nfi/NfiMPcaSdk'
 import {ActivityInfoSdk} from './activity-info/ActiviftyInfoSdk'
 import {KoboApiSdk} from './kobo/KoboApiSdk'
 import {Method} from 'axios'
-import {MpcaPaymentSdk} from './mpcaPaymentTool/MpcaPaymentSdk'
 import {SessionSdk} from '@/core/sdk/server/session/SessionSdk'
 import {KoboAnswerSdk} from '@/core/sdk/server/kobo/KoboAnswerSdk'
 import {KoboServerSdk} from '@/core/sdk/server/kobo/KoboServerSdk'
@@ -53,7 +52,6 @@ export class ApiSdk {
   readonly mealVerification = new MealVerificationClient(this.client)
   readonly activityInfo = new ActivityInfoSdk(this.client)
   readonly mpca = new MpcaSdk(this.client)
-  readonly mpcaPayment = new MpcaPaymentSdk(this.client)
   readonly wfpDeduplication = new WfpDeduplicationSdk(this.client)
   readonly access = new AccessSdk(this.client)
   readonly group = new GroupSdk(this.client)

@@ -53,7 +53,6 @@ model KoboAnswers {
   deletedBy              String?
   tags                   Json?
 
-  mpcaPaymentTools  MpcaPaymentToolAnswers[]
   mealVerifications MealVerificationAnswers[]
   // meta              KoboMeta[]
   history           KoboAnswersHistory[]
@@ -138,32 +137,6 @@ model KoboMeta {
 
   @@index([formId])
   @@index([koboId])
-}
-
-model MpcaPaymentTool {
-  id                                String                   @id @default(uuid())
-  name                              String?
-  index                             Int                      @unique() @default(autoincrement())
-  budgetLineMPCA                    String?
-  budgetLineCFR                     String?
-  budgetLineStartUp                 String?
-  headOfOperation                   String?
-  cashAndVoucherAssistanceAssistant String?
-  financeAndAdministrationOfficer   String?
-  city                              String?
-  createdAt                         DateTime                 @default(now())
-  updatedAt                         DateTime?
-  answers                           MpcaPaymentToolAnswers[]
-}
-
-model MpcaPaymentToolAnswers {
-  koboAnswers       KoboAnswers     @relation(fields: [koboAnswersId], references: [id])
-  koboAnswersId     String
-  mpcaPaymentTool   MpcaPaymentTool @relation(fields: [mpcaPaymentToolId], references: [id])
-  mpcaPaymentToolId String
-  createdAt         DateTime        @default(now())
-
-  @@id([koboAnswersId, mpcaPaymentToolId])
 }
 
 model User {

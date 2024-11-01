@@ -5,7 +5,6 @@ import {Services} from './services'
 import {PrismaClient} from '@prisma/client'
 import {ControllerActivityInfo} from './controller/ControllerActivityInfo'
 import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi'
-import {ControllerMpcaPayment} from './controller/ControllerMpcaPayment'
 import {ControllerSession} from './controller/ControllerSession'
 import {ControllerKoboForm} from './controller/kobo/ControllerKoboForm'
 import {ControllerKoboServer} from './controller/kobo/ControllerKoboServer'
@@ -61,7 +60,6 @@ export const getRoutes = (
   //   legalAidSdk,
   //   logger,
   // )
-  const mpcaPayment = new ControllerMpcaPayment(services.mpcaPayment)
   const mpca = new ControllerMpca(prisma)
   const main = new ControllerMain()
   const koboForm = new ControllerKoboForm(prisma)
@@ -187,10 +185,6 @@ export const getRoutes = (
 
     router.post('/mpca/search', errorCatcher(mpca.search))
     router.post('/mpca/refresh', auth(), errorCatcher(mpca.refresh))
-    router.put('/mpca-payment', auth(), errorCatcher(mpcaPayment.create))
-    router.post('/mpca-payment/:id', auth(), errorCatcher(mpcaPayment.update))
-    router.get('/mpca-payment', auth(), errorCatcher(mpcaPayment.getAll))
-    router.get('/mpca-payment/:id', auth(), errorCatcher(mpcaPayment.get))
     router.post('/wfp-deduplication/refresh', auth(), errorCatcher(wfp.refresh))
     router.post('/wfp-deduplication/search', auth(), errorCatcher(wfp.search))
     router.post('/wfp-deduplication/upload-taxid', auth(), Server.upload.single('aa-file'), errorCatcher(wfp.uploadTaxIdMapping))

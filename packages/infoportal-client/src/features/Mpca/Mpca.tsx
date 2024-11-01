@@ -6,8 +6,6 @@ import {MpcaProvider, useMpcaContext} from './MpcaContext'
 import React, {useMemo} from 'react'
 import {MpcaData} from '@/features/Mpca/MpcaData/MpcaData'
 import {MpcaDashboard} from '@/features/Mpca/Dashboard/MpcaDashboard'
-import {MpcaPaymentTools} from '@/features/Mpca/PaymentTools/MpcaPaymentTools'
-import {MpcaPaymentTool} from '@/features/Mpca/PaymentTool/MpcaPaymentTool'
 import {AppHeader} from '@/shared/Layout/Header/AppHeader'
 import {WfpDeduplicationData} from '@/features/WfpDeduplication/WfpDeduplicationData'
 import {useSession} from '@/core/Session/SessionContext'
@@ -24,8 +22,6 @@ export const mpcaIndex = {
     deduplication: '/deduplication',
     data: '/data',
     dashboard: '/dashboard',
-    paymentTools: '/payment-tools',
-    paymentTool: (id = ':id') => '/payment-tool/' + id,
     // form: (id = ':id') => '/form/' + id,
   }
 }
@@ -89,8 +85,6 @@ export const Mpca = () => {
           <Route path={mpcaIndex.siteMap.dashboard} element={<MpcaDashboard/>}/>
           <Route path={mpcaIndex.siteMap.deduplication} element={<WfpDeduplicationData/>}/>
           <Route path={mpcaIndex.siteMap.data} element={<MpcaData/>}/>
-          <Route path={mpcaIndex.siteMap.paymentTools} element={<MpcaPaymentTools/>}/>
-          <Route path={mpcaIndex.siteMap.paymentTool()} element={<MpcaPaymentTool/>}/>
         </Routes>
       </Layout>
     </MpcaProvider>
