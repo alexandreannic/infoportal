@@ -37,26 +37,10 @@ export namespace Protection_referral {
     'service_requested': undefined | Option<'service_requested'>[],
     // referral_details/service_requested_other [text] 2.2.1 If other service requested, please specify
     'service_requested_other': string | undefined,
-    'cal_mpca': string,
-    'cal_nfi': string,
-    'cal_shelter_rehabilitation': string,
-    'cal_cash_rent': string,
-    'cal_cash_repair': string,
-    'cal_emergency_shelter_kit': string,
-    'cal_agricultural_livelihood_support': string,
-    'cal_business_support': string,
-    'cal_vocational_training': string,
-    'cal_victim_assistance': string,
-    'cal_legal_aid': string,
-    'cal_psychosocial_support': string,
-    'cal_protection_case_management': string,
-    'cal_ipa': string,
-    'cal_gbv': string,
-    'cal_eore': string,
-    // referral_details/receiving_department_out_inc [note] 2.3 Receiving department
-    'receiving_department_out_inc': string,
-    // referral_details/receiving_staff_out_inc [note] 2.4 Receiving staff
-    'receiving_staff_out_inc': string,
+    // referral_details/receiving_department_out_inc [text] 2.3 Receiving department
+    'receiving_department_out_inc': string | undefined,
+    // referral_details/receiving_staff_out_inc [text] 2.4 Receiving staff
+    'receiving_staff_out_inc': string | undefined,
     // referral_details/service_requested_prot [select_one] 2.5 Service requested
     'service_requested_prot': undefined | Option<'service_requested_prot'>,
     // referral_details/service_requested_prot_other [text] 2.5.1 If other service requested, please specify
@@ -172,12 +156,9 @@ export namespace Protection_referral {
       'shelter_rehabilitation': `Shelter rehabilitation`,
       'cash_rent': `Cash for rent`,
       'cash_repair': `Cash for repair`,
-      'cash_fuel': `Cash for solid fuel`,
-      'cash_utilities': `Cash for utilities`,
       'emergency_shelter_kit': `Emergency shelter kit`,
       'employment_support': `Employment support`,
       'agricultural_livelihood_support': `Agricultural livelihood support`,
-      'cash_animal_shelter_repair': `Cash For Animal Shelter Repair`,
       'business_support': `Business support`,
       'vocational_training': `Vocational training`,
       'victim_assistance': `Victim assistance`,
@@ -188,7 +169,6 @@ export namespace Protection_referral {
       'gbv': `GBV`,
       'child_protection': `Child protection`,
       'education': `Education`,
-      'eore': `EORE`,
       'other': `Other`
     },
     service_requested_prot: {
@@ -2309,7 +2289,7 @@ export namespace Protection_referral {
       'zymohirivska': `Zymohirivska`,
       'zymynska': `Zymynska`
     }
-  } as const
+  }
 
   const extractQuestionName = (_: Record<string, any>) => {
     const output: any = {}

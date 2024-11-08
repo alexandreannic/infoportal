@@ -27,28 +27,6 @@ export namespace Protection_groupSession {
     'location': undefined | Option<'location'>,
     // introduction/location_other [text] If "Other", please specify
     'location_other': string | undefined,
-    // gi/activity_conducted [select_one] What activity have you conducted?
-    'activity_conducted': undefined | Option<'activity_conducted'>,
-    // gi/topic_information_session [select_one] Which topic was the information session about?
-    'topic_information_session': undefined | Option<'topic_information_session'>,
-    // gi/topic_information_session_other [text] If "Other", please specify
-    'topic_information_session_other': string | undefined,
-    // gi/topic_information_session_specify [text] Specify topic
-    'topic_information_session_specify': string | undefined,
-    // gi/topic_training_session [select_one] Which topic was the training session about?
-    'topic_training_session': undefined | Option<'topic_training_session'>,
-    // gi/topic_training_session_001 [text] If "Other", please specify
-    'topic_training_session_001': string | undefined,
-    // gi/training_general_protection_topic [select_multiple] Specify topic
-    'training_general_protection_topic': undefined | Option<'training_general_protection_topic'>[],
-    // gi/training_general_protection_topic_other [text] If "Other", please specify
-    'training_general_protection_topic_other': string | undefined,
-    // gi/training_legal_topic [text] Specify topic
-    'training_legal_topic': string | undefined,
-    // gi/target_group [select_multiple] What was the target group?
-    'target_group': undefined | Option<'target_group'>[],
-    // gi/information_target_group [text] More details on participants
-    'information_target_group': string | undefined,
     // gi/activity [select_one] Which topic was the group information session about?
     'activity': undefined | Option<'activity'>,
     // gi/activity_other [text] If "Other", please specify
@@ -65,16 +43,10 @@ export namespace Protection_groupSession {
     'hh_char_hh_det': {
       'hh_char_hh_det_gender': undefined | Option<'hh_char_hh_det_gender'> | undefined,
       'hh_char_hh_det_age': number | undefined | undefined,
-      'hh_char_hh_det_status': undefined | Option<'hh_char_hh_det_status'> | undefined,
-      'hh_char_hh_oblast_residence': undefined | Option<'ben_det_oblast'> | undefined,
-      'new_beneficiaries': undefined | Option<'new_beneficiaries'> | undefined
+      'hh_char_hh_det_status': undefined | Option<'hh_char_hh_det_status'> | undefined
     }[] | undefined,
-    // gi/particular_questions_information_session [text] Were there any particular questions raised triggering needs for new information session?
-    'particular_questions_information_session': string | undefined,
-    // gi/comments [text] Comments (including link to the folder containing all relevant material - inc. training/info session material and scanned attendance lists)
+    // gi/comments [text] Comments
     'comments': string | undefined,
-    // gi/comments_training_session [text] Comments (including link to the folder containing all relevant material - inc. training/info session material and scanned attendance lists)
-    'comments_training_session': string | undefined,
   }
 
   export const options = {
@@ -86,7 +58,6 @@ export namespace Protection_groupSession {
       'mykolaiv': `Mykolaiv`,
       'sumy': `Sumy`,
       'sloviansk': `Sloviansk`,
-      'kyiv': `Kyiv`
     },
     staff_code_001: {
       'CEJ001': `CEJ001`,
@@ -220,36 +191,55 @@ export namespace Protection_groupSession {
       'uhf4': `UKR-000314 UHF IV`,
       'echo': `UKR-000322 ECHO`,
       'uhf6': `UKR-000336 UHF VI`,
-      'ukr000345_bha2': `UKR-000345 BHA`,
-      'uhf8': `UKR-000363 UHF VIII`,
-      '372_echo': `UKR-000372 ECHO 3`,
-      'ukr000355_danish_mofa': `UKR-000355 DMFA Mykolaiv`
+      'uhf8': `UKR-000363 UHF8`,
+      '372_echo': `UKR-000372 ECHO 3`
+    },
+    ben_det_oblast: {
+      'cherkaska': `Cherkaska`,
+      'chernihivska': `Chernihivska`,
+      'chernivetska': `Chernivetska`,
+      'dnipropetrovska': `Dnipropetrovska`,
+      'donetska': `Donetska`,
+      'ivano-frankivska': `Ivano-Frankivska`,
+      'kharkivska': `Kharkivska`,
+      'khersonska': `Khersonska`,
+      'khmelnytska': `Khmelnytska`,
+      'kirovohradska': `Kirovohradska`,
+      'kyivska': `Kyivska`,
+      'luhanska': `Luhanska`,
+      'lvivska': `Lvivska`,
+      'mykolaivska': `Mykolaivska`,
+      'odeska': `Odeska`,
+      'poltavska': `Poltavska`,
+      'rivnenska': `Rivnenska`,
+      'sevastopilska': `Sevastopilska`,
+      'sumska': `Sumska`,
+      'ternopilska': `Ternopilska`,
+      'vinnytska': `Vinnytska`,
+      'volynska': `Volynska`,
+      'zakarpatska': `Zakarpatska`,
+      'zaporizka': `Zaporizka`,
+      'zhytomyrska': `Zhytomyrska`
     },
     location: {
       'logow': `Governmental collective site`,
       'lopri': `Private collective site`,
       'lohum': `Humanitarian hub`,
       'locso': `CSO/CBO premises`,
-      'loloc': `Social services premises`,
+      'loloc': `Local authorities' premises`,
       'locom': `Community space`,
       'loedu': `Educational facility`,
-      'lopub': `Public service building (e.g. CNAP, LSGs, etc.)`,
-      'local_authorities': `Local authorities' premises`,
-      'transit_centres': `Transit centres`,
-      'youth_centres': `Youth centres`,
+      'lopub': `Public service building`,
       'loeres': `Resilience hubs`,
-      'employment_centers': `Employment centers`,
       'lodrc': `DRC WGSS`,
       'looth': `Other WGSS`,
-      'drc_office': `DRC office`,
-      'online_session_legal': `Online session (e.g. legal aid platform, Teams, Zoom, etc.)`,
       'other': `Other`
     },
     activity: {
       'gpt': `General protection topic`,
       'other': `Other`
     },
-    new_beneficiaries: {
+    new_ben: {
       'yes': `Yes`,
       'no': `No`
     },
@@ -265,95 +255,8 @@ export namespace Protection_groupSession {
       'non-displaced': `Non-displaced`,
       'unspec': `Unspecified`,
       'other': `Other`
-    },
-    activity_conducted: {
-      'information_session': `Information session/Awareness-raising`,
-      'training_session': `Training session`,
-      'training_trainers': `Training of Trainers`
-    },
-    topic_information_session: {
-      'general_protection_topic': `General protection topic`,
-      'legal_general_protection': `Legal topic - General Protection`,
-      'legal_hlp': `Legal topic - HLP`,
-      'legal_gbv': `Legal topic - GBV`,
-      'legal_business_issues': `Legal topic - Business issues`,
-      'legal_va': `Legal topic - VA`,
-      'other': `Other`
-    },
-    topic_training_session: {
-      'general_protection_topic': `General protection topic`,
-      'legal_topic': `Legal topic - General Protection`,
-      'legal_hlp': `Legal topic - HLP`,
-      'legal_gbv': `Legal topic - GBV`,
-      'legal_business_issues': `Legal topic - Business issues`,
-      'legal_va': `Legal topic - VA`,
-      'other': `Other`
-    },
-    training_general_protection_topic: {
-      'protection_standards': `Protection standards`,
-      'protection_analysis': `Protection analysis`,
-      'safe_referrals': `Safe referrals`,
-      'psychological_aid': `Psychological first aid`,
-      'age_diversity_inclusion': `Age, Gender and Diversity Inclusion`,
-      'protection_mainstreaming': `Protection mainstreaming`,
-      'data_protection': `Data protection`,
-      'community_engagement': `Community engagement`,
-      'advocacy': `Advocacy`,
-      'pseah': `PSEAH`,
-      'facilitation_skills': `Facilitation skills`,
-      'communication_skills': `Communication skills`,
-      'humanitarian_principles': `Humanitarian principles`,
-      'protection_management': `Protection case management`,
-      'other': `Other`
-    },
-    target_group: {
-      'community_based_focal_points': `DRC Community-based focal points/structures`,
-      'community_based_networks': `Other community-based networks/activists/volunteers`,
-      'community_representatives': `Other community representatives`,
-      'lsg_representatives': `LSG representatives`,
-      'cnap': `Department of Social Protection workers/CNAP`,
-      'cso_ngo_members': `CSO/NGO members`,
-      'idp_councils': `IDP councils`,
-      'legal_implementing_partners': `Legal implementing partners`,
-      'legal_service_providers': `Other legal aid service providers`,
-      'judges_prosecutors': `Judges and prosecutors`,
-      'property_evaluation_commissions': `Property evaluation commissions`,
-      'other': `Other`
-    },
-    new_ben: {
-      'yes': `Yes`,
-      'both': `Both old and new`,
-      'no': `No`
-    },
-    ben_det_oblast: {
-      'crimea': `Autonomous Republic of Crimea`,
-      'cherkaska': `Cherkasy`,
-      'chernihivska': `Chernihiv`,
-      'chernivetska': `Chernivtsi`,
-      'dnipropetrovska': `Dnipropetrovsk`,
-      'donetska': `Donetsk`,
-      'ivano-frankivska': `Ivano-Frankivsk`,
-      'kharkivska': `Kharkiv`,
-      'khersonska': `Kherson`,
-      'khmelnytska': `Khmelnytskyi`,
-      'kirovohradska': `Kirovohrad`,
-      'kyivska': `Kyiv`,
-      'luhanska': `Luhansk`,
-      'lvivska': `Lviv`,
-      'mykolaivska': `Mykolaiv`,
-      'odeska': `Odesa`,
-      'poltavska': `Poltava`,
-      'rivnenska': `Rivne`,
-      'sumska': `Sumy`,
-      'ternopilska': `Ternopil`,
-      'vinnytska': `Vinnytsia`,
-      'volynska': `Volyn`,
-      'zakarpatska': `Zakarpattia`,
-      'zaporizka': `Zaporizhzhia`,
-      'zhytomyrska': `Zhytomyr`,
-      'sevastopol': `Sevastopol`
     }
-  } as const
+  }
 
   const extractQuestionName = (_: Record<string, any>) => {
     const output: any = {}
@@ -368,8 +271,6 @@ export namespace Protection_groupSession {
   export const map = (_: Record<keyof T, any>): T => ({
     ..._,
     date: _.date ? new Date(_.date) : undefined,
-    training_general_protection_topic: _.training_general_protection_topic?.split(' '),
-    target_group: _.target_group?.split(' '),
     new_ben_no: _.new_ben_no ? +_.new_ben_no : undefined,
     numb_part: _.numb_part ? +_.numb_part : undefined,
     hh_char_hh_det: _['hh_char_hh_det']?.map(extractQuestionName).map((_: any) => {

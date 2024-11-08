@@ -99,6 +99,7 @@ export class KoboMetaMapperProtection {
         lviv: DrcOffice.Lviv,
         mykolaiv: DrcOffice.Mykolaiv,
         sumy: DrcOffice.Sumy,
+        sloviansk: DrcOffice.Sloviansk
       }, () => undefined),
       oblast: OblastIndex.byKoboName(answer.ben_det_oblast)?.name!,
       raion: KoboGeneralMapping.searchRaion(answer.ben_det_raion),
