@@ -93,6 +93,25 @@ export class KoboClientV2 {
     })
   }
 
+  readonly updateValidation = ({
+    formId,
+    submissionIds,
+    status
+  }: {
+    formId: KoboId,
+    submissionIds: KoboAnswerId[],
+    status: ApiKoboValidation
+  }) => {
+    return this.api.patch(`/v2/assets/${formId}/data/validation_statuses/`, {
+      body: {
+        payload: {
+          submission_ids: submissionIds,
+          'validation_status.uid': status,
+        }
+      }
+    })
+  }
+
   readonly delete = (formId: Kobo.Form.Id, ids: Kobo.SubmissionId[]): Promise<{detail: string}> => {
     return this.api.delete(`/v2/assets/${formId}/data/bulk/`, {
       body: {

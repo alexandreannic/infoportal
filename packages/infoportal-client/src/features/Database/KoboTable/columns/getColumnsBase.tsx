@@ -92,5 +92,12 @@ export const getColumnsBase = ({
   return [
     action,
     validation,
+    {
+      id: '_validation',
+      head: '_' + m.validation,
+      width: 0,
+      type: 'select_one',
+      renderQuick: (row: any) => getRow(row).validationStatus
+    }
   ]
 }
