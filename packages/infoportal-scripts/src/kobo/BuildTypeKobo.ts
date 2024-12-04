@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import {capitalize, KoboIndex} from 'infoportal-common'
 import {koboSdk} from '../index'
 import {appConf} from '../appConf'
-import {Kobo} from 'kobo-sdk'
+import {Kobo, KoboClientV2} from 'kobo-sdk'
 
 interface KoboInterfaceGeneratorParams {
   outDir: string,
@@ -415,7 +415,7 @@ const ignoredQuestionTypes: Kobo.Form['content']['survey'][0]['type'][] = [
 class KoboInterfaceGenerator {
 
   constructor(
-    private sdk: KoboClientv2,
+    private sdk: KoboClientV2,
     private options: KoboInterfaceGeneratorParams
   ) {
   }

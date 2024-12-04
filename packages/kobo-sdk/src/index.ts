@@ -1,4 +1,4 @@
-export type {Kobo} from './Kobo'
+export {Kobo} from './Kobo'
 export {KoboClient} from './KoboClient'
 export {KoboClientV1} from './v1/KoboClientV1'
 export {KoboClientV2} from './v2/KoboClientV2'

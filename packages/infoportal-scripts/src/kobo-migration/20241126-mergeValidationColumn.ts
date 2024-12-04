@@ -1,7 +1,8 @@
-import {ApiKoboValidation, groupBy, KoboIndex, KoboSdk, KoboValidation} from 'infoportal-common'
+import {groupBy, KoboIndex, KoboValidation} from 'infoportal-common'
 import {PrismaClient} from '@prisma/client'
 import winston from 'winston'
 import {fnSwitch, Obj, seq} from '@alexandreannic/ts-utils'
+import {Kobo, KoboClient} from 'kobo-sdk'
 
 const allForms = [
   // 'a4bgAsLLag7HTjjY3pSLT7',// a4bgAsLLag7HTjjY3pSLT7 Approved 1
@@ -108,7 +109,7 @@ export const run = async () => {
       }
     },
   })
-  const sdk = new KoboSdk({
+  const sdk = new KoboClient({
     urlv1: server.urlV1 + '/api/v1',
     urlv2: server.url + '/api',
     token: server.token,
@@ -134,23 +135,24 @@ export const run = async () => {
               submissionIds,
               formId,
               status: fnSwitch(validation, {
-                Pending: ApiKoboValidation.validation_status_on_hold,
-                Approved: ApiKoboValidation.validation_status_approved,
-                Rejected: ApiKoboValidation.validation_status_not_approved,
+                Pending: Kobo.Submission.Validation.validation_status_on_hold,
+                Approved: Kobo.Submission.Validation.validation_status_approved,
+                Rejected: Kobo.Submission.Validation.validation_status_not_approved,
               })
             })
           } else {
-            await sdk.v2.updateData({
-              submissionIds,
-              formId,
-              data: {
-                _IP_VALIDATION_STATUS_EXTRA: validation,
-              }
-            })
+            if (validation)
+              await sdk.v2.updateData({
+                submissionIds,
+                formId,
+                data: {
+                  _IP_VALIDATION_STATUS_EXTRA: validation,
+                }
+              })
           }
           const answers = await sdk.v2.getAnswers(formId)
           console.log('Refresh...')
-          await Promise.all(Obj.entries(seq(answers.data).groupBy(_ => _.validationStatus!)).map(([k, v]) => {
+          await Promise.all(Obj.entries(seq(answers.results).groupBy(_ => _.validationStatus!)).map(([k, v]) => {
             return prisma.koboAnswers.updateMany({
               where: {
                 id: {in: v.map(_ => _.id)}

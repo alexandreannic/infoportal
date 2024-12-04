@@ -98,9 +98,9 @@ export class KoboClientV2 {
     submissionIds,
     status
   }: {
-    formId: KoboId,
-    submissionIds: KoboAnswerId[],
-    status: ApiKoboValidation
+    formId: Kobo.FormId,
+    submissionIds: Kobo.Submission.Id[],
+    status: Kobo.Submission.Validation
   }) => {
     return this.api.patch(`/v2/assets/${formId}/data/validation_statuses/`, {
       body: {
