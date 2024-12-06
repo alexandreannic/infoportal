@@ -778,6 +778,7 @@ export const en = Object.freeze({
       currentlyDisplayed: `columns displayed`,
       tagNotUpdated: 'Failed to update tag. Reloading clean data set...',
       downloadAsXLS: 'Download <b>filtered data</b> as XLS',
+      importFromXLS: 'Import from XLS',
       registerNewForm: 'Register new form',
       repeatAs: 'Show Grouped questions as',
       repeatAsColumn: 'New columns',
