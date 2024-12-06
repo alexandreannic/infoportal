@@ -26,6 +26,7 @@ import {ControllerKoboAnswerHistory} from './controller/kobo/ControllerKoboAnswe
 import {ControllerCache} from './controller/ControllerCache'
 import {UserService} from '../feature/user/UserService'
 import {ControllerDatabaseView} from './controller/ControllerDatabaseView'
+import {ControllerXlsImport} from './controller/ControllerImport'
 
 export interface AuthenticatedRequest extends Request {
   user?: UserSession
@@ -78,6 +79,7 @@ export const getRoutes = (
   const koboAnswerHistory = new ControllerKoboAnswerHistory(prisma)
   const databaseView = new ControllerDatabaseView(prisma)
   const cacheController = new ControllerCache()
+  const importData = new ControllerXlsImport(prisma)
 
   const auth = ({adminOnly = false}: {adminOnly?: boolean} = {}) => async (req: Request, res: Response, next: NextFunction) => {
     // req.session.user = {
@@ -196,6 +198,13 @@ export const getRoutes = (
 
     router.get('/cache', cacheController.get)
     router.post('/cache/clear', cacheController.clear)
+
+    router.post('/kobo-api/:formId/import-from-xls', auth(), Server.upload.single('aa-file'), errorCatcher(importData.handleFileUpload))
+
+
+    // router.get('/legalaid', auth(), errorCatcher(legalaid.index))
+    // router.get('/ecrec', auth(), errorCatcher(ecrec.index))
+    // router.get('/*', errorCatcher(ecrec.index))
   } catch (e) {
     if (e instanceof Error) {
       log.error(e.toString())

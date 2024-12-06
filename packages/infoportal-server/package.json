@@ -4,6 +4,8 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
+    "dev-windows": "tsc && node lib/index.js",
+    "test": "npx jest",
     "start": "node dist/bundle.js",
     "build": "webpack --config webpack.config.js",
     "dev-r": "nodemon src/index.ts",
