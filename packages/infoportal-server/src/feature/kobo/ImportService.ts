@@ -1,9 +1,13 @@
-import {KoboApiColumType, KoboId, KoboSchemaHelper, KoboSdk} from 'infoportal-common'
+import { KoboSchemaHelper} from 'infoportal-common'
 import * as xlsx from 'xlsx'
 import {PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {Obj, seq} from '@alexandreannic/ts-utils'
 import lodash from 'lodash'
+import {KoboClient} from 'kobo-sdk/KoboClient'
+import {Kobo} from 'kobo-sdk/Kobo'
+import QuestionType = Kobo.Form.QuestionType
+import FormId = Kobo.FormId
 
 type KoboData = {_parent_index?: number; _index?: number} & Record<string, any>
 
@@ -14,7 +18,7 @@ export class ImportService {
   ) {
   }
 
-  readonly processData = async (formId: KoboId, filePath: string, action: 'create' | 'update') => {
+  readonly processData = async (formId: FormId, filePath: string, action: 'create' | 'update') => {
     const sdk = await this.koboSdkGenerator.getBy.formId(formId)
     const schema = await sdk.v2.getForm(formId)
     const schemaHelper = KoboSchemaHelper.buildBundle({schema})
@@ -70,7 +74,7 @@ export class ImportService {
     })
   }
 
-  private isValid = (type: KoboApiColumType, value: any): boolean => {
+  private isValid = (type: QuestionType, value: any): boolean => {
     if (value == null || value === '') return true
 
     switch (type) {
@@ -211,7 +215,7 @@ export class ImportService {
   }
 
 
-  private async batchCreate(data: KoboData[], sdk: any, formId: KoboId) {
+  private async batchCreate(data: KoboData[], sdk: any, formId: FormId) {
     for (const row of data) {
       await sdk.v1.submit({
         formId,
@@ -222,9 +226,9 @@ export class ImportService {
   }
 
   private async batchUpdate(
-    sdk: KoboSdk,
+    sdk: KoboClient,
     data: KoboData[],
-    formId: KoboId,
+    formId: FormId,
     schemaHelper: KoboSchemaHelper.Bundle
   ) {
     for (const row of data) {
