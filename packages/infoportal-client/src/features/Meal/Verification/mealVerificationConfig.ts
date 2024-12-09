@@ -500,15 +500,22 @@ export const mealVerificationActivities = seq([
       ben_det_surname: {
         reg: _ => _.hh_char_hh_det?.[0].ben_det_surname, verif: _ => _.ben_det_surname,
       },
-  
-      ben_det_first_name: 'AUTO_MAPPING',
-      ben_det_pat_name: 'AUTO_MAPPING',
-      ben_det_ph_number: 'AUTO_MAPPING',
+      ben_det_first_name: {
+        reg: _ => _.hh_char_hh_det?.[0].ben_det_first_name, verif: _ => _.ben_det_first_name,
+      },
+      ben_det_pat_name: {
+        reg: _ => _.hh_char_hh_det?.[0].ben_det_pat_name, verif: _ => _.ben_det_pat_name,
+      },
+      ben_det_ph_number: {
+        reg: _ => _.hh_char_hh_det?.[0].member_ph_number, verif: _ => _.ben_det_ph_number,
+      },
       ben_det_oblast: 'AUTO_MAPPING',
       ben_det_raion: 'AUTO_MAPPING',
       ben_det_hromada: 'AUTO_MAPPING',
       ben_det_settlement: 'AUTO_MAPPING',
-      ben_det_res_stat: 'AUTO_MAPPING',
+      ben_det_res_stat: {
+        reg: _ => _.hh_char_hh_det?.[0].ben_det_res_stat, verif: _ => _.ben_det_res_stat,
+      },
       ben_det_income: 'AUTO_MAPPING',
       ben_det_hh_size: 'AUTO_MAPPING',
       current_gov_assist_cff: 'AUTO_MAPPING',
