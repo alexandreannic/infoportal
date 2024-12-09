@@ -34,7 +34,6 @@ import {useIpToast} from '@/core/useToast'
 import {useAsync} from '@/shared/hook/useAsync'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {DatabaseImportBtn} from '@/features/Database/KoboTable/DatabaseImportBtn'
-import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 
 export const DatabaseKoboTableContent = ({
   onFiltersChange,
