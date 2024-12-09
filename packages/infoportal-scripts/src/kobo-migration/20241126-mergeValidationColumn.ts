@@ -2,12 +2,12 @@ import {groupBy, KoboIndex, KoboValidation} from 'infoportal-common'
 import {PrismaClient} from '@prisma/client'
 import winston from 'winston'
 import {fnSwitch, Obj, seq} from '@alexandreannic/ts-utils'
-import {Kobo, KoboClient} from 'kobo-sdk'
+import {chunkify, Kobo, KoboClient} from 'kobo-sdk'
 
 const allForms = [
-  // 'a4bgAsLLag7HTjjY3pSLT7',// a4bgAsLLag7HTjjY3pSLT7 Approved 1
-  // 'a4iDDoLpUJHbu6cwsn2fnG',// ecrec_vetEvaluation Approved 181
-  // 'a4iDDoLpUJHbu6cwsn2fnG',// ecrec_vetEvaluation Rejected 25
+  'a4bgAsLLag7HTjjY3pSLT7',// a4bgAsLLag7HTjjY3pSLT7 Approved 1
+  'a4iDDoLpUJHbu6cwsn2fnG',// ecrec_vetEvaluation Approved 181
+  'a4iDDoLpUJHbu6cwsn2fnG',// ecrec_vetEvaluation Rejected 25
   'a52hN5iiCW73mxqqfmEAfp',// protection_pss null 1
   'a5Noq6Wf9a8aE2cmi74FyS',// protection_gbv null 1
   'a62ZpworuN4nFLznsUej8r',// protection_referral Approved 174
@@ -24,19 +24,19 @@ const allForms = [
   'adpuqZypnqHb8LNfX49iA5',// bn_rapidResponse2 Approved 877
   'adpuqZypnqHb8LNfX49iA5',// bn_rapidResponse2 null 1
   'adpuqZypnqHb8LNfX49iA5',// bn_rapidResponse2 Rejected 37
-  // 'aE5md7RfHiy4LJmddoFAQH',// ecrec_cashRegistration Approved 2498
-  // 'aE5md7RfHiy4LJmddoFAQH',// ecrec_cashRegistration null 160
-  // 'aE5md7RfHiy4LJmddoFAQH',// ecrec_cashRegistration Pending 14
-  // 'aE5md7RfHiy4LJmddoFAQH',// ecrec_cashRegistration Rejected 148
+  'aE5md7RfHiy4LJmddoFAQH',// ecrec_cashRegistration Approved 2498
+  'aE5md7RfHiy4LJmddoFAQH',// ecrec_cashRegistration null 160
+  'aE5md7RfHiy4LJmddoFAQH',// ecrec_cashRegistration Pending 14
+  'aE5md7RfHiy4LJmddoFAQH',// ecrec_cashRegistration Rejected 148
   'affnm5MBjwADExT9SH6Eng',// affnm5MBjwADExT9SH6Eng Rejected 3
   'ag34YtGDQiW5FstyAxzy5P',// ag34YtGDQiW5FstyAxzy5P null 3
   'ag34YtGDQiW5FstyAxzy5P',// ag34YtGDQiW5FstyAxzy5P Rejected 7
   'ag6n7kQk7vps4MYjjVoja8',// ag6n7kQk7vps4MYjjVoja8 Approved 1
   'ag6n7kQk7vps4MYjjVoja8',// ag6n7kQk7vps4MYjjVoja8 Rejected 42
-  // 'aGGGapARnC2ek7sA6SuHmu',// ecrec_vetApplication Approved 492
-  // 'aGGGapARnC2ek7sA6SuHmu',// ecrec_vetApplication null 4
-  // 'aGGGapARnC2ek7sA6SuHmu',// ecrec_vetApplication Pending 129
-  // 'aGGGapARnC2ek7sA6SuHmu',// ecrec_vetApplication Rejected 1281
+  'aGGGapARnC2ek7sA6SuHmu',// ecrec_vetApplication Approved 492
+  'aGGGapARnC2ek7sA6SuHmu',// ecrec_vetApplication null 4
+  'aGGGapARnC2ek7sA6SuHmu',// ecrec_vetApplication Pending 129
+  'aGGGapARnC2ek7sA6SuHmu',// ecrec_vetApplication Rejected 1281
   'ajNzDaUuLkcEvjQhVsAmao',// bn_cashForRentRegistration Approved 305
   'ajNzDaUuLkcEvjQhVsAmao',// bn_cashForRentRegistration Rejected 12
   'aKgX4MNs6gCemDQKPeXxY8',// bn_re Approved 5361
@@ -127,42 +127,47 @@ export const run = async () => {
         {by: _ => (_.tags as any)._validation},
       ],
       finalTransform: async (grouped, [formId, validation]) => {
-        if (formId === 'aKgX4MNs6gCemDQKPeXxY8') {
-          console.log(formId, KoboIndex.searchById(formId)?.name ?? formId, validation, grouped.length)
-          const submissionIds = grouped.map(_ => _.id)
-          if ([KoboValidation.Pending, KoboValidation.Approved, KoboValidation.Rejected].includes(validation)) {
-            await sdk.v2.updateValidation({
+        // if (formId === 'aKgX4MNs6gCemDQKPeXxY8') {
+        console.log(formId, KoboIndex.searchById(formId)?.name ?? formId, validation, grouped.length)
+        const submissionIds = grouped.map(_ => _.id)
+        if ([KoboValidation.Pending, KoboValidation.Approved, KoboValidation.Rejected].includes(validation)) {
+          await sdk.v2.updateValidation({
+            submissionIds,
+            formId,
+            status: fnSwitch(validation, {
+              Pending: Kobo.Submission.Validation.validation_status_on_hold,
+              Approved: Kobo.Submission.Validation.validation_status_approved,
+              Rejected: Kobo.Submission.Validation.validation_status_not_approved,
+            })
+          })
+        } else {
+          if (validation)
+            await sdk.v2.updateData({
               submissionIds,
               formId,
-              status: fnSwitch(validation, {
-                Pending: Kobo.Submission.Validation.validation_status_on_hold,
-                Approved: Kobo.Submission.Validation.validation_status_approved,
-                Rejected: Kobo.Submission.Validation.validation_status_not_approved,
-              })
-            })
-          } else {
-            if (validation)
-              await sdk.v2.updateData({
-                submissionIds,
-                formId,
-                data: {
-                  _IP_VALIDATION_STATUS_EXTRA: validation,
-                }
-              })
-          }
-          const answers = await sdk.v2.getAnswers(formId)
-          console.log('Refresh...')
-          await Promise.all(Obj.entries(seq(answers.results).groupBy(_ => _.validationStatus!)).map(([k, v]) => {
-            return prisma.koboAnswers.updateMany({
-              where: {
-                id: {in: v.map(_ => _.id)}
-              },
               data: {
-                validationStatus: k === 'undefined' as any ? null : k,
+                _IP_VALIDATION_STATUS_EXTRA: validation,
               }
             })
-          }))
         }
+        const answers = await sdk.v2.getAnswers(formId)
+        await Promise.all(Obj.entries(seq(answers.results).groupBy(_ => _.validationStatus!)).map(([k, v]) => {
+          return chunkify({
+            size: 10000,
+            data: v.map(_ => _._id),
+            fn: _ => {
+              return prisma.koboAnswers.updateMany({
+                where: {
+                  id: {in: _}
+                },
+                data: {
+                  validationStatus: k === 'undefined' as any ? null : k,
+                }
+              })
+            },
+            concurrency: 1,
+          })
+        }))
       }
     }
   )

@@ -15,6 +15,7 @@ import {KoboAnswerHistoryService} from './history/KoboAnswerHistoryService'
 import {AppError} from '../../helper/Errors'
 import {Util} from '../../helper/Utils'
 import {Kobo} from 'kobo-sdk'
+import {KoboSubmissionMetaData} from 'infoportal-common'
 import Event = GlobalEvent.Event
 
 export type DbKoboAnswer<
@@ -447,6 +448,7 @@ export class KoboService {
     answer?: string
   }) => {
     answer = Array.isArray(answer) ? answer.join(' ') : answer
+    const validationKey: keyof KoboSubmissionMetaData = 'validationStatus'
     const [sdk, xpath] = await Promise.all([
       this.sdkGenerator.getBy.formId(formId),
       this.getSchema({formId}).then(_ => _.content.survey.find(_ => _.name === question)?.$xpath),
@@ -461,7 +463,9 @@ export class KoboService {
         newValue: answer,
         authorEmail,
       }),
-      sdk.v2.updateData({formId, submissionIds: answerIds, data: {[xpath]: answer}}),
+      question === validationKey
+        ? sdk.v2.updateValidation({formId, submissionIds: answerIds, status: answer as any})
+        : sdk.v2.updateData({formId, submissionIds: answerIds, data: {[xpath]: answer}}),
       await this.prisma.$executeRawUnsafe(
         `UPDATE "KoboAnswers"
          SET answers     = jsonb_set(answers, '{${question}}', '"${KoboService.safeJsonValue(answer ?? '')}"'),

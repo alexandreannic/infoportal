@@ -9,6 +9,7 @@ import {KoboIndex} from 'infoportal-common'
 import {KeyOf} from '@alexandreannic/ts-utils'
 import {useIpToast} from '@/core/useToast'
 import {Kobo} from 'kobo-sdk'
+import {KoboSubmissionMetaData} from 'infoportal-common/kobo'
 
 interface EditDataParams<T extends Record<string, any> = any> extends Omit<KoboUpdateAnswers<T>, 'answer'> {
   onSuccess?: (params: KoboUpdateAnswers<T>) => void
@@ -82,18 +83,28 @@ export const KoboEditAnswersProvider = ({
   }
 
   const asyncUpdateById = useAsync(async (p: KoboUpdateAnswers) => {
-    await api.kobo.answer.updateAnswers({
-      answerIds: p.answerIds,
-      answer: p.answer,
-      formId: p.formId,
-      question: p.question,
-    }).then(() => {
+    try {
+      const validationKey: keyof KoboSubmissionMetaData = 'validationStatus'
+      if (p.question === validationKey) {
+        await api.kobo.answer.updateValidation({
+          answerIds: p.answerIds,
+          formId: p.formId,
+          status: p.answer,
+        })
+      } else {
+        await api.kobo.answer.updateAnswers({
+          answerIds: p.answerIds,
+          answer: p.answer,
+          formId: p.formId,
+          question: p.question,
+        })
+      }
       updateCacheById(p)
-    }).catch((e) => {
+    } catch (e) {
       toastHttpError(e)
       ctxAnswers.byId(p.formId).fetch({force: true, clean: false})
       return Promise.reject(e)
-    })
+    }
   }, {requestKey: ([_]) => _.formId})
 
   const asyncUpdateByName = useAsync(async <T extends KoboFormNameMapped, K extends KeyOf<InferTypedAnswer<T>>>(p: KoboUpdateAnswersByName<T, K>) => {

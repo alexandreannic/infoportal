@@ -1,7 +1,7 @@
 import {AxiosError} from 'axios'
 import {Kobo, Logger} from '../Kobo'
 import {ApiClient} from '../api-client/ApiClient'
-import {chunkify} from '../Utils'
+import {chunkify} from '../helper/Utils'
 
 export type KoboUpdateDataParamsData = Record<string, string | string[] | number | null | undefined>
 export type KoboUpdateDataParams<TData extends KoboUpdateDataParamsData = any> = {

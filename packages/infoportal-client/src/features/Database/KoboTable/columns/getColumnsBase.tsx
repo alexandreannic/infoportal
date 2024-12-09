@@ -15,24 +15,24 @@ import {Kobo} from 'kobo-sdk'
 export const getColumnsBase = ({
   selectedIds,
   formId,
-  asyncUpdateTagById,
   canEdit,
   m,
+  asyncUpdateTagById,
   asyncEdit,
   openEditTag,
-  openAnswerModal,
+  openEditAnswer,
   getRow = _ => _,
 }: {
   getRow?: (_: any) => KoboSubmissionFlat,
   asyncEdit: DatabaseKoboContext['asyncEdit']
   openEditTag: KoboEditTagsContext['open']
-  openAnswerModal: KoboAnswersContext['openAnswerModal']
+  openEditAnswer: KoboAnswersContext['open']
   formId: Kobo.FormId
   selectedIds: Kobo.SubmissionId[]
   asyncUpdateTagById: KoboEditTagsContext['asyncUpdateById']
   canEdit?: boolean
   m: Messages
-}) => {
+}): DatatableColumn.Props<any>[] => {
   const action: DatatableColumn.Props<any> = {
     id: 'actions',
     head: '',
@@ -43,7 +43,7 @@ export const getColumnsBase = ({
         value: null as any,
         label: (
           <>
-            <TableIconBtn tooltip={m.view} children="visibility" onClick={() => openAnswerModal({answer: _, formId: formId})}/>
+            <TableIconBtn tooltip={m.view} children="visibility" onClick={() => openEditAnswer({answer: _, formId: formId})}/>
             <TableIconBtn disabled={!canEdit} tooltip={m.editKobo} target="_blank" href={asyncEdit(_.id)} children="edit"/>
           </>
         )
@@ -94,10 +94,42 @@ export const getColumnsBase = ({
     validation,
     {
       id: '_validation',
-      head: '_' + m.validation,
+      head: m.validation,
+      subHeader: selectedIds.length > 0 && <TableEditCellBtn onClick={() => openEditTag({
+        formId: formId,
+        answerIds: selectedIds,
+        type: 'select_one',
+        options: Obj.values(KoboValidation).map(_ => ({
+          value: _, label: _, before: <OptionLabelTypeCompact sx={{alignSelf: 'center', mr: 1}} type={SelectStatusConfig.statusType.KoboValidation[_]}/>
+        })),
+        tag: '_validation',
+      })}/>,
       width: 0,
       type: 'select_one',
-      renderQuick: (row: any) => getRow(row).validationStatus
+      render: (row: any) => {
+        const value = getRow(row).validationStatus
+        return {
+          export: value ? m[value] : DatatableUtils.blank,
+          value: value ?? DatatableUtils.blank,
+          option: value ? m[value] : DatatableUtils.blank,
+          label: (
+            <SelectStatusBy
+              enum="KoboValidation"
+              compact
+              disabled={!canEdit}
+              value={value}
+              onChange={(e) => {
+                asyncUpdateTagById.call({
+                  formId: formId,
+                  answerIds: [getRow(row).id],
+                  tag: '_validation',
+                  value: e,
+                })
+              }}
+            />
+          )
+        }
+      }
     }
   ]
 }

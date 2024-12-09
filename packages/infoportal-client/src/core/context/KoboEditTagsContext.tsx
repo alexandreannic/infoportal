@@ -133,7 +133,6 @@ export const KoboEditTagsProvider = ({
       formId: KoboIndex.byName(formName).id,
       ...p,
     })
-
   }
 
   return (
