@@ -28,12 +28,13 @@ import {useNavigate} from 'react-router-dom'
 import {getColumnsForRepeatGroup} from '@/features/Database/RepeatGroup/DatabaseKoboRepeatGroup'
 import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
 import {databaseKoboDisplayBuilder} from '@/features/Database/KoboTable/groupDisplay/DatabaseKoboDisplay'
-import { DatabaseGroupDisplayInput } from './groupDisplay/DatabaseGroupDisplayInput'
+import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useSession} from '@/core/Session/SessionContext'
 import {useIpToast} from '@/core/useToast'
 import {useAsync} from '@/shared/hook/useAsync'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {DatabaseImportBtn} from '@/features/Database/KoboTable/DatabaseImportBtn'
+import {generateEmptyXlsTemplate} from '@/shared/Datatable/util/generateEmptyXlsFile'
 
 export const DatabaseKoboTableContent = ({
   onFiltersChange,
@@ -127,6 +128,12 @@ export const DatabaseKoboTableContent = ({
     await _importFromXLS.call(ctx.form.id, file, action).catch(toastHttpError)
   }
 
+  const handleGenerateTemplate = async () => {
+    if (ctx.schema && ctx.form) {
+      await generateEmptyXlsTemplate(ctx.schema, ctx.form.name + '_Template');
+    }
+  };
+
   return (
     <>
       <Datatable
@@ -216,7 +223,7 @@ export const DatabaseKoboTableContent = ({
                 <DatabaseImportBtn
                   onUploadNewData={(file) => handleImportData(file, 'create')}
                   onUpdateExistingData={(file) => handleImportData(file, 'update')}
-                  loading={_importFromXLS.loading}
+                  onGenerateTemplate={handleGenerateTemplate}
                 />
               )}
             </div>

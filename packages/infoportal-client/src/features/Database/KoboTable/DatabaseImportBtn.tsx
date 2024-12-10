@@ -5,19 +5,23 @@ import {IpIconBtn, PopoverWrapper} from '@/shared'
 interface DatabaseImportBtnProps {
   onUploadNewData: (file: File) => void;
   onUpdateExistingData: (file: File) => void;
+  onGenerateTemplate: () => void;
   loading?: boolean;
 }
 
 export const DatabaseImportBtn: React.FC<DatabaseImportBtnProps> = ({
   onUploadNewData,
   onUpdateExistingData,
+  onGenerateTemplate,
   loading = false,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleMenuClick = (selectedAction: 'create' | 'update', close: () => void) => {
+  const handleMenuClick = (selectedAction: 'create' | 'update' | 'generate', close: () => void) => {
     close()
-    if (fileInputRef.current) {
+    if (selectedAction === 'generate') {
+      onGenerateTemplate()
+    } else if (fileInputRef.current) {
       fileInputRef.current.dataset.action = selectedAction
       fileInputRef.current.click()
     }
@@ -42,6 +46,7 @@ export const DatabaseImportBtn: React.FC<DatabaseImportBtnProps> = ({
         <>
           <MenuItem onClick={() => handleMenuClick('create', close)}>Upload New Data</MenuItem>
           <MenuItem onClick={() => handleMenuClick('update', close)}>Update Existing Data</MenuItem>
+          <MenuItem onClick={() => handleMenuClick('generate', close)}>Generate Excel Template</MenuItem>
         </>
       )}>
         <IpIconBtn
