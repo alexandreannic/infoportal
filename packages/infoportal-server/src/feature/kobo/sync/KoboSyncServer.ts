@@ -1,21 +1,21 @@
-import {KoboCustomDirectives, KoboIndex, KoboSubmission, KoboValidation, logPerformance, UUID} from 'infoportal-common'
+import {KoboHelper, KoboIndex, KoboSubmission, logPerformance, UUID} from 'infoportal-common'
 import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from '../KoboSdkGenerator'
 import {app, AppCacheKey, AppLogger} from '../../../index'
 import {createdBySystem} from '../../../core/DbInit'
-import {fnSwitch, seq} from '@alexandreannic/ts-utils'
+import {seq} from '@alexandreannic/ts-utils'
 import {GlobalEvent} from '../../../core/GlobalEvent'
 import {KoboService} from '../KoboService'
 import {AppError} from '../../../helper/Errors'
 import {appConf} from '../../../core/conf/AppConf'
 import {genUUID, Util} from '../../../helper/Utils'
 import {Kobo} from 'kobo-sdk'
-import {KoboHelper} from 'infoportal-common'
 
 export type KoboSyncServerResult = {
   answersIdsDeleted: Kobo.FormId[]
   answersCreated: KoboSubmission[]
   answersUpdated: KoboSubmission[]
+  validationUpdated: KoboSubmission[]
 }
 
 export class KoboSyncServer {
@@ -159,7 +159,7 @@ export class KoboSyncServer {
 
     this.debug(formId, `Fetch local answers...`)
     const localAnswersIndex = await this.prisma.koboAnswers.findMany({where: {formId, deletedAt: null}, select: {id: true, lastValidatedTimestamp: true, uuid: true}}).then(_ => {
-      return _.reduce((map, curr) => map.set(curr.id, curr.uuid), new Map<Kobo.FormId, UUID>())
+      return _.reduce((map, {id, ...rest}) => map.set(id, rest), new Map<Kobo.FormId, {lastValidatedTimestamp: null | number, uuid: UUID}>())
     })
     this.debug(formId, `Fetch local answers... ${localAnswersIndex.size} fetched.`)
 
@@ -218,17 +218,33 @@ export class KoboSyncServer {
     }
 
     const handleValidation = async () => {
-      const answersToUpdate = seq([...localAnswersIndex]).map(([id, uuid]) => {
+      const answersToUpdate = seq([...localAnswersIndex]).map(([id, index]) => {
         const match = remoteIdsIndex.get(id)
-        const hasBeenUpdated = match && match.uuid !== uuid
+        const hasBeenUpdated = match && match.lastValidatedTimestamp !== index.lastValidatedTimestamp
         return hasBeenUpdated ? match : undefined
       }).compact()
+      this.debug(formId, `Handle validation (${answersToUpdate.length})...`)
+      await Promise.all(answersToUpdate.map(a => {
+        this.event.emit(GlobalEvent.Event.KOBO_VALIDATION_EDITED_FROM_KOBO, {
+          formId,
+          answerIds: [a.id],
+          status: a.validationStatus,
+        })
+        return this.prisma.koboAnswers.update({
+          where: {id: a.id,},
+          data: {
+            validationStatus: a.validationStatus,
+            lastValidatedTimestamp: a.lastValidatedTimestamp,
+          }
+        })
+      }))
+      return answersToUpdate
     }
 
     const handleUpdate = async () => {
-      const answersToUpdate = seq([...localAnswersIndex]).map(([id, uuid]) => {
+      const answersToUpdate = seq([...localAnswersIndex]).map(([id, index]) => {
         const match = remoteIdsIndex.get(id)
-        const hasBeenUpdated = match && match.uuid !== uuid
+        const hasBeenUpdated = match && match.uuid !== index.uuid
         return hasBeenUpdated ? match : undefined
       }).compact()
       this.debug(formId, `Handle update (${answersToUpdate.length})...`)
@@ -252,12 +268,10 @@ export class KoboSyncServer {
           },
           data: {
             uuid: a.uuid,
-            validationStatus: a.validationStatus,
             attachments: a.attachments,
             date: a.date,
             start: a.start,
             end: a.end,
-            submissionTime: a.submissionTime,
             answers: a.answers,
           }
         })
@@ -268,11 +282,13 @@ export class KoboSyncServer {
     const answersIdsDeleted = await handleDelete()
     const answersCreated = await handleCreate()
     const answersUpdated = await handleUpdate()
+    const validationUpdated = await handleValidation()
 
     return {
       answersIdsDeleted,
       answersCreated,
       answersUpdated,
+      validationUpdated,
     }
   }
 

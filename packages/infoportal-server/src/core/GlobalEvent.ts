@@ -1,6 +1,7 @@
 import {EventEmitter} from 'events'
 import {app} from '../index'
 import {Kobo} from 'kobo-sdk'
+import {KoboValidation} from 'infoportal-common'
 
 export namespace GlobalEvent {
 
@@ -20,6 +21,14 @@ export namespace GlobalEvent {
     total?: number
   }
 
+  export interface KoboValidationEditedParams {
+    formId: Kobo.FormId,
+    answerIds: Kobo.SubmissionId[],
+    status?: KoboValidation,
+    index?: number
+    total?: number
+  }
+
   interface KoboFormSyncParams
     // extends KoboSyncServerResult
   {
@@ -30,6 +39,7 @@ export namespace GlobalEvent {
 
   export enum Event {
     KOBO_FORM_SYNCHRONIZED = 'KOBO_FORM_SYNCHRONIZED',
+    KOBO_VALIDATION_EDITED_FROM_KOBO = 'KOBO_VALIDATION_EDITED_FROM_KOBO',
     KOBO_ANSWER_EDITED_FROM_KOBO = 'KOBO_ANSWER_EDITED_FROM_KOBO',
     KOBO_ANSWER_EDITED_FROM_IP = 'KOBO_ANSWER_EDITED_FROM_IP',
     KOBO_ANSWER_NEW = 'KOBO_ANSWER_NEW',
@@ -40,6 +50,7 @@ export namespace GlobalEvent {
   type Emit = {
     (event: Event.KOBO_ANSWER_EDITED_FROM_IP, params: KoboAnswerEditedParams): void
     (event: Event.KOBO_ANSWER_EDITED_FROM_KOBO, params: KoboAnswerEditedParams): void
+    (event: Event.KOBO_VALIDATION_EDITED_FROM_KOBO, params: KoboValidationEditedParams): void
     (event: Event.KOBO_ANSWER_NEW, params: KoboAnswerEditedParams): void
     (event: Event.KOBO_TAG_EDITED, params: KoboTagEditedParams): void
     (event: Event.KOBO_FORM_SYNCHRONIZED, params: KoboFormSyncParams): void
@@ -49,12 +60,12 @@ export namespace GlobalEvent {
   type Listen = {
     (event: Event.KOBO_ANSWER_EDITED_FROM_IP, cb: (params: KoboAnswerEditedParams) => void): void
     (event: Event.KOBO_ANSWER_EDITED_FROM_KOBO, cb: (params: KoboAnswerEditedParams) => void): void
+    (event: Event.KOBO_VALIDATION_EDITED_FROM_KOBO, cb: (params: KoboValidationEditedParams) => void): void
     (event: Event.KOBO_ANSWER_NEW, cb: (params: KoboAnswerEditedParams) => void): void
     (event: Event.KOBO_TAG_EDITED, cb: (params: KoboTagEditedParams) => void): void
     (event: Event.KOBO_FORM_SYNCHRONIZED, cb: (params: KoboFormSyncParams) => void): void
     (event: Event.WFP_DEDUPLICATION_SYNCHRONIZED, cb: () => void): void
   }
-
 
   export class Class {
 

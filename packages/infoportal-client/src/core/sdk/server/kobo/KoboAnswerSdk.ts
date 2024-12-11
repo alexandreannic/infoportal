@@ -13,6 +13,12 @@ export interface KoboAnswerFilter {
   readonly filters?: AnswersFilters
 }
 
+export type KoboUpdateValidation = {
+  formId: Kobo.FormId
+  answerIds: Kobo.SubmissionId[]
+  status: KoboValidation
+}
+
 export type KoboUpdateAnswers<T extends Record<string, any> = any, K extends KeyOf<T> = any> = {
   formId: Kobo.FormId
   answerIds: Kobo.SubmissionId[]
@@ -86,11 +92,7 @@ export class KoboAnswerSdk {
     formId,
     answerIds,
     status,
-  }: {
-    formId: Kobo.FormId
-    answerIds: Kobo.SubmissionId[]
-    status: KoboValidation
-  }) => {
+  }: KoboUpdateValidation) => {
     return this.client.patch(`/kobo/answer/${formId}/validation`, {
       body: {
         answerIds: answerIds,

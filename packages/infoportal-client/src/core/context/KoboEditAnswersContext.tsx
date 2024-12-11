@@ -1,6 +1,6 @@
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useState} from 'react'
 import {KoboEditModalAnswer} from '@/shared/koboEdit/KoboEditModal'
-import {KoboUpdateAnswers} from '@/core/sdk/server/kobo/KoboAnswerSdk'
+import {KoboUpdateAnswers, KoboUpdateValidation} from '@/core/sdk/server/kobo/KoboAnswerSdk'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useAsync, UseAsyncMultiple} from '@/shared/hook/useAsync'
@@ -9,6 +9,7 @@ import {KoboIndex} from 'infoportal-common'
 import {KeyOf} from '@alexandreannic/ts-utils'
 import {useIpToast} from '@/core/useToast'
 import {Kobo} from 'kobo-sdk'
+import {KoboSubmissionMetaData} from 'infoportal-common/kobo'
 
 interface EditDataParams<T extends Record<string, any> = any> extends Omit<KoboUpdateAnswers<T>, 'answer'> {
   onSuccess?: (params: KoboUpdateAnswers<T>) => void
@@ -24,6 +25,7 @@ interface KoboUpdateAnswersByName<T extends KoboFormNameMapped, K extends KeyOf<
 export interface KoboEditAnswersContext {
   asyncUpdateByName: UseAsyncMultiple<<T extends KoboFormNameMapped, K extends KeyOf<InferTypedAnswer<T>>>(_: KoboUpdateAnswersByName<T, K>) => Promise<void>>
   asyncUpdateById: UseAsyncMultiple<(_: KoboUpdateAnswers) => Promise<void>>
+  asyncUpdateValidationById: UseAsyncMultiple<(_: KoboUpdateValidation) => Promise<void>>
   asyncDeleteById: UseAsyncMultiple<(_: Pick<KoboUpdateAnswers, 'formId' | 'answerIds'>) => Promise<void>>
   open: Dispatch<SetStateAction<EditDataParams | undefined>>
   close: () => void
@@ -81,7 +83,7 @@ export const KoboEditAnswersProvider = ({
     })
   }
 
-  const asyncUpdateById = useAsync(async (p: KoboUpdateAnswers) => {
+  const updateById = async (p: KoboUpdateAnswers) => {
     try {
       await api.kobo.answer.updateAnswers({
         answerIds: p.answerIds,
@@ -95,7 +97,9 @@ export const KoboEditAnswersProvider = ({
       ctxAnswers.byId(p.formId).fetch({force: true, clean: false})
       return Promise.reject(e)
     }
-  }, {requestKey: ([_]) => _.formId})
+  }
+
+  const asyncUpdateById = useAsync(updateById, {requestKey: ([_]) => _.formId})
 
   const asyncUpdateByName = useAsync(async <T extends KoboFormNameMapped, K extends KeyOf<InferTypedAnswer<T>>>(p: KoboUpdateAnswersByName<T, K>) => {
     await api.kobo.answer.updateAnswers({
@@ -111,6 +115,16 @@ export const KoboEditAnswersProvider = ({
       return Promise.reject(e)
     })
   }, {requestKey: ([_]) => _.formName})
+
+  const asyncUpdateValidationById = useAsync(async (p: KoboUpdateValidation) => {
+    const validationKey: keyof KoboSubmissionMetaData = 'validationStatus'
+    return updateById({
+      formId: p.formId,
+      answerIds: p.answerIds,
+      question: validationKey,
+      answer: p.status,
+    })
+  })
 
   const asyncDeleteById = useAsync(async ({answerIds, formId}: Pick<KoboUpdateAnswers, 'answerIds' | 'formId'>) => {
     await api.kobo.answer.delete({
@@ -135,6 +149,7 @@ export const KoboEditAnswersProvider = ({
       asyncDeleteById,
       asyncUpdateById,
       asyncUpdateByName,
+      asyncUpdateValidationById,
       open: setEditPopup,
       close: () => setEditPopup(undefined)
     }}>
