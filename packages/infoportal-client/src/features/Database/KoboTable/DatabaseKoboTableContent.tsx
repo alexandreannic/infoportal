@@ -54,8 +54,8 @@ export const DatabaseKoboTableContent = ({
     formId: ctx.form.id,
     canEdit: ctx.access.write,
     m,
-    asyncUpdateTagById: ctxEditTag.asyncUpdateById,
-    openEditTag: ctxEditTag.open,
+    asyncUpdateTagById: ctxEditAnswer.asyncUpdateById.tag,
+    openEditTag: ctxEditAnswer.open,
   }).map(_ => ({
     ..._,
     typeIcon: <DatatableHeadIconByType type={_.type}/>
@@ -68,9 +68,12 @@ export const DatabaseKoboTableContent = ({
       externalFilesIndex: ctx.externalFilesIndex,
       onRepeatGroupClick: _ => navigate(databaseIndex.siteMap.group.absolute(ctx.form.id, _.name, _.row.id, _.row._index)),
       onEdit: selectedIds.length > 0 ? (questionName => ctxEditAnswer.open({
-        formId: ctx.form.id,
-        question: questionName,
-        answerIds: selectedIds,
+        target: 'answer',
+        params: {
+          formId: ctx.form.id,
+          question: questionName,
+          answerIds: selectedIds,
+        }
       })) : undefined,
       m,
       t,
@@ -101,11 +104,9 @@ export const DatabaseKoboTableContent = ({
       canEdit: ctx.access.write,
       m,
       asyncEdit: ctx.asyncEdit,
-      asyncUpdateAnswerById: ctxEditAnswer.asyncUpdateById,
-      asyncUpdateTagById: ctxEditTag.asyncUpdateById,
+      asyncUpdateValidationById: ctxEditAnswer.asyncUpdateById.validation,
       openViewAnswer: ctxAnswers.openView,
-      openEditAnswer: ctxEditAnswer.open,
-      openEditTag: ctxEditTag.open,
+      openUpdate: ctxEditAnswer.open,
     })
     return [...base, ...extraColumns, ...schemaColumns].map(_ => ({
       ..._,

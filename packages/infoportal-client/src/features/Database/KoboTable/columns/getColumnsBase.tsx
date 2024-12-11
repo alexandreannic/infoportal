@@ -6,7 +6,6 @@ import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import React from 'react'
 import {Messages} from '@/core/i18n/localization/en'
 import {KoboSubmissionFlat} from 'infoportal-common'
-import {KoboEditTagsContext} from '@/core/context/KoboEditTagsContext'
 import {KoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {DatabaseKoboContext} from '@/features/Database/KoboTable/DatabaseKoboContext'
 import {Kobo} from 'kobo-sdk'
@@ -18,23 +17,19 @@ export const getColumnsBase = ({
   formId,
   canEdit,
   m,
-  asyncUpdateTagById,
-  asyncUpdateAnswerById,
+  asyncUpdateValidationById,
   asyncEdit,
-  openEditTag,
   openViewAnswer,
   openEditAnswer,
   getRow = _ => _,
 }: {
   getRow?: (_: any) => KoboSubmissionFlat,
   asyncEdit: DatabaseKoboContext['asyncEdit']
-  openEditTag: KoboEditTagsContext['open']
-  openEditAnswer: KoboEditAnswersContext['open']
+  openEdit: KoboEditAnswersContext['open']
   openViewAnswer: KoboAnswersContext['openView']
   formId: Kobo.FormId
   selectedIds: Kobo.SubmissionId[]
-  asyncUpdateTagById: KoboEditTagsContext['asyncUpdateById']
-  asyncUpdateAnswerById: KoboEditAnswersContext['asyncUpdateById']
+  asyncUpdateValidationById: KoboEditAnswersContext['asyncUpdateValidationById']
   canEdit?: boolean
   m: Messages
 }): DatatableColumn.Props<any>[] => {

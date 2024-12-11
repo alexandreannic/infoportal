@@ -221,9 +221,12 @@ export const ShelterTable = () => {
         head: m.modality,
         subHeader: selectedIds.length > 0
           ? <TableEditCellBtn onClick={() => ctxEditAnswers.open({
-            formId: KoboIndex.byName('shelter_nta').id,
-            answerIds: selectedIds,
-            question: 'modality',
+            target: 'answer',
+            params: {
+              formId: KoboIndex.byName('shelter_nta').id,
+              answerIds: selectedIds,
+              question: 'modality',
+            }
           })}/>
           : undefined,
         render: _ => {

@@ -1,5 +1,5 @@
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useState} from 'react'
-import {KoboEditModalOption, KoboEditModalTag, KoboEditModalType} from '@/shared/koboEdit/KoboEditModal'
+import {KoboEditModal, KoboEditModalOption, KoboEditModalType} from '@/shared/koboEdit/KoboEditModal'
 import {KoboUpdateAnswers} from '@/core/sdk/server/kobo/KoboAnswerSdk'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {useAppSettings} from '@/core/context/ConfigContext'
@@ -145,7 +145,7 @@ export const KoboEditTagsProvider = ({
     }}>
       {children}
       {editPopup && (
-        <KoboEditModalTag
+        <KoboEditModal.Tag
           type={editPopup.type}
           formId={editPopup.formId}
           tag={editPopup.tag}

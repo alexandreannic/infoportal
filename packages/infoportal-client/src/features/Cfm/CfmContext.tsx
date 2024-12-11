@@ -31,6 +31,7 @@ import {Box, BoxProps} from '@mui/material'
 import {useKoboEditTagContext} from '@/core/context/KoboEditTagsContext'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {Kobo} from 'kobo-sdk'
+import {useKoboEditAnswerContext} from '@/core/context/KoboEditAnswersContext'
 
 export enum CfmDataOrigin {
   Internal = 'Internal',
@@ -133,7 +134,7 @@ export const CfmProvider = ({
   const {session, accesses} = useSession()
   const {api} = useAppSettings()
   const ctxAnswers = useKoboAnswersContext()
-  const ctxEditTag = useKoboEditTagContext()
+  const ctxKoboEdit = useKoboEditAnswerContext()
   const users = useFetcher(() => api.user.search())
   const fetcherInternal = ctxAnswers.byName('meal_cfmInternal')
   const fetcherExternal = ctxAnswers.byName('meal_cfmExternal')
@@ -218,7 +219,7 @@ export const CfmProvider = ({
     formId: Kobo.FormId,
     answerId: Kobo.SubmissionId
   }) => {
-    await ctxEditTag.asyncUpdateById.call({
+    await ctxKoboEdit.asyncUpdateById.tag.call({
       formId,
       answerIds: [answerId],
       tag: 'deletedBy',
