@@ -152,10 +152,7 @@ export const DatabaseWithContext = () => {
                           )}
                         </>}
                       >
-                        <Txt sx={{
-                          color: _.archived ? t.palette.text.disabled : undefined,
-                        }}
-                        >
+                        <Txt sx={{color: _.archived ? t.palette.text.disabled : undefined}}>
                           {_.parsedName.name}
                           {_.custom && (
                             <span style={{fontWeight: 300}}>{' '}({m._koboDatabase.mergedDb})</span>

@@ -100,9 +100,11 @@ export const DatabaseKoboTableContent = ({
       formId: ctx.form.id,
       canEdit: ctx.access.write,
       m,
-      openAnswerModal: ctxAnswers.openAnswerModal,
       asyncEdit: ctx.asyncEdit,
+      asyncUpdateAnswerById: ctxEditAnswer.asyncUpdateById,
       asyncUpdateTagById: ctxEditTag.asyncUpdateById,
+      openViewAnswer: ctxAnswers.openView,
+      openEditAnswer: ctxEditAnswer.open,
       openEditTag: ctxEditTag.open,
     })
     return [...base, ...extraColumns, ...schemaColumns].map(_ => ({

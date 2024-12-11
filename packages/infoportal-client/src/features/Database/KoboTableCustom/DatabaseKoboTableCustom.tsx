@@ -170,7 +170,7 @@ export const DatabaseTableCustomRoute = () => {
           formId,
           canEdit: true,
           m,
-          openAnswerModal: ctxAnswers.openAnswerModal,
+          open: ctxAnswers.openView,
           asyncEdit: (answerId: Kobo.SubmissionId) => api.koboApi.getEditUrl({formId: formId, answerId}),
           asyncUpdateTagById: ctxEditTag.asyncUpdateById,
           getRow: _ => (_[formId] ?? {}) as any,

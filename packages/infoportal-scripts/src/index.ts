@@ -1,7 +1,6 @@
 import {KoboClient} from 'kobo-sdk'
 import {appConf} from './appConf'
 import winston from 'winston'
-import {BuildKoboType} from './kobo/BuildTypeKobo'
 
 export const koboSdk = new KoboClient({
   urlv1: appConf.kobo.urlV1 + '/api/v1',

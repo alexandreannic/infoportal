@@ -75,7 +75,7 @@ export const ShelterTable = () => {
               <>
                 {map(_.nta, answer =>
                   <>
-                    <TableIconBtn tooltip={m.view} children="visibility" onClick={() => ctxAnswers.openAnswerModal({answer, formId: KoboIndex.byName('shelter_nta').id})}/>
+                    <TableIconBtn tooltip={m.view} children="visibility" onClick={() => ctxAnswers.openView({answer, formId: KoboIndex.byName('shelter_nta').id})}/>
                     <TableIconBtn tooltip={m.edit} href={ctx.asyncEdit(KoboIndex.byName('shelter_nta').id, answer.id)} target="_blank" children="edit"/>
                   </>
                 ) ?? (
@@ -656,7 +656,7 @@ export const ShelterTable = () => {
             value: _.ta ? 'true' : 'false',
             label: map(_.ta, form =>
               <>
-                <TableIconBtn tooltip={m.view} children="visibility" onClick={() => ctxAnswers.openAnswerModal({formId: KoboIndex.byName('shelter_ta').id, answer: form})}/>
+                <TableIconBtn tooltip={m.view} children="visibility" onClick={() => ctxAnswers.openView({formId: KoboIndex.byName('shelter_ta').id, answer: form})}/>
                 <TableIconBtn tooltip={m.edit} href={ctx.asyncEdit(KoboIndex.byName('shelter_ta').id, form.id)} target="_blank" children="edit"/>
               </>
             ) ?? (

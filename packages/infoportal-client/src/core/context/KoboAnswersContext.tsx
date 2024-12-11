@@ -18,7 +18,7 @@ export interface OpenModalProps {
 }
 
 export type KoboAnswersContext = {
-  openAnswerModal: (_: OpenModalProps) => void
+  openView: (_: OpenModalProps) => void
   byId: (id: Kobo.FormId) => {
     find: (_: Kobo.SubmissionId) => KoboMappedAnswer | undefined
     set: (value: ApiPaginate<KoboMappedAnswer>) => void,
@@ -88,21 +88,21 @@ export const KoboAnswersProvider = ({
     }
   }, [fetcher.getAsMap])
 
-  const [modalAnswerOpen, setModalAnswerOpen] = useState<OpenModalProps | undefined>()
+  const [editPopup, setEditPopup] = useState<OpenModalProps | undefined>()
 
   return (
     <Context.Provider value={{
       byId,
       byName,
-      openAnswerModal: setModalAnswerOpen
+      openView: setEditPopup
     }}>
       {children}
-      {modalAnswerOpen && (
+      {editPopup && (
         <DatabaseKoboAnswerViewDialog
           open={true}
-          onClose={() => setModalAnswerOpen(undefined)}
-          answer={modalAnswerOpen.answer}
-          formId={modalAnswerOpen.formId}
+          onClose={() => setEditPopup(undefined)}
+          answer={editPopup.answer}
+          formId={editPopup.formId}
         />
       )}
     </Context.Provider>

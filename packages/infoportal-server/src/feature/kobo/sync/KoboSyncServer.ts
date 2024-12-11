@@ -10,6 +10,7 @@ import {AppError} from '../../../helper/Errors'
 import {appConf} from '../../../core/conf/AppConf'
 import {genUUID, Util} from '../../../helper/Utils'
 import {Kobo} from 'kobo-sdk'
+import {KoboHelper} from 'infoportal-common'
 
 export type KoboSyncServerResult = {
   answersIdsDeleted: Kobo.FormId[]
@@ -38,18 +39,6 @@ export class KoboSyncServer {
       }
       return [nameWithoutGroup, v]
     })
-  }
-
-  private static readonly mapValidationStatus = (_: Kobo.Submission): undefined | KoboValidation => {
-    if (_._validation_status?.uid) return fnSwitch(_._validation_status.uid, {
-      validation_status_on_hold: KoboValidation.Pending,
-      validation_status_approved: KoboValidation.Approved,
-      validation_status_not_approved: KoboValidation.Rejected,
-      no_status: undefined,
-    })
-    if (_[KoboCustomDirectives._IP_VALIDATION_STATUS_EXTRA]) {
-      return KoboValidation[_._IP_VALIDATION_STATUS_EXTRA as (keyof typeof KoboValidation)]
-    }
   }
 
   private static readonly mapAnswer = (k: Kobo.Submission): KoboSubmission => {
@@ -85,7 +74,7 @@ export class KoboSyncServer {
       id: '' + _id,
       uuid: _uuid,
       submittedBy: _submitted_by,
-      validationStatus: KoboSyncServer.mapValidationStatus(k),
+      validationStatus: KoboHelper.mapValidation.fromKobo(k),
       lastValidatedTimestamp: _validation_status?.timestamp,
       validatedBy: _validation_status?.by_whom,
       answers: answersUngrouped,
@@ -169,7 +158,7 @@ export class KoboSyncServer {
     this.debug(formId, `Fetch remote answers... ${remoteAnswers.length} fetched.`)
 
     this.debug(formId, `Fetch local answers...`)
-    const localAnswersIndex = await this.prisma.koboAnswers.findMany({where: {formId, deletedAt: null}, select: {id: true, uuid: true}}).then(_ => {
+    const localAnswersIndex = await this.prisma.koboAnswers.findMany({where: {formId, deletedAt: null}, select: {id: true, lastValidatedTimestamp: true, uuid: true}}).then(_ => {
       return _.reduce((map, curr) => map.set(curr.id, curr.uuid), new Map<Kobo.FormId, UUID>())
     })
     this.debug(formId, `Fetch local answers... ${localAnswersIndex.size} fetched.`)
@@ -226,6 +215,14 @@ export class KoboSyncServer {
         skipDuplicates: true,
       })
       return notInsertedAnswers
+    }
+
+    const handleValidation = async () => {
+      const answersToUpdate = seq([...localAnswersIndex]).map(([id, uuid]) => {
+        const match = remoteIdsIndex.get(id)
+        const hasBeenUpdated = match && match.uuid !== uuid
+        return hasBeenUpdated ? match : undefined
+      }).compact()
     }
 
     const handleUpdate = async () => {

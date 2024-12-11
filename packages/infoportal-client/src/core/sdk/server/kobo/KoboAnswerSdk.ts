@@ -1,12 +1,12 @@
 import {ApiClient} from '../ApiClient'
-import {KeyOf, KoboBaseTags, KoboIndex, Period, UUID} from 'infoportal-common'
+import {KeyOf, KoboBaseTags, KoboIndex, KoboSubmission, KoboSubmissionFlat, Period, UUID} from 'infoportal-common'
 import {KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
 import {AnswersFilters} from '@/core/sdk/server/kobo/KoboApiSdk'
 import {endOfDay, startOfDay} from 'date-fns'
 import {map} from '@alexandreannic/ts-utils'
 import {ApiPaginate, ApiPagination} from '@/core/sdk/server/_core/ApiSdkUtils'
-import {KoboSubmission, KoboSubmissionFlat} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
+import {KoboValidation} from 'infoportal-common/kobo'
 
 export interface KoboAnswerFilter {
   readonly paginate?: ApiPagination
@@ -80,6 +80,23 @@ export class KoboAnswerSdk {
     formId: Kobo.FormId
   }) => {
     await this.client.delete(`/kobo/answer/${formId}`, {body: {answerIds}})
+  }
+
+  readonly updateValidation = ({
+    formId,
+    answerIds,
+    status,
+  }: {
+    formId: Kobo.FormId
+    answerIds: Kobo.SubmissionId[]
+    status: KoboValidation
+  }) => {
+    return this.client.patch(`/kobo/answer/${formId}/validation`, {
+      body: {
+        answerIds: answerIds,
+        status,
+      }
+    })
   }
 
   readonly updateAnswers = <T extends Record<string, any>, K extends KeyOf<T>>({

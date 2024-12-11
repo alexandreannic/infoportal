@@ -82,18 +82,19 @@ export const KoboEditAnswersProvider = ({
   }
 
   const asyncUpdateById = useAsync(async (p: KoboUpdateAnswers) => {
-    await api.kobo.answer.updateAnswers({
-      answerIds: p.answerIds,
-      answer: p.answer,
-      formId: p.formId,
-      question: p.question,
-    }).then(() => {
+    try {
+      await api.kobo.answer.updateAnswers({
+        answerIds: p.answerIds,
+        answer: p.answer,
+        formId: p.formId,
+        question: p.question,
+      })
       updateCacheById(p)
-    }).catch((e) => {
+    } catch (e) {
       toastHttpError(e)
       ctxAnswers.byId(p.formId).fetch({force: true, clean: false})
       return Promise.reject(e)
-    })
+    }
   }, {requestKey: ([_]) => _.formId})
 
   const asyncUpdateByName = useAsync(async <T extends KoboFormNameMapped, K extends KeyOf<InferTypedAnswer<T>>>(p: KoboUpdateAnswersByName<T, K>) => {

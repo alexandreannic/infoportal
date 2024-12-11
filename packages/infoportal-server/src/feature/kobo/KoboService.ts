@@ -1,5 +1,17 @@
 import {KoboForm, Prisma, PrismaClient} from '@prisma/client'
-import {ApiPaginate, ApiPaginateHelper, ApiPagination, KoboIndex, KoboSubmission, logPerformance, UUID} from 'infoportal-common'
+import {
+  ApiPaginate,
+  ApiPaginateHelper,
+  ApiPagination,
+  KoboCustomDirectives,
+  KoboHelper,
+  KoboIndex,
+  KoboSubmission,
+  KoboSubmissionMetaData,
+  KoboValidation,
+  logPerformance,
+  UUID
+} from 'infoportal-common'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {duration, fnSwitch, Obj, seq} from '@alexandreannic/ts-utils'
 import {format} from 'date-fns'
@@ -431,6 +443,52 @@ export class KoboService {
       answerIds,
       authorEmail,
     })
+  }
+
+  readonly updateValidation = async ({
+    authorEmail = 'system',
+    formId,
+    answerIds,
+    validation,
+  }: {
+    authorEmail?: string,
+    formId: Kobo.FormId,
+    answerIds: Kobo.SubmissionId[],
+    validation?: KoboValidation
+  }) => {
+    const validationKey: keyof KoboSubmissionMetaData = 'validationStatus'
+    const sdk = await this.sdkGenerator.getBy.formId(formId)
+    const koboValidation = KoboHelper.mapValidation.toKobo(validation)
+    const updateRes = await (() => {
+      if (koboValidation._validation_status)
+        return sdk.v2.updateValidation({formId, submissionIds: answerIds, status: koboValidation._validation_status})
+      else
+        return sdk.v2.updateData({formId, submissionIds: answerIds, data: {[KoboCustomDirectives._IP_VALIDATION_STATUS_EXTRA]: validation}})
+    })()
+    await Promise.all([
+      this.history.create({
+        type: 'answer',
+        formId,
+        answerIds,
+        property: validationKey,
+        newValue: validation,
+        authorEmail,
+      }),
+      this.prisma.koboAnswers.updateMany({
+        data: {
+          lastValidatedTimestamp:
+          validationStatus
+  :
+    koboValidation._validation_status
+  },
+    where: {
+      id: {in:
+        answerIds
+      }
+    ,
+    }
+  })
+  ])
   }
 
   readonly updateAnswers = async ({

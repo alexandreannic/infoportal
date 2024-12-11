@@ -3,6 +3,7 @@ import axios from 'axios'
 import {KoboClientv2FixedUpdated, KoboUpdateDataParams, KoboUpdateDataParamsData} from './KoboClientV2FixedUpdated'
 import {Kobo, Logger} from '../Kobo'
 import {ApiClient} from '../api-client/ApiClient'
+import {queuify} from '../helper/Utils'
 
 export class KoboClientV2 {
   constructor(
@@ -93,6 +94,31 @@ export class KoboClientV2 {
     })
   }
 
+  readonly updateValidation = queuify({
+    extractDataFromParams: _ => _.submissionIds,
+    reconcileParams: (submissionIds, params) => {
+      return [{...params[0], submissionIds}] as const
+    },
+    run: ({
+      formId,
+      submissionIds,
+      status
+    }: {
+      formId: Kobo.FormId,
+      submissionIds: Kobo.Submission.Id[],
+      status: Kobo.Submission.Validation
+    }): Promise<> => {
+      return this.api.patch(`/v2/assets/${formId}/data/validation_statuses/`, {
+        body: {
+          payload: {
+            submission_ids: submissionIds,
+            'validation_status.uid': status,
+          }
+        }
+      })
+    }
+  })
+
   readonly delete = (formId: Kobo.Form.Id, ids: Kobo.SubmissionId[]): Promise<{detail: string}> => {
     return this.api.delete(`/v2/assets/${formId}/data/bulk/`, {
       body: {
@@ -148,6 +174,7 @@ export class KoboClientV2 {
           results: res.results
             .map(_ => {
               const submissionTime = new Date(_._submission_time)
+              _._id = '' + _._id
               _._submission_time = submissionTime
               _.start = _.start ? new Date(_.start) : undefined
               _.end = _.end ? new Date(_.end) : undefined

@@ -67,6 +67,7 @@ model KoboAnswersHistory {
   id       String        @id @default(uuid())
   form     KoboForm?     @relation(fields: [formId], references: [id])
   formId   String?
+  answerId String?
   answers  KoboAnswers[] @relation("KoboAnswersToHistory")
   by       String
   date     DateTime      @default(now())
