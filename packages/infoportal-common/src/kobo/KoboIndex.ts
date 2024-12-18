@@ -122,7 +122,6 @@ const koboFormTranslation: Record<KoboFormName, string> = {
   partner_lampa: '[Verification] NGO LAMPA CASH FOR SOLID FUEL',
   partner_angels: '[Verification] UKRF №155 DRC-200 Реєстрація на отримання грошей на паливо',
   partner_misto_syly: '[Verification] DRC-203 (Misto Syly)',
-
 }
 
 export type KoboFormName = keyof typeof koboIndex

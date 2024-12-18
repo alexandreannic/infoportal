@@ -28,6 +28,12 @@ import {getColumnsForRepeatGroup} from '@/features/Database/RepeatGroup/Database
 import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
 import {databaseKoboDisplayBuilder} from '@/features/Database/KoboTable/groupDisplay/DatabaseKoboDisplay'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
+import {useSession} from '@/core/Session/SessionContext'
+import {useIpToast} from '@/core/useToast'
+import {useAsync} from '@/shared/hook/useAsync'
+import {useAppSettings} from '@/core/context/ConfigContext'
+import {DatabaseImportBtn} from '@/features/Database/KoboTable/DatabaseImportBtn'
+import {generateEmptyXlsTemplate} from '@/features/Database/KoboTable/generateEmptyXlsFile'
 
 export const DatabaseKoboTableContent = ({
   onFiltersChange,
@@ -36,6 +42,7 @@ export const DatabaseKoboTableContent = ({
   const {m} = useI18n()
   const t = useTheme()
   const navigate = useNavigate()
+  const {session} = useSession()
   const ctx = useDatabaseKoboTableContext()
   const ctxSchema = useKoboSchemaContext()
   const ctxAnswers = useKoboAnswersContext()
@@ -110,8 +117,21 @@ export const DatabaseKoboTableContent = ({
     }))
   }, [schemaColumns, ctx.view.currentView])
 
+  const {api} = useAppSettings()
   const selectedHeader = useCustomSelectedHeader({access: ctx.access, formId: ctx.form.id, selectedIds})
   const header = useCustomHeader()
+  const _importFromXLS = useAsync(api.importData.importFromXLSFile)
+  const {toastHttpError} = useIpToast()
+
+  const handleImportData = async (file: File, action: 'create' | 'update') => {
+    await _importFromXLS.call(ctx.form.id, file, action).catch(toastHttpError)
+  }
+
+  const handleGenerateTemplate = async () => {
+    if (ctx.schema && ctx.form) {
+      await generateEmptyXlsTemplate(ctx.schema, ctx.form.name + '_Template')
+    }
+  }
 
   return (
     <>
@@ -198,6 +218,13 @@ export const DatabaseKoboTableContent = ({
                 tooltip={<div dangerouslySetInnerHTML={{__html: m._koboDatabase.pullDataAt(ctx.form.updatedAt)}}/>}
                 onClick={ctx.asyncRefresh.call}
               />
+              {session.admin && (
+                <DatabaseImportBtn
+                  onUploadNewData={(file) => handleImportData(file, 'create')}
+                  onUpdateExistingData={(file) => handleImportData(file, 'update')}
+                  onGenerateTemplate={handleGenerateTemplate}
+                />
+              )}
             </div>
           </>
         }

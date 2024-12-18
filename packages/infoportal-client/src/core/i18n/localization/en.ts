@@ -778,6 +778,7 @@ export const en = Object.freeze({
       currentlyDisplayed: `columns displayed`,
       tagNotUpdated: 'Failed to update tag. Reloading clean data set...',
       downloadAsXLS: 'Download <b>filtered data</b> as XLS',
+      importFromXLS: 'Import from XLS',
       registerNewForm: 'Register new form',
       repeatAs: 'Show Grouped questions as',
       repeatAsColumn: 'New columns',
@@ -984,6 +985,11 @@ export const en = Object.freeze({
       WKB: 'Baby Winter Kits',
       HKMV: 'Family Hygiene Kits for moving IDPs',
       ESK: 'Emergency Shelter Kit'
+    },
+    importData:{
+      create: 'Upload New Data',
+      update: 'Update Existing Data',
+      generate: 'Generate Excel Template'
     }
   },
 })

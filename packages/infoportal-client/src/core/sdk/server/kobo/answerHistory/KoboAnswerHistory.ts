@@ -1,4 +1,4 @@
-import {Kobo} from 'kobo-sdk/Kobo'
+import {Kobo} from 'kobo-sdk'
 
 export interface KoboAnswerHistorySearch {
   formId: Kobo.FormId
