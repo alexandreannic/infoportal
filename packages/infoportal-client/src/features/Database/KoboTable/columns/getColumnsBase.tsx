@@ -9,8 +9,6 @@ import {KoboSubmissionFlat} from 'infoportal-common'
 import {KoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {DatabaseKoboContext} from '@/features/Database/KoboTable/DatabaseKoboContext'
 import {Kobo} from 'kobo-sdk'
-import {KoboSubmissionMetaData} from 'infoportal-common'
-import {KoboEditAnswersContext} from '@/core/context/KoboEditAnswersContext'
 import {KoboUpdateContext} from '@/core/context/KoboUpdateContext'
 
 export const getColumnsBase = ({
