@@ -33,23 +33,21 @@ jobs:
       - name: npm install, build, and test (kobo-sdk)
         working-directory: ./packages/kobo-sdk
         run: |
-          npm ci --production
-          npm run build --if-present
-          npm run test --if-present
+          npm run build --workspace kobo-sdk --if-present
+          npm run test --workspace kobo-sdk --if-present
 
-      - name: Build, and test (lib)
+      - name: Build, and test (common)
         working-directory: ./packages/infoportal-common
         run: |
-          npm run build --if-present
-          npm run test --if-present
+          npm run build --workspace infoportal-common --if-present
+          npm run test --workspace infoportal-common --if-present
 
       - name: Build, and test (server)
         working-directory: ./packages/infoportal-server
         run: |
           npm run db-generate
-          npm run build --if-present
-          npm run test --if-present
-
+          npm run build --workspace infoportal-server --if-present
+          npm run test --workspace infoportal-server --if-present
 
       - name: Zip
         working-directory: ./packages/infoportal-server
