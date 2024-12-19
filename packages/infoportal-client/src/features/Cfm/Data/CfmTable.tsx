@@ -335,11 +335,11 @@ export const CfmTable = ({}: any) => {
                       options={ctx.schemaInternal.helper.getOptionsByQuestionName('project_code').map(_ => {
                         const label = ctx.schemaInternal.translate.choice('project_code', _.name) as DrcProject
                         return IpSelectMultipleHelper.makeOption({
-                          value: DrcProject[label] ?? label + '⚠️',
+                          value: label,
                           children: DrcProject[label] ?? label + '⚠️',
                         })
                       })}
-                      value={DrcProject[row.project as DrcProject] ?? row.project + '⚠️'}
+                      value={row.project}
                       onChange={newValue => {
                         ctxKoboUpdate.asyncUpdateByName.answer.call({
                           answerIds: [row.id],

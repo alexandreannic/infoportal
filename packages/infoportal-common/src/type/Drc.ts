@@ -234,7 +234,7 @@ export enum DrcProject {
   'UKR-000269 ECHO1' = 'UKR-000269 ECHO1',
   'UKR-000270 Pooled Funds' = 'UKR-000270 Pooled Funds',
   'UKR-000270 Pooled Funds Old (MPCA)' = 'UKR-000270 Pooled Funds Old (MPCA)',
-  'UKR-000274 Novo-Nordisk' = 'UKR-000274 Novo-Nordisk',
+  'UKR-000274 Novo-Nordilsk' = 'UKR-000274 Novo-Nordilsk',
   'UKR-000276 UHF3' = 'UKR-000276 UHF3',
   'UKR-000284 BHA' = 'UKR-000284 BHA',
   'UKR-000286 DMFA' = 'UKR-000286 DMFA',
@@ -269,7 +269,7 @@ export enum DrcProject {
   'UKR-000370 SIDA' = 'UKR-000370 SIDA',
   'UKR-000371 ECHO3' = 'UKR-000371 ECHO3',
   'UKR-000372 ECHO3' = 'UKR-000372 ECHO3',
-  'UKR-000373 Novo-Nordisk' = 'UKR-000373 Novo-Nordisk',
+  'UKR-000373 Novo-Nordilsk' = 'UKR-000373 Novo-Nordilsk',
   'UKR-000378 Danish MFA' = 'UKR-000378 Danish MFA',
   'UKR-000380 Danida' = 'UKR-000380 Danida',
   'UKR-000385 Pooled Funds' = 'UKR-000385 Pooled Funds',
@@ -301,7 +301,7 @@ export class DrcProjectHelper {
     'UKR-000269 ECHO1': DrcDonor.ECHO,
     'UKR-000270 Pooled Funds': DrcDonor.PoolFunds,
     'UKR-000270 Pooled Funds Old (MPCA)': DrcDonor.PoolFunds,
-    'UKR-000274 Novo-Nordisk': DrcDonor.NovoNordisk,
+    'UKR-000274 Novo-Nordilsk': DrcDonor.NovoNordisk,
     'UKR-000276 UHF3': DrcDonor.UHF,
     'UKR-000284 BHA': DrcDonor.BHA,
     'UKR-000286 DMFA': DrcDonor.DMFA,
@@ -347,7 +347,7 @@ export class DrcProjectHelper {
     'UKR-000397 GFFO': DrcDonor.GFFO,
     'UKR-000399 SDC3': DrcDonor.SDC,
     'UKR-000378 Danish MFA': DrcDonor.DMFA,
-    'UKR-000373 Novo-Nordisk': DrcDonor.NovoNordisk,
+    'UKR-000373 Novo-Nordilsk': DrcDonor.NovoNordisk,
     'None': DrcDonor.None
   }
 
