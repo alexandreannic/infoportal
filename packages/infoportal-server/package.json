@@ -12,7 +12,7 @@
     "dev": "npm run build && npm start",
     "dev-BROKEN": "ts-node src/index.ts",
     "debug": "npm run build && node --inspect-brk lib/index.js",
-    "db-migrate": "npx prisma migrate dev",
+    "db-migrate": "npx prisma migrate dev && npx prisma generate",
     "db-migrate-f": "prisma db push",
     "db-generate": "prisma generate",
     "update-kobo-tags": "node src/script/RefactoProjectForHhs.ts",
