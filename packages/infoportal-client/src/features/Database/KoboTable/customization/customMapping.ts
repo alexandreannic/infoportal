@@ -18,4 +18,5 @@ export const databaseCustomMapping: Record<any, (_: any) => any> = {
   [KoboIndex.byName('protection_hhs3').id]: KoboGeneralMapping.addIndividualBreakdownColumn,
   [KoboIndex.byName('protection_groupSession').id]: KoboGeneralMapping.addIndividualBreakdownColumn,
   [KoboIndex.byName('meal_cashPdm').id]: KoboGeneralMapping.addIndividualBreakdownColumn,
+  [KoboIndex.byName('partner_lampa').id]: KoboGeneralMapping.addIndividualBreakdownColumn,
 }

@@ -11,12 +11,12 @@ import {Badge, Box, useTheme} from '@mui/material'
 import {IpBtn} from '@/shared/Btn'
 import {useI18n} from '@/core/i18n'
 import {endOfMonth, startOfMonth, subMonths} from 'date-fns'
-import {KoboAnswerFlat, KoboIndex} from 'infoportal-common'
+import {KoboSubmissionFlat, KoboIndex} from 'infoportal-common'
 import {useSession} from '@/core/Session/SessionContext'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {PeriodPicker} from '@/shared/PeriodPicker/PeriodPicker'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 
 export interface AiTable<
   TActivity = any,
@@ -25,7 +25,7 @@ export interface AiTable<
 > {
   submit?: boolean
   recordId: string
-  data: KoboAnswerFlat<TAnswer>[],
+  data: KoboSubmissionFlat<TAnswer>[],
   activity: TActivity,
   subActivity?: TSubActivity,
   requestBody: ActiviftyInfoRecords,

@@ -1,9 +1,8 @@
 import {ReactNode} from 'react'
-import {KoboAnswerId} from 'infoportal-common'
 import {IpBtn, Modal, Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {KoboId} from 'infoportal-common'
-import {useKoboEditAnswerContext} from '@/core/context/KoboEditAnswersContext'
+import {useKoboUpdateContext} from '@/core/context/KoboUpdateContext'
+import {Kobo} from 'kobo-sdk'
 import {AccessSum} from '@/core/sdk/server/access/Access'
 
 export const useCustomSelectedHeader = ({
@@ -12,11 +11,11 @@ export const useCustomSelectedHeader = ({
   selectedIds
 }: {
   access: AccessSum
-  formId: KoboId,
-  selectedIds: KoboAnswerId[]
+  formId: Kobo.FormId,
+  selectedIds: Kobo.SubmissionId[]
 }): ReactNode => {
   const {m} = useI18n()
-  const ctx = useKoboEditAnswerContext()
+  const ctx = useKoboUpdateContext()
 
   return (
     <>

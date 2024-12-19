@@ -20,9 +20,8 @@ import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns'
 import {LicenseInfo} from '@mui/x-license-pro'
 import {useRouter} from 'next/router'
 import {KoboSchemaProvider} from '@/features/KoboSchema/KoboSchemaContext'
-import {KoboEditAnswersProvider} from '@/core/context/KoboEditAnswersContext'
+import {KoboUpdateProvider} from '@/core/context/KoboUpdateContext'
 import {KoboAnswersProvider} from '@/core/context/KoboAnswersContext'
-import {KoboEditTagsProvider} from '@/core/context/KoboEditTagsContext'
 import {HashRouter} from 'react-router-dom'
 import {SessionProvider} from '@/core/Session/SessionContext'
 import {ToastProvider} from '@/shared/Toast'
@@ -82,8 +81,7 @@ const AppWithConfig = (props: AppProps) => {
       ...!isServerSide ? [(_: any) => <HashRouter children={_}/>] : [],
       _ => <KoboSchemaProvider children={_}/>,
       _ => <KoboAnswersProvider children={_}/>,
-      _ => <KoboEditAnswersProvider children={_}/>,
-      _ => <KoboEditTagsProvider children={_}/>,
+      _ => <KoboUpdateProvider children={_}/>,
       _ => <ModalProvider children={_}/>,
       _ => <SessionProvider children={_}/>,
     ]}>

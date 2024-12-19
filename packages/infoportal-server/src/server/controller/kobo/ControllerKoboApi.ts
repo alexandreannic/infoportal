@@ -2,8 +2,7 @@ import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from '../../../feature/kobo/KoboSdkGenerator'
-import {KoboSyncServer} from '../../../feature/kobo/KoboSyncServer'
-import {KoboAnswerUtils} from 'infoportal-common'
+import {KoboSyncServer} from '../../../feature/kobo/sync/KoboSyncServer'
 import axios, {AxiosError} from 'axios'
 import {KoboService} from '../../../feature/kobo/KoboService'
 
@@ -34,9 +33,8 @@ export class ControllerKoboApi {
   }
 
   readonly handleWebhookNewAnswers = async (req: Request, res: Response, next: NextFunction) => {
-    const answer = KoboAnswerUtils.mapAnswer(req.body)
     const formId = req.body._xform_id_string
-    await this.syncService.handleWebhookNewAnswers({formId, answer})
+    await this.syncService.handleWebhookNewAnswers({formId, answer: req.body})
     res.send({})
   }
 

@@ -10,7 +10,6 @@ import {
   DrcProject,
   DrcProjectHelper,
   DrcSectorHelper,
-  KoboAnswerUtils,
   KoboGeneralMapping,
   KoboMetaHelper,
   KoboMetaTagNfi,
@@ -21,6 +20,7 @@ import {
 } from 'infoportal-common'
 import {KoboMetaOrigin} from './KoboMetaType'
 import {KoboMetaMapper, MetaMapped, MetaMapperInsert} from './KoboMetaService'
+import {KoboHelper} from 'infoportal-common'
 
 const nfisPrograms = [DrcProgram.NFI, DrcProgram.ESK, DrcProgram.InfantWinterClothing, DrcProgram.InfantWinterClothing]
 
@@ -83,9 +83,9 @@ export class KoboMetaBasicneeds {
         lastStatusUpdate: row.tags?.lastStatusUpdate ?? (status === CashStatus.Paid || nfisPrograms.includes(activity) ? row.date : undefined),
         passportNum: map((answer.pay_det_pass_ser ?? '') + (answer.pay_det_pass_num ?? ''), _ => _ === '' ? undefined : _),
         taxIdFileName: answer.pay_det_tax_id_ph,
-        taxIdFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
+        taxIdFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
         idFileName: answer.pay_det_id_ph,
-        idFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_id_ph),
+        idFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_id_ph),
         tags: fnSwitch(activity, {
           ESK: () => {
             if (!answer.estimate_sqm_damage) return
@@ -263,9 +263,9 @@ export class KoboMetaBasicneeds {
         ),
         taxId: answer.pay_det_tax_id_num ?? answer.pay_det_tax_id_num_l,
         taxIdFileName: answer.pay_det_tax_id_ph ?? answer.pay_det_tax_id_ph_l,
-        taxIdFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_tax_id_ph ?? answer.pay_det_tax_id_ph_l),
+        taxIdFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_tax_id_ph ?? answer.pay_det_tax_id_ph_l),
         idFileName: answer.pay_det_id_ph ?? answer.pay_det_id_ph_l,
-        idFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_id_ph ?? answer.pay_det_id_ph_l),
+        idFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_id_ph ?? answer.pay_det_id_ph_l),
         lastStatusUpdate: row.tags?.lastStatusUpdate ?? (status === CashStatus.Paid ? row.date : undefined),
         tags: fnSwitch(activity, {
           ESK: () => {
@@ -337,9 +337,9 @@ export class KoboMetaBasicneeds {
         lastStatusUpdate: row.tags?.lastStatusUpdate ?? (status === CashStatus.Paid || nfisPrograms.includes(activity.program) ? row.date : undefined),
         passportNum: map((answer.pay_det_pass_ser ?? '') + (answer.pay_det_pass_num ?? ''), _ => _ === '' ? undefined : _),
         taxIdFileName: answer.pay_det_tax_id_ph,
-        taxIdFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
+        taxIdFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
         idFileName: answer.pay_det_id_ph,
-        idFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_id_ph),
+        idFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_id_ph),
         tags: fnSwitch(activity.program, {
           ESK: () => {
             if (!answer.esk_estimate_sqm_damage) return

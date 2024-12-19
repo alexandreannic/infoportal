@@ -1,7 +1,8 @@
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState} from 'react'
 import {useAsync, UseAsyncSimple} from '@/shared/hook/useAsync'
-import {KoboForm, KoboMappedAnswer} from '@/core/sdk/server/kobo/Kobo'
-import {KoboAnswerId, KoboSchemaHelper} from 'infoportal-common'
+import {KoboForm, KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
+import {Kobo} from 'kobo-sdk'
+import {KoboSchemaHelper} from 'infoportal-common'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {databaseCustomMapping} from '@/features/Database/KoboTable/customization/customMapping'
@@ -23,7 +24,7 @@ export interface DatabaseKoboContext {
   access: AccessSum
   form: KoboForm
   asyncRefresh: UseAsyncSimple<() => Promise<void>>
-  asyncEdit: (answerId: KoboAnswerId) => string
+  asyncEdit: (answerId: Kobo.SubmissionId) => string
   data?: KoboMappedAnswer[]
   loading?: boolean
   setData: Dispatch<SetStateAction<KoboMappedAnswer[]>>
@@ -94,7 +95,7 @@ export const DatabaseKoboTableProvider = (props: {
     await refetch({force: true, clean: false})
   })
 
-  const asyncEdit = (answerId: KoboAnswerId) => api.koboApi.getEditUrl({formId: form.id, answerId})
+  const asyncEdit = (answerId: Kobo.SubmissionId) => api.koboApi.getEditUrl({formId: form.id, answerId})
 
   const [mappedData, setMappedData] = useState<KoboMappedAnswer[] | undefined>(undefined)
 

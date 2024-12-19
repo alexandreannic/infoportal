@@ -1,9 +1,10 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {KoboApiSchema, KoboId, KoboSchemaHelper, nullValuesToUndefined} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
+import {KoboSchemaHelper, makeKoboCustomDirective, nullValuesToUndefined} from 'infoportal-common'
 import {AppFeatureId} from '@/features/appFeatureId'
 import React, {ReactElement, useCallback, useMemo} from 'react'
 import {Modal, Txt} from '@/shared'
-import {Autocomplete, Box, Chip, createFilterOptions, Icon, TextField} from '@mui/material'
+import {Autocomplete, Box, Chip, createFilterOptions, Icon} from '@mui/material'
 import {IpInput} from '@/shared/Input/Input'
 import {Controller, useForm} from 'react-hook-form'
 import {KoboDatabaseAccessParams} from '@/core/sdk/server/access/Access'
@@ -15,7 +16,7 @@ import {useEffectFn} from '@alexandreannic/react-hooks-lib'
 import {AccessForm, IAccessForm} from '@/features/Access/AccessForm'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {useFetcher} from '@/shared/hook/useFetcher'
-import {koboIconMap} from '@/features/Database/KoboTable/columns/columnBySchema'
+import {DirectiveTemplate, koboIconMap} from '@/features/Database/KoboTable/columns/columnBySchema'
 
 interface Form extends IAccessForm {
   question?: string
@@ -30,8 +31,8 @@ export const DatabaseAccessForm = ({
 }: {
   onAdded?: () => void,
   children: ReactElement,
-  formId: KoboId,
-  form: KoboApiSchema
+  formId: Kobo.FormId,
+  form: Kobo.Form
 }) => {
   const langIndex = 0
   const survey = form.content.survey
@@ -41,7 +42,7 @@ export const DatabaseAccessForm = ({
   const {api} = useAppSettings()
 
   const _addAccess = useAsync(api.access.create)
-  const requestInConstToFixTsInference = (databaseId: KoboId) => api.access.search({featureId: AppFeatureId.kobo_database})
+  const requestInConstToFixTsInference = (databaseId: Kobo.FormId) => api.access.search({featureId: AppFeatureId.kobo_database})
     .then(_ => _.filter(_ => _.params?.koboFormId === databaseId))
   const _access = useFetcher(requestInConstToFixTsInference)
 
@@ -131,21 +132,34 @@ export const DatabaseAccessForm = ({
                     error={!!accessForm.formState.errors.question}
                     helperText={accessForm.formState.errors.question && m.required}
                   />}
-                  renderOption={(props, option) => (
-                    <Box component="li" {...props} key={option}>
-                      <Icon color="disabled" sx={{mr: 1}}>{koboIconMap[indexQuestion[option].type]}</Icon>
-                      <div>
-                        <Txt block>{KoboSchemaHelper.getLabel(indexQuestion[option], langIndex).replace(/<[^>]+>/g, '') ?? option}</Txt>
-                        <Txt color="disabled">{option}</Txt>
-                      </div>
-                    </Box>
-                  )}
-                />
+                  renderOption={(props, option) => {
+                    if (indexQuestion[option].name.startsWith(makeKoboCustomDirective('TRIGGER_EMAIL'))) {
+                      const template = DirectiveTemplate.render.TRIGGER_EMAIL
+                      return (
+                        <Box component="li" {...props} key={option} sx={{color: template.color}}>
+                          <Icon color="disabled" sx={{mr: 1, color: template.color}}>{template.icon}</Icon>
+                          <div>
+                            <Txt bold block>{template.label(indexQuestion[option], m)}</Txt>
+                            <Txt color="disabled">{option}</Txt>
+                          </div>
+                        </Box>
+                      )
+                    } else return (
+                      <Box component="li" {...props} key={option}>
+                        <Icon color="disabled" sx={{mr: 1}}>{koboIconMap[indexQuestion[option].type]}</Icon>
+                        <div>
+                          <Txt block>{KoboSchemaHelper.getLabel(indexQuestion[option], langIndex).replace(/<[^>]+>/g, '') ?? option}</Txt>
+                          <Txt color="disabled">{option}</Txt>
+                        </div>
+                      </Box>
+                    )
+                  }}/>
               )}
             />
             {map(accessForm.watch('question'), questionName => {
               if (questionName === '') return
               const question = indexQuestion[questionName]
+              if (!question) return;
               switch (question.type) {
                 case 'select_one':
                 case 'select_multiple': {

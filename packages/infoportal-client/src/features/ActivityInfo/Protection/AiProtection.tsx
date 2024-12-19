@@ -5,7 +5,7 @@ import {Panel} from '@/shared/Panel'
 import {AiBundleTable} from '@/features/ActivityInfo/shared/AiTable'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {AiProtectionMapper} from '@/features/ActivityInfo/Protection/aiProtectionMapper'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 
 export const AiProtection = () => {
   const {api} = useAppSettings()

@@ -1,14 +1,11 @@
 import {
-  KoboAnswerMetaData,
-  KoboApiColType,
-  KoboApiColumType,
-  KoboApiQuestionSchema,
-  KoboApiQuestionType,
+  KoboCustomDirectives,
   KoboFlattenRepeat,
   KoboFlattenRepeatData,
-  KoboId,
   KoboRepeatRef,
   KoboSchemaHelper,
+  KoboSubmissionMetaData,
+  makeKoboCustomDirective,
   removeHtml,
 } from 'infoportal-common'
 import {useI18n} from '@/core/i18n/I18n'
@@ -23,6 +20,8 @@ import {findFileUrl, KoboAttachedImg, koboImgHelper} from '@/shared/TableImg/Kob
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {formatDate, formatDateTime, Messages} from '@/core/i18n/localization/en'
 import {KoboExternalFilesIndex} from '@/features/Database/KoboTable/DatabaseKoboContext'
+import DOMPurify from 'dompurify'
+import {Kobo} from 'kobo-sdk'
 
 export const MissingOption = ({value}: {value?: string}) => {
   const {m} = useI18n()
@@ -34,11 +33,11 @@ export const MissingOption = ({value}: {value?: string}) => {
   )
 }
 
-const ignoredColType: Set<KoboApiColType> = new Set([
+const ignoredColType: Set<Kobo.Form.QuestionType> = new Set([
   'begin_group',
 ])
 
-const noEditableColsId: Set<string> = new Set<keyof KoboAnswerMetaData>([
+const noEditableColsId: Set<string> = new Set<keyof KoboSubmissionMetaData>([
   'start',
   'end',
   'version',
@@ -51,7 +50,7 @@ const noEditableColsId: Set<string> = new Set<keyof KoboAnswerMetaData>([
   'tags',
 ])
 
-const editableColsType: Set<KoboApiColType> = new Set([
+const editableColsType: Set<Kobo.Form.QuestionType> = new Set([
   'select_one',
   'calculate',
   'select_multiple',
@@ -62,16 +61,38 @@ const editableColsType: Set<KoboApiColType> = new Set([
   'datetime',
 ])
 
+export namespace DirectiveTemplate {
+  export type Template = {
+    icon: string
+    color: string
+    label: (q: Kobo.Form.Question, m: Messages) => string
+  }
+  const make = <T extends KoboCustomDirectives>(directive: T, template: Template): Record<T, Template> => ({
+    [directive]: template
+  }) as any
 
-export const DatatableHeadTypeIconByKoboType = ({children, ...props}: {
-  children: KoboApiColumType,
-} & Pick<IconProps, 'sx' | 'color'>) => {
-  return <DatatableHeadIcon children={fnSwitch(children, koboIconMap, () => 'short_text')} tooltip={children} {...props}/>
+  export const render = {
+    ...make(KoboCustomDirectives.TRIGGER_EMAIL, {
+      icon: 'forward_to_inbox',
+      color: '#A335EE',
+      label: (q, m) => {
+        const directiveName = q.name.replace(makeKoboCustomDirective('TRIGGER_EMAIL'), '')
+        if (directiveName === '') return m._koboDatabase.autoEmail
+        return directiveName.replaceAll('_', ' ')
+      },
+    })
+  }
 }
 
-export const koboIconMap: Record<KoboApiQuestionType, string> = {
+export const DatatableHeadTypeIconByKoboType = ({children, ...props}: {
+  children: Kobo.Form.QuestionType,
+} & Pick<IconProps, 'sx' | 'color'>) => {
+  return <DatatableHeadIcon children={fnSwitch(children, koboIconMap, () => 'short_text')} tooltip={children} {...props} />
+}
+
+export const koboIconMap: Record<Kobo.Form.QuestionType, string> = {
   image: 'image',
-  file: 'functions',
+  file: 'description',
   calculate: 'functions',
   select_one_from_file: 'attach_file',
   username: 'short_text',
@@ -101,7 +122,7 @@ export type ColumnBySchemaGeneratorProps = {
   m: Messages
   getRow?: (_: Data) => Row
   schema: KoboSchemaHelper.Bundle,
-  formId: KoboId
+  formId: Kobo.FormId
   onEdit?: (name: string) => void
   externalFilesIndex?: KoboExternalFilesIndex
   onRepeatGroupClick?: (_: {name: string, row: Row, event: any}) => void
@@ -121,7 +142,7 @@ export const columnBySchemaGenerator = ({
   t,
 }: ColumnBySchemaGeneratorProps) => {
 
-  const getCommon = (q: KoboApiQuestionSchema): Pick<DatatableColumn.Props<any>, 'id' | 'groupLabel' | 'group' | 'typeIcon' | 'typeLabel' | 'head' | 'subHeader'> => {
+  const getCommon = (q: Kobo.Form.Question): Pick<DatatableColumn.Props<any>, 'id' | 'groupLabel' | 'group' | 'typeIcon' | 'typeLabel' | 'head' | 'subHeader'> => {
     return {
       id: q.name,
       typeLabel: q.type,
@@ -211,6 +232,42 @@ export const columnBySchemaGenerator = ({
   //     renderQuick: (row: Row) => getValue(row, name) as string,
   //   }
   // }
+
+  const getIpTriggerEmail = (name: string) => {
+    const q = schema.helper.questionIndex[name]
+    const template = DirectiveTemplate.render.TRIGGER_EMAIL
+    const x: DatatableColumn.Props<any> = {
+      ...getCommon(q),
+      styleHead: {
+        color: template.color,
+      },
+      head: template.label(q, m),
+      type: 'string',
+      typeIcon: <TableIcon fontSize="small" sx={{marginRight: 'auto', color: template.color}} tooltip={
+        <>
+          <div style={{marginBottom: t.spacing(1)}}>{m._koboDatabase.autoEmailDesc}</div>
+          <div style={{
+            background: t.palette.background.paper,
+            color: t.palette.text.primary,
+            marginBottom: t.spacing(0.5),
+            padding: t.spacing(.5),
+            borderRadius: t.shape.borderRadius - 3
+          }}>
+            <div style={{fontWeight: 'bold', marginBottom: t.spacing(1)}}>{q.label?.[0]}</div>
+            <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(q.hint?.[0] ?? '')}}/>
+          </div>
+        </>
+      }>{template.icon}</TableIcon>,
+      render: (row: Row) => {
+        const value = getValue(row, name)
+        return {
+          label: value,
+          value: value,
+        }
+      }
+    }
+    return x
+  }
 
   const getSelectOneFromFile = (name: string) => {
     const q = schema.helper.questionIndex[name]
@@ -355,13 +412,16 @@ export const columnBySchemaGenerator = ({
     geopoint: getGeopoint,
   }
 
-  const getByQuestion = (q: KoboApiQuestionSchema): undefined | DatatableColumn.Props<any> => {
+  const getByQuestion = (q: Kobo.Form.Question): undefined | DatatableColumn.Props<any> => {
     if (ignoredColType.has(q.type)) return
+    if (q.name?.startsWith(makeKoboCustomDirective('TRIGGER_EMAIL'))) {
+      return getIpTriggerEmail(q.name)
+    }
     const fn = (getBy as any)[q.type]
     return fn ? fn(q.name) : getDefault(q.name)
   }
 
-  const getByQuestions = (questions: KoboApiQuestionSchema[]): DatatableColumn.Props<any>[] => {
+  const getByQuestions = (questions: Kobo.Form.Question[]): DatatableColumn.Props<any>[] => {
     return seq(questions).map(getByQuestion).compact()
   }
 

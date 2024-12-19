@@ -1,7 +1,7 @@
-import {KoboAnswerId, KoboId, KoboSchemaHelper} from 'infoportal-common'
+import {KoboSchemaHelper} from 'infoportal-common'
 import {Dispatch, SetStateAction} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
-
+import {Kobo} from 'kobo-sdk'
 import {ShelterEntity} from '@/features/Shelter/shelterEntity'
 
 export type UseShelterActions = ReturnType<typeof useShelterActions>
@@ -11,11 +11,11 @@ export const useShelterActions = ({
   schema,
 }: {
   schema: KoboSchemaHelper.Bundle
-  formId: KoboId,
+  formId: Kobo.FormId,
   setEntity: Dispatch<SetStateAction<ShelterEntity[] | undefined>>
 }) => {
   const {api} = useAppSettings()
-  const asyncEdit = (answerId: KoboAnswerId) => api.koboApi.getEditUrl({formId, answerId})
+  const asyncEdit = (answerId: Kobo.SubmissionId) => api.koboApi.getEditUrl({formId, answerId})
   return {
     schema,
     asyncEdit,

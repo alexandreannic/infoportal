@@ -1,7 +1,7 @@
 import {IKoboMeta} from '../kobo/IKoboMeta'
 import {WfpDeduplication} from './WfpDeduplication'
-import {KoboBaseTags, KoboTagStatus} from '../kobo/mapper'
 import {DrcProject} from './Drc'
+import {KoboBaseTags, KoboTagStatus} from '../kobo/mapper/Kobo'
 
 export interface MpcaEntityTags extends KoboBaseTags, KoboTagStatus {
   projects?: DrcProject[]

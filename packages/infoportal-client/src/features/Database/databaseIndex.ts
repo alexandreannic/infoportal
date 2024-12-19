@@ -1,4 +1,5 @@
-import {KoboAnswerId, objectToQueryString} from 'infoportal-common'
+import {objectToQueryString} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
 
 const base = (formId = ':formId') => `/form/${formId}`
 
@@ -17,8 +18,8 @@ export const databaseIndex = {
       absolute: (formId = ':formId') => base(formId) + '/database'
     },
     answer: {
-      relative: (answerId: KoboAnswerId = ':answerId') => `answer/${answerId}`,
-      absolute: (formId = ':formId', answerId: KoboAnswerId = ':answerId') => base(formId) + `/answer/${answerId}`
+      relative: (answerId: Kobo.SubmissionId = ':answerId') => `answer/${answerId}`,
+      absolute: (formId = ':formId', answerId: Kobo.SubmissionId = ':answerId') => base(formId) + `/answer/${answerId}`
     },
     access: {
       relative: `access`,

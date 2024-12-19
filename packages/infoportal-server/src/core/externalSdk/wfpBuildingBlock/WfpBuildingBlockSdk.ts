@@ -1,5 +1,6 @@
-import {ApiClient, ApiPaginate} from 'infoportal-common'
-import {AssistancePrevented, AssistanceProvided, WfpFilters, WfpImport, WfpPaginate} from './WfpBuildingBlockType'
+import {ApiPaginate} from 'infoportal-common'
+import {AssistancePrevented, AssistanceProvided, WfpFilters, WfpImport, WfpImportHelper, WfpPaginate} from './WfpBuildingBlockType'
+import {ApiClient} from 'kobo-sdk'
 
 export class WFPBuildingBlockSdk {
 
@@ -13,14 +14,14 @@ export class WFPBuildingBlockSdk {
     }
   }
 
-  readonly getImportFiles = ({limit, offset}: WfpFilters = {}) => {
+  readonly getImportFiles = ({limit, offset}: WfpFilters = {}): Promise<ApiPaginate<WfpImport>> => {
     return this.client.get<WfpPaginate<any>>(`/manager/tasks/beneficiary-import-requests`, {
       qs: {
         _limit: limit,
         _offset: offset,
       }
     })
-      .then(WFPBuildingBlockSdk.mapPaginate(WfpImport.map))
+      .then(WFPBuildingBlockSdk.mapPaginate(WfpImportHelper.map))
   }
 
   readonly getAssistanceProvided = ({limit = 1000, offset = 0}: WfpFilters = {}) => {

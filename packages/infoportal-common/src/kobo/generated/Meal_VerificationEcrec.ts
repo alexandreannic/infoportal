@@ -4,145 +4,203 @@ export type Option<T extends keyof typeof options> = keyof (typeof options)[T]
 	export interface T {
 	    'start': string,
 	    'end': string,
-	  // background/back_office [select_one] 1.1 Select Office
+	  // background/back_office [select_one] 1.1 Офіс
   'back_office': undefined | Option<'back_office'>,
-	  // background/back_enum [text] 1.2 Enumerator
+	  // background/back_enum [text] 1.2 Переписувач
   'back_enum': string | undefined,
 	    'calc_city': string,
 	    'calc_nlv': string,
-	  // background/back_donor [select_one] 1.3 Project
+	  // background/back_donor [select_one] 1.3 Проект
   'back_donor': undefined | Option<'back_donor'>,
-	  // background/reg_drc [select_one] 1.4 Where you registered by DRC for a cash transfer for livelihoods?
-  'reg_drc': undefined | Option<'received_any_assistance_ngo'>,
+	  // background/reg_drc [select_one] 1.4 Ви зареєструвалися в DRC для отримання грошової допомоги для забезпечення засобів до існування?
+  'reg_drc': undefined | Option<'received_previous_support'>,
 	    'calc_vet': string,
 	    'calc_vet_llh': string,
-	  // background/which_support_registered [select_one] 1.4. For which support were you registered for?
+	  // background/which_support_registered [select_one] 1.4. Для отримання якої підтримки ви були зареєстровані?
   'which_support_registered': undefined | Option<'which_support_registered'>,
-	  // background/back_consent [select_one] 1.5.1 Consent
-  'back_consent': undefined | Option<'received_any_assistance_ngo'>,
-	  // background/back_consen_no_reas [text] 1.5.2 Can you please give the reason for why you do not wish to consent to the questionnaire?
+	  // background/back_consent [select_one] 1.5.1 Згода
+  'back_consent': undefined | Option<'received_previous_support'>,
+	  // background/back_consen_no_reas [text] 1.5.2 Зазначте, будь ласка, причину, з якої Ви не погоджуєтеся заповнити анкету?
   'back_consen_no_reas': string | undefined,
-	  // background/pay_det_tax_id_num [text] 1.6 What is your individual tax number?
+	  // background/pay_det_tax_id_num [text] 1.6 Ідентифікаційний номер (ІПН) бенефіціара
   'pay_det_tax_id_num': string | undefined,
-	  // background/back_consent_no_note [note] Thank you very much for your time, we will not proceed with the questionnaire without your consent.
+	  // background/back_consent_no_note [note] Щиро дякуємо за ваш час, ми не будемо продовжувати заповнення анкети без вашої згоди.
   'back_consent_no_note': string,
-	  // ben_det/ben_det_surname [text] 2.1 What is your surname name (as shown in personal ID)?
+	  // ben_det/ben_det_surname [text] 2.1 Яке ваше прізвище (як вказано в паспорті)?
   'ben_det_surname': string | undefined,
-	  // ben_det/ben_det_first_name [text] 2.2 What is your first name (as shown in personal ID)?
+	  // ben_det/ben_det_first_name [text] 2.2 Яке ваше ім'я (як зазначено в паспорті)?
   'ben_det_first_name': string | undefined,
-	  // ben_det/ben_det_pat_name [text] 2.3 What is your patronymic name?
+	  // ben_det/ben_det_pat_name [text] 2.3 Яке ваше по-батькові?
   'ben_det_pat_name': string | undefined,
-	  // ben_det/ben_det_ph_number [integer] 2.4 What is your phone number?
+	  // ben_det/ben_det_ph_number [integer] 2.4 Ваш контактний номер телефону?
   'ben_det_ph_number': number | undefined,
-	  // ben_det/ben_det_age [integer] 2.4.1 What is your age?
+	  // ben_det/ben_det_age [integer] 2.4.1 Який ваш вік?
   'ben_det_age': number | undefined,
-	  // ben_det/ben_det_oblast [select_one] 2.5.1 Select oblast where registration is taking place
+	  // ben_det/ben_det_oblast [select_one] 2.5.1 Виберіть область, де буде проходити реєстрація
   'ben_det_oblast': undefined | Option<'ben_det_oblast'>,
-	  // ben_det/ben_det_raion [select_one] 2.5.2 Select raion where registration is taking place
+	  // ben_det/ben_det_raion [select_one] 2.5.2 Виберіть район, де буде проходити реєстрація
   'ben_det_raion': undefined | string,
-	  // ben_det/ben_det_hromada [select_one] 2.5.3 Select hromada where registration is taking place
+	  // ben_det/ben_det_hromada [select_one] 2.5.3 Виберіть громаду, де відбувається реєстрація
   'ben_det_hromada': undefined | string,
-	  // ben_det/ben_det_settlement [select_one_from_file] 2.5.4 Select settlement where registration is taking place
+	  // ben_det/ben_det_settlement [select_one_from_file] 2.5.4 Виберіть Поселення, де відбувається реєстрація
   'ben_det_settlement': string,
-	  // ben_det/ben_det_settlement_other [text] 2.5.4.1 If "Other", please specify
+	  // ben_det/ben_det_settlement_other [text] 2.5.4.1 Якщо "Інше", будь ласка, вкажіть
   'ben_det_settlement_other': string | undefined,
-	  // ben_det/ben_det_res_stat [select_one] 2.5.5 Select residential status
+	  // ben_det/ben_det_res_stat [select_one] 2.5.5 Виберіть статус проживання
   'ben_det_res_stat': undefined | Option<'ben_det_res_stat'>,
-	  // ben_det/ben_det_income [integer] 2.6 What was the total value in UAH of all the resources your household received in the last one month?
+	  // ben_det/ben_det_income [integer] 2.6 Якою була загальна вартість у гривнях усіх ресурсів, отриманих Вашим домогосподарством за останній один місяць?
   'ben_det_income': number | undefined,
-	  // ben_det/ben_det_hh_size [integer] 2.7 Indicate the total number of people in your household, including the HHH
+	  // ben_det/ben_det_hh_size [integer] 2.7 Кількість членів домогосподарства (включно з головою домогосподарства)
   'ben_det_hh_size': number | undefined,
-	  // cash_farmers/know_contamination_farming [select_one] Do you know of any contamination (e.g. unexploded ordnance) on the land which you are farming on?
+	  // cash_farmers/know_contamination_farming [select_one] Чи знаєте ви про будь-яке можливе забруднення (наприклад, боєприпасами, що не розірвалися) на землі, яку ви обробляєте?
   'know_contamination_farming': undefined | Option<'know_contamination_neighbour'>,
-	  // cash_farmers/know_contamination_neighbour [select_one] Do you know of any contamination (e.g. unexploded ordnance) on land of a neighbour or a small-scale farmer close by?
+	  // cash_farmers/know_contamination_neighbour [select_one] Чи знаєте ви про будь-яке можливе забруднення (наприклад, нерозірваними боєприпасами) на землі сусіда або дрібного фермера, що знаходиться поблизу?
   'know_contamination_neighbour': undefined | Option<'know_contamination_neighbour'>,
-	  // cash_farmers/know_contamination_neighbour_yes [select_one] Do you know if this/these indivudual(s) still continue to farm their land?
+	  // cash_farmers/know_contamination_neighbour_yes [select_one] Чи знаєте ви, що ця/ці особи все ще продовжують обробляти свою землю?
   'know_contamination_neighbour_yes': undefined | Option<'know_contamination_neighbour_yes'>,
-	  // cash_farmers/has_agriculture_exp [select_one] Is agriculture or farming the primary source of livelihood in your household?
-  'has_agriculture_exp': undefined | Option<'received_any_assistance_ngo'>,
-	  // cash_farmers/consume_majority [select_one] Do you consume a majority of the crops you produce / livestock that you manage
-  'consume_majority': undefined | Option<'received_any_assistance_ngo'>,
-	  // cash_farmers/land_own [decimal] How much land do you own:
+	  // cash_farmers/has_agriculture_exp [select_one] Сільське господарство чи фермерство є основним джерелом засобів до існування для вашої родини?
+  'has_agriculture_exp': undefined | Option<'received_previous_support'>,
+	  // cash_farmers/consume_majority [select_one] Чи споживає Ваше домогосподарство значну частину того, що ви вирощуєте:
+  'consume_majority': undefined | Option<'received_previous_support'>,
+	  // cash_farmers/land_own [decimal] Скільки землі у власності Вашого домогосподарства:
   'land_own': number | undefined,
-	  // cash_farmers/land_cultivate [decimal] How much land do you cultivate or manage for crops and/or livestock (in hectares) :
+	  // cash_farmers/land_cultivate [decimal] Скільки землі обробляє Ваше домогосподарство:
   'land_cultivate': number | undefined,
-	  // cash_farmers/depend_basic_needs [select_one] Do you depend on farming to meet your basic needs?
-  'depend_basic_needs': undefined | Option<'received_any_assistance_ngo'>,
-	  // cash_farmers/depend_basic_needs_uhf [select_one] Does agriculture and/or livestock management significantly contribute to the household being able to meet its basic needs?
-  'depend_basic_needs_uhf': undefined | Option<'received_any_assistance_ngo'>,
-	  // cash_farmers/not_many_livestock [note] #### 🔘 How many of the following livestock do you have:
+	  // cash_farmers/depend_basic_needs [select_one] Чи залежите ви від сільського господарства для задоволення своїх основних потреб?
+  'depend_basic_needs': undefined | Option<'received_previous_support'>,
+	  // cash_farmers/depend_basic_needs_uhf [select_one] Чи робить сільське господарство та/або тваринництво значний внесок у те, що домогосподарство може задовольнити свої основні потреби?
+  'depend_basic_needs_uhf': undefined | Option<'received_previous_support'>,
+	  // cash_farmers/not_many_livestock [note] #### 🔘 Скільки у вас є такої худоби:
   'not_many_livestock': string,
-	  // cash_farmers/many_sheep_goat [integer] Sheep/goat:
+	  // cash_farmers/many_sheep_goat [integer] Вівці/кози:
   'many_sheep_goat': number | undefined,
-	  // cash_farmers/many_milking [integer] Milking/lactating cow:
+	  // cash_farmers/many_milking [integer] Доїльна/лактуюча корова:
   'many_milking': number | undefined,
-	  // cash_farmers/many_cow [integer] Dry cow:
+	  // cash_farmers/many_cow [integer] Суха корова:
   'many_cow': number | undefined,
-	  // cash_farmers/many_cattle [integer] Cattle
+	  // cash_farmers/many_cattle [integer] Велика рогата худоба
   'many_cattle': number | undefined,
-	  // cash_farmers/many_pig [integer] Pig:
+	  // cash_farmers/many_pig [integer] Свиня:
   'many_pig': number | undefined,
-	  // cash_farmers/many_poultry [integer] Poultry:
+	  // cash_farmers/many_poultry [integer] Свійська птиця,кролик:
   'many_poultry': number | undefined,
-	  // cash_farmers/type_assistance [select_multiple] Please indicate what support you received:
+	  // cash_farmers/type_assistance [select_multiple] Будь ласка, вкажіть, яку підтримку ви отримали:
   'type_assistance': undefined | Option<'type_assistance'>[],
-	  // cash_farmers/barriers_providing_sufficient [select_one] Do you face barriers in providing sufficient quality and quantity of feed to your livestock?
-  'barriers_providing_sufficient': undefined | Option<'received_any_assistance_ngo'>,
-	  // cash_farmers/barriers_providing_sufficient_yes [text] If "Yes", please specify
+	  // cash_farmers/barriers_providing_sufficient [select_one] Чи стикаєтесь ви з бар'єрами у забезпеченні достатньої кількості та якості кормів для вашої худоби?
+  'barriers_providing_sufficient': undefined | Option<'received_previous_support'>,
+	  // cash_farmers/barriers_providing_sufficient_yes [text] Якщо "Так", будь ласка, вкажіть
   'barriers_providing_sufficient_yes': string | undefined,
-	  // cash_businesses/organization_business [select_one] Organization form of business
+	  // cash_businesses/organization_business [select_one] Організаційна форма ведення бізнесу
   'organization_business': undefined | Option<'organization_business_001'>,
-	  // cash_businesses/organization_business_other [text] If "Other", please specify
+	  // cash_businesses/organization_business_other [text] Якщо "Інше", будь ласка, вкажіть
   'organization_business_other': string | undefined,
-	  // cash_businesses/main_business_activities [select_multiple] State the main business activities of the household to date
+	  // cash_businesses/main_business_activities [select_multiple] Вкажіть основні види діяльності домогосподарства на сьогоднішній день
   'main_business_activities': undefined | Option<'main_business_activities'>[],
-	  // cash_businesses/main_business_activities_other [text] If "Other", please specify
+	  // cash_businesses/main_business_activities_other [text] Якщо "Інше", будь ласка, вкажіть
   'main_business_activities_other': string | undefined,
-	  // cash_businesses/long_business_operational [select_one] How long has your business been operational?
+	  // cash_businesses/long_business_operational [select_one] Як довго працює ваш бізнес?
   'long_business_operational': undefined | Option<'long_business_operational'>,
-	  // cash_businesses/committed_one_person_idp [select_one] Are you committed to hiring at least one person one person who has been affected by the war such as an IDP or returnee?
-  'committed_one_person_idp': undefined | Option<'received_any_assistance_ngo'>,
-	  // vet_training/you_currently_employed [select_one] 5.1 Are you currently employed:
-  'you_currently_employed': undefined | Option<'received_any_assistance_ngo'>,
-	  // vet_training/you_currently_employed_no [select_one] 5.1.1 How long have you been unemployed?
+	  // cash_businesses/committed_one_person_idp [select_one] Чи зобов'язуєтеся ви найняти принаймні одну людину, яка постраждала від війни, наприклад, ВПО або репатріанта?
+  'committed_one_person_idp': undefined | Option<'received_previous_support'>,
+	  // vet_training/you_currently_employed [select_one] 5.1 Чи працюєте ви зараз?
+  'you_currently_employed': undefined | Option<'received_previous_support'>,
+	  // vet_training/you_currently_employed_no [select_one] 5.1.1 Як довго ви були безробітним?
   'you_currently_employed_no': undefined | Option<'you_currently_employed_no'>,
-	  // vet_training/registered_training_facility [select_one] 5.2 Are you aware of a registered/official training facility that is currently operating and could provide this training?
-  'registered_training_facility': undefined | Option<'received_any_assistance_ngo'>,
-	  // vet_training/registered_training_facility_yes [text] 5.2.1 If yes, input the information of the training center here:
+	  // vet_training/registered_training_facility [select_one] 5.2 Чи знаєте ви про зареєстрований/офіційний навчальний заклад, який наразі працює і може забезпечити таке навчання?
+  'registered_training_facility': undefined | Option<'received_previous_support'>,
+	  // vet_training/registered_training_facility_yes [text] 5.2.1 Якщо так, введіть тут інформацію про навчальний центр:
   'registered_training_facility_yes': string | undefined,
-	  // vet_training/training_activities_support [select_one] 5.3 In the last 2 years, have you engaged in any training activities to support re-training or movement into another sector of work?
-  'training_activities_support': undefined | Option<'received_any_assistance_ngo'>,
-	  // vet_training/training_activities_support_yes_paid [select_one] 5.3.1 Who paid for this training?
+	  // vet_training/training_activities_support [select_one] 5.3 За останні 2 роки Ви брали участь у будь-яких навчальних заходах з метою перекваліфікації або переходу до іншого сектору роботи?
+  'training_activities_support': undefined | Option<'received_previous_support'>,
+	  // vet_training/training_activities_support_yes_paid [select_one] 5.3.1 Хто заплатив за це навчання?
   'training_activities_support_yes_paid': undefined | Option<'training_activities_support_yes_paid'>,
-	  // vet_training/training_activities_support_yes_consequence [select_one] 5.3.2 Did you obtain employement as a consequence of this training?
-  'training_activities_support_yes_consequence': undefined | Option<'received_any_assistance_ngo'>,
-	  // msme/name_business_entrepreneur [text] 6.1 Name of business or entrepreneur
+	  // vet_training/training_activities_support_yes_consequence [select_one] 5.3.2 Чи отримали Ви роботу в результаті цього навчання?
+  'training_activities_support_yes_consequence': undefined | Option<'received_previous_support'>,
+	  // alt_vet_training/current_employment_situation [select_one] Як би Ви описали Вашу поточну ситуацію з працевлаштуванням?
+  'current_employment_situation': undefined | Option<'current_employment_situation'>,
+	  // alt_vet_training/long_unemployed [select_one] Як довго Ви перебуваєте без роботи?
+  'long_unemployed': undefined | Option<'long_unemployed'>,
+	  // alt_vet_training/interested_formally_employed [select_one] Ви вказали, що офіційно працевлаштовані, тому, будь ласка, повідомте нам основну причину, чому ви зацікавлені в подачі заявки на курс професійного навчання
+  'interested_formally_employed': undefined | Option<'interested_formally_employed'>,
+	  // alt_vet_training/interested_formally_employed_other [text] Якщо «Інше», будь ласка, вкажіть
+  'interested_formally_employed_other': string | undefined,
+	  // alt_vet_training/aware_training_facility_operating [select_one] Чи знаєте ви про зареєстрований/офіційний навчальний заклад, який наразі працює і може проводити таке навчання?
+  'aware_training_facility_operating': undefined | Option<'received_previous_support'>,
+	  // alt_vet_training/information_training_center [text] Якщо так, введіть інформацію про навчальний центр тут
+  'information_training_center': string | undefined,
+	  // alt_vet_training/know_cost_training [select_one] Чи знаєте ви загальну вартість навчання, на яке ви хотіли б записатися?
+  'know_cost_training': undefined | Option<'received_previous_support'>,
+	  // alt_vet_training/cost_training [integer] Якщо так, будь ласка, вкажіть загальну вартість навчання в гривнях.
+  'cost_training': number | undefined,
+	  // alt_vet_training/format_training [select_one] Який формат навчання ви обрали
+  'format_training': undefined | Option<'format_training'>,
+	  // alt_vet_training/access_computer_internet [select_one] Оскільки обраний вами курс містить онлайн-компоненти, будь ласка, підтвердіть, що у вас є доступ до ноутбука/комп'ютера та підключення до Інтернету, щоб мати можливість проходити цей курс
+  'access_computer_internet': undefined | Option<'access_computer_internet'>,
+	  // alt_vet_training/ability_regularly_attend [select_one] Будь ласка, підтвердіть, що ви маєте можливість регулярно відвідувати навчальні курси протягом обраного вами курсу
+  'ability_regularly_attend': undefined | Option<'received_previous_support'>,
+	  // alt_vet_training/enrolled_other_training [select_one] Чи брали Ви участь у будь-якій іншій навчальній програмі протягом останніх двох років?
+  'enrolled_other_training': undefined | Option<'received_previous_support'>,
+	  // alt_vet_training/who_paid_training [select_one] Хто оплачував це навчання?
+  'who_paid_training': undefined | Option<'who_paid_training'>,
+	  // msme/name_business_entrepreneur [text] 6.1 Назва бізнесу
   'name_business_entrepreneur': string | undefined,
-	  // msme/address_business [text] 6.2 Address of the business
+	  // msme/address_business [text] 6.2 Адреса розташування бізнесу
   'address_business': string | undefined,
-	  // msme/business_owned_you [select_one] 6.3 Is this business solely owned by you?
-  'business_owned_you': undefined | Option<'received_any_assistance_ngo'>,
-	  // msme/date_registration [date] 6.4 Date of registration
+	  // msme/business_owned_you [select_one] 6.3 Цей бізнес належить виключно вам?
+  'business_owned_you': undefined | Option<'received_previous_support'>,
+	  // msme/date_registration [date] 6.4 Дата реєстрації
   'date_registration': Date | undefined,
-	  // msme/experience_business [select_one] 6.5.1 How much experience do you have in this business activity?
+	  // msme/experience_business [select_one] 6.5.1 Скільки у вас досвіду ведення бізнесу в цій сфері?
   'experience_business': undefined | Option<'experience_business'>,
-	  // msme/organization_business_001 [select_one] 6.5.2 Organization form of business
+	  // msme/organization_business_001 [select_one] 6.5.2 Організаційно-правова форма господарювання
   'organization_business_001': undefined | Option<'organization_business_001'>,
-	  // msme/many_people_employ [select_one] 6.6 How many people do you employ?
+	  // msme/many_people_employ [select_one] 6.6 Скільки людей у вас працює?
   'many_people_employ': undefined | Option<'many_people_employ'>,
-	  // msme/business_currently_operational [select_one] 6.7 Is your business currently operational?
-  'business_currently_operational': undefined | Option<'received_any_assistance_ngo'>,
-	  // msme/business_main_income_household [select_one] 6.8 Is this business being your main source of income for your household?
-  'business_main_income_household': undefined | Option<'received_any_assistance_ngo'>,
-	  // msme/recruiting_idp_6mout [select_one] 6.9 As a condition for receiving the grant to restore and/or expand your business operations, would you be willing to commit to recruiting someone affected by the conflict (for instance an IDP or returnee) for a minimum period of 6 months after receiving the grant?
-  'recruiting_idp_6mout': undefined | Option<'received_any_assistance_ngo'>,
-	  // msme/received_any_assistance_ngo [select_one] 6.10 Has your business received any assistance from an NGO or the government in the past two years?
-  'received_any_assistance_ngo': undefined | Option<'received_any_assistance_ngo'>,
-	  // fin_det/fin_det_res [text] 7.1 Other Comments from Respondent
+	  // msme/business_currently_operational [select_one] 6.7 Чи працює ваш бізнес зараз?
+  'business_currently_operational': undefined | Option<'received_previous_support'>,
+	  // msme/business_main_income_household [select_one] 6.8 Чи є цей бізнес основним джерелом доходу для Вашого домогосподарства?
+  'business_main_income_household': undefined | Option<'received_previous_support'>,
+	  // msme/recruiting_idp_6mout [select_one] 6.9 Чи готові ви, відповідно до умов отримання гранту на відновлення та/або розширення вашої бізнес-діяльності, працевлаштувати принаймні на 6 місяців особу, яка постраждала від конфлікту (наприклад, ВПО або людину що що повернулася)?
+  'recruiting_idp_6mout': undefined | Option<'received_previous_support'>,
+	  // msme/received_any_assistance_ngo [select_one] 6.10 Чи отримував ваш бізнес будь-яку допомогу від NGO або уряду за останні два роки?
+  'received_any_assistance_ngo': undefined | Option<'received_previous_support'>,
+	  // msme_bha388/business_currently_operational_bha388 [select_one] Чи працює Ваше підприємство зараз?
+  'business_currently_operational_bha388': undefined | Option<'received_previous_support'>,
+	  // msme_bha388/business_currently_operational_no [text] Будь ласка, надайте додаткову інформацію, чому Ваше підприємство зараз не працює
+  'business_currently_operational_no': string | undefined,
+	  // msme_bha388/reason_pause_activity [select_multiple] Будь ласка, вкажіть причину призупинення діяльності
+  'reason_pause_activity': undefined | Option<'reason_pause_activity'>[],
+	  // msme_bha388/reason_pause_activity_other [text] Якщо «Інше», будь ласка, вкажіть
+  'reason_pause_activity_other': string | undefined,
+	  // msme_bha388/years_experience_business [integer] Який Ваш загальний стаж роботи в обраному Вами виді діяльності?
+  'years_experience_business': number | undefined,
+	  // msme_bha388/number_employees_business [integer] Будь ласка, вкажіть кількість працівників на Вашому підприємстві
+  'number_employees_business': number | undefined,
+	  // msme_bha388/income_past12 [integer] Яким був дохід від Вашої підприємницької діяльності за останні 12 місяців у гривнях?
+  'income_past12': number | undefined,
+	  // msme_bha388/monthly_business_expenditure [integer] Які ваші середньомісячні витрати на ведення бізнесу в гривнях?
+  'monthly_business_expenditure': number | undefined,
+	  // msme_bha388/have_debt_repayment [select_one] Чи є у вас боргові зобов'язання або зобов'язання з погашення кредиту?
+  'have_debt_repayment': undefined | Option<'received_previous_support'>,
+	  // msme_bha388/repayment_debt_loan [select_one] Будь ласка, вкажіть, чи є у Вас затримка з виплатами за цим боргом або кредитом
+  'repayment_debt_loan': undefined | Option<'received_previous_support'>,
+	  // msme_bha388/received_previous_support [select_one] Чи отримував ваш бізнес будь-яку раніше підтримку від уряду, неурядових організацій або інших суб'єктів?
+  'received_previous_support': undefined | Option<'received_previous_support'>,
+	  // msme_bha388/who_previous_support [select_one] Хто надавав цю підтримку?
+  'who_previous_support': undefined | Option<'who_previous_support'>,
+	  // msme_bha388/who_previous_support_other [text] Якщо «Інше», будь ласка, вкажіть
+  'who_previous_support_other': string | undefined,
+	  // msme_bha388/amount_previous_support [integer] Якою була її сума?
+  'amount_previous_support': number | undefined,
+	  // msme_bha388/when_previous_support [date] Коли вона була надана?
+  'when_previous_support': Date | undefined,
+	  // msme_bha388/grant_purpose_use [select_one] Якщо Ви відповідатимете критеріям для отримання бізнес-гранту від ДРБ, на які цілі Ви плануєте його використати?
+  'grant_purpose_use': undefined | Option<'grant_purpose_use'>,
+	  // fin_det/fin_det_res [text] 7.1 Інші коментарі респондента
   'fin_det_res': string | undefined,
-	  // fin_det/fin_det_enum [text] 7.2 Other Comments from Enumerator
+	  // fin_det/fin_det_enum [text] 7.2 Інші коментарі особи, яка проводила оцінювання
   'fin_det_enum': string | undefined,
-	  // fin_det/fin_det_oth_doc_im [image] 7.3 Please take picture of any other relevant document
+	  // fin_det/fin_det_oth_doc_im [image] 7.3 Сфотографуйте будь-який інший відповідний документ
   'fin_det_oth_doc_im': string,
 	}
 export const options = {
@@ -157,188 +215,189 @@ back_office: {
 	'umy': `Sumy(UMY)`
 },
 undefined: {
-	'oleksandr_havrylov': `Oleksandr Havrylov`,
-	'ievgen_kylymenniy': `Ievgen Kylymenniy`,
-	'oleksandr_shmunk': `Oleksandr Shmunk`,
-	'inna_kovalchuk': `Inna Kovalchuk`,
-	'dmytro_ivanov': `Dmytro Ivanov`,
-	'henadii_petrychenko': `Henadii Petrychenko`,
-	'nadiia_yudaieva': `Nadiia Yudaieva`,
-	'dmytro_tsaruk': `Dmytro Tsaruk`,
-	'viktoria_ushan': `Viktoria Ushan`,
-	'kostiantyn_yefimchuk': `Kostiantyn Yefimchuk`,
-	'viktoriia_lytvynova': `Viktoriia Lytvynova`,
-	'valerii_vietrov': `Valerii Vietrov`,
-	'daria_kokalia': `Daria Kokalia`,
-	'artem_chernukha_1': `Artem Chernukha`,
-	'lwo_ex1': `Extra 1`,
-	'lwo_ex2': `Extra 2`,
-	'polina_prusakova': `Polina Prusakova`,
-	'nlv_ex1': `Extra 1`,
-	'nlv_ex2': `Extra 2`,
+	'oleksandr_havrylov': `Олександр Гаврилов`,
+	'ievgen_kylymenniy': `Євген Килименний`,
+	'oleksandr_shmunk': `Олександр Шмунк`,
+	'inna_kovalchuk': `Інна Ковальчук`,
+	'dmytro_ivanov': `Іванов Дмитро`,
+	'henadii_petrychenko': `Петриченко Геннадій`,
+	'nadiia_yudaieva': `Юдаєва Надія`,
+	'dmytro_tsaruk': `Царук Дмитро`,
+	'viktoria_ushan': `Ушань Вікторія`,
+	'kostiantyn_yefimchuk': `Єфімчук Костянтин`,
+	'viktoriia_lytvynova': `Вікторія Литвинова`,
+	'valerii_vietrov': `Валерій Вєтров`,
+	'daria_kokalia': `Кокаля Дар'я`,
+	'artem_chernukha_1': `Чернуха Артем`,
+	'lwo_ex1': `Додатковий 1`,
+	'lwo_ex2': `Додатковий 1`,
+	'polina_prusakova': `Поліна Прусакова`,
+	'nlv_ex1': `Додатковий 1`,
+	'nlv_ex2': `Додатковий 1`,
 	'oleh_vyshnevskyi': `Oleh Vyshevskyi`,
 	'alina_bondarenko': `Alina Bondarenko`,
 	'serhii_dolzhenko': `Serhii Dolzhenko`,
 	'viktoria_klymenko': `Viktoria Klymenko`,
-	'andrii_zahoruyev': `Andrii Zahoruyev`,
-	'oleh_Ivanov': `Oleh Ivanov`,
-	'karina_korzh': `Karina Korzh`,
-	'serhii_nevmyvaka': `Serhii Nevmyvaka`,
-	'olha_osmukha': `Olha Osmukha`,
-	'halyna_diachenko': `Halyna Diachenko`,
-	'mariia_kozachko': `Mariia Kozachko`,
-	'dnk_ex1': `Extra 1`,
-	'dnk_ex2': `Extra 2`,
-	'yurii_volkov': `Yurii Volkov`,
-	'andrii_zagoruiev': `Andrii Zagoruiev`,
-	'olena_sydorenko': `Olena Sydorenko`,
-	'svitlana_smyrnova': `Svitlana Smyrnova`,
-	'tetiana_konovshii': `Tetiana Konovshii`,
-	'bohdan_taranushchenko': `Bohdan Taranushchenko`,
-	'hrk_ex1': `Extra 1`,
-	'hrk_ex2': `Extra 2`,
-	'dmytro_chernukha': `Chernukha Dmytro`,
-	'anastasiia_reshynska': `Anastasiia Reshynska`,
-	'nataliia_pushenko': `Pushenko Nataliia`,
-	'tetiana_gorbatiuk': `Gorbatiuk Tetiana`,
-	'oleksandr_lukomets': `Oleksandr Lukomets`,
-	'katerina_severin': `Katerina Severin`,
-	'maksim_sedun': `Maksim Sedun`,
-	'chj_ex1': `Extra 1`,
-	'chj_ex2': `Extra 2`,
-	'khe_ex1': `Extra 1`,
-	'khe_ex2': `Extra 2`,
-	'khe_ex3': `Extra 3`,
-	'khe_ex4': `Extra 4`,
-	'zap_ex1': `Extra 1`,
-	'zap_ex2': `Extra 2`,
-	'zap_ex3': `Extra 3`,
-	'zap_ex4': `Extra 4`,
-	'honcharov_oleksandr': `Honcharov Oleksandr`,
-	'vceronika_kaliuzhna': `Kaliuzhna Veronika`,
-	'margaryta_pustova': `Pustova Margaryta`,
-	'umy_ex1': `Extra 1`,
-	'umy_ex2': `Extra 2`,
-	'umy_ex3': `Extra 3`,
-	'umy_ex4': `Extra 4`,
+	'andrii_zahoruyev': `Андрій Загоруєв`,
+	'oleh_Ivanov': `Олег Іванов`,
+	'karina_korzh': `Каріна Корж`,
+	'serhii_nevmyvaka': `Сергій Невмивака`,
+	'olha_osmukha': `Ольга Осьмуха`,
+	'halyna_diachenko': `Галина Дьяченко`,
+	'mariia_kozachko': `Марія Козачко`,
+	'dnk_ex1': `Додатковий 1`,
+	'dnk_ex2': `Додатковий 1`,
+	'yurii_volkov': `Юрій Волков`,
+	'andrii_zagoruiev': `Андрій Загоруєв`,
+	'olena_sydorenko': `Олена Сидоренко`,
+	'svitlana_smyrnova': `Світлана Смирнова`,
+	'tetiana_konovshii': `Тетяна Коновшій`,
+	'bohdan_taranushchenko': `Богдан Таранущенко`,
+	'hrk_ex1': `Додатковий 1`,
+	'hrk_ex2': `Додатковий 1`,
+	'dmytro_chernukha': `Чернуха Дмитро`,
+	'anastasiia_reshynska': `Анастасія Решинська`,
+	'nataliia_pushenko': `Пушенко Наталія`,
+	'tetiana_gorbatiuk': `Горбатюк Тетяна`,
+	'oleksandr_lukomets': `Лукомець Олександр`,
+	'katerina_severin': `Северін Катерина`,
+	'maksim_sedun': `Седун Максим`,
+	'chj_ex1': `Додатковий 1`,
+	'chj_ex2': `Додатковийv2`,
+	'khe_ex1': `Додатковий 1`,
+	'khe_ex2': `Додатковий 2`,
+	'khe_ex3': `Додатковий 3`,
+	'khe_ex4': `Додатковий 4`,
+	'zap_ex1': `Додатковий 1`,
+	'zap_ex2': `Додатковий 2`,
+	'zap_ex3': `Додатковий 3`,
+	'zap_ex4': `Додатковий 4`,
+	'honcharov_oleksandr': `Гончаров Олександр`,
+	'vceronika_kaliuzhna': `Калюжна Вероніка`,
+	'margaryta_pustova': `Пустова Маргарита`,
+	'umy_ex1': `Додатковий 1`,
+	'umy_ex2': `Додатковий 2`,
+	'umy_ex3': `Додатковий 3`,
+	'umy_ex4': `Додатковий 4`,
 	'ecrec': `MPCA`,
-	'prot': `A = Protection`,
-	'legal': `B = Legal`,
-	'shelter': `C = Shelter`,
-	'yes': `Yes`,
-	'no_had_no_need_to_use_this_coping_strategy': `No, had no need to use this coping strategy`,
-	'no_have_already_exhausted_this_coping_strategy_and_cannot_use_it_again': `No, have already exhausted this coping strategy and cannot use it again`,
-	'not_applicable_this_coping_strategy_is_not_available_to_me': `Not applicable / This coping strategy is not available to me`,
-	'prefer_not_to_answer': `Prefer not to answer`,
-	'to_access_or_pay_for_food': `To access or pay for food`,
-	'to_access_or_pay_for_healthcare': `To access or pay for healthcare`,
-	'to_access_or_pay_for_shelter': `To access or pay for shelter`,
-	'to_access_or_pay_for_education': `To access or pay for education`,
-	'other': `Other`,
-	'dont_know': `Don't know`,
-	'hay': `Hay`,
-	'concentrated_feed': `Concentrated feed`,
-	'mineral_blocks': `Mineral blocks`,
-	'wheat_seeds': `Wheat seeds`,
-	'barley_seeds': `Barley seeds`,
-	'bricks': `Bricks`,
-	'wood': `Wood`,
-	'plywood': `Plywood`,
-	'metal_panel': `Metal panel`,
-	'roof_panel': `Roof Panel`,
-	'cement': `Cement`,
-	'nails': `Nails`,
-	'male': `A = Male`,
-	'female': `B = Female`,
-	'single': `A = Single (Never Married)`,
-	'dom_part': `B = Not Married but Living in Domestic Partnership`,
-	'married': `C = Married`,
-	'div_sep': `D = Divorced/Seperated`,
-	'widow': `E = Widowed`,
-	'abandoned': `F = Abandoned`,
-	'diff_see': `A = Have difficulty seeing, even if wearing glasses`,
-	'diff_hear': `B = Have difficulty hearing, even if using a hearing aid`,
-	'diff_walk': `C = Have difficulty walking or climbing steps`,
-	'diff_rem': `D = Have difficulty remembering or concentrating`,
-	'diff_care': `E = Have difficulty with self-care such as washing all over or dressing`,
-	'diff_comm': `F = Have difficulty communicating, for example understanding or being understood`,
-	'diff_none': `G = None of the above apply`,
-	'zero': `A = No, no difficulty`,
-	'one': `B = Yes, some difficulty`,
-	'two': `C = Yes, a lot of difficulty`,
-	'fri': `D = Cannot do at all`,
-	'no_damage': `No Structural Damage`,
-	'minor_damage': `Minor Damage (light or medium damages such as broken windows and doors, minor roof damage)`,
-	'heavy_damage': `Heavy Damage`,
-	'rent': `B = Find Rental Accommodation`,
-	'host': `B = Living with Friends/Family/Host`,
-	'own_prop': `C = Living in Own Property`,
-	'coll_cen': `D = Living in Collective Center`,
-	'homeless': `E = Homeless`,
-	'other_accom': `F = Other`,
-	'secure': `A = Secure for Medium/Long Term`,
-	'unable_pay': `B = Currently Unable to Pay Rent/Contribute to Collective Costs`,
-	'dan_unable_pay': `C = In Danger of Being Unable to Pay Rent/Contribute to Collective Costs`,
-	'unsuit_accom': `D = Accommodation Unsuitable for my needs`,
-	'eviction': `E = Eviction/Removal for Other Reasons`,
-	'remain': `A = Remain in Current Place`,
-	'not_sure': `C = Not Sure/Don’t Know`,
-	'always': `A = Always`,
-	'not_always': `B = Not always on but comes daily`,
-	'intermittent': `C = Comes on intermittent days`,
-	'rarely': `D = Rarely`,
-	'never': `E = Never`,
-	'nat_pass_card': `A = National Passport (card)`,
-	'nat_pass_book': `B = National Passport (book)`,
-	'nat_pass_diia': `C = National Passport (Diia app)`,
-	'pass_ussr_red': `D = Passport (USSR red book)`,
-	'pass_int': `E = Passport for international travel`,
-	'birth_certificate': `F = Birth certificate`,
-	'driver_lic': `G = Driver’s license`,
-	'pen_cert': `H = Pensioner certificate`,
-	'oth_id': `I = Other Form of ID`,
-	'no_id': `J = No ID`,
-	'raiff_trans': `A = Remittance Raiffaisen AVAL`,
-	'ukrpost': `B = Ukrposhta`,
-	'bank_card': `C = Bank card`,
-	'other_pay': `D = Other Payment Method`,
-	'none_pay': `E = None of the above fit my needs`,
-	'agricul': `Agricultural and/or livestock activities`,
-	'grocery': `Grocery, shop`,
-	'smalls': `Small shop/kiosk`,
-	'carpentry': `Carpentry, carving, or woodwork`,
-	'mechanic': `Mechanics`,
-	'plumber': `Plumber`,
-	'electrical': `Electrical work`,
-	'construct': `Construction work`,
-	'textiel': `Textile and tailoring`,
-	'education': `Education centre`,
-	'heath': `Heath centre`,
-	'manufacturing': `Manufacturing/factory work`,
-	'computer': `Computer, technology`,
-	'administration': `Administration,`,
-	'graphic': `Graphic design`,
-	'transport': `Transport service`,
-	'hairdressing': `Hairdressing/barber`,
-	'pscoffe': `Providing services (such as coffee/tea, small restaurant, cooking, etc.)`,
-	'pscleaning': `Providing services (cleaning, security)`,
-	'ngo': `NGOs/UN agencies`,
-	'government': `Government`,
-	'seeds': `Seeds`,
-	'fertilizers': `Fertilizers`,
-	'irrigationp': `Irrigation pipes (drop lines)`,
-	'fuel': `Fuel (for agricultural machinery)`,
-	'agriculser': `Agricultural services (tractor service, harvesting)`,
-	'livestock': `Livestock (chickens, pigs, cows etc)`,
-	'agricultool': `Agricultural tools (shovel, rake etc)`,
-	'livestockf': `Livestock feed`,
-	'buildingm': `Building materials,`
+	'prot': `A = Захист`,
+	'legal': `B = Юридичний`,
+	'shelter': `C = Відновлення житла`,
+	'yes': `Так;`,
+	'no_had_no_need_to_use_this_coping_strategy': `Ні, не було потреби використовувати цю стратегію подолання труднощів;`,
+	'no_have_already_exhausted_this_coping_strategy_and_cannot_use_it_again': `Ні, ми вже вичерпали цю стратегію виживання та не можемо використовувати її знову;`,
+	'not_applicable_this_coping_strategy_is_not_available_to_me': `Не застосовно / Для мене ця стратегія недоступна;`,
+	'prefer_not_to_answer': `Не хочу відповідати`,
+	'to_access_or_pay_for_food': `Щоб отримати доступ до або оплатити харчування;`,
+	'to_access_or_pay_for_healthcare': `Щоб отримати доступ до медичних послуг або ліків або або оплатити їх;`,
+	'to_access_or_pay_for_shelter': `Щоб отримати доступ до житла або оплатити його;`,
+	'to_access_or_pay_for_education': `Щоб отримати доступ до навчання або оплатити його;`,
+	'other': `Інше`,
+	'dont_know': `Не знаю`,
+	'hay': `Сіно`,
+	'concentrated_feed': `Концентровані корми`,
+	'mineral_blocks': `Мінеральні блоки`,
+	'wheat_seeds': `Насіння пшениці`,
+	'barley_seeds': `Насіння ячменю`,
+	'bricks': `Цегла`,
+	'wood': `Дерево`,
+	'plywood': `Фанера`,
+	'metal_panel': `Металева панель`,
+	'roof_panel': `Покрівельна панель`,
+	'cement': `Цемент`,
+	'nails': `Цвяхи`,
+	'male': `A = Чоловік`,
+	'female': `B = Жінка`,
+	'single': `A = Неодружений(-а) (ніколи не був(-ла) одружений(-а))`,
+	'dom_part': `B = Неодружений(-а), але живе у сімейному партнерстві`,
+	'married': `C = Одружений(-а)`,
+	'div_sep': `D = Розлучений(-а)/ проживає окремо`,
+	'widow': `E = Удівець/ вдова`,
+	'abandoned': `F = Покинутий(-а)`,
+	'diff_see': `A = Маєте труднощі із зором, навіть якщо носите окуляри`,
+	'diff_hear': `B = Маєте проблеми зі слухом, навіть якщо користуєтеся слуховим апаратом`,
+	'diff_walk': `C = Маєте труднощі з ходьбою або підйомом по сходах`,
+	'diff_rem': `D = Маєте труднощі з запам'ятовуванням або концентрацією уваги`,
+	'diff_care': `E = Мають труднощі з самообслуговуванням, наприклад, з миттям або одяганням`,
+	'diff_comm': `F = Маєте труднощі у спілкуванні, наприклад, у розумінні чи розумінні інших людей`,
+	'diff_none': `G = Ніщо з перерахованого вище не стосується`,
+	'zero': `A = Ні, труднощі відсутні`,
+	'one': `B = Так, є деякі труднощі`,
+	'two': `C = Так, багато труднощів`,
+	'fri': `D = Взагалі не можу(-е) робити`,
+	'no_damage': `Відсутність структурних пошкоджень`,
+	'minor_damage': `незначні пошкодження (легкі або середні пошкодження, такі як розбиті вікна та двері, незначні пошкодження даху)`,
+	'heavy_damage': `сильні пошкодження`,
+	'rent': `B = Орендувати житло`,
+	'host': `B = Проживання з друзями/ родиною/ стороною, яка приймає`,
+	'own_prop': `C = Проживання у власному житлі`,
+	'coll_cen': `D = Проживання у центрі тимчасового розміщення`,
+	'homeless': `E = Безхатній(-я)`,
+	'other_accom': `F = Інше`,
+	'secure': `A = Забезпечення на середній/ довгий строк`,
+	'unable_pay': `B = Зараз не в змозі сплачувати орендну плату/ платити за центр тимчасового розміщення`,
+	'dan_unable_pay': `C = Існує небезпека неможливості сплачувати орендну плату/ платити за центр тимчасового розміщення`,
+	'unsuit_accom': `D = Житло, яке не відповідає моїм потребам`,
+	'eviction': `E = Виселення з інших причин`,
+	'remain': `A = Залишатися у поточному місці`,
+	'not_sure': `C = Не впевнений(-а)/ не знаю`,
+	'always': `A = Постійно`,
+	'not_always': `B = Не постійно, але щодня приходить`,
+	'intermittent': `C = Приходить у різні дні`,
+	'rarely': `D = Рідко`,
+	'never': `E = Ніколи`,
+	'nat_pass_card': `A = Національний паспорт (карта)`,
+	'nat_pass_book': `B = Національний паспорт (книжка)`,
+	'nat_pass_diia': `C = Національний паспорт (додаток Дія)`,
+	'pass_ussr_red': `D = Паспорт (Червона книга СРСР)`,
+	'pass_int': `E = Закордонний паспорт`,
+	'birth_certificate': `F = Свідоцтво про народження`,
+	'driver_lic': `G = Водійські права`,
+	'pen_cert': `H = Посвідчення пенсіонера`,
+	'oth_id': `I = Інша форма ідентифікатора`,
+	'no_id': `J = Немає іншого типу`,
+	'raiff_trans': `A = Переказ через «Райффайзен Банк АВАЛЬ»`,
+	'ukrpost': `B = Укрпошта`,
+	'bank_card': `C = Банківська картка`,
+	'other_pay': `D = Інший спосіб оплати`,
+	'none_pay': `E = Жодний з перелічених способів мені не підходить`,
+	'agricul': `Сільське господарство та/або тваринництво`,
+	'grocery': `Продукти, магазин`,
+	'smalls': `Невеликий магазин/кіоск`,
+	'carpentry': `Столярні, різьбярські або деревообробні роботи`,
+	'mechanic': `Механіка`,
+	'plumber': `Сантехнік`,
+	'electrical': `Електромонтажні роботи`,
+	'construct': `Будівельні роботи`,
+	'textiel': `Текстиль та пошиття одягу`,
+	'education': `Освітній центр`,
+	'heath': `Оздоровчий центр`,
+	'manufacturing': `Виробництво / робота на заводі`,
+	'computer': `Комп'ютер, технології`,
+	'administration': `Адміністрування,`,
+	'graphic': `Графічний дизайн`,
+	'transport': `Транспортне обслуговування`,
+	'hairdressing': `Перукарня/барбер`,
+	'pscoffe': `Надання послуг (наприклад, кава/чай, невеликий ресторан, кулінарія тощо)`,
+	'pscleaning': `Надання послуг (прибирання, охорона)`,
+	'ngo': `НУО / агенції ООН`,
+	'government': `Уряд`,
+	'seeds': `Насіння`,
+	'fertilizers': `Добрива`,
+	'irrigationp': `Зрошувальні труби (краплинні лінії)`,
+	'fuel': `Паливо (для сільськогосподарської техніки)`,
+	'agriculser': `Сільськогосподарські послуги (тракторний сервіс, збір врожаю)`,
+	'livestock': `Тваринництво (кури, свині, корови тощо)`,
+	'agricultool': `Сільськогосподарські інструменти (лопата, граблі тощо)`,
+	'livestockf': `Корми для худоби`,
+	'buildingm': `Будівельні матеріали,`
 },
 back_donor: {
 	'uhf6': `UHF-6`,
 	'uhf7': `UHF-7`,
 	'uhf8': `UHF-8`,
 	'bha_llh_348': `BHA – LLH 348`,
+	'ukr000388_bha': `BHA-388`,
 	'danish_mfa_355': `Danish MFA 355`
 },
 which_support_registered: {
@@ -347,111 +406,162 @@ which_support_registered: {
 	'vet_training': `VET training for New Livelihood Development`,
 	'msme': `MSME Sectoral Cash for Businesses [Livelihood Restoration]`
 },
-received_any_assistance_ngo: {
-	'yes': `Yes`,
-	'no': `No`
+received_previous_support: {
+	'yes': `Так`,
+	'no': `Ні`
 },
 know_contamination_neighbour: {
-	'yes': `Yes`,
-	'no': `No`,
-	'unwilling': `Unwilling or unable to answer`
+	'yes': `Так`,
+	'no': `Ні`,
+	'unwilling': `Не бажають або не можуть відповісти`
 },
 type_assistance: {
-	'cfas': `Cash for Animal Shelter`,
-	'cfaf': `Cash for Animal Feed`
+	'cfas': `Готівка для притулку для тварин`,
+	'cfaf': `Готівка на корм для тварин`
 },
 organization_business_001: {
-	'private_entrepreneur': `Private entrepreneur`,
-	'private_enterprise': `Private enterprise`,
-	'limited_company': `Limited Liability Company (LLC)`,
-	'farming_enterprise': `Farming enterprise`,
-	'collective_enterprise': `Collective enterprise`,
-	'other': `Other`
+	'private_entrepreneur': `Приватний підприємець`,
+	'private_enterprise': `Приватне підприємство`,
+	'limited_company': `Товариство з обмеженою відповідальністю (ТОВ)`,
+	'farming_enterprise': `Фермерське господарство`,
+	'collective_enterprise': `Колективне підприємство`,
+	'other': `Інше`
 },
 main_business_activities: {
-	'agro_processing': `Agro-processing`,
-	'agriculture': `Agriculture (crop and/or livestock)`,
-	'transport_services': `Transport services`,
-	'construction_Construction': `Construction`,
-	'food_services': `Food services`,
-	'electrical': `Electrical`,
-	'mechanics': `Mechanics`,
-	'plumber': `Plumber`,
-	'petty_trade': `Petty trade`,
-	'retail_trade': `Retail and wholesale trade`,
-	'sewing_repair': `Sewing/Shoe repair`,
-	'small_manufacturing': `Small manufacturing`,
-	'hairdressing_barber': `Hairdressing/barber`,
-	'it': `IT`,
-	'other': `Other`
+	'agro_processing': `Переробка сільськогосподарської продукції`,
+	'agriculture': `Сільське господарство (рослинництво та/або тваринництво)`,
+	'transport_services': `Транспортні послуги`,
+	'construction_Construction': `Будівництво`,
+	'food_services': `Харчові послуги`,
+	'electrical': `Електрика`,
+	'mechanics': `Механіка`,
+	'plumber': `Сантехнік`,
+	'petty_trade': `Дрібна торгівля`,
+	'retail_trade': `Роздрібна та оптова торгівля`,
+	'sewing_repair': `Пошиття / ремонт взуття`,
+	'small_manufacturing': `Мале виробництво`,
+	'hairdressing_barber': `Перукарня/барбер`,
+	'it': `ІТ`,
+	'other': `Інше`
 },
 long_business_operational: {
-	'under_two': `Under two years`,
-	'over_two': `Over two years`
+	'under_two': `До двох років`,
+	'over_two': `Більше двох років`
 },
 you_currently_employed_no: {
-	'0_3_mounths': `0-3 months`,
-	'3_6_mounths': `3-6 months`,
-	'6_12_mounths': `6-12 months`,
-	'12_more_mounths': `12+ months`
+	'0_3_mounths': `0-3 місяці`,
+	'3_6_mounths': `3-6 місяців`,
+	'6_12_mounths': `6-12 місяців`,
+	'12_more_mounths': `12+ місяців`
 },
 training_activities_support_yes_paid: {
-	'state_service': `State Service`,
-	'non_international': `Non-Governmental Organisation [international]`,
-	'non_national': `Non-Governmental Organisation [national]`,
-	'private_actor': `Private Sector Actor`
+	'state_service': `Державна служба`,
+	'non_international': `Неурядова організація [міжнародна]`,
+	'non_national': `Неурядова організація [національна]`,
+	'private_actor': `Представник приватного сектору`
 },
 experience_business: {
-	'one_two_years': `1-2 years`,
-	'three_five_years': `3-5 years`,
-	'more_five_years': `5+ years`
+	'one_two_years': `1-2 роки`,
+	'three_five_years': `3-5 років`,
+	'more_five_years': `5+ років`
 },
 many_people_employ: {
-	'0_5_people': `0-5 people`,
-	'5_10_people': `5-10 people`,
-	'10_15_people': `10-15 people`,
-	'15_20_people': `15-20 people`,
-	'20_more_people': `20+ people`
+	'0_5_people': `0-5 осіб`,
+	'5_10_people': `5-10 осіб`,
+	'10_15_people': `10-15 осіб`,
+	'15_20_people': `15-20 осіб`,
+	'20_more_people': `20+ осіб`
 },
 know_contamination_neighbour_yes: {
-	'still': `Still farm all the land`,
-	'partially': `Partially farm the land`,
-	'stopped': `Stopped farming all togehter`,
-	'uu': `Unable/unwilling to answer`
+	'still': `Досі обробляє цю землю`,
+	'partially': `Частково обробляє землю`,
+	'stopped': `Припинили обробляти цю землю`,
+	'uu': `Не можу/не хочу відповісти`
+},
+current_employment_situation: {
+	'unemployed': `Безробітний/а`,
+	'formally_employed': `Офіційно працевлаштований/а`,
+	'informaly_employed': `Неофіційно працевлаштований/а`
+},
+long_unemployed: {
+	'less_3m': `0-3 місяці`,
+	'3_6m': `3-6 місяців`,
+	'6_12m': `6-12 місяців`,
+	'more_12m': `12+ місяців`
+},
+interested_formally_employed: {
+	'work_part_time': `Я працюю неповний робочий день/частково і хочу працювати на повну ставку`,
+	'salary_minimum_wage': `Я отримую зарплату нижче мінімальної`,
+	'limited_prospects_progression': `Маю обмежені перспективи кар'єрного зростання`,
+	'job_uncertain_prospects': `Маю роботу з невизначеними перспективами`,
+	'other': `Інше`
+},
+access_computer_internet: {
+	'yes': `Так`,
+	'no': `Ні`,
+	'not_relevant': `Не актуально`
+},
+who_paid_training: {
+	'state_sevice': `Державна служба`,
+	'international_ngo': `Неурядова організація (міжнародна)`,
+	'national_ngo': `Неурядова організація (національна)`,
+	'private_sector_actor': `Суб'єкт приватного сектору`,
+	'private_person': `Приватна особа`
+},
+format_training: {
+	'online': `Онлайн`,
+	'offline': `Офлайн`,
+	'mixed': `Змішаний`
+},
+reason_pause_activity: {
+	'relocation_business': `Географічне переміщення бізнесу`,
+	'mine_contamination': `Мінне забруднення`,
+	'damaged_assets': `Пошкодження або знищення активів внаслідок обстрілів`,
+	'other': `Інше`
+},
+who_previous_support: {
+	'government': `Уряд`,
+	'ngo': `Неурядова організація`,
+	'other': `Інше`
+},
+grant_purpose_use: {
+	'restoration': `Відновлення бізнесу`,
+	'continuation': `Продовження бізнесу`,
+	'expansion': `Розширення бізнесу`
 },
 ben_det_oblast: {
-	'cherkaska': `Cherkaska`,
-	'chernihivska': `Chernihivska`,
-	'chernivetska': `Chernivetska`,
-	'dnipropetrovska': `Dnipropetrovska`,
-	'donetska': `Donetska`,
-	'ivano-frankivska': `Ivano-Frankivska`,
-	'kharkivska': `Kharkivska`,
-	'khersonska': `Khersonska`,
-	'khmelnytska': `Khmelnytska`,
-	'kirovohradska': `Kirovohradska`,
-	'kyivska': `Kyivska`,
-	'luhanska': `Luhanska`,
-	'lvivska': `Lvivska`,
-	'mykolaivska': `Mykolaivska`,
-	'odeska': `Odeska`,
-	'poltavska': `Poltavska`,
-	'rivnenska': `Rivnenska`,
-	'sevastopilska': `Sevastopilska`,
-	'sumska': `Sumska`,
-	'ternopilska': `Ternopilska`,
-	'vinnytska': `Vinnytska`,
-	'volynska': `Volynska`,
-	'zakarpatska': `Zakarpatska`,
-	'zaporizka': `Zaporizka`,
-	'zhytomyrska': `Zhytomyrska`
+	'cherkaska': `Черкаська`,
+	'chernihivska': `Чернігівська`,
+	'chernivetska': `Чернівецька`,
+	'dnipropetrovska': `Дніпропетровська`,
+	'donetska': `Донецька`,
+	'ivano-frankivska': `Івано-Франківська`,
+	'kharkivska': `Харківська`,
+	'khersonska': `Херсонська`,
+	'khmelnytska': `Хмельницька`,
+	'kirovohradska': `Кіровоградська`,
+	'kyivska': `Київська`,
+	'luhanska': `Луганська`,
+	'lvivska': `Львівська`,
+	'mykolaivska': `Миколаївська`,
+	'odeska': `Одеська`,
+	'poltavska': `Полтавська`,
+	'rivnenska': `Рівненська`,
+	'sevastopilska': `Севастопільська`,
+	'sumska': `Сумська`,
+	'ternopilska': `Тернопільська`,
+	'vinnytska': `Вінницька`,
+	'volynska': `Волинська`,
+	'zakarpatska': `Закарпатська`,
+	'zaporizka': `Запорізька`,
+	'zhytomyrska': `Житомирська`
 },
 ben_det_res_stat: {
-	'idp': `A = Internally Displaced Person (IDP)`,
-	'long_res': `B = Long - Term Resident`,
-	'ret': `C = Returnee`,
-	'ref_asy': `D = Refugee/asylum seeker`
-}}
+	'idp': `A = Внутрішньо-переміщена особа (ВПО)`,
+	'long_res': `B = Довгостроковий мешканець`,
+	'ret': `C = Особа, яка повернулася`,
+	'ref_asy': `D = Біженець/особа, що потребує прихистку`
+}} as const
 
 const extractQuestionName = (_: Record<string, any>) => {
   const output: any = {}
@@ -477,6 +587,14 @@ export const map = (_: Record<keyof T, any>): T => ({
 	many_poultry: _.many_poultry ? +_.many_poultry : undefined,
 	type_assistance: _.type_assistance?.split(' '),
 	main_business_activities: _.main_business_activities?.split(' '),
+	cost_training: _.cost_training ? +_.cost_training : undefined,
 	date_registration: _.date_registration ? new Date(_.date_registration) : undefined,
+	reason_pause_activity: _.reason_pause_activity?.split(' '),
+	years_experience_business: _.years_experience_business ? +_.years_experience_business : undefined,
+	number_employees_business: _.number_employees_business ? +_.number_employees_business : undefined,
+	income_past12: _.income_past12 ? +_.income_past12 : undefined,
+	monthly_business_expenditure: _.monthly_business_expenditure ? +_.monthly_business_expenditure : undefined,
+	amount_previous_support: _.amount_previous_support ? +_.amount_previous_support : undefined,
+	when_previous_support: _.when_previous_support ? new Date(_.when_previous_support) : undefined,
 }) as T
 }

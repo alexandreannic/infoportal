@@ -12,12 +12,18 @@
     "paths": {
       "infoportal-common/*": [
         "../infoportal-common/src/*"
+      ],
+      "kobo-sdk/*": [
+        "../kobo-sdk/src/*"
       ]
     }
   },
   "references": [
     {
       "path": "../infoportal-common"
+    },
+    {
+      "path": "../kobo-sdk"
     }
   ],
   "ts-node": {

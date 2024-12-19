@@ -21,6 +21,7 @@ import {KoboTypedAnswerSdk} from '@/core/sdk/server/kobo/KoboTypedAnswerSdk'
 import {KoboAnswerHistorySdk} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistorySdk'
 import {CacheSdk} from '@/core/sdk/server/cache/CacheSdk'
 import {DatabaseViewSdk} from '@/core/sdk/server/databaseView/DatabaseViewSdk'
+import {ImportFromXlsDataSdk} from '@/core/sdk/server/importXls/ImportFromXlsSdk'
 
 export class ApiSdk {
   constructor(private client: ApiClient) {
@@ -61,4 +62,5 @@ export class ApiSdk {
   readonly jsonStore = new JsonStoreSdk(this.client)
   readonly hdp = new HdpSdk(this.client)
   readonly cache = new CacheSdk(this.client)
+  readonly importData = new ImportFromXlsDataSdk(this.client)
 }

@@ -1,5 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {DrcOffice, KoboId, nullValuesToUndefined} from 'infoportal-common'
+import {DrcOffice, nullValuesToUndefined} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
 import {AppFeatureId} from '@/features/appFeatureId'
 import React, {ReactElement} from 'react'
 import {Modal} from '@/shared/Modal'
@@ -32,7 +33,7 @@ export const WfpDeduplicationAccessForm = ({
   const {api} = useAppSettings()
 
   const _addAccess = useAsync(api.access.create)
-  const requestInConstToFixTsInference = (databaseId: KoboId) => api.access.search({featureId: AppFeatureId.kobo_database})
+  const requestInConstToFixTsInference = (databaseId: Kobo.FormId) => api.access.search({featureId: AppFeatureId.kobo_database})
     .then(_ => _.filter(_ => _.params?.koboFormId === databaseId))
   const _access = useFetcher(requestInConstToFixTsInference)
 

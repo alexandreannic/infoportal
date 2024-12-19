@@ -10,7 +10,7 @@ import {AiGbvMapper} from '@/features/ActivityInfo/Gbv/AiGbvMapper'
 import {activitiesConfig} from '@/features/ActivityInfo/ActivityInfo'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {AiMapper} from '@/features/ActivityInfo/shared/AiMapper'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 
 type AiGbvBundle = AiTable<AiGbvType.Type, AiGbvType.TypeSub>
 

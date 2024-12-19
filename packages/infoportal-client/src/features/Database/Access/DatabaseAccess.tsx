@@ -1,5 +1,4 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {KoboApiSchema, KoboId} from 'infoportal-common'
 import {AppFeatureId} from '@/features/appFeatureId'
 import React, {useEffect, useMemo} from 'react'
 import {Box} from '@mui/material'
@@ -16,6 +15,7 @@ import {Panel} from '@/shared/Panel'
 import {useSession} from '@/core/Session/SessionContext'
 import {AccessTable} from '@/features/Access/AccessTable'
 import {useFetcher} from '@/shared/hook/useFetcher'
+import {Kobo} from 'kobo-sdk'
 
 export const DatabaseAccessRoute = () => {
   const {api} = useAppSettings()
@@ -40,8 +40,8 @@ export const DatabaseAccess = ({
   formId,
   form,
 }: {
-  formId: KoboId,
-  form: KoboApiSchema
+  formId: Kobo.FormId,
+  form: Kobo.Form
 }) => {
   const {m} = useI18n()
   const {api} = useAppSettings()

@@ -87,7 +87,7 @@ export interface WfpImport {
   }
 }
 
-export class WfpImport {
+export class WfpImportHelper {
   static readonly map = (_: Record<keyof WfpImport, any>): WfpImport => {
     return {
       ..._,

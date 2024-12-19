@@ -1,5 +1,6 @@
-import {DrcOffice, KoboId} from 'infoportal-common'
+import {DrcOffice} from 'infoportal-common'
 import {FeatureAccess} from '@prisma/client'
+import {Kobo} from 'kobo-sdk'
 
 export enum AppFeatureId {
   mpca = 'mpca',
@@ -20,13 +21,13 @@ export interface WfpDeduplicationAccessParams {
 }
 
 export interface KoboDatabaseAccessParams {
-  koboFormId: KoboId,
+  koboFormId: Kobo.FormId,
   filters?: Record<string, string[]>
 }
 
 
 export interface KoboDatabaseFeatureParams {
-  koboFormId: KoboId,
+  koboFormId: Kobo.FormId,
   filters?: Record<string, string[]>
 }
 

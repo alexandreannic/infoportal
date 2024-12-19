@@ -22,10 +22,9 @@ export const SnapshotProtMonitoEchoDisplacement = () => {
         <Div>
           <Div column>
             <SlideTxt sx={{mb: .5}} block>
-              Intentions to return home remain primarily influenced by improved security and cessation of hostilities. However, barriers such as damaged housing, lack of
-              employment, and mined agricultural land deter returns.
-              The discontinuation of IDP allowances, combined with rising living expenses, has heightened concerns about financial instability and increasingly pressured IDPs to
-              consider returning to their areas of origin or relocating to rural areas where rental costs are lower.
+            The conflict has caused widespread family separations, with many households reporting members living apart due to safety concerns, economic pressures, and mobilisation. 
+            Displaced individuals frequently recount the emotional toll of separation, including the loss of contact with loved ones and the uncertainty surrounding their safety. 
+            This isolation exacerbates feelings of loneliness and stress, making it even harder to adapt to new living conditions.
             </SlideTxt>
 
             <SlidePanel>

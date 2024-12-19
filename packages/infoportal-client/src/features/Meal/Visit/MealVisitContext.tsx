@@ -1,15 +1,16 @@
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
-import {KoboAnswerFlat, KoboAnswerId, KoboIndex, Meal_visitMonitoring, Period} from 'infoportal-common'
+import {KoboSubmissionFlat, KoboIndex, Meal_visitMonitoring, Period} from 'infoportal-common'
 import {map, seq, Seq} from '@alexandreannic/ts-utils'
+import {Kobo} from 'kobo-sdk'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useFetcher, UseFetcher} from '@/shared/hook/useFetcher'
 
 export interface MealVisitContext {
-  fetcherAnswers: UseFetcher<(filter: Partial<Period>) => Promise<Seq<KoboAnswerFlat<Meal_visitMonitoring.T, any>>>>
+  fetcherAnswers: UseFetcher<(filter: Partial<Period>) => Promise<Seq<KoboSubmissionFlat<Meal_visitMonitoring.T, any>>>>
   fetcherPeriod: UseFetcher<() => Promise<Period>>
   periodFilter: Partial<Period>
   setPeriodFilter: Dispatch<SetStateAction<Partial<Period>>>
-  answersIndex?: Record<KoboAnswerId, KoboAnswerFlat<Meal_visitMonitoring.T, any>>
+  answersIndex?: Record<Kobo.SubmissionId, KoboSubmissionFlat<Meal_visitMonitoring.T, any>>
 }
 
 const Context = React.createContext({} as MealVisitContext)

@@ -7,7 +7,7 @@ import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {AiMapper} from '@/features/ActivityInfo/shared/AiMapper'
 import {AiMpcaType} from '@/features/ActivityInfo/Mpca/aiMpcaType'
 import {appConfig} from '@/conf/AppConfig'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 
 export namespace AiMpcaMapper {
 
@@ -16,7 +16,7 @@ export namespace AiMpcaMapper {
   const getPlanCode = (_: DrcProject) => {
     return fnSwitch(_ as any, {
       // TODO wrongly set on Kobo answers
-      [DrcProject['UKR-000380 Danida']]: 'MPCA-DRC-00011',
+      [DrcProject['UKR-000380 DANIDA']]: 'MPCA-DRC-00011',
       [DrcProject['UKR-000342 Pooled Funds']]: 'MPCA-DRC-00010',
       [DrcProject['UKR-000341 Hoffmans & Husmans']]: 'MPCA-DRC-00009',
       [DrcProject['UKR-000340 Augustinus Fonden']]: 'MPCA-DRC-00008',

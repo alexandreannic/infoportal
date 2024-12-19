@@ -1,95 +1,89 @@
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {TableIconBtn} from '@/features/Mpca/MpcaData/TableIcon'
 import {TableEditCellBtn} from '@/shared/TableEditCellBtn'
-import {Obj} from '@alexandreannic/ts-utils'
-import {OptionLabelTypeCompact, SelectStatusBy, SelectStatusConfig} from '@/shared/customInput/SelectStatus'
+import {SelectStatusBy} from '@/shared/customInput/SelectStatus'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import React from 'react'
 import {Messages} from '@/core/i18n/localization/en'
-import {KoboAnswerFlat, KoboAnswerId, KoboId, KoboValidation} from 'infoportal-common'
-import {KoboEditTagsContext} from '@/core/context/KoboEditTagsContext'
+import {KoboSubmissionFlat} from 'infoportal-common'
 import {KoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {DatabaseKoboContext} from '@/features/Database/KoboTable/DatabaseKoboContext'
+import {Kobo} from 'kobo-sdk'
+import {KoboUpdateContext} from '@/core/context/KoboUpdateContext'
 
 export const getColumnsBase = ({
   selectedIds,
   formId,
-  asyncUpdateTagById,
   canEdit,
   m,
-  asyncEdit,
-  openEditTag,
-  openAnswerModal,
+  ctxEdit,
+  openViewAnswer,
   getRow = _ => _,
+  asyncEdit,
 }: {
-  getRow?: (_: any) => KoboAnswerFlat,
+  ctxEdit: KoboUpdateContext
   asyncEdit: DatabaseKoboContext['asyncEdit']
-  openEditTag: KoboEditTagsContext['open']
-  openAnswerModal: KoboAnswersContext['openAnswerModal']
-  formId: KoboId
-  selectedIds: KoboAnswerId[]
-  asyncUpdateTagById: KoboEditTagsContext['asyncUpdateById']
+  getRow?: (_: any) => KoboSubmissionFlat,
+  openViewAnswer: KoboAnswersContext['openView']
+  formId: Kobo.FormId
+  selectedIds: Kobo.SubmissionId[]
   canEdit?: boolean
   m: Messages
-}) => {
-  const action: DatatableColumn.Props<any> = {
-    id: 'actions',
-    head: '',
-    width: 0,
-    noCsvExport: true,
-    render: _ => {
-      return {
-        value: null as any,
-        label: (
-          <>
-            <TableIconBtn tooltip={m.view} children="visibility" onClick={() => openAnswerModal({answer: _, formId: formId})}/>
-            <TableIconBtn disabled={!canEdit} tooltip={m.editKobo} target="_blank" href={asyncEdit(_.id)} children="edit"/>
-          </>
-        )
-      }
-    }
-  }
-  const validation: DatatableColumn.Props<any> = {
-    id: 'validation',
-    head: m.validation,
-    subHeader: selectedIds.length > 0 && <TableEditCellBtn onClick={() => openEditTag({
-      formId: formId,
-      answerIds: selectedIds,
-      type: 'select_one',
-      options: Obj.values(KoboValidation).map(_ => ({
-        value: _, label: _, before: <OptionLabelTypeCompact sx={{alignSelf: 'center', mr: 1}} type={SelectStatusConfig.statusType.KoboValidation[_]}/>
-      })),
-      tag: '_validation',
-    })}/>,
-    width: 0,
-    type: 'select_one',
-    render: (row) => {
-      const value = getRow(row).tags?._validation
-      return {
-        export: value ? m[value] : DatatableUtils.blank,
-        value: value ?? DatatableUtils.blank,
-        option: value ? m[value] : DatatableUtils.blank,
-        label: (
-          <SelectStatusBy
-            enum="KoboValidation"
-            compact
-            disabled={!canEdit}
-            value={value}
-            onChange={(e) => {
-              asyncUpdateTagById.call({
-                formId: formId,
-                answerIds: [getRow(row).id],
-                tag: '_validation',
-                value: e,
-              })
-            }}
-          />
-        )
-      }
-    }
-  }
+}): DatatableColumn.Props<any>[] => {
   return [
-    action,
-    validation,
+    {
+      id: 'actions',
+      head: '',
+      width: 0,
+      noCsvExport: true,
+      render: _ => {
+        return {
+          value: null as any,
+          label: (
+            <>
+              <TableIconBtn tooltip={m.view} children="visibility" onClick={() => openViewAnswer({answer: _, formId: formId})}/>
+              <TableIconBtn disabled={!canEdit} tooltip={m.editKobo} target="_blank" href={asyncEdit(_.id)} children="edit"/>
+            </>
+          )
+        }
+      }
+    }
+    ,
+    {
+      id: '_validation',
+      head: m.validation,
+      subHeader: selectedIds.length > 0 && <TableEditCellBtn onClick={() => ctxEdit.openById({
+        target: 'validation',
+        params: {
+          formId: formId,
+          answerIds: selectedIds,
+        }
+      })}/>,
+      width: 0,
+      type: 'select_one',
+      render: (row: any) => {
+        const value = getRow(row).validationStatus
+        return {
+          export: value ? m[value] : DatatableUtils.blank,
+          value: value ?? DatatableUtils.blank,
+          option: value ? m[value] : DatatableUtils.blank,
+          label: (
+            <SelectStatusBy
+              enum="KoboValidation"
+              compact
+              disabled={!canEdit}
+              value={value}
+              onChange={(e) => {
+                ctxEdit.asyncUpdateById.validation.call({
+                  formId: formId,
+                  answerIds: [getRow(row).id],
+                  status: e,
+                })
+              }}
+            />
+          )
+        }
+      }
+    }
   ]
 }

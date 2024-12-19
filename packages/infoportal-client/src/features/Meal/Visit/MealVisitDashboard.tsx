@@ -14,7 +14,7 @@ import {ChartPieWidget} from '@/shared/charts/ChartPieWidget'
 import {IpBtn} from '@/shared/Btn'
 import {CommentsPanel} from '@/shared/CommentsPanel'
 import {KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
-import {KoboAnswerFlat, KoboIndex, Meal_visitMonitoring, OblastIndex} from 'infoportal-common'
+import {KoboSubmissionFlat, KoboIndex, Meal_visitMonitoring, OblastIndex} from 'infoportal-common'
 import {NavLink} from 'react-router-dom'
 import {DataFilterLayout} from '@/shared/DataFilter/DataFilterLayout'
 import {useMealVisitContext} from '@/features/Meal/Visit/MealVisitContext'
@@ -25,7 +25,7 @@ import {ChartBarSingleBy} from '@/shared/charts/ChartBarSingleBy'
 
 export interface DashboardPageProps {
   filters: Record<string, string[]>
-  data: Seq<KoboAnswerFlat<Meal_visitMonitoring.T>>
+  data: Seq<KoboSubmissionFlat<Meal_visitMonitoring.T>>
 }
 
 const mapOblast = OblastIndex.koboOblastIndexIso
@@ -39,7 +39,7 @@ export const MealVisitDashboard = () => {
   const [optionFilter, setOptionFilters] = useState<Record<string, string[] | undefined>>({})
 
   const filterShape = useMemo(() => {
-    return DataFilter.makeShape<KoboAnswerFlat<Meal_visitMonitoring.T>>({
+    return DataFilter.makeShape<KoboSubmissionFlat<Meal_visitMonitoring.T>>({
       oblast: {
         icon: 'location_on',
         getOptions: () => schema.helper.getOptionsByQuestionName('mdro').map(_ => ({value: _.name, label: _.label[langIndex]})),

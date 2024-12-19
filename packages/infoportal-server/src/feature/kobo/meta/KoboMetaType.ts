@@ -1,17 +1,17 @@
-import {KoboAnswerMetaData} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
+import {KoboSubmissionMetaData} from 'infoportal-common'
 
 export type KoboMetaOrigin<
   TAnswer extends Record<string, any> = any,
   TTag extends undefined | Record<string, any> = undefined,
 > = {
-  formId: KoboAnswerMetaData['id']
-  uuid: KoboAnswerMetaData['uuid']
-  attachments: KoboAnswerMetaData['attachments']
+  formId: Kobo.FormId
+  uuid: string
+  attachments: Kobo.Submission.Attachment[]
   answers: TAnswer
-  date: KoboAnswerMetaData['date']
-  submissionTime: KoboAnswerMetaData['submissionTime']
-  id: KoboAnswerMetaData['id']
-  updatedAt?: KoboAnswerMetaData['updatedAt']
+  date: Date
+  submissionTime: Date
+  id: Kobo.SubmissionId
+  updatedAt?: KoboSubmissionMetaData['updatedAt']
   tags?: TTag | null
 }
-

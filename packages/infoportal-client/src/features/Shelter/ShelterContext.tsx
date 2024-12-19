@@ -1,15 +1,16 @@
 import React, {ReactNode, useContext} from 'react'
-import {KoboAnswerId, KoboId, KoboSchemaHelper, Shelter_nta} from 'infoportal-common'
+import {KoboSchemaHelper, Shelter_nta} from 'infoportal-common'
 import {UseShelterData} from '@/features/Shelter/useShelterData'
 import {AccessSum} from '@/core/sdk/server/access/Access'
 import {KoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
 import {useAppSettings} from '@/core/context/ConfigContext'
+import {Kobo} from 'kobo-sdk'
 
 export type ShelterContext = Pick<KoboSchemaContext, 'langIndex' | 'setLangIndex'> & {
   access: AccessSum
   data: UseShelterData
   allowedOffices: Shelter_nta.T['back_office'][]
-  asyncEdit: (formId: KoboId, answerId: KoboAnswerId) => string
+  asyncEdit: (formId: Kobo.FormId, answerId: Kobo.SubmissionId) => string
   nta: {
     schema: KoboSchemaHelper.Bundle
   }
@@ -39,7 +40,7 @@ export const ShelterProvider = ({
   allowedOffices: ShelterContext['allowedOffices']
 } & Pick<KoboSchemaContext, 'langIndex' | 'setLangIndex'>) => {
   const {api} = useAppSettings()
-  const asyncEdit = (formId: KoboId, answerId: KoboAnswerId) => api.koboApi.getEditUrl({formId, answerId})
+  const asyncEdit = (formId: Kobo.FormId, answerId: Kobo.SubmissionId) => api.koboApi.getEditUrl({formId, answerId})
 
   return (
     <Context.Provider value={{

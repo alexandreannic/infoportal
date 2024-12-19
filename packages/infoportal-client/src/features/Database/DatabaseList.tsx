@@ -1,4 +1,4 @@
-import {KoboForm} from '@/core/sdk/server/kobo/Kobo'
+import {KoboForm} from '@/core/sdk/server/kobo/KoboMapper'
 import {useI18n} from '@/core/i18n'
 import {useNavigate} from 'react-router'
 import {Page, PageTitle} from '@/shared/Page'

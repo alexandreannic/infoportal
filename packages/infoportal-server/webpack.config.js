@@ -5,7 +5,6 @@ const {PrismaPlugin} = require('@prisma/nextjs-monorepo-workaround-plugin')
 module.exports = {
   entry: './src/index.ts',
   target: 'node',
-  externals: [nodeExternals()],
   plugins: [
     new PrismaPlugin()
   ],
@@ -25,5 +24,5 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
-  mode: 'development', // Change to 'production' for production builds
+  mode: 'production',
 }

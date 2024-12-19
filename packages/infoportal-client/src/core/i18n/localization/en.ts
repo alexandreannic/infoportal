@@ -324,6 +324,7 @@ export const en = Object.freeze({
     duplicate: 'Duplicate',
     serverId: 'Server ID',
     server: 'Server',
+    scoring: 'Scoring',
     duplication: 'Duplication',
     deduplication: 'Deduplication',
     wfpDeduplication: 'WFP Deduplication',
@@ -661,7 +662,7 @@ export const en = Object.freeze({
       monitoredHhByOblast: 'Monitored HH By Oblast',
     },
     protHHSnapshot: {
-      male1860: `Males 18-60 years old`,
+      maleYoung: `Males 25-60 years old`,
       avgHhSize: (n: number) => `Average HH size: ${n.toFixed(1)}`,
       noAccommodationDocument: 'HHs without formal lease agreement',
       maleWithoutIDPCert: 'Unregistered IDPs',
@@ -765,6 +766,9 @@ export const en = Object.freeze({
       }
     },
     _koboDatabase: {
+      mergedDb: 'Merged DB',
+      autoEmail: 'Auto Email',
+      autoEmailDesc: 'Emails are sent to recipients on submission or column updates via Kobo or InfoPortal',
       isArchived: 'This form is archived.',
       translation: 'Translation',
       newValue: 'New value',
@@ -775,6 +779,7 @@ export const en = Object.freeze({
       currentlyDisplayed: `columns displayed`,
       tagNotUpdated: 'Failed to update tag. Reloading clean data set...',
       downloadAsXLS: 'Download <b>filtered data</b> as XLS',
+      importFromXLS: 'Import from XLS',
       registerNewForm: 'Register new form',
       repeatAs: 'Show Grouped questions as',
       repeatAsColumn: 'New columns',
@@ -952,6 +957,8 @@ export const en = Object.freeze({
         LegalAid: 'GBV Legal Aid',
         MHPSSActivities: 'MHPSS awareness session',
         PsychosocialGroupSession: 'Psychosocial groupDisplay session',
+        PsychosocialIndividualSession: 'Psychosocial Individual Session',
+        PsychologicalFirstAid: 'Psychological First Aid',
       }
       const activitiesMerged_: Partial<Record<DrcProgram, string>> = {
         ...activities_,
@@ -979,6 +986,11 @@ export const en = Object.freeze({
       WKB: 'Baby Winter Kits',
       HKMV: 'Family Hygiene Kits for moving IDPs',
       ESK: 'Emergency Shelter Kit'
+    },
+    importData:{
+      create: 'Upload New Data',
+      update: 'Update Existing Data',
+      generate: 'Generate Excel Template'
     }
   },
 })
