@@ -35,6 +35,7 @@ import {
   Protection_groupSession,
   Protection_hhs3,
   ProtectionHhsTags,
+  Protection_pfa_training_test,
   Shelter_nta,
   Shelter_ta,
   ShelterNtaTags,
@@ -257,6 +258,11 @@ export class KoboTypedAnswerSdk {
       ...make('protection_gbvSocialProviders', (filters?: KoboAnswerFilter) => req({
         formId: KoboIndex.byName('protection_gbvSocialProviders').id,
         fnMapKobo: Protection_gbvSocialProviders.map,
+        ...filters,
+      })),
+      ...make('protection_pfa_training_test', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('protection_pfa_training_test').id,
+        fnMapKobo: Protection_pfa_training_test.map,
         ...filters,
       })),
       ...make('partner_pomogaem', (filters?: KoboAnswerFilter) => req({

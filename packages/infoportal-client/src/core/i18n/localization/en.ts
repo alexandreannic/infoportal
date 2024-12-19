@@ -324,6 +324,7 @@ export const en = Object.freeze({
     duplicate: 'Duplicate',
     serverId: 'Server ID',
     server: 'Server',
+    scoring: 'Scoring',
     duplication: 'Duplication',
     deduplication: 'Deduplication',
     wfpDeduplication: 'WFP Deduplication',
