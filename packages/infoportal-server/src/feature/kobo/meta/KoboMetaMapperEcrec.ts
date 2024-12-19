@@ -82,7 +82,7 @@ export class KoboMetaMapperEcrec {
     const group = KoboGeneralMapping.collectXlsKoboIndividuals(answer)
     const oblast = OblastIndex.byKoboName(answer.ben_det_oblast!)
     const status = row.tags
-      ? row.tags.status === VetApplicationStatus.CertificateSubmitted || row.tags?.status === VetApplicationStatus.SecondPaid
+      ? row.tags.status === VetApplicationStatus.CertificateSubmitted || row.tags?.status === VetApplicationStatus.SecondPaid || row.tags?.status === VetApplicationStatus.FirstPaid
         ? KoboMetaStatus.Committed
         : row.tags._validation === KoboValidation.Rejected ? KoboMetaStatus.Rejected : KoboMetaStatus.Pending
       : undefined
