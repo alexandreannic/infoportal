@@ -1,9 +1,14 @@
-import {groupBy, KoboIndex, KoboValidation} from 'infoportal-common'
+import {groupBy, KoboHelper, KoboIndex, KoboValidation} from 'infoportal-common'
 import {PrismaClient} from '@prisma/client'
 import winston from 'winston'
 import {fnSwitch, Obj, seq} from '@alexandreannic/ts-utils'
 import {chunkify, Kobo, KoboClient} from 'kobo-sdk'
 
+type Req = {
+  validation: KoboValidation
+  data: any[]
+  formId: string
+}
 const allForms = [
   'a4bgAsLLag7HTjjY3pSLT7',// a4bgAsLLag7HTjjY3pSLT7 Approved 1
   'a4iDDoLpUJHbu6cwsn2fnG',// ecrec_vetEvaluation Approved 181
@@ -103,6 +108,11 @@ export const run = async () => {
   })
   const answers = await prisma.koboAnswers.findMany({
     where: {
+      form: {
+        server: {
+          id: server.id,
+        }
+      },
       tags: {
         path: ['_validation'],
         not: {equals: null},
@@ -120,57 +130,60 @@ export const run = async () => {
     }),
   })
 
+  const reqs: Req[] = []
   groupBy({
-      data: answers,
-      groups: [
-        {by: _ => _.formId},
-        {by: _ => (_.tags as any)._validation},
-      ],
-      finalTransform: async (grouped, [formId, validation]) => {
-        // if (formId === 'aKgX4MNs6gCemDQKPeXxY8') {
-        console.log(formId, KoboIndex.searchById(formId)?.name ?? formId, validation, grouped.length)
-        const submissionIds = grouped.map(_ => _.id)
-        if ([KoboValidation.Pending, KoboValidation.Approved, KoboValidation.Rejected].includes(validation)) {
-          await sdk.v2.updateValidation({
-            submissionIds,
-            formId,
-            status: fnSwitch(validation, {
-              Pending: Kobo.Submission.Validation.validation_status_on_hold,
-              Approved: Kobo.Submission.Validation.validation_status_approved,
-              Rejected: Kobo.Submission.Validation.validation_status_not_approved,
-            })
-          })
-        } else {
-          if (validation)
-            await sdk.v2.updateData({
-              submissionIds,
-              formId,
-              data: {
-                _IP_VALIDATION_STATUS_EXTRA: validation,
-              }
-            })
-        }
-        const answers = await sdk.v2.getAnswers(formId)
-        await Promise.all(Obj.entries(seq(answers.results).groupBy(_ => _.validationStatus!)).map(([k, v]) => {
-          return chunkify({
-            size: 10000,
-            data: v.map(_ => _._id),
-            fn: _ => {
-              return prisma.koboAnswers.updateMany({
-                where: {
-                  id: {in: _}
-                },
-                data: {
-                  validationStatus: k === 'undefined' as any ? null : k,
-                }
-              })
-            },
-            concurrency: 1,
-          })
-        }))
-      }
+    data: answers,
+    groups: [
+      {by: _ => _.formId},
+      {by: _ => (_.tags as any)._validation},
+    ],
+    finalTransform: async (grouped, [formId, validation]) => {
+      reqs.push({formId, validation, data: grouped})
     }
-  )
+  })
+
+  for (let req of reqs) {
+    const {formId, validation, data: grouped} = req
+    if (formId !== 'awYf9G3sZB4grG8S4w3Wt8') break
+    console.log(formId, KoboIndex.searchById(formId)?.name ?? formId, validation, grouped.length)
+    const submissionIds = grouped.map(_ => _.id)
+    const status = KoboHelper.mapValidation.toKobo(validation)
+    if (status._validation_status) {
+      await sdk.v2.updateValidation({
+        submissionIds,
+        formId,
+        status: status._validation_status
+      })
+    } else if (status._IP_VALIDATION_STATUS_EXTRA) {
+      if (validation)
+        await sdk.v2.updateData({
+          submissionIds,
+          formId,
+          data: {
+            _IP_VALIDATION_STATUS_EXTRA: status._IP_VALIDATION_STATUS_EXTRA,
+          }
+        })
+    }
+    const answers = await sdk.v2.getAnswers(formId)
+    await Promise.all(Obj.entries(seq(answers.results).groupBy(_ => _.validationStatus!)).map(([k, v]) => {
+      return chunkify({
+        size: 10000,
+        data: v.map(_ => _._id),
+        fn: _ => {
+          return prisma.koboAnswers.updateMany({
+            where: {
+              id: {in: _}
+            },
+            data: {
+              validationStatus: k === 'undefined' as any ? null : k,
+            }
+          })
+        },
+        concurrency: 1,
+      })
+    }))
+  }
+
 // const formId = 'ag6n7kQk7vps4MYjjVoja8'
 // const answers = await sdk.v2.getAnswers(formId)
 // const answer = answers.data[0]
