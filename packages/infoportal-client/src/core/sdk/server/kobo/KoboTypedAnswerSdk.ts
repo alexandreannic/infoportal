@@ -19,6 +19,7 @@ import {
   Meal_cfmExternal,
   Meal_cfmInternal,
   Meal_shelterPdm,
+  Meal_nfiPdm,
   Meal_verificationEcrec,
   Meal_verificationPartnerBnre,
   Meal_verificationWinterization,
@@ -226,6 +227,11 @@ export class KoboTypedAnswerSdk {
       ...make('meal_shelterPdm', (filters?: KoboAnswerFilter) => req({
         formId: KoboIndex.byName('meal_shelterPdm').id,
         fnMapKobo: Meal_shelterPdm.map,
+        ...filters,
+      })),
+      ...make('meal_nfiPdm', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('meal_nfiPdm').id,
+        fnMapKobo: Meal_nfiPdm.map,
         ...filters,
       })),
       ...make('protection_hhs3', (filters?: KoboAnswerFilter) => req({
