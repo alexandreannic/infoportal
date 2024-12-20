@@ -3,10 +3,11 @@ import {Panel} from '@/shared/Panel'
 import {NavLink, useNavigate, useParams, useSearchParams} from 'react-router-dom'
 import {map} from '@alexandreannic/ts-utils'
 import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
-import {KoboFlattenRepeat, KoboFlattenRepeatData, KoboId, KoboSchemaHelper} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
+import {KoboFlattenRepeat, KoboFlattenRepeatData, KoboSchemaHelper} from 'infoportal-common'
 import * as yup from 'yup'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
-import {useMemo} from 'react'
+import {useEffect, useMemo} from 'react'
 import {useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
 import {Datatable} from '@/shared/Datatable/Datatable'
@@ -47,7 +48,7 @@ export const getColumnsForRepeatGroup = ({
   t,
 }: {
   groupName: string
-  formId: KoboId
+  formId: Kobo.FormId
   schema: KoboSchemaHelper.Bundle
   onRepeatGroupClick?: ColumnBySchemaGeneratorProps['onRepeatGroupClick']
   m: ColumnBySchemaGeneratorProps['m']
@@ -94,7 +95,7 @@ const DatabaseKoboRepeat = ({
   group,
   formId,
 }: {
-  formId: KoboId
+  formId: Kobo.FormId
   group: string
   schema: KoboSchemaHelper.Bundle
 }) => {
@@ -110,6 +111,10 @@ const DatabaseKoboRepeat = ({
   const {m} = useI18n()
   const groupInfo = schema.helper.group.getByName(group)!
   const paths = groupInfo.pathArr
+
+  useEffect(() => {
+    fetcherAnswers.fetch({force: false, clean: false})
+  }, [formId])
 
   const {columns, filters} = useMemo(() => {
     const res = getColumnsForRepeatGroup({

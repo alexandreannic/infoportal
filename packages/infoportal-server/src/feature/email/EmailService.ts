@@ -1,12 +1,11 @@
 import {GlobalEvent} from '../../core/GlobalEvent'
 import {EmailClient} from './EmailClient'
-import {KoboIndex, Regexp} from 'infoportal-common'
+import {getKoboCustomDirectives, KoboCustomDirectives, KoboIndex, Regexp} from 'infoportal-common'
 import {app} from '../../index'
 import {UserService} from '../user/UserService'
 import {PrismaClient} from '@prisma/client'
 import {FrontEndSiteMap} from '../../core/FrontEndSiteMap'
 import {appConf} from '../../core/conf/AppConf'
-import {getKoboCustomDirectives, KoboCustomDirectives} from '../kobo/KoboCustomDirectives'
 import {KoboService} from '../kobo/KoboService'
 import {seq} from '@alexandreannic/ts-utils'
 
@@ -39,7 +38,7 @@ export class EmailService {
 
   readonly sendEmailIfTriggered = async (p: GlobalEvent.KoboAnswerEditedParams) => {
     const schema = await this.koboService.getSchema({formId: p.formId})
-    const {question} = getKoboCustomDirectives(schema).find(_ => _.directive === KoboCustomDirectives.TRIGGER_EMAIL) ?? {}
+    const {question} = getKoboCustomDirectives(schema).find(_ => _.directive.startsWith('TRIGGER_EMAIL')) ?? {}
     if (!question) return
     if (!question.name || !p.answer[question.name]) return
     const html = question.hint?.[0]

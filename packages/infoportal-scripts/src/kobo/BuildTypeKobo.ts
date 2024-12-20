@@ -1,8 +1,9 @@
 import {fnSwitch, Obj, seq} from '@alexandreannic/ts-utils'
 import * as fs from 'fs'
-import {capitalize, KoboApiSchema, KoboId, KoboIndex, KoboSdkv2} from 'infoportal-common'
+import {capitalize, KoboIndex} from 'infoportal-common'
 import {koboSdk} from '../index'
 import {appConf} from '../appConf'
+import {Kobo, KoboClient} from 'kobo-sdk'
 
 interface KoboInterfaceGeneratorParams {
   outDir: string,
@@ -121,10 +122,28 @@ export class BuildKoboType {
         'ben_det_raion',
       ]
     },
-    ecrec_msmeGrantReg:{
+    ecrec_msmeGrantReg: {
       formId: KoboIndex.byName('ecrec_msmeGrantReg').id, skipQuestionTyping: [
         'ben_det_hromada',
         'ben_det_raion',
+      ]
+    },
+    ecrec_vet2_dmfa: {
+      formId: KoboIndex.byName('ecrec_vet2_dmfa').id,
+      skipQuestionTyping: [
+        'hromada',
+      ]
+    },
+    ecrec_vet_bha388: {
+      formId: KoboIndex.byName('ecrec_vet_bha388').id,
+      skipQuestionTyping: [
+        'hromada',
+      ]
+    },
+    ecrec_msme_bha388: {
+      formId: KoboIndex.byName('ecrec_msme_bha388').id,
+      skipQuestionTyping: [
+        'hromada',
       ]
     },
     ecrec_cashRegistration: {
@@ -191,6 +210,12 @@ export class BuildKoboType {
     },
     meal_shelterPdm: {
       formId: KoboIndex.byName('meal_shelterPdm').id, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    meal_nfiPdm: {
+      formId: KoboIndex.byName('meal_nfiPdm').id, skipQuestionTyping: [
         'ben_det_hromada',
         'ben_det_raion',
       ]
@@ -368,10 +393,25 @@ export class BuildKoboType {
       formId: KoboIndex.byName('safety_incident').id,
       skipQuestionTyping: ['hromada', 'raion',],
     },
+    partner_pomogaem: {
+      formId: KoboIndex.byName('partner_pomogaem').id,
+    },
+    partner_lampa: {
+      formId: KoboIndex.byName('partner_lampa').id,
+    },
+    partner_angels: {
+      formId: KoboIndex.byName('partner_angels').id,
+    },
+    partner_misto_syly: {
+      formId: KoboIndex.byName('partner_misto_syly').id,
+    },
+    meal_verificationPartnerBnre: {
+      formId: KoboIndex.byName('meal_verificationPartnerBnre').id,
+    },
   }, (k, v) => [k, {formName: capitalize(k), ...v} as Omit<KoboInterfaceGeneratorParams, 'outDir'>])
 
   readonly build = (f: keyof typeof BuildKoboType['config']) => {
-    return new KoboInterfaceGenerator(this.sdk.v2, {
+    return new KoboInterfaceGenerator(this.sdk, {
       outDir: this.outDir,
       ...BuildKoboType.config[f],
     }).generate()
@@ -382,7 +422,7 @@ export class BuildKoboType {
   }
 }
 
-const ignoredQuestionTypes: KoboApiSchema['content']['survey'][0]['type'][] = [
+const ignoredQuestionTypes: Kobo.Form['content']['survey'][0]['type'][] = [
   // 'calculate',
   'begin_group',
   'end_group',
@@ -393,7 +433,7 @@ const ignoredQuestionTypes: KoboApiSchema['content']['survey'][0]['type'][] = [
 class KoboInterfaceGenerator {
 
   constructor(
-    private sdk: KoboSdkv2,
+    private sdk: KoboClient,
     private options: KoboInterfaceGeneratorParams
   ) {
   }
@@ -403,7 +443,7 @@ class KoboInterfaceGenerator {
     'end'
   ]
 
-  readonly fixDuplicateName = (survey: KoboApiSchema['content']['survey']): KoboApiSchema['content']['survey'] => {
+  readonly fixDuplicateName = (survey: Kobo.Form['content']['survey']): Kobo.Form['content']['survey'] => {
     const duplicate: Record<string, number> = {}
     return survey.map(q => {
       if (!q.name) return q
@@ -418,7 +458,7 @@ class KoboInterfaceGenerator {
   }
 
   readonly generate = async () => {
-    const form = await this.sdk.getForm(this.options.formId)
+    const form = await this.sdk.v2.getForm(this.options.formId)
     const survey = this.fixDuplicateName(form.content.survey)
     const mainInterface = this.generateInterface({survey, formId: this.options.formId,})
     const options = this.generateOptionsType({survey, choices: form.content.choices,})
@@ -447,7 +487,7 @@ const extractQuestionName = (_: Record<string, any>) => {
   return output
 }`
 
-  readonly generateFunctionMapping = (survey: KoboApiSchema['content']['survey']) => {
+  readonly generateFunctionMapping = (survey: Kobo.Form['content']['survey']) => {
     const repeatItems = this.getBeginRepeatQuestion(survey)
     const basicMapping = (name: string) => {
       return {
@@ -503,7 +543,7 @@ const extractQuestionName = (_: Record<string, any>) => {
   //   })
   // }
 
-  readonly getBeginRepeatQuestion = (survey: KoboApiSchema['content']['survey']) => {
+  readonly getBeginRepeatQuestion = (survey: Kobo.Form['content']['survey']) => {
     return survey.filter(_ => _.type === 'begin_repeat')
   }
 
@@ -515,8 +555,8 @@ const extractQuestionName = (_: Record<string, any>) => {
     survey,
     formId,
   }: {
-    survey: KoboApiSchema['content']['survey'],
-    formId: KoboId
+    survey: Kobo.Form['content']['survey'],
+    formId: Kobo.FormId
   }): string[] => {
     const indexOptionId = seq(survey).groupBy(_ => _.select_from_list_name!)
     const repeatItems = this.getBeginRepeatQuestion(survey)
@@ -563,8 +603,8 @@ const extractQuestionName = (_: Record<string, any>) => {
     survey,
     choices,
   }: {
-    survey: KoboApiSchema['content']['survey'],
-    choices: KoboApiSchema['content']['choices']
+    survey: Kobo.Form['content']['survey'],
+    choices: Kobo.Form['content']['choices']
   }) => {
     const indexOptionId = seq(survey).reduceObject<Record<string, string>>(_ => [_.select_from_list_name ?? '', _.name ?? ''])
     const res: Record<string, Record<string, string>> = {}

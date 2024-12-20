@@ -1,6 +1,6 @@
 import {fnSwitch} from '@alexandreannic/ts-utils'
 import {Meal_cfmInternal} from '../generated/Meal_cfmInternal'
-import {KoboBaseTags} from './Common'
+import {KoboBaseTags} from './Kobo'
 import {DrcOffice, DrcProject} from '../../type/Drc'
 
 export enum CfmDataSource {

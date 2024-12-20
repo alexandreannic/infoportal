@@ -12,10 +12,10 @@ import {
   Ecrec_msmeGrantSelection,
   Ecrec_vetApplication,
   Ecrec_vetEvaluation,
-  KoboAnswerUtils,
   KoboBaseTags,
   KoboEcrec_cashRegistration,
   KoboGeneralMapping,
+  KoboHelper,
   KoboMetaEcrecTags,
   KoboMetaHelper,
   KoboMetaStatus,
@@ -66,12 +66,12 @@ export class KoboMetaMapperEcrec {
         taxId: answer.pay_det_tax_id_num,
         phone: answer.ben_det_ph_number ? '' + answer.ben_det_ph_number : undefined,
         status: KoboMetaHelper.mapCashStatus(row.tags?.status),
-        lastStatusUpdate: row.tags?.lastStatusUpdate,
+        lastStatusUpdate: row.tags?.lastStatusUpdate ? new Date(row.tags?.lastStatusUpdate) : undefined,
         passportNum: answer.pay_det_pass_num,
         taxIdFileName: answer.pay_det_tax_id_ph,
-        taxIdFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
+        taxIdFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
         idFileName: answer.pay_det_id_ph,
-        idFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_id_ph),
+        idFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_id_ph),
       })
     })
   }
@@ -82,7 +82,7 @@ export class KoboMetaMapperEcrec {
     const group = KoboGeneralMapping.collectXlsKoboIndividuals(answer)
     const oblast = OblastIndex.byKoboName(answer.ben_det_oblast!)
     const status = row.tags
-      ? row.tags.status === VetApplicationStatus.CertificateSubmitted || row.tags?.status === VetApplicationStatus.SecondPaid
+      ? row.tags.status === VetApplicationStatus.CertificateSubmitted || row.tags?.status === VetApplicationStatus.SecondPaid || row.tags?.status === VetApplicationStatus.FirstPaid
         ? KoboMetaStatus.Committed
         : row.tags._validation === KoboValidation.Rejected ? KoboMetaStatus.Rejected : KoboMetaStatus.Pending
       : undefined
@@ -103,7 +103,7 @@ export class KoboMetaMapperEcrec {
       patronymicName: answer.ben_det_pat_name,
       phone: answer.ben_det_ph_number ? '' + answer.ben_det_ph_number : undefined,
       status: status,
-      lastStatusUpdate: row.tags?.lastStatusUpdate,
+      lastStatusUpdate: row.tags?.lastStatusUpdate ? new Date(row.tags?.lastStatusUpdate) : undefined,
     })
   }
 
@@ -243,12 +243,12 @@ export class KoboMetaMapperEcrec {
       taxId: answer.pay_det_tax_id_num,
       phone: answer.ben_det_ph_number ? '' + answer.ben_det_ph_number : undefined,
       status: KoboMetaHelper.mapCashStatus(row.tags?.status),
-      lastStatusUpdate: row.tags?.lastStatusUpdate,
+      lastStatusUpdate: row.tags?.lastStatusUpdate ? new Date(row.tags?.lastStatusUpdate) : undefined,
       passportNum: answer.pay_det_pass_num,
       taxIdFileName: answer.pay_det_tax_id_ph,
-      taxIdFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
+      taxIdFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
       idFileName: answer.pay_det_id_ph,
-      idFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_id_ph),
+      idFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_id_ph),
     })
   }
 }

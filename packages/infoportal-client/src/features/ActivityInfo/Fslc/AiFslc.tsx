@@ -5,7 +5,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {AiFslcMapper} from '@/features/ActivityInfo/Fslc/aiFslcMapper'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {AiBundleTable} from '@/features/ActivityInfo/shared/AiTable'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 
 export const AiFslc = () => {
   const {api} = useAppSettings()

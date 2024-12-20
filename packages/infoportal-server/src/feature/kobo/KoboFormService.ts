@@ -1,10 +1,11 @@
 import {KoboForm, Prisma, PrismaClient} from '@prisma/client'
-import {KoboApiSchema, KoboId, KoboSdk, KoboSdkv2, UUID} from 'infoportal-common'
 import {seq} from '@alexandreannic/ts-utils'
 import {appConf} from '../../core/conf/AppConf'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {PromisePool} from '@supercharge/promise-pool'
 import {app, AppCacheKey} from '../../index'
+import {UUID} from 'infoportal-common'
+import {Kobo, KoboClient, KoboClientV2} from 'kobo-sdk'
 
 export interface KoboFormCreate {
   uid: string
@@ -28,7 +29,7 @@ export class KoboFormService {
     serverId,
     uploadedBy,
   }: {
-    schema: KoboApiSchema,
+    schema: Kobo.Form,
     serverId: UUID
     uploadedBy: string
   }): Prisma.KoboFormUncheckedCreateInput => {
@@ -55,13 +56,13 @@ export class KoboFormService {
       this.createHookIfNotExists(sdk, payload.uid)
     ])
     this.cache.clear(AppCacheKey.KoboServerIndex)
-    this.cache.clear(AppCacheKey.KoboSdk)
+    this.cache.clear(AppCacheKey.KoboClient)
     return newFrom
   }
 
-  private createHookIfNotExists = async (sdk: KoboSdk, formId: KoboId) => {
+  private createHookIfNotExists = async (sdk: KoboClient, formId: Kobo.FormId) => {
     const hooks = await sdk.v2.getHook(formId)
-    if (hooks.data.find(_ => _.name === KoboSdkv2.webHookName)) return
+    if (hooks.results.find(_ => _.name === KoboClientV2.webHookName)) return
     return sdk.v2.createWebHook(formId, this.conf.baseUrl + `/kobo-api/webhook`)
   }
 
@@ -72,11 +73,11 @@ export class KoboFormService {
         .map(server => this.koboSdk.getBy.serverId(server.serverId).then(_ => ({
           serverId: server.serverId, sdk: _
         })))
-    ).then(_ => seq(_).reduceObject<Record<string, KoboSdk>>(_ => [_.serverId!, _.sdk]))
+    ).then(_ => seq(_).reduceObject<Record<string, KoboClient>>(_ => [_.serverId!, _.sdk]))
     await Promise.all(forms.map(async form => this.createHookIfNotExists(sdks[form.serverId], form.id).catch(() => console.log(`Not created ${form.id}`))))
   }
 
-  readonly get = async (id: KoboId): Promise<KoboForm | undefined> => {
+  readonly get = async (id: Kobo.FormId): Promise<KoboForm | undefined> => {
     return await this.prisma.koboForm.findFirst({where: {id}}) ?? undefined
   }
 

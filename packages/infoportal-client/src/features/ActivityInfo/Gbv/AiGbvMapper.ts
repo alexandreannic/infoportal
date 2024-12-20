@@ -5,7 +5,7 @@ import {AiMapper} from '@/features/ActivityInfo/shared/AiMapper'
 import {aiInvalidValueFlag} from '@/features/ActivityInfo/shared/AiTable'
 import {InferTypedAnswer} from '@/core/sdk/server/kobo/KoboTypedAnswerSdk'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 
 export namespace AiGbvMapper {
 

@@ -6,7 +6,7 @@ import {fnSwitch} from '@alexandreannic/ts-utils'
 import {AiMapper} from '@/features/ActivityInfo/shared/AiMapper'
 import {ActivityInfoSdk} from '@/core/sdk/server/activity-info/ActiviftyInfoSdk'
 import {activitiesConfig} from '@/features/ActivityInfo/ActivityInfo'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 
 export namespace AiProtectionMapper {
 

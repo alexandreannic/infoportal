@@ -1,5 +1,5 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {CfmDataProgram, DrcOffice, KoboId, nullValuesToUndefined} from 'infoportal-common'
+import {CfmDataProgram, DrcOffice, nullValuesToUndefined} from 'infoportal-common'
 import {AppFeatureId} from '@/features/appFeatureId'
 import React, {ReactElement} from 'react'
 import {Modal} from '@/shared/Modal'
@@ -15,6 +15,7 @@ import {useCfmContext} from '@/features/Cfm/CfmContext'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {IpSelectMultiple} from '@/shared/Select/SelectMultiple'
+import {Kobo} from 'kobo-sdk'
 
 interface Form extends IAccessForm {
   office: DrcOffice[]
@@ -35,7 +36,7 @@ export const CfmAccessForm = ({
   const ctx = useCfmContext()
 
   const _addAccess = useAsync(api.access.create)
-  const requestInConstToFixTsInference = (databaseId: KoboId) => api.access.search({featureId: AppFeatureId.kobo_database})
+  const requestInConstToFixTsInference = (databaseId: Kobo.FormId) => api.access.search({featureId: AppFeatureId.kobo_database})
     .then(_ => _.filter(_ => _.params?.koboFormId === databaseId))
   const _access = useFetcher(requestInConstToFixTsInference)
 

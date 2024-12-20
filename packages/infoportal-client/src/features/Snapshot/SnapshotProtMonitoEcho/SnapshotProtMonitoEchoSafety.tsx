@@ -106,8 +106,9 @@ export const SnapshotProtMonitoEchoSafety = () => {
                     //   })
                     // }}
                   >
-                    Following the enactment of the new mobilization law on May 18th, men are increasingly avoiding public places due to fear of conscription, limiting their movements and primarily staying at home. 
-                    Conscripts have reportedly a low level of legal awareness and understanding of legislative norms, including the grounds for deferment from military service. Increased mobilization measures, coupled with insufficient communication and clarification from the authorities, have heightened public anxiety and increased risks for conscripts. 
+                    In eastern oblasts like Kharkiv and Donetsk, proximity to the frontline and frequent shelling attacks create a constant sense of insecurity, while many remain reluctant to leave their homes due to fears of property destruction and of mobilization. 
+                    Access to safe shelters remains limited, and the absence of air raid warning systems in remote areas poses significant risks to affected communities. 
+                    The presence of military personnel heightens fears of strikes and risks of violence, further undermining residents' sense of safety. 
                   </p>
                 }
               </Lazy>

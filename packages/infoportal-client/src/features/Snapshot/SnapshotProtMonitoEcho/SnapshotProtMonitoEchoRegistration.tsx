@@ -29,10 +29,9 @@ export const SnapshotProtMonitoEchoRegistration = () => {
                   attributed to the implementation of Resolution No. 332, which substantially changes the provision of accommodation assistance to IDPs. The increase in
                   unregistered adult males (<Txt bold sx={{color: t.palette.success.main}}>+15%</Txt>) can be linked to the enforcement of the new mobilization law on May 18th. This law aims to bolster male mobilization by lowering
                   the conscription age, narrowing the grounds for exemptions, and heightening penalties for failing to update military records. */}
-              The re-registration procedure for IDP benefits, in line with Resolution #332, has been complex and time-consuming, with issues such as long queues, unclear
-              documentation requirements, online system disruptions, and lost documents causing frustrations and delays in benefit disbursements.
-              Many IDPs, especially the elderly, prefer in-person registration due to difficulties with the online system, while local authorities and social protection
-              departments struggle with high workloads and staffing shortages, highlighting the need for additional support.
+              Accessing government compensation for damaged or destroyed property remains significantly hindered by bureaucratic obstacles and complex procedures. 
+              Residents in remote areas often need to travel long distances to obtain or renew essential documentation, with limited public transport options and high private transportation costs posing substantial barriers. 
+              IDPs face additional challenges, particularly in formalizing inheritance and ownership documents, further complicating their access to compensation.
             </SlideTxt>
             <SlidePanel>
               <SlidePanelTitle sx={{mb: 1}}>{m.protHHSnapshot.maleWithoutIDPCert}</SlidePanelTitle>
@@ -63,7 +62,7 @@ export const SnapshotProtMonitoEchoRegistration = () => {
                 })}>
                   {(d, l) => (
                     <ChartPieWidget
-                      title={m.protHHSnapshot.male1860}
+                      title={m.protHHSnapshot.maleYoung}
                       value={d.value}
                       base={d.base}
                       evolution={d.percent - l.percent}

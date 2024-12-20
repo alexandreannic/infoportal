@@ -1,7 +1,6 @@
 import {
   DrcOffice,
-  KoboAnswerFlat,
-  KoboAnswerId,
+  KoboSubmissionFlat,
   OblastISO,
   OblastName,
   Person,
@@ -11,17 +10,18 @@ import {
   ShelterTaPriceLevel,
   ShelterTaTags
 } from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
 
 export interface ShelterEntity {
-  ta?: KoboAnswerFlat<Shelter_ta.T, ShelterTaTags> & {
+  ta?: KoboSubmissionFlat<Shelter_ta.T, ShelterTaTags> & {
     _price?: number | null
     _priceLevel?: ShelterTaPriceLevel
   }
-  nta?: KoboAnswerFlat<Shelter_nta.T, ShelterNtaTags>
+  nta?: KoboSubmissionFlat<Shelter_nta.T, ShelterNtaTags>
   oblastIso?: OblastISO | ''
   oblast?: OblastName | ''
   office?: DrcOffice | ''
-  id: KoboAnswerId
+  id: Kobo.SubmissionId
   persons?: Person.Person[]
 }
 

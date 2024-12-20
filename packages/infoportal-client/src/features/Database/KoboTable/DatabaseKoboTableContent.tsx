@@ -1,6 +1,7 @@
 import React, {useMemo, useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {KoboAnswerId, KoboFlattenRepeat} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
+import {KoboFlattenRepeat, KoboRepeatRef} from 'infoportal-common'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {Alert, Icon, useTheme} from '@mui/material'
 import {useDatabaseKoboTableContext} from '@/features/Database/KoboTable/DatabaseKoboContext'
@@ -11,8 +12,7 @@ import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useCustomSelectedHeader} from '@/features/Database/KoboTable/customization/useCustomSelectedHeader'
 import {useCustomHeader} from '@/features/Database/KoboTable/customization/useCustomHeader'
-import {useKoboEditAnswerContext} from '@/core/context/KoboEditAnswersContext'
-import {useKoboEditTagContext} from '@/core/context/KoboEditTagsContext'
+import {useKoboUpdateContext} from '@/core/context/KoboUpdateContext'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {appConfig} from '@/conf/AppConfig'
 import {getColumnsBase} from '@/features/Database/KoboTable/columns/getColumnsBase'
@@ -20,15 +20,20 @@ import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {DatabaseViewInput} from '@/features/Database/KoboTable/view/DatabaseViewInput'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
-import {KoboMappedAnswer} from '@/core/sdk/server/kobo/Kobo'
+import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/columnBySchema'
 import {databaseIndex} from '@/features/Database/databaseIndex'
 import {useNavigate} from 'react-router-dom'
 import {getColumnsForRepeatGroup} from '@/features/Database/RepeatGroup/DatabaseKoboRepeatGroup'
 import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
-import {KoboRepeatRef} from 'infoportal-common/kobo'
 import {databaseKoboDisplayBuilder} from '@/features/Database/KoboTable/groupDisplay/DatabaseKoboDisplay'
-import { DatabaseGroupDisplayInput } from './groupDisplay/DatabaseGroupDisplayInput'
+import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
+import {useSession} from '@/core/Session/SessionContext'
+import {useIpToast} from '@/core/useToast'
+import {useAsync} from '@/shared/hook/useAsync'
+import {useAppSettings} from '@/core/context/ConfigContext'
+import {DatabaseImportBtn} from '@/features/Database/KoboTable/DatabaseImportBtn'
+import {generateEmptyXlsTemplate} from '@/features/Database/KoboTable/generateEmptyXlsFile'
 
 export const DatabaseKoboTableContent = ({
   onFiltersChange,
@@ -37,12 +42,12 @@ export const DatabaseKoboTableContent = ({
   const {m} = useI18n()
   const t = useTheme()
   const navigate = useNavigate()
+  const {session} = useSession()
   const ctx = useDatabaseKoboTableContext()
   const ctxSchema = useKoboSchemaContext()
   const ctxAnswers = useKoboAnswersContext()
-  const ctxEditAnswer = useKoboEditAnswerContext()
-  const ctxEditTag = useKoboEditTagContext()
-  const [selectedIds, setSelectedIds] = useState<KoboAnswerId[]>([])
+  const ctxKoboUpdate = useKoboUpdateContext()
+  const [selectedIds, setSelectedIds] = useState<Kobo.SubmissionId[]>([])
 
   const flatData: KoboMappedAnswer[] | undefined = useMemo(() => {
     if (ctx.groupDisplay.get.repeatAs !== 'rows' || ctx.groupDisplay.get.repeatGroupName === undefined) return ctx.data
@@ -54,8 +59,7 @@ export const DatabaseKoboTableContent = ({
     formId: ctx.form.id,
     canEdit: ctx.access.write,
     m,
-    asyncUpdateTagById: ctxEditTag.asyncUpdateById,
-    openEditTag: ctxEditTag.open,
+    ctxUpdate: ctxKoboUpdate,
   }).map(_ => ({
     ..._,
     typeIcon: <DatatableHeadIconByType type={_.type}/>
@@ -67,10 +71,13 @@ export const DatabaseKoboTableContent = ({
       schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,
       onRepeatGroupClick: _ => navigate(databaseIndex.siteMap.group.absolute(ctx.form.id, _.name, _.row.id, _.row._index)),
-      onEdit: selectedIds.length > 0 ? (questionName => ctxEditAnswer.open({
-        formId: ctx.form.id,
-        question: questionName,
-        answerIds: selectedIds,
+      onEdit: selectedIds.length > 0 ? (questionName => ctxKoboUpdate.openById({
+        target: 'answer',
+        params: {
+          formId: ctx.form.id,
+          question: questionName,
+          answerIds: selectedIds,
+        }
       })) : undefined,
       m,
       t,
@@ -100,10 +107,9 @@ export const DatabaseKoboTableContent = ({
       formId: ctx.form.id,
       canEdit: ctx.access.write,
       m,
-      openAnswerModal: ctxAnswers.openAnswerModal,
       asyncEdit: ctx.asyncEdit,
-      asyncUpdateTagById: ctxEditTag.asyncUpdateById,
-      openEditTag: ctxEditTag.open,
+      ctxEdit: ctxKoboUpdate,
+      openViewAnswer: ctxAnswers.openView,
     })
     return [...base, ...extraColumns, ...schemaColumns].map(_ => ({
       ..._,
@@ -111,8 +117,21 @@ export const DatabaseKoboTableContent = ({
     }))
   }, [schemaColumns, ctx.view.currentView])
 
+  const {api} = useAppSettings()
   const selectedHeader = useCustomSelectedHeader({access: ctx.access, formId: ctx.form.id, selectedIds})
   const header = useCustomHeader()
+  const _importFromXLS = useAsync(api.importData.importFromXLSFile)
+  const {toastHttpError} = useIpToast()
+
+  const handleImportData = async (file: File, action: 'create' | 'update') => {
+    await _importFromXLS.call(ctx.form.id, file, action).catch(toastHttpError)
+  }
+
+  const handleGenerateTemplate = async () => {
+    if (ctx.schema && ctx.form) {
+      await generateEmptyXlsTemplate(ctx.schema, ctx.form.name + '_Template')
+    }
+  }
 
   return (
     <>
@@ -168,7 +187,9 @@ export const DatabaseKoboTableContent = ({
                 ...ctx.schema.schemaSanitized.content.translations.map((_, i) => ({children: _, value: i}))
               ]}
             />
-            <DatabaseGroupDisplayInput sx={{mr: 1}}/>
+            {ctx.schema.helper.group.size > 0 && (
+              <DatabaseGroupDisplayInput sx={{mr: 1}}/>
+            )}
             {header?.(params)}
             {ctx.form.deploymentStatus === 'archived' && (
               <Alert color="info" icon={<Icon sx={{mr: -1}}>archive</Icon>} sx={{pr: t.spacing(1), pl: t.spacing(.5), pt: 0, pb: 0}}>
@@ -197,6 +218,13 @@ export const DatabaseKoboTableContent = ({
                 tooltip={<div dangerouslySetInnerHTML={{__html: m._koboDatabase.pullDataAt(ctx.form.updatedAt)}}/>}
                 onClick={ctx.asyncRefresh.call}
               />
+              {session.admin && (
+                <DatabaseImportBtn
+                  onUploadNewData={(file) => handleImportData(file, 'create')}
+                  onUpdateExistingData={(file) => handleImportData(file, 'update')}
+                  onGenerateTemplate={handleGenerateTemplate}
+                />
+              )}
             </div>
           </>
         }

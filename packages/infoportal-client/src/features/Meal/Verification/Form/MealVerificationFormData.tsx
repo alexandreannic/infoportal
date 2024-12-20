@@ -5,7 +5,7 @@ import {DatatableFilterValue} from '@/shared/Datatable/util/datatableType'
 import {MealVerificationForm} from '@/features/Meal/Verification/Form/MealVerificationForm'
 import {useEffectFn} from '@alexandreannic/react-hooks-lib'
 import {MealVerificationActivity} from '@/features/Meal/Verification/mealVerificationConfig'
-import {KoboAnswerId} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
 
 export const MealVerificationFormData = ({
   activity,
@@ -16,7 +16,7 @@ export const MealVerificationFormData = ({
   onDataChange: (_: MealVerificationForm['answerIds']) => void
   activity: MealVerificationActivity
 }) => {
-  const [selectedIds, setSelectedIds] = useState<KoboAnswerId[] | undefined>()
+  const [selectedIds, setSelectedIds] = useState<Kobo.SubmissionId[] | undefined>()
   const [selectedFilters, setSelectedFilters] = useState<Record<string, DatatableFilterValue> | undefined>()
   const t = useTheme()
 

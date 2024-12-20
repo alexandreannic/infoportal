@@ -6,16 +6,16 @@ import {useIpToast} from '@/core/useToast'
 import {Access} from '@/core/sdk/server/access/Access'
 import {AppFeatureId} from '@/features/appFeatureId'
 import {useSession} from '@/core/Session/SessionContext'
-import {KoboForm} from '@/core/sdk/server/kobo/Kobo'
+import {KoboForm} from '@/core/sdk/server/kobo/KoboMapper'
 import {seq} from '@alexandreannic/ts-utils'
 import {KoboFormSdk} from '@/core/sdk/server/kobo/KoboFormSdk'
 import {useFetcher, UseFetcher} from '@/shared/hook/useFetcher'
-import {KoboId} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
 
 export interface DatabaseContext {
   _forms: UseFetcher<ApiSdk['kobo']['form']['getAll']>
   isAdmin?: boolean
-  getForm: (_: KoboId) => KoboForm | undefined
+  getForm: (_: Kobo.FormId) => KoboForm | undefined
   formsAccessible?: KoboForm[]
   // servers: UseFetcher<ApiSdk['kobo']['server']['getAll']>
 }
@@ -35,8 +35,8 @@ export const DatabaseProvider = ({
   const {toastHttpError} = useIpToast()
 
   const getForm = useMemo(() => {
-    const index = seq(_forms.get).reduceObject<Record<KoboId, KoboForm>>(_ => [_.id, _])
-    return (_: KoboId) => index[_]
+    const index = seq(_forms.get).reduceObject<Record<Kobo.FormId, KoboForm>>(_ => [_.id, _])
+    return (_: Kobo.FormId) => index[_]
   }, [_forms.get])
 
   useEffect(() => {

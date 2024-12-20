@@ -1,15 +1,16 @@
 import {StateStatus, UUID} from '../type/Generic'
 import {OblastName} from '../location'
 import {DrcDonor, DrcOffice, DrcProgram, DrcProject, DrcSector} from '../type/Drc'
-import {CashStatus, DisplacementStatus, KoboId, KoboValidation, PersonDetails, ShelterTaPriceLevel} from './mapper'
+import {CashStatus, DisplacementStatus, KoboValidation, PersonDetails, ShelterTaPriceLevel} from './mapper'
 import {fnSwitch} from '@alexandreannic/ts-utils'
+import {Kobo} from 'kobo-sdk'
 
 export type IKoboMeta<TTag = any> = {
   id: UUID
   uuid: UUID
-  koboId: KoboId
-  formId: KoboId
-  referencedFormId?: KoboId
+  koboId: Kobo.SubmissionId
+  formId: Kobo.FormId
+  referencedFormId?: Kobo.FormId
   updatedAt?: Date
   date: Date
 

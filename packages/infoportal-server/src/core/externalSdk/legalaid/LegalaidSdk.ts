@@ -1,7 +1,8 @@
-import {ApiClient, Period, UUID} from 'infoportal-common'
+import {Period, UUID} from 'infoportal-common'
 import {Legalaid} from './Legalaid'
 import {Cache, duration, Obj, seq, throwIf} from '@alexandreannic/ts-utils'
 import {toYYYYMMDD} from '../../../helper/Utils'
+import {ApiClient} from 'kobo-sdk'
 import Poll = Legalaid.Poll
 import PaginateRequest = Legalaid.PaginateRequest
 import PaginateResult = Legalaid.PaginateResult

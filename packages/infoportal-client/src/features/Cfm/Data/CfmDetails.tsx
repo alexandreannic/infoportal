@@ -2,7 +2,7 @@ import {CfmData, cfmMakeEditRequestKey, CfmStatusIconLabel, useCfmContext} from 
 import {useNavigate, useParams} from 'react-router'
 import {Page, PageTitle} from '@/shared/Page'
 import * as yup from 'yup'
-import {ListRow, Modal, Txt} from '@/shared'
+import {IpBtn, ListRow, Modal, Txt} from '@/shared'
 import {Box, Divider, Grid, Icon} from '@mui/material'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
@@ -11,18 +11,17 @@ import {CfmDataProgram, CfmDataSource, DrcOffice, KoboMealCfmArea, KoboMealCfmSt
 import {KoboSelectTag} from '@/shared/KoboSelectTag'
 import {Obj} from '@alexandreannic/ts-utils'
 import {CfmPriorityLogo} from '@/features/Cfm/Data/CfmTable'
-import {IpBtn} from '@/shared/Btn'
 import {cfmIndex} from '@/features/Cfm/Cfm'
 import {useSession} from '@/core/Session/SessionContext'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {TableInput} from '@/shared/TableInput'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
-import {useKoboEditTagContext} from '@/core/context/KoboEditTagsContext'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {NavLink} from 'react-router-dom'
 import {IpInput} from '@/shared/Input/Input'
 import {useIpToast} from '@/core/useToast'
 import {Fender} from '@/shared/Fender'
+import {useKoboUpdateContext} from '@/core/context/KoboUpdateContext'
 
 const routeParamsSchema = yup.object({
   formId: yup.string().required(),
@@ -54,7 +53,7 @@ export const CfmDetails = ({entry}: {
 }) => {
   const {m, formatDateTime} = useI18n()
   const ctx = useCfmContext()
-  const ctxEditTag = useKoboEditTagContext()
+  const ctxKoboUpdate = useKoboUpdateContext()
   const navigate = useNavigate()
   const {api} = useAppSettings()
   const {session} = useSession()
@@ -163,7 +162,7 @@ export const CfmDetails = ({entry}: {
                   })()}
                   onChange={_ => {
                     if (_ === undefined || Regexp.get.drcEmail.test(_))
-                      ctxEditTag.asyncUpdateById.call({formId: entry.formId, answerIds: [entry.id], tag: 'focalPointEmail', value: _})
+                      ctxKoboUpdate.asyncUpdateById.tag.call({formId: entry.formId, answerIds: [entry.id], tag: 'focalPointEmail', value: _})
                   }}
                 />
               </ListRow>
@@ -209,7 +208,7 @@ export const CfmDetails = ({entry}: {
             disabled={entry.form === CfmDataSource.Internal}
             defaultValue={entry.category}
             onChange={newValue => {
-              ctxEditTag.asyncUpdateById.call({formId: entry.formId, answerIds: [entry.id], tag: 'feedbackTypeOverride', value: newValue})
+              ctxKoboUpdate.asyncUpdateById.tag.call({formId: entry.formId, answerIds: [entry.id], tag: 'feedbackTypeOverride', value: newValue})
             }}
             options={Obj.entries(Meal_cfmInternal.options.feedback_type).map(([k, v]) => ({value: k, children: v}))}
           />
@@ -236,9 +235,9 @@ export const CfmDetails = ({entry}: {
                 icon="check"
                 size="small"
                 variant="outlined"
-                loading={ctxEditTag.asyncUpdateById.anyLoading}
+                loading={ctxKoboUpdate.asyncUpdateById.tag.anyLoading}
                 onClick={async () => {
-                  await ctxEditTag.asyncUpdateById.call({formId: entry.formId, answerIds: [entry.id], tag: 'notes', value: comment}).catch(toastHttpError)
+                  await ctxKoboUpdate.asyncUpdateById.tag.call({formId: entry.formId, answerIds: [entry.id], tag: 'notes', value: comment}).catch(toastHttpError)
                   setIsEditing(false)
                 }}
                 sx={{marginLeft: 'auto', mr: 1}}

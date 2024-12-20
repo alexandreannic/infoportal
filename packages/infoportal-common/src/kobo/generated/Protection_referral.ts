@@ -7,6 +7,8 @@ export namespace Protection_referral {
     'end': string,
     // __IP__TRIGGER_EMAIL [calculate] New referral case
     '__IP__TRIGGER_EMAIL': string,
+    // __IP__TRIGGER_EMAIL_2 [calculate] New referral case
+    '__IP__TRIGGER_EMAIL_DELEGATES': string,
     // date [date] Date
     'date': Date | undefined,
     // introduction/staff_to_insert_their_DRC_office [select_one] 1.1 DRC office
@@ -42,6 +44,7 @@ export namespace Protection_referral {
     'cal_shelter_rehabilitation': string,
     'cal_cash_rent': string,
     'cal_cash_repair': string,
+    'cal_cash_utilities': string,
     'cal_emergency_shelter_kit': string,
     'cal_agricultural_livelihood_support': string,
     'cal_business_support': string,
@@ -138,7 +141,8 @@ export namespace Protection_referral {
       '336_uhf_iv': `UKR-000336 UHF VI`,
       '345_bha': `UKR-000345 BHA`,
       '363_uhf8': `UKR-000363 UHF VIII`,
-      '372_echo': `UKR-000372 ECHO`
+      '372_echo': `UKR-000372 ECHO`,
+      'ukr000397_gffo': `UKR-000397 GFFO`
     },
     referral_closed: {
       'yes': `Yes`,
@@ -299,6 +303,9 @@ export namespace Protection_referral {
       'HRK013': `HRK013`,
       'HRK014': `HRK014`,
       'HRK015': `HRK015`,
+      'HRK016': `HRK016`,
+      'HRK017': `HRK017`,
+      'HRK018': `HRK018`,
       'HRK_A': `HRK-A`,
       'HRK_B': `HRK-B`,
       'HRK_C': `HRK-C`,

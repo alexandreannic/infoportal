@@ -1,21 +1,21 @@
 import {Meal_cashPdm} from '../generated'
 import {Person} from '../../type/Person'
 import {fnSwitch} from '@alexandreannic/ts-utils'
-import {DisplacementStatus, KoboAnswerFlat, KoboBaseTags, PersonDetails} from './Common'
-import {KoboAnswerTags} from '../sdk'
+import {DisplacementStatus, KoboSubmissionFlat, PersonDetails} from './Kobo'
 import {Meal_shelterPdm} from '../generated/Meal_shelterPdm'
+import {KoboClient} from 'kobo-sdk'
 
 export namespace KoboMealPdm {
 
   export type Person = PersonDetails
 
-  export type T = KoboAnswerFlat<PdmFormAnswers> & {
+  export type T = KoboSubmissionFlat<PdmFormAnswers> & {
     persons: Person[]
   }
 
   export type PdmFormAnswers = | Omit<Meal_cashPdm.T, 'hh_char_hh_det'> | Meal_shelterPdm.T;
 
-  export const map = (d: KoboAnswerFlat<PdmFormAnswers, KoboAnswerTags>): KoboAnswerFlat<T> => {
+  export const map = (d: KoboSubmissionFlat<PdmFormAnswers, KoboClient>): KoboSubmissionFlat<T> => {
     const r: T = d as unknown as T
     r.persons = mapPersons(d)
     return r

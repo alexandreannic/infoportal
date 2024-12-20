@@ -298,6 +298,8 @@ export class KoboMetaMapperProtection {
       activity: fnSwitch(answer.activity!, {
         mhpss: DrcProgram.MHPSSActivities,
         pgs: DrcProgram.PGS,
+        ais: DrcProgram.PIS,
+        pfa: DrcProgram.PFA,
       }, () => undefined),
       personsCount: persons.length,
       persons,

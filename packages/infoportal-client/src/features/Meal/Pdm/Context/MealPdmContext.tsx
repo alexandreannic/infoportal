@@ -2,14 +2,14 @@ import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMe
 import {
   DrcOffice,
   DrcProject,
-  DrcProjectHelper, KoboAnswerFlat,
-  KoboAnswerId,
+  DrcProjectHelper, KoboSubmissionFlat,
   KoboIndex, KoboMealPdm,
   Meal_cashPdm,
   OblastIndex,
   OblastName,
   Period, PersonDetails
 } from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
 import {fnSwitch, map, seq, Seq} from '@alexandreannic/ts-utils'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useFetcher, UseFetcher} from '@/shared/hook/useFetcher'
@@ -28,7 +28,7 @@ export type PdmData<T extends PdmForm> = {
   project: DrcProject | undefined;
   office: DrcOffice | undefined;
   persons: PersonDetails[]
-  answers: KoboAnswerFlat<T>;
+  answers: KoboSubmissionFlat<T>;
 }
 
 export interface MealPdmDashboardContext {
@@ -36,7 +36,7 @@ export interface MealPdmDashboardContext {
   fetcherPeriod: UseFetcher<() => Promise<Period>>;
   periodFilter: Partial<Period>;
   setPeriodFilter: Dispatch<SetStateAction<Partial<Period>>>;
-  answersIndex?: Record<KoboAnswerId, PdmData<PdmForm>>;
+  answersIndex?: Record<Kobo.SubmissionId, PdmData<PdmForm>>;
 }
 
 const Context = React.createContext({} as MealPdmDashboardContext)

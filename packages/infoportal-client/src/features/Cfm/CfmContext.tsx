@@ -6,14 +6,12 @@ import {
   DrcOffice,
   DrcProject,
   DrcProjectHelper,
-  KoboAnswerFlat,
-  KoboAnswerId,
-  KoboId,
   KoboIndex,
   KoboMealCfmHelper,
   KoboMealCfmStatus,
   KoboMealCfmTag,
   KoboSchemaHelper,
+  KoboSubmissionFlat,
   Meal_cfmExternal,
   Meal_cfmInternal,
   OblastIndex,
@@ -30,8 +28,9 @@ import {fnSwitch, map, Obj, Seq, seq} from '@alexandreannic/ts-utils'
 import {useFetcher, UseFetcher} from '@/shared/hook/useFetcher'
 import {TableIcon, TableIconProps} from '@/features/Mpca/MpcaData/TableIcon'
 import {Box, BoxProps} from '@mui/material'
-import {useKoboEditTagContext} from '@/core/context/KoboEditTagsContext'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
+import {Kobo} from 'kobo-sdk'
+import {useKoboUpdateContext} from '@/core/context/KoboUpdateContext'
 
 export enum CfmDataOrigin {
   Internal = 'Internal',
@@ -61,7 +60,7 @@ export const cfmStatusIconIndex = Obj.mapValues(KoboMealCfmStatus, _ => <CfmStat
 export type CfmData = {
   readonly origin: CfmDataOrigin
   readonly priority?: CfmDataPriority
-  readonly formId: KoboId
+  readonly formId: Kobo.FormId
   readonly tags?: KoboMealCfmTag
   readonly form: CfmDataSource
   readonly comments?: string
@@ -81,11 +80,11 @@ export type CfmData = {
   // internal_feedback?: Meal_CfmInternal.T['feedback']
   // internal?: Pick<Meal_CfmInternal.T, 'feedback' | 'existing_beneficiary' | 'project_code'>
   // external?: Pick<MealCfmExternal, 'prot_support' | 'thanks_feedback' | 'complaint' | 'consent' | 'feedback_type'>
-} & Pick<KoboAnswerFlat<Meal_cfmInternal.T>,
+} & Pick<KoboSubmissionFlat<Meal_cfmInternal.T>,
   // 'ben_det_oblast' |
   'ben_det_raion' |
   'ben_det_hromada'
-> & Pick<KoboAnswerFlat<Meal_cfmInternal.T>,
+> & Pick<KoboSubmissionFlat<Meal_cfmInternal.T>,
   'id' |
   'start' |
   'date' |
@@ -108,9 +107,9 @@ export interface CfmContext {
   schemaInternal: KoboSchemaHelper.Bundle
   schemaExternal: KoboSchemaHelper.Bundle
   asyncRemove: UseAsyncMultiple<(_: {
-    formId: KoboId,
-    answerId: KoboAnswerId
-  }) => Promise<void>, KoboId>
+    formId: Kobo.FormId,
+    answerId: Kobo.SubmissionId
+  }) => Promise<void>, Kobo.FormId>
   users: UseFetcher<ApiSdk['user']['search']>
   mappedData: Seq<CfmData>
   visibleData: Seq<CfmData>
@@ -120,7 +119,7 @@ const CfmContext = React.createContext({} as CfmContext)
 
 export const useCfmContext = () => useContext<CfmContext>(CfmContext)
 
-export const cfmMakeEditRequestKey = (form: KoboId, answerId: KoboAnswerId) => form + answerId
+export const cfmMakeEditRequestKey = (form: Kobo.FormId, answerId: Kobo.SubmissionId) => form + answerId
 
 export const CfmProvider = ({
   children,
@@ -134,7 +133,7 @@ export const CfmProvider = ({
   const {session, accesses} = useSession()
   const {api} = useAppSettings()
   const ctxAnswers = useKoboAnswersContext()
-  const ctxEditTag = useKoboEditTagContext()
+  const ctxKoboUpdate = useKoboUpdateContext()
   const users = useFetcher(() => api.user.search())
   const fetcherInternal = ctxAnswers.byName('meal_cfmInternal')
   const fetcherExternal = ctxAnswers.byName('meal_cfmExternal')
@@ -216,10 +215,10 @@ export const CfmProvider = ({
   }, [mappedData, authorizations.accessiblePrograms, authorizations.accessibleOffices])
 
   const asyncRemove = useAsync(async ({formId, answerId}: {
-    formId: KoboId,
-    answerId: KoboAnswerId
+    formId: Kobo.FormId,
+    answerId: Kobo.SubmissionId
   }) => {
-    await ctxEditTag.asyncUpdateById.call({
+    await ctxKoboUpdate.asyncUpdateById.tag.call({
       formId,
       answerIds: [answerId],
       tag: 'deletedBy',

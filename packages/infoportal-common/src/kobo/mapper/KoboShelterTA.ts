@@ -1,7 +1,7 @@
 import {ShelterContractor} from './ShelterContractor'
 import {Shelter_ta} from '../generated/Shelter_TA'
 import {fnSwitch, KeyOfType, map} from '@alexandreannic/ts-utils'
-import {KoboBaseTags, KoboTagStatus} from './Common'
+import {KoboBaseTags, KoboTagStatus} from './Kobo'
 import {DrcProject} from '../../type/Drc'
 import {Bn_re, Shelter_nta} from '../generated'
 

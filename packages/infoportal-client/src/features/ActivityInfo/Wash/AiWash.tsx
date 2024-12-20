@@ -5,7 +5,7 @@ import {Panel} from '@/shared/Panel'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {AiBundleTable} from '@/features/ActivityInfo/shared/AiTable'
 import {AiWashMapper} from '@/features/ActivityInfo/Wash/aiWashMapper'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 
 export const AiWash = () => {
   const {api} = useAppSettings()

@@ -1,11 +1,12 @@
 import {seq} from '@alexandreannic/ts-utils'
-import {KoboApiColType, KoboApiQuestionSchema, KoboApiSchema, removeHtml} from './../../index'
+import {removeHtml} from './../../index'
 import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper'
+import {Kobo} from 'kobo-sdk'
 
 export type KoboTranslateQuestion = (key: string) => string
 export type KoboTranslateChoice = (key: string, choice?: string) => string
 
-export const ignoredColType: Set<KoboApiColType> = new Set([
+export const ignoredColType: Set<Kobo.Form.QuestionType> = new Set([
   'end_group',
   'end_repeat',
   'deviceid',
@@ -26,13 +27,13 @@ export namespace KoboSchemaHelper {
 
   export interface Bundle {
     helper: Helper
-    schema: KoboApiSchema
-    schemaFlatAndSanitized: KoboApiQuestionSchema[]
-    schemaSanitized: KoboApiSchema
+    schema: Kobo.Form
+    schemaFlatAndSanitized: Kobo.Form.Question[]
+    schemaSanitized: Kobo.Form
     translate: Translation
   }
 
-  const sanitizeQuestions = (questions: KoboApiQuestionSchema[]): KoboApiQuestionSchema[] => {
+  const sanitizeQuestions = (questions: Kobo.Form.Question[]): Kobo.Form.Question[] => {
     return questions.filter(_ => !ignoredColType.has(_.type) && !(
       _.type === 'note' && !_.calculation ||
       _.type === 'calculate' && !_.label
@@ -45,13 +46,13 @@ export namespace KoboSchemaHelper {
   export const buildHelper = ({
     schema,
   }: {
-    schema: KoboApiSchema,
+    schema: Kobo.Form,
   }) => {
     const groupHelper = new KoboSchemaRepeatHelper(schema.content.survey)
     const choicesIndex = seq(schema.content.choices).groupBy(_ => _.list_name)
     const questionIndex = seq([
       ...schema.content.survey,
-    ]).compactBy('name').reduceObject<Record<string, KoboApiQuestionSchema>>(_ => [_.name, _])
+    ]).compactBy('name').reduceObject<Record<string, Kobo.Form.Question>>(_ => [_.name, _])
 
     const getOptionsByQuestionName = (qName: string) => {
       const listName = questionIndex[qName].select_from_list_name
@@ -71,7 +72,7 @@ export namespace KoboSchemaHelper {
     langIndex,
     questionIndex,
   }: {
-    schema: KoboApiSchema,
+    schema: Kobo.Form,
     langIndex: number
     questionIndex: Helper['questionIndex']
   }): {
@@ -98,7 +99,7 @@ export namespace KoboSchemaHelper {
     }
   }
 
-  export const buildBundle = ({schema, langIndex = 0}: {schema: KoboApiSchema, langIndex?: number}): Bundle => {
+  export const buildBundle = ({schema, langIndex = 0}: {schema: Kobo.Form, langIndex?: number}): Bundle => {
     const helper = buildHelper({schema: schema})
     const translate = buildTranslation({
       schema: schema,

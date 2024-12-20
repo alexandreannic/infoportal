@@ -11,8 +11,8 @@ import {useSession} from '@/core/Session/SessionContext'
 import {Access, AccessLevel} from '@/core/sdk/server/access/Access'
 import {AppFeatureId} from '@/features/appFeatureId'
 import {DatabaseKoboTableProvider} from '@/features/Database/KoboTable/DatabaseKoboContext'
-import {KoboId} from 'infoportal-common'
-import {KoboForm, KoboMappedAnswer} from '@/core/sdk/server/kobo/Kobo'
+import {Kobo} from 'kobo-sdk'
+import {KoboForm, KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {Skeleton} from '@mui/material'
 import {DatatableFilterValue} from '@/shared/Datatable/util/datatableType'
 import {useFetcher} from '@/shared/hook/useFetcher'
@@ -43,7 +43,7 @@ export const DatabaseTableRoute = () => {
 
 export interface DatabaseTableProps {
   form?: KoboForm
-  formId: KoboId
+  formId: Kobo.FormId
   dataFilter?: (_: KoboMappedAnswer) => boolean
   onFiltersChange?: (_: Record<string, DatatableFilterValue>) => void
   onDataChange?: (_: {
@@ -79,8 +79,9 @@ export const DatabaseTable = ({
 
   useEffect(() => {
     fetcherForm.fetch()
+    fetcherAnswers.fetch({force: true, clean: true})
+    ctxSchema.fetchById(formId)
   }, [formId])
-
 
   const loading = fetcherAnswers.loading
   const refetch = useCallback(async (p: FetchParams = {}) => {

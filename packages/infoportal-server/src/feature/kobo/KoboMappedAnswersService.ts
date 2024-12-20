@@ -10,18 +10,18 @@ import {
   Bn_rapidResponse,
   Bn_re,
   Ecrec_cashRegistration,
-  KoboAnswerFlat,
-  KoboId,
+  KoboSubmissionFlat,
   KoboIndex,
   Protection_hhs,
+  ProtectionHhsTags,
   Shelter_cashForRepair,
   Shelter_north,
   Shelter_nta,
-  Shelter_ta,
-  ProtectionHhsTags
+  Shelter_ta
 } from 'infoportal-common'
 import {map} from '@alexandreannic/ts-utils'
 import {ShelterNtaTags, ShelterTaTags} from './tags/ShelterTags'
+import {Kobo} from 'kobo-sdk'
 
 export class KoboMappedAnswersService {
 
@@ -39,7 +39,7 @@ export class KoboMappedAnswersService {
     fnTag?: (_: Record<string, any>) => TTag,
   ) => (
     data: ApiPaginate<DbKoboAnswer>
-  ): ApiPaginate<KoboAnswerFlat<T, TTag>> => {
+  ): ApiPaginate<KoboSubmissionFlat<T, TTag>> => {
     return {
       total: data.total,
       data: data.data.map(_ => ({
@@ -51,7 +51,7 @@ export class KoboMappedAnswersService {
   }
 
   private readonly buildMappedSearch = <T extends Record<string, any>, TTag extends Record<string, any>>(
-    formId: KoboId,
+    formId: Kobo.FormId,
     fn: (_: any) => T,
     fnTag?: (_: any) => TTag,
   ) => (

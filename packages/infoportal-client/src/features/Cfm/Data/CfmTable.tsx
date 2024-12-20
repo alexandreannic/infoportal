@@ -34,10 +34,9 @@ import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
-import {useKoboEditTagContext} from '@/core/context/KoboEditTagsContext'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {IpSelectMultipleHelper} from '@/shared/Select/SelectMultiple'
-import {useKoboEditAnswerContext} from '@/core/context/KoboEditAnswersContext'
+import {useKoboUpdateContext} from '@/core/context/KoboUpdateContext'
 
 export interface CfmDataFilters extends KoboAnswerFilter {
 }
@@ -62,8 +61,7 @@ export const CfmPriorityLogo = ({
 export const CfmTable = ({}: any) => {
   const ctx = useCfmContext()
   const ctxAnswers = useKoboAnswersContext()
-  const ctxEditTag = useKoboEditTagContext()
-  const ctxEditAnswer = useKoboEditAnswerContext()
+  const ctxKoboUpdate = useKoboUpdateContext()
   const {langIndex, setLangIndex} = useKoboSchemaContext()
 
   // const [selectedFromId_Ids, setSelectedFromId_Ids] = useState<string[]>([])
@@ -92,13 +90,13 @@ export const CfmTable = ({}: any) => {
 
   // const {toastHttpError, toastLoading} = useAaToast()
   //
-  // const _editExternal = useFetchers(async (answerId: KoboAnswerId) => {
+  // const _editExternal = useFetchers(async (answerId: Kobo.SubmissionId) => {
   //   return api.koboApi.getEditUrl(kobo.drcUa.server.prod, KoboIndex.byName('cfmExternal').id, answerId).then(_ => {
   //     if (_.url) window.open(_.url, '_blank')
   //   }).catch(toastHttpError)
   // }, {requestKey: _ => _[0]})
   //
-  // const _editInternal = useFetchers(async (answerId: KoboAnswerId) => {
+  // const _editInternal = useFetchers(async (answerId: Kobo.SubmissionId) => {
   //   return api.koboApi.getEditUrl(kobo.drcUa.server.prod, KoboIndex.byName('cfmInternal').id, answerId).then(_ => {
   //     if (_.url) window.open(_.url, '_blank')
   //   }).catch(toastHttpError)
@@ -132,7 +130,7 @@ export const CfmTable = ({}: any) => {
             <IpSelectSingle
               value={(row.tags as any)?.[tag] ?? value ?? ''}
               onChange={(tagChange) => {
-                ctxEditTag.asyncUpdateById.call({
+                ctxKoboUpdate.asyncUpdateById.tag.call({
                   formId: row.formId,
                   answerIds: [row.id],
                   tag,
@@ -177,6 +175,15 @@ export const CfmTable = ({}: any) => {
     }
   }, [ctx.visibleData])
 
+  const defaultFilters = useMemo(() => {
+    return {
+      status: [
+        KoboMealCfmStatus.Processing,
+        KoboMealCfmStatus.Open,
+        KoboMealCfmStatus.Close,
+      ]
+    }
+  }, [])
   return (
     <Page width="full">
       <Panel>
@@ -185,13 +192,7 @@ export const CfmTable = ({}: any) => {
           //   getId: _ => _.formId + '_' + _.id,
           //   onSelect: _ => setSelectedFromId_Ids(_),
           showExportBtn
-          defaultFilters={{
-            status: [
-              KoboMealCfmStatus.Processing,
-              KoboMealCfmStatus.Open,
-              KoboMealCfmStatus.Close,
-            ]
-          }}
+          defaultFilters={defaultFilters}
           id="cfm"
           header={
             <>
@@ -237,7 +238,7 @@ export const CfmTable = ({}: any) => {
                       value={row.tags?.status ?? KoboMealCfmStatus.Open ?? ''}
                       onChange={(tagChange) => {
                         if (!isNotesEmpty) {
-                          ctxEditTag.asyncUpdateById.call({
+                          ctxKoboUpdate.asyncUpdateById.tag.call({
                             formId: row.formId,
                             answerIds: [row.id],
                             tag: 'status',
@@ -334,13 +335,13 @@ export const CfmTable = ({}: any) => {
                       options={ctx.schemaInternal.helper.getOptionsByQuestionName('project_code').map(_ => {
                         const label = ctx.schemaInternal.translate.choice('project_code', _.name) as DrcProject
                         return IpSelectMultipleHelper.makeOption({
-                          value: DrcProject[label] ?? label + '⚠️',
+                          value: label,
                           children: DrcProject[label] ?? label + '⚠️',
                         })
                       })}
-                      value={DrcProject[row.project as DrcProject] ?? row.project + '⚠️'}
+                      value={row.project}
                       onChange={newValue => {
-                        ctxEditAnswer.asyncUpdateByName.call({
+                        ctxKoboUpdate.asyncUpdateByName.answer.call({
                           answerIds: [row.id],
                           formName: 'meal_cfmInternal',
                           question: 'project_code',
@@ -352,7 +353,7 @@ export const CfmTable = ({}: any) => {
                       label={null}
                       value={row.project}
                       onChange={newValue => {
-                        ctxEditTag.asyncUpdateById.call({formId: row.formId, answerIds: [row.id], tag: 'project', value: newValue})
+                        ctxKoboUpdate.asyncUpdateById.tag.call({formId: row.formId, answerIds: [row.id], tag: 'project', value: newValue})
                       }}
                     />
                 }
@@ -370,7 +371,7 @@ export const CfmTable = ({}: any) => {
                     <IpSelectSingle
                       defaultValue={row.benef_origin}
                       onChange={newValue => {
-                        ctxEditAnswer.asyncUpdateById.call({formId: row.formId, answerIds: [row.id], question: 'benef_origin', answer: newValue})
+                        ctxKoboUpdate.asyncUpdateById.answer.call({formId: row.formId, answerIds: [row.id], question: 'benef_origin', answer: newValue})
                       }}
                       options={Obj.entries(Meal_cfmInternal.options.benef_origin).map(([k, v]) => ({value: k, children: v}))}
                     />
@@ -397,7 +398,7 @@ export const CfmTable = ({}: any) => {
                       value={row.tags?.focalPointEmail}
                       onChange={_ => {
                         if (_ === '' || Regexp.get.drcEmail.test(_))
-                          ctxEditTag.asyncUpdateById.call({formId: row.formId, answerIds: [row.id], tag: 'focalPointEmail', value: _})
+                          ctxKoboUpdate.asyncUpdateById.tag.call({formId: row.formId, answerIds: [row.id], tag: 'focalPointEmail', value: _})
                       }}
                     >
                       {(value, onChange) => (
@@ -438,7 +439,7 @@ export const CfmTable = ({}: any) => {
                     : <IpSelectSingle
                       defaultValue={row.category}
                       onChange={newValue => {
-                        ctxEditTag.asyncUpdateById.call({formId: row.formId, answerIds: [row.id], tag: 'feedbackTypeOverride', value: newValue})
+                        ctxKoboUpdate.asyncUpdateById.tag.call({formId: row.formId, answerIds: [row.id], tag: 'feedbackTypeOverride', value: newValue})
                       }}
                       options={Obj.entries(Meal_cfmInternal.options.feedback_type).map(([k, v]) => ({value: k, children: v}))}
                     />
