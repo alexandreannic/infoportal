@@ -31,21 +31,22 @@ jobs:
           npm ci
 
       - name: npm install, build, and test (kobo-sdk)
-        working-directory: ./packages/kobo-sdk
         run: |
           npm run build --workspace kobo-sdk --if-present
           npm run test --workspace kobo-sdk --if-present
 
       - name: Build, and test (common)
-        working-directory: ./packages/infoportal-common
         run: |
           npm run build --workspace infoportal-common --if-present
           npm run test --workspace infoportal-common --if-present
 
-      - name: Build, and test (server)
+      - name: Run DB migration
         working-directory: ./packages/infoportal-server
         run: |
           npm run db-generate
+
+      - name: Build, and test (server)
+        run: |
           npm run build --workspace infoportal-server --if-present
           npm run test --workspace infoportal-server --if-present
 
