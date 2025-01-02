@@ -21,7 +21,7 @@ export enum AppCacheKey {
   KoboAnswers = 'KoboAnswers',
   KoboSchema = 'KoboSchema',
   KoboServerIndex = 'KoboServerIndex',
-  KoboSdk = 'KoboSdk',
+  KoboClient = 'KoboClient',
   WfpDeduplication = 'WfpDeduplication',
 }
 
@@ -29,7 +29,7 @@ export const App = (config: AppConf = appConf) => {
 
   const logger = (label?: string) => {
     return winston.createLogger({
-      level: appConf.logLevel ?? 'debug',
+      level: config.logLevel,
       format: winston.format.combine(
         format.label({label}),
         winston.format.timestamp({
@@ -65,7 +65,6 @@ export const App = (config: AppConf = appConf) => {
 }
 
 export const app = App()
-
 const startApp = async (conf: AppConf) => {
   // await new BuildKoboType().build('safety_incident')
   // await ActivityInfoBuildType.fslc()
@@ -83,6 +82,7 @@ const startApp = async (conf: AppConf) => {
   // }))
 
   const log = app.logger('')
+  log.info(`Logger level: ${appConf.logLevel}`)
   const prisma = new PrismaClient({
     // log: ['query']
   })

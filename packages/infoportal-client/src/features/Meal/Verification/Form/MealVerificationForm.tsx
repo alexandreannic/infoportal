@@ -3,7 +3,8 @@ import React, {ReactNode} from 'react'
 import {Page} from '@/shared/Page'
 import {Box, Icon, Step, StepContent, StepLabel, Stepper, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
-import {KoboAnswerId, KoboIndex} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
+import {KoboIndex} from 'infoportal-common'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {Controller, useForm} from 'react-hook-form'
 import {MealVerificationFormData} from '@/features/Meal/Verification/Form/MealVerificationFormData'
@@ -25,8 +26,8 @@ export interface MealVerificationForm {
   activity: string
   name: string
   desc?: string
-  filters: Record<KoboAnswerId, DatatableFilterValue>
-  answerIds: KoboAnswerId[]
+  filters: Record<Kobo.SubmissionId, DatatableFilterValue>
+  answerIds: Kobo.SubmissionId[]
 }
 
 const RenderRow = ({icon, label, children}: {

@@ -9,7 +9,7 @@ import {appFeaturesIndex} from '@/features/appFeatureId'
 import {NoFeatureAccessPage} from '@/shared/NoFeatureAccessPage'
 import {CfmTable} from '@/features/Cfm/Data/CfmTable'
 import {CfmProvider, useCfmContext} from '@/features/Cfm/CfmContext'
-import {CfmDataPriority, KoboFormName, KoboId, KoboMealCfmStatus} from 'infoportal-common'
+import {CfmDataPriority, KoboFormName, KoboMealCfmStatus} from 'infoportal-common'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {CfmEntryRoute} from '@/features/Cfm/Data/CfmDetails'
 import {ChartPieWidget} from '@/shared/charts/ChartPieWidget'
@@ -22,6 +22,7 @@ import {SidebarSection} from '@/shared/Layout/Sidebar/SidebarSection'
 import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
 import {CfmDashboard} from '@/features/Cfm/Dashboard/CfmDashboard'
 import {useReactRouterDefaultRoute} from '@/core/useReactRouterDefaultRoute'
+import {Kobo} from 'kobo-sdk'
 
 const relatedKoboForms: KoboFormName[] = [
   'meal_cfmInternal',
@@ -34,7 +35,7 @@ export const cfmIndex = {
     dashboard: '/dashboard',
     access: '/access',
     data: '/data',
-    entry: (formId: KoboId = ':formId', answerId: string = ':answerId') => `/entry/${formId}/${answerId}`
+    entry: (formId: Kobo.FormId = ':formId', answerId: string = ':answerId') => `/entry/${formId}/${answerId}`
   }
 }
 

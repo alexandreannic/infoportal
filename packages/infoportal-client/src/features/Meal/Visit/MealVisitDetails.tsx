@@ -6,7 +6,7 @@ import {Txt, TxtProps} from '@/shared/Txt'
 import {useI18n} from '@/core/i18n'
 import {muiTheme} from '@/core/theme'
 import {DRCLogoLarge} from '@/shared/logo/logo'
-import {capitalize, KoboAnswerFlat, KoboIndex, Meal_visitMonitoring} from 'infoportal-common'
+import {capitalize, KoboSubmissionFlat, KoboIndex, Meal_visitMonitoring} from 'infoportal-common'
 import {useSession} from '@/core/Session/SessionContext'
 import {DrawingCanvas} from '@/shared/DrawingCanvas'
 import {mapFor, seq} from '@alexandreannic/ts-utils'
@@ -97,7 +97,7 @@ export const _DashboardMealVisitPdf = () => {
   const {session} = useSession()
   const {m, formatDate} = useI18n()
   const {id} = urlValidation.validateSync(useParams())
-  const entry: KoboAnswerFlat<Meal_visitMonitoring.T> | undefined = ctx.answersIndex?.[id]
+  const entry: KoboSubmissionFlat<Meal_visitMonitoring.T> | undefined = ctx.answersIndex?.[id]
 
   if (!entry)
     return 'Not found'

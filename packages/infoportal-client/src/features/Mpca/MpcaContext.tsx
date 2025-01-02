@@ -1,11 +1,12 @@
 import React, {ReactNode, useContext, useEffect, useMemo} from 'react'
-import {CashStatus, KoboAnswerId, KoboId, MpcaEntity, NonNullableKey} from 'infoportal-common'
+import {CashStatus, MpcaEntity, NonNullableKey} from 'infoportal-common'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {KoboAnswerFilter} from '@/core/sdk/server/kobo/KoboAnswerSdk'
 import {MpcaTypeTag} from '@/core/sdk/server/mpca/MpcaEntity'
 import {Obj, Seq, seq} from '@alexandreannic/ts-utils'
 import {useFetcher, UseFetcher} from '@/shared/hook/useFetcher'
 import {useAsync, UseAsyncSimple} from '@/shared/hook/useAsync'
+import {Kobo} from 'kobo-sdk'
 
 // [DONORS according to Alix]
 
@@ -17,8 +18,8 @@ import {useAsync, UseAsyncSimple} from '@/shared/hook/useAsync'
 //   Danish MFA - UKR-000301 & Pooled Funds: 000270 (Kherson Registration); Novo Nordisk 000298 (Mykolaiv Registration)
 
 interface UpdateTag<K extends keyof MpcaTypeTag> {
-  formId?: KoboId
-  answerIds: KoboAnswerId[],
+  formId?: Kobo.FormId
+  answerIds: Kobo.SubmissionId[],
   key: K,
   value: MpcaTypeTag[K] | null
 }
@@ -43,7 +44,7 @@ export const MpcaProvider = ({
 
   const fetcherData = useFetcher((_?: KoboAnswerFilter) => api.mpca.search(_).then(_ => seq(_.data)) as Promise<Seq<MpcaEntity>>)
   const dataIndex = useMemo(() => {
-    const index: Record<KoboAnswerId, number> = {}
+    const index: Record<Kobo.SubmissionId, number> = {}
     fetcherData.get?.forEach((_, i) => {
       index[_.id] = i
     })

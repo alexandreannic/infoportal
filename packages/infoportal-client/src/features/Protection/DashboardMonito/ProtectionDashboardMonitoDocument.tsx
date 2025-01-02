@@ -59,17 +59,17 @@ export const ProtectionDashboardMonitoDocument = () => {
                 )}
               </Lazy>
               <Lazy deps={[ctx.dataFiltered, ctx.dataPreviousPeriod]} fn={d => ChartHelper.percentage({
-                data: getIdpsAnsweringRegistrationQuestion(d).filter(_ => _.age && _.age >= 18 && _.age <= 60 && _.gender && _.gender === Person.Gender.Male),
+                data: getIdpsAnsweringRegistrationQuestion(d).filter(_ => _.age && _.age >= 25 && _.age <= 60 && _.gender && _.gender === Person.Gender.Male),
                 value: _ => _.isIdpRegistered !== 'yes' && _.are_you_and_your_hh_members_registered_as_idps !== 'yes_all'
               })}>
                 {(d, l) => (
-                  <ChartPieWidget sx={{flex: 1}} title={m.protHHSnapshot.male1860} value={d.value} base={d.base} evolution={d.percent - l.percent}/>
+                  <ChartPieWidget sx={{flex: 1}} title={m.protHHSnapshot.maleYoung} value={d.value} base={d.base} evolution={d.percent - l.percent}/>
                 )}
               </Lazy>
             </Div>
           </SlidePanel>
-          <Lazy deps={[ctx.dataFlat]} fn={() => ChartHelper.byCategory({
-            data: ctx.dataFlat,
+          <Lazy deps={[ctx.dataFlatFiltered]} fn={() => ChartHelper.byCategory({
+            data: ctx.dataFlatFiltered,
             categories: ctx.categoryOblasts('where_are_you_current_living_oblast'),
             filter: _ => !_.lackDoc?.includes('none'),
             filterBase: _ => _.lackDoc !== undefined,

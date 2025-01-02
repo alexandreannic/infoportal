@@ -1,5 +1,3 @@
-import {Obj, seq} from '@alexandreannic/ts-utils'
-
 const koboIndex = {
   safety_incident: 'aAJNkn7v9fRL2XqQCgEkXf',
   ecrec_cashRegistration: 'aE5md7RfHiy4LJmddoFAQH',
@@ -9,6 +7,9 @@ const koboIndex = {
   ecrec_msmeGrantSelection: 'aQkWZkWjVpJsqZ3tYtuwFZ',
   ecrec_msmeGrantEoi: 'awYf9G3sZB4grG8S4w3Wt8',
   ecrec_msmeGrantReg: 'aoJppKLX7QvSkMYokUfEjB',
+  ecrec_vet2_dmfa: 'ag34YtGDQiW5FstyAxzy5P',
+  ecrec_vet_bha388: 'aLEGqicGyzkZCeCYeWqEyG',
+  ecrec_msme_bha388: 'aoJppKLX7QvSkMYokUfEjB',
   bn_rapidResponse: 'aMJL9DG8qEcULqTZTKQbrq',
   bn_rapidResponse2: 'adpuqZypnqHb8LNfX49iA5',
   bn_cashForRentApplication: 'aBupWbhtUmA7so3532tYLa',
@@ -25,10 +26,12 @@ const koboIndex = {
   bn_rapidResponseSida: 'aTJRd5zLdPHcEhGDovh9dW',
   meal_verificationEcrec: 'aEN2tkQhpsfX4G3i6Re7bi',
   meal_verificationWinterization: 'aAWVLi8bSb2S8bHc5CcL8i',
+  meal_verificationPartnerBnre: 'awDJ8L8B77AvV9SDLYPis9',
   meal_visitMonitoring: 'a8GkjWBQDfxVADGHWJDrUw',
   meal_pdmStandardised: 'aCWKwfvJ6F48HxUZTrr9L7',
   meal_cashPdm: 'aEKoPVd36PLRrmqWgk42DG',
   meal_shelterPdm: 'a7iHZCW28ncZY7iDcqVF49',
+  meal_nfiPdm: 'aLyuPbbNSWsW6rcAixq3Eu',
   meal_cfmInternal: 'aN3Y8JeH2fU3GthrWAs9FG',
   meal_cfmExternal: 'aJaGLvGEdpYWk5ift8k87y',
   shelter_nta: 'aL8oHMzJJ9soPepvK6YU9E',
@@ -47,16 +50,24 @@ const koboIndex = {
   protection_referral: 'a62ZpworuN4nFLznsUej8r',
   protection_counselling: 'a2ck63vPA7hkk8aEhNTSUJ',
   protection_gbvSocialProviders: 'aKrbJdapRxfdPgXb3KqzHd',
+  protection_pfa_training_test:'a68LY3yZUXn6iTNvDCivtB',
   partnership_partnersDatabase: 'aLs32U5Qc9HfQ5mxQtsEML',
   partnership_initialQuestionnaire: 'a6u7CBysEz746Hdx6pVLzp',
   partnership_assessment: 'aLD2Xc9cKSY22c5cAP5utT',
-  pseah_training_tracker: 'aRBEzakmsMPpw8VoJG8Gpk'
+  pseah_training_tracker: 'aRBEzakmsMPpw8VoJG8Gpk',
+  partner_pomogaem: 'awpFpKtZZYEDuaZbqPi944',
+  partner_lampa: 'axkkzwvccFtUkkL3BzSSnW',
+  partner_angels: 'aSK3rbp4gbRWmaGUL5eN5v',
+  partner_misto_syly: 'aHr7429Q2n2YvBBJunx7b9',
 }
+
+import {Obj, seq} from '@alexandreannic/ts-utils'
 
 const koboFormById: Record<string, KoboFormName> = seq(Obj.entries(koboIndex)).reduceObject(([k, v]) => [v, k])
 
 const koboFormTranslation: Record<KoboFormName, string> = {
   safety_incident: '[Safety] Incident tracker',
+  ecrec_vet_bha388: '[Ecrec] VET BHA388 grant registration form',
   ecrec_vetApplication: `[Ecrec] VET - Training grants - we are now accepting applications / Гранти на навчання — відкриваємо прийом заявок`,
   ecrec_vetEvaluation: `[Ecrec] VET - Candidate evaluation`,
   ecrec_cashRegistration: '[Ecrec] Cash Registration Agricultural Inputs',
@@ -64,6 +75,8 @@ const koboFormTranslation: Record<KoboFormName, string> = {
   ecrec_msmeGrantSelection: '[Ecrec] MSME Grant Selection',
   ecrec_msmeGrantEoi: '[Ecrec] MSME EOI',
   ecrec_msmeGrantReg: '[Ecrec] MSME grant registration form',
+  ecrec_vet2_dmfa: '[Ecrec] VET DMFA355 grant registration form',
+  ecrec_msme_bha388: '[Ecrec] MSME grant registration form {BHA388}',
   bn_rapidResponse: '[Basic Needs] Rapid Response Mechanism',
   bn_rapidResponse2: '[Basic Needs] Rapid Response Mechanism v2',
   bn_cashForRentApplication: '[Basic Needs] Cash for Rent Application',
@@ -77,10 +90,12 @@ const koboFormTranslation: Record<KoboFormName, string> = {
   bn_0_mpcaRegESign: '[Basic Needs] v0 MPCA Registration (GREENLIGHT WITH ESIGNATURE)',
   bn_re: '[Basic Needs] Registration and Evaluation Form',
   bn_rapidResponseSida: '[Basic Needs] RRM SIDA',
+  meal_verificationPartnerBnre: '[MEAL] Verification Partner BNRE',
   meal_visitMonitoring: '[MEAL] Field Visit Monitoring',
   meal_pdmStandardised: '[MEAL] MPCA Standardised PDM',
   meal_cashPdm: '[MEAL] Cash PDM',
   meal_shelterPdm: '[MEAL] Shelter PDM',
+  meal_nfiPdm: '[MEAL] NFI PDM',
   meal_cfmInternal: '[MEAL] Cfm Internal',
   meal_cfmExternal: '[MEAL] Cfm External',
   meal_verificationEcrec: '[MEAL] Verification EcRec',
@@ -102,10 +117,15 @@ const koboFormTranslation: Record<KoboFormName, string> = {
   protection_gbvSocialProviders: '[Protection] GBV Survey for social service providers',
   protection_coc: '[Protection] GBV PSEAH & CoC Training',
   protection_referral: '[Protection] Referral Tracking Form',
+  protection_pfa_training_test:'[Protection] PFA Training - Pre/post test',
   partnership_assessment: '[Partnership] CBP CSO Assessment',
   partnership_initialQuestionnaire: '[Partnership] CBP CSO Initial Questionnaire',
   partnership_partnersDatabase: '[Partnership] DRC Partners Database',
-  pseah_training_tracker: 'DRC - PSEAH Training tracker'
+  pseah_training_tracker: 'DRC - PSEAH Training tracker',
+  partner_pomogaem: '[Verification] DRC_Pomagaem_UHF',
+  partner_lampa: '[Verification] NGO LAMPA CASH FOR SOLID FUEL',
+  partner_angels: '[Verification] UKRF №155 DRC-200 Реєстрація на отримання грошей на паливо',
+  partner_misto_syly: '[Verification] DRC-203 (Misto Syly)',
 }
 
 export type KoboFormName = keyof typeof koboIndex

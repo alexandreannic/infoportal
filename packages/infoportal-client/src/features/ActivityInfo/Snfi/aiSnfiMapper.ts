@@ -6,7 +6,7 @@ import {aiInvalidValueFlag, AiTable, checkAiValid} from '@/features/ActivityInfo
 import {AiSnfiType} from '@/features/ActivityInfo/Snfi/aiSnfiType'
 import {AiMapper} from '@/features/ActivityInfo/shared/AiMapper'
 import {activitiesConfig} from '@/features/ActivityInfo/ActivityInfo'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 
 export namespace AiShelterMapper {
 

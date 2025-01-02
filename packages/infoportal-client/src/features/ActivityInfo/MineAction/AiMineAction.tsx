@@ -8,7 +8,7 @@ import {AiMineActionType} from '@/features/ActivityInfo/MineAction/aiMineActionT
 import {ActivityInfoSdk} from '@/core/sdk/server/activity-info/ActiviftyInfoSdk'
 import {activitiesConfig} from '@/features/ActivityInfo/ActivityInfo'
 import {AiMapper} from '@/features/ActivityInfo/shared/AiMapper'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 
 
 type Bundle = AiTable<AiMineActionType.Type, AiMineActionType.TypeSub>

@@ -2,6 +2,11 @@
   "name": "infoportal",
   "requires": true,
   "scripts": {
+    "server": "npm run dev --workspace infoportal-server",
+    "client": "npm run dev --workspace infoportal-client",
+    "kobo-sdk": "npm run dev --workspace kobo-sdk",
+    "common": "npm run dev --workspace infoportal-common",
+    "db-migrate-f": "npm run db-migrate-f --workspace infoportal-server",
     "test": "npx jest"
   },
   "workspaces": [

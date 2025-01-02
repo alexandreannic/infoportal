@@ -1,24 +1,26 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {KoboAnswerFlat, KoboAnswerId, KoboFormName, KoboId, KoboIndex, KoboSchemaHelper} from 'infoportal-common'
+import {KoboIndex, KoboSchemaHelper, KoboSubmissionFlat} from 'infoportal-common'
 import {InferTypedAnswer, KoboFormNameMapped} from '@/core/sdk/server/kobo/KoboTypedAnswerSdk'
 import {FetchParams, useFetchers} from '@/shared/hook/useFetchers'
 import React, {ReactNode, useContext, useMemo, useState} from 'react'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
-import {Kobo, KoboMappedAnswer} from '@/core/sdk/server/kobo/Kobo'
+import {KoboMappedAnswer, KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
 import {DatabaseKoboAnswerViewDialog} from '@/features/Database/KoboEntry/DatabaseKoboAnswerView'
+import {Kobo} from 'kobo-sdk'
+import {KoboFormName} from 'infoportal-common'
 
 const Context = React.createContext({} as KoboAnswersContext)
 
 export interface OpenModalProps {
-  answer: KoboAnswerFlat<any, any>
-  formId: KoboId
+  answer: KoboSubmissionFlat<any, any>
+  formId: Kobo.FormId
 }
 
 export type KoboAnswersContext = {
-  openAnswerModal: (_: OpenModalProps) => void
-  byId: (id: KoboId) => {
-    find: (_: KoboAnswerId) => KoboMappedAnswer | undefined
+  openView: (_: OpenModalProps) => void
+  byId: (id: Kobo.FormId) => {
+    find: (_: Kobo.SubmissionId) => KoboMappedAnswer | undefined
     set: (value: ApiPaginate<KoboMappedAnswer>) => void,
     fetch: (p?: FetchParams,) => Promise<ApiPaginate<KoboMappedAnswer>>,
     get: undefined | ApiPaginate<KoboMappedAnswer>,
@@ -42,7 +44,7 @@ export const KoboAnswersProvider = ({
 
   const getMappedRequest = (_?: KoboFormName) => api.kobo.typedAnswers.searchByAccess[_ as KoboFormNameMapped]
 
-  const fetcher = useFetchers(async (id: KoboAnswerId) => {
+  const fetcher = useFetchers(async (id: Kobo.SubmissionId) => {
     const mappedReq = getMappedRequest(KoboIndex.searchById(id)?.name)
     if (mappedReq as any) {
       return mappedReq({})
@@ -53,7 +55,7 @@ export const KoboAnswersProvider = ({
       ])
       return {
         ...answers,
-        data: answers.data.map(_ => Kobo.mapAnswerBySchema(schema.questionIndex, _))
+        data: answers.data.map(_ => KoboMapper.mapAnswerBySchema(schema.questionIndex, _))
       }
     }
   }, {requestKey: _ => _[0]})
@@ -70,7 +72,7 @@ export const KoboAnswersProvider = ({
           return fetcher.fetch(p, KoboIndex.byName(name).id) as any
         },
       }),
-      byId: (id: KoboAnswerId) => ({
+      byId: (id: Kobo.SubmissionId) => ({
         set: (value: ApiPaginate<KoboMappedAnswer>) => {
           fetcher.getAsMap.set(id, value as any)
         },
@@ -78,7 +80,7 @@ export const KoboAnswersProvider = ({
         fetch: (p: FetchParams = {}): Promise<ApiPaginate<KoboMappedAnswer>> => {
           return fetcher.fetch(p, id) as any
         },
-        find: (answerId: KoboAnswerId) => {
+        find: (answerId: Kobo.SubmissionId) => {
           return fetcher.get[id]?.data.find(_ => _.id === answerId) as KoboMappedAnswer
         },
         loading: fetcher.loading[id],
@@ -86,21 +88,21 @@ export const KoboAnswersProvider = ({
     }
   }, [fetcher.getAsMap])
 
-  const [modalAnswerOpen, setModalAnswerOpen] = useState<OpenModalProps | undefined>()
+  const [editPopup, setEditPopup] = useState<OpenModalProps | undefined>()
 
   return (
     <Context.Provider value={{
       byId,
       byName,
-      openAnswerModal: setModalAnswerOpen
+      openView: setEditPopup
     }}>
       {children}
-      {modalAnswerOpen && (
+      {editPopup && (
         <DatabaseKoboAnswerViewDialog
           open={true}
-          onClose={() => setModalAnswerOpen(undefined)}
-          answer={modalAnswerOpen.answer}
-          formId={modalAnswerOpen.formId}
+          onClose={() => setEditPopup(undefined)}
+          answer={editPopup.answer}
+          formId={editPopup.formId}
         />
       )}
     </Context.Provider>

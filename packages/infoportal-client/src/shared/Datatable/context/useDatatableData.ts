@@ -68,7 +68,7 @@ export const useDatatableData = <T extends DatatableRow>({
             const bv = (col.render(b).value as Date).getTime() ?? 0
             return (av - bv) * (search.orderBy === 'asc' ? -1 : 1)
           } catch (e) {
-            console.warn('Invalid date', col.render(a).value)
+            // console.warn('Invalid date', col.render(a).value)
             return -1
           }
         },

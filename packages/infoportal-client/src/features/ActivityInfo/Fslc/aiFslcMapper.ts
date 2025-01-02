@@ -7,7 +7,7 @@ import {activitiesConfig} from '@/features/ActivityInfo/ActivityInfo'
 import {aiInvalidValueFlag, AiTable, checkAiValid} from '@/features/ActivityInfo/shared/AiTable'
 import {AiMapper} from '@/features/ActivityInfo/shared/AiMapper'
 import {IKoboMeta, KoboMetaEcrecTags} from 'infoportal-common'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 
 export namespace AiFslcMapper {
   export type Bundle = AiTable<AiFslcType.Type>

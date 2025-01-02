@@ -1,8 +1,8 @@
 import {Alert, Box, Dialog, DialogActions, DialogContent, DialogTitle, Icon, Skeleton, Switch, useTheme} from '@mui/material'
 import {IpBtn} from '@/shared/Btn'
 import {useI18n} from '@/core/i18n'
-import {KoboMappedAnswer} from '@/core/sdk/server/kobo/Kobo'
-import {KoboApiQuestionSchema, KoboId, KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
+import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
+import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
 import React, {useEffect, useMemo, useState} from 'react'
 import {KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {Txt} from '@/shared/Txt'
@@ -18,6 +18,7 @@ import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {map, seq} from '@alexandreannic/ts-utils'
 import {NavLink} from 'react-router-dom'
 import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/columnBySchema'
+import {Kobo} from 'kobo-sdk'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -80,7 +81,7 @@ export const DatabaseKoboAnswerViewDialog = ({
   formId,
   answer,
 }: {
-  formId: KoboId
+  formId: Kobo.FormId
   answer: KoboMappedAnswer<any>
   onClose: () => void
   open: boolean
@@ -133,7 +134,7 @@ const KoboAnswerFormView = ({
   schema: KoboSchemaHelper.Bundle
   showQuestionWithoutAnswer?: boolean
   answer: KoboMappedAnswer<any>
-  formId: KoboId
+  formId: Kobo.FormId
 }) => {
   return (
     <Box>
@@ -160,9 +161,9 @@ const KoboAnswerQuestionView = ({
   answer: row,
   formId,
 }: {
-  formId: KoboId
+  formId: Kobo.FormId
   schema: KoboSchemaHelper.Bundle
-  questionSchema: NonNullableKey<KoboApiQuestionSchema, 'name'>
+  questionSchema: NonNullableKey<Kobo.Form.Question, 'name'>
   answer: KoboMappedAnswer<any>
 }) => {
   const langIndex = useKoboSchemaContext()

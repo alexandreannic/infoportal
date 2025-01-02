@@ -16,7 +16,7 @@ import {
 import {KoboAnswerFilter} from '../kobo/KoboService'
 import {WfpDeduplicationService} from '../wfpDeduplication/WfpDeduplicationService'
 import {appConf} from '../../core/conf/AppConf'
-import {KoboSyncServer} from '../kobo/KoboSyncServer'
+import {KoboSyncServer} from '../kobo/sync/KoboSyncServer'
 import {KoboMetaService} from '../kobo/meta/KoboMetaService'
 import {addMonths} from 'date-fns'
 

@@ -1,5 +1,6 @@
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
-import {KoboApiSchema, KoboFormName, KoboId, KoboIndex, KoboSchemaHelper} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
+import {KoboFormName, KoboIndex, KoboSchemaHelper} from 'infoportal-common'
 import {useI18n} from '@/core/i18n'
 import {useFetchers} from '@/shared/hook/useFetchers'
 import {useAppSettings} from '@/core/context/ConfigContext'
@@ -23,10 +24,10 @@ export interface KoboSchemaContext {
   clearCache: () => void
   langIndex: number
   setLangIndex: Dispatch<SetStateAction<number>>
-  fetchById: (id: KoboId) => Promise<KoboApiSchema>
-  fetchByName: (name: KoboFormName) => Promise<KoboApiSchema>
-  byId: Record<KoboId, SchemaContextRes | undefined>
-  byId2: (_: KoboId) => SchemaContextRes
+  fetchById: (id: Kobo.FormId) => Promise<Kobo.Form>
+  fetchByName: (name: KoboFormName) => Promise<Kobo.Form>
+  byId: Record<Kobo.FormId, SchemaContextRes | undefined>
+  byId2: (_: Kobo.FormId) => SchemaContextRes
   byName: Record<KoboFormName, SchemaContextRes>
 }
 
@@ -41,7 +42,7 @@ export const KoboSchemaProvider = ({
   const [langIndex, setLangIndex] = useState<number>(defaultLangIndex)
   const {toastHttpError} = useIpToast()
 
-  const {anyLoading, anyError, clearCache, ...fetchers} = useFetchers((id: KoboId) => {
+  const {anyLoading, anyError, clearCache, ...fetchers} = useFetchers((id: Kobo.FormId) => {
     return api.koboApi.getSchema({id}).catch(e => {
       toastHttpError(e)
       throw e
@@ -52,7 +53,7 @@ export const KoboSchemaProvider = ({
 
   const by = useMemo(() => {
     const bundles: {
-      byId: Record<KoboId, SchemaContextRes | undefined>
+      byId: Record<Kobo.FormId, SchemaContextRes | undefined>
       byName: Record<KoboFormName, SchemaContextRes>
     } = {byId: {}, byName: {} as any}
     Obj.entries(fetchers.get).forEach(([id, schema]) => {
@@ -78,10 +79,10 @@ export const KoboSchemaProvider = ({
       anyLoading,
       anyError,
       clearCache,
-      fetchById: (id: KoboId) => fetchers.fetch({force: false, clean: false}, id),
+      fetchById: (id: Kobo.FormId) => fetchers.fetch({force: false, clean: false}, id),
       fetchByName: (name: KoboFormName) => fetchers.fetch({force: false, clean: false}, KoboIndex.byName(name).id),
       byId: by.byId,
-      byId2: (_: KoboId) => by.byId[_] ?? {},
+      byId2: (_: Kobo.FormId) => by.byId[_] ?? {},
       byName: by.byName,
     }}>
       {children}

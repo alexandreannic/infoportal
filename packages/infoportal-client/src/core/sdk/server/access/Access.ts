@@ -1,5 +1,6 @@
 import {AppFeatureId} from '@/features/appFeatureId'
-import {CfmDataProgram, DrcJob, DrcOffice, KoboFormName, KoboId, KoboIndex, UUID} from 'infoportal-common'
+import {CfmDataProgram, DrcJob, DrcOffice, KoboFormName, KoboIndex, UUID} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
 
 export enum AccessLevel {
   Read = 'Read',
@@ -32,7 +33,7 @@ export interface WfpDeduplicationAccessParams {
 }
 
 export interface KoboDatabaseAccessParams {
-  koboFormId: KoboId,
+  koboFormId: Kobo.FormId,
   filters?: Record<string, string[]>
 }
 

@@ -10,7 +10,8 @@ import {Modal, Txt} from '@/shared'
 import {useAsync} from '@/shared/hook/useAsync'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useSession} from '@/core/Session/SessionContext'
-import {KoboId, KoboIndex} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
+import {KoboIndex} from 'infoportal-common'
 import {AppFeatureId} from '@/features/appFeatureId'
 import {databaseIndex} from '@/features/Database/databaseIndex'
 import Link from 'next/link'
@@ -26,7 +27,7 @@ export const MealVerificationLinkToForm = ({
   koboFormId,
   sx,
 }: {
-  koboFormId: KoboId
+  koboFormId: Kobo.FormId
 } & Pick<BoxProps, 'sx'>) => {
   const {conf} = useAppSettings()
   return (

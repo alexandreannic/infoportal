@@ -1,5 +1,5 @@
 import {ApiClient} from '../ApiClient'
-import {KoboServer} from './Kobo'
+import {KoboServer} from './KoboMapper'
 
 export class KoboServerSdk {
 

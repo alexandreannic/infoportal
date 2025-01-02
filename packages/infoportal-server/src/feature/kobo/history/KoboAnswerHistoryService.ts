@@ -1,13 +1,14 @@
 import {Prisma, PrismaClient} from '@prisma/client'
 import {app, AppLogger} from '../../../index'
 import {KoboAnswerHistoryHelper} from './KoboAnswerHistoryType'
-import {ApiPaginateHelper, KoboAnswerId, KoboId} from 'infoportal-common'
+import {ApiPaginateHelper} from 'infoportal-common'
 import {Obj, seq} from '@alexandreannic/ts-utils'
+import {Kobo} from 'kobo-sdk'
 
 type Create = {
   authorEmail: string
-  formId: KoboId
-  answerIds: KoboAnswerId[]
+  formId: Kobo.FormId
+  answerIds: Kobo.SubmissionId[]
 } & ({
   type: 'answer' | 'tag'
   newValue: any

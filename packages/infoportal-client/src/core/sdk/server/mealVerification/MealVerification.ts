@@ -1,4 +1,5 @@
-import {KoboAnswerId, KoboId, UUID} from 'infoportal-common'
+import {UUID} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
 
 export class MealVerificationHelper {
 
@@ -20,14 +21,14 @@ export enum MealVerificationAnswersStatus {
 
 export interface MealVerificationAnsers {
   id: UUID
-  koboAnswerId: KoboAnswerId
+  koboAnswerId: Kobo.SubmissionId
   status?: MealVerificationAnswersStatus
 }
 
 
 export interface MealVerification {
   id: UUID
-  activity: KoboId
+  activity: Kobo.FormId
   name: string
   desc?: string
   createdAt: Date

@@ -2,7 +2,8 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {fnSwitch, Obj, seq} from '@alexandreannic/ts-utils'
 import React, {useMemo, useState} from 'react'
 import {alpha, Box, Icon, Tooltip, useTheme} from '@mui/material'
-import {KoboAnswerFlat, KoboApiQuestionSchema, KoboApiSchema, KoboSchemaHelper, NonNullableKey, toPercent} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
+import {KoboSubmissionFlat, KoboSchemaHelper, NonNullableKey, toPercent} from 'infoportal-common'
 import {useI18n} from '@/core/i18n'
 import {Panel} from '@/shared/Panel'
 import {ChartPieWidget} from '@/shared/charts/ChartPieWidget'
@@ -12,7 +13,7 @@ import {TableIcon, TableIconBtn} from '@/features/Mpca/MpcaData/TableIcon'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {MealVerification, MealVerificationAnsers, MealVerificationAnswersStatus} from '@/core/sdk/server/mealVerification/MealVerification'
-import {MealVerificationActivity, mealVerificationConf} from '@/features/Meal/Verification/mealVerificationConfig'
+import {MealVerificationActivity, mealVerificationConf, VerifiedColumnsMapping} from '@/features/Meal/Verification/mealVerificationConfig'
 import {useAsync} from '@/shared/hook/useAsync'
 import {useMealVerificationContext} from '@/features/Meal/Verification/MealVerificationContext'
 import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
@@ -36,8 +37,8 @@ interface ComputedCell {
 
 interface ComputedRow {
   score: number
-  rowReg: KoboAnswerFlat<any>
-  rowVerif: KoboAnswerFlat<any>
+  rowReg: KoboSubmissionFlat<any>
+  rowVerif: KoboSubmissionFlat<any>
   verifiedData: Record<string, ComputedCell>
   status: Status
 }
@@ -70,8 +71,8 @@ export type MealVerificationBundle<
 > = {
   mealVerification: MealVerification
   activity: MealVerificationActivity<TReg, TVerif>
-  schemaReg: KoboApiSchema
-  schemaVerif: KoboApiSchema
+  schemaReg: Kobo.Form
+  schemaVerif: Kobo.Form
   dataReg: InferTypedAnswer<TReg>[]
   dataVerif: InferTypedAnswer<TVerif>[]
   toVerify: MealVerificationAnsers[]
@@ -106,7 +107,7 @@ export const MealVerificationDataTable = <
   const indexToVerify = useMemo(() => seq(toVerify).groupByFirst(_ => _.koboAnswerId), [toVerify])
   const asyncUpdateAnswer = useAsync(api.mealVerification.updateAnswers, {requestKey: _ => _[0]})
 
-  const [openModalAnswer, setOpenModalAnswer] = useState<KoboAnswerFlat<any> | undefined>()
+  const [openModalAnswer, setOpenModalAnswer] = useState<KoboSubmissionFlat<any> | undefined>()
   const [display, setDisplay] = useState<'reg' | 'verif' | 'both'>('both')
 
   const {schemaReg, schemaVerif} = useMemo(() => {
@@ -118,14 +119,16 @@ export const MealVerificationDataTable = <
 
   const harmonizedVerifiedColumns = useMemo(() => {
     return Obj.mapValues(activity.verifiedColumns as any, ((_, col) => {
-      return {
-        reg: (_: InferTypedAnswer<TReg>, schema: KoboSchemaHelper.Bundle) => {
-          return schema.translate.choice(col as any, (_ as any)[col])
-        },
-        verif: (_: InferTypedAnswer<TVerif>, schema: KoboSchemaHelper.Bundle) => {
-          return schema.translate.choice(col as any, (_ as any)[col])
-        },
-      }
+      if (_ === 'AUTO_MAPPING')
+        return {
+          reg: (_: InferTypedAnswer<TReg>, schema: KoboSchemaHelper.Bundle) => {
+            return schema.translate.choice(col as any, (_ as any)[col])
+          },
+          verif: (_: InferTypedAnswer<TVerif>, schema: KoboSchemaHelper.Bundle) => {
+            return schema.translate.choice(col as any, (_ as any)[col])
+          },
+        }
+      return _ as VerifiedColumnsMapping<TReg, TVerif>
     }))
   }, [schemaReg, schemaVerif, activity.verifiedColumns])
 
@@ -332,7 +335,7 @@ export const MealVerificationDataTable = <
               },
             },
             ...activity.dataColumns?.flatMap(c => {
-              const q = schemaReg.helper.questionIndex[c] as NonNullableKey<KoboApiQuestionSchema, 'name'>
+              const q = schemaReg.helper.questionIndex[c] as NonNullableKey<Kobo.Form.Question, 'name'>
               if (!q.name) return []
               return columnBySchemaGenerator({
                 formId: activity.registration.koboFormId,
@@ -361,6 +364,7 @@ export const MealVerificationDataTable = <
                   const reg = _.verifiedData[id]?.valueReg
                   const verif = _.verifiedData[id]?.valueVerif ?? <TableIcon color="disabled">block</TableIcon>
                   return {
+                    export: reg + ' <=> ' + verif,
                     value: _.verifiedData[id].equals ? '1' : '0',
                     label: fnSwitch(display, {
                       reg,

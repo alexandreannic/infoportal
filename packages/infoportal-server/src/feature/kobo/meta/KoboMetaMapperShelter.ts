@@ -9,7 +9,6 @@ import {
   DrcProjectHelper,
   DrcSector,
   DrcSectorHelper,
-  KoboAnswerUtils,
   KoboGeneralMapping,
   KoboIndex,
   KoboMetaHelper,
@@ -28,6 +27,7 @@ import {
 } from 'infoportal-common'
 import {KoboMetaOrigin} from './KoboMetaType'
 import {KoboMetaMapper, MetaMapperInsert, MetaMapperMerge} from './KoboMetaService'
+import {KoboHelper} from 'infoportal-common'
 
 export namespace KoboMetaMapperShelter {
 
@@ -74,9 +74,9 @@ export namespace KoboMetaMapperShelter {
       lastStatusUpdate: row.tags?.lastStatusUpdate,
       passportNum: answer.pay_det_pass_num,
       taxIdFileName: answer.pay_det_tax_id_ph,
-      taxIdFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
+      taxIdFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
       idFileName: answer.pay_det_id_ph,
-      idFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_id_ph),
+      idFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_id_ph),
     })
   }
 
@@ -115,9 +115,9 @@ export namespace KoboMetaMapperShelter {
       lastStatusUpdate: row.tags?.lastStatusUpdate,
       passportNum: answer.pay_det_pass_num,
       taxIdFileName: answer.pay_det_tax_id_ph,
-      taxIdFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
+      taxIdFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
       idFileName: answer.pay_det_id_ph,
-      idFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_id_ph),
+      idFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_id_ph),
     })
   }
 
@@ -156,9 +156,9 @@ export namespace KoboMetaMapperShelter {
       lastStatusUpdate: row.tags?.lastStatusUpdate,
       passportNum: answer.pay_det_pass_num,
       taxIdFileName: answer.pay_det_tax_id_ph,
-      taxIdFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
+      taxIdFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
       idFileName: answer.pay_det_id_ph,
-      idFileUrl: KoboAnswerUtils.findFileUrl(row.attachments, answer.pay_det_id_ph),
+      idFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_id_ph),
     })
   }
 

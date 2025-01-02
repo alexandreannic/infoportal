@@ -1,8 +1,7 @@
-import {Protection_hhs3} from '../generated/Protection_hhs3'
-import {KoboAnswerFlat, KoboBaseTags, PersonDetails} from './Common'
-import {Protection_hhs2} from '../generated/Protection_hhs2'
-import {DrcDonor, DrcProject} from '../../type/Drc'
-import {KoboGeneralMapping} from './KoboMapper'
+import {Protection_hhs2, Protection_hhs3} from '../generated'
+import {KoboBaseTags, KoboSubmissionFlat, PersonDetails} from './Kobo'
+import {DrcProject} from '../../type/Drc'
+import {KoboGeneralMapping} from './KoboMapperPerson'
 
 export namespace KoboProtection_hhs3 {
 
@@ -11,11 +10,11 @@ export namespace KoboProtection_hhs3 {
     isIdpRegistered: Protection_hhs2.T['is_member_1_registered']
   }
 
-  export type T = KoboAnswerFlat<Omit<Protection_hhs3.T, 'hh_char_hh_det'>, ProtectionHhsTags> & {
+  export type T = KoboSubmissionFlat<Omit<Protection_hhs3.T, 'hh_char_hh_det'>, ProtectionHhsTags> & {
     persons: Person[]
   }
 
-  export const map = (d: KoboAnswerFlat<Protection_hhs3.T, ProtectionHhsTags>): KoboAnswerFlat<T, ProtectionHhsTags> => {
+  export const map = (d: KoboSubmissionFlat<Protection_hhs3.T, ProtectionHhsTags>): KoboSubmissionFlat<T, ProtectionHhsTags> => {
     const r: T = d as unknown as T
     r.persons = d.hh_char_hh_det?.map((_, i) => {
       return {
@@ -45,6 +44,8 @@ export const currentProtectionProjects = [
   DrcProject['UKR-000226 SDC'],
   DrcProject['UKR-000309 OKF'],
   DrcProject['UKR-000372 ECHO3'],
+  DrcProject['UKR-000355 Danish MFA'],
+  DrcProject['UKR-000397 GFFO'],
   DrcProject['None'],
 ]
 

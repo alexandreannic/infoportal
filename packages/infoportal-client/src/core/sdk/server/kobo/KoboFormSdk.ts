@@ -1,10 +1,11 @@
 import {ApiClient} from '../ApiClient'
-import {KoboForm, KoboFormHelper} from './Kobo'
-import {KoboId, UUID} from 'infoportal-common'
+import {KoboForm, KoboFormHelper} from './KoboMapper'
+import {UUID} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
 
 export interface KoboFormCreate {
   serverId: UUID
-  uid: KoboId
+  uid: Kobo.FormId
 }
 
 interface KoboParsedFormName {

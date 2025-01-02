@@ -6,12 +6,13 @@ import {KoboService} from '../KoboService'
 import {duration, map, Obj, seq, Seq} from '@alexandreannic/ts-utils'
 import {KoboMetaMapperEcrec} from './KoboMetaMapperEcrec'
 import {KoboMetaMapperShelter} from './KoboMetaMapperShelter'
-import {DrcDonor, DrcProgram, DrcProject, IKoboMeta, KeyOf, KoboId, KoboIndex, KoboMetaStatus, PersonDetails, UUID} from 'infoportal-common'
+import {DrcDonor, DrcProgram, DrcProject, IKoboMeta, KeyOf, KoboIndex, KoboMetaStatus, PersonDetails, UUID} from 'infoportal-common'
 import {appConf} from '../../../core/conf/AppConf'
 import {genUUID, yup} from '../../../helper/Utils'
 import {InferType} from 'yup'
 import {KoboMetaMapperProtection} from './KoboMetaMapperProtection'
 import {PromisePool} from '@supercharge/promise-pool'
+import {Kobo} from 'kobo-sdk'
 import Event = GlobalEvent.Event
 
 export type MetaMapped<TTag extends Record<string, any> = any> = Omit<IKoboMeta<TTag>, 'koboId' | 'id' | 'uuid' | 'updatedAt' | 'formId' | 'date'> & {date?: Date}
@@ -33,7 +34,7 @@ export class KoboMetaMapper {
     return _ as any
   }
 
-  static readonly mappersCreate: Record<KoboId, MetaMapperInsert> = {
+  static readonly mappersCreate: Record<Kobo.FormId, MetaMapperInsert> = {
     [KoboIndex.byName('bn_re').id]: KoboMetaBasicneeds.bn_re,
     [KoboIndex.byName('bn_rapidResponse').id]: KoboMetaBasicneeds.bn_rrm,
     [KoboIndex.byName('bn_rapidResponse2').id]: KoboMetaBasicneeds.bn_rrm2,
@@ -52,7 +53,7 @@ export class KoboMetaMapper {
     [KoboIndex.byName('ecrec_vetApplication').id]: KoboMetaMapperEcrec.vetApplication,
     [KoboIndex.byName('ecrec_msmeGrantEoi').id]: KoboMetaMapperEcrec.msmeEoi,
   }
-  static readonly mappersUpdate: Record<KoboId, MetaMapperMerge> = {
+  static readonly mappersUpdate: Record<Kobo.FormId, MetaMapperMerge> = {
     [KoboIndex.byName('shelter_ta').id]: KoboMetaMapperShelter.updateTa,
     [KoboIndex.byName('ecrec_vetEvaluation').id]: KoboMetaMapperEcrec.vetEvaluation,
     [KoboIndex.byName('ecrec_msmeGrantSelection').id]: KoboMetaMapperEcrec.msmeSelection,
@@ -139,14 +140,14 @@ export class KoboMetaService {
     }
   })
 
-  private info = (formId: KoboId, message: string) => this.log.info(`${KoboIndex.searchById(formId)?.translation ?? formId}: ${message}`)
-  private debug = (formId: KoboId, message: string) => this.log.debug(`${KoboIndex.searchById(formId)?.translation ?? formId}: ${message}`)
+  private info = (formId: Kobo.FormId, message: string) => this.log.info(`${KoboIndex.searchById(formId)?.translation ?? formId}: ${message}`)
+  private debug = (formId: Kobo.FormId, message: string) => this.log.debug(`${KoboIndex.searchById(formId)?.translation ?? formId}: ${message}`)
 
   private syncMerge = async ({
     formId,
     mapper,
   }: {
-    formId: KoboId
+    formId: Kobo.FormId
     mapper: MetaMapperMerge,
   }) => {
     const destinationFormId = Obj.entries(KoboMetaMapper.triggerUpdate).find(_ => _[1].includes(formId))![0]
@@ -199,7 +200,7 @@ export class KoboMetaService {
     formId,
     mapper,
   }: {
-    formId: KoboId
+    formId: Kobo.FormId
     mapper: MetaMapperInsert,
   }) => {
     this.debug(formId, `Fetch Kobo answers...`)

@@ -89,6 +89,8 @@ export enum DrcProgram {
   CapacityBuilding = 'CapacityBuilding',
   MHPSSActivities = 'MHPSSActivities',
   PGS = 'PsychosocialGroupSession',
+  PIS = 'PsychosocialIndividualSession',
+  PFA = 'PsychologicalFirstAid',
 }
 
 export class DrcSectorHelper {
@@ -126,6 +128,8 @@ export class DrcSectorHelper {
     CaseManagement: [DrcSector.GBV],	//	# of individuals reached with humanitarian cash and voucher assistance for GBV case management and
     AwarenessRaisingSession: [DrcSector.GeneralProtection, DrcSector.GBV],	//	# of individuals reached with awareness-raising activities and GBV-life-saving information
     LegalAid: [DrcSector.GBV],	//	# of individuals at risk supported with GBV specialized legal assistance and counseling
+    PsychosocialIndividualSession: [DrcSector.PSS],
+    PsychologicalFirstAid: [DrcSector.PSS],
     //	# of operational women and girls\' safe spaces
     // CapacityBuilding: DrcSector.GBV,	//	# of GBV service providers trained on GBV prevention and response that meet GBViE minimum standards
   } as const
@@ -230,7 +234,7 @@ export enum DrcProject {
   'UKR-000269 ECHO1' = 'UKR-000269 ECHO1',
   'UKR-000270 Pooled Funds' = 'UKR-000270 Pooled Funds',
   'UKR-000270 Pooled Funds Old (MPCA)' = 'UKR-000270 Pooled Funds Old (MPCA)',
-  'UKR-000274 Novo-Nordisk' = 'UKR-000274 Novo-Nordisk',
+  'UKR-000274 Novo-Nordilsk' = 'UKR-000274 Novo-Nordilsk',
   'UKR-000276 UHF3' = 'UKR-000276 UHF3',
   'UKR-000284 BHA' = 'UKR-000284 BHA',
   'UKR-000286 DMFA' = 'UKR-000286 DMFA',
@@ -265,12 +269,14 @@ export enum DrcProject {
   'UKR-000370 SIDA' = 'UKR-000370 SIDA',
   'UKR-000371 ECHO3' = 'UKR-000371 ECHO3',
   'UKR-000372 ECHO3' = 'UKR-000372 ECHO3',
+  'UKR-000373 Novo-Nordilsk' = 'UKR-000373 Novo-Nordilsk',
   'UKR-000378 Danish MFA' = 'UKR-000378 Danish MFA',
-  'UKR-000380 Danida' = 'UKR-000380 Danida',
+  'UKR-000380 DANIDA' = 'UKR-000380 DANIDA',
   'UKR-000385 Pooled Funds' = 'UKR-000385 Pooled Funds',
   'UKR-000388 BHA' = 'UKR-000388 BHA',
   'UKR-000396 Danish MFA' = 'UKR-000396 Danish MFA',
   'UKR-000397 GFFO' = 'UKR-000397 GFFO',
+  'UKR-000399 SDC3' = 'UKR-000399 SDC3',
   'SIDA 518-570A' = 'SIDA 518-570A',
   'UKR-000316 UHF5' = 'UKR-000316 UHF5',
   'UKR-000329 SIDA H2R' = 'UKR-000329 SIDA H2R',
@@ -295,7 +301,7 @@ export class DrcProjectHelper {
     'UKR-000269 ECHO1': DrcDonor.ECHO,
     'UKR-000270 Pooled Funds': DrcDonor.PoolFunds,
     'UKR-000270 Pooled Funds Old (MPCA)': DrcDonor.PoolFunds,
-    'UKR-000274 Novo-Nordisk': DrcDonor.NovoNordisk,
+    'UKR-000274 Novo-Nordilsk': DrcDonor.NovoNordisk,
     'UKR-000276 UHF3': DrcDonor.UHF,
     'UKR-000284 BHA': DrcDonor.BHA,
     'UKR-000286 DMFA': DrcDonor.DMFA,
@@ -328,7 +334,7 @@ export class DrcProjectHelper {
     'UKR-000390 UHF9': DrcDonor.UHF,
     'UKR-000371 ECHO3': DrcDonor.ECHO,
     'UKR-000372 ECHO3': DrcDonor.ECHO,
-    'UKR-000380 Danida': DrcDonor.DANI,
+    'UKR-000380 DANIDA': DrcDonor.DANI,
     'SIDA 518-570A': DrcDonor.SIDA,
     'UKR-000316 UHF5': DrcDonor.UHF,
     'UKR-000329 SIDA H2R': DrcDonor.SIDA,
@@ -339,7 +345,9 @@ export class DrcProjectHelper {
     'UKR-000388 BHA': DrcDonor.BHA,
     'UKR-000396 Danish MFA': DrcDonor.DMFA,
     'UKR-000397 GFFO': DrcDonor.GFFO,
+    'UKR-000399 SDC3': DrcDonor.SDC,
     'UKR-000378 Danish MFA': DrcDonor.DMFA,
+    'UKR-000373 Novo-Nordilsk': DrcDonor.NovoNordisk,
     'None': DrcDonor.None
   }
 
@@ -503,6 +511,7 @@ export enum DrcJob {
   'Monitoring, Evaluation, Accountability and Learning Manager' = 'Monitoring, Evaluation, Accountability and Learning Manager',
   'Monitoring, Evaluation, Accountability and Learning Specialist' = 'Monitoring, Evaluation, Accountability and Learning Specialist',
   'MPCA / NFI Assistant' = 'MPCA / NFI Assistant',
+  'MPCA/ NFI Assistant' = 'MPCA/ NFI Assistant',
   'MPCA Assistant' = 'MPCA Assistant',
   'MPCA/NFI Assistant' = 'MPCA/NFI Assistant',
   'MPCA/NFI Officer' = 'MPCA/NFI Officer',

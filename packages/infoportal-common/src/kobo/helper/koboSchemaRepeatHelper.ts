@@ -1,20 +1,20 @@
 import {Obj} from '@alexandreannic/ts-utils'
-import {KoboApiQuestionSchema, KoboApiSchema} from '../sdk/v2/type/KoboApiForm'
 import {ignoredColType} from './koboSchemaHelper'
+import {Kobo} from 'kobo-sdk'
 
 export type KoboGroupInfo = {
   name: string
   path: string
   pathArr: string[]
   depth: number
-  questions: KoboApiQuestionSchema[]
+  questions: Kobo.Form.Question[]
 }
 
 export class KoboSchemaRepeatHelper {
   static readonly $xpathSeparator = '/'
-  readonly schemaIndex: Record<string, KoboApiQuestionSchema[]> = {}
+  readonly schemaIndex: Record<string, Kobo.Form.Question[]> = {}
   /** Questions except `begin_repeat` */
-  readonly questionsFlat: KoboApiQuestionSchema[] = []
+  readonly questionsFlat: Kobo.Form.Question[] = []
   private readonly infosIndex: Record<string, KoboGroupInfo>
   readonly size: number
 
@@ -29,7 +29,7 @@ export class KoboSchemaRepeatHelper {
     }
   }
 
-  constructor(survey: KoboApiSchema['content']['survey']) {
+  constructor(survey: Kobo.Form['content']['survey']) {
     let depth: string[] = []
     survey.forEach(q => {
       if (q.type === 'end_repeat') depth.pop()

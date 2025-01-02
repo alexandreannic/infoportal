@@ -1,0 +1,23 @@
+{
+  "name": "kobo-sdk",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "version": "1.0.0",
+  "dependencies": {
+    "@supercharge/promise-pool": "^3.2.0",
+    "@alexandreannic/ts-utils": "^2.1.15",
+    "axios": "1.7.9",
+    "qs": "^6.12.1",
+    "winston": "^3.13.1",
+    "@types/promise-retry": "^1.1.6",
+    "date-fns": "4.1.0",
+    "@types/qs": "^6.9.15"
+  },
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2"
+  }
+}

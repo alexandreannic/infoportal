@@ -13,7 +13,7 @@ import {
   Protection_groupSession
 } from 'infoportal-common'
 import {fnSwitch} from '@alexandreannic/ts-utils'
-import {Period} from 'infoportal-common/type/Period'
+import {Period} from 'infoportal-common'
 import {format} from 'date-fns'
 
 export namespace AiMapper {

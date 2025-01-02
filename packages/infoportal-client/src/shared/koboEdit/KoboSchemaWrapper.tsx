@@ -1,13 +1,13 @@
 import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
 import {useEffect, useMemo} from 'react'
-import {KoboId} from 'infoportal-common'
 import {KeyOf} from '@alexandreannic/ts-utils'
+import {Kobo} from 'kobo-sdk'
 
 export const useKoboColumnDef = <T extends Record<string, any>>({
   formId,
   columnName,
 }: {
-  formId: KoboId,
+  formId: Kobo.FormId,
   columnName: KeyOf<T>
 }) => {
   const ctx = useKoboSchemaContext()

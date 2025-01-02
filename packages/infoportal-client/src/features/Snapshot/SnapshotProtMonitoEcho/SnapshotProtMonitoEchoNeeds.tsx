@@ -72,8 +72,9 @@ export const SnapshotProtMonitoEchoNeeds = () => {
               }}>
                 {_ =>
                   <p>
-                    Consistent with previous months, the risk of eviction remains the predominant concern among IDPs due to the closure of collective sites, discontinuation of allowances, and high rental costs. 
-                    Additionally, IDPs struggle to cover utility costs in their new residences as they continue to be charged for utilities in their places of origin.
+                    Many men avoid seeking healthcare due to fears of conscription near hospitals, risking serious health issues. 
+                    The cancellation of IDP allowances has further limited access to healthcare, leaving many unable to afford rising costs. 
+                    This financial strain forces families to cut back on medical expenses and reduce food consumption.
                   </p>
                 }
               </Lazy>
@@ -114,7 +115,7 @@ export const SnapshotProtMonitoEchoNeeds = () => {
                   ...Protection_hhs3.options.why_dont_they_have_status,
                   inability_to_access_registration_safety_risks: 'Inability to access registration',
                   status_registration_not_requested: 'Disability status not applied for',
-                  status_registration_rejected_not_meeting_the_criteria_as_per_ukrainian_procedure: 'Status registration rejected',
+                  status_registration_rejected_not_meeting_the_criteria_as_per_ukrainian_procedure: 'Status registration or renewal rejected',
                 }}
                 mergeOptions={{
                   inability_to_access_registration_costly_andor_lengthy_procedure: 'inability_to_access_registration_safety_risks',
@@ -122,6 +123,7 @@ export const SnapshotProtMonitoEchoNeeds = () => {
                   // delays_in_registration_process: 'other_specify',
                   unaware_ofnot_familiar_with_the_procedure: 'other_specify',
                   // status_renewal_rejected: 'other_specify',
+                  status_renewal_rejected: 'status_registration_rejected_not_meeting_the_criteria_as_per_ukrainian_procedure'
                 }}
               />
             </SlidePanel>

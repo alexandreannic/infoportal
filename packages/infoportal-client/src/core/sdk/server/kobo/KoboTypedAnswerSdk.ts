@@ -18,9 +18,15 @@ import {
   Meal_cashPdm,
   Meal_cfmExternal,
   Meal_cfmInternal,
+  Meal_shelterPdm,
+  Meal_nfiPdm,
   Meal_verificationEcrec,
+  Meal_verificationPartnerBnre,
   Meal_verificationWinterization,
   Meal_visitMonitoring,
+  Partner_lampa,
+  Partner_pomogaem,
+  Partner_angels,
   Partnership_partnersDatabase,
   Person,
   PersonDetails,
@@ -30,14 +36,18 @@ import {
   Protection_groupSession,
   Protection_hhs3,
   ProtectionHhsTags,
+  Protection_pfa_training_test,
   Shelter_nta,
   Shelter_ta,
   ShelterNtaTags,
   ShelterTaTagsHelper,
+  Ecrec_vet2_dmfa,
+  Ecrec_vet_bha388,
+  Ecrec_msme_bha388,
+  Partner_misto_syly
 } from 'infoportal-common'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {fnSwitch, seq} from '@alexandreannic/ts-utils'
-import {Meal_shelterPdm} from "infoportal-common";
 
 /** @deprecated should be coming from the unified database */
 type Meta = {
@@ -66,6 +76,7 @@ const make = <K extends KoboFormName, T>(key: K,
 export type KoboFormNameMapped = keyof KoboTypedAnswerSdk['search']
 
 export type InferTypedAnswer<N extends KoboFormNameMapped> = Awaited<ReturnType<KoboTypedAnswerSdk['search'][N]>>['data'][number]
+export type InferTypedTag<N extends KoboFormNameMapped> = NonNullable<Awaited<ReturnType<KoboTypedAnswerSdk['search'][N]>>['data'][number]['tags']>
 
 export class KoboTypedAnswerSdk {
   constructor(private client: ApiClient, private sdk = new KoboAnswerSdk(client)) {
@@ -74,6 +85,21 @@ export class KoboTypedAnswerSdk {
   private readonly buildSearch = (request: 'searchByAccess' | 'search') => {
     const req = this.sdk[request]
     return ({
+      ...make('ecrec_msme_bha388', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('ecrec_msme_bha388').id,
+        fnMapKobo: Ecrec_msme_bha388.map,
+        ...filters,
+      })),
+      ...make('ecrec_vet2_dmfa', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('ecrec_vet2_dmfa').id,
+        fnMapKobo: Ecrec_vet2_dmfa.map,
+        ...filters,
+      })),
+      ...make('ecrec_vet_bha388', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('ecrec_vet_bha388').id,
+        fnMapKobo: Ecrec_vet_bha388.map,
+        ...filters,
+      })),
       ...make('meal_cfmInternal', (filters?: KoboAnswerFilter) =>
         // BAD, we should revamp the way access is working for CFM. Add FP should add rule in the access table that will natively work with the standard access filters
         this.sdk.search({
@@ -156,6 +182,11 @@ export class KoboTypedAnswerSdk {
         fnMapKobo: Meal_verificationWinterization.map,
         ...filters,
       })),
+      ...make('meal_verificationPartnerBnre', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('meal_verificationPartnerBnre').id,
+        fnMapKobo: Meal_verificationPartnerBnre.map,
+        ...filters,
+      })),
       ...make('bn_re', (filters?: KoboAnswerFilter) => req({
         formId: KoboIndex.byName('bn_re').id,
         fnMapKobo: Bn_re.map,
@@ -198,6 +229,11 @@ export class KoboTypedAnswerSdk {
         fnMapKobo: Meal_shelterPdm.map,
         ...filters,
       })),
+      ...make('meal_nfiPdm', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('meal_nfiPdm').id,
+        fnMapKobo: Meal_nfiPdm.map,
+        ...filters,
+      })),
       ...make('protection_hhs3', (filters?: KoboAnswerFilter) => req({
         formId: KoboIndex.byName('protection_hhs3').id,
         fnMapKobo: Protection_hhs3.map,
@@ -223,6 +259,36 @@ export class KoboTypedAnswerSdk {
       ...make('protection_gbvSocialProviders', (filters?: KoboAnswerFilter) => req({
         formId: KoboIndex.byName('protection_gbvSocialProviders').id,
         fnMapKobo: Protection_gbvSocialProviders.map,
+        ...filters,
+      })),
+      ...make('protection_gbvSocialProviders', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('protection_gbvSocialProviders').id,
+        fnMapKobo: Protection_gbvSocialProviders.map,
+        ...filters,
+      })),
+      ...make('protection_pfa_training_test', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('protection_pfa_training_test').id,
+        fnMapKobo: Protection_pfa_training_test.map,
+        ...filters,
+      })),
+      ...make('partner_pomogaem', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('partner_pomogaem').id,
+        fnMapKobo: Partner_pomogaem.map,
+        ...filters,
+      })),
+      ...make('partner_lampa', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('partner_lampa').id,
+        fnMapKobo: Partner_lampa.map,
+        ...filters,
+      })),
+      ...make('partner_angels', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('partner_angels').id,
+        fnMapKobo: Partner_angels.map,
+        ...filters,
+      })),
+      ...make('partner_misto_syly', (filters?: KoboAnswerFilter) => req({
+        formId: KoboIndex.byName('partner_misto_syly').id,
+        fnMapKobo: Partner_misto_syly.map,
         ...filters,
       })),
     })

@@ -1,7 +1,8 @@
-import {DrcDonor, DrcSector, KoboId, OblastISO, OblastName, Partnership_partnersDatabase} from 'infoportal-common'
+import {DrcDonor, DrcSector,  OblastISO, OblastName, Partnership_partnersDatabase} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
 
 export interface PartnershipData extends Partnership_partnersDatabase.T {
-  id: KoboId
+  id: Kobo.FormId
   computed: {
     name?: string
   }

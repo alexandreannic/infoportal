@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2021",
+      "dom"
+    ],
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./lib",
+    "checkJs": false,
+    "rootDir": "./src",
+    "composite": true,
+    "resolveJsonModule": true,
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

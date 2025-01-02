@@ -1,8 +1,10 @@
-import {convertNumberIndexToLetter, KoboAnswerMetaData, KoboApiColumType, KoboId} from 'infoportal-common'
+import {convertNumberIndexToLetter} from 'infoportal-common'
 import XlsxPopulate from 'xlsx-populate'
 import {PrismaClient} from '@prisma/client'
 import {DbKoboAnswer, KoboService} from './KoboService'
 import {appConf} from '../../core/conf/AppConf'
+import {Kobo} from 'kobo-sdk'
+import {KoboSubmissionMetaData} from 'infoportal-common'
 
 /** @deprecated??*/
 export class KoboToXLS {
@@ -22,12 +24,12 @@ export class KoboToXLS {
     password,
   }: {
     fileName: string
-    formId: KoboId,
+    formId: Kobo.FormId,
     data: DbKoboAnswer[],
     langIndex?: number
     password?: string
   }) => {
-    const koboQuestionType: KoboApiColumType[] = [
+    const koboQuestionType: Kobo.Form.QuestionType[] = [
       'text',
       'start',
       'end',
@@ -40,7 +42,7 @@ export class KoboToXLS {
     const translated = langIndex !== undefined ? await this.service.translateForm({formId, langIndex, data}) : data
     const flatTranslated = translated.map(({answers, ...meta}) => ({...meta, ...answers}))
     const columns = (() => {
-      const metaColumns: (keyof KoboAnswerMetaData)[] = ['id', 'submissionTime', 'version']
+      const metaColumns: (keyof KoboSubmissionMetaData)[] = ['id', 'submissionTime', 'version']
       const schemaColumns = koboFormDetails.content.survey.filter(_ => koboQuestionType.includes(_.type))
         .map(_ => langIndex !== undefined && _.label
           ? _.label[langIndex]?.replace(/(<([^>]+)>)/gi, '') ?? _.name

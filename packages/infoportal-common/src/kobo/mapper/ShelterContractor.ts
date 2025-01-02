@@ -18,6 +18,7 @@ export enum ShelterContractor {
   'Osnova-R' = 'Osnova-R',
   'PGS Group' = 'PGS Group',
   'Skytown' = 'Skytown',
+  'Starlight' = 'Starlight',
   'Tribotechnika' = 'Tribotechnika',
   'Ukr Bud Tekhnolohiyi' = 'Ukr Bud Tekhnolohiyi',
   'Ukrbudtechnologii' = 'Ukrbudtechnologii',

@@ -8,6 +8,7 @@ import {WfpBuildingBlockClient} from '../../core/externalSdk/wfpBuildingBlock/Wf
 import {app, AppLogger} from '../../index'
 import promiseRetry from 'promise-retry'
 import {Obj} from '@alexandreannic/ts-utils'
+import {ApiError} from 'kobo-sdk'
 
 export class WfpDeduplicationUpload {
 
@@ -36,9 +37,16 @@ export class WfpDeduplicationUpload {
     // await Promise.all([
     await this.throttledFetchAndRun({
       fetch: _ => promiseRetry((retry, number) => {
-        return this.wfpSdk.getAssistanceProvided(_).catch(retry)
+        return this.wfpSdk.getAssistanceProvided(_).catch((e: ApiError) => {
+          if (e.details.code === 401) {
+            return Promise.reject(e)
+          }
+          this.log.info('Retry request ' + number)
+          return retry(number)
+        })
       }),
       runOnBatchedResult: async (res: AssistanceProvided[]) => {
+        this.log.debug('Run...')
         await this.upsertMappingId(res.map(_ => _.beneficiaryId))
         await this.prisma.mpcaWfpDeduplication.createMany({
           data: res.map(_ => {
@@ -60,6 +68,7 @@ export class WfpDeduplicationUpload {
     await this.throttledFetchAndRun({
       fetch: _ => this.wfpSdk.getAssistancePrevented(_),
       runOnBatchedResult: async (res: AssistancePrevented[]) => {
+        this.log.debug('Run...')
         await this.upsertMappingId(res.map(_ => _.beneficiaryId))
         await this.prisma.mpcaWfpDeduplication.createMany({
           data: res.map(_ => {
@@ -135,7 +144,10 @@ export class WfpDeduplicationUpload {
         if (res.length !== 1)
           console.error(`Problem when searching matching entry ${_.beneficiaryId} at ${_.createdAt}, found ${res.length} entries.`)
         if (res.length > 0)
-          return this.prisma.mpcaWfpDeduplication.update({data: {amount: res[0].amount}, where: {id: _.id}}).then(() => res[0].id)
+          return this.prisma.mpcaWfpDeduplication.update({
+            data: {amount: res[0].amount},
+            where: {id: _.id}
+          }).then(() => res[0].id)
         else
           return Promise.resolve(undefined)
       }).then(deprecatedId => {
@@ -148,7 +160,7 @@ export class WfpDeduplicationUpload {
 
   private readonly throttledFetchAndRun = async <T, R>({
     fetch,
-    batchSize = 1000,
+    batchSize = 500,
     runOnBatchedResult
   }: {
     batchSize?: number
@@ -214,13 +226,15 @@ export class WfpDeduplicationUpload {
         })
       })
       const officeValue = office ? officeMapping[office] : null
-      await this.prisma.$executeRaw`
-          UPDATE "MpcaWfpDeduplication"
-          SET "office"     = ${officeValue},
-              "fileName"   = ${file.fileName},
-              "fileUpload" = ${new Date(file.finishedAt)}
-          WHERE "id" IN (${Prisma.join(rows.map(_ => _.id))})
-      `
+      if (rows.length > 0) {
+        await this.prisma.$executeRaw`
+            UPDATE "MpcaWfpDeduplication"
+            SET "office"     = ${officeValue},
+                "fileName"   = ${file.fileName},
+                "fileUpload" = ${new Date(file.finishedAt)}
+            WHERE "id" IN (${Prisma.join(rows.map(_ => _.id))})
+        `
+      }
       // await this.prisma.mpcaWfpDeduplication.updateMany({
       //   where: {id: {in: rows.map(_ => _.id)}},
       //   data: {

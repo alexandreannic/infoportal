@@ -36,10 +36,8 @@ export const SnapshotProtMonitoEchoLivelihood = () => {
                     {/* Following the changes in the housing assistance system for IDPs under Resolution No. 332, a substantially higher number of IDPs have reported gaps in meeting
                     their basic needs, with a <Txt bold style={{color: t.palette.success.main}}>37%</Txt> increase compared to March. The limited availability of job opportunities continues to be reported as the primary factor affecting
                     employment. */}
-                    The implementation of Resolution #332 requires IDPs to register with local employment centers, which are struggling with high demand and a shortage of available
-                    jobs.
-                    This, combined with the cancellation of IDP allowances, has intensified job market competition, resulting in many IDPs facing underemployment or unemployment
-                    due to mismatches between their skills and available job opportunities.
+                    IDPs face limited work opportunities in host areas, with financial constraints and changes in government allowances for IDPs often pushing them into precarious or physically demanding jobs. 
+                    Barriers such as job scarcity, impairments, and childcare responsibilities – particularly due to online education – worsen financial insecurity, leading households to deplete savings and cut back on food consumption.
                   </p>
                 }
               </Lazy>
