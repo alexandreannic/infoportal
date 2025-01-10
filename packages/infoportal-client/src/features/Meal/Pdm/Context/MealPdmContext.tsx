@@ -64,7 +64,7 @@ export const MealPdmProvider = ({children}: {children: ReactNode}) => {
             record.office!,
             {
               dnipro: DrcOffice.Dnipro,
-              kharkiv: DrcOffice.Kharkiv,
+              empca: DrcOffice.Kharkiv,
               chernihiv: DrcOffice.Chernihiv,
               sumy: DrcOffice.Sumy,
               mykolaiv: DrcOffice.Mykolaiv,
