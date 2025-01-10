@@ -1,5 +1,6 @@
 export namespace Meal_cashPdm {
   export type Option<T extends keyof typeof options> = keyof (typeof options)[T]
+
   // Form id: aEKoPVd36PLRrmqWgk42DG
   export interface T {
     start: string
@@ -56,6 +57,8 @@ export namespace Meal_cashPdm {
     not_cash_for_rent: string
     // ic/not_cash_for_repair [note] Cash for repair The purpose of this interview is to obtain information about the shelter programs to understand whether they are being implemented properly and whether we are addressing the needs of vulnerable people. Your information and the data will be obtained from you are considered as confidential. The information will be used to prepare reports, but will not include any specific names. We would appreciate providing us with the most accurate answers that you can.
     not_cash_for_repair: string
+    // ic/not_vet [note] Hello I am from DRC organization (please mention your organization name)! We want to ask you some questions to obtain information about the Cash Assistance that you have received from us for vocational training. We want to hear your thoughts so we can improve the way that we are doing our job. Your participation is voluntary and the questions will take around 20-30 minutes to answer. If you accept to participate, you have the option to stop answering or to not answer any question that you don't want to. This information will help us to understand what has been done appropriately in the process, what hasn't worked that good and what we should be doing differently. The information you share will be kept protected and will only be shared with a small group of people in the organization (please mention your organization name). Finally, please know that if you provide negative feedback about our work, this will not have any negative consequences to your permanence in this or future activities of this project.
+    not_vet: string
     // ic/agree_interviewed [select_one] Do you agree to be interviewed?
     agree_interviewed: undefined | Option<'any_member_household'>
     // ic/spent_cash_assistance_received [select_one] Have you spent the cash assistance you received yet?
@@ -150,6 +153,14 @@ export namespace Meal_cashPdm {
     received_feed_livestock_winter_long: undefined | Option<'received_feed_livestock_winter_long'>
     // sufficiency/received_feed_livestock_winter_no_other [text] If “Other” - Please, specify
     received_feed_livestock_winter_no_other: string | undefined
+    // sufficiency/cash_modality_inkind [select_one] Did you prefer the cash modality, or would you have liked to receive in-kind assistance (e.g., like tools, seeds, maybe poultry)?
+    cash_modality_inkind: undefined | Option<'cash_modality_inkind'>
+    // sufficiency/cash_modality_inkind_yes [text] If yes, please explain why:
+    cash_modality_inkind_yes: string | undefined
+    // sufficiency/training_inductions_agricultural [select_one] Do you need training or inductions to improve your agricultural practices, increase produce?
+    training_inductions_agricultural: undefined | Option<'any_member_household'>
+    // sufficiency/training_inductions_agricultural_yes [text] If yes, please explain one topic that is the most needed
+    training_inductions_agricultural_yes: string | undefined
     // sufficiency/amount_received_renovation_shelter [select_one] Was the assisstance you received sufficient to renovate your shelter for animals?
     amount_received_renovation_shelter: undefined | Option<'any_member_household'>
     // sufficiency/amount_received_renovation_shelter_no [text] If “No” - Please, specify
@@ -212,6 +223,127 @@ export namespace Meal_cashPdm {
     cash_assistance_timely: undefined | Option<'any_member_household'>
     // sufficiency/brochure_provided [select_one] Did you use the brochure provided as guidance on how to spend money on repairs?
     brochure_provided: undefined | Option<'brochure_provided'>
+    // sufficiency_vet/enrol_vocational_center [select_one] Did you enroll in a vocational training center after receiving funding from our organization?
+    enrol_vocational_center: undefined | Option<'any_member_household'>
+    // sufficiency_vet/enrol_vocational_center_no [text] If no, why not?
+    enrol_vocational_center_no: string | undefined
+    // sufficiency_vet/training_completed [select_one] Have you completed the vocational training program?
+    training_completed: undefined | Option<'training_completed'>
+    // sufficiency_vet/training_no_reason [select_one] If no, how much of the training have you completed?
+    training_no_reason: undefined | Option<'training_no_reason'>
+    // sufficiency_vet/hours_dedicating_vocational [select_one] How many hours per week are you dedicating to vocational training?
+    hours_dedicating_vocational: undefined | Option<'hours_dedicating_vocational'>
+    // sufficiency_vet/training_type [select_one] What type of vocational training did you attend?
+    training_type: undefined | Option<'training_type'>
+    // sufficiency_vet/training_type_other [text] If "Other", please specify
+    training_type_other: string | undefined
+    // sufficiency_vet/skills_usage [select_one] Are you currently using the skills you learned from the vocational training in a new livelihood activity?
+    skills_usage: undefined | Option<'skills_usage'>
+    // sufficiency_vet/skills_usage_method [select_one] If you are using the skills, in what way are you practicing them?
+    skills_usage_method: undefined | Option<'skills_usage_method'>
+    // sufficiency_vet/skills_usage_method_other [text] If "Other", please specify
+    skills_usage_method_other: string | undefined
+    // sufficiency_vet/skills_usage_method_no [text] If no, why not?
+    skills_usage_method_no: string | undefined
+    // sufficiency_vet/believe_skills_improve [select_one] Do you believe your skills have improved as a result of the vocational training?
+    believe_skills_improve: undefined | Option<'any_member_household'>
+    // sufficiency_vet/believe_skills_improve_no [text] If no, why not?
+    believe_skills_improve_no: string | undefined
+    // sufficiency_vet/conf_using_skills [select_one] How confident do you feel about using the skills you have learned in future employment?
+    conf_using_skills: undefined | Option<'conf_using_skills'>
+    // sufficiency_vet/conf_using_skills_not [text] If selected 'not very confident' or 'not confiedent at all' pelase explain why
+    conf_using_skills_not: string | undefined
+    // sufficiency_vet/job_started_vocational [select_one] Have you started a job as a result of the assistance or vocational training?
+    job_started_vocational: undefined | Option<'any_member_household'>
+    // sufficiency_vet/job_started_vocational_no [text] If no, why not?
+    job_started_vocational_no: string | undefined
+    // sufficiency_vet/worked_other_12m [select_one] Have you worked in any other job in the last 12 months?
+    worked_other_12m: undefined | Option<'any_member_household'>
+    // sufficiency_vet/job_type [select_one] Is this job permanent or temporary?
+    job_type: undefined | Option<'job_type'>
+    // sufficiency_vet/job_continuation [select_one] Do you think you will continue working in this job for at least the next 6 months?
+    job_continuation: undefined | Option<'job_continuation'>
+    // sufficiency_vet/job_duration [integer] For how many months have you been working in this job? (Respond in months)
+    job_duration: number | undefined
+    // sufficiency_vet/hours_per_week [integer] How many hours per week do you work in this job? (Respond in hours per week)
+    hours_per_week: number | undefined
+    // sufficiency_vet/income_earned [select_one] Have you earned any income from your new livelihood?
+    income_earned: undefined | Option<'any_member_household'>
+    // sufficiency_vet/monthly_income [integer] What is your average monthly income from your new livelihood? (specify in UAH)
+    monthly_income: number | undefined
+    // sufficiency_vet/expenses_made [decimal] What is your average monthly expenses for your livelihood?
+    expenses_made: number | undefined
+    proft_made: string
+    // sufficiency_vet/income_sufficiency [select_one] Do you feel that the income from this job is sufficient to cover your basic needs?
+    income_sufficiency: undefined | Option<'income_sufficiency'>
+    // sufficiency_vet/income_sufficiency_no [text] If no, why not?
+    income_sufficiency_no: string | undefined
+    // sufficiency_vet/recommendation [select_one] How likely are you to recommend this vocational training or assistance program to others?
+    recommendation: undefined | Option<'recommendation_likelihood'>
+    // sufficiency_vet/recommendation_explain [text] Please explain?
+    recommendation_explain: string | undefined
+    // sufficiency_msme/cash_received_msme [select_one] Did you receive cash assistance as part of the business support program?
+    cash_received_msme: undefined | Option<'any_member_household'>
+    // sufficiency_msme/cash_not_received_reason [text] If No, why didn’t you receive the cash assistance?
+    cash_not_received_reason: string | undefined
+    // sufficiency_msme/cash_usage [select_multiple] How did you use the cash assistance for your business? (Select all that apply)
+    cash_usage: undefined | Option<'cash_usage'>[]
+    // sufficiency_msme/cash_usage_other [text] If “Other” - Please, specify
+    cash_usage_other: string | undefined
+    // sufficiency_msme/cash_sufficient [select_one] Was the amount of cash assistance sufficient to meet the needs of your business?
+    cash_sufficient: undefined | Option<'cash_sufficient'>
+    // sufficiency_msme/cash_not_sufficient_reason [text] Please explain why and what amount would have been sufficient?
+    cash_not_sufficient_reason: string | undefined
+    // sufficiency_msme/business_improvement [select_one] Have you noticed any improvements in your business after receiving the cash assistance?
+    business_improvement: undefined | Option<'any_member_household'>
+    // sufficiency_msme/improvements_noticed [select_multiple] If Yes, what improvements have you noticed? (Select all that apply)
+    improvements_noticed: undefined | Option<'improvements_noticed'>[]
+    // sufficiency_msme/improvements_noticed_other [text] If “Other” - Please, specify
+    improvements_noticed_other: string | undefined
+    // sufficiency_msme/challenges_faced [select_multiple] If No, what challenges are you still facing? (Select all that apply)
+    challenges_faced: undefined | Option<'challenges_faced'>[]
+    // sufficiency_msme/challenges_faced_other [text] If “Other” - Please, specify
+    challenges_faced_other: string | undefined
+    // sufficiency_msme/training_attended [select_one] Did you attend the online training provided by the business consultant as part of the business support program?
+    training_attended: undefined | Option<'any_member_household'>
+    // sufficiency_msme/training_not_attended_reason [text] If No, why didn’t you attend the training?
+    training_not_attended_reason: string | undefined
+    // sufficiency_msme/training_satisfaction [select_one] How satisfied are you with the quality of the training provided by the business consultant?
+    training_satisfaction: undefined | Option<'training_satisfaction'>
+    // sufficiency_msme/training_satisfaction_bad [text] If "Unsatisfied" or "very unsatisfied" then:  If you were not satisfied, could you tell us why you were not satisfied?
+    training_satisfaction_bad: string | undefined
+    // sufficiency_msme/training_expectations_met [select_one] Did the training content provided by the business consultant meet your expectations?
+    training_expectations_met: undefined | Option<'training_expectations_met'>
+    // sufficiency_msme/training_expectations_not_met_reason [text] If No, what could have been improved?
+    training_expectations_not_met_reason: string | undefined
+    // sufficiency_msme/training_relevance [select_one] How relevant was the training to the needs of your business?
+    training_relevance: undefined | Option<'training_relevance'>
+    // sufficiency_msme/training_relevance_improvement [text] If Not relevant, what topics would have been more useful?
+    training_relevance_improvement: string | undefined
+    // sufficiency_msme/training_format_suitability [select_one] Was the online format suitable for the business consultant’s training?
+    training_format_suitability: undefined | Option<'training_format_suitability'>
+    // sufficiency_msme/training_format_suitability_reason [text] If No, what format would have been better?
+    training_format_suitability_reason: string | undefined
+    // sufficiency_msme/training_duration_sufficient [select_one] Do you feel that 5 hours of training from the business consultant were sufficient to cover the topics adequately?
+    training_duration_sufficient: undefined | Option<'training_duration_sufficient'>
+    // sufficiency_msme/training_duration_additional_needed [text] If No, how much additional time do you think would have been sufficient?
+    training_duration_additional_needed: string | undefined
+    // sufficiency_msme/training_valuable_part [text] What was the most valuable part of the training for your business?
+    training_valuable_part: string | undefined
+    // sufficiency_msme/revenue_generated [select_one] Have you generated any revenue from your business since the support from DRC?
+    revenue_generated: undefined | Option<'any_member_household'>
+    // sufficiency_msme/no_revenue_reason [text] If No, why hasn’t your business generated revenue?
+    no_revenue_reason: string | undefined
+    // sufficiency_msme/monthly_costs [decimal] On average, what are your business’s monthly costs?
+    monthly_costs: number | undefined
+    // sufficiency_msme/net_income [select_one] After covering your monthly costs, do you have a net income (profit) from your business?
+    net_income: undefined | Option<'any_member_household'>
+    // sufficiency_msme/no_net_income_reason [text] If No, what is the main reason for the lack of profit?
+    no_net_income_reason: string | undefined
+    // sufficiency_msme/recommendation_likelihood [select_one] How likely are you to recommend this business support program to others?
+    recommendation_likelihood: undefined | Option<'recommendation_likelihood'>
+    // sufficiency_msme/recommendation_explain_msme [text] Please explain?
+    recommendation_explain_msme: string | undefined
     // income_generation/food_expenditures_assistance [select_one] Did your household's food expenditures increase or decrease after receiving assistance?
     food_expenditures_assistance: undefined | Option<'after_assistance_natural_products'>
     // income_generation/food_expenditures_assistance_inc_dec [text] By how many percent did you increase/decrease household's food expenditures?
@@ -453,6 +585,7 @@ export namespace Meal_cashPdm {
     // not_thank [note] Thank you for taking the time to fill out this form.
     not_thank: string
   }
+
   export const options = {
     undefined: {
       carep: `Cash for Repair`,
@@ -504,6 +637,17 @@ export namespace Meal_cashPdm {
       some: `Able to cover some of them`,
       all: `Able to cover all the basic needs`,
       all_extra_costs: `All the basic needs are covered and we can afford extra costs (cinema, café, etc.)`,
+      increased: `Increased`,
+      decreased: `No, my income has decreased`,
+      stayed_same: `Stayed the same`,
+      significant_increase: `Yes, I have seen a significant increase`,
+      slight_increase: `Yes, I have seen a slight increase`,
+      same: `No, income has stayed the same`,
+      definitely_yes: `Yes, definitely`,
+      probably_yes: `Yes, probably`,
+      no: `No, I do not think so`,
+      not_sure: `I am not sure`,
+      no_change: `No, my income has stayed the same`,
     },
     pdmtype: {
       empca: `Emergency MPCA`,
@@ -515,10 +659,12 @@ export namespace Meal_cashPdm {
       cfg: `Cash for agriculture`,
       csf: `Cash for solid fuel`,
       carep: `Cash for Repair`,
+      vet: `Vocational training (VET)`,
+      msme: `Business support (MSME)`,
     },
     office: {
       dnipro: `DNK (Dnipro)`,
-      kharkiv: `HRK (Kharkiv)`,
+      empca: `HRK (Kharkiv)`,
       chernihiv: `CEJ (Chernihiv)`,
       sumy: `UMY (Sumy)`,
       mykolaiv: `NLV (Mykolaiv)`,
@@ -601,6 +747,7 @@ export namespace Meal_cashPdm {
       dbbd: `Improved communication before the distribution`,
       dbdd: `Improved communication during the distribution`,
       dbcd: `Improved communication after the distribution`,
+      all_fine: `Everything was fine`,
       dbad: `More information about the date of the distribution`,
       dbtd: `More information about the time of the distribution`,
       other: `Other`,
@@ -747,6 +894,7 @@ export namespace Meal_cashPdm {
       ukr000322_echo: `ECHO (UKR-000322)`,
       ukr000314_uhf4: `UHF4 (UKR-000314)`,
       ukr000336_uhf6: `UHF6 (UKR-000336)`,
+      ukr000363_uhf8: `UHF8 (UKR-000363)`,
       ukr000345_bha: `BHA (UKR-000345)`,
       ukr000348_bha_llh: `BHA LLH (UKR-000348)`,
       ukr000352_uhf7: `UHF7 (UKR-000352)`,
@@ -892,9 +1040,128 @@ export namespace Meal_cashPdm {
       about_half: `I spend about half (50%) of my income on food`,
       small: `I spend a small proportion (25% or less) on food`,
     },
+    training_type: {
+      technical: `Technical skills  (e.g., carpentry, welding)`,
+      service: `Service sector skills`,
+      it: `Information technology`,
+      other: `Other`,
+    },
+    skills_usage: {
+      regularly: `Yes, I regularly use the skills`,
+      sometimes: `Yes, I use the skills sometimes`,
+      not_using: `No, I am not using the skills`,
+      not_completed_training: `No, I have not completed the training yet`,
+    },
+    skills_usage_method: {
+      job_started: `In a job I started after the training`,
+      personal_business: `In a personal business I started`,
+      informal: `In informal or part-time work`,
+      not_using: `I am not using the skills`,
+      other: `Other`,
+    },
+    training_completed: {
+      completed: `Yes, I completed it`,
+      attending: `No, I am still attending`,
+      dropped: `No, I dropped out`,
+    },
+    job_type: {
+      permanent: `Permanent`,
+      temporary: `Temporary`,
+      sure: `I am not sure`,
+    },
+    training_no_reason: {
+      less_25: `Less than 25%`,
+      '25_50': `25% - 50%`,
+      '50_75': `50% - 75%`,
+      more_75: `75% - 100%`,
+    },
+    conf_using_skills: {
+      very_confident: `Very confident`,
+      somewhat_confident: `Somewhat confident`,
+      not_very_confident: `Not very confident`,
+      not_all: `Not confident at all`,
+    },
+    hours_dedicating_vocational: {
+      less_10h: `Less than 10 hours`,
+      '10_20h': `10-20 hours`,
+      more_30h: `More than 30 hours`,
+    },
+    income_sufficiency: {
+      sufficient: `Yes, it is sufficient`,
+      somewhat_sufficient: `Somewhat sufficient`,
+      not_sufficient: `No, it is not sufficient`,
+      not_sure: `I am not sure`,
+    },
+    job_continuation: {
+      definitely: `Yes, definitely`,
+      probably: `Yes, probably`,
+      unlikely: `No, I don’t think so`,
+      not_sure: `I am not sure`,
+    },
+    recommendation_likelihood: {
+      very: `Very likely`,
+      somewhat: `Somewhat likely`,
+      unlikely: `Unlikely`,
+      very_unlikely: `Very unlikely`,
+    },
+    cash_usage: {
+      materials: `Purchase of materials or supplies`,
+      equipment: `Purchase of equipment or tools`,
+      wages: `Payment of wages`,
+      rent_utilities: `Rent or utilities`,
+      expanded_customer_base: `Expanded customer base`,
+      other: `Other`,
+    },
+    cash_sufficient: {
+      yes: `Yes, it was sufficient`,
+      somewhat: `Somewhat sufficient, but more was needed`,
+      no: `No, it was not sufficient`,
+    },
+    improvements_noticed: {
+      improved_quality: `Improved product/service quality`,
+      increased_capacity: `Increased production or service capacity`,
+      hired_employees: `Hired new employees`,
+      expand_customer_base: `Expand customer base`,
+      increased_revenue: `Increased revenue`,
+      other: `Other`,
+    },
+    challenges_faced: {
+      insufficient_cash: `Insufficient cash assistance`,
+      low_demand: `Lack of demand for products/services`,
+      supply_issues: `Difficulty in accessing supplies or resources`,
+      skill_issues: `Insufficient skills or knowledge`,
+      other: `Other`,
+    },
+    training_satisfaction: {
+      very_satisfied: `Very satisfied`,
+      satisfied: `Satisfied`,
+      neutral: `Neutral`,
+      unsatisfied: `Unsatisfied`,
+      very_unsatisfied: `Very unsatisfied`,
+    },
+    training_expectations_met: {
+      met_expectations: `Met expectations`,
+      not_met: `Did not meet expectations`,
+    },
+    training_relevance: {
+      very_relevant: `Very relevant`,
+      somewhat_relevant: `Somewhat relevant`,
+      not_relevant: `Not relevant`,
+    },
+    training_format_suitability: {
+      suitable: `Suitable`,
+      somewhat_suitable: `Somewhat suitable`,
+      not_suitable: `Not suitable`,
+    },
+    training_duration_sufficient: {
+      sufficient_duration: `Sufficient duration`,
+      additional_time: `Additional time needed`,
+    },
+    cash_modality_inkind: {
+      yes: `Yes, I prefer cash modality`,
+      no: `No I would have preferred in kind`,
+    },
     ben_det_oblast: {
-      aroc: `Autonomous Republic of Crimea`,
-      vinnytska: `Vinnytsia`,
       volynska: `Volyn`,
       dnipropetrovska: `Dnipropetrovsk`,
       donetska: `Donetsk`,
@@ -921,7 +1188,7 @@ export namespace Meal_cashPdm {
       citykyiv: `City Kyiv`,
       sevastopilska: `Sevastopil`,
     },
-  }
+  } as const
 
   const extractQuestionName = (_: Record<string, any>) => {
     const output: any = {}
@@ -985,6 +1252,12 @@ export namespace Meal_cashPdm {
       better_inform_distribution: _.better_inform_distribution?.split(' '),
       type_fuel_most: _.type_fuel_most?.split(' '),
       completed_renovation_livestock_no: _.completed_renovation_livestock_no?.split(' '),
+      job_duration: _.job_duration ? +_.job_duration : undefined,
+      hours_per_week: _.hours_per_week ? +_.hours_per_week : undefined,
+      monthly_income: _.monthly_income ? +_.monthly_income : undefined,
+      cash_usage: _.cash_usage?.split(' '),
+      improvements_noticed: _.improvements_noticed?.split(' '),
+      challenges_faced: _.challenges_faced?.split(' '),
       contacted_pay_amount: _.contacted_pay_amount?.split(' '),
       household_currently_have_clothing_no: _.household_currently_have_clothing_no?.split(' '),
       lcs_reason: _.lcs_reason?.split(' '),

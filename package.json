@@ -2,7 +2,7 @@
   "name": "infoportal",
   "requires": true,
   "scripts": {
-    "format": "prettier --write \"**/*.{js,ts,tsx,json}\" --config .prettierrc",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json}\" --config .prettierrc --",
     "server": "npm run dev --workspace infoportal-server",
     "client": "npm run dev --workspace infoportal-client",
     "kobo-sdk": "npm run dev --workspace kobo-sdk",

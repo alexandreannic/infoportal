@@ -23,6 +23,7 @@ import {useReactRouterDefaultRoute} from '@/core/useReactRouterDefaultRoute'
 import {MealVerificationData} from '@/features/Meal/Verification/MealVerificationData'
 import {MealPdmCashDashboard} from '@/features/Meal/Pdm/MealPdmCashDashboard'
 import {MealPdmShelterDashboard} from '@/features/Meal/Pdm/MealPdmShelterDashboard'
+import {MealPdmNfiDashboard} from '@/features/Meal/Pdm/MealPdmNfiDashboard'
 
 const relatedKoboForms: KoboFormName[] = [
   'meal_verificationWinterization',
@@ -51,6 +52,7 @@ export const mealIndex = {
       _: '/pdm',
       cashPdmDashboard: `/pdm/cash/dashboard`,
       shelterPdmDashboard: `/pdm/shelter/dashboard`,
+      nfiPdmDashboard: `/pdm/nfi/dashboard`,
     },
     form: (id: KoboFormName = ':id' as any) => '/form/' + id,
   },
@@ -178,6 +180,7 @@ export const Meal = () => {
           <Route index element={<Navigate to={mealIndex.siteMap.pdm.cashPdmDashboard} replace />} />
           <Route path={mealIndex.siteMap.pdm.cashPdmDashboard} element={<MealPdmCashDashboard />} />
           <Route path={mealIndex.siteMap.pdm.shelterPdmDashboard} element={<MealPdmShelterDashboard />} />
+          <Route path={mealIndex.siteMap.pdm.nfiPdmDashboard} element={<MealPdmNfiDashboard />} />
         </Route>
         <Route index element={<Navigate to={mealIndex.siteMap.visit.dashboard} />} />
         {relatedKoboForms.map((_) => (

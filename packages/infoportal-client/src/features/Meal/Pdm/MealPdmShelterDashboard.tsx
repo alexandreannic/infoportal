@@ -34,7 +34,7 @@ export const MealPdmShelterDashboard = () => {
   const {m, formatDateTime, formatDate} = useI18n()
   const [optionFilter, setOptionFilters] = useState<Record<string, string[] | undefined>>({})
   const filterShape = useMemo(() => {
-    return DataFilter.makeShape(commonShape) // Reusing the common filter shape
+    return DataFilter.makeShape(commonShape)
   }, [commonShape])
 
   const data = useMemo(() => {
