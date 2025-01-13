@@ -43,6 +43,7 @@ import {
   Ecrec_vet_bha388,
   Ecrec_msme_bha388,
   Partner_misto_syly,
+  Ecrec_smallScaleFarmerBha388,
 } from 'infoportal-common'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {fnSwitch, seq} from '@alexandreannic/ts-utils'
@@ -197,6 +198,13 @@ export class KoboTypedAnswerSdk {
         req({
           formId: KoboIndex.byName('ecrec_vetApplication').id,
           fnMapKobo: Ecrec_vetApplication.map,
+          ...filters,
+        }),
+      ),
+      ...make('ecrec_smallScaleFarmerBha388', (filters?: KoboAnswerFilter) =>
+        req({
+          formId: KoboIndex.byName('ecrec_smallScaleFarmerBha388').id,
+          fnMapKobo: Ecrec_smallScaleFarmerBha388.map,
           ...filters,
         }),
       ),

@@ -19,6 +19,7 @@ import {
   Protection_referral,
   Shelter_cashForShelter,
   Shelter_nta,
+  Ecrec_smallScaleFarmerBha388,
 } from '../generated'
 import {Person} from '../../type/Person'
 import {fnSwitch, seq} from '@alexandreannic/ts-utils'
@@ -258,6 +259,10 @@ export namespace KoboXmlMapper {
           hh_char_hh_res_stat: row.ben_det_res_stat,
         })),
       })
+    }
+
+    export const ecrec_smallScaleFarmerBha388 = (row: Ecrec_smallScaleFarmerBha388.T) => {
+      return common(row)
     }
 
     export const shelter_nta = (row: Shelter_nta.T) => {

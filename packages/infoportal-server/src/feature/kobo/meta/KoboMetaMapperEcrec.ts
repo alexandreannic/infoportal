@@ -10,6 +10,7 @@ import {
   Ecrec_cashRegistrationBha,
   Ecrec_msmeGrantEoi,
   Ecrec_msmeGrantSelection,
+  Ecrec_smallScaleFarmerBha388,
   Ecrec_vetApplication,
   Ecrec_vetEvaluation,
   KoboBaseTags,
@@ -175,6 +176,37 @@ export class KoboMetaMapperEcrec {
         },
       },
     }
+  }
+
+  static readonly ecrec_smallScaleFarmerBha388: MetaMapperInsert<
+    KoboMetaOrigin<Ecrec_smallScaleFarmerBha388.T, KoboBaseTags>
+  > = (row) => {
+    const answer = Ecrec_smallScaleFarmerBha388.map(row.answers)
+    const persons = KoboXmlMapper.Persons.ecrec_smallScaleFarmerBha388(answer)
+    return KoboMetaMapper.make({
+      status: KoboMetaHelper.mapValidationStatus(row.tags?._validation),
+      date: answer.date,
+      sector: DrcSector.Livelihoods,
+      activity: DrcProgram.SectoralCashSmallFarmer,
+      project: [DrcProject['UKR-000388 BHA']],
+      donor: [DrcDonor.BHA],
+      lastName: answer.surname,
+      patronymicName: answer.pat_name,
+      firstName: answer.first_name,
+      office: KoboXmlMapper.office(answer.back_office),
+      oblast: KoboXmlMapper.Location.mapOblast(answer.oblast!).name,
+      raion: KoboXmlMapper.Location.searchRaion(answer.raion),
+      hromada: KoboXmlMapper.Location.searchHromada(answer.hromada),
+      settlement: answer.settlement,
+      persons,
+      personsCount: persons.length,
+      taxId: answer.pay_det_tax_id_num,
+      taxIdFileName: answer.pay_det_tax_id_ph,
+      taxIdFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_tax_id_ph),
+      idFileName: answer.pay_det_id_ph,
+      idFileUrl: KoboHelper.findFileUrl(row.attachments, answer.pay_det_id_ph),
+      passportNum: answer.pay_det_pass_num,
+    })
   }
 
   static readonly msmeEoi: MetaMapperInsert<KoboMetaOrigin<Ecrec_msmeGrantEoi.T, KoboBaseTags>, KoboMetaEcrecTags> = (

@@ -97,6 +97,10 @@ export class BuildKoboType {
         formId: KoboIndex.byName('ecrec_msmeGrantEoi').id,
         skipQuestionTyping: ['ben_det_hromada', 'ben_det_raion'],
       },
+      ecrec_smallScaleFarmerBha388: {
+        formId: KoboIndex.byName('ecrec_smallScaleFarmerBha388').id,
+        skipQuestionTyping: ['ben_det_hromada', 'ben_det_raion'],
+      },
       ecrec_msmeGrantReg: {
         formId: KoboIndex.byName('ecrec_msmeGrantReg').id,
         skipQuestionTyping: ['ben_det_hromada', 'ben_det_raion'],

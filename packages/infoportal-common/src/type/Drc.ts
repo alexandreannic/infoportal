@@ -69,6 +69,7 @@ export enum DrcProgram {
   InfantWinterClothing = 'InfantWinterClothing',
   HygieneKit = 'HygieneKit',
   SectoralCashForAgriculture = 'SectoralCashForAgriculture',
+  SectoralCashSmallFarmer = 'SectoralCashSmallFarmer',
   VET = 'VET',
   MSME = 'MSME',
   SectoralCashForAnimalShelterRepair = 'SectoralCashForAnimalShelterRepair',
@@ -129,6 +130,7 @@ export class DrcSectorHelper {
     LegalAid: [DrcSector.GBV], //	# of individuals at risk supported with GBV specialized legal assistance and counseling
     PsychosocialIndividualSession: [DrcSector.PSS],
     PsychologicalFirstAid: [DrcSector.PSS],
+    SectoralCashSmallFarmer: [DrcSector.Livelihoods],
     //	# of operational women and girls\' safe spaces
     // CapacityBuilding: DrcSector.GBV,	//	# of GBV service providers trained on GBV prevention and response that meet GBViE minimum standards
   } as const
