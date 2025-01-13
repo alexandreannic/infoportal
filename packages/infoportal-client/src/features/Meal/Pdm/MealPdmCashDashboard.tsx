@@ -19,11 +19,11 @@ import {Panel, PanelBody} from '@/shared/Panel'
 import {MapSvgByOblast} from '@/shared/maps/MapSvgByOblast'
 import {usePdmFilters} from '@/features/Meal/Pdm/Context/usePdmFilter'
 
+const mapOblast = OblastIndex.koboOblastIndexIso
+
 const isCashPdm = (_: PdmData<PdmForm>): _ is PdmData<Meal_cashPdm.T> => {
   return _.type === 'Cash'
 }
-
-const mapOblast = OblastIndex.koboOblastIndexIso
 
 export const MealPdmCashDashboard = () => {
   const ctx = useMealPdmContext()

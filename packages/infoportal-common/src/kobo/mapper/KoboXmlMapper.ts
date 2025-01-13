@@ -44,7 +44,7 @@ export namespace KoboXmlMapper {
     export type DisabilitySelected = ExtractHh<Ecrec_cashRegistration.T, 'hh_char_hh_det'>['hh_char_hh_det_dis_select']
 
     // export type Displacement = ExtractHh<Ecrec_cashRegistration.T, 'hh_char_hh_det'>['hh_char_hh_res_stat']
-    export type Office = 'dnk' | 'hrk' | 'cej' | 'lwo' | 'umy' | 'nlv' | 'slo' | 'chj' | 'zap' | 'khe' | 'other'
+    export type Office = 'dnk' | 'hrk' | 'cej' | 'lwo' | 'umy' | 'nlv' | 'slo' | 'chj' | 'zap' | 'khe' | 'iev' | 'other'
 
     export type Displacement =
       | 'idp'
@@ -96,6 +96,7 @@ export namespace KoboXmlMapper {
         slo: DrcOffice.Sloviansk,
         zap: DrcOffice.Zaporizhzhya,
         khe: DrcOffice.Kherson,
+        iev: DrcOffice.Kyiv,
       },
       () => undefined,
     )
