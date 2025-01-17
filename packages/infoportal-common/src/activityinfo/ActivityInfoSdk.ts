@@ -176,7 +176,7 @@ export class ActivityInfoSdk {
   //   })
   // }
 
-  /** @deprecated should generated related model and use function mapping */
+  /** @deprecated should generated related dummy-model.ts and use function mapping */
   // static readonly makeForm = (params: AiProtectionHhs.FormParams): any => {
   //   const getKeyId = (id: keyof typeof AiProtectionHhs.inputs) => AiProtectionHhs.inputs[id].id
   //   // const buildOption = <T extends keyof typeof AiProtectionHhs.inputsOptions>(t: T, defaultValue?: keyof (typeof AiProtectionHhs.inputsOptions)[T]) => {

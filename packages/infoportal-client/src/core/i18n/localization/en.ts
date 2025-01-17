@@ -608,7 +608,7 @@ export const en = Object.freeze({
       no: 'no',
       pna: 'prefer not to say',
       npn: 'Training needs',
-      preferences: 'Preferences on the training model',
+      preferences: 'Preferences on the training dummy-model.ts',
       modality: 'Preferences on modality',
       believe: 'Need for MH & psychosocial support',
       overwhelm: 'Feeling overwhelmed/stressed due to workload',

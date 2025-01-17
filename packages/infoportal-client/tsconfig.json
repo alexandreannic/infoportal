@@ -5,7 +5,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "module": "esnext",
+    "module": "ESNext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -13,6 +15,18 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
+    "allowJs": true,
+
+    "module": "ESNext", // Use ESNext for ES Modules
+    "moduleResolution": "node", // Resolve modules like Node.js
+    "target": "ESNext", // Compile to ESNext
+    "esModuleInterop": true, // Ensure default imports work
+    "skipLibCheck": true, // Skip type checking for declaration files
+
+    "types": [
+      "node",
+      "jest"
+    ],
     "plugins": [
       {
         "name": "next"

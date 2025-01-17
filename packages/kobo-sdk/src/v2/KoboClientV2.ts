@@ -192,6 +192,10 @@ export class KoboClientV2 {
     return this.api.get<Kobo.Paginate<Kobo.Form>>(`/v2/assets/?q=asset_type%3Asurvey&limit=1000`)
   }
 
+  readonly getXml = (formId: Kobo.FormId) => {
+    return this.api.get(`/v2/assets/${formId}.xml`)
+  }
+
   readonly getAttachement = (path: string) => {
     return axios.create().request({
       url: this.api.params.baseUrl + path,

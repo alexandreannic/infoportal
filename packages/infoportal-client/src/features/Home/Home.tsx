@@ -12,7 +12,11 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {AppHeader} from '@/shared/Layout/Header/AppHeader'
 import {fnSwitch, Obj, seq} from '@alexandreannic/ts-utils'
 import {styleUtils} from '@/core/theme'
+import dynamic from 'next/dynamic'
 
+const Test = dynamic(() => import('./Test').then(_ => _.Test), {
+  ssr: false, // Disable server-side rendering
+})
 export const Home = () => {
   return (
     <Layout header={<AppHeader/>}>
@@ -37,6 +41,7 @@ const _Home = () => {
   const {session, accesses} = useSession()
   const layoutCtx = useLayoutContext()
   const t = useTheme()
+  return (<Test/>)
   return (
     <Page>
       <Box>

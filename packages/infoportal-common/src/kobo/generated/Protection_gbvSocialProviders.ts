@@ -32,7 +32,7 @@ export type Option<T extends keyof typeof options> = keyof (typeof options)[T]
   'interested_training_families_gbv_yes': undefined | Option<'interested_training_families_gbv_yes'>[],
 	  // introduction/interested_training_families_gbv_yes_other [text] Other- please specify
   'interested_training_families_gbv_yes_other': string | undefined,
-	  // introduction/training_model [select_one] Which training model do you prefer?
+	  // introduction/training_model [select_one] Which training dummy-model.ts do you prefer?
   'training_model': undefined | Option<'training_model'>,
 	  // introduction/preferred_modality_training [select_one] What is your preferred modality for training?
   'preferred_modality_training': undefined | Option<'preferred_modality_training'>,

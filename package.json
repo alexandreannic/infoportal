@@ -2,14 +2,26 @@
   "name": "infoportal",
   "requires": true,
   "scripts": {
+    "postinstall": "npm run build --workspace infoportal-common",
     "server": "npm run dev --workspace infoportal-server",
     "client": "npm run dev --workspace infoportal-client",
     "kobo-sdk": "npm run dev --workspace kobo-sdk",
     "common": "npm run dev --workspace infoportal-common",
+    "build:server": "npm run build --workspace infoportal-server",
+    "build:client": "npm run build --workspace infoportal-client",
+    "build:kobo-sdk": "npm run build --workspace kobo-sdk",
+    "build:common": "npm run build --workspace infoportal-common",
+    "scripts": "npm run dev --workspace infoportal-scripts",
     "db-migrate-f": "npm run db-migrate-f --workspace infoportal-server",
     "test": "npx jest"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "jquery": "^3.7.1"
+  },
+  "devDependencies": {
+    "next-transpile-modules": "^10.0.1"
+  }
 }
