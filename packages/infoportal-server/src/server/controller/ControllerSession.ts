@@ -8,13 +8,12 @@ import {UserSession} from '../../feature/session/UserSession'
 import {appConf} from '../../core/conf/AppConf'
 import {SessionError} from '../../feature/session/SessionErrors'
 
-export class ControllerSession extends Controller {
+export class ControllerSession {
   constructor(
     private prisma: PrismaClient,
     private service = new SessionService(prisma),
     private conf = appConf,
   ) {
-    super({errorKey: 'session'})
   }
 
   readonly get = async (req: Request, res: Response, next: NextFunction) => {

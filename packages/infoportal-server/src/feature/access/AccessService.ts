@@ -41,31 +41,6 @@ export class AccessService {
     id: yup.string().required(),
   })
 
-  static readonly drcOfficeSchema = yup.mixed<DrcOffice>().oneOf(Obj.values(DrcOffice))
-  static readonly drcJobSchema = yup.string().required() //yup.mixed<DrcJob>().oneOf(Obj.values(DrcJob)),
-  static readonly levelSchema = yup.mixed<FeatureAccessLevel>().oneOf(Obj.values(FeatureAccessLevel)).required()
-  static readonly featureIdSchema = yup.mixed<AppFeatureId>().oneOf(Obj.values(AppFeatureId))
-
-  static readonly createSchema = yup.object({
-    featureId: AccessService.featureIdSchema,
-    level: AccessService.levelSchema,
-    drcOffice: AccessService.drcOfficeSchema.optional().nullable(),
-    drcJob: yup.array().of(AccessService.drcJobSchema).optional().nullable(),
-    email: yup.string().optional().nullable(),
-    groupId: yup.string().optional().nullable(),
-    params: yup.mixed().optional().nullable(),
-  })
-
-  static readonly updateSchema = yup.object({
-    level: yup.mixed<FeatureAccessLevel>().oneOf(Obj.values(FeatureAccessLevel)),
-    drcJob: yup.string(), //yup.mixed<DrcJob>().oneOf(Obj.values(DrcJob)),
-    drcOffice: yup.mixed<DrcOffice>().oneOf(Obj.values(DrcOffice)),
-  })
-
-  static readonly searchSchema = yup.object({
-    featureId: yup.mixed<AppFeatureId>().oneOf(Obj.values(AppFeatureId)),
-  })
-
   private readonly searchFromAccess = async ({featureId, user}: {featureId?: AppFeatureId; user?: UserSession}) => {
     return this.prisma.featureAccess.findMany({
       distinct: ['id'],

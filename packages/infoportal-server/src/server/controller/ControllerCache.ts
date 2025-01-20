@@ -5,6 +5,10 @@ import {yup} from '../../helper/Utils'
 export class ControllerCache {
   constructor(private appCache = app.cache) {}
 
+  static readonly schema = {
+
+  }
+
   readonly get = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const cache = this.appCache.getAll()
