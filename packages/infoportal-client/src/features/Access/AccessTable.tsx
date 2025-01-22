@@ -6,7 +6,7 @@ import {useAsync, UseAsyncMultiple} from '@/shared/hook/useAsync'
 import {Obj, seq} from '@alexandreannic/ts-utils'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
-import {TableIconBtn} from '@/features/Mpca/MpcaData/TableIcon'
+import TableIconBtn from '@/shared/Datatable/DatatableCellIconBtn'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {UseFetcher} from '@/shared/hook/useFetcher'
 import {Txt} from '@/shared/Txt'
@@ -65,7 +65,7 @@ export const AccessTable = ({
           head: m.drcJob,
           renderQuick: (_) => _.drcJob,
           type: 'select_one',
-          options: () => drcJobs.get?.map((job) => ({ value: job, label: job })) || [],
+          options: () => drcJobs.get?.map((job) => ({value: job, label: job})) || [],
         },
         {
           id: 'drcOffice',

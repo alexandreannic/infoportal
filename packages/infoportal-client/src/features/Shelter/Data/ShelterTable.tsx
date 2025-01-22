@@ -4,7 +4,8 @@ import {fnSwitch, map, Obj, seq} from '@alexandreannic/ts-utils'
 import {useI18n} from '@/core/i18n'
 import {Panel} from '@/shared/Panel'
 import {Box, useTheme} from '@mui/material'
-import {TableIcon, TableIconBtn} from '@/features/Mpca/MpcaData/TableIcon'
+import TableIcon from '@/shared/Datatable/DatatableCellIcon'
+import TableIconBtn from '@/shared/Datatable/DatatableCellIconBtn'
 import {KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {
   add,

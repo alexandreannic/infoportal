@@ -2,7 +2,7 @@ import {IpInput, IpInputProps} from '@/shared/Input/Input'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {DebouncedInput} from '@/shared/DebouncedInput'
 import React from 'react'
-import {TableIcon} from '@/features/Mpca/MpcaData/TableIcon'
+import TableIcon from '@/shared/Datatable/DatatableCellIcon'
 import {StateStatus} from 'infoportal-common'
 import {appConfig} from '@/conf/AppConfig'
 

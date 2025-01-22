@@ -1,4 +1,4 @@
-import {TableIconBtn} from '@/features/Mpca/MpcaData/TableIcon'
+import TableIconBtn from '@/shared/Datatable/DatatableCellIconBtn'
 import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {alpha, Box, Icon, lighten, Popover, useTheme} from '@mui/material'

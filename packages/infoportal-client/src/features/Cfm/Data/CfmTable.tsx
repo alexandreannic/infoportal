@@ -19,7 +19,8 @@ import {
   Regexp,
 } from 'infoportal-common'
 import {DebouncedInput} from '@/shared/DebouncedInput'
-import {TableIcon, TableIconBtn, TableIconProps} from '@/features/Mpca/MpcaData/TableIcon'
+import TableIcon, {type TableIconProps} from '@/shared/Datatable/DatatableCellIcon'
+import TableIconBtn from '@/shared/Datatable/DatatableCellIconBtn'
 import {
   CfmData,
   cfmMakeEditRequestKey,
