@@ -11,6 +11,7 @@ import {WfpDeduplicationSdk} from '@/core/sdk/server/wfpDeduplication/WfpDedupli
 import {AccessSdk} from '@/core/sdk/server/access/AccessSdk'
 import {UserSdk} from '@/core/sdk/server/user/UserSdk'
 import {ProxySdk} from '@/core/sdk/server/proxy/ProxySdk'
+import {EcrecSdk} from '@/core/sdk/server/ecrec/EcrecSdk'
 import {MpcaSdk} from '@/core/sdk/server/mpca/MpcaSdk'
 import {GroupSdk} from '@/core/sdk/server/group/GroupSdk'
 import {MealVerificationClient} from '@/core/sdk/server/mealVerification/MealVerificationClient'
@@ -51,6 +52,7 @@ export class ApiSdk {
   readonly koboApi = new KoboApiSdk(this.client)
   readonly mealVerification = new MealVerificationClient(this.client)
   readonly activityInfo = new ActivityInfoSdk(this.client)
+  readonly ecrec = new EcrecSdk(this.client)
   readonly mpca = new MpcaSdk(this.client)
   readonly wfpDeduplication = new WfpDeduplicationSdk(this.client)
   readonly user = new UserSdk(this.client)
