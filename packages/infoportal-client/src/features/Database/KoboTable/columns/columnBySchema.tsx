@@ -7,7 +7,7 @@ import {
 } from 'infoportal-common'
 import {useI18n} from '@/core/i18n/I18n'
 import {fnSwitch, map, seq} from '@alexandreannic/ts-utils'
-import TableIcon from '@/shared/Datatable/DatatableCellIcon'
+import {TableIcon} from '@/features/Mpca/MpcaData/TableIcon'
 import React from 'react'
 import {DatatableHeadIcon, DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {alpha, IconProps, Theme} from '@mui/material'

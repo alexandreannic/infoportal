@@ -10,6 +10,7 @@ import {formatDateTime, formatLargeNumber} from '@/core/i18n/localization/en'
 import {MpcaHelper} from '@/core/sdk/server/mpca/MpcaEntity'
 import {SelectDrcProject} from '@/shared/customInput/SelectDrcProject'
 import {Box, Icon} from '@mui/material'
+import {useAsync} from '@/shared/hook/useAsync'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DeduplicationStatusIcon} from '@/features/WfpDeduplication/WfpDeduplicationData'
@@ -22,10 +23,11 @@ import {Txt} from '@/shared/Txt'
 import {useSession} from '@/core/Session/SessionContext'
 import {AccessSdk} from '@/core/sdk/server/access/AccessSdk'
 import {fnSwitch, seq} from '@alexandreannic/ts-utils'
+import {TableIcon} from '@/features/Mpca/MpcaData/TableIcon'
 import {useMemoFn} from '@alexandreannic/react-hooks-lib'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
-import TableIcon from '@/shared/Datatable/DatatableCellIcon'
 import {KoboApiSdk} from '@/core/sdk/server/kobo/KoboApiSdk'
+import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 
 const PrivateCell = () => {
   return <TableIcon color="disabled">lock</TableIcon>
@@ -33,7 +35,7 @@ const PrivateCell = () => {
 
 export const MpcaData = () => {
   const {m, formatDate} = useI18n()
-  const {conf} = useAppSettings()
+  const {api, conf} = useAppSettings()
   const {session, accesses} = useSession()
   const ctx = useMpcaContext()
   const [selected, setSelected] = useState<string[]>([])

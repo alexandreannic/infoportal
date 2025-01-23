@@ -1,7 +1,6 @@
+import {TableIconBtn} from '@/features/Mpca/MpcaData/TableIcon'
 import React from 'react'
-
-import TableIconBtn from './Datatable/DatatableCellIconBtn'
-import {IpIconBtnProps} from './IconBtn'
+import {IpIconBtnProps} from '@/shared/IconBtn'
 
 export const TableEditCellBtn = (props: Omit<IpIconBtnProps, 'children'>) => {
   return (

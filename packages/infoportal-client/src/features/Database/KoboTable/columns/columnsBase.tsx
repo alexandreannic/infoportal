@@ -1,5 +1,5 @@
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
-import TableIconBtn from '@/shared/Datatable/DatatableCellIconBtn'
+import {TableIconBtn} from '@/features/Mpca/MpcaData/TableIcon'
 import {TableEditCellBtn} from '@/shared/TableEditCellBtn'
 import {SelectStatusBy} from '@/shared/customInput/SelectStatus'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
