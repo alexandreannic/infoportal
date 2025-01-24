@@ -16,7 +16,7 @@ export class EcrecDbService {
 
   readonly search = async (): Promise<ApiPaginate<IKoboMeta>> => {
     const meta = await this.meta.search({
-      activities: [DrcProgram.MSME, DrcProgram.VET],
+      formNames: ['ecrec_vet_bha388', 'ecrec_msmeGrantReg'],
     })
 
     return ApiPaginateHelper.make()(meta)
