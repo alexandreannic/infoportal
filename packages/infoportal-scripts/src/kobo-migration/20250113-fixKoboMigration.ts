@@ -423,9 +423,9 @@ export namespace FixKoboMigration {
         try {
           const [answers, form] = await Promise.all([
             koboSdkHumanitarian.v2
-              .getAnswers(formId, {start: firstMigrationDate})
+              .submission.get({formId, filters:{start: firstMigrationDate}})
               .then((_) => _.results.filter((_) => _._validation_status.uid !== Validation.validation_status_approved)),
-            koboSdkHumanitarian.v2.getForm(formId),
+            koboSdkHumanitarian.v2.form.get({formId}),
           ])
           if (answers && answers.length) {
             const afterClosure = answers.filter((_) => _._submission_time.getTime() > new Date(2025, 0, 19).getTime())

@@ -412,7 +412,7 @@ class KoboInterfaceGenerator {
   }
 
   readonly generate = async () => {
-    const form = await this.sdk.v2.getForm(this.options.formId)
+    const form = await this.sdk.v2.form.get({formId: this.options.formId, use$autonameAsName: true})
     const survey = this.fixDuplicateName(form.content.survey)
     const mainInterface = this.generateInterface({survey, formId: this.options.formId})
     const options = this.generateOptionsType({survey, choices: form.content.choices})

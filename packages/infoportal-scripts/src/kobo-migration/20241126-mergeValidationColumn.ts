@@ -151,7 +151,7 @@ export const run = async () => {
       })
     } else if (status._IP_VALIDATION_STATUS_EXTRA) {
       if (validation)
-        await sdk.v2.updateData({
+        await sdk.v2.submission.update({
           submissionIds,
           formId,
           data: {
@@ -159,7 +159,7 @@ export const run = async () => {
           },
         })
     }
-    const answers = await sdk.v2.getAnswers(formId)
+    const answers = await sdk.v2.submission.get(formId)
     await Promise.all(
       Obj.entries(seq(answers.results).groupBy((_) => _.validationStatus!)).map(([k, v]) => {
         return chunkify({

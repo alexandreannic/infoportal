@@ -16,7 +16,7 @@ export class ImportService {
 
   readonly processData = async (formId: Kobo.FormId, filePath: string, action: 'create' | 'update') => {
     const sdk = await this.koboSdkGenerator.getBy.formId(formId)
-    const schema = await sdk.v2.getForm(formId)
+    const schema = await sdk.v2.form.get({formId, use$autonameAsName: true})
     const schemaHelper = KoboSchemaHelper.buildBundle({schema})
 
     const sheetData = Obj.mapValues(this.getSheets(xlsx.readFile(filePath)), (sheet) =>
@@ -28,7 +28,7 @@ export class ImportService {
         questionIndex: schemaHelper.helper.questionIndex,
         data: mergedData,
         output: 'toInsert',
-        tag: '_IP_ADDED_FROM_XLS'
+        tag: '_IP_ADDED_FROM_XLS',
       })
       await this.batchCreate(formattedData, sdk, formId)
     } else if (action === 'update') {
@@ -99,7 +99,7 @@ export class ImportService {
 
   private async batchCreate(data: KoboData[], sdk: any, formId: Kobo.FormId) {
     for (const row of data) {
-      await sdk.v1.submit({
+      await sdk.v1.submissions.submit({
         formId,
         data: {...row},
         retries: 2,
@@ -111,7 +111,7 @@ export class ImportService {
     for (const row of data) {
       const answerId = row['ID']
       if (!answerId) continue
-      await sdk.v2.updateData({
+      await sdk.v2.submission.update({
         formId,
         data: row,
         submissionIds: [answerId],

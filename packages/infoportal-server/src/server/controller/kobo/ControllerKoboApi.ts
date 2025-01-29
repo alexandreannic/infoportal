@@ -28,7 +28,7 @@ export class ControllerKoboApi {
       })
       .validate(req.body)
     const sdk = await this.koboSdkGenerator.getBy.serverId(serverId)
-    const forms = await sdk.v2.getForms()
+    const forms = await sdk.v2.form.getAll()
     res.send(forms)
   }
 
@@ -53,7 +53,7 @@ export class ControllerKoboApi {
     const {formId} = await this.extractParams(req)
     const answerId = await yup.string().required().validate(req.params.answerId)
     const sdk = await this.koboSdkGenerator.getBy.formId(formId)
-    const link = await sdk.v2.edit(formId, answerId)
+    const link = await sdk.v2.submission.getEditLinkUrl({formId, submissionId: answerId})
 
     //   res.send(`
     //   <!DOCTYPE html>
@@ -103,7 +103,7 @@ export class ControllerKoboApi {
         .validate(req.params)
       const fileName = req.query.fileName
       const sdk = await this.koboSdkGenerator.getBy.formId(params.formId)
-      const img = await sdk.v2.getAttachement(params)
+      const img = await sdk.v2.submission.getAttachement(params)
       if (!fileName) {
         res.set('Content-Type', 'image/jpeg')
         res.set('Content-Length', img.length)

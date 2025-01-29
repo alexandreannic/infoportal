@@ -6,7 +6,7 @@ import {AppLogger} from '../../index'
 export class ControllerLegalAid extends Controller {
   constructor(
     private legalAidSdk: LegalaidSdk,
-    private logger: AppLogger,
+    private log: AppLogger,
   ) {
     super({errorKey: 'monitoring'})
   }

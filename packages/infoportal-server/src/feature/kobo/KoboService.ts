@@ -2,7 +2,8 @@ import {KoboForm, Prisma, PrismaClient} from '@prisma/client'
 import {
   ApiPaginate,
   ApiPaginateHelper,
-  ApiPagination, KoboCustomDirective,
+  ApiPagination,
+  KoboCustomDirective,
   KoboHelper,
   KoboIndex,
   KoboSubmission,
@@ -325,7 +326,7 @@ export class KoboService {
     ttlMs: duration(2, 'day').toMs,
     fn: async ({formId}: {formId: Kobo.FormId}): Promise<Kobo.Form> => {
       const sdk = await this.sdkGenerator.getBy.formId(formId)
-      return sdk.v2.getForm(formId)
+      return sdk.v2.form.get({formId, use$autonameAsName: true})
     },
   })
 
@@ -459,7 +460,7 @@ export class KoboService {
           id: {in: answerIds},
         },
       }),
-      this.sdkGenerator.getBy.formId(formId).then((_) => _.v2.delete(formId, answerIds)),
+      this.sdkGenerator.getBy.formId(formId).then((_) => _.v2.submission.delete({formId, ids: answerIds})),
     ])
     this.history.create({
       type: 'delete',
@@ -497,7 +498,7 @@ export class KoboService {
         newValue: answer,
         authorEmail,
       }),
-      sdk.v2.updateData({formId, submissionIds: answerIds, data: {[xpath]: answer}}),
+      sdk.v2.submission.update({formId, submissionIds: answerIds, data: {[xpath]: answer}}),
       await this.prisma.$executeRawUnsafe(
         `UPDATE "KoboAnswers"
          SET answers     = jsonb_set(answers, '{${question}}', '"${KoboService.safeJsonValue(answer ?? '')}"'),
@@ -534,8 +535,12 @@ export class KoboService {
       (async () => {
         if (mappedValidation._validation_status) {
           await Promise.all([
-            sdk.v2.updateValidation({formId, submissionIds: answerIds, status: mappedValidation._validation_status}),
-            sdk.v2.updateData({
+            sdk.v2.submission.updateValidation({
+              formId,
+              submissionIds: answerIds,
+              status: mappedValidation._validation_status,
+            }),
+            sdk.v2.submission.update({
               formId,
               submissionIds: answerIds,
               data: {[KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: null},
@@ -543,12 +548,18 @@ export class KoboService {
           ])
         } else {
           await Promise.all([
-            sdk.v2.updateData({
+            sdk.v2.submission.update({
               formId,
               submissionIds: answerIds,
-              data: {[KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: mappedValidation._IP_VALIDATION_STATUS_EXTRA},
+              data: {
+                [KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: mappedValidation._IP_VALIDATION_STATUS_EXTRA,
+              },
             }),
-            sdk.v2.updateValidation({formId, submissionIds: answerIds, status: Kobo.Submission.Validation.no_status}),
+            sdk.v2.submission.updateValidation({
+              formId,
+              submissionIds: answerIds,
+              status: Kobo.Submission.Validation.no_status,
+            }),
           ])
         }
       })(),

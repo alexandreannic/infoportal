@@ -1,6 +1,7 @@
 export type Logger = {
   error: (_: string) => void
   info: (_: string) => void
+  debug: (_: string) => void
 }
 
 export namespace Kobo {
@@ -30,7 +31,7 @@ export namespace Kobo {
     url: string
     logs_url: string
     asset: number
-    uid: 'hLgBEVbijurruSrU3nc7d9'
+    uid: string
     name: 'InfoPortal'
     endpoint: string
     active: true
@@ -64,11 +65,6 @@ export namespace Kobo {
 
     export type Question = {
       name: string
-      /**
-       * @deprecated
-       * This variable is set by Kobo based `name` since this last one can be undefined and duplicated.
-       * To simplify usage in this app, `name` = $autoname.
-       */
       $autoname: string
       $kuid: string
       $qpath: string
@@ -167,18 +163,18 @@ export namespace Kobo {
       deployment__submission_count: 0
       // downloads: [,…]
       // export_settings: []
-      // kind: "asset"
+      kind: 'asset'
       // owner: "https://kobo.humanitarianresponse.info/api/v2/users/alexandre_annic_drc/"
       owner__username: string
       // parent: null
       // permissions: [{,…}, {,…}, {,…}, {,…}, {,…}, {,…}, {,…}, {,…}]
       // settings: {sector: {label: "Humanitarian - Coordination / Information Management",…},…}
-      // status: "private"
+      status: 'private'
       subscribers_count: 0
       // summary: {geo: false,…}
-      // tag_string: ""
+      tag_string: string
       uid: string
-      // url: "https://kobo.humanitarianresponse.info/api/v2/assets/aRHsewShwZhXiy8jrBj9zf/"
+      url: string
       version_id: string
       files: File[]
     }

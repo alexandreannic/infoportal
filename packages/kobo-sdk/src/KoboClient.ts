@@ -24,6 +24,7 @@ export class KoboClient {
           Authorization: KoboClient.makeAuthorizationHeader(token),
         },
       }),
+      log,
     )
     this.v2 = new KoboClientV2(
       new ApiClientClass({
