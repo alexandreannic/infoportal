@@ -87,7 +87,7 @@ export const appFeaturesIndex: Record<AppFeatureId, AppFeature> = {
     color: '#daba00',
     category: 'programs',
     path: '/ecrec',
-    showIf: (u, accesses) => false,
+    showIf: (u, accesses) => true, // TODO: should we restrict access to this feature?
   },
   protection: {
     id: AppFeatureId.protection,

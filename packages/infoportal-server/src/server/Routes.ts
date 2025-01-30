@@ -3,6 +3,7 @@ import {app, AppLogger} from '../index'
 import {ControllerMain} from './controller/ControllerMain'
 import {PrismaClient} from '@prisma/client'
 import {ControllerActivityInfo} from './controller/ControllerActivityInfo'
+import {ControllerEcrec} from './controller/ControllerEcrec'
 import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi'
 import {ControllerSession} from './controller/ControllerSession'
 import {ControllerKoboForm} from './controller/kobo/ControllerKoboForm'
@@ -59,6 +60,7 @@ export const getRoutes = (
   //   legalAidSdk,
   //   logger,
   // )
+  const ecrec = new ControllerEcrec(prisma)
   const mpca = new ControllerMpca(prisma)
   const main = new ControllerMain()
   const koboForm = new ControllerKoboForm(prisma)
@@ -196,7 +198,7 @@ export const getRoutes = (
     router.put('/json-store', auth(), errorCatcher(jsonStore.set))
     router.patch('/json-store', auth(), errorCatcher(jsonStore.update))
 
-    router.post('/mpca/search', errorCatcher(mpca.search))
+    router.post('/mpca/search', auth(), errorCatcher(mpca.search))
     router.post('/mpca/refresh', auth(), errorCatcher(mpca.refresh))
     router.post('/wfp-deduplication/refresh', auth(), errorCatcher(wfp.refresh))
     router.post('/wfp-deduplication/search', auth(), errorCatcher(wfp.search))
@@ -206,6 +208,7 @@ export const getRoutes = (
       Server.upload.single('aa-file'),
       errorCatcher(wfp.uploadTaxIdMapping),
     )
+    router.post('/ecrec/search', /*auth(),*/ errorCatcher(ecrec.search))
 
     router.put('/meal-verification', auth(), errorCatcher(mealVerification.create))
     router.get('/meal-verification', auth(), errorCatcher(mealVerification.getAll))

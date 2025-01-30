@@ -6,6 +6,7 @@ import {
   Ecrec_cashRegistration,
   Ecrec_cashRegistrationBha,
   Ecrec_msmeGrantEoi,
+  Ecrec_msmeGrantReg,
   Ecrec_vet2_dmfa,
   Ecrec_vet_bha388,
   Ecrec_vetApplication,
@@ -24,10 +25,8 @@ import {
 } from '../generated'
 import {Person} from '../../type/Person'
 import {fnSwitch, seq} from '@alexandreannic/ts-utils'
-import {Ecrec_msmeGrantReg} from '../generated/Ecrec_msmeGrantReg'
 import {OblastIndex} from '../../location'
 import {DrcOffice} from '../../type/Drc'
-import {fnTry} from '../../utils'
 
 export namespace KoboXmlMapper {
   type ExtractHh<T, K extends keyof T> = T[K] extends any[] | undefined ? NonNullable<T[K]>[0] : never
@@ -189,29 +188,29 @@ export namespace KoboXmlMapper {
       return [
         ...(row.hh_char_hhh_age || row.hh_char_hhh_gender
           ? [
-            {
-              age: row.hh_char_hhh_age,
-              gender: Gender.common({hh_char_hh_det_gender: row.hh_char_hhh_gender}),
-              disability: Disability.common({
-                hh_char_hh_det_dis_level: row.hh_char_hhh_dis_level,
-                hh_char_hh_det_dis_select: row.hh_char_hhh_dis_select,
-              }),
-              displacement: Displacement.common({hh_char_hh_res_stat: row.hh_char_hhh_res_stat}),
-            },
-          ]
+              {
+                age: row.hh_char_hhh_age,
+                gender: Gender.common({hh_char_hh_det_gender: row.hh_char_hhh_gender}),
+                disability: Disability.common({
+                  hh_char_hh_det_dis_level: row.hh_char_hhh_dis_level,
+                  hh_char_hh_det_dis_select: row.hh_char_hhh_dis_select,
+                }),
+                displacement: Displacement.common({hh_char_hh_res_stat: row.hh_char_hhh_res_stat}),
+              },
+            ]
           : []),
         ...(row.hh_char_res_age || row.hh_char_res_gender
           ? [
-            {
-              age: row.hh_char_res_age,
-              gender: Gender.common({hh_char_hh_det_gender: row.hh_char_res_gender}),
-              disability: Disability.common({
-                hh_char_hh_det_dis_level: row.hh_char_res_dis_level,
-                hh_char_hh_det_dis_select: row.hh_char_res_dis_select,
-              }),
-              displacement: Displacement.common({hh_char_hh_res_stat: row.ben_det_res_stat}),
-            },
-          ]
+              {
+                age: row.hh_char_res_age,
+                gender: Gender.common({hh_char_hh_det_gender: row.hh_char_res_gender}),
+                disability: Disability.common({
+                  hh_char_hh_det_dis_level: row.hh_char_res_dis_level,
+                  hh_char_hh_det_dis_select: row.hh_char_res_dis_select,
+                }),
+                displacement: Displacement.common({hh_char_hh_res_stat: row.ben_det_res_stat}),
+              },
+            ]
           : []),
         ...(row.hh_char_hh_det ?? []).map((_) => ({
           age: _.hh_char_hh_det_age,
@@ -235,29 +234,29 @@ export namespace KoboXmlMapper {
       return [
         ...(row.hh_char_hhh_age_l || row.hh_char_hhh_gender_l
           ? [
-            {
-              age: row.hh_char_hhh_age_l,
-              gender: Gender.common({hh_char_hh_det_gender: row.hh_char_hhh_gender_l}),
-              disability: Disability.common({
-                hh_char_hh_det_dis_level: row.hh_char_hhh_dis_level_l,
-                hh_char_hh_det_dis_select: row.hh_char_hhh_dis_select_l,
-              }),
-              displacement: Displacement.common({hh_char_hh_res_stat: row.ben_det_res_stat_l}),
-            },
-          ]
+              {
+                age: row.hh_char_hhh_age_l,
+                gender: Gender.common({hh_char_hh_det_gender: row.hh_char_hhh_gender_l}),
+                disability: Disability.common({
+                  hh_char_hh_det_dis_level: row.hh_char_hhh_dis_level_l,
+                  hh_char_hh_det_dis_select: row.hh_char_hhh_dis_select_l,
+                }),
+                displacement: Displacement.common({hh_char_hh_res_stat: row.ben_det_res_stat_l}),
+              },
+            ]
           : []),
         ...(row.hh_char_res_age_l || row.hh_char_res_gender_l
           ? [
-            {
-              age: row.hh_char_res_age_l,
-              gender: Gender.common({hh_char_hh_det_gender: row.hh_char_res_gender_l}),
-              disability: Disability.common({
-                hh_char_hh_det_dis_level: row.hh_char_res_dis_level_l,
-                hh_char_hh_det_dis_select: row.hh_char_res_dis_select_l,
-              }),
-              displacement: Displacement.common({hh_char_hh_res_stat: row.ben_det_res_stat_l}),
-            },
-          ]
+              {
+                age: row.hh_char_res_age_l,
+                gender: Gender.common({hh_char_hh_det_gender: row.hh_char_res_gender_l}),
+                disability: Disability.common({
+                  hh_char_hh_det_dis_level: row.hh_char_res_dis_level_l,
+                  hh_char_hh_det_dis_select: row.hh_char_res_dis_select_l,
+                }),
+                displacement: Displacement.common({hh_char_hh_res_stat: row.ben_det_res_stat_l}),
+              },
+            ]
           : []),
         ...common({
           ...row,
