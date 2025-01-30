@@ -124,6 +124,10 @@ export const OptionLabelType = ({
 export const StateStatusIcon = ({type, filled, sx}: {type: StateStatus; filled?: boolean; sx?: SxProps}) => {
   const t = useTheme()
   const style = SelectStatusConfig.stateStatusStyle[type]
+  if (!style) {
+    return null
+  }
+
   return <Icon title={type} sx={{color: style.color(t), ...sx}} children={filled ? style.icon : style.iconOutlined} />
 }
 
