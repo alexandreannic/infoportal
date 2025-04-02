@@ -1,0 +1,368 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // provider = "postgresql"
+  // url      = "postgresql://alexandreac:sieges78@localhost:5432/im-tools"
+}
+
+model KoboServer {
+  id       String     @id @default(uuid())
+  url      String
+  urlV1    String?
+  token    String
+  KoboForm KoboForm[]
+}
+
+model KoboForm {
+  id                 String               @id @default(uuid())
+  name               String
+  server             KoboServer           @relation(fields: [serverId], references: [id])
+  serverId           String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime?
+  deploymentStatus   String?
+  updatedBy          String?
+  uploadedBy         String?
+  enketoUrl          String?
+  submissionsCount   Int?
+  KoboAnswers        KoboAnswers[]
+  KoboAnswersHistory KoboAnswersHistory[]
+}
+
+model KoboAnswers {
+  id                     String    @id
+  uuid                   String
+  form                   KoboForm  @relation(fields: [formId], references: [id])
+  formId                 String
+  updatedAt              DateTime?
+  start                  DateTime
+  end                    DateTime
+  date                   DateTime
+  version                String?
+  submissionTime         DateTime
+  validationStatus       String?
+  validatedBy            String?
+  lastValidatedTimestamp Int?
+  geolocation            String?
+  answers                Json
+  attachments            Json[]
+  source                 String?
+  deletedAt              DateTime?
+  deletedBy              String?
+  tags                   Json?
+
+  mealVerifications MealVerificationAnswers[]
+  // meta              KoboMeta[]
+  histories         KoboAnswersHistory[]      @relation("KoboAnswersToHistory")
+
+  @@unique([id, formId])
+  @@index([deletedAt])
+  @@index([date])
+  @@index([formId])
+}
+
+model KoboAnswersHistory {
+  id       String        @id @default(uuid())
+  form     KoboForm?     @relation(fields: [formId], references: [id])
+  formId   String?
+  answerId String?
+  answers  KoboAnswers[] @relation("KoboAnswersToHistory")
+  by       String
+  date     DateTime      @default(now())
+  type     String?
+  property String?
+  oldValue Json?
+  newValue Json?
+
+  @@index([formId])
+}
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
+model KoboPerson {
+  id           String   @id @default(uuid())
+  age          Int?
+  gender       Gender?
+  disability   String[]
+  displacement String?
+  meta         KoboMeta @relation(fields: [metaId], references: [id], onDelete: Cascade)
+  metaId       String
+
+  @@index([metaId])
+}
+
+model KoboMeta {
+  id               String    @id @default(uuid())
+  koboId           String
+  uuid             String
+  // answer           KoboAnswers @relation(fields: [koboId], references: [id], onDelete: Cascade)
+  formId           String
+  referencedFormId String?
+  date             DateTime
+  updatedAt        DateTime?
+  oblast           String?
+  raion            String?
+  hromada          String?
+  settlement       String?
+  personsCount     Int?
+  enumerator       String?
+  taxId            String?
+  firstName        String?
+  lastName         String?
+  patronymicName   String?
+  phone            String?
+  activity         String?
+  sector           String?
+  office           String?
+  project          String[]
+  donor            String[]
+  displacement     String?
+  address          String?
+  status           String?
+  taxIdFileName    String?
+  taxIdFileId      Int?
+  idFileName       String?
+  idFileId         Int?
+  passportNum      String?
+
+  lastStatusUpdate DateTime?
+  tags             Json?
+  persons          KoboPerson[]
+
+  @@index([formId])
+  @@index([koboId])
+}
+
+model User {
+  id              String         @id @default(uuid())
+  email           String         @unique
+  createdBy       String?
+  createdAt       DateTime       @default(now())
+  lastConnectedAt DateTime?
+  accessToken     String?
+  name            String?
+  drcJob          String?
+  avatar          Bytes?         @db.ByteA
+  drcOffice       String?
+  admin           Boolean        @default(false)
+  officer         String?
+  activities      UserActivity[]
+
+  @@index([email])
+}
+
+model UserActivity {
+  id     String   @id @default(uuid())
+  at     DateTime @default(now())
+  user   User?    @relation(fields: [userId], references: [id])
+  detail String?
+  userId String?
+}
+
+model MpcaWfpDeduplicationIdMapping {
+  beneficiaryId String                 @id
+  taxId         String?                @unique
+  deduplication MpcaWfpDeduplication[]
+
+  @@unique([beneficiaryId, taxId])
+}
+
+model MpcaWfpDeduplication {
+  id             String                         @id @default(uuid())
+  office         String?
+  fileName       String?
+  fileUpload     DateTime?
+  category       String?
+  amount         Int
+  wfpId          Int
+  createdAt      DateTime
+  validFrom      DateTime
+  expiry         DateTime
+  beneficiaryId  String
+  beneficiary    MpcaWfpDeduplicationIdMapping? @relation(fields: [beneficiaryId], references: [beneficiaryId])
+  message        String?
+  status         String
+  existingOrga   String?
+  existingStart  DateTime?
+  existingEnd    DateTime?
+  existingAmount Int?
+}
+
+enum FeatureAccessLevel {
+  Read
+  Write
+  Admin
+}
+
+enum FeatureAccessType {
+  KoboForm
+}
+
+model FeatureAccess {
+  id          String             @id @default(uuid())
+  createdBy   String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime?
+  featureType FeatureAccessType?
+  featureId   String?
+  email       String?
+  drcOffice   String?
+  drcJob      String?
+  level       FeatureAccessLevel
+  params      Json?
+  groupId     String?
+  group       Group?             @relation(fields: [groupId], references: [id])
+}
+
+model Group {
+  id        String          @id @default(uuid())
+  createdAt DateTime        @default(now())
+  name      String          @unique
+  desc      String?
+  accesses  FeatureAccess[]
+  items     GroupItem[]
+}
+
+model GroupItem {
+  id        String             @id @default(uuid())
+  createdAt DateTime           @default(now())
+  drcJob    String?
+  drcOffice String?
+  email     String?
+  level     FeatureAccessLevel
+  group     Group?             @relation(fields: [groupId], references: [id])
+  groupId   String?
+}
+
+model AccessToken {
+  id        String   @id @default(uuid())
+  createdBy DateTime @default(now())
+  name      String
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
+model Proxy {
+  id        String       @id @default(uuid())
+  createdAt DateTime     @default(now())
+  expireAt  DateTime?
+  createdBy String?
+  name      String       @unique
+  slug      String       @unique
+  url       String
+  disabled  Boolean?
+  usage     ProxyUsage[]
+}
+
+model ProxyUsage {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  ipAddresses String[]
+  proxy       Proxy    @relation(fields: [proxyId], references: [id])
+  proxyId     String
+}
+
+model MealVerificationAnswers {
+  id                 String                         @id @default(uuid())
+  koboAnswer         KoboAnswers                    @relation(fields: [koboAnswerId], references: [id], onDelete: Cascade)
+  mealVerification   MealVerification               @relation(fields: [mealVerificationId], references: [id])
+  koboAnswerId       String
+  mealVerificationId String
+  status             MealVerificationAnswersStatus?
+}
+
+enum MealVerificationAnswersStatus {
+  Selected
+}
+
+enum MealVerificationStatus {
+  Approved
+  Rejected
+  Pending
+}
+
+model MealVerification {
+  id        String                    @id @default(uuid())
+  activity  String
+  createdAt DateTime                  @default(now())
+  createdBy String
+  name      String
+  desc      String?
+  filters   Json
+  answers   MealVerificationAnswers[]
+  status    MealVerificationStatus?
+}
+
+model JsonStore {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  updatedBy String
+  key       String    @unique
+  value     Json
+}
+
+model DatabaseView {
+  id         String                 @id @default(uuid())
+  databaseId String
+  name       String
+  createdAt  DateTime               @default(now())
+  createdBy  String?
+  updatedAt  DateTime?
+  updatedBy  String?
+  visibility DatabaseViewVisibility @default(Private)
+  details    DatabaseViewCol[]
+
+  @@unique([databaseId, name])
+  @@index([name])
+  @@index([databaseId])
+}
+
+model DatabaseViewCol {
+  name       String
+  view       DatabaseView?              @relation(fields: [viewId], references: [id], onDelete: Cascade)
+  viewId     String
+  width      Int?
+  visibility DatabaseViewColVisibility? @default(Visible)
+
+  @@unique([name, viewId])
+  @@index([name, viewId])
+}
+
+enum DatabaseViewVisibility {
+  Public
+  Private
+  Sealed
+}
+
+enum DatabaseViewColVisibility {
+  Hidden
+  Visible
+}
+
+model EmailOutBox {
+  id          String    @id @default(uuid())
+  createdAt   DateTime  @default(now())
+  createdBy   String?
+  context     String
+  to          String
+  cc          String?
+  subject     String
+  content     String?
+  deliveredAt DateTime?
+  tags        Json?
+}

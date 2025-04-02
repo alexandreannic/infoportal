@@ -1,0 +1,31 @@
+{
+  "name": "infoportal",
+  "requires": true,
+  "scripts": {
+    "format": "prettier --write \"**/*.{js,ts,tsx,json}\" --config .prettierrc --",
+    "server": "npm run dev --workspace infoportal-server",
+    "client": "npm run dev --workspace infoportal-client",
+    "common": "npm run dev --workspace infoportal-common",
+    "scripts": "npm run dev --workspace infoportal-scripts",
+    "start:server": "npm run start --workspace infoportal-server",
+    "start:client": "npm run start --workspace infoportal-client",
+    "build:all": "npm run build:common && npm run build:server && npm run build:client",
+    "build:server": "npm run build --workspace infoportal-server",
+    "build:client": "npm run build --workspace infoportal-client",
+    "build:common": "npm run build --workspace infoportal-common",
+    "test:common": "npm run test --workspace infoportal-common",
+    "db-migrate-f": "npm run db-migrate-f --workspace infoportal-server",
+    "db-generate": "npm run db-generate --workspace infoportal-server",
+    "test": "npm test --workspace infoportal-common && npm test --workspace infoportal-server"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.3"
+  },
+  "dependencies": {
+    "kobo-sdk": "^2.1.4"
+  }
+}
