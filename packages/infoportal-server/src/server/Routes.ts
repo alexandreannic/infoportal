@@ -2,26 +2,19 @@ import express, {NextFunction, Request, Response} from 'express'
 import {app, AppLogger} from '../index.js'
 import {ControllerMain} from './controller/ControllerMain.js'
 import {PrismaClient} from '@prisma/client'
-import {ControllerActivityInfo} from './controller/ControllerActivityInfo.js'
 import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi.js'
 import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerKoboForm} from './controller/kobo/ControllerKoboForm.js'
 import {ControllerKoboServer} from './controller/kobo/ControllerKoboServer.js'
 import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer.js'
-import {ControllerWfp} from './controller/ControllerWfp.js'
 import {Server} from './Server.js'
 import {ControllerAccess} from './controller/ControllerAccess.js'
 import {ControllerUser} from './controller/ControllerUser.js'
 import {UserSession} from '../feature/session/UserSession.js'
 import {AppError} from '../helper/Errors.js'
-import apicache from 'apicache'
 import {ControllerProxy} from './controller/ControllerProxy.js'
-import {ControllerMpca} from './controller/ControllerMpca.js'
-import {ControllerMealVerification} from './controller/ControllerMealVerification.js'
 import {ControllerGroup} from './controller/ControllerGroup.js'
-import {ControllerKoboMeta} from './controller/ControllerKoboMeta.js'
 import {ControllerJsonStore} from './controller/ControllerJsonStore.js'
-import {ControllerHdp} from './controller/ControllerHdp.js'
 import {ControllerKoboAnswerHistory} from './controller/kobo/ControllerKoboAnswerHistory.js'
 import {ControllerCache} from './controller/ControllerCache.js'
 import {UserService} from '../feature/user/UserService.js'
@@ -34,12 +27,8 @@ export interface AuthenticatedRequest extends Request {
 
 export const getRoutes = (
   prisma: PrismaClient,
-  // ecrecSdk: EcrecSdk,
-  // legalAidSdk: LegalaidSdk,
   log: AppLogger = app.logger('Routes'),
 ) => {
-  const cache = apicache.middleware
-
   const errorCatcher = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -52,30 +41,17 @@ export const getRoutes = (
   }
 
   const router = express.Router()
-  // const ecrec = new ControllerEcrec(
-  //   ecrecSdk,
-  // )
-  // const legalaid = new ControllerLegalAid(
-  //   legalAidSdk,
-  //   logger,
-  // )
-  const mpca = new ControllerMpca(prisma)
   const main = new ControllerMain()
   const koboForm = new ControllerKoboForm(prisma)
   const koboServer = new ControllerKoboServer(prisma)
   const koboAnswer = new ControllerKoboAnswer(prisma)
   const koboApi = new ControllerKoboApi(prisma)
-  const activityInfo = new ControllerActivityInfo()
   const session = new ControllerSession(prisma)
-  const wfp = new ControllerWfp(prisma)
   const access = new ControllerAccess(prisma)
   const accessGroup = new ControllerGroup(prisma)
   const user = new ControllerUser(prisma)
   const proxy = new ControllerProxy(prisma)
-  const mealVerification = new ControllerMealVerification(prisma)
-  const koboMeta = new ControllerKoboMeta(prisma)
   const jsonStore = new ControllerJsonStore(prisma)
-  const hdp = new ControllerHdp()
   const koboAnswerHistory = new ControllerKoboAnswerHistory(prisma)
   const databaseView = new ControllerDatabaseView(prisma)
   const cacheController = new ControllerCache()
@@ -83,29 +59,29 @@ export const getRoutes = (
 
   const auth =
     ({adminOnly = false}: {adminOnly?: boolean} = {}) =>
-    async (req: Request, res: Response, next: NextFunction) => {
-      // req.session.user = {
-      //   email: 'alexandre.annic@drc.ngo',
-      //   admin: true,
-      // } as any
-      // next()
-      try {
-        const email = req.session.user?.email
-        if (!email) {
-          throw new AppError.Forbidden('auth_user_not_connected')
+      async (req: Request, res: Response, next: NextFunction) => {
+        // req.session.user = {
+        //   email: 'alexandre.annic@drc.ngo',
+        //   admin: true,
+        // } as any
+        // next()
+        try {
+          const email = req.session.user?.email
+          if (!email) {
+            throw new AppError.Forbidden('auth_user_not_connected')
+          }
+          const user = await UserService.getInstance(prisma).getUserByEmail(email)
+          if (!user) {
+            throw new AppError.Forbidden('user_not_allowed')
+          }
+          if (adminOnly && !user.admin) {
+            throw new AppError.Forbidden('user_not_admin')
+          }
+          next()
+        } catch (e) {
+          next(e)
         }
-        const user = await UserService.getInstance(prisma).getUserByEmail(email)
-        if (!user) {
-          throw new AppError.Forbidden('user_not_allowed')
-        }
-        if (adminOnly && !user.admin) {
-          throw new AppError.Forbidden('user_not_admin')
-        }
-        next()
-      } catch (e) {
-        next(e)
       }
-    }
 
   try {
     router.get('/', errorCatcher(main.ping))
@@ -116,10 +92,6 @@ export const getRoutes = (
     router.post('/session/connect-as-revert', auth(), errorCatcher(session.revertConnectAs))
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session', errorCatcher(session.get))
-
-    router.post('/kobo-meta/search', errorCatcher(koboMeta.search))
-    router.post('/kobo-meta/sync', errorCatcher(koboMeta.sync))
-    router.post('/kobo-meta/kill-cache', errorCatcher(koboMeta.killCache))
 
     router.get('/proxy/:slug', errorCatcher(proxy.redirect))
     router.put('/proxy', auth({adminOnly: true}), errorCatcher(proxy.create))
@@ -147,8 +119,6 @@ export const getRoutes = (
     router.get('/user', auth(), errorCatcher(user.search))
     router.get('/user/avatar/:email', auth(), errorCatcher(user.avatar))
     router.get('/user/drc-job', auth(), errorCatcher(user.getDrcJobs))
-
-    router.post('/activity-info/activity', auth({adminOnly: true}), errorCatcher(activityInfo.submitActivity))
 
     router.post('/proxy-request', errorCatcher(main.proxy))
 
@@ -184,8 +154,6 @@ export const getRoutes = (
     router.delete('/kobo/answer/:formId', auth({adminOnly: true}), errorCatcher(koboAnswer.deleteAnswers))
     router.post('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
 
-    router.get('/hdp/risk-education', errorCatcher(hdp.fetchRiskEducation))
-
     router.post(`/database-view/:viewId/col/:colName`, auth(), errorCatcher(databaseView.updateCol))
     router.post(`/database-view`, auth(), errorCatcher(databaseView.search))
     router.put(`/database-view/:databaseId`, auth(), errorCatcher(databaseView.create))
@@ -195,24 +163,6 @@ export const getRoutes = (
     router.get('/json-store/:key', auth(), errorCatcher(jsonStore.get))
     router.put('/json-store', auth(), errorCatcher(jsonStore.set))
     router.patch('/json-store', auth(), errorCatcher(jsonStore.update))
-
-    router.post('/mpca/search', errorCatcher(mpca.search))
-    router.post('/mpca/refresh', auth(), errorCatcher(mpca.refresh))
-    router.post('/wfp-deduplication/refresh', auth(), errorCatcher(wfp.refresh))
-    router.post('/wfp-deduplication/search', auth(), errorCatcher(wfp.search))
-    router.post(
-      '/wfp-deduplication/upload-taxid',
-      auth(),
-      Server.upload.single('aa-file'),
-      errorCatcher(wfp.uploadTaxIdMapping),
-    )
-
-    router.put('/meal-verification', auth(), errorCatcher(mealVerification.create))
-    router.get('/meal-verification', auth(), errorCatcher(mealVerification.getAll))
-    router.get('/meal-verification/:id/answers', auth(), errorCatcher(mealVerification.getAnswers))
-    router.delete('/meal-verification/:id', auth(), errorCatcher(mealVerification.remove))
-    router.post('/meal-verification/:id', auth(), errorCatcher(mealVerification.update))
-    router.post('/meal-verification/answer/:id', auth(), errorCatcher(mealVerification.updateAnswerStatus))
 
     router.get('/cache', cacheController.get)
     router.post('/cache/clear', cacheController.clear)

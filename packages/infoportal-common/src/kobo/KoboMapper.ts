@@ -1,6 +1,6 @@
 import {Kobo} from 'kobo-sdk'
 import {fnSwitch} from '@axanc/ts-utils'
-import {KoboCustomDirective} from '../KoboCustomDirective.js'
+import {KoboCustomDirective} from './KoboCustomDirective.js'
 
 export enum KoboValidation {
   Approved = 'Approved',
@@ -46,40 +46,6 @@ export type KoboSubmissionFlat<
 
 export interface KoboBaseTags {
   _validation?: KoboValidation
-}
-
-export interface KoboTagStatus<T = CashStatus> {
-  status?: T
-  lastStatusUpdate?: Date
-}
-
-export enum CashStatus {
-  Selected = 'Selected',
-  Pending = 'Pending',
-  Paid = 'Paid',
-  Rejected = 'Rejected',
-  Referred = 'Referred',
-  PaymentRejected = 'PaymentRejected',
-}
-
-export enum CashForRentStatus {
-  FirstPending = 'FirstPending',
-  FirstPaid = 'FirstPaid',
-  FirstRejected = 'FirstRejected',
-  SecondPending = 'SecondPending',
-  SecondPaid = 'SecondPaid',
-  SecondRejected = 'SecondRejected',
-  Selected = 'Selected',
-  Referred = 'Referred',
-}
-
-export enum VetApplicationStatus {
-  Approved = 'Approved',
-  FirstPending = 'FirstPending',
-  FirstPaid = 'FirstPaid',
-  SecondPending = 'SecondPending',
-  SecondPaid = 'SecondPaid',
-  CertificateSubmitted = 'CertificateSubmitted',
 }
 
 export class KoboHelper {
