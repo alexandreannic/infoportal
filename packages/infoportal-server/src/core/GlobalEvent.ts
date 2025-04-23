@@ -42,7 +42,6 @@ export namespace GlobalEvent {
     KOBO_ANSWER_EDITED_FROM_IP = 'KOBO_ANSWER_EDITED_FROM_IP',
     KOBO_ANSWER_NEW = 'KOBO_ANSWER_NEW',
     KOBO_TAG_EDITED = 'KOBO_TAG_EDITED',
-    WFP_DEDUPLICATION_SYNCHRONIZED = 'WFP_DEDUPLICATION_SYNCHRONIZED',
   }
 
   type Emit = {
@@ -52,7 +51,6 @@ export namespace GlobalEvent {
     (event: Event.KOBO_ANSWER_NEW, params: KoboAnswerEditedParams): void
     (event: Event.KOBO_TAG_EDITED, params: KoboTagEditedParams): void
     (event: Event.KOBO_FORM_SYNCHRONIZED, params: KoboFormSyncParams): void
-    (event: Event.WFP_DEDUPLICATION_SYNCHRONIZED, params: void): void
   }
 
   type Listen = {
@@ -62,7 +60,6 @@ export namespace GlobalEvent {
     (event: Event.KOBO_ANSWER_NEW, cb: (params: KoboAnswerEditedParams) => void): void
     (event: Event.KOBO_TAG_EDITED, cb: (params: KoboTagEditedParams) => void): void
     (event: Event.KOBO_FORM_SYNCHRONIZED, cb: (params: KoboFormSyncParams) => void): void
-    (event: Event.WFP_DEDUPLICATION_SYNCHRONIZED, cb: () => void): void
   }
 
   export class Class {

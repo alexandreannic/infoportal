@@ -1,7 +1,6 @@
 import {FeatureAccessLevel, Prisma, PrismaClient} from '@prisma/client'
 import {appConf, AppConf} from './conf/AppConf.js'
 import {AppFeatureId, KoboDatabaseFeatureParams} from '../feature/access/AccessType.js'
-import {DrcJob, DrcOffice, KoboIndex} from 'infoportal-common'
 
 export const createdBySystem = 'SYSTEM'
 
@@ -13,13 +12,7 @@ export class DbInit {
 
   readonly initializeDatabase = async () => {
     if ((await this.prisma.user.count()) > 0) return
-    await Promise.all([
-      this.createAccOwner(),
-      this.createAccAdmins(),
-      this.createAccTest(),
-      this.createServer(),
-      this.createAccess(),
-    ])
+    await Promise.all([this.createAccOwner(), this.createAccAdmins(), this.createAccTest(), this.createAccess()])
   }
 
   private readonly createAccTest = async () => {
@@ -27,19 +20,19 @@ export class DbInit {
       {
         email: 'prot.man.hrk@dummy',
         drcJob: 'Protection Manager',
-        drcOffice: DrcOffice.Kharkiv,
+        drcOffice: 'Kharkiv',
         createdBy: createdBySystem,
       },
       {
         email: 'mpca.assist.hrk@dummy',
         drcJob: 'MPCA/NFI Assistant',
-        drcOffice: DrcOffice.Kharkiv,
+        drcOffice: 'Kharkiv',
         createdBy: createdBySystem,
       },
       {
         email: 'prot.officer.dnp@dummy',
         drcJob: 'Protection Officer',
-        drcOffice: DrcOffice.Dnipro,
+        drcOffice: 'Dnipro',
         createdBy: createdBySystem,
       },
       {
@@ -105,15 +98,6 @@ export class DbInit {
       // },
       {
         createdBy: createdBySystem,
-        level: FeatureAccessLevel.Write,
-        featureId: AppFeatureId.kobo_database,
-        params: KoboDatabaseFeatureParams.create({
-          koboFormId: KoboIndex.byName('bn_rapidResponse').id,
-          filters: {},
-        }),
-      },
-      {
-        createdBy: createdBySystem,
         email: appConf.ownerEmail,
         level: FeatureAccessLevel.Admin,
       },
@@ -125,27 +109,5 @@ export class DbInit {
         }),
       ),
     )
-  }
-
-  private readonly createServer = async () => {
-    const serversCount = await this.prisma.koboServer.count()
-    if (serversCount < 2) {
-      return Promise.all([
-        this.prisma.koboServer.create({
-          data: {
-            url: 'https://kobo.humanitarianresponse.info',
-            urlV1: 'https://kc-eu.kobotoolbox.org',
-            token: appConf.kobo.token,
-          },
-        }),
-        this.prisma.koboServer.create({
-          data: {
-            url: 'https://kf.kobotoolbox.org',
-            urlV1: 'https://kc.kobotoolbox.org',
-            token: 'TODO',
-          },
-        }),
-      ])
-    }
   }
 }

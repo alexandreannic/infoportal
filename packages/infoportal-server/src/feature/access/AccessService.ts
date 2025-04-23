@@ -1,9 +1,9 @@
 import {FeatureAccess, FeatureAccessLevel, Prisma, PrismaClient} from '@prisma/client'
-import {Access, AppFeatureId, KoboDatabaseFeatureParams, WfpDeduplicationAccessParams} from './AccessType.js'
+import {Access, AppFeatureId, KoboDatabaseFeatureParams} from './AccessType.js'
 import {yup} from '../../helper/Utils.js'
 import {Obj} from '@axanc/ts-utils'
 import {InferType} from 'yup'
-import {DrcOffice, UUID} from 'infoportal-common'
+import {UUID} from 'infoportal-common'
 import {UserSession} from '../session/UserSession.js'
 import {app, AppLogger} from '../../index.js'
 
@@ -21,14 +21,6 @@ interface SearchByFeature {
     featureId: AppFeatureId.kobo_database
     user?: UserSession
   }): Promise<Access<KoboDatabaseFeatureParams>[]>
-  ({
-    featureId,
-    user,
-  }: {
-    featureId: AppFeatureId.wfp_deduplication
-    user?: UserSession
-  }): Promise<Access<WfpDeduplicationAccessParams>[]>
-  ({featureId, user}: {featureId?: AppFeatureId; user?: UserSession}): Promise<Access<any>[]>
 }
 
 export class AccessService {
@@ -41,7 +33,7 @@ export class AccessService {
     id: yup.string().required(),
   })
 
-  static readonly drcOfficeSchema = yup.mixed<DrcOffice>().oneOf(Obj.values(DrcOffice))
+  static readonly drcOfficeSchema = yup.string()
   static readonly drcJobSchema = yup.string().required() //yup.mixed<DrcJob>().oneOf(Obj.values(DrcJob)),
   static readonly levelSchema = yup.mixed<FeatureAccessLevel>().oneOf(Obj.values(FeatureAccessLevel)).required()
   static readonly featureIdSchema = yup.mixed<AppFeatureId>().oneOf(Obj.values(AppFeatureId))
@@ -59,11 +51,11 @@ export class AccessService {
   static readonly updateSchema = yup.object({
     level: yup.mixed<FeatureAccessLevel>().oneOf(Obj.values(FeatureAccessLevel)),
     drcJob: yup.string(), //yup.mixed<DrcJob>().oneOf(Obj.values(DrcJob)),
-    drcOffice: yup.mixed<DrcOffice>().oneOf(Obj.values(DrcOffice)),
+    drcOffice: yup.string(),
   })
 
   static readonly searchSchema = yup.object({
-    featureId: yup.mixed<AppFeatureId>().oneOf(Obj.values(AppFeatureId)),
+    featureId: yup.mixed<AppFeatureId>().oneOf(Obj.values(AppFeatureId)).required(),
   })
 
   private readonly searchFromAccess = async ({featureId, user}: {featureId?: AppFeatureId; user?: UserSession}) => {

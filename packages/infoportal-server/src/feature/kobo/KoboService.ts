@@ -5,7 +5,6 @@ import {
   ApiPagination,
   KoboCustomDirective,
   KoboHelper,
-  KoboIndex,
   KoboSubmission,
   KoboSubmissionMetaData,
   KoboValidation,
@@ -58,12 +57,6 @@ export class KoboService {
     private conf = appConf,
   ) {}
 
-  static readonly largeForm = new Set([
-    KoboIndex.byName('bn_re').id,
-    KoboIndex.byName('ecrec_cashRegistration').id,
-    KoboIndex.byName('ecrec_cashRegistrationBha').id,
-  ])
-
   readonly getForms = async (): Promise<KoboForm[]> => {
     return this.prisma.koboForm.findMany()
   }
@@ -111,7 +104,7 @@ export class KoboService {
   }
 
   readonly searchAnswersByUsersAccess = logPerformance({
-    message: (p) => `Fetch ${KoboIndex.searchById(p.formId)?.name ?? p.formId} by ${p.user?.email}`,
+    message: (p) => `Fetch ${p.formId} by ${p.user?.email}`,
     showResult: (res) => `(${res ? res.data.length : '...'} rows)`,
     logger: (m: string) => this.log.info(m),
     fn: this._searchAnswersByUsersAccess,
@@ -121,9 +114,6 @@ export class KoboService {
     key: AppCacheKey.KoboAnswers,
     cacheIf: (params) => {
       return false
-      // return KoboService.largeForm.has(params.formId)
-      //   && Object.keys(params.filters ?? {}).length === 0
-      //   && Object.keys(params.paginate ?? {}).length === 0
     },
     genIndex: (p) => p.formId,
     ttlMs: duration(1, 'day').toMs,

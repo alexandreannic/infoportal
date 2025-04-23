@@ -25,18 +25,6 @@ export const appConf = {
   sentry: {
     dns: e()('SENTRY_DNS'),
   },
-  buildingBlockWfp: {
-    otpURL: e(required)('BUILDINGBLOCK_WFP_OTP_URL'),
-    login: e(required)('BUILDINGBLOCK_WFP_LOGIN'),
-    password: e(required)('BUILDINGBLOCK_WFP_PASSWORD'),
-  },
-  dbAzureHdp: {
-    host: e(defaultValue('hdp-ukr.database.windows.net'))('DBAZUREHDP_HOST'),
-    user: e(defaultValue('alexandreannic'))('DBAZUREHDP_USER'),
-    password: e(required)('DBAZUREHDP_PWD'),
-    port: e(required, int)('DBAZUREHDP_PORT'),
-    schema: 'hdp',
-  },
   db: {
     maxPreparedStatementParams: 3e4,
     maxConcurrency: e(int, defaultValue(50))('DATABASE_MAX_CONCURRENCY'),
@@ -48,19 +36,6 @@ export const appConf = {
   //   password: e(required)('DB_PASSWORD'),
   //   port: e(int, defaultValue(5432))('DB_PORT')
   // },
-  kobo: {
-    url: e(defaultValue('https://kobo.humanitarianresponse.info'))('KOBO_URL'),
-    token: e(required)('KOBO_TOKEN'),
-  },
-  legalAid: {
-    apiToken: e(required)('LEGALAID_API_TOKEN'),
-  },
-  activityInfo: {
-    apiToken: e(required)('ACTIVITY_INFO_API_TOKEN'),
-  },
-  params: {
-    assistanceAmountUAH: (d: Date) => (d.getTime() > new Date(2023, 9, 1).getTime() ? 3600 : 2220),
-  },
   email: {
     address: e(required)('EMAIL_ADDRESS'),
     user: e(required)('EMAIL_USER'),

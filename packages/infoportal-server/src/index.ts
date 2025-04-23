@@ -2,8 +2,6 @@ import {AppConf, appConf} from './core/conf/AppConf.js'
 import {Server} from './server/Server.js'
 import {PrismaClient} from '@prisma/client'
 import {ScheduledTask} from './scheduledTask/ScheduledTask.js'
-import {MpcaCachedDb} from './feature/mpca/MpcaCachedDb.js'
-import {KoboMetaService} from './feature/kobo/meta/KoboMetaService.js'
 import {IpCache, IpCacheApp} from 'infoportal-common'
 import {duration} from '@axanc/ts-utils'
 import * as winston from 'winston'
@@ -42,14 +40,14 @@ export const App = (config: AppConf = appConf) => {
       transports: [
         ...(config.production && !config.cors.allowOrigin.includes('localhost')
           ? [
-              new Syslog({
-                host: 'logs.papertrailapp.com',
-                port: 32079,
-                protocol: 'tls4',
-                localhost: os.hostname(),
-                eol: '\n',
-              }),
-            ]
+            new Syslog({
+              host: 'logs.papertrailapp.com',
+              port: 32079,
+              protocol: 'tls4',
+              localhost: os.hostname(),
+              eol: '\n',
+            }),
+          ]
           : []),
         new winston.transports.Console({
           level: appConf.logLevel,
@@ -70,21 +68,6 @@ export const App = (config: AppConf = appConf) => {
 
 export const app = App()
 const startApp = async (conf: AppConf) => {
-  // await new BuildKoboType().build('safety_incident')
-  // await ActivityInfoBuildType.fslc()
-  // await KoboMigrateHHS2({
-  //   prisma,
-  //   serverId: koboServerId.prod,
-  //   oldFormId: KoboIndex.byName('protectionHh_2').id,
-  //   newFormId: KoboIndex.byName('protectionHh_2_1').id,
-  // }).run()
-  // const legalAidSdk = new LegalaidSdk(new ApiClient({
-  //   baseUrl: 'https://api.lau-crm.org.ua',
-  //   headers: {
-  //     'x-auth-token': appConf.legalAid.apiToken,
-  //   }
-  // }))
-
   const log = app.logger('')
   log.info(`Logger level: ${appConf.logLevel}`)
   const prisma = new PrismaClient({
@@ -106,12 +89,10 @@ const startApp = async (conf: AppConf) => {
     // cluster.on('exit', (worker, code, signal) => {
     //   console.log(`Worker ${worker.process.pid} died`)
     // })
-    new KoboMetaService(prisma).start()
     new EmailService().initializeListeners()
     // await new KoboSyncServer(prisma).syncApiAnswersToDbAll()
     if (conf.production) {
       new ScheduledTask(prisma).start()
-      MpcaCachedDb.constructSingleton(prisma).warmUp()
     } else {
       // await new BuildKoboType().buildAll()
     }

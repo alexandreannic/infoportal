@@ -1,4 +1,4 @@
-import {KoboHelper, KoboIndex, KoboSubmission, logPerformance, UUID} from 'infoportal-common'
+import {KoboHelper, KoboSubmission, logPerformance, UUID} from 'infoportal-common'
 import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from '../KoboSdkGenerator.js'
 import {app, AppCacheKey, AppLogger} from '../../../index.js'
@@ -104,10 +104,8 @@ export class KoboSyncServer {
     this.log.info(`Synchronize kobo forms finished!`)
   }
 
-  private info = (formId: string, message: string) =>
-    this.log.info(`${KoboIndex.searchById(formId)?.translation ?? formId}: ${message}`)
-  private debug = (formId: string, message: string) =>
-    this.log.debug(`${KoboIndex.searchById(formId)?.translation ?? formId}: ${message}`)
+  private info = (formId: string, message: string) => this.log.info(`${formId}: ${message}`)
+  private debug = (formId: string, message: string) => this.log.debug(`${formId}: ${message}`)
 
   readonly syncApiAnswersToDbByForm = async ({formId, updatedBy}: {formId: Kobo.FormId; updatedBy?: string}) => {
     try {
@@ -328,7 +326,7 @@ export class KoboSyncServer {
 
   private readonly syncApiFormAnswers = logPerformance({
     logger: (_) => this.log.info(_),
-    message: (formId) => `Sync answers for ${KoboIndex.searchById(formId)?.translation ?? formId}.`,
+    message: (formId) => `Sync answers for ${formId}.`,
     showResult: (r) =>
       `${r.answersCreated.length} created, ${r.answersUpdated.length} updated, ${r.answersIdsDeleted.length} deleted.`,
     fn: this._syncApiFormAnswers,

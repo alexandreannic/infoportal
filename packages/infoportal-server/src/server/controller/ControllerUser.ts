@@ -2,8 +2,6 @@ import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {UserService} from '../../feature/user/UserService.js'
-import {DrcOffice} from 'infoportal-common'
-import {Obj} from '@axanc/ts-utils'
 import {SessionError} from '../../feature/session/SessionErrors.js'
 import {Util} from '../../helper/Utils.js'
 
@@ -37,7 +35,7 @@ export class ControllerUser {
   readonly updateMe = async (req: Request, res: Response, next: NextFunction) => {
     const user = await yup
       .object({
-        drcOffice: yup.mixed<DrcOffice>().oneOf(Obj.values(DrcOffice)),
+        drcOffice: yup.string(),
       })
       .validate(req.body)
 
