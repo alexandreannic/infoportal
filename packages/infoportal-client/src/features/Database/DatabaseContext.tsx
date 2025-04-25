@@ -1,7 +1,7 @@
 import React, {ReactNode, useContext, useEffect, useMemo} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
-import {useEffectFn} from '@alexandreannic/react-hooks-lib'
+import {useEffectFn} from '@axanc/react-hooks'
 import {useIpToast} from '@/core/useToast'
 import {Access} from '@/core/sdk/server/access/Access'
 import {AppFeatureId} from '@/features/appFeatureId'

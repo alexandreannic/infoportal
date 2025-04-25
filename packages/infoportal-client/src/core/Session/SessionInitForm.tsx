@@ -9,7 +9,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
 import {Modal} from '@/shared'
 import {useFetcher} from '@/shared/hook/useFetcher'
-import {useEffectFn} from '@alexandreannic/react-hooks-lib'
+import {useEffectFn} from '@axanc/react-hooks'
 
 export const SessionInitForm = ({
   user,

@@ -1,13 +1,12 @@
 import React, {ReactNode, useContext, useEffect, useMemo} from 'react'
-import {UseSetState} from '@alexandreannic/react-hooks-lib'
 import {UseDatatableData, useDatatableData} from '@/shared/Datatable/context/useDatatableData'
 import {DatatableModal, useDatatableModal} from '@/shared/Datatable/context/useDatatableModal'
-import {useSetStateIp} from '@/shared/hook/useSetState'
 import {seq} from '@axanc/ts-utils'
 import {DatatableColumn, DatatableRow, DatatableTableProps, OrderBy} from '@/shared/Datatable/util/datatableType'
 import {UseDatatableOptions, useDatatableOptions} from '@/shared/Datatable/context/useDatatableOptions'
 import {KeyOf} from 'infoportal-common'
 import {UseDatabaseColVisibility, useDatabaseColVisibility} from '@/shared/Datatable/context/useDatabaseColVisibility'
+import {useSetState, UseSetState} from '@axanc/react-hooks'
 
 export interface DatatableContext<T extends DatatableRow> {
   data: UseDatatableData<T>
@@ -60,7 +59,7 @@ export const DatatableProvider = <T extends DatatableRow>({
   columnsToggle: DatatableTableProps<T>['columnsToggle']
   children: ReactNode
 }) => {
-  const selected = useSetStateIp<string>()
+  const selected = useSetState<string>()
   const columnsIndex = useMemo(
     () => seq(columns).reduceObject<Record<string, DatatableColumn.InnerProps<T>>>((_) => [_.id, _]),
     [columns],

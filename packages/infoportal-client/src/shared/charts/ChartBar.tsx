@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {ReactNode, useMemo, useState} from 'react'
 import {alpha, Box, Icon, TooltipProps} from '@mui/material'
-import {useTimeout} from '@alexandreannic/react-hooks-lib'
+import {useTimeout} from '@axanc/react-hooks'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
 import {Obj} from '@axanc/ts-utils'

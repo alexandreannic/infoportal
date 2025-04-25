@@ -1,4 +1,4 @@
-import {Func} from '@alexandreannic/react-hooks-lib'
+import {Func} from '@axanc/react-hooks'
 import {useMapIp} from '@/shared/hook/useMap'
 import {useState} from 'react'
 

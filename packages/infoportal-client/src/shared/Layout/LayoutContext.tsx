@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
-import {useEffectFn} from '@alexandreannic/react-hooks-lib'
+import {useEffectFn} from '@axanc/react-hooks'
 import {useTheme} from '@mui/material'
 import {Breakpoint} from '@mui/system'
 

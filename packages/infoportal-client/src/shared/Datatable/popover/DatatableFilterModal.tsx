@@ -17,7 +17,7 @@ import React, {Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState
 import {IpInput} from '../../Input/Input'
 import {PeriodPicker} from '../../PeriodPicker/PeriodPicker'
 import {Txt} from '@/shared/Txt'
-import {OrderBy} from '@alexandreannic/react-hooks-lib'
+import {OrderBy} from '@axanc/react-hooks'
 import {PanelBody, PanelHead} from '@/shared/Panel'
 import {PanelFoot} from '@/shared/Panel/PanelFoot'
 import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType'

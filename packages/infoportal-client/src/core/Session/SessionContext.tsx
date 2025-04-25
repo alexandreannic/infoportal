@@ -1,5 +1,5 @@
 import React, {Dispatch, ReactNode, SetStateAction, useCallback, useContext, useEffect} from 'react'
-import {useEffectFn} from '@alexandreannic/react-hooks-lib'
+import {useEffectFn} from '@axanc/react-hooks'
 import {useI18n} from '@/core/i18n'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {UserSession} from '@/core/sdk/server/session/Session'

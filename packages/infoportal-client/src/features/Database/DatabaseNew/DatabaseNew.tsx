@@ -1,4 +1,4 @@
-import {useEffectFn} from '@alexandreannic/react-hooks-lib'
+import {useEffectFn} from '@axanc/react-hooks'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {ReactElement, useEffect, useState} from 'react'
 import {Modal, Txt} from '@/shared'

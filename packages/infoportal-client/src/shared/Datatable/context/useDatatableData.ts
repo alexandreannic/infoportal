@@ -9,7 +9,7 @@ import {
   DatatableSearch,
   DatatableTableProps,
 } from '@/shared/Datatable/util/datatableType'
-import {OrderBy} from '@alexandreannic/react-hooks-lib'
+import {OrderBy} from '@axanc/react-hooks'
 import {usePersistentState} from '@/shared/hook/usePersistantState'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 

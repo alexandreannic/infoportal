@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {forwardRef, ReactNode} from 'react'
-import {alpha, Button, CircularProgress, Icon, Tooltip} from '@mui/material'
+import {alpha, Button, CircularProgress, Icon, Theme, Tooltip} from '@mui/material'
 import {ButtonProps} from '@mui/material/Button'
 import {makeStyles} from 'tss-react/mui'
 import {fnSwitch} from '@axanc/ts-utils'

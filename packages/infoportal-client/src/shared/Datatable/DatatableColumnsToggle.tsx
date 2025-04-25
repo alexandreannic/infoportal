@@ -5,7 +5,7 @@ import {useI18n} from '@/core/i18n'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {IpBtn} from '@/shared/Btn'
-import {useSetState} from '@alexandreannic/react-hooks-lib'
+import {useSetState} from '@axanc/react-hooks'
 import {IpAlert} from '@/shared/Alert'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Database/KoboTable/columns/columnBySchema'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
@@ -85,7 +85,7 @@ export const DatatableColumnToggle = ({
                   </Txt>{' '}
                   / {columns.length} {m._koboDatabase.currentlyDisplayed}
                 </Txt>
-                <IpBtn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
+                <IpBtn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray())}>
                   {m.save}
                 </IpBtn>
               </>

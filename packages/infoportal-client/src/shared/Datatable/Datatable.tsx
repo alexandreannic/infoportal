@@ -4,7 +4,7 @@ import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
 import {map, Obj} from '@axanc/ts-utils'
 import {IpIconBtn} from '@/shared'
-import {useMemoFn} from '@alexandreannic/react-hooks-lib'
+import {useMemoFn} from '@axanc/react-hooks'
 import {DatatableBody} from './DatatableBody'
 import {DatatableHead} from './DatatableHead'
 import {DatatableColumn, DatatableRow, DatatableTableProps} from '@/shared/Datatable/util/datatableType'
@@ -129,7 +129,7 @@ const _Datatable = <T extends DatatableRow>({
   const t = useTheme()
   const ctx = useDatatableContext()
   const _generateXLSFromArray = useAsync(DatatableXlsGenerator.download)
-  useEffect(() => ctx.select?.onSelect(ctx.selected.toArray), [ctx.selected.get])
+  useEffect(() => ctx.select?.onSelect(ctx.selected.toArray()), [ctx.selected.get])
   const {m} = useI18n()
 
   const exportToCSV = () => {
