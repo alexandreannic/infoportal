@@ -26,6 +26,7 @@
     "tsx": "^4.19.3"
   },
   "dependencies": {
-    "kobo-sdk": "^2.1.4"
+    "@react-oauth/google": "^0.12.1",
+    "kobo-sdk": "^2.2.0"
   }
 }

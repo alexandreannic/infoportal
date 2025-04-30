@@ -149,6 +149,10 @@ export const en = Object.freeze({
     noDataAtm: 'No data at the moment',
     fileName: 'File name',
     signIn: 'Sign-in',
+    signInMicrosoft: 'Sign in with Microsoft',
+    signInMicrosoftDesc: 'Use your Microsoft credentials',
+    signInGoogle: 'Sign in with Google',
+    signInGoogleDesc: 'Use your Google account',
     committed: 'Committed',
     pending: 'Pending',
     rejected: 'Rejected',
@@ -267,7 +271,6 @@ export const en = Object.freeze({
     itCannotBeChanged: (admin: string) =>
       `For privacy reasons, you will not be able to change it later without contacting ${admin}.`,
     select: 'Select',
-    welcomePleaseSelectOffice: 'Welcome, select your DRC office:',
     firstName: 'First name',
     patronyme: 'Patronyme',
     data: 'Data',

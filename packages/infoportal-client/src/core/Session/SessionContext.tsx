@@ -14,6 +14,8 @@ import {IpIconBtn} from '@/shared/IconBtn'
 import {UseFetcher, useFetcher} from '@/shared/hook/useFetcher'
 import {useAsync} from '@/shared/hook/useAsync'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
+import {GoogleOAuthProvider} from '@react-oauth/google'
+import {appConfig} from '@/conf/AppConfig'
 
 export interface SessionContext {
   session: UserSession
@@ -107,7 +109,9 @@ export const ProtectRoute = ({adminOnly, children}: {children: ReactNode; adminO
   if (!session || !fetcherAccesses.get) {
     return (
       <CenteredContent>
-        <SessionLoginForm setSession={fetcherSession.set} />
+        <GoogleOAuthProvider clientId={appConfig.gooogle.clientId}>
+          <SessionLoginForm setSession={fetcherSession.set} />
+        </GoogleOAuthProvider>
       </CenteredContent>
     )
   }

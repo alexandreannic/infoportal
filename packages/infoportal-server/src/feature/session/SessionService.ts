@@ -5,6 +5,7 @@ import {AuthenticationProviderOptions} from '@microsoft/microsoft-graph-client/s
 import {Client} from '@microsoft/microsoft-graph-client'
 import {SessionError} from './SessionErrors.js'
 // import {User} from '@microsoft/msgraph-sdk-javascript/lib/src/models/user'
+import {google} from 'googleapis'
 
 type User = {
   mail?: string
@@ -17,7 +18,58 @@ export class SessionService {
     private log: AppLogger = app.logger('SessionService'),
   ) {}
 
-  readonly login = async (userBody: {name: string; username: string; accessToken: string}) => {
+  readonly login = async (userBody: {
+    name: string
+    username: string
+    accessToken: string
+    provider: 'google' | 'microsoft'
+  }) => {
+    switch (userBody.provider) {
+      case 'google':
+        return this.loginWithGoogle(userBody)
+      case 'microsoft':
+        return this.loginWithMicrosoft(userBody)
+      default:
+        throw new Error('Invalid provider')
+    }
+  }
+
+  private readonly loginWithGoogle = async (userBody: {name: string; username: string; accessToken: string}) => {
+    const oauth2Client = new google.auth.OAuth2()
+    oauth2Client.setCredentials({access_token: userBody.accessToken})
+
+    const oauth2 = google.oauth2({version: 'v2', auth: oauth2Client})
+    const userInfo = await oauth2.userinfo.get()
+    const email = userInfo.data.email
+    const name = userInfo.data.name ?? userBody.name
+
+    if (!email) {
+      throw new SessionError.UserNotFound()
+    }
+
+    let avatar: Buffer | undefined
+    try {
+      const res = await fetch(userInfo.data.picture!, {
+        headers: {Authorization: `Bearer ${userBody.accessToken}`},
+      })
+      const blob = await res.arrayBuffer()
+      avatar = Buffer.from(blob)
+    } catch {
+      this.log.info(`No profile picture for ${email}`)
+    }
+
+    const connectedUser = await this.syncUserInDb({
+      email,
+      accessToken: userBody.accessToken,
+      name,
+      avatar,
+    })
+
+    this.log.info(`${connectedUser.email} connected via Google.`)
+    return connectedUser
+  }
+
+  readonly loginWithMicrosoft = async (userBody: {name: string; username: string; accessToken: string}) => {
     class MyCustomAuthenticationProvider implements AuthenticationProvider {
       getAccessToken = async (authenticationProviderOptions?: AuthenticationProviderOptions) => {
         return userBody.accessToken
@@ -69,7 +121,7 @@ export class SessionService {
     avatar?: Buffer
     name: string
     email: string
-    drcJob: string
+    drcJob?: string
   }): Promise<PUser> => {
     const user = await this.prisma.user.findFirst({where: {email}})
     if (!user) {

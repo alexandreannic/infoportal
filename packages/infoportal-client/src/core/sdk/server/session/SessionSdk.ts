@@ -6,6 +6,7 @@ interface LoginRequest {
   name: string
   username: string
   accessToken: string
+  provider: 'google' | 'microsoft'
 }
 
 export class SessionSdk {

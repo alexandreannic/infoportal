@@ -36,6 +36,7 @@ export class ControllerSession extends Controller {
         name: yup.string().required(),
         username: yup.string().required(),
         accessToken: yup.string().required(),
+        provider: yup.string().oneOf(['google', 'microsoft']).required(),
       })
       .validate(req.body)
     const connectedUser = await this.service.login(user)

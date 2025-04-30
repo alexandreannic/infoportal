@@ -18,7 +18,7 @@ interface SearchByFeature {
     featureId,
     user,
   }: {
-    featureId: AppFeatureId.kobo_database
+    featureId?: AppFeatureId.kobo_database
     user?: UserSession
   }): Promise<Access<KoboDatabaseFeatureParams>[]>
 }
@@ -55,7 +55,7 @@ export class AccessService {
   })
 
   static readonly searchSchema = yup.object({
-    featureId: yup.mixed<AppFeatureId>().oneOf(Obj.values(AppFeatureId)).required(),
+    featureId: yup.mixed<AppFeatureId>().oneOf(Obj.values(AppFeatureId)),
   })
 
   private readonly searchFromAccess = async ({featureId, user}: {featureId?: AppFeatureId; user?: UserSession}) => {
