@@ -20,7 +20,7 @@ export const appConf = {
   port: e(int, defaultValue(80))('PORT'),
   ownerEmail: e(defaultValue('alexandre.annic@drc.ngo'))('OWNER_EMAIL'),
   cors: {
-    allowOrigin: e(defaultValue(`http://localhost:3000`))('CORS_ALLOW_ORIGIN'),
+    allowOrigin: e(defaultValue(`http://localhost:5174`))('CORS_ALLOW_ORIGIN'),
   },
   sentry: {
     dns: e()('SENTRY_DNS'),

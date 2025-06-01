@@ -21,7 +21,6 @@ import {OrderBy} from '@axanc/react-hooks'
 import {PanelBody, PanelHead} from '@/shared/Panel'
 import {PanelFoot} from '@/shared/Panel/PanelFoot'
 import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType'
-import {type} from 'os'
 import {seq} from '@axanc/ts-utils'
 import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
 import {endOfDay} from 'date-fns'
@@ -285,7 +284,7 @@ export const DatatableFilterDialogNumber = ({
       min: Math.min(...values),
       max: Math.max(...values),
     }
-  }, [type, data])
+  }, [col.type, data])
 
   const mappedValue = [value?.[0] ?? min, value?.[1] ?? max]
 

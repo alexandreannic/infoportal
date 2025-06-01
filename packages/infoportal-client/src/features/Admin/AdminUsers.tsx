@@ -8,11 +8,11 @@ import {Panel} from '@/shared/Panel'
 import {TableIcon} from '@/shared/TableIcon'
 import {Txt} from '@/shared/Txt'
 import {Box, Switch} from '@mui/material'
-import {useRouter} from 'next/router'
 import {seq} from '@axanc/ts-utils'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {AppAvatar} from '@/shared/AppAvatar'
+import {useNavigate} from 'react-router-dom'
 
 export const AdminUsers = () => {
   const {api, conf} = useAppSettings()
@@ -20,7 +20,7 @@ export const AdminUsers = () => {
   const _connectAs = useFetcher(api.session.connectAs)
   const _users = useFetcher(api.user.search)
   const {m, formatDate, formatDateTime} = useI18n()
-  const router = useRouter()
+  const navigate = useNavigate()
 
   const [showDummyAccounts, setShowDummyAccounts] = useState(false)
 
@@ -30,7 +30,7 @@ export const AdminUsers = () => {
 
   const connectAs = async (email: string) => {
     const session = await _connectAs.fetch({force: true, clean: true}, email)
-    await router.push('/')
+    await navigate('/')
     setSession(session)
   }
 

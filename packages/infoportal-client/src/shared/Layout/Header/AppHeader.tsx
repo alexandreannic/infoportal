@@ -6,7 +6,6 @@ import {useLayoutContext} from '../LayoutContext'
 import {AppHeaderMenu} from '@/shared/Layout/Header/AppHeaderMenu'
 import {AppHeaderFeatures} from '@/shared/Layout/Header/AppHeaderFeatures'
 import {IpIconBtn} from '@/shared/IconBtn'
-import Link from 'next/link'
 import {AppHeaderContainer} from '@/shared/Layout/Header/AppHeaderContainer'
 import {PopoverWrapper} from '@/shared/PopoverWrapper'
 import {useI18n} from '@/core/i18n'
@@ -100,9 +99,7 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
       >
         <IpIconBtn children={lightThemeIcons[brightness ?? 'auto']} />
       </PopoverWrapper>
-      <Link href="/">
-        <IpIconBtn children="home" />
-      </Link>
+      <IpIconBtn children="home" />
       <AppHeaderFeatures sx={{mr: 1}} />
       <AppHeaderMenu />
     </AppHeaderContainer>
