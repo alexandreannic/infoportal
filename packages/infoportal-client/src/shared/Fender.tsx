@@ -1,22 +1,47 @@
 import {ReactNode} from 'react'
-import {Box, BoxProps, CircularProgress, Icon, useTheme} from '@mui/material'
+import {Box, BoxProps, CircularProgress, Icon, SxProps, Theme, useTheme} from '@mui/material'
+import {sxUtils} from '@/core/theme'
+import {fnSwitch, match} from '@axanc/ts-utils'
 
 type State = 'loading' | 'error' | 'empty' | 'success' | 'warning'
+
+type FenderSize = 'normal' | 'small' | 'big'
 
 export interface FenderProps extends Omit<BoxProps, 'title'> {
   type?: State
   icon?: string
   iconSize?: number
   title?: ReactNode
+  size?: FenderSize
   description?: ReactNode
+}
+
+const textSizes: Record<FenderSize, {title: SxProps<Theme>; description: SxProps<Theme>}> = {
+  small: {
+    title: sxUtils.fontNormal,
+    description: sxUtils.fontSmall,
+  },
+  big: {
+    title: sxUtils.fontBig,
+    description: sxUtils.fontNormal,
+  },
+  normal: {
+    title: sxUtils.fontBig,
+    description: sxUtils.fontNormal,
+  },
 }
 
 export const Fender = ({
   children,
   icon,
-  iconSize = 100,
   type = 'empty',
   title,
+  size = 'normal',
+  iconSize = fnSwitch(size, {
+    normal: 44,
+    small: 32,
+    big: 100,
+  }),
   description,
   sx,
   ...props
@@ -34,7 +59,7 @@ export const Fender = ({
       case 'warning':
         return renderIcon('warning')
       case 'loading':
-        return <CircularProgress size={iconSize - 10} />
+        return <CircularProgress size={iconSize} />
     }
   }
 
@@ -55,8 +80,7 @@ export const Fender = ({
       <div>
         <Box
           sx={{
-            height: iconSize + 10,
-            mt: 1,
+            height: iconSize,
             lineHeight: 1,
             ...{
               error: {
@@ -73,13 +97,14 @@ export const Fender = ({
                 color: t.palette.success.main,
               },
             }[type],
+            ...sx,
           }}
         >
           {getIcon()}
         </Box>
-        <Box sx={{mt: 1}}>
-          {title && <Box sx={{fontSize: 24}}>{title}</Box>}
-          {description && <Box>{description}</Box>}
+        <Box sx={{mt: 0}}>
+          {title && <Box sx={textSizes[size].title}>{title}</Box>}
+          {description && <Box sx={textSizes[size].description}>{description}</Box>}
           {children}
         </Box>
       </div>

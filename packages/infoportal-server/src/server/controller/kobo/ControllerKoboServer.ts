@@ -1,6 +1,8 @@
 import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
+import {yup} from '../../../helper/Utils.js'
 import {KoboService} from '../../../feature/kobo/KoboService.js'
+import {ProxyService} from '../../../feature/proxy/ProxyService'
 
 export class ControllerKoboServer {
   constructor(
@@ -8,8 +10,35 @@ export class ControllerKoboServer {
     private service = new KoboService(pgClient),
   ) {}
 
-  readonly getServers = async (req: Request, res: Response, next: NextFunction) => {
+  static readonly schema = {
+    create: yup.object({
+      name: yup.string().required(),
+      url: yup.string().required(),
+      urlV1: yup.string().required(),
+      token: yup.string().required(),
+    }),
+    id: yup.object({
+      id: yup.string().required(),
+    }),
+  }
+  readonly getAll = async (req: Request, res: Response, next: NextFunction) => {
     const servers = await this.pgClient.koboServer.findMany()
     res.send(servers)
+  }
+
+  readonly create = async (req: Request, res: Response, next: NextFunction) => {
+    const payload = await ControllerKoboServer.schema.create.validate(req.body)
+    const data = await this.pgClient.koboServer.create({
+      data: payload,
+    })
+    res.send(data)
+  }
+
+  readonly delete = async (req: Request, res: Response, next: NextFunction) => {
+    const {id} = await ControllerKoboServer.schema.id.validate(req.params)
+    await this.pgClient.koboServer.delete({
+      where: {id},
+    })
+    res.send()
   }
 }

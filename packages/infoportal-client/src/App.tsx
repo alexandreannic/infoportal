@@ -11,7 +11,6 @@ import {MsalProvider} from '@azure/msal-react'
 import {getMsalInstance} from '@/core/msal'
 import {DRCLogo} from '@/shared/logo/logo'
 import {EmotionCache} from '@emotion/react'
-import {ModalProvider} from '@/shared/Modal/ModalProvider'
 import {LocalizationProvider} from '@mui/x-date-pickers-pro'
 import {AdapterDateFns} from '@mui/x-date-pickers-pro/AdapterDateFnsV3'
 import {LicenseInfo} from '@mui/x-license-pro'
@@ -22,6 +21,7 @@ import {HashRouter, useLocation} from 'react-router-dom'
 import {ProtectRoute, SessionProvider} from '@/core/Session/SessionContext'
 import {ToastProvider} from '@/shared/Toast'
 import {Database} from '@/features/Database/Database'
+import {DialogsProvider} from '@toolpad/core'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -37,7 +37,7 @@ const App = () => {
     <Provide
       providers={[
         // (_) => <AppCacheProvider {...props} children={_} />,
-        (_) => <AppSettingsProvider api={api} children={_} />,
+        _ => <AppSettingsProvider api={api} children={_} />,
       ]}
     >
       <AppWithConfig />
@@ -51,18 +51,18 @@ const AppWithConfig = () => {
   return (
     <Provide
       providers={[
-        (_) => <LocalizationProvider children={_} dateAdapter={AdapterDateFns} />,
-        (_) => <ToastProvider children={_} />,
-        (_) => <ThemeProvider theme={settings.theme.theme} children={_} />,
-        (_) => <CssBaseline children={_} />,
-        (_) => <I18nProvider children={_} />,
-        (_) => <MsalProvider children={_} instance={msal} />,
-        (_) => <HashRouter children={_} />,
-        (_) => <KoboSchemaProvider children={_} />,
-        (_) => <KoboAnswersProvider children={_} />,
-        (_) => <KoboUpdateProvider children={_} />,
-        (_) => <ModalProvider children={_} />,
-        (_) => <SessionProvider children={_} />,
+        _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns} />,
+        _ => <ToastProvider children={_} />,
+        _ => <ThemeProvider theme={settings.theme.theme} children={_} />,
+        _ => <CssBaseline children={_} />,
+        _ => <I18nProvider children={_} />,
+        _ => <MsalProvider children={_} instance={msal} />,
+        _ => <HashRouter children={_} />,
+        _ => <DialogsProvider children={_} />,
+        _ => <KoboSchemaProvider children={_} />,
+        _ => <KoboAnswersProvider children={_} />,
+        _ => <KoboUpdateProvider children={_} />,
+        _ => <SessionProvider children={_} />,
       ]}
     >
       <AppWithBaseContext />
@@ -84,7 +84,7 @@ const AppWithBaseContext = () => {
       <CenteredContent>
         <Box
           sx={{
-            border: (t) => `1px solid ${t.palette.divider}`,
+            border: t => `1px solid ${t.palette.divider}`,
             padding: 4,
             borderRadius: '8px',
             display: 'flex',
@@ -99,7 +99,7 @@ const AppWithBaseContext = () => {
           <Txt sx={{mb: 4}} size="big" color="hint" block>
             {m.appInMaintenance}
           </Txt>
-          <Icon sx={{fontSize: '90px !important', color: (t) => t.palette.text.disabled}}>engineering</Icon>
+          <Icon sx={{fontSize: '90px !important', color: t => t.palette.text.disabled}}>engineering</Icon>
           <Box></Box>
         </Box>
       </CenteredContent>

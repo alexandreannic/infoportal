@@ -11,7 +11,7 @@ import {
   PaperProps,
 } from '@mui/material'
 
-export interface ModalProps extends Omit<DialogProps, 'children' | 'onClick' | 'open' | 'content'> {
+export interface ModalProps extends Omit<DialogProps, 'onClose' | 'children' | 'onClick' | 'open' | 'content'> {
   disabled?: boolean
   title?: string
   confirmLabel?: string
@@ -19,7 +19,7 @@ export interface ModalProps extends Omit<DialogProps, 'children' | 'onClick' | '
   content?: ((content: () => void) => ReactNode) | ReactNode | string
   children: ReactElement<any>
   onOpen?: () => void
-  onClose?: () => void
+  onClose?: null | (() => void)
   onConfirm?: (event: SyntheticEvent<any>, close: () => void) => void
   confirmDisabled?: boolean
   onClick?: EventHandler<SyntheticEvent<any>>
@@ -90,22 +90,26 @@ export const Modal = ({
         )}
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>{typeof content === 'function' ? content(close) : content}</DialogContent>
-        <DialogActions>
-          {overrideActions ? (
-            overrideActions(close)
-          ) : (
-            <>
-              <Button color="primary" onClick={close}>
-                {cancelLabel || 'Cancel'}
-              </Button>
-              {onConfirm && (
-                <Button color="primary" onClick={confirm} disabled={confirmDisabled}>
-                  {confirmLabel || 'Confirm'}
-                </Button>
-              )}
-            </>
-          )}
-        </DialogActions>
+        {(onClose !== null || onConfirm || overrideActions) && (
+          <DialogActions>
+            {overrideActions ? (
+              overrideActions(close)
+            ) : (
+              <>
+                {onClose !== null && (
+                  <Button color="primary" onClick={close}>
+                    {cancelLabel || 'Cancel'}
+                  </Button>
+                )}
+                {onConfirm && (
+                  <Button color="primary" onClick={confirm} disabled={confirmDisabled}>
+                    {confirmLabel || 'Confirm'}
+                  </Button>
+                )}
+              </>
+            )}
+          </DialogActions>
+        )}
       </Dialog>
     </>
   )

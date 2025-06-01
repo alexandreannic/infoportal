@@ -91,7 +91,8 @@ export type AppThemeParams = {
 
 export const defaultAppThemeParams = {
   light: {
-    backgroundDefault: '#f6f8fc',
+    backgroundDefault: '#fff',
+    // backgroundDefault: '#f6f8fc',
     backgroundPaper: '#fff',
   },
   dark: {
@@ -102,7 +103,8 @@ export const defaultAppThemeParams = {
 
 export const muiTheme = ({
   dark,
-  mainColor = '#c9000a',
+  mainColor = '#0073e6',
+  // mainColor = '#c9000a',
   backgroundPaper,
   backgroundDefault,
   cardElevation,
@@ -214,6 +216,9 @@ export const muiTheme = ({
             fontSize: '1rem',
             lineHeight: '1.5',
             boxSizing: 'border-box',
+            // Delete padding inserted by @mui that is supposed to cover the scrollbar width
+            // but which is insanely huge here for some reason.
+            paddingRight: '0 !important',
           },
           ul: {
             marginTop: '.5em',
@@ -419,7 +424,7 @@ const tableTheme = (t: Theme, colorOverOpaque: string) => ({
     minWidth: '100%',
     width: 'max-content',
     // borderTop: '1px solid ' + t.palette.divider,
-    tableLayout: 'fixed',
+    // tableLayout: 'fixed',
     borderCollapse: 'collapse',
     borderSpacing: 0,
   },

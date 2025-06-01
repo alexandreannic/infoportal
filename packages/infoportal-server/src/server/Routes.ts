@@ -25,10 +25,7 @@ export interface AuthenticatedRequest extends Request {
   user?: UserSession
 }
 
-export const getRoutes = (
-  prisma: PrismaClient,
-  log: AppLogger = app.logger('Routes'),
-) => {
+export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Routes')) => {
   const errorCatcher = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -59,29 +56,29 @@ export const getRoutes = (
 
   const auth =
     ({adminOnly = false}: {adminOnly?: boolean} = {}) =>
-      async (req: Request, res: Response, next: NextFunction) => {
-        // req.session.user = {
-        //   email: 'alexandre.annic@drc.ngo',
-        //   admin: true,
-        // } as any
-        // next()
-        try {
-          const email = req.session.user?.email
-          if (!email) {
-            throw new AppError.Forbidden('auth_user_not_connected')
-          }
-          const user = await UserService.getInstance(prisma).getUserByEmail(email)
-          if (!user) {
-            throw new AppError.Forbidden('user_not_allowed')
-          }
-          if (adminOnly && !user.admin) {
-            throw new AppError.Forbidden('user_not_admin')
-          }
-          next()
-        } catch (e) {
-          next(e)
+    async (req: Request, res: Response, next: NextFunction) => {
+      // req.session.user = {
+      //   email: 'alexandre.annic@drc.ngo',
+      //   admin: true,
+      // } as any
+      // next()
+      try {
+        const email = req.session.user?.email
+        if (!email) {
+          throw new AppError.Forbidden('auth_user_not_connected')
         }
+        const user = await UserService.getInstance(prisma).getUserByEmail(email)
+        if (!user) {
+          throw new AppError.Forbidden('user_not_allowed')
+        }
+        if (adminOnly && !user.admin) {
+          throw new AppError.Forbidden('user_not_admin')
+        }
+        next()
+      } catch (e) {
+        next(e)
       }
+    }
 
   try {
     router.get('/', errorCatcher(main.ping))
@@ -142,7 +139,9 @@ export const getRoutes = (
 
     router.post('/kobo-answer-history/search', errorCatcher(koboAnswerHistory.search))
 
-    router.get('/kobo/server', auth(), errorCatcher(koboServer.getServers))
+    router.put('/kobo/server', auth(), errorCatcher(koboServer.create))
+    router.delete('/kobo/server/:id', auth(), errorCatcher(koboServer.delete))
+    router.get('/kobo/server', auth(), errorCatcher(koboServer.getAll))
     router.get('/kobo/form', auth(), errorCatcher(koboForm.getAll))
     router.post('/kobo/form/refresh', auth(), errorCatcher(koboForm.refreshAll))
     router.get('/kobo/form/:id', auth(), errorCatcher(koboForm.get))

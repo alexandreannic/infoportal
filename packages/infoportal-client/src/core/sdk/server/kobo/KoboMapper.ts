@@ -3,9 +3,13 @@ import {Obj} from '@axanc/ts-utils'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Kobo} from 'kobo-sdk'
 
+export type KoboServerCreate = Omit<KoboServer, 'id'>
+
 export type KoboServer = {
   id: string
+  name: string
   url: string
+  urlV1: string
   token: string
 }
 

@@ -12,6 +12,49 @@ import {UserSession} from '@/core/sdk/server/session/Session'
 import {CenteredContent} from '@/shared/CenteredContent'
 import {useAsync} from '@/shared/hook/useAsync'
 import {useGoogleLogin} from '@react-oauth/google'
+import {ButtonProps} from '@mui/material/Button'
+
+const BtnLogin = ({
+  title,
+  desc,
+  sx,
+  icon,
+  ...props
+}: ButtonProps & {
+  icon: string
+  title: string
+  desc?: string
+}) => {
+  return (
+    <ButtonBase
+      sx={{
+        ...sx,
+        boxShadow: (t: Theme) => t.shadows[2],
+        display: 'flex',
+        alignItems: 'center',
+        // margin: 'auto',
+        textAlign: 'left',
+        // height: 80,
+        minWidth: 300,
+        borderRadius: '8px',
+        justifyContent: 'flex-start',
+        py: 1,
+        px: 2,
+      }}
+      {...props}
+    >
+      <Icon sx={{mr: 2}}>{icon}</Icon>
+      <Box>
+        <Txt block size="big" bold>
+          {title}
+        </Txt>
+        <Txt block color="hint">
+          {desc}
+        </Txt>
+      </Box>
+    </ButtonBase>
+  )
+}
 
 export const SessionLoginForm = ({setSession}: {setSession: (_: UserSession) => void}) => {
   const {api} = useAppSettings()
@@ -82,43 +125,15 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: UserSession) => 
           {m.subTitle}
         </Txt>
 
-        {/* Microsoft Login */}
-        <ButtonBase sx={btnStyle} onClick={loginWithMicrosoft}>
-          <Icon sx={{mr: 2}}>login</Icon>
-          <Box>
-            <Txt block size="big" bold>
-              {m.signInMicrosoft}
-            </Txt>
-            <Txt block color="hint">
-              {m.signInMicrosoftDesc}
-            </Txt>
-          </Box>
-        </ButtonBase>
-
-        {/* Google Login */}
-        <ButtonBase sx={{...btnStyle, mt: 2}} onClick={() => googleLogin()}>
-          <Icon sx={{mr: 2}}>google</Icon>
-          <Box>
-            <Txt block size="big" bold>
-              {m.signInGoogle}
-            </Txt>
-            <Txt block color="hint">
-              {m.signInGoogleDesc}
-            </Txt>
-          </Box>
-        </ButtonBase>
+        <BtnLogin title={m.signInMicrosoft} desc={m.signInMicrosoftDesc} icon="login" onClick={loginWithMicrosoft} />
+        <BtnLogin
+          title={m.signInGoogle}
+          desc={m.signInGoogleDesc}
+          icon="android"
+          onClick={() => googleLogin()}
+          sx={{mt: 1}}
+        />
       </Box>
     </CenteredContent>
   )
-}
-
-const btnStyle = {
-  boxShadow: (t: Theme) => t.shadows[2],
-  display: 'flex',
-  alignItems: 'center',
-  margin: 'auto',
-  textAlign: 'left',
-  height: 80,
-  minWidth: 300,
-  borderRadius: '8px',
 }

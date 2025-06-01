@@ -4,9 +4,10 @@ import {Kobo} from 'kobo-sdk'
 const base = (formId = ':formId') => `/form/${formId}`
 
 export const databaseIndex = {
-  basePath: '/database',
+  basePath: '/',
   siteMap: {
     index: '/',
+    importKoboForm: '/import-kobo',
     home: base,
     custom: (id = ':id') => `/custom/${id}`,
     entry: {

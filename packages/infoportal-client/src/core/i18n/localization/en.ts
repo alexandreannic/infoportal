@@ -27,7 +27,7 @@ export const dateFromNow: {
   (d: Date): string
   (d?: undefined): undefined
   (d?: Date): string | undefined
-} = (d) => {
+} = d => {
   return d ? formatDistance(d, new Date(), {addSuffix: true}) : (undefined as any)
 }
 
@@ -96,6 +96,7 @@ export const en = Object.freeze({
     familyUnity: 'Family unity',
     city: 'City',
     no: 'No',
+    forms: 'Forms',
     contactAdmin: 'Contact:',
     question: 'Question',
     kobo: 'Kobo',
@@ -254,7 +255,16 @@ export const en = Object.freeze({
     age: 'Age',
     submitAll: 'Submit all',
     submit: 'Submit',
+    importFromKobo: 'Import from Kobo',
     changeAccount: 'Change account',
+    addNewKoboAccount: 'Add new Kobo account',
+    serverUrlV1: 'Server URL KC (API v1)',
+    serverUrlV2: 'Server URL KF (API v2)',
+    selectServer: 'Select server',
+    live: 'Live',
+    testConnection: 'Test connection',
+    connectionSuccessful: 'Connection successful',
+    apiToken: 'API Token',
     lastName: 'Last name',
     change: 'Change',
     successfullyEdited: (n: number) => `Successfully edited ${n} rows.`,

@@ -122,15 +122,7 @@ export const ProtectRoute = ({adminOnly, children}: {children: ReactNode; adminO
       </CenteredContent>
     )
   }
-  return !session.drcOffice ? (
-    <CenteredContent>
-      <SessionInitForm
-        user={session}
-        onChangeAccount={logout}
-        onSelectOffice={(drcOffice) => fetcherSession.set((prev) => prev && {...prev, drcOffice: drcOffice})}
-      />
-    </CenteredContent>
-  ) : (
+  return (
     <>
       {session.originalEmail && (
         <Box sx={{px: 2, py: 0.25, background: (t) => t.palette.background.paper}}>

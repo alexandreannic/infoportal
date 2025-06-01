@@ -12,6 +12,7 @@ datasource db {
 
 model KoboServer {
   id       String     @id @default(uuid())
+  name     String
   url      String
   urlV1    String?
   token    String

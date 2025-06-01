@@ -31,14 +31,12 @@ export const DatabaseProvider = ({children}: {children: ReactNode}) => {
     () =>
       api.kobo.form
         .getAll()
-        .then((_) => seq(_).sortByString((_) => KoboFormSdk.parseFormName(_.name).program ?? '')) as Promise<
-        KoboForm[]
-      >,
+        .then(_ => seq(_).sortByString(_ => KoboFormSdk.parseFormName(_.name).program ?? '')) as Promise<KoboForm[]>,
   )
   const {toastHttpError} = useIpToast()
 
   const getForm = useMemo(() => {
-    const index = seq(_forms.get).reduceObject<Record<Kobo.FormId, KoboForm>>((_) => [_.id, _])
+    const index = seq(_forms.get).reduceObject<Record<Kobo.FormId, KoboForm>>(_ => [_.id, _])
     return (_: Kobo.FormId) => index[_]
   }, [_forms.get])
 
@@ -47,11 +45,11 @@ export const DatabaseProvider = ({children}: {children: ReactNode}) => {
   }, [])
 
   const koboAccesses = useMemo(() => {
-    return accesses.filter(Access.filterByFeature(AppFeatureId.kobo_database)).map((_) => _.params?.koboFormId)
+    return accesses.filter(Access.filterByFeature(AppFeatureId.kobo_database)).map(_ => _.params?.koboFormId)
   }, [accesses])
 
   const formsAccessible = useMemo(() => {
-    return _forms.get?.filter((_) => session.admin || koboAccesses.includes(_.id))
+    return _forms.get?.filter(_ => session.admin || koboAccesses.includes(_.id))
   }, [koboAccesses, _forms.get])
 
   useEffectFn(_forms.error, toastHttpError)
