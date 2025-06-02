@@ -27,7 +27,7 @@ export const DatabaseTableRoute = () => {
   const {formId} = databaseUrlParamsValidation.validateSync(useParams())
   return (
     <>
-      {map(ctx.getForm(formId), (form) => (
+      {map(ctx.getForm(formId), form => (
         <Page width="full" sx={{p: 0, pb: 0, mb: 0}}>
           <Panel sx={{mb: 0}}>
             <DatabaseTable form={form} formId={formId} />
@@ -69,9 +69,9 @@ export const DatabaseTable = ({
   const access = useMemo(() => {
     const list = accesses
       .filter(Access.filterByFeature(AppFeatureId.kobo_database))
-      .filter((_) => _.params?.koboFormId === formId)
-    const admin = session.admin || !!list.find((_) => _.level === AccessLevel.Admin)
-    const write = admin || !!list.find((_) => _.level === AccessLevel.Write)
+      .filter(_ => _.params?.koboFormId === formId)
+    const admin = session.admin || !!list.find(_ => _.level === AccessLevel.Admin)
+    const write = admin || !!list.find(_ => _.level === AccessLevel.Write)
     const read = write || list.length > 0
     return {admin, write, read}
   }, [accesses])

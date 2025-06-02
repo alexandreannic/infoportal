@@ -53,7 +53,7 @@ export const AccessForm = ({form}: {form: UseFormReturn<IAccessForm>}) => {
               dense
               error={!!form.formState.errors.selectBy}
               {...field}
-              onChange={(e) => {
+              onChange={e => {
                 form.setValue('drcJob', null)
                 form.setValue('drcOffice', null)
                 form.setValue('email', null)
@@ -121,12 +121,7 @@ export const AccessFormInputDrcOffice = ({form}: {form: UseFormReturn<IAccessFor
       name="drcOffice"
       control={form.control}
       render={({field: {onChange, ...field}}) => (
-        <IpSelectSingle<string>
-          {...field}
-          label={m.drcOffice}
-          onChange={(_) => onChange(_)}
-          options={[]}
-        />
+        <IpSelectSingle<string> {...field} label={m.drcOffice} onChange={_ => onChange(_)} options={[]} />
       )}
     />
   )
@@ -145,7 +140,7 @@ export const AccessFormInputAccessLevel = ({form}: {form: UseFormReturn<IAccessF
           {...field}
           // onChange={_ => field.onChange({target: {value: _}} as any)}
         >
-          {Obj.values(AccessLevel).map((level) => (
+          {Obj.values(AccessLevel).map(level => (
             <ScRadioGroupItem icon={accessLevelIcon[level]} value={level} key={level} title={level} />
           ))}
         </ScRadioGroup>
@@ -174,7 +169,7 @@ export const AccessFormInputGroup = ({form}: {form: UseFormReturn<IAccessForm>})
   const {api} = useAppSettings()
   const fetcherGroups = useFetcher(api.group.search)
   const groupIndex = useMemo(() => {
-    return seq(fetcherGroups.get).groupByFirst((_) => _.id)
+    return seq(fetcherGroups.get).groupByFirst(_ => _.id)
   }, [fetcherGroups.get])
 
   useEffect(() => {
@@ -193,7 +188,7 @@ export const AccessFormInputGroup = ({form}: {form: UseFormReturn<IAccessForm>})
             value={groupIndex[field.value!]}
             onChange={(e: any, _) => _ && onChange(_.id ?? undefined)}
             loading={fetcherGroups.loading}
-            getOptionLabel={(_) => _.name}
+            getOptionLabel={_ => _.name}
             // renderTags={_ => }
             options={fetcherGroups.get ?? []}
             renderOption={(props, option, state, ownerState) => (
@@ -217,14 +212,14 @@ export const AccessFormInputGroup = ({form}: {form: UseFormReturn<IAccessForm>})
           />
         )}
       />
-      {map(form.watch('groupId'), (groupId) => (
+      {map(form.watch('groupId'), groupId => (
         <>
           <Datatable
             sx={{
               mt: 2,
-              border: (t) => `1px solid ${t.palette.divider}`,
+              border: t => `1px solid ${t.palette.divider}`,
               overflow: 'hidden',
-              borderRadius: (t) => t.shape.borderRadius + 'px',
+              borderRadius: t => t.shape.borderRadius + 'px',
             }}
             id="access"
             defaultLimit={5}
@@ -234,25 +229,25 @@ export const AccessFormInputGroup = ({form}: {form: UseFormReturn<IAccessForm>})
                 id: 'email',
                 head: m.email,
                 type: 'string',
-                renderQuick: (_) => _.email,
+                renderQuick: _ => _.email,
               },
               {
                 id: 'drcJob',
                 head: m.drcJob,
                 type: 'select_one',
-                renderQuick: (_) => _.drcJob,
+                renderQuick: _ => _.drcJob,
               },
               {
                 id: 'drcOffice',
                 head: m.drcOffice,
                 type: 'select_one',
-                renderQuick: (_) => _.drcOffice,
+                renderQuick: _ => _.drcOffice,
               },
               {
                 id: 'level',
                 head: m.accessLevel,
                 type: 'select_one',
-                renderQuick: (_) => _.level,
+                renderQuick: _ => _.level,
               },
             ]}
           />

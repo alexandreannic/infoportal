@@ -61,14 +61,14 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
             size="small"
             sx={{
               mr: 1,
-              border: (t) => `2px solid ${t.palette.primary.main}`,
-              background: (t) => (sidebarOpen ? 'none' : alpha(t.palette.primary.main, 0.1)),
-              color: (t) => t.palette.primary.main,
+              border: t => `2px solid ${t.palette.primary.main}`,
+              background: t => (sidebarOpen ? 'none' : alpha(t.palette.primary.main, 0.1)),
+              color: t => t.palette.primary.main,
               '&:hover': {
-                background: (t) => alpha(t.palette.primary.main, 0.1),
+                background: t => alpha(t.palette.primary.main, 0.1),
               },
             }}
-            onClick={() => setSidebarOpen((_) => !_)}
+            onClick={() => setSidebarOpen(_ => !_)}
             children="menu"
           />
         )}
@@ -81,7 +81,7 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
         {children}
       </div>
       <PopoverWrapper
-        content={(close) =>
+        content={close =>
           Obj.entries(lightThemeIcons).map(([theme, icon]) => (
             <MenuItem
               key={theme}

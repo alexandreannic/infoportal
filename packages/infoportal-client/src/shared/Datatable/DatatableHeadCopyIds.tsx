@@ -36,9 +36,9 @@ export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerPro
     <>
       <TableIconBtn
         disabled={!data.filteredData || data.filteredData.length === 0}
-        onClick={(e) => {
+        onClick={e => {
           const {currentTarget} = e
-          copy(data.filteredSortedAndPaginatedData?.data.map((_) => column.render(_).value))
+          copy(data.filteredSortedAndPaginatedData?.data.map(_ => column.render(_).value))
           setAnchorEl(currentTarget)
         }}
       >
@@ -77,7 +77,7 @@ export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerPro
               ml: 2,
             }}
             onClick={() => {
-              copy(data.filteredData?.map((_) => column.render(_).value))
+              copy(data.filteredData?.map(_ => column.render(_).value))
             }}
           >
             Copy All {formatLargeNumber(data.filteredData?.length)}

@@ -62,7 +62,7 @@ export const DatabaseViewInputRow = ({
         <Box sx={{flex: 1, height: '32px', display: 'flex', alignItems: 'center'}}>
           {view.name}&nbsp;<Txt color="hint">({view.visibility})</Txt>
         </Box>
-        <Box sx={{display: 'flex', alignItems: 'center'}} onClick={(e) => e.stopPropagation()}>
+        <Box sx={{display: 'flex', alignItems: 'center'}} onClick={e => e.stopPropagation()}>
           <IpIconBtn onClick={onOpen} color={open ? 'primary' : undefined}>
             {open ? 'close_fullscreen' : 'settings'}
           </IpIconBtn>
@@ -83,8 +83,8 @@ export const DatabaseViewInputRow = ({
           <IpSelectSingle<DatabaseViewVisibility>
             disabled={readOnly}
             value={view.visibility}
-            onChange={(_) => onUpdate({visibility: _})}
-            renderValue={(_) => _}
+            onChange={_ => onUpdate({visibility: _})}
+            renderValue={_ => _}
             hideNullOption
             options={[
               ipSelectItem({

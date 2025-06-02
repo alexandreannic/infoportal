@@ -49,13 +49,13 @@ export const IpSelectMultiple = <T extends string | number>({
   const options = useMemo(() => {
     const _options = props.options ?? []
     if (typeof _options[0] === 'string') {
-      return props.options.map((_) => ({value: _, children: _})) as Option<T>[]
+      return props.options.map(_ => ({value: _, children: _})) as Option<T>[]
     }
     return _options as Option<T>[]
   }, [props.options])
 
   const handleSelectAll = (e: any) => {
-    const newValue = value.length === options.length ? [] : options.map((_) => _.value)
+    const newValue = value.length === options.length ? [] : options.map(_ => _.value)
     onChange(newValue, e)
     setUncontrolledInnerState(newValue)
   }
@@ -73,9 +73,9 @@ export const IpSelectMultiple = <T extends string | number>({
         defaultValue={props.defaultValue}
         multiple={true}
         renderValue={(v: T[]) =>
-          options.find((_) => v.includes(_.value))?.children + (v.length > 1 ? ` +${v.length - 1}  selected` : '')
+          options.find(_ => v.includes(_.value))?.children + (v.length > 1 ? ` +${v.length - 1}  selected` : '')
         }
-        onChange={(e) => {
+        onChange={e => {
           if (e.target.value.includes(IGNORED_VALUE_FOR_SELECT_ALL_ITEM as any)) return
           const newValue = e.target.value as T[]
           onChange(newValue, e)
@@ -98,7 +98,7 @@ export const IpSelectMultiple = <T extends string | number>({
             divider
             sx={{
               py: 0,
-              fontWeight: (t) => t.typography.fontWeightBold,
+              fontWeight: t => t.typography.fontWeightBold,
             }}
           >
             <Checkbox

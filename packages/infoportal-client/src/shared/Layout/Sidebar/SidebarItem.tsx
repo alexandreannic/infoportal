@@ -40,7 +40,7 @@ export const SidebarItem = ({
       disableRipple={!props.onClick && !props.href}
       sx={{
         width: '100%',
-        transition: (t) => t.transitions.create('all'),
+        transition: t => t.transitions.create('all'),
         display: 'flex',
         alignItems: 'center',
         textDecoration: 'inherit',
@@ -58,7 +58,7 @@ export const SidebarItem = ({
         whiteSpace: 'nowrap',
         textAlign: 'left',
         textOverflow: 'ellipsis',
-        color: (t) => t.palette.text.secondary,
+        color: t => t.palette.text.secondary,
         pr: 1,
         pl: 1.5,
         my:
@@ -78,14 +78,14 @@ export const SidebarItem = ({
           opacity: 0.5,
         }),
         '&:hover': {
-          background: (t) => alpha(t.palette.primary.main, 0.06),
+          background: t => alpha(t.palette.primary.main, 0.06),
         },
         ...(large && {
           minHeight: 38,
         }),
         ...(active && {
-          color: (t) => t.palette.primary.main,
-          background: (t) => alpha(t.palette.primary.main, 0.16),
+          color: t => t.palette.primary.main,
+          background: t => alpha(t.palette.primary.main, 0.16),
         }),
         ...sx,
       }}
@@ -101,7 +101,7 @@ export const SidebarItem = ({
           display: 'flex',
           alignItems: 'center',
           flex: 1,
-          fontWeight: (t) => t.typography.fontWeightMedium,
+          fontWeight: t => t.typography.fontWeightMedium,
         }}
       >
         {children}

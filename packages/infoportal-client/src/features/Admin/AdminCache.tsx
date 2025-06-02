@@ -21,7 +21,7 @@ export const AdminCache = () => {
   const asyncClear = useAsync(
     (k: string, sk?: string) => api.cache.clear(k, sk).then(() => fetcherCache.fetch({force: true, clean: false})),
     {
-      requestKey: (_) => _[0] + (_[1] ?? ''),
+      requestKey: _ => _[0] + (_[1] ?? ''),
     },
   )
   useEffect(() => {
@@ -30,7 +30,7 @@ export const AdminCache = () => {
 
   return (
     <Page width="md" loading={fetcherCache.loading}>
-      {map(fetcherCache.get, (cache) =>
+      {map(fetcherCache.get, cache =>
         Object.entries(cache).map(([key, info]) => {
           return (
             <Panel key={key}>

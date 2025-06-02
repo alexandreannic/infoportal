@@ -9,7 +9,7 @@ export const ChartBarSingleBy = <D extends Record<string, any>, K extends string
   by,
   data,
   limit,
-  finalTransform = (_) => _,
+  finalTransform = _ => _,
   onClickData,
   checked,
   onToggle,
@@ -34,8 +34,8 @@ export const ChartBarSingleBy = <D extends Record<string, any>, K extends string
 }) => {
   const res = useMemo(() => {
     const source = seq(data)
-      .filter(filter ?? ((_) => _))
-      .map((d) => {
+      .filter(filter ?? (_ => _))
+      .map(d => {
         if (by(d) === undefined) return
         if (mergeOptions) return (mergeOptions as any)[by(d)] ?? by(d)
         return by(d)
@@ -44,7 +44,7 @@ export const ChartBarSingleBy = <D extends Record<string, any>, K extends string
     return ChartHelper.single({data: source})
       .setLabel(label)
       .sortBy.value()
-      .filterValue((_) => (min ? _.value > min : true))
+      .filterValue(_ => (min ? _.value > min : true))
       .take(limit)
       .map(finalTransform)
       .get() as Record<K, ChartDataVal>
@@ -52,11 +52,11 @@ export const ChartBarSingleBy = <D extends Record<string, any>, K extends string
   return (
     <ChartBar
       data={res}
-      onClickData={(_) => onClickData?.(_ as K)}
+      onClickData={_ => onClickData?.(_ as K)}
       labels={
         !onToggle
           ? undefined
-          : seq(Obj.keys(res)).reduceObject((option) => [
+          : seq(Obj.keys(res)).reduceObject(option => [
               option,
               <Checkbox
                 key={option as string}

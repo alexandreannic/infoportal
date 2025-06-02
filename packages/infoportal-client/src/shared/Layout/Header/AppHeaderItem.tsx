@@ -9,7 +9,7 @@ export const AppHeaderItem = ({children, href}: {children: any; href?: string}) 
       href={href}
       sx={{
         textTransform: 'initial',
-        fontSize: (t) => styleUtils(t).fontSize.normal,
+        fontSize: t => styleUtils(t).fontSize.normal,
         py: 0,
         px: 2,
       }}

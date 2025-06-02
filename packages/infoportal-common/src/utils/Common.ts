@@ -42,7 +42,7 @@ export const isDate = (value: any) => {
 type PipeFunction = <T, R>(fn1: (arg: T) => R, ...fns: (((arg: R) => R) | undefined)[]) => (arg: T) => R
 
 export const pipe: PipeFunction = (fn1, ...fns) => {
-  return (arg) => fns.reduce((prev, fn) => (fn ? fn(prev) : prev), fn1(arg))
+  return arg => fns.reduce((prev, fn) => (fn ? fn(prev) : prev), fn1(arg))
 }
 
 export class Chain<T> {
@@ -85,9 +85,9 @@ export const multipleFilters = <T>(
   if (filters.length === 0) return list
   return list.filter((t: T, index: number, array: T[]) =>
     filters
-      .filter((filter) => filter instanceof Function)
+      .filter(filter => filter instanceof Function)
       // @ts-ignore
-      .every((filter) => filter(t, index, array)),
+      .every(filter => filter(t, index, array)),
   )
 }
 
@@ -96,7 +96,7 @@ export const forceArrayStringInference = <T extends string>(a: T[]) => a
 export const uppercaseHandlingAcronyms = (text: string): string => {
   const acronyms = ['HoHH', 'IDPs', 'PwD', 'PwDs', 'HHs', 'CoC', 'w/', 'PoC', 'PoCs', 'NFIs']
   text = text.toUpperCase()
-  acronyms.forEach((_) => {
+  acronyms.forEach(_ => {
     text = text.replaceAll(_.toUpperCase(), _)
   })
   return text
@@ -157,7 +157,7 @@ export const removeAccent = (str: string): string => {
     ē: 'e',
   }
 
-  return str.replace(/[àáâãäåçèéêëìíîïðñòóôõöøùúûüýÿćđē]/g, (match) => accentMap[match] || match)
+  return str.replace(/[àáâãäåçèéêëìíîïðñòóôõöøùúûüýÿćđē]/g, match => accentMap[match] || match)
 }
 
 export const add = (...args: (string | number | undefined)[]) => {
@@ -180,7 +180,7 @@ export const safeInt32: {
 
 export const safeArray = <T extends string>(value?: T[]): T[] => {
   if (!value) return []
-  if (Array.isArray(value)) return value.filter((_) => _ !== undefined && _ !== null)
+  if (Array.isArray(value)) return value.filter(_ => _ !== undefined && _ !== null)
   return [value]
 }
 
@@ -188,7 +188,7 @@ export const removeHtml: {
   (_: string): string
   (_: undefined): undefined
   (_?: string): string | undefined
-} = (_) => _?.replace(/(<([^>]+)>)/gi, '') as any
+} = _ => _?.replace(/(<([^>]+)>)/gi, '') as any
 
 export const assert = (condition: any, msg?: string): asserts condition => {
   if (!condition) {
@@ -222,7 +222,7 @@ export const logThen =
 export const openCanvasInNewTab = (canvas: HTMLCanvasElement, name: string) => {
   setTimeout(() => {
     // w.document.write('<static src="' + canvas.toDataURL('png') + '" />')
-    canvas.toBlob((blob) => {
+    canvas.toBlob(blob => {
       const w = window.open(URL.createObjectURL(blob!), '_blank')!
       w.document.title = name
     })

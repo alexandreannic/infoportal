@@ -42,12 +42,12 @@ export const ChartBarMultipleBy = <
 }: ChartBarMultipleByProps<D, K, O>) => {
   const res = useMemo(() => {
     const source = data
-      .map((d) => {
+      .map(d => {
         if (by(d) === undefined) return
         if (mergeOptions) {
           return seq(by(d) as string[])
-            .map((_) => (mergeOptions as any)[_] ?? _)
-            .distinct((_) => _)
+            .map(_ => (mergeOptions as any)[_] ?? _)
+            .distinct(_ => _)
             .get()
         }
         return by(d)
@@ -66,11 +66,11 @@ export const ChartBarMultipleBy = <
   return (
     <ChartBar
       data={res}
-      onClickData={(_) => onClickData?.(_ as K)}
+      onClickData={_ => onClickData?.(_ as K)}
       labels={
         !onToggle
           ? undefined
-          : seq(Obj.keys(res)).reduceObject<Record<string, ReactNode>>((option) => [
+          : seq(Obj.keys(res)).reduceObject<Record<string, ReactNode>>(option => [
               option,
               <Checkbox
                 key={option as string}

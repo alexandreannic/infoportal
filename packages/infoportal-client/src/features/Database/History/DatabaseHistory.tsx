@@ -31,7 +31,7 @@ export const DatabaseHistory = () => {
   }, [])
 
   const getAnswerTranslation = (row: KoboAnswerHistory, fn: (_: KoboAnswerHistory) => string) =>
-    map(row.property, (property) => {
+    map(row.property, property => {
       const value: any = fn(row)
       if (!schema) return value
       const questionSchema = schema.helper.questionIndex[property]
@@ -86,7 +86,7 @@ export const DatabaseHistory = () => {
               id: 'date',
               width: 80,
               head: m.date,
-              render: (_) => {
+              render: _ => {
                 return {
                   value: _.date,
                   label: formatDate(_.date),
@@ -99,7 +99,7 @@ export const DatabaseHistory = () => {
               id: 'answerIdCount',
               width: 0,
               head: m.id + ' #',
-              renderQuick: (_) => _.answerIds.length,
+              renderQuick: _ => _.answerIds.length,
             },
             {
               type: 'string',
@@ -108,14 +108,14 @@ export const DatabaseHistory = () => {
               className: 'td-id',
               width: 80,
               head: m.id,
-              renderQuick: (_) => _.answerIds?.join(' '),
+              renderQuick: _ => _.answerIds?.join(' '),
             },
             {
               type: 'select_one',
               id: 'author',
               width: 0,
               head: m.by,
-              render: (_) => {
+              render: _ => {
                 return {
                   value: _.by,
                   label: (
@@ -131,7 +131,7 @@ export const DatabaseHistory = () => {
               type: 'select_one',
               id: 'type',
               head: m.type,
-              render: (_) => {
+              render: _ => {
                 return {
                   value: _.type,
                   label: fnSwitch(_.type, {
@@ -151,7 +151,7 @@ export const DatabaseHistory = () => {
               id: 'question',
               head: m.column,
               width: 250,
-              render: (_) => {
+              render: _ => {
                 return {
                   value: _.property,
                   label: _.property ? schema?.translate.question(_.property) : undefined,
@@ -163,7 +163,7 @@ export const DatabaseHistory = () => {
               id: 'xml',
               head: 'XML',
               width: 90,
-              render: (_) => {
+              render: _ => {
                 return {
                   value: _.property,
                   label: (
@@ -180,8 +180,8 @@ export const DatabaseHistory = () => {
               head: m._koboDatabase.oldValue,
               styleHead: {borderRight: 0},
               style: () => ({borderRight: 0}),
-              render: (row) => {
-                const label = getAnswerTranslation(row, (_) => _.oldValue)
+              render: row => {
+                const label = getAnswerTranslation(row, _ => _.oldValue)
                 return {
                   label: label && (
                     <span
@@ -205,15 +205,15 @@ export const DatabaseHistory = () => {
               align: 'center',
               styleHead: {borderRight: 0},
               style: () => ({borderRight: 0}),
-              renderQuick: (_) => _.oldValue && <Icon color="disabled">arrow_forward</Icon>,
+              renderQuick: _ => _.oldValue && <Icon color="disabled">arrow_forward</Icon>,
             },
             {
               type: 'string',
               id: 'newVranslate',
               head: m._koboDatabase.newValue,
-              render: (row) => {
+              render: row => {
                 if (!row.newValue) return {label: undefined, value: undefined}
-                const label = getAnswerTranslation(row, (_) => _.newValue)
+                const label = getAnswerTranslation(row, _ => _.newValue)
                 return {
                   label: (
                     <span

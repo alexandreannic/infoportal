@@ -125,7 +125,7 @@ export const ProtectRoute = ({adminOnly, children}: {children: ReactNode; adminO
   return (
     <>
       {session.originalEmail && (
-        <Box sx={{px: 2, py: 0.25, background: (t) => t.palette.background.paper}}>
+        <Box sx={{px: 2, py: 0.25, background: t => t.palette.background.paper}}>
           Connected as <b>{session.email}</b>. Go back as <b>{session.originalEmail}</b>
           <IpIconBtn loading={_revertConnectAs.loading} onClick={_revertConnectAs.call} color="primary">
             logout

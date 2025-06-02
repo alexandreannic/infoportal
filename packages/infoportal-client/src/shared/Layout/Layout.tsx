@@ -44,7 +44,7 @@ const LayoutUsingContext = ({sidebar, header, children}: Pick<LayoutProps, 'side
       <Box
         component="main"
         sx={{
-          transition: (t) => t.transitions.create('all'),
+          transition: t => t.transitions.create('all'),
           paddingLeft:
             (sidebar && sidebarOpen && sidebarPinned && !isMobileWidth
               ? layoutConfig.sidebarWith + defaultSpacing

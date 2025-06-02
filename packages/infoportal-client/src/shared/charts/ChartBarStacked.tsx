@@ -15,7 +15,7 @@ const renderCustomizedLabel = ({x, y, stroke, value, ...rest}: any) => {
 
 export const commonLegendProps = {
   formatter: (_: any) => (
-    <Box component="span" sx={{verticalAlign: 'middle', color: (t) => t.palette.text.primary}}>
+    <Box component="span" sx={{verticalAlign: 'middle', color: t => t.palette.text.primary}}>
       {_}
     </Box>
   ),

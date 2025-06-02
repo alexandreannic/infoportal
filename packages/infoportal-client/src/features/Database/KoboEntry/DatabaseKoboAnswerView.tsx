@@ -72,14 +72,14 @@ export const DatabaseKoboAnswerViewPage = () => {
                   <Switch
                     size="small"
                     value={showQuestionWithoutAnswer}
-                    onChange={(e) => setShowQuestionWithoutAnswer(e.target.checked)}
+                    onChange={e => setShowQuestionWithoutAnswer(e.target.checked)}
                   />
                 </Box>
               }
             >
               {schema.schema.name}
               <br />
-              <Txt sx={{color: (t) => t.palette.info.main}}>{answerId}</Txt>
+              <Txt sx={{color: t => t.palette.info.main}}>{answerId}</Txt>
             </PanelHead>
             <PanelBody>
               <KoboAnswerFormView
@@ -126,15 +126,12 @@ export const DatabaseKoboAnswerViewDialog = ({
             <Txt sx={{fontSize: '1rem'}} color="hint">
               {m._koboDatabase.showAllQuestions}
             </Txt>
-            <Switch
-              value={showQuestionWithoutAnswer}
-              onChange={(e) => setShowQuestionWithoutAnswer(e.target.checked)}
-            />
+            <Switch value={showQuestionWithoutAnswer} onChange={e => setShowQuestionWithoutAnswer(e.target.checked)} />
           </Box>
         </Box>
       </DialogTitle>
       <DialogContent>
-        {map(ctxSchema.byId[formId]?.get, (schema) => (
+        {map(ctxSchema.byId[formId]?.get, schema => (
           <KoboAnswerFormView
             schema={schema}
             formId={formId}
@@ -165,10 +162,8 @@ const KoboAnswerFormView = ({
     <Box>
       {seq(schema.schemaSanitized.content.survey)
         .compactBy('name')
-        .filter(
-          (q) => showQuestionWithoutAnswer || q.type === 'begin_group' || (answer[q.name] !== '' && answer[q.name]),
-        )
-        .map((q) => (
+        .filter(q => showQuestionWithoutAnswer || q.type === 'begin_group' || (answer[q.name] !== '' && answer[q.name]))
+        .map(q => (
           <Box key={q.name} sx={{mb: 1.5}}>
             <KoboAnswerQuestionView formId={formId} schema={schema} answer={answer} questionSchema={q} />
           </Box>
@@ -206,7 +201,7 @@ const KoboAnswerQuestionView = ({
   switch (questionSchema.type) {
     case 'begin_group': {
       return (
-        <Box sx={{pt: 1, mt: 2, borderTop: (t) => `1px solid ${t.palette.divider}`}}>
+        <Box sx={{pt: 1, mt: 2, borderTop: t => `1px solid ${t.palette.divider}`}}>
           <Txt bold block size="title">
             {schema.translate.question(questionSchema.name)}
           </Txt>
@@ -271,7 +266,7 @@ const KoboAnswerQuestionView = ({
       return (
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
-          {(row[questionSchema.name] as string[])?.map((_) => (
+          {(row[questionSchema.name] as string[])?.map(_ => (
             <KoboQuestionAnswerView key={_} icon="check_box">
               {schema.translate.choice(questionSchema.name, _)}
             </KoboQuestionAnswerView>

@@ -6,8 +6,8 @@ import {IpBtn} from './Btn'
 
 const sx = makeSx({
   doc_icon: {
-    color: (t) => t.palette.text.secondary,
-    fontSize: (t) => t.typography.subtitle1.fontSize,
+    color: t => t.palette.text.secondary,
+    fontSize: t => t.typography.subtitle1.fontSize,
   },
 })
 
@@ -76,7 +76,7 @@ export const BtnUploader = ({
       return (
         <Chip
           sx={{
-            color: (t) => t.palette.text.disabled,
+            color: t => t.palette.text.disabled,
             position: 'relative',
           }}
           label={msg.loading}
@@ -125,7 +125,7 @@ export const BtnUploader = ({
               style={{display: 'none'}}
               type="file"
               ref={fileInputEl}
-              onChange={(e) => handleChange(e.target.files)}
+              onChange={e => handleChange(e.target.files)}
             />
           </IpBtn>
         )
@@ -148,7 +148,7 @@ export const BtnUploader = ({
             display: 'flex',
             alignItems: 'center',
             ml: 1,
-            color: (t) => t.palette.error.main,
+            color: t => t.palette.error.main,
             py: 1,
             px: 2,
             borderRadius: '2px',

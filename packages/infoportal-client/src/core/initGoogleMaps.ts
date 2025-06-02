@@ -33,12 +33,12 @@ export const initGoogleMaps = async ({
     zoom: 5.1,
     controlSize: 32,
   })
-  const max = Math.max(...bubbles.map((_) => _.size))
+  const max = Math.max(...bubbles.map(_ => _.size))
   const flatted = bubbles.map((_: any) => {
     _.opacity = (_.size / max) * 0.7
     return _
   })
-  flatted.forEach((_) => {
+  flatted.forEach(_ => {
     if (!_.loc?.[0]) return
     const marker = new google.maps.Marker({
       position: new google.maps.LatLng(_.loc[0], _.loc[1]),

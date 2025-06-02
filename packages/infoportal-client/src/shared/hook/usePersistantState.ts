@@ -5,7 +5,7 @@ export const usePersistentState = <S>(
   initialState: S | (() => S),
   {
     storageKey = 'react-persistent-state' + generateId(),
-    transformFromStorage = (_) => _,
+    transformFromStorage = _ => _,
   }: {
     transformFromStorage?: (_: S) => S
     storageKey: string

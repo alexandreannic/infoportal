@@ -62,9 +62,9 @@ export const SidebarSubSection = ({
       {...props}
     >
       <Box
-        onClick={(e) => {
+        onClick={e => {
           onClick?.(e)
-          if (children) setOpen((_) => !_)
+          if (children) setOpen(_ => !_)
         }}
         sx={{minHeight: dense ? 26 : 30, pl: keepOpen ? 1 : 0.5, mb: 0, display: 'flex', alignItems: 'center'}}
       >

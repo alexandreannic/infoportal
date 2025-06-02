@@ -17,11 +17,7 @@ export const DatabaseGroupDisplayInput = (props: IpBtnProps) => {
           <Txt color="hint" sx={{mb: 0.5}} fontSize="small" block>
             {m._koboDatabase.repeatAs}
           </Txt>
-          <ScRadioGroup
-            dense
-            value={groupDisplay.get.repeatAs}
-            onChange={(_) => groupDisplay.setProperty('repeatAs', _)}
-          >
+          <ScRadioGroup dense value={groupDisplay.get.repeatAs} onChange={_ => groupDisplay.setProperty('repeatAs', _)}>
             <ScRadioGroupItem value={null} title={m._koboDatabase.repeatDont} />
             <ScRadioGroupItem value="rows" title={m._koboDatabase.repeatAsRows} />
             <ScRadioGroupItem value="columns" title={m._koboDatabase.repeatAsColumn} />
@@ -33,9 +29,9 @@ export const DatabaseGroupDisplayInput = (props: IpBtnProps) => {
               </Txt>
               <IpSelectSingle
                 value={groupDisplay.get.repeatGroupName}
-                renderValue={(_) => schema.translate.question(_)!}
-                onChange={(_) => groupDisplay.setProperty('repeatGroupName', _ ?? undefined)}
-                options={schema.helper.group.search({depth: 1}).map((_) =>
+                renderValue={_ => schema.translate.question(_)!}
+                onChange={_ => groupDisplay.setProperty('repeatGroupName', _ ?? undefined)}
+                options={schema.helper.group.search({depth: 1}).map(_ =>
                   ipSelectItem({
                     value: _.name,
                     title: schema.translate.question(_.name),

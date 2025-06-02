@@ -27,13 +27,13 @@ export const TableInput = ({
     <DebouncedInput<string>
       debounce={debounce}
       value={value}
-      onChange={(_) => onChange(_ === '' || _ === originalValue ? undefined : _)}
+      onChange={_ => onChange(_ === '' || _ === originalValue ? undefined : _)}
     >
       {(value, onChange) => (
         <IpInput
           helperText={null}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={e => onChange(e.target.value)}
           endAdornment={
             <>
               {helper && (

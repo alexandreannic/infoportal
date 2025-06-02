@@ -17,24 +17,24 @@ export namespace DatatableXlsGenerator {
   export const download = async <T>(fileName: string, params: Params<T>[] | Params<T>) => {
     const workbook = new ExcelJS.Workbook()
     ;[params]
-      .flatMap((_) => _)
+      .flatMap(_ => _)
       .map(({data, schema, sheetName}) => {
         const datatable = workbook.addWorksheet(sheetName)
-        const header = datatable.addRow(schema.map((_) => _.head))
+        const header = datatable.addRow(schema.map(_ => _.head))
         // header.fill = {
         //   type: 'pattern',
         //   pattern: 'solid',
         // bgColor: {argb: '#f2f2f2'},
         // }
-        data.forEach((d) => {
+        data.forEach(d => {
           datatable.addRow(
-            schema.map((_) => {
+            schema.map(_ => {
               return _.render?.(d)
             }),
           )
         })
         datatable.views = [{state: 'frozen', xSplit: 0, ySplit: 1}]
-        datatable.columns.forEach((c) => {
+        datatable.columns.forEach(c => {
           c.width = 10
         })
       })

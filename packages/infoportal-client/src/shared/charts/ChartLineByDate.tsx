@@ -30,10 +30,10 @@ export const ChartLineByDate = <T, K extends DateKeys<T>>({
   const curve = useMemo(() => {
     const res: Record<string, Record<string, number>> = {}
     let hasInvalidDate = false
-    data.forEach((d) => {
+    data.forEach(d => {
       Obj.entries(curves)
         .map(([q, fn]) => {
-          const date = map(fn(d), (d) => (typeof d === 'string' ? new Date(d) : d)) as Date | undefined
+          const date = map(fn(d), d => (typeof d === 'string' ? new Date(d) : d)) as Date | undefined
           try {
             if (!date || !isDate(date)) throw Error('Invalid date')
             const yyyyMM = format(date, 'yyyy-MM')
@@ -48,14 +48,14 @@ export const ChartLineByDate = <T, K extends DateKeys<T>>({
             return
           }
         })
-        .filter((_) => _ !== undefined)
+        .filter(_ => _ !== undefined)
     })
     if (hasInvalidDate) {
       console.log(`Invalid date`, {data, res})
     }
     return Obj.entries(res)
       .map(([date, v]) => {
-        Obj.keys(curves).forEach((q) => {
+        Obj.keys(curves).forEach(q => {
           if (!v[q]) v[q] = 0
         })
         return [date, v] as [string, Record<K, number>]

@@ -43,10 +43,10 @@ export class KoboAnswerHistoryService {
         },
         orderBy: {date: 'desc'},
       })
-      .then((_) => {
-        return _.map((history) => ({
+      .then(_ => {
+        return _.map(history => ({
           ...history,
-          answerIds: history.answers.map((_) => _.id),
+          answerIds: history.answers.map(_ => _.id),
         }))
       })
       .then(ApiPaginateHelper.wrap())
@@ -57,7 +57,7 @@ export class KoboAnswerHistoryService {
       return this.prisma.koboAnswersHistory.create({
         data: {
           answers: {
-            connect: answerIds.map((id) => ({id})),
+            connect: answerIds.map(id => ({id})),
           },
           by: authorEmail,
           type: type,
@@ -71,8 +71,8 @@ export class KoboAnswerHistoryService {
           id: {in: answerIds},
         },
       })
-      .then((res) =>
-        seq(res).groupBy((_) => {
+      .then(res =>
+        seq(res).groupBy(_ => {
           const data: any = _[type === 'tag' ? 'tags' : 'answers'] ?? {}
           return data[property]
         }),
@@ -82,7 +82,7 @@ export class KoboAnswerHistoryService {
         return this.prisma.koboAnswersHistory.create({
           data: {
             answers: {
-              connect: v.map((_) => ({id: _.id})),
+              connect: v.map(_ => ({id: _.id})),
             },
             by: authorEmail,
             type,

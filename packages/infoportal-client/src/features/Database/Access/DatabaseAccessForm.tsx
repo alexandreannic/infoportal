@@ -45,7 +45,7 @@ export const DatabaseAccessForm = ({
   const requestInConstToFixTsInference = (databaseId: Kobo.FormId) =>
     api.access
       .search({featureId: AppFeatureId.kobo_database})
-      .then((_) => _.filter((_) => _.params?.koboFormId === databaseId))
+      .then(_ => _.filter(_ => _.params?.koboFormId === databaseId))
   const _access = useFetcher(requestInConstToFixTsInference)
 
   useEffectFn(_addAccess.error, toastHttpError)
@@ -57,16 +57,16 @@ export const DatabaseAccessForm = ({
     return {
       indexQuestion: seq(survey)
         .compactBy('name')
-        .groupByFirst((_) => _.name),
-      indexOptionsByListName: seq(form.content.choices).groupBy((_) => _.list_name),
-      indexOptionsByName: seq(form.content.choices).groupByFirst((_) => _.name),
+        .groupByFirst(_ => _.name),
+      indexOptionsByListName: seq(form.content.choices).groupBy(_ => _.list_name),
+      indexOptionsByName: seq(form.content.choices).groupByFirst(_ => _.name),
     }
   }, [form])
 
   const questions = useMemo(() => {
-    return map(survey, (schema) =>
+    return map(survey, schema =>
       schema.filter(
-        (_) => _.type === 'calculate' || _.type === 'text' || _.type === 'select_multiple' || _.type === 'select_one',
+        _ => _.type === 'calculate' || _.type === 'text' || _.type === 'select_multiple' || _.type === 'select_one',
       ),
     )
   }, [survey])
@@ -105,7 +105,7 @@ export const DatabaseAccessForm = ({
       loading={_addAccess.loading}
       confirmDisabled={!accessForm.formState.isValid}
       onConfirm={(_, close) =>
-        accessForm.handleSubmit((_) => {
+        accessForm.handleSubmit(_ => {
           submit(_)
           close()
         })()
@@ -136,7 +136,7 @@ export const DatabaseAccessForm = ({
                     }
                   }}
                   loading={!questions}
-                  options={questions?.map((_) => _.name!) ?? []}
+                  options={questions?.map(_ => _.name!) ?? []}
                   renderInput={({InputProps, ...props}) => (
                     <IpInput
                       {...InputProps}
@@ -181,7 +181,7 @@ export const DatabaseAccessForm = ({
                 />
               )}
             />
-            {map(accessForm.watch('question'), (questionName) => {
+            {map(accessForm.watch('question'), questionName => {
               if (questionName === '') return
               const question = indexQuestion[questionName]
               if (!question) return
@@ -204,7 +204,7 @@ export const DatabaseAccessForm = ({
                           onChange={(e, _) => _ && field.onChange(_)}
                           loading={!questions}
                           disableCloseOnSelect
-                          options={options?.map((_) => _.name) ?? []}
+                          options={options?.map(_ => _.name) ?? []}
                           // options={options?.map(_ => ({children: KoboSchemaHelper.getLabel(_, langIndex), value: _.name}))}
                           renderInput={({InputProps, ...props}) => (
                             <IpInput

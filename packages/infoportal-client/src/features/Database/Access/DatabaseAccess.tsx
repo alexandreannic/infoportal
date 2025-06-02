@@ -41,19 +41,15 @@ export const DatabaseAccess = ({formId, form}: {formId: Kobo.FormId; form: Kobo.
 
   const accessSum = useMemo(() => {
     return Access.toSum(
-      accesses
-        .filter(Access.filterByFeature(AppFeatureId.kobo_database))
-        .filter((_) => _.params?.koboFormId === formId),
+      accesses.filter(Access.filterByFeature(AppFeatureId.kobo_database)).filter(_ => _.params?.koboFormId === formId),
       session.admin,
     )
   }, [session, accesses])
 
   const requestInConstToFixTsInference = () =>
-    api.access
-      .search({featureId: AppFeatureId.kobo_database})
-      .then((_) => _.filter((_) => _.params?.koboFormId === formId))
+    api.access.search({featureId: AppFeatureId.kobo_database}).then(_ => _.filter(_ => _.params?.koboFormId === formId))
   const _get = useFetcher(requestInConstToFixTsInference)
-  const _remove = useAsync(api.access.remove, {requestKey: (_) => _[0]})
+  const _remove = useAsync(api.access.remove, {requestKey: _ => _[0]})
 
   const refresh = () => {
     _get.fetch({force: true, clean: false})

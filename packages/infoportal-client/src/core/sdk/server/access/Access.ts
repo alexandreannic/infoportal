@@ -59,18 +59,18 @@ export interface AccessSum {
 export class Access {
   static readonly toSum = (accesses: Access<any>[], admin?: boolean) => {
     return {
-      admin: admin || !!accesses.find((_) => _.level === AccessLevel.Admin),
-      write: admin || !!accesses.find((_) => _.level === AccessLevel.Write || _.level === AccessLevel.Admin),
+      admin: admin || !!accesses.find(_ => _.level === AccessLevel.Admin),
+      write: admin || !!accesses.find(_ => _.level === AccessLevel.Write || _.level === AccessLevel.Admin),
       read:
         admin ||
         !!accesses.find(
-          (_) => _.level === AccessLevel.Write || _.level === AccessLevel.Admin || _.level === AccessLevel.Read,
+          _ => _.level === AccessLevel.Write || _.level === AccessLevel.Admin || _.level === AccessLevel.Read,
         ),
     }
   }
 
   // @ts-ignore
-  static readonly filterByFeature: FilterByFeature = (f) => (_) => {
+  static readonly filterByFeature: FilterByFeature = f => _ => {
     return _.featureId === f
   }
 

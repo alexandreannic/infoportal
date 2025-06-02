@@ -31,7 +31,7 @@ export class KoboSchemaRepeatHelper {
 
   constructor(survey: Kobo.Form['content']['survey']) {
     let depth: string[] = []
-    survey.forEach((q) => {
+    survey.forEach(q => {
       if (q.type === 'end_repeat') depth.pop()
       if (!ignoredColType.has(q.type)) {
         if (depth.length === 0) this.questionsFlat.push(q)
@@ -53,7 +53,7 @@ export class KoboSchemaRepeatHelper {
   }
 
   readonly getByName = (name: string): KoboGroupInfo | undefined => {
-    return Obj.values(this.infosIndex).find((_) => _.pathArr.includes(name))
+    return Obj.values(this.infosIndex).find(_ => _.pathArr.includes(name))
   }
 
   readonly search = ({
@@ -64,7 +64,7 @@ export class KoboSchemaRepeatHelper {
     exactName?: string
     depth?: number
   } = {}): KoboGroupInfo[] => {
-    return Obj.values(this.infosIndex).filter((info) => {
+    return Obj.values(this.infosIndex).filter(info => {
       if (depth && depth !== info.depth) return false
       if (exactName && !info.pathArr.includes(exactName)) return false
       return info

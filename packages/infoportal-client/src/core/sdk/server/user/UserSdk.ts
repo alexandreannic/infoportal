@@ -15,8 +15,8 @@ export class UserSdk {
   readonly search = ({includeDummy}: {includeDummy?: boolean} = {}) => {
     return this.client
       .get<any[]>(`/user`)
-      .then((res) => res.map(User.map))
-      .then((res) => (includeDummy ? res : res.filter((_) => !_.email.includes('@dummy'))))
+      .then(res => res.map(User.map))
+      .then(res => (includeDummy ? res : res.filter(_ => !_.email.includes('@dummy'))))
   }
 
   readonly fetchDrcJobs = () => {

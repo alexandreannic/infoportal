@@ -35,7 +35,7 @@ export const DatabaseKoboRepeatRoute = () => {
       animationDeps={[formId]}
       loading={schemaLoader?.loading}
     >
-      {map(schemaLoader?.get, (schema) => (
+      {map(schemaLoader?.get, schema => (
         <Panel sx={{mb: 0}}>
           <DatabaseKoboRepeat schema={schema} group={group} formId={formId} />
         </Panel>
@@ -89,7 +89,7 @@ export const getColumnsForRepeatGroup = ({
       type: 'string',
       id: '_index',
       head: '_index',
-      renderQuick: (_) => '' + _._index,
+      renderQuick: _ => '' + _._index,
     },
     schemaGenerator.getId(),
     schemaGenerator.getSubmissionTime(),
@@ -130,7 +130,7 @@ const DatabaseKoboRepeat = ({
       schema,
       t,
       m,
-      onRepeatGroupClick: (_) => navigate(databaseIndex.siteMap.group.absolute(formId, _.name, _.row.id, _.row._index)),
+      onRepeatGroupClick: _ => navigate(databaseIndex.siteMap.group.absolute(formId, _.name, _.row.id, _.row._index)),
       groupName: groupInfo.name,
     })
     return {

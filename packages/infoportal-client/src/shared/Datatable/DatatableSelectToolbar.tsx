@@ -10,7 +10,7 @@ export const DatatableSelectToolbar = ({children}: {children?: ReactNode}) => {
         right: 0,
         left: 0,
         bottom: 0,
-        background: (t) => t.palette.background.paper,
+        background: t => t.palette.background.paper,
       }}
     >
       <Box
@@ -22,12 +22,12 @@ export const DatatableSelectToolbar = ({children}: {children?: ReactNode}) => {
           bottom: 0,
           display: 'flex',
           alignItems: 'center',
-          border: (t) => `2px solid ${t.palette.primary.main}`,
-          color: (t) => t.palette.primary.main,
-          fontWeight: (t) => t.typography.fontWeightBold,
-          background: (t) => t.palette.action.focus,
-          borderTopLeftRadius: (t) => t.shape.borderRadius + 'px',
-          borderTopRightRadius: (t) => t.shape.borderRadius + 'px',
+          border: t => `2px solid ${t.palette.primary.main}`,
+          color: t => t.palette.primary.main,
+          fontWeight: t => t.typography.fontWeightBold,
+          background: t => t.palette.action.focus,
+          borderTopLeftRadius: t => t.shape.borderRadius + 'px',
+          borderTopRightRadius: t => t.shape.borderRadius + 'px',
           px: 2,
         }}
       >

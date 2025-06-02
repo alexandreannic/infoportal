@@ -39,13 +39,13 @@ export const KoboSchemaProvider = ({defaultLangIndex = 0, children}: KoboSchemaP
 
   const {anyLoading, anyError, clearCache, ...fetchers} = useFetchers(
     (id: Kobo.FormId) => {
-      return api.koboApi.getSchema({id}).catch((e) => {
+      return api.koboApi.getSchema({id}).catch(e => {
         toastHttpError(e)
         throw e
       })
     },
     {
-      requestKey: (_) => _[0],
+      requestKey: _ => _[0],
     },
   )
 

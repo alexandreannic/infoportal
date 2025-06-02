@@ -23,7 +23,7 @@ export const useMapIp = <K extends Key, V>(initialValue: Map<K, V> = new Map()):
       // ...map,
       map,
       reset: (arr: V[], getKey: (v: V) => K) => {
-        const index: [K, V][] = arr.map((_) => [getKey(_), _])
+        const index: [K, V][] = arr.map(_ => [getKey(_), _])
         setMap(new Map(index))
       },
       set: (k: K, v: V) => {

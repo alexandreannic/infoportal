@@ -76,30 +76,29 @@ export const StepperHeader = ({
                   borderRadius: stepSize,
                   display: 'flex',
                   alignItems: 'center',
-                  fontWeight: (t) => t.typography.fontWeightBold,
+                  fontWeight: t => t.typography.fontWeightBold,
                   ...(stepSize <= 30 && {
-                    fontSize: (t) => styleUtils(t).fontSize.small,
+                    fontSize: t => styleUtils(t).fontSize.small,
                   }),
                   justifyContent: 'center',
-                  transition: (t) => t.transitions.create('all'),
+                  transition: t => t.transitions.create('all'),
                   mr: 1,
                   ml: 1,
                   ...fnSwitch<StepState, SxProps<Theme>>(
                     state,
                     makeSx({
                       done: {
-                        background: (t) => t.palette.success.light,
-                        color: (t) => t.palette.success.contrastText,
+                        background: t => t.palette.success.light,
+                        color: t => t.palette.success.contrastText,
                       },
                       current: {
-                        boxShadow: (t) =>
-                          `0px 0px 0px ${stepSize > 30 ? 4 : 2}px ${alpha(t.palette.primary.main, 0.3)}`,
-                        color: (t) => t.palette.primary.contrastText,
+                        boxShadow: t => `0px 0px 0px ${stepSize > 30 ? 4 : 2}px ${alpha(t.palette.primary.main, 0.3)}`,
+                        color: t => t.palette.primary.contrastText,
                         bgcolor: 'primary.main',
                       },
                       not_done: {
-                        border: (t) => `2px solid ${t.palette.divider}`,
-                        color: (t) => t.palette.text.disabled,
+                        border: t => `2px solid ${t.palette.divider}`,
+                        color: t => t.palette.text.disabled,
                       },
                     }),
                   ),
@@ -116,10 +115,10 @@ export const StepperHeader = ({
                       state,
                       makeSx({
                         current: {
-                          fontWeight: (t) => t.typography.fontWeightBold,
+                          fontWeight: t => t.typography.fontWeightBold,
                         },
                         not_done: {
-                          color: (t) => t.palette.text.disabled,
+                          color: t => t.palette.text.disabled,
                         },
                       }),
                       () => ({}),

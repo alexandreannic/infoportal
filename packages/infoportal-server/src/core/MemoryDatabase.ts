@@ -33,8 +33,8 @@ export class MemoryDatabase {
       const index = new Map<string, number>()
       ;(await res$).forEach((d, i) => {
         ;[params.getId(d)]
-          .flatMap((_) => _)
-          .forEach((id) => {
+          .flatMap(_ => _)
+          .forEach(id => {
             if (index.has(id)) throw new Error(`Why ${params.getId(d)} ${id} exists twice?`)
             index.set(id, i)
           })
@@ -49,7 +49,7 @@ export class MemoryDatabase {
         const index = this.index.get(params.name)
         const i = index?.get(id)
         if (!i) return
-        return this.cache.get(params.name)?.then((data) => {
+        return this.cache.get(params.name)?.then(data => {
           const newValue = setValue(data[i])
           data[i] = newValue
           return newValue
@@ -59,7 +59,7 @@ export class MemoryDatabase {
       warmUp: build,
       clear: () => this.cache.delete(params.name),
       get: () => {
-        return map(this.cache.get(params.name), (_) => _) ?? build()
+        return map(this.cache.get(params.name), _ => _) ?? build()
       },
     }
   }

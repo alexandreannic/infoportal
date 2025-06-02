@@ -37,14 +37,14 @@ export const databaseKoboDisplayBuilder = ({
         const copy = [...columns]
         schema.helper.group
           .search({depth: 1})
-          .map((group) => {
-            const index = copy.findIndex((_) => _.id == group.name)
-            const groupSize = Math.max(...data.map((_) => _[group.name]?.length ?? 0))
-            mapFor(groupSize, (repeat) => {
+          .map(group => {
+            const index = copy.findIndex(_ => _.id == group.name)
+            const groupSize = Math.max(...data.map(_ => _[group.name]?.length ?? 0))
+            mapFor(groupSize, repeat => {
               const newCols = columnBySchemaGenerator({
                 schema,
                 onRepeatGroupClick,
-                getRow: (_) => _[group.name]?.[repeat] ?? {},
+                getRow: _ => _[group.name]?.[repeat] ?? {},
                 formId,
                 m,
                 t,
@@ -82,13 +82,13 @@ export const databaseKoboDisplayBuilder = ({
           t,
         })
           .getByQuestions(group.questions)
-          .map((_) => {
+          .map(_ => {
             _.styleHead = {
               background: colorRepeatedQuestionHeader(t),
             }
             return _
           })
-        const index = columns.findIndex((_) => _.id == group.name)
+        const index = columns.findIndex(_ => _.id == group.name)
         return [...columns.slice(0, index), ...repeatGroupColumns, ...columns.slice(index + 1)]
       }
       default: {

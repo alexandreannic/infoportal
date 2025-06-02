@@ -133,7 +133,7 @@ export type ColumnBySchemaGeneratorProps = {
 export const colorRepeatedQuestionHeader = (t: Theme) => alpha(t.palette.info.light, 0.22)
 
 export const columnBySchemaGenerator = ({
-  getRow = (_) => _ as Row,
+  getRow = _ => _ as Row,
   onEdit,
   formId,
   externalFilesIndex,
@@ -151,7 +151,7 @@ export const columnBySchemaGenerator = ({
     return {
       id: q.name,
       typeLabel: q.type,
-      ...map(q.$xpath.split('/')[0], (value) => ({groupLabel: schema.translate.question(value), group: value})),
+      ...map(q.$xpath.split('/')[0], value => ({groupLabel: schema.translate.question(value), group: value})),
       ...(onEdit && editableColsType.has(q.type) && !noEditableColsId.has(q.name)
         ? {
             subHeader: <TableEditCellBtn onClick={() => onEdit(q.name)} />,
@@ -184,7 +184,7 @@ export const columnBySchemaGenerator = ({
             <IpBtn
               children={value.length}
               style={{padding: '0 4px'}}
-              onClick={(event) => {
+              onClick={event => {
                 onRepeatGroupClick?.({
                   name,
                   row,
@@ -376,14 +376,14 @@ export const columnBySchemaGenerator = ({
       ...getCommon(q),
       type: 'select_multiple',
       options: () =>
-        schema.helper.choicesIndex[q.select_from_list_name!].map((_) => ({
+        schema.helper.choicesIndex[q.select_from_list_name!].map(_ => ({
           value: _.name,
           label: schema.translate.choice(name, _.name),
         })),
       render: (row: Row) => {
         const v = getValue(row, name) as string[] | undefined
         try {
-          const label = v?.map((_) => schema.translate.choice(name, _)).join(' | ')
+          const label = v?.map(_ => schema.translate.choice(name, _)).join(' | ')
           return {
             label,
             export: label,
@@ -462,7 +462,7 @@ export const columnBySchemaGenerator = ({
       head: 'ID',
       typeIcon: <DatatableHeadIconByType type="id" />,
       className: 'td-id',
-      style: (row) => {
+      style: row => {
         const data = getRow(row) as KoboFlattenRepeatedGroup.Data
         if (data[KoboFlattenRepeatedGroup.INDEX_COL]! > 0) {
           return {

@@ -31,7 +31,7 @@ export const DatabaseViewInput = ({sx, view: ctx}: {view: UseDatabaseView; sx?: 
           <IpAlert color="info" icon={<Icon>help</Icon>} sx={{mb: 1}} deletable="permanent" id="db-view-info">
             <b>Views</b> save your column visibility and column width settings and can be shared with other users
           </IpAlert>
-          {ctx.fetcherViews.get?.map((view) => (
+          {ctx.fetcherViews.get?.map(view => (
             <DatabaseViewInputRow
               key={view.id}
               readOnly={
@@ -43,7 +43,7 @@ export const DatabaseViewInput = ({sx, view: ctx}: {view: UseDatabaseView; sx?: 
               open={open === view.id}
               onDelete={() => ctx.asyncViewDelete.call(view.id)}
               onOpen={() => setOpen(open === view.id ? undefined : view.id)}
-              onUpdate={(_) => ctx.currentView && ctx.asyncViewUpdate.call(ctx.currentView, _)}
+              onUpdate={_ => ctx.currentView && ctx.asyncViewUpdate.call(ctx.currentView, _)}
               checked={ctx.currentView?.id === view.id}
               view={view}
               onClick={() => ctx.setCurrentViewId(view.id)}
@@ -63,7 +63,7 @@ export const DatabaseViewInput = ({sx, view: ctx}: {view: UseDatabaseView; sx?: 
                   disabled={!formCreate.formState.isValid}
                   icon="add"
                   children={m.create}
-                  onClick={formCreate.handleSubmit((_) => {
+                  onClick={formCreate.handleSubmit(_ => {
                     ctx.asyncViewCreate
                       .call({
                         name: _.name,

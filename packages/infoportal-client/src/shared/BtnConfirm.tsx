@@ -24,7 +24,7 @@ export const BtnConfirm = ({onClick, size, ...props}: BtnConfirmProps) => {
             icon="check"
             color="success"
             children={m.confirm}
-            onClick={(e) => {
+            onClick={e => {
               if (onClick) onClick(e)
               setShowConfirm(false)
             }}

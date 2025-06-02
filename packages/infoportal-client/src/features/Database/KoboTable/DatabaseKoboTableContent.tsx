@@ -75,11 +75,11 @@ export const DatabaseKoboTableContent = ({
       formId: ctx.form.id,
       schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,
-      onRepeatGroupClick: (_) =>
+      onRepeatGroupClick: _ =>
         navigate(databaseIndex.siteMap.group.absolute(ctx.form.id, _.name, _.row.id, _.row._index)),
       onEdit:
         selectedIds.length > 0
-          ? (questionName) =>
+          ? questionName =>
               ctxKoboUpdate.openById({
                 target: 'answer',
                 params: {
@@ -96,7 +96,7 @@ export const DatabaseKoboTableContent = ({
       data: ctx.data ?? [],
       formId: ctx.form.id,
       schema: ctx.schema,
-      onRepeatGroupClick: (_) =>
+      onRepeatGroupClick: _ =>
         navigate(databaseIndex.siteMap.group.absolute(ctx.form.id, _.name, _.row.id, _.row._index)),
       display: ctx.groupDisplay.get,
       m,
@@ -114,7 +114,7 @@ export const DatabaseKoboTableContent = ({
       ctxEdit: ctxKoboUpdate,
       openViewAnswer: ctxAnswers.openView,
     })
-    return [...base, ...schemaColumns].map((_) => ({
+    return [...base, ...schemaColumns].map(_ => ({
       ..._,
       width: ctx.view.colsById[_.id]?.width ?? _.width ?? 90,
     }))
@@ -155,12 +155,12 @@ export const DatabaseKoboTableContent = ({
             ? {
                 onSelect: setSelectedIds,
                 selectActions: selectedHeader,
-                getId: (_) => _.id,
+                getId: _ => _.id,
               }
             : undefined
         }
-        exportAdditionalSheets={(data) => {
-          return ctx.schema.helper.group.search().map((group) => {
+        exportAdditionalSheets={data => {
+          return ctx.schema.helper.group.search().map(group => {
             const cols = getColumnsForRepeatGroup({
               formId: ctx.form.id,
               t,
@@ -177,10 +177,10 @@ export const DatabaseKoboTableContent = ({
         }}
         title={ctx.form.name}
         id={ctx.form.id}
-        getRenderRowKey={(_) => _.id + (_._index ?? '')}
+        getRenderRowKey={_ => _.id + (_._index ?? '')}
         columns={columns}
         data={flatData}
-        header={(params) => (
+        header={params => (
           <>
             <DatabaseViewInput sx={{mr: 1}} view={ctx.view} />
             <IpSelectSingle<number>
@@ -219,8 +219,8 @@ export const DatabaseKoboTableContent = ({
               />
               {session.admin && (
                 <DatabaseImportBtn
-                  onUploadNewData={(file) => handleImportData(file, 'create')}
-                  onUpdateExistingData={(file) => handleImportData(file, 'update')}
+                  onUploadNewData={file => handleImportData(file, 'create')}
+                  onUpdateExistingData={file => handleImportData(file, 'update')}
                   onGenerateTemplate={handleGenerateTemplate}
                 />
               )}

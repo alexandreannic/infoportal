@@ -55,7 +55,7 @@ export const Sidebar = ({
     sidebar = null
     header = null
     if (headerId) stickSidebarToHeader(id, headerId)
-    setSidebarOpen((_) => !isMobileWidth)
+    setSidebarOpen(_ => !isMobileWidth)
   }, [isMobileWidth, sidebarPinned])
 
   useEffect(() => {
@@ -99,10 +99,10 @@ export const Sidebar = ({
     >
       <Box
         sx={{
-          background: isTemporary ? (t) => t.palette.background.default : undefined,
+          background: isTemporary ? t => t.palette.background.default : undefined,
           width: layoutConfig.sidebarWith,
           height: '100%',
-          transition: (t) => t.transitions.create('width'),
+          transition: t => t.transitions.create('width'),
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
@@ -116,7 +116,7 @@ export const Sidebar = ({
         <SidebarFooter>
           {showThemeToggle && (
             <SidebarItem
-              onClick={stopPropagation(() => app.theme.setBrightness((_) => (_ === 'dark' ? 'light' : 'dark')))}
+              onClick={stopPropagation(() => app.theme.setBrightness(_ => (_ === 'dark' ? 'light' : 'dark')))}
               icon="dark_mode"
               sx={{mr: 0, pr: 0}}
             >
@@ -125,11 +125,7 @@ export const Sidebar = ({
             </SidebarItem>
           )}
           {!isMobileWidth && (
-            <SidebarItem
-              onClick={stopPropagation(() => setSidebarPinned((_) => !_))}
-              icon="push_pin"
-              sx={{mr: 0, pr: 0}}
-            >
+            <SidebarItem onClick={stopPropagation(() => setSidebarPinned(_ => !_))} icon="push_pin" sx={{mr: 0, pr: 0}}>
               {m.pin}
               <Switch color="primary" sx={{ml: 'auto'}} checked={sidebarPinned} />
             </SidebarItem>

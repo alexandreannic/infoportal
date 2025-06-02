@@ -15,14 +15,14 @@ export const SidebarHeader = ({hidden, children, sx, ...props}: SidebarHeaderPro
       sx={{
         height: layoutConfig.headerHeight,
         opacity: 1,
-        transition: (t) => t.transitions.create('all'),
+        transition: t => t.transitions.create('all'),
         pt: 1,
         pb: 1,
         display: 'flex',
         alignItems: 'center',
         px: layoutConfig.headerPx,
-        borderTop: (t) => '1px solid ' + t.palette.divider,
-        borderBottom: (t) => '1px solid ' + t.palette.divider,
+        borderTop: t => '1px solid ' + t.palette.divider,
+        borderBottom: t => '1px solid ' + t.palette.divider,
         ...(hidden && {
           height: 0,
           p: 0,

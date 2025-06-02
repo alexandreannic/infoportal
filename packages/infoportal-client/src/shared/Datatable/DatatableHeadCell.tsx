@@ -3,7 +3,7 @@ import {IpBtn, IpIconBtnProps} from '@/shared'
 import {ReactNode} from 'react'
 import {Icon, Tooltip} from '@mui/material'
 
-const useStyles = makeStyles()((t) => ({
+const useStyles = makeStyles()(t => ({
   root: {
     width: '100%',
   },

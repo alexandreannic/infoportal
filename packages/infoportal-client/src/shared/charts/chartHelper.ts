@@ -18,7 +18,7 @@ export type ChartData<K extends string = string> = Record<K, ChartDataVal>
 export const makeChartData: {
   (_: ChartDataValPercent): ChartDataValPercent
   (_: ChartDataVal): ChartDataVal
-} = (_) => {
+} = _ => {
   return _ as any
 }
 
@@ -32,13 +32,13 @@ export class ChartHelper<K extends string = string> {
     filterValue?: K[]
     percent?: boolean
   }): ChartHelper<K> => {
-    const obj = seq(data.filter((_) => (filterValue ? !filterValue.includes(_) : true))).reduceObject<
-      Record<K, number>
-    >((curr, acc) => {
-      return [curr, (acc[curr] ?? 0) + 1]
-    })
+    const obj = seq(data.filter(_ => (filterValue ? !filterValue.includes(_) : true))).reduceObject<Record<K, number>>(
+      (curr, acc) => {
+        return [curr, (acc[curr] ?? 0) + 1]
+      },
+    )
     const res = {} as ChartData<K>
-    Obj.keys(obj).forEach((k) => {
+    Obj.keys(obj).forEach(k => {
       res[k] = {value: obj[k] / (percent ? data.length : 1)}
     })
     return new ChartHelper(res).sortBy.value()
@@ -53,10 +53,10 @@ export class ChartHelper<K extends string = string> {
     filterValue?: K[]
     base?: 'percentOfTotalAnswers' | 'percentOfTotalChoices'
   }): ChartHelper<K> => {
-    const filteredData = data.compact().filter((_) => {
+    const filteredData = data.compact().filter(_ => {
       return filterValue ? seq(_).intersect(filterValue).length === 0 : true
     })
-    const flatData: K[] = filteredData.flatMap((_) => _)
+    const flatData: K[] = filteredData.flatMap(_ => _)
     const obj = seq(flatData).reduceObject<Record<K, number>>((_, acc) => [_!, (acc[_!] ?? 0) + 1])
     const baseCount = fnSwitch(
       base!,
@@ -64,10 +64,10 @@ export class ChartHelper<K extends string = string> {
         percentOfTotalAnswers: filteredData.length,
         percentOfTotalChoices: flatData.length,
       },
-      (_) => undefined,
+      _ => undefined,
     )
     const res = {} as ChartData<K>
-    Obj.keys(obj).forEach((k) => {
+    Obj.keys(obj).forEach(k => {
       if (!res[k]) res[k] = {value: 0, base: 0}
       res[k].value = obj[k]
       res[k].base = baseCount
@@ -92,7 +92,7 @@ export class ChartHelper<K extends string = string> {
       (acc, category) => ({...acc, [category]: {value: 0, base: 0, percent: 0}}),
       {} as Record<K, ChartDataValPercent>,
     )
-    data.forEach((x) => {
+    data.forEach(x => {
       Obj.entries(categories).forEach(([category, isCategory]) => {
         if (!isCategory(x)) return
         if (filterBase && !filterBase(x)) return
@@ -105,7 +105,7 @@ export class ChartHelper<K extends string = string> {
       })
     })
     if (filterZeroCategory) {
-      Obj.keys(res).forEach((k) => {
+      Obj.keys(res).forEach(k => {
         if (res[k].value === 0) delete res[k]
       })
     }
@@ -130,7 +130,7 @@ export class ChartHelper<K extends string = string> {
   static readonly take =
     <K extends string>(n?: number) =>
     (obj: Record<K, ChartDataVal>): ChartData<K> => {
-      if (n) return seq(Obj.entries(obj).splice(0, n)).reduceObject((_) => _)
+      if (n) return seq(Obj.entries(obj).splice(0, n)).reduceObject(_ => _)
       return obj
     }
 
@@ -204,7 +204,7 @@ export class ChartHelper<K extends string = string> {
     filterBase?: (_: A) => boolean
   }): ChartData<K> => {
     const res: ChartData<any> = {} as any
-    data.forEach((x) => {
+    data.forEach(x => {
       const value = groupBy(x) ?? 'undefined'
       if (!res[value]) res[value] = {value: 0} as ChartDataVal
       if (filterBase && filterBase(x)) {
@@ -232,7 +232,7 @@ export class ChartHelper<K extends string = string> {
       (acc, category) => ({...acc, [category]: {value: 0, base: 0}}),
       {} as Record<K, {value: number; base: 0}>,
     )
-    data.forEach((x) => {
+    data.forEach(x => {
       Obj.entries(categories).forEach(([category, isCategory]) => {
         if (!isCategory(x)) return
         const base = sumBase ? sumBase(x) : 1
@@ -247,7 +247,7 @@ export class ChartHelper<K extends string = string> {
 
   readonly setLabel = (m?: Record<K, ReactNode>): ChartHelper<K> => {
     if (m) {
-      Obj.keys(this.value).forEach((k) => {
+      Obj.keys(this.value).forEach(k => {
         this.value[k].label = m[k]
       })
     }
@@ -257,7 +257,7 @@ export class ChartHelper<K extends string = string> {
   readonly setDesc =
     (m: Record<string, string>) =>
     (data: ChartData): ChartData => {
-      Object.keys(data).forEach((k) => {
+      Object.keys(data).forEach(k => {
         data[k].desc = m[k]
       })
       return data

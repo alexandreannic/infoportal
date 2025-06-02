@@ -26,7 +26,7 @@ export const ChartBarVertical = ({
   const theme = useTheme()
   height = height ?? width ?? 340
   width = width ?? '100%'
-  const bars = Object.keys(data[0] ?? {}).filter((_) => _ !== 'name')
+  const bars = Object.keys(data[0] ?? {}).filter(_ => _ !== 'name')
   return (
     <Box sx={{position: 'relative', height, width, ...sx}} {...props}>
       <ResponsiveContainer width="100%" height="100%">

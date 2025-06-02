@@ -76,7 +76,7 @@ export const ipSelectItem = <T extends any>({
     value,
     children: (
       <Box sx={{display: 'flex', py: 0.5}}>
-        {icon && <Icon sx={{mr: 1, color: (t) => t.palette.text.secondary}}>{icon}</Icon>}
+        {icon && <Icon sx={{mr: 1, color: t => t.palette.text.secondary}}>{icon}</Icon>}
         <Box>
           <Box>{title}</Box>
           <Txt color="hint" size="small" sx={{lineHeight: 1}}>
@@ -105,7 +105,7 @@ export const IpSelectSingle = <T extends TType>({
   const options = useMemo(() => {
     const _options = props.options ?? []
     if (typeof _options[0] === 'string') {
-      return props.options.map((_) => ({value: _, children: _})) as IpSelectOption<T>[]
+      return props.options.map(_ => ({value: _, children: _})) as IpSelectOption<T>[]
     }
     return _options as IpSelectOption<T>[]
   }, [props.options])
@@ -124,7 +124,7 @@ export const IpSelectSingle = <T extends TType>({
         //  <CircularProgress size={20}/>
         //</div>
         multiple={false}
-        onChange={(e) => {
+        onChange={e => {
           const value = e.target.value as T
           if (value === IGNORED_VALUE_EMPTY) onChange(null as any, e)
           onChange(value, e)
@@ -133,7 +133,11 @@ export const IpSelectSingle = <T extends TType>({
         input={<OutlinedInput label={label} placeholder={placeholder} />}
         {...props}
       >
-        {(!hideNullOption || placeholder) && <MenuItem dense value={null as any} sx={style.item}>{placeholder}</MenuItem>}
+        {(!hideNullOption || placeholder) && (
+          <MenuItem dense value={null as any} sx={style.item}>
+            {placeholder}
+          </MenuItem>
+        )}
         {options.map((option, i) => (
           <MenuItem dense key={option.key ?? option.value} value={option.value} sx={style.item}>
             {option.children}

@@ -46,7 +46,7 @@ export class KoboApiSdk {
   }
 
   readonly searchSchemas = (body: {serverId: UUID}): Promise<Kobo.Form[]> => {
-    return this.client.post(`/kobo-api/schema`, {body}).then((_) =>
+    return this.client.post(`/kobo-api/schema`, {body}).then(_ =>
       _.results.map((_: Record<keyof Kobo.Form, any>): Kobo.Form => {
         return {
           ..._,

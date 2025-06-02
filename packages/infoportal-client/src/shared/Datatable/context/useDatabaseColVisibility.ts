@@ -32,11 +32,11 @@ export const useDatabaseColVisibility = <T extends DatatableRow>({
     if (hidden) setHiddenColumns(hidden)
   }, [hidden])
 
-  const filteredColumns = useMemo(() => columns.filter((_) => !hiddenColumns.includes(_.id)), [columns, hiddenColumns])
+  const filteredColumns = useMemo(() => columns.filter(_ => !hiddenColumns.includes(_.id)), [columns, hiddenColumns])
 
   const handleHide = useCallback(
     (columns: string[]) => {
-      setHiddenColumns((_) => {
+      setHiddenColumns(_ => {
         return [...new Set([..._, ...columns])]
       })
     },

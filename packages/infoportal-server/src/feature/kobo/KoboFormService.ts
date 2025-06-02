@@ -61,7 +61,7 @@ export class KoboFormService {
 
   private createHookIfNotExists = async (sdk: KoboClient, formId: Kobo.FormId) => {
     const hooks = await sdk.v2.hook.get({formId})
-    if (hooks.results.find((_) => _.name === KoboFormService.HOOK_NAME)) return
+    if (hooks.results.find(_ => _.name === KoboFormService.HOOK_NAME)) return
     return sdk.v2.hook.create({
       formId,
       destinationUrl: this.conf.baseUrl + `/kobo-api/webhook`,
@@ -73,17 +73,17 @@ export class KoboFormService {
     const forms = await this.prisma.koboForm.findMany()
     const sdks = await Promise.all(
       seq(forms)
-        .distinct((_) => _.serverId)
+        .distinct(_ => _.serverId)
         .get()
-        .map((server) =>
-          this.koboSdk.getBy.serverId(server.serverId).then((_) => ({
+        .map(server =>
+          this.koboSdk.getBy.serverId(server.serverId).then(_ => ({
             serverId: server.serverId,
             sdk: _,
           })),
         ),
-    ).then((_) => seq(_).reduceObject<Record<string, KoboClient>>((_) => [_.serverId!, _.sdk]))
+    ).then(_ => seq(_).reduceObject<Record<string, KoboClient>>(_ => [_.serverId!, _.sdk]))
     await Promise.all(
-      forms.map(async (form) =>
+      forms.map(async form =>
         this.createHookIfNotExists(sdks[form.serverId], form.id).catch(() => console.log(`Not created ${form.id}`)),
       ),
     )
@@ -105,21 +105,21 @@ export class KoboFormService {
     const forms = await this.getAll().then(seq)
     const sdks = await Promise.all(
       forms
-        .map((_) => _.serverId)
-        .distinct((_) => _)
-        .map((_) => this.koboSdk.getBy.serverId(_))
+        .map(_ => _.serverId)
+        .distinct(_ => _)
+        .map(_ => this.koboSdk.getBy.serverId(_))
         .get(),
     )
-    const indexForm = seq(forms).groupByFirst((_) => _.id)
-    const indexSchema = await Promise.all(sdks.map((_) => _.v2.form.getAll()))
-      .then((_) => _.flatMap((_) => _.results))
-      .then((_) => seq(_).groupByFirst((_) => _.uid))
+    const indexForm = seq(forms).groupByFirst(_ => _.id)
+    const indexSchema = await Promise.all(sdks.map(_ => _.v2.form.getAll()))
+      .then(_ => _.flatMap(_ => _.results))
+      .then(_ => seq(_).groupByFirst(_ => _.uid))
     await PromisePool.withConcurrency(this.conf.db.maxConcurrency)
       .for(forms)
-      .handleError(async (error) => {
+      .handleError(async error => {
         throw error
       })
-      .process((form) => {
+      .process(form => {
         const db = KoboFormService.apiToDb({
           schema: indexSchema[form.id],
           serverId: indexForm[form.id].serverId,

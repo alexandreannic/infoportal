@@ -41,7 +41,7 @@ export const KoboEditAnswer = <T extends Record<string, any>, K extends KeyOf<T>
         <IpSelectSingle
           value={value as any}
           onChange={handleChange}
-          options={schema.helper.choicesIndex[columnDef.select_from_list_name!].map((_) => ({
+          options={schema.helper.choicesIndex[columnDef.select_from_list_name!].map(_ => ({
             value: _.name,
             children: schema.translate.choice(columnName, _.name),
           }))}

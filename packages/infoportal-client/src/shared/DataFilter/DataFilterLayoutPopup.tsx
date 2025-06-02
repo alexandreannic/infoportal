@@ -47,7 +47,7 @@ export const DataFilterLayoutPopup = ({
 
   return (
     <Box sx={{position: 'relative', ...sx}}>
-      <IpIconBtn children="tune" onClick={(e) => setAnchorEl(e.currentTarget)} />
+      <IpIconBtn children="tune" onClick={e => setAnchorEl(e.currentTarget)} />
       <Popover
         disableScrollLock={true}
         open={open}
@@ -58,7 +58,7 @@ export const DataFilterLayoutPopup = ({
         anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}
         sx={{
-          boxShadow: (t) => t.shadows[4],
+          boxShadow: t => t.shadows[4],
           overflow: 'hidden',
           // border: 'none',
           // position: 'absolute',
@@ -85,11 +85,10 @@ export const DataFilterLayoutPopup = ({
                 <IpSelectMultiple
                   sx={{maxWidth: 250, width: 250}}
                   value={innerFilters[name] ?? []}
-                  onChange={(_) => setInnerFilters((prev: any) => ({...prev, [name]: _}))}
+                  onChange={_ => setInnerFilters((prev: any) => ({...prev, [name]: _}))}
                   options={
-                    shape
-                      .getOptions(() => getFilteredOptions(name))
-                      ?.map((_) => ({value: _.value, children: _.label})) ?? []
+                    shape.getOptions(() => getFilteredOptions(name))?.map(_ => ({value: _.value, children: _.label})) ??
+                    []
                   }
                 />
               </Box>

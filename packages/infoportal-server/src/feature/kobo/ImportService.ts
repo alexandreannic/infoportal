@@ -19,12 +19,12 @@ export class ImportService {
     const schema = await sdk.v2.form.get({formId, use$autonameAsName: true})
     const schemaHelper = KoboSchemaHelper.buildBundle({schema})
 
-    const sheetData = Obj.mapValues(this.getSheets(xlsx.readFile(filePath)), (sheet) =>
+    const sheetData = Obj.mapValues(this.getSheets(xlsx.readFile(filePath)), sheet =>
       ImportService.fixStupidMicrosoftDate(sheet, schemaHelper),
     )
     if (action === 'create') {
       const mergedData = ImportService.mergeNestedSheets(sheetData, schemaHelper)
-      const taggedData = mergedData.map((_) => {
+      const taggedData = mergedData.map(_ => {
         _._IP_ADDED_FROM_XLS = true
         return _
       })
@@ -36,13 +36,13 @@ export class ImportService {
 
   private getSheets = (workbook: xlsx.WorkBook): Record<string, KoboData[]> => {
     const sheetData: Record<string, KoboData[]> = {}
-    workbook.SheetNames.forEach((sheetName) => {
+    workbook.SheetNames.forEach(sheetName => {
       const sheet = workbook.Sheets[sheetName]
       const jsonData = xlsx.utils.sheet_to_json(sheet, {header: 1}) as any[][]
       if (jsonData.length > 0) {
         const headers = jsonData[0]
         const rows = jsonData.slice(1)
-        sheetData[sheetName] = rows.map((row) => {
+        sheetData[sheetName] = rows.map(row => {
           return lodash.zipObject(headers, row)
         })
       }
@@ -53,12 +53,12 @@ export class ImportService {
   private static mergeNestedSheets = (sheets: Record<string, KoboData[]>, schemaHelper: KoboSchemaHelper.Bundle) => {
     const rootSheetData = Object.values(sheets)[0]
 
-    return rootSheetData.map((row) => {
+    return rootSheetData.map(row => {
       const groups = schemaHelper.helper.group.search({depth: 1})
-      groups.forEach((group) => {
+      groups.forEach(group => {
         const indexedChildren = seq(sheets[group.name])
           .compactBy('_parent_index')
-          .groupBy((_) => _._parent_index)
+          .groupBy(_ => _._parent_index)
         if (sheets[group.name]) {
           row[group.name] = indexedChildren[row._index!] || []
         }
@@ -69,7 +69,7 @@ export class ImportService {
 
   private static fixStupidMicrosoftDate = (data: KoboData[], schemaHelper: KoboSchemaHelper.Bundle): KoboData[] => {
     const dates: Set<Kobo.Form.QuestionType> = new Set(['date', 'today', 'start', 'end', 'datetime'])
-    return data.map((d) => {
+    return data.map(d => {
       return Obj.map(d, (k, v) => {
         if (dates.has(schemaHelper.helper.questionIndex[k]?.type)) {
           return [k, ImportService.stupidMicrosoftDateToJSDate(v)]

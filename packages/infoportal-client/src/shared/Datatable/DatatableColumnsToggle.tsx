@@ -36,7 +36,7 @@ export const DatatableColumnToggle = ({
 }: Props) => {
   const {m} = useI18n()
   const set = useSetState(hiddenColumns)
-  const hasGroup = useMemo(() => !!columns.find((_) => _.group), [columns])
+  const hasGroup = useMemo(() => !!columns.find(_ => _.group), [columns])
 
   useEffect(() => {
     set.reset(hiddenColumns)
@@ -61,22 +61,22 @@ export const DatatableColumnToggle = ({
           </IpAlert>
           <Datatable
             hidePagination
-            header={(_) => (
+            header={_ => (
               <>
                 <Chip
                   sx={{mr: 1, fontWeight: 'bold'}}
                   icon={<Icon>check_circle</Icon>}
                   variant="outlined"
                   color="success"
-                  label={m.add + ' ' + _.filteredData.filter((_) => set.has(_.id)).length}
-                  onClick={() => set.delete(_.filteredData.map((_) => _.id))}
+                  label={m.add + ' ' + _.filteredData.filter(_ => set.has(_.id)).length}
+                  onClick={() => set.delete(_.filteredData.map(_ => _.id))}
                 />
                 <Chip
                   sx={{mr: 1}}
                   icon={<Icon>remove_circle</Icon>}
                   variant="outlined"
                   color="error"
-                  onClick={() => set.add(_.filteredData.filter((_) => !set.has(_.id)).map((_) => _.id))}
+                  onClick={() => set.add(_.filteredData.filter(_ => !set.has(_.id)).map(_ => _.id))}
                   label={m.remove + ' ' + _.filteredData.length}
                 />
                 <Txt bold>
@@ -101,7 +101,7 @@ export const DatatableColumnToggle = ({
                 type: 'select_one',
                 head: '',
                 width: 0,
-                render: (_) => {
+                render: _ => {
                   return {
                     label: (
                       <Switch
@@ -122,7 +122,7 @@ export const DatatableColumnToggle = ({
                 width: 0,
                 type: 'select_one',
                 head: m.type,
-                render: (_) => {
+                render: _ => {
                   return {
                     option: (
                       <>
@@ -155,7 +155,7 @@ export const DatatableColumnToggle = ({
                 width: 400,
                 type: 'select_one',
                 head: m.question,
-                render: (_) => {
+                render: _ => {
                   return {
                     value: _.id,
                     label: _.head,

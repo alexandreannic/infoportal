@@ -17,7 +17,7 @@ export const AccessTable = ({
   isAdmin,
   header,
   onRemoved,
-  renderParams = (_) => JSON.stringify(_),
+  renderParams = _ => JSON.stringify(_),
   fetcherData,
   asyncRemove,
 }: {
@@ -43,7 +43,7 @@ export const AccessTable = ({
     <Datatable<Access>
       defaultLimit={100}
       id="access"
-      getRenderRowKey={(_) => _.id}
+      getRenderRowKey={_ => _.id}
       loading={fetcherData.loading}
       header={header}
       data={fetcherData.get}
@@ -53,7 +53,7 @@ export const AccessTable = ({
           id: 'createdAt',
           type: 'date',
           head: m.createdAt,
-          render: (_) => {
+          render: _ => {
             return {
               label: <Txt color="hint">{formatDate(_.createdAt)}</Txt>,
               value: _.createdAt,
@@ -63,39 +63,39 @@ export const AccessTable = ({
         {
           id: 'drcJob',
           head: m.drcJob,
-          renderQuick: (_) => _.drcJob,
+          renderQuick: _ => _.drcJob,
           type: 'select_one',
-          options: () => drcJobs.get?.map((job) => ({ value: job, label: job })) || [],
+          options: () => drcJobs.get?.map(job => ({value: job, label: job})) || [],
         },
         {
           id: 'drcOffice',
           head: m.drcOffice,
-          renderQuick: (_) => _.drcOffice,
+          renderQuick: _ => _.drcOffice,
           type: 'select_one',
           options: () =>
-            seq(fetcherData.get?.map((_) => _.drcOffice))
-              .distinct((_) => _)
+            seq(fetcherData.get?.map(_ => _.drcOffice))
+              .distinct(_ => _)
               .compact()
-              .map((_) => ({value: _, label: _})),
+              .map(_ => ({value: _, label: _})),
         },
         {
           id: 'email',
           head: m.email,
-          renderQuick: (_) => _.email,
+          renderQuick: _ => _.email,
         },
         {
           id: 'group',
           type: 'select_one',
           head: m.group,
-          renderQuick: (_) => _.groupName ?? DatatableUtils.blank,
+          renderQuick: _ => _.groupName ?? DatatableUtils.blank,
         },
         {
           width: 90,
           id: 'level',
           head: m.accessLevel,
           type: 'select_one',
-          options: () => Obj.keys(AccessLevel).map((_) => ({value: _, label: _})),
-          render: (row) => {
+          options: () => Obj.keys(AccessLevel).map(_ => ({value: _, label: _})),
+          render: row => {
             if (!!row.groupName) return {value: undefined, label: ''}
             if (isAdmin)
               return {
@@ -104,7 +104,7 @@ export const AccessTable = ({
                   <IpSelectSingle<AccessLevel>
                     value={row.level}
                     placeholder=""
-                    onChange={(_) => _update.call(row.id, {level: _ as AccessLevel})}
+                    onChange={_ => _update.call(row.id, {level: _ as AccessLevel})}
                     hideNullOption
                     disabled={!!row.groupName}
                     options={Obj.keys(AccessLevel)}
@@ -117,7 +117,7 @@ export const AccessTable = ({
         {
           id: 'params',
           head: m.filter,
-          render: (_) => {
+          render: _ => {
             return {
               label: renderParams(_.params),
               value: _.params,

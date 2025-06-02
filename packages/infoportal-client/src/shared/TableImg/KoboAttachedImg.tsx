@@ -15,7 +15,7 @@ const getAttachment = ({
   attachments: Kobo.Submission.Attachment[]
 }): Kobo.Submission.Attachment | undefined => {
   const parsedFileName = parseKoboFileName(fileName)
-  return parsedFileName ? attachments.find((_) => _.filename.includes(parsedFileName)) : undefined
+  return parsedFileName ? attachments.find(_ => _.filename.includes(parsedFileName)) : undefined
 }
 
 export const getKoboAttachmentUrl = ({

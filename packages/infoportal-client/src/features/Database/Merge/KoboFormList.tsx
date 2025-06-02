@@ -14,7 +14,7 @@ export const KoboFormListButton = ({
   const [open, setOpen] = useState(false)
   return (
     <>
-      <IpBtn onClick={() => setOpen((_) => !_)} children={children} variant={variant} />
+      <IpBtn onClick={() => setOpen(_ => !_)} children={children} variant={variant} />
       <KoboFormListDialog open={open} onClose={() => setOpen(false)} {...props} />
     </>
   )
@@ -36,7 +36,7 @@ export const KoboFormListDialog = ({
       <DialogContent>
         <KoboFormList
           value={value}
-          onChange={(e) => {
+          onChange={e => {
             onChange?.(e)
             setTimeout(onClose, 100)
           }}
@@ -62,7 +62,7 @@ export const KoboFormList = ({value, onChange, forms}: KoboFormListProps) => {
   const {formatDateTime} = useI18n()
   return (
     <ScRadioGroup value={value} onChange={onChange}>
-      {forms.map((form) => (
+      {forms.map(form => (
         <ScRadioGroupItem
           dense
           key={form.uid}

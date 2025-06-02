@@ -46,7 +46,7 @@ const DEFAULT_KEY: any = 'DEFAULT_KEY'
 export const useAsync: UseAsyncFn = <F extends Func<Promise<any>>, K extends Key = any, E = any>(
   caller: F,
   {
-    mapError = (_) => _,
+    mapError = _ => _,
     requestKey,
   }: {
     mapError?: (_: any) => E
@@ -63,13 +63,13 @@ export const useAsync: UseAsyncFn = <F extends Func<Promise<any>>, K extends Key
     const key = requestKey ? requestKey(args) : DEFAULT_KEY
     loading.set(key, true)
     return caller(...args)
-      .then((_) => {
+      .then(_ => {
         loading.delete(key)
-        setCallIndex((_) => _ + 1)
+        setCallIndex(_ => _ + 1)
         return _
       })
       .catch((e: E) => {
-        setCallIndex((_) => _ + 1)
+        setCallIndex(_ => _ + 1)
         setLastError(e)
         loading.delete(key)
         error.set(key, mapError(e))

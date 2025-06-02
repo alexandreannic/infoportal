@@ -25,12 +25,12 @@ export const SidebarSection = ({
         mt: margin,
         pb: margin,
         '&:not(:last-of-type)': {
-          borderBottom: (t) => `1px solid ${t.palette.divider}`,
+          borderBottom: t => `1px solid ${t.palette.divider}`,
         },
       }}
     >
       <Box sx={{pl: 0.5, mb: 0, display: 'flex', alignItems: 'center'}}>
-        <IpIconBtn onClick={() => setOpen((_) => !_)} size="small" sx={{mr: 1}}>
+        <IpIconBtn onClick={() => setOpen(_ => !_)} size="small" sx={{mr: 1}}>
           {open ? 'expand_less' : 'expand_more'}
         </IpIconBtn>
         <Txt uppercase bold color="disabled" sx={{fontSize: '.825em', flex: 1}}>

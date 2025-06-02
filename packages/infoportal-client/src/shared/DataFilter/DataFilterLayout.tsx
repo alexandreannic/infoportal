@@ -69,7 +69,7 @@ export const DataFilterLayout = ({
             key={name}
             debounce={50}
             value={filters[name]}
-            onChange={(_) => setFilters((prev: any) => ({...prev, [name]: _}))}
+            onChange={_ => setFilters((prev: any) => ({...prev, [name]: _}))}
           >
             {(value, onChange) => (
               <DashboardFilterOptions

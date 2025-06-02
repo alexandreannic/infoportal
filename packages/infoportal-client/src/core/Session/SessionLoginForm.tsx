@@ -73,7 +73,7 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: UserSession) => 
   const loginWithMicrosoft = () => {
     msal.instance
       .loginPopup({scopes: ['User.Read']})
-      .then((res) => {
+      .then(res => {
         _saveSession.call({
           accessToken: res.accessToken,
           name: res.account?.name ?? '',
@@ -81,11 +81,11 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: UserSession) => 
           provider: 'microsoft',
         })
       })
-      .catch((err) => toastError(err.message))
+      .catch(err => toastError(err.message))
   }
 
   const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
+    onSuccess: async tokenResponse => {
       try {
         const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
           headers: {
@@ -112,7 +112,7 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: UserSession) => 
     <CenteredContent>
       <Box
         sx={{
-          border: (t) => `1px solid ${t.palette.divider}`,
+          border: t => `1px solid ${t.palette.divider}`,
           padding: 4,
           borderRadius: '8px',
         }}

@@ -27,11 +27,11 @@ export const ChartPieWidgetByKey = <T, K extends KeyOf<T>>({
   )) => {
   const {dataDefined, compareDefined} = useMemo(() => {
     return {
-      dataDefined: keepUndefined ? data : data.filter((_) => _[property] !== undefined),
+      dataDefined: keepUndefined ? data : data.filter(_ => _[property] !== undefined),
       compareDefined: compare
         ? {
-            before: compare?.before?.filter((_) => _[property] !== undefined),
-            now: compare?.now?.filter((_) => _[property] !== undefined),
+            before: compare?.before?.filter(_ => _[property] !== undefined),
+            now: compare?.now?.filter(_ => _[property] !== undefined),
           }
         : undefined,
     }
@@ -40,8 +40,8 @@ export const ChartPieWidgetByKey = <T, K extends KeyOf<T>>({
     <ChartPieWidgetBy
       data={dataDefined as any}
       compare={compareDefined}
-      filter={(_) => filter(_[property] as any)}
-      filterBase={filterBase ? (_) => filterBase(_[property] as any) : undefined}
+      filter={_ => filter(_[property] as any)}
+      filterBase={filterBase ? _ => filterBase(_[property] as any) : undefined}
       {...props}
     />
   )

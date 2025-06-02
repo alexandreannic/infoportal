@@ -36,9 +36,9 @@ export class EmailService {
 
   readonly sendEmailIfTriggered = async (p: GlobalEvent.KoboAnswerEditedParams) => {
     const schema = await this.koboService.getSchema({formId: p.formId})
-    const toSend_names = Obj.keys(p.answer).filter((_) => _.startsWith(KoboCustomDirective.make('TRIGGER_EMAIL')))
-    const toSend_questions = schema.content.survey.filter((_) => toSend_names.includes(_.name))
-    await Promise.all(toSend_questions.map((_) => this.sendByQuestion(_, p)))
+    const toSend_names = Obj.keys(p.answer).filter(_ => _.startsWith(KoboCustomDirective.make('TRIGGER_EMAIL')))
+    const toSend_questions = schema.content.survey.filter(_ => toSend_names.includes(_.name))
+    await Promise.all(toSend_questions.map(_ => this.sendByQuestion(_, p)))
   }
 
   private readonly sendByQuestion = async (question: Kobo.Form.Question, p: GlobalEvent.KoboAnswerEditedParams) => {
@@ -49,8 +49,8 @@ export class EmailService {
     } else {
       const answer = (p.answer[question.name] as string) ?? ''
       const toEmails = seq(answer.replaceAll(/\s+/g, ' ').split(' '))
-        .distinct((_) => _)
-        .filter((_) => Regexp.get.email.test(_))
+        .distinct(_ => _)
+        .filter(_ => Regexp.get.email.test(_))
 
       if (toEmails.length === 0) {
         this.log.info(`No valid emails found for question ${question.name} in form ${p.formId}`)

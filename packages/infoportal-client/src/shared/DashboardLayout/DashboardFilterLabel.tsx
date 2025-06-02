@@ -6,24 +6,24 @@ const css = makeSx({
   button: {
     py: 0.75,
     px: 1.25,
-    fontWeight: (t) => t.typography.fontWeightBold,
+    fontWeight: t => t.typography.fontWeightBold,
     display: 'inline-flex',
     alignItems: 'center',
-    background: (t) => t.palette.background.paper,
-    border: (t) => `1px solid ${t.palette.divider}`,
+    background: t => t.palette.background.paper,
+    border: t => `1px solid ${t.palette.divider}`,
     borderRadius: 20,
-    color: (t) => t.palette.text.primary,
-    transition: (t) => t.transitions.create('all'),
+    color: t => t.palette.text.primary,
+    transition: t => t.transitions.create('all'),
     '&:active': {
-      boxShadow: (t) => t.shadows[3],
+      boxShadow: t => t.shadows[3],
     },
     '&:hover': {
-      background: (t) => t.palette.action.hover,
+      background: t => t.palette.action.hover,
     },
   },
   active: {
-    color: (t) => t.palette.primary.main,
-    background: (t) => t.palette.action.focus,
+    color: t => t.palette.primary.main,
+    background: t => t.palette.action.focus,
     // borderColor: t => alpha(t.palette.primary.light, .8),
   },
 })
@@ -49,7 +49,7 @@ export const DashboardFilterLabel = ({
       <Box
         component="button"
         sx={combineSx(css.button, active && css.active)}
-        onClick={(e) => setAnchorEl(e.currentTarget)}
+        onClick={e => setAnchorEl(e.currentTarget)}
       >
         {icon && (
           <Icon fontSize="small" sx={{mr: 0.75}}>
@@ -71,7 +71,7 @@ export const DashboardFilterLabel = ({
         anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}
         sx={{
-          boxShadow: (t) => t.shadows[4],
+          boxShadow: t => t.shadows[4],
           overflow: 'hidden',
           // border: 'none',
           // position: 'absolute',

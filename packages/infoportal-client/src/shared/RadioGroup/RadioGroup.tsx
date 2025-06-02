@@ -95,11 +95,11 @@ const _ScRadioGroup = <T,>(
               if (child.props.onClick) child.props.onClick(event)
               if (!disabled) {
                 const value = child.props.value
-                setInnerValue((currentValue) => {
+                setInnerValue(currentValue => {
                   const newValue = (() => {
                     if (isMultiple(multiple, currentValue)) {
                       if (currentValue.includes(value)) {
-                        return currentValue.filter((_) => _ !== value)
+                        return currentValue.filter(_ => _ !== value)
                       } else {
                         return [...currentValue, value]
                       }

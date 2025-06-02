@@ -45,7 +45,7 @@ export const DatabaseImportBtn: React.FC<DatabaseImportBtnProps> = ({
   return (
     <>
       <PopoverWrapper
-        content={(close) => (
+        content={close => (
           <>
             <MenuItem onClick={() => handleMenuClick('create', close)}>{m.importData.create}</MenuItem>
             <MenuItem onClick={() => handleMenuClick('update', close)}>{m.importData.update}</MenuItem>

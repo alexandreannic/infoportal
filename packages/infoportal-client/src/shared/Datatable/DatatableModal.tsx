@@ -9,7 +9,7 @@ export const DatatableModal = () => {
   const ctx = useDatatableContext()
   return (
     <>
-      {map(ctx.modal.filterPopover.get, (popover) => {
+      {map(ctx.modal.filterPopover.get, popover => {
         const id = popover.columnId
         const column = ctx.columnsIndex[id]
         if (!column.type) return
@@ -24,12 +24,12 @@ export const DatatableModal = () => {
             type={column.type}
             orderBy={ctx.data.search.orderBy}
             sortBy={ctx.data.search.sortBy}
-            onOrderByChange={(_) => ctx.data.onOrderBy(id, _)}
+            onOrderByChange={_ => ctx.data.onOrderBy(id, _)}
             value={ctx.data.filters[id] as any}
             filterActive={!!ctx.data.filters[id]}
             onClose={ctx.modal.filterPopover.close}
             onClear={() =>
-              ctx.data.setFilters((prev) => {
+              ctx.data.setFilters(prev => {
                 if (prev) {
                   delete prev[id]
                 }
@@ -38,15 +38,15 @@ export const DatatableModal = () => {
               })
             }
             onChange={(p: string, v: DatatableFilterValue) => {
-              ctx.data.setFilters((_) => ({..._, [p]: v}))
-              ctx.data.setSearch((prev) => ({...prev, offset: 0}))
+              ctx.data.setFilters(_ => ({..._, [p]: v}))
+              ctx.data.setSearch(prev => ({...prev, offset: 0}))
               ctx.modal.filterPopover.close()
             }}
           />
         )
       })}
 
-      {map(ctx.modal.statsPopover.get, (popover) => {
+      {map(ctx.modal.statsPopover.get, popover => {
         const id = popover.columnId
         const column = ctx.columnsIndex[id]
         switch (column.type) {

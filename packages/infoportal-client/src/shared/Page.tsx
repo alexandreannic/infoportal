@@ -85,7 +85,7 @@ export const Page = ({children, sx, loading, animation = 'default', animationDep
       <Box
         {...props}
         sx={{
-          transition: (t) => t.transitions.create('all', {easing: 'ease', duration: 160}),
+          transition: t => t.transitions.create('all', {easing: 'ease', duration: 160}),
           margin: 'auto',
           opacity: 0,
           transform: fnSwitch(animation, {

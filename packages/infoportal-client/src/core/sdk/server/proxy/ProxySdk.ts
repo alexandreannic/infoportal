@@ -25,6 +25,6 @@ export class ProxySdk {
   }
 
   readonly search = (): Promise<Proxy[]> => {
-    return this.client.get(`/proxy`).then((_) => _.map(Proxy.map))
+    return this.client.get(`/proxy`).then(_ => _.map(Proxy.map))
   }
 }

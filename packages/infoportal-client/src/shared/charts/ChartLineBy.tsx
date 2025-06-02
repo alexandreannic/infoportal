@@ -24,7 +24,7 @@ export const ChartLineBy = <T extends Record<string, any>>({
         [label]: v.sum(getY as any),
       } as unknown as ChartLineData
     })
-    return seq(w).sortByString((_) => _.name)
+    return seq(w).sortByString(_ => _.name)
   }, [data])
   return <ChartLine {...props} data={transform} percent height={height} hideLabelToggle />
 }

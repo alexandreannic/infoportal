@@ -34,22 +34,22 @@ export namespace KoboSchemaHelper {
   const sanitizeQuestions = (questions: Kobo.Form.Question[]): Kobo.Form.Question[] => {
     return questions
       .filter(
-        (_) =>
+        _ =>
           !ignoredColType.has(_.type) &&
           !((_.type === 'note' && !_.calculation) || (_.type === 'calculate' && !_.label)),
       )
-      .map((_) => ({
+      .map(_ => ({
         ..._,
-        label: _.label?.map((_) => removeHtml(_)),
+        label: _.label?.map(_ => removeHtml(_)),
       }))
   }
 
   export const buildHelper = ({schema}: {schema: Kobo.Form}) => {
     const groupHelper = new KoboSchemaRepeatHelper(schema.content.survey)
-    const choicesIndex = seq(schema.content.choices).groupBy((_) => _.list_name)
+    const choicesIndex = seq(schema.content.choices).groupBy(_ => _.list_name)
     const questionIndex = seq([...schema.content.survey])
       .compactBy('name')
-      .reduceObject<Record<string, Kobo.Form.Question>>((_) => [_.name, _])
+      .reduceObject<Record<string, Kobo.Form.Question>>(_ => [_.name, _])
 
     const getOptionsByQuestionName = (qName: string) => {
       const listName = questionIndex[qName].select_from_list_name
@@ -80,10 +80,10 @@ export namespace KoboSchemaHelper {
     const choicesTranslation: Record<string, Record<string, string>> = {}
     seq(schema.content.survey)
       .compactBy('name')
-      .forEach((_) => {
+      .forEach(_ => {
         questionsTranslation[_.name] = _.label?.[langIndex] ?? _.name
       })
-    ;(schema.content.choices ?? []).forEach((choice) => {
+    ;(schema.content.choices ?? []).forEach(choice => {
       if (!choicesTranslation[choice.list_name]) choicesTranslation[choice.list_name] = {}
       choicesTranslation[choice.list_name][choice.name] = choice.label?.[langIndex] ?? choice.name
     })

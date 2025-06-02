@@ -55,7 +55,7 @@ export class DbInit {
       'isabel.pearson@drc.ngo',
     ]
     return this.upsertUsers(
-      adminsEmail.map((email) => ({
+      adminsEmail.map(email => ({
         email,
         createdBy: createdBySystem,
         admin: true,
@@ -74,7 +74,7 @@ export class DbInit {
 
   private readonly upsertUsers = async (users: Prisma.UserCreateInput[]) => {
     await Promise.all(
-      users.map((_) =>
+      users.map(_ =>
         this.prisma.user.upsert({
           update: _,
           create: _,
@@ -103,7 +103,7 @@ export class DbInit {
       },
     ]
     await Promise.all(
-      access.map((_) =>
+      access.map(_ =>
         this.prisma.featureAccess.create({
           data: _,
         }),

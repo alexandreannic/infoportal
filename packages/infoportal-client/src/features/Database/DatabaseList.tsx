@@ -24,7 +24,7 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
     fetcherServers.fetch()
   }, [])
   const indexServers = useMemo(() => {
-    return seq(fetcherServers.get).groupByFirst((_) => _.id)
+    return seq(fetcherServers.get).groupByFirst(_ => _.id)
   }, [fetcherServers.get])
 
   return (
@@ -46,7 +46,7 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
                   head: m.status,
                   styleHead: {maxWidth: 0},
                   align: 'center',
-                  render: (_) => {
+                  render: _ => {
                     return {
                       label:
                         _.deploymentStatus === 'archived' ? (
@@ -68,19 +68,19 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
                   id: 'id',
                   type: 'string',
                   head: m.id,
-                  renderQuick: (_) => _.id,
+                  renderQuick: _ => _.id,
                 },
                 {
                   id: 'serverId',
                   type: 'select_one',
                   head: m.serverId,
-                  renderQuick: (_) => _.serverId,
+                  renderQuick: _ => _.serverId,
                 },
                 {
                   id: 'serverUrl',
                   type: 'select_one',
                   head: m.server,
-                  render: (_) => {
+                  render: _ => {
                     const url = indexServers[_.serverId]?.url
                     if (url) {
                       return {
@@ -99,7 +99,7 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
                   id: 'name',
                   type: 'select_one',
                   head: m.name,
-                  render: (_) => {
+                  render: _ => {
                     return {
                       label: <Txt bold>{KoboFormSdk.parseFormName(_.name)?.name}</Txt>,
                       value: KoboFormSdk.parseFormName(_.name)?.name,
@@ -110,7 +110,7 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
                   id: 'program',
                   type: 'select_one',
                   head: m.program,
-                  renderQuick: (_) => KoboFormSdk.parseFormName(_.name)?.program,
+                  renderQuick: _ => KoboFormSdk.parseFormName(_.name)?.program,
                 },
                 {
                   id: 'length',
@@ -118,14 +118,14 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
                   type: 'number',
                   align: 'right',
                   width: 0,
-                  renderQuick: (_) => _.submissionsCount,
+                  renderQuick: _ => _.submissionsCount,
                 },
                 {
                   id: 'createdAt',
                   type: 'date',
                   head: m.createdAt,
                   width: 0,
-                  render: (_) => {
+                  render: _ => {
                     return {
                       label: <Txt color="hint">{formatDate(_.createdAt)}</Txt>,
                       value: _.createdAt,
@@ -137,7 +137,7 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
                   type: 'date',
                   width: 0,
                   head: m.updatedAt,
-                  render: (_) => {
+                  render: _ => {
                     return {
                       label: <Txt color="hint">{formatDate(_.updatedAt)}</Txt>,
                       value: _.updatedAt,
@@ -150,7 +150,7 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
                   align: 'center',
                   type: 'string',
                   width: 0,
-                  render: (_) => {
+                  render: _ => {
                     if (!_.enketoUrl) return {label: '', value: undefined}
                     return {
                       export: _.enketoUrl,
@@ -170,7 +170,7 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
                   styleHead: {maxWidth: 0},
                   align: 'right',
                   head: '',
-                  renderQuick: (_) => (
+                  renderQuick: _ => (
                     <NavLink to={databaseIndex.siteMap.database.absolute(_.id)}>
                       <TableIconBtn color="primary" children="chevron_right" />
                     </NavLink>

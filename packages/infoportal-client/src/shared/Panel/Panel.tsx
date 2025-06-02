@@ -24,23 +24,23 @@ export const Panel = forwardRef(
         ref={ref}
         elevation={elevation}
         sx={{
-          border: (t) => `1px solid ${t.palette.divider}`,
+          border: t => `1px solid ${t.palette.divider}`,
           position: 'relative',
-          background: (t) => t.palette.background.paper,
-          borderRadius: (t) => t.shape.borderRadius + 'px',
+          background: t => t.palette.background.paper,
+          borderRadius: t => t.shape.borderRadius + 'px',
           mb: 2,
           ...(hoverable && {
             cursor: 'pointer',
-            transition: (t) => t.transitions.create('all'),
+            transition: t => t.transitions.create('all'),
             '&:hover': {
               transform: 'scale(1.01)',
-              boxShadow: (t) => t.shadows[4],
+              boxShadow: t => t.shadows[4],
             },
           }),
           ...(stretch && {
             display: 'flex',
             flexDirection: 'column',
-            height: (t) => `calc(100% - ${t.spacing(2)})`,
+            height: t => `calc(100% - ${t.spacing(2)})`,
           }),
           ...(elevation &&
             elevation > 0 && {

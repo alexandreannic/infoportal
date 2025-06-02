@@ -17,7 +17,7 @@ const DatatableBody_ = <T extends DatatableRow>({
   }) => {
   const {classNameTdIndex, classNameTr} = useMemo(() => {
     const classNameTdIndex: Record<string, string> = {}
-    columns.forEach((_) => {
+    columns.forEach(_ => {
       let className = 'td ' + _.className
       if (_.stickyEnd) className += ' td-sticky-end'
       if (_.type === 'number') className += ' td-right'
@@ -37,7 +37,7 @@ const DatatableBody_ = <T extends DatatableRow>({
           style={rowStyle?.(item)}
           className={classNameTr}
           key={getRenderRowKey ? getRenderRowKey(item, rowI) : rowI}
-          onClick={(e) => onClickRows?.(item, e)}
+          onClick={e => onClickRows?.(item, e)}
         >
           {select && (
             <td className="td td-center td-sticky-start">

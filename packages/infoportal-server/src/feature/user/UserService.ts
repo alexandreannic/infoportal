@@ -54,9 +54,9 @@ export class UserService {
 
   readonly getUserByEmail = async (email: string) => {
     const cache = await this.loadUsersCache()
-    let user = cache.find((user) => user.email === email)
+    let user = cache.find(user => user.email === email)
     if (!user) {
-      user = await this.prisma.user.findUnique({where: {email}}).then((_) => _ ?? undefined)
+      user = await this.prisma.user.findUnique({where: {email}}).then(_ => _ ?? undefined)
       if (user) {
         cache.push(user!)
       }
@@ -65,7 +65,7 @@ export class UserService {
   }
 
   readonly getUserAvatarByEmail = async (email: string): Promise<Buffer | undefined> => {
-    return this.getUserByEmail(email).then((_) => (_?.avatar ? Buffer.from(_.avatar) : undefined))
+    return this.getUserByEmail(email).then(_ => (_?.avatar ? Buffer.from(_.avatar) : undefined))
   }
 
   readonly update = async ({email, drcOffice}: {email: string; drcOffice?: string}) => {
@@ -75,7 +75,7 @@ export class UserService {
     })
     this.cache.set({
       key: AppCacheKey.Users,
-      value: this.loadUsersCache().then((_) => _.map((_) => (_.email === email ? updatedUser : _))),
+      value: this.loadUsersCache().then(_ => _.map(_ => (_.email === email ? updatedUser : _))),
     })
     return updatedUser
   }
@@ -86,6 +86,6 @@ export class UserService {
       distinct: ['drcJob'],
       where: {drcJob: {not: null}},
     })
-    return drcJobs.map((job) => job.drcJob!)
+    return drcJobs.map(job => job.drcJob!)
   }
 }

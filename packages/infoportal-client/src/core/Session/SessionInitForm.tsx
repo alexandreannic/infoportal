@@ -29,7 +29,7 @@ export const SessionInitForm = ({
   useEffectFn(_updateUser.error, toastHttpError)
 
   useEffect(() => {
-    map(_updateUser.get?.drcOffice, (_) => onSelectOffice(_ as string))
+    map(_updateUser.get?.drcOffice, _ => onSelectOffice(_ as string))
   }, [_updateUser.get])
 
   return (

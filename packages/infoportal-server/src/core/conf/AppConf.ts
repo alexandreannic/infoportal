@@ -16,7 +16,7 @@ export const appConf = {
   logLevel: e(defaultValue('info'))('LOG_LEVEL'),
   rootProjectDir: e(defaultValue(__dirname))('ROOT_PROJECT_DIR'),
   disableScheduledTask: e(bool, defaultValue(false))('DISABLED_SCHEDULED_TASK'),
-  production: e((_) => _?.toLowerCase() === 'production', defaultValue(true))('NODE_ENV'),
+  production: e(_ => _?.toLowerCase() === 'production', defaultValue(true))('NODE_ENV'),
   port: e(int, defaultValue(80))('PORT'),
   ownerEmail: e(defaultValue('alexandre.annic@drc.ngo'))('OWNER_EMAIL'),
   cors: {

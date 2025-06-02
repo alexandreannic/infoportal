@@ -23,7 +23,7 @@ export const PanelFeatures = ({
       allowTaint: true,
       backgroundColor: 'transparent',
       // backgroundColor: t.palette.background.default,
-    }).then((_) => Utils.openCanvasInNewTab(_, 'imaa-tools-static'))
+    }).then(_ => Utils.openCanvasInNewTab(_, 'imaa-tools-static'))
   }
 
   return (
@@ -53,7 +53,7 @@ export const PanelFeatures = ({
           p: 0.5,
           position: 'absolute',
           display: 'none',
-          background: (t) => t.palette.background.paper,
+          background: t => t.palette.background.paper,
           top: 0,
           right: 0,
         }}
@@ -61,14 +61,14 @@ export const PanelFeatures = ({
         {expendable && (
           <IpIconBtn
             size="small"
-            sx={{marginLeft: 'auto', p: 0, color: (t) => t.palette.text.disabled}}
-            onClick={() => setExpended((_) => !_)}
+            sx={{marginLeft: 'auto', p: 0, color: t => t.palette.text.disabled}}
+            onClick={() => setExpended(_ => !_)}
           >
             {expended ? 'fullscreen_exit' : 'fullscreen'}
           </IpIconBtn>
         )}
         {savableAsImg && (
-          <IpIconBtn size="small" sx={{ml: 1, p: 0, color: (t) => t.palette.text.disabled}} onClick={saveAsImg}>
+          <IpIconBtn size="small" sx={{ml: 1, p: 0, color: t => t.palette.text.disabled}} onClick={saveAsImg}>
             download
           </IpIconBtn>
         )}

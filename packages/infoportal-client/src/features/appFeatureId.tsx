@@ -33,7 +33,7 @@ export const appFeaturesIndex: Record<AppFeatureId, AppFeature> = {
     color: 'silver',
     path: '/admin',
     category: 'settings',
-    showIf: (_) => _ && _?.admin,
+    showIf: _ => _ && _?.admin,
   },
 } as const
 

@@ -39,7 +39,7 @@ export class KoboSdkGenerator {
     serverId: app.cache.request({
       key: AppCacheKey.KoboClient,
       ttlMs: duration(7, 'day'),
-      genIndex: (_) => _,
+      genIndex: _ => _,
       fn: async (serverId: UUID): Promise<KoboClient> => {
         this.log.info(`Rebuilding KoboClient form server ${serverId}`)
         const server = await this.getServerBy.id(serverId)
@@ -56,11 +56,11 @@ export class KoboSdkGenerator {
         .findMany({
           select: {id: true, serverId: true},
         })
-        .then((_) => {
+        .then(_ => {
           this.log.info(`Recalculate server index`)
           return seq(_).groupByAndApply(
-            (_) => _.id,
-            (_) => _[0].serverId,
+            _ => _.id,
+            _ => _[0].serverId,
           )
         })
     },
@@ -68,7 +68,7 @@ export class KoboSdkGenerator {
 
   private readonly getServerId = async (formId: Kobo.FormId): Promise<UUID> => {
     return await this.getServerIndex()
-      .then((_) => _[formId])
+      .then(_ => _[formId])
       .then(AppError.throwNotFoundIfUndefined(`No serverId for form ${formId}`))
   }
 

@@ -139,7 +139,7 @@ export class IpCache<V = undefined> {
 
   readonly getAll = (): (V extends undefined ? any : V)[] => {
     this.cleanCheckup()
-    return filterUndefined(Array.from(this.cache.values()).map((_) => _.value)) as any
+    return filterUndefined(Array.from(this.cache.values()).map(_ => _.value)) as any
   }
 
   readonly getAllKeys = (): string[] => {
@@ -149,11 +149,11 @@ export class IpCache<V = undefined> {
 
   readonly getInfo = () => {
     this.cleanCheckup()
-    return Obj.mapValues(Object.fromEntries(this.cache), (v) => {
+    return Obj.mapValues(Object.fromEntries(this.cache), v => {
       if (typeof v.value === 'object') {
         return {
           ...v,
-          value: Obj.mapValues(v.value as any, (v2) => {
+          value: Obj.mapValues(v.value as any, v2 => {
             try {
               const canStringfy = JSON.stringify(v2)
               return v2

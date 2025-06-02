@@ -41,8 +41,8 @@ export class KoboToXLS {
     const columns = (() => {
       const metaColumns: (keyof KoboSubmissionMetaData)[] = ['id', 'submissionTime', 'version']
       const schemaColumns = koboFormDetails.content.survey
-        .filter((_) => koboQuestionType.includes(_.type))
-        .map((_) =>
+        .filter(_ => koboQuestionType.includes(_.type))
+        .map(_ =>
           langIndex !== undefined && _.label ? (_.label[langIndex]?.replace(/(<([^>]+)>)/gi, '') ?? _.name) : _.name,
         )
       return [...metaColumns, ...schemaColumns]
@@ -50,7 +50,7 @@ export class KoboToXLS {
     const workbook = await XlsxPopulate.fromBlankAsync()
     const sheet = workbook.sheet('Sheet1')
     sheet.cell('A1').value([columns] as any)
-    sheet.cell('A2').value(flatTranslated.map((a) => columns.map((_) => (a as any)[_!])) as any)
+    sheet.cell('A2').value(flatTranslated.map(a => columns.map(_ => (a as any)[_!])) as any)
 
     sheet.freezePanes(2, 1)
     // const ['start', 'end', 'su']

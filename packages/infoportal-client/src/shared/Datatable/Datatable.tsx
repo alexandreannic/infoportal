@@ -37,7 +37,7 @@ export const Datatable = <T extends DatatableRow = DatatableRow>({
 }: DatatableTableProps<T>) => {
   const innerColumns = useMemo(() => {
     return columns
-      .map((col) => {
+      .map(col => {
         if (DatatableColumn.isQuick(col)) {
           if (col.type === undefined) {
             ;(col as unknown as DatatableColumn.InnerProps<T>).render = (_: T) => {
@@ -58,7 +58,7 @@ export const Datatable = <T extends DatatableRow = DatatableRow>({
         }
         return col as unknown as DatatableColumn.InnerProps<T>
       })
-      .map((col) => {
+      .map(col => {
         const render = col.render
         col.render = (_: T) => {
           const rendered = render(_)
@@ -67,7 +67,7 @@ export const Datatable = <T extends DatatableRow = DatatableRow>({
               rendered.value = [rendered.value as string]
             }
             if (rendered.value.length === 0) rendered.value = [DatatableUtils.blank]
-            rendered.value.map((_) => _ ?? DatatableUtils.blank)
+            rendered.value.map(_ => _ ?? DatatableUtils.blank)
           } else if (rendered.value === undefined || rendered.value === null) rendered.value = DatatableUtils.blank
           if (!Object.hasOwn(rendered, 'option')) rendered.option = rendered.label
           return rendered as any
@@ -138,14 +138,14 @@ const _Datatable = <T extends DatatableRow>({
         {
           sheetName: 'data',
           data: ctx.data.filteredAndSortedData,
-          schema: ctx.columns.filter((_) => _.noCsvExport !== true).map(DatatableXlsGenerator.columnsToParams),
+          schema: ctx.columns.filter(_ => _.noCsvExport !== true).map(DatatableXlsGenerator.columnsToParams),
         },
         ...(exportAdditionalSheets ? exportAdditionalSheets(ctx.data.filteredAndSortedData as any) : []),
       ])
     }
   }
 
-  const filterCount = useMemoFn(ctx.data.filters, (_) => Obj.keys(_).length)
+  const filterCount = useMemoFn(ctx.data.filters, _ => Obj.keys(_).length)
 
   return (
     <Box {...props}>
@@ -167,7 +167,7 @@ const _Datatable = <T extends DatatableRow>({
               sx={{mr: 1}}
               columns={ctx.columns}
               hiddenColumns={ctx.columnsToggle.hiddenColumns}
-              onChange={(_) => ctx.columnsToggle.setHiddenColumns(_)}
+              onChange={_ => ctx.columnsToggle.setHiddenColumns(_)}
               title={m._datatable.toggleColumns}
             />
           )}
@@ -246,7 +246,7 @@ const _Datatable = <T extends DatatableRow>({
               onOpenStats={ctx.modal.statsPopover.open}
             />
             <tbody>
-              {map(ctx.data.filteredSortedAndPaginatedData, (data) => {
+              {map(ctx.data.filteredSortedAndPaginatedData, data => {
                 return data.data.length > 0 ? (
                   <DatatableBody
                     onClickRows={onClickRows}
@@ -290,12 +290,12 @@ const _Datatable = <T extends DatatableRow>({
           rowsPerPage={ctx.data.search.limit}
           page={ctx.data.search.offset / ctx.data.search.limit}
           onPageChange={(event: unknown, newPage: number) => {
-            ctx.data.setSearch((prev) => ({...prev, offset: newPage * ctx.data.search.limit}))
+            ctx.data.setSearch(prev => ({...prev, offset: newPage * ctx.data.search.limit}))
           }}
           onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             const newLimit = parseInt(event.target.value, 10)
             const newPage = Math.floor(ctx.data.search.offset / newLimit)
-            ctx.data.setSearch((prev) => ({
+            ctx.data.setSearch(prev => ({
               ...prev,
               limit: newLimit,
               offset: newPage * newLimit,

@@ -27,10 +27,10 @@ export const DashboardHeader = ({
     <>
       <Box
         sx={{
-          transition: (t) => t.transitions.create('all'),
+          transition: t => t.transitions.create('all'),
           pl: 2,
           zIndex: 2,
-          background: (t) => t.palette.background.default,
+          background: t => t.palette.background.default,
           pt: 2,
           width: '100%',
         }}
@@ -51,7 +51,7 @@ export const DashboardHeader = ({
                     background: alpha(t.palette.primary.main, 0.1),
                   },
                 }}
-                onClick={() => setSidebarOpen((_) => !_)}
+                onClick={() => setSidebarOpen(_ => !_)}
                 children="menu"
               />
             )}

@@ -3,7 +3,7 @@ import {BoxProps} from '@mui/material'
 import {makeStyles} from 'tss-react/mui'
 import debounce from 'lodash.debounce'
 
-const useStyles = makeStyles()((t) => ({
+const useStyles = makeStyles()(t => ({
   root: {
     resize: 'horizontal',
     overflow: 'hidden',

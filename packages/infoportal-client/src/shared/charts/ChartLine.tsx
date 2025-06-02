@@ -40,7 +40,7 @@ const addMissingKeyMonths = <T extends ChartLineData[]>(arr: T): T => {
   //   format(addMonths(new Date(period.start), i), 'yyyy-MM')
   // )
   const result: ChartLineData[] = []
-  const otherKeys = Obj.keys(arr[0] ?? {}).filter((_) => _ !== 'name')
+  const otherKeys = Obj.keys(arr[0] ?? {}).filter(_ => _ !== 'name')
   for (let i = 0; i < arr.length; i++) {
     result.push(arr[i])
     if (i < arr.length - 1) {
@@ -50,7 +50,7 @@ const addMissingKeyMonths = <T extends ChartLineData[]>(arr: T): T => {
       while (isBefore(addMonths(currentDate, 1), nextDate)) {
         currentDate = addMonths(currentDate, 1)
         const newItem: any = {name: format(currentDate, 'yyyy-MM')}
-        otherKeys.forEach((k) => {
+        otherKeys.forEach(k => {
           newItem[k] = 0
         })
         result.push(newItem)
@@ -79,7 +79,7 @@ export const ChartLine = ({
   height = 220,
 }: ChartLineProps) => {
   const theme = useTheme()
-  const lines = Object.keys(data?.[0] ?? {}).filter((_) => _ !== 'name')
+  const lines = Object.keys(data?.[0] ?? {}).filter(_ => _ !== 'name')
   const [showCurves, setShowCurves] = useState<boolean[]>(new Array(lines.length).fill(false))
 
   const cleanedData = React.useMemo(() => {
@@ -94,9 +94,7 @@ export const ChartLine = ({
             <Checkbox
               key={c}
               checked={showCurves[i]}
-              onChange={(e) =>
-                setShowCurves((prev) => prev.map((_, index) => (i === index ? e.currentTarget.checked : _)))
-              }
+              onChange={e => setShowCurves(prev => prev.map((_, index) => (i === index ? e.currentTarget.checked : _)))}
               sx={{
                 '& svg': {
                   fill: colorsByKey ? colorsByKey(theme)[c] : (colors(theme)[i] ?? colors(theme)[0] + ' !important'),
@@ -113,20 +111,20 @@ export const ChartLine = ({
             {!hideLegend && <Legend {...commonLegendProps} />}
             <XAxis dataKey="name" />
             {distinctYAxis ? (
-              lines.map((_) => <YAxis hide={hideYTicks} key={_} yAxisId={_} dataKey={_} />)
+              lines.map(_ => <YAxis hide={hideYTicks} key={_} yAxisId={_} dataKey={_} />)
             ) : (
               <YAxis hide={hideYTicks} />
             )}
             <YAxis hide={hideYTicks} />
             <Tooltip
               wrapperStyle={{zIndex: 100, borderRadius: 4}}
-              formatter={(_) => (percent ? `${_}` : formatLargeNumber(_ as any, {maximumFractionDigits: 2}))}
+              formatter={_ => (percent ? `${_}` : formatLargeNumber(_ as any, {maximumFractionDigits: 2}))}
             />
             {lines.map((line, i) => (
               <Line
                 isAnimationActive={!disableAnimation}
                 key={line}
-                name={map(translation, (_) => _[line]) ?? line}
+                name={map(translation, _ => _[line]) ?? line}
                 type="monotone"
                 yAxisId={distinctYAxis ? line : undefined}
                 dataKey={line}

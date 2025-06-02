@@ -27,7 +27,7 @@ export class GroupItemService {
 
   readonly create = (groupId: UUID, body: GroupItemCreateParams) => {
     return Promise.all(
-      (body.drcJob ?? [undefined]).map((drcJob) =>
+      (body.drcJob ?? [undefined]).map(drcJob =>
         this.prisma.groupItem.create({
           data: {
             level: body.level,

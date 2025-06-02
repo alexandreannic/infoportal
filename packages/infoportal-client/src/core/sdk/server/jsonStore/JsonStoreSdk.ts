@@ -31,8 +31,8 @@ export class JsonStoreSdk {
 
   readonly getValue: {
     (key: JsonStoreKey.MpcaBudget): Promise<JsonStoreMpcaBudget>
-  } = async (key) => {
-    const data = await this.getRaw<any>(key).then((_) => _.value)
+  } = async key => {
+    const data = await this.getRaw<any>(key).then(_ => _.value)
     if (key === JsonStoreKey.MpcaBudget && !Array.isArray(data)) {
       throw new Error(`Except JsonStoreKey.MpcaBudget value to be of type Array`)
     }

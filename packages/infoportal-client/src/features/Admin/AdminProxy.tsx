@@ -44,7 +44,7 @@ export const AdminProxy = () => {
     _search.fetch()
   }, [])
 
-  const parseForUrl: NullableFn<string> = (_) => {
+  const parseForUrl: NullableFn<string> = _ => {
     return slugify(_?.toLowerCase()) as any
   }
 
@@ -60,7 +60,7 @@ export const AdminProxy = () => {
                 loading={_search.creating}
                 confirmDisabled={!_createForm.formState.isValid}
                 onConfirm={(e, close) =>
-                  _createForm.handleSubmit((form) => {
+                  _createForm.handleSubmit(form => {
                     _search
                       .create(
                         {},
@@ -147,13 +147,13 @@ export const AdminProxy = () => {
               type: 'string',
               id: 'name',
               head: m.name,
-              renderQuick: (_) => _.name,
+              renderQuick: _ => _.name,
             },
             {
               type: 'string',
               id: 'origin',
               head: m.origin,
-              render: (_) => {
+              render: _ => {
                 const redirectUrl = Proxy.makeUrl({appConfig: appConfig, proxy: _})
                 return {
                   value: _.slug,
@@ -171,7 +171,7 @@ export const AdminProxy = () => {
               type: 'string',
               id: 'destination',
               head: m.destination,
-              render: (_) => {
+              render: _ => {
                 return {
                   value: _.url,
                   label: (
@@ -188,7 +188,7 @@ export const AdminProxy = () => {
               type: 'date',
               id: 'createdAt',
               head: m.createdAt,
-              render: (_) => {
+              render: _ => {
                 return {
                   label: formatDateTime(_.createdAt),
                   value: _.createdAt,
@@ -200,7 +200,7 @@ export const AdminProxy = () => {
               id: 'expireAt',
               width: 0,
               head: m.expireAt,
-              render: (_) => {
+              render: _ => {
                 return {
                   label: formatDateTime(_.expireAt),
                   value: _.expireAt,
@@ -212,12 +212,12 @@ export const AdminProxy = () => {
               id: 'enabled',
               align: 'center',
               head: m.enabled,
-              render: (_) => {
+              render: _ => {
                 return {
                   label: (
                     <Switch
                       checked={!_.disabled}
-                      onChange={(e) => _search.update(_.id, {disabled: !e.currentTarget.checked})}
+                      onChange={e => _search.update(_.id, {disabled: !e.currentTarget.checked})}
                     />
                   ),
                   value: !_.disabled ? 'Enabled' : 'Disabled',
@@ -230,7 +230,7 @@ export const AdminProxy = () => {
               head: '',
               width: 0,
               align: 'right',
-              renderQuick: (_) => (
+              renderQuick: _ => (
                 <TableIconBtn onClick={() => _search.remove(_.id)} loading={_search.removing(_.id)}>
                   delete
                 </TableIconBtn>

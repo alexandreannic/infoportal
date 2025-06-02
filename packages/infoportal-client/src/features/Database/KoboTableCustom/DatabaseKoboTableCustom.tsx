@@ -131,8 +131,8 @@ export const DatabaseTableCustomRoute = () => {
   const ctxSchema = useKoboSchemaContext()
   const ctxAnswers = useKoboAnswersContext()
 
-  const customForm = useMemo(() => customForms.find((_) => _.id === id), [id])
-  const formIds = useMemo(() => customForm!.forms.map((_) => _.id), [id])
+  const customForm = useMemo(() => customForms.find(_ => _.id === id), [id])
+  const formIds = useMemo(() => customForm!.forms.map(_ => _.id), [id])
   const {setTitle} = useLayoutContext()
 
   const [selectedIndexes, setSelectedIndexes] = useState<string[]>([])
@@ -142,39 +142,39 @@ export const DatabaseTableCustomRoute = () => {
   const view = useDatabaseView('custom-db-' + customForm.id)
 
   useEffect(() => {
-    formIds.forEach((_) => {
+    formIds.forEach(_ => {
       ctxAnswers.byId(_).fetch()
       ctxSchema.fetchById(_)
     })
   }, [formIds])
 
   const schemas = customForm.forms
-    .map((_) => ({formId: _.id, schema: ctxSchema.byId[_.id]?.get}))
-    .filter((_) => !!_.schema) as {formId: Kobo.FormId; schema: KoboSchemaHelper.Bundle}[]
-  const isFullyArchived = schemas.every((_) => _.schema.schema.deployment_status === 'archived')
+    .map(_ => ({formId: _.id, schema: ctxSchema.byId[_.id]?.get}))
+    .filter(_ => !!_.schema) as {formId: Kobo.FormId; schema: KoboSchemaHelper.Bundle}[]
+  const isFullyArchived = schemas.every(_ => _.schema.schema.deployment_status === 'archived')
 
   useEffect(() => {
-    setTitle(schemas.map((_) => _.schema.schema.name).join(' + '))
+    setTitle(schemas.map(_ => _.schema.schema.name).join(' + '))
   }, [schemas])
 
   const data = useMemo(() => {
-    const dataSets = formIds.map((_) => ctxAnswers.byId(_).get?.data)
-    if (!dataSets.every((_) => _ !== undefined)) return
+    const dataSets = formIds.map(_ => ctxAnswers.byId(_).get?.data)
+    if (!dataSets.every(_ => _ !== undefined)) return
     const indexesParams = seq(customForm.forms)
       .compactBy('join')
-      .flatMap((_) => [
+      .flatMap(_ => [
         {formId: _.id, colName: _.join.colName},
         {formId: _.join.originId, colName: _.join.originColName},
       ])
-      .distinct((_) => _.formId)
+      .distinct(_ => _.formId)
     const indexes = indexesParams.groupByAndApply(
-      (_) => _.formId,
-      (group) =>
+      _ => _.formId,
+      group =>
         seq(
           ctxAnswers
             .byId(group[0].formId)
-            .get?.data.filter((_) => !_.tags || _.tags._validation !== KoboValidation.Rejected)!,
-        ).groupByFirst((_) => (_ as any)[group[0].colName]),
+            .get?.data.filter(_ => !_.tags || _.tags._validation !== KoboValidation.Rejected)!,
+        ).groupByFirst(_ => (_ as any)[group[0].colName]),
     )
     return dataSets[0]!.map((row, i) => {
       return {
@@ -182,24 +182,26 @@ export const DatabaseTableCustomRoute = () => {
         [customForm.forms[0].id]: row,
         ...seq(customForm.forms)
           .compactBy('join')
-          .reduceObject((_) => {
+          .reduceObject(_ => {
             const refRow = indexes[_.id][(row as any)[_.join.originColName]]
             return [_.id, refRow]
           }),
       }
     })
-  }, [...formIds.map((_) => ctxAnswers.byId(_).get?.data), ctxSchema.langIndex])
+  }, [...formIds.map(_ => ctxAnswers.byId(_).get?.data), ctxSchema.langIndex])
 
   const columns: DatatableColumn.Props<any>[] = useMemo(() => {
     return schemas.flatMap(({formId, schema}) => {
-      const selectedIds = data ? selectedIndexes.map((_) => (data[+_][formId] as any)?.id).filter((_) => _ !== undefined) : []
+      const selectedIds = data
+        ? selectedIndexes.map(_ => (data[+_][formId] as any)?.id).filter(_ => _ !== undefined)
+        : []
       const cols = columnBySchemaGenerator({
         formId,
         schema,
         m,
         onEdit:
           selectedIds.length > 0
-            ? (questionName) =>
+            ? questionName =>
                 ctxKoboUpdate.openById({
                   target: 'answer',
                   params: {
@@ -210,7 +212,7 @@ export const DatabaseTableCustomRoute = () => {
                 })
             : undefined,
         t,
-        getRow: (_) => (_[formId] ?? {}) as any,
+        getRow: _ => (_[formId] ?? {}) as any,
       }).getAll()
       cols[cols.length - 1].style = () => ({borderRight: '3px solid ' + t.palette.divider})
       cols[cols.length - 1].styleHead = {borderRight: '3px solid ' + t.palette.divider}
@@ -223,10 +225,10 @@ export const DatabaseTableCustomRoute = () => {
           openViewAnswer: ctxAnswers.openView,
           ctxEdit: ctxKoboUpdate,
           asyncEdit: (answerId: Kobo.SubmissionId) => api.koboApi.getEditUrl({formId: formId, answerId}),
-          getRow: (_) => (_[formId] ?? {}) as any,
+          getRow: _ => (_[formId] ?? {}) as any,
         }),
         ...cols,
-      ].map((_) => {
+      ].map(_ => {
         return {
           ..._,
           id: formId + '_' + _.id,
@@ -238,7 +240,7 @@ export const DatabaseTableCustomRoute = () => {
     })
   }, [...schemas, data, selectedIndexes, ctxSchema.langIndex, view.currentView])
 
-  const loading = ctxSchema.anyLoading || !!formIds.find((_) => ctxAnswers.byId(_).loading)
+  const loading = ctxSchema.anyLoading || !!formIds.find(_ => ctxAnswers.byId(_).loading)
   return (
     <>
       <Page width="full" sx={{p: 0}} loading={loading}>
@@ -249,7 +251,7 @@ export const DatabaseTableCustomRoute = () => {
             columns={columns}
             select={{
               onSelect: setSelectedIndexes,
-              getId: (_) => '' + _.index,
+              getId: _ => '' + _.index,
             }}
             data={data}
             showExportBtn

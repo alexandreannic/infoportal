@@ -124,7 +124,7 @@ export class AccessService {
     ])
     return [
       ...fromAccess,
-      ...fromGroup.map((_) => {
+      ...fromGroup.map(_ => {
         const accesses = _.group?.items.reduce((acc, curr) => {
           acc.set(curr.level, curr.level)
           return acc
@@ -140,7 +140,7 @@ export class AccessService {
 
   readonly create = (body: AccessCreateParams) => {
     return Promise.all(
-      (body.drcJob ?? [undefined]).map((drcJob) =>
+      (body.drcJob ?? [undefined]).map(drcJob =>
         this.prisma.featureAccess.create({
           data: {
             ...body,

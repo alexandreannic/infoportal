@@ -52,7 +52,7 @@ export const DatabaseKoboTableProvider = (props: {
 
   const fetcherExternalFiles = useFetcher<() => Promise<{file: string; csv: string}[]>>(() => {
     return Promise.all(
-      props.schema.schema.files.map((file) =>
+      props.schema.schema.files.map(file =>
         api.koboApi
           .proxy({method: 'GET', url: file.content, formId: form.id})
           .then((csv: string) => ({file: file.metadata.filename, csv}))
@@ -61,20 +61,20 @@ export const DatabaseKoboTableProvider = (props: {
             return undefined
           }),
       ),
-    ).then((_) => seq(_).compact())
+    ).then(_ => seq(_).compact())
   })
 
   useEffect(() => {
-    fetcherExternalFiles.fetch().then(async (res) => {
+    fetcherExternalFiles.fetch().then(async res => {
       const jsons: ExternalFilesChoices[][] = await Promise.all(
-        res.map((_) => csvToJson.default({delimiter: ';'}).fromString(_.csv)),
+        res.map(_ => csvToJson.default({delimiter: ';'}).fromString(_.csv)),
       )
-      const indexed = jsons.map((_) => seq(_).groupByFirst((_) => _.name))
+      const indexed = jsons.map(_ => seq(_).groupByFirst(_ => _.name))
       const indexes = seq(res).map((_, i) => ({file: _.file, index: indexed[i]}))
       setIndexExternalFiles(
         Obj.mapValues(
-          seq(indexes).groupByFirst((_) => _.file),
-          (_) => _.index,
+          seq(indexes).groupByFirst(_ => _.file),
+          _ => _.index,
         ),
       )
     })

@@ -57,7 +57,7 @@ export namespace Utils {
   export const openCanvasInNewTab = (canvas: HTMLCanvasElement, name: string) => {
     setTimeout(() => {
       // w.document.write('<static src="' + canvas.toDataURL('png') + '" />')
-      canvas.toBlob((blob) => {
+      canvas.toBlob(blob => {
         const w = window.open(URL.createObjectURL(blob!), '_blank')!
         w.document.title = name
       })

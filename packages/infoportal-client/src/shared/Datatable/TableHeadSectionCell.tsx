@@ -18,7 +18,7 @@ const colors = [
   '#E91E63',
 ]
 
-const useStyles = makeStyles()((t) => ({
+const useStyles = makeStyles()(t => ({
   tr: {
     cursor: 'pointer',
     fontSize: styleUtils(t).fontSize.small,
@@ -63,8 +63,8 @@ export const TableHeadSectionCell = ({
   return (
     <tr className={cx('tr', classes.tr)}>
       {map(
-        Obj.entries(seq(columns).groupBy((_) => _.groupLabel ?? 'None')),
-        (groups) =>
+        Obj.entries(seq(columns).groupBy(_ => _.groupLabel ?? 'None')),
+        groups =>
           groups.length > 1 &&
           groups.map(([group, cols], i) => (
             <th
@@ -83,7 +83,7 @@ export const TableHeadSectionCell = ({
                   size="small"
                   variant="contained"
                   color="primary"
-                  onClick={() => onHideColumns(cols.map((_) => _.id))}
+                  onClick={() => onHideColumns(cols.map(_ => _.id))}
                 >
                   <Icon fontSize="small">visibility_off</Icon>
                 </IpBtn>

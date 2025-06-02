@@ -18,7 +18,7 @@ export const getColumnsBase = ({
   m,
   ctxEdit,
   openViewAnswer,
-  getRow = (_) => _,
+  getRow = _ => _,
   asyncEdit,
 }: {
   ctxEdit: KoboUpdateContext
@@ -36,7 +36,7 @@ export const getColumnsBase = ({
       head: '',
       width: 0,
       noCsvExport: true,
-      render: (_) => {
+      render: _ => {
         return {
           value: null as any,
           label: (
@@ -88,7 +88,7 @@ export const getColumnsBase = ({
               compact
               disabled={!canEdit}
               value={value}
-              onChange={(e) => {
+              onChange={e => {
                 ctxEdit.asyncUpdateById.validation.call({
                   formId: formId,
                   answerIds: [getRow(row).id],

@@ -53,7 +53,10 @@ export const useFetchers: UseFetchersFn = <F extends Func<Promise<any>>, K exten
   const list = useMemo(() => entities.values ?? [], [entities])
   const fetch$ = useRef(new Map<string, Promise<undefined | FetcherResult<F>>>())
 
-  const fetch = ({force = true, clean = true}: FetchParams = {}, ...args: Parameters<F>): Promise<undefined | FetcherResult<F>> => {
+  const fetch = (
+    {force = true, clean = true}: FetchParams = {},
+    ...args: Parameters<F>
+  ): Promise<undefined | FetcherResult<F>> => {
     const key = requestKey(args)
     const entity = entities.get(key)
     errors.delete(key)
@@ -76,7 +79,7 @@ export const useFetchers: UseFetchersFn = <F extends Func<Promise<any>>, K exten
         fetch$.current.delete(key)
         return x
       })
-      .catch((e) => {
+      .catch(e => {
         errors.set(key, mapError ? mapError(e) : e)
         setLastError(e)
         loadings.set(key, false)
@@ -103,7 +106,7 @@ export const useFetchers: UseFetchersFn = <F extends Func<Promise<any>>, K exten
     error: errors.toObject,
     lastError,
     anyError: errors.size > 0,
-    anyLoading: !!loadings.values.find((_) => _),
+    anyLoading: !!loadings.values.find(_ => _),
     // TODO(Alex) not sure the error is legitimate
     fetch: fetch as any,
     // setEntity,

@@ -20,7 +20,7 @@ export const PdfSlide = ({
     <Box
       {...props}
       sx={{
-        background: (t) => t.palette.background.default,
+        background: t => t.palette.background.default,
         p: 0,
         // overflow: 'hidden',
         width,
@@ -31,7 +31,7 @@ export const PdfSlide = ({
           width,
           mb: 16,
           borderRadius: '6px',
-          boxShadow: (t) => t.shadows[1],
+          boxShadow: t => t.shadows[1],
         },
         // pageBreakAfter: 'always',
         ...props.sx,
@@ -46,7 +46,7 @@ export const SlideH1 = ({children, sx, ...props}: BoxProps) => {
       {...props}
       sx={{
         fontSize: '1.25em',
-        fontWeight: (t) => t.typography.fontWeightBold,
+        fontWeight: t => t.typography.fontWeightBold,
         lineHeight: 1,
         ...sx,
       }}
@@ -134,7 +134,7 @@ export const SlideHeader = ({
       sx={{
         px: 2,
         py: 1,
-        borderBottom: (t) => `1px solid ${t.palette.divider}`,
+        borderBottom: t => `1px solid ${t.palette.divider}`,
         mb: 0,
         display: 'flex',
         alignItems: 'center',
@@ -233,7 +233,7 @@ export const SlideWidget = ({
       BodyProps={{
         sx: {
           px: 0.25,
-          pb: (t) => t.spacing(1) + ' !important',
+          pb: t => t.spacing(1) + ' !important',
         },
       }}
       sx={{
@@ -253,7 +253,7 @@ export const SlideWidget = ({
       <Box
         sx={{
           lineHeight: 1,
-          fontWeight: (t) => t.typography.fontWeightBold,
+          fontWeight: t => t.typography.fontWeightBold,
           fontSize: '1.7em',
           display: 'inline-flex',
           alignItems: 'center',

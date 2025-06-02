@@ -46,6 +46,6 @@ export class KoboFormSdk {
   }
 
   readonly getAll = (): Promise<KoboForm[]> => {
-    return this.client.get(`/kobo/form`).then((_) => _.map(KoboFormHelper.map))
+    return this.client.get(`/kobo/form`).then(_ => _.map(KoboFormHelper.map))
   }
 }

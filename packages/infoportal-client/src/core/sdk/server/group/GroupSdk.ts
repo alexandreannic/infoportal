@@ -44,11 +44,11 @@ export class GroupSdk {
     name?: string
     featureId?: AppFeatureId
   } = {}): Promise<Group[]> => {
-    return this.client.post(`/group`, {body: {name, featureId}}).then((_) => _.map(GroupHelper.map))
+    return this.client.post(`/group`, {body: {name, featureId}}).then(_ => _.map(GroupHelper.map))
   }
 
   readonly getMine = async (): Promise<Group[]> => {
-    return this.client.get(`/group/me`).then((_) => _.map(GroupHelper.map))
+    return this.client.get(`/group/me`).then(_ => _.map(GroupHelper.map))
   }
 
   readonly updateItem = (itemId: UUID, body: GroupItemUpdate) => {

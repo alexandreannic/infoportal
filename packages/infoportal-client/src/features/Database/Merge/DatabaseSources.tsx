@@ -29,10 +29,10 @@ export const DatabaseSources = ({serverId}: {serverId: UUID}) => {
     <Page>
       {fetcherKoboSchema.get && (
         <>
-          <KoboFormListButton forms={fetcherKoboSchema.get} onChange={(_) => setMainSource(_)} />
-          {map(_sources.get[mainSource!], (source) => (
+          <KoboFormListButton forms={fetcherKoboSchema.get} onChange={_ => setMainSource(_)} />
+          {map(_sources.get[mainSource!], source => (
             <>
-              {source.content.survey.map((q) => (
+              {source.content.survey.map(q => (
                 <Box key={q.name}>{q.name}</Box>
               ))}
             </>

@@ -185,7 +185,7 @@ export const DatabaseWithContext = () => {
         <Route path={databaseIndex.siteMap.index} element={<DatabaseList forms={ctx.formsAccessible} />} />
         <Route path={databaseIndex.siteMap.custom()} element={<DatabaseTableCustomRoute />} />
         <Route path={databaseIndex.siteMap.importKoboForm} element={<ImportKobo />} />
-        <Route path={databaseIndex.siteMap.home()} element={<DatabaseHome/>}>
+        <Route path={databaseIndex.siteMap.home()} element={<DatabaseHome />}>
           <Route index element={<Navigate to={databaseIndex.siteMap.database.relative} />} />
           <Route path={databaseIndex.siteMap.answer.relative()} element={<DatabaseKoboAnswerViewPage />} />
           <Route path={databaseIndex.siteMap.access.relative} element={<DatabaseAccessRoute />} />

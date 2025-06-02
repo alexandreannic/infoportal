@@ -34,10 +34,10 @@ export const AdminGroups = () => {
   const fetcher = useFetcher(api.group.search)
   const asyncCreate = useAsync(api.group.create)
   const asyncUpdate = useAsync(api.group.update)
-  const asyncRemove = useAsync(api.group.remove, {requestKey: (_) => _[0]})
+  const asyncRemove = useAsync(api.group.remove, {requestKey: _ => _[0]})
   const asyncItemCreate = useAsync(api.group.createItem)
   const asyncItemItem = useAsync(api.group.updateItem)
-  const asyncItemDelete = useAsync(api.group.deleteItem, {requestKey: (_) => _[0]})
+  const asyncItemDelete = useAsync(api.group.deleteItem, {requestKey: _ => _[0]})
   const asyncDuplicate = useAsync(
     async (g: Group) => {
       const {id, items, createdAt, name, ...params} = g
@@ -46,7 +46,7 @@ export const AdminGroups = () => {
         ...params,
       })
       await Promise.all(
-        items.map((item) => {
+        items.map(item => {
           return api.group.createItem(newGroup.id, {
             ...item,
             drcJob: item.drcJob ? [item.drcJob] : undefined,
@@ -54,7 +54,7 @@ export const AdminGroups = () => {
         }),
       )
     },
-    {requestKey: (_) => _[0].id},
+    {requestKey: _ => _[0].id},
   )
 
   const [selectedGroupId, setSelectedGroupId] = useState<
@@ -92,7 +92,7 @@ export const AdminGroups = () => {
               <Modal
                 onOpen={groupForm.reset}
                 onConfirm={(e, close) =>
-                  groupForm.handleSubmit((form) => {
+                  groupForm.handleSubmit(form => {
                     asyncCreate.call(form).then(close)
                   })()
                 }
@@ -116,21 +116,21 @@ export const AdminGroups = () => {
               id: 'drcJob',
               width: 150,
               head: m.name,
-              renderQuick: (_) => _.name,
+              renderQuick: _ => _.name,
             },
             {
               type: 'string',
               id: 'desc',
               width: 120,
               head: m.desc,
-              renderQuick: (_) => _.desc,
+              renderQuick: _ => _.desc,
             },
             {
               type: 'date',
               id: 'createdAt',
               width: 80,
               head: m.createdAt,
-              render: (_) => {
+              render: _ => {
                 return {
                   label: formatDateTime(_.createdAt),
                   value: _.createdAt,
@@ -141,9 +141,9 @@ export const AdminGroups = () => {
               id: 'items',
               style: () => ({whiteSpace: 'normal'}),
               head: m.accesses,
-              renderQuick: (_) => (
+              renderQuick: _ => (
                 <>
-                  {_.items.map((item) => (
+                  {_.items.map(item => (
                     <Chip
                       onClick={() => {
                         accessForm.reset({
@@ -152,7 +152,7 @@ export const AdminGroups = () => {
                         })
                         setSelectedGroupId({groupId: _.id, accessId: item.id})
                       }}
-                      onDelete={(e) => asyncItemDelete.call(item.id)}
+                      onDelete={e => asyncItemDelete.call(item.id)}
                       sx={{mr: 0.5, my: 0.25}}
                       icon={<Icon>{accessLevelIcon[item.level]}</Icon>}
                       size="small"
@@ -183,12 +183,12 @@ export const AdminGroups = () => {
               id: 'actions',
               width: 84,
               align: 'right',
-              renderQuick: (_) => (
+              renderQuick: _ => (
                 <>
                   <Modal
                     onOpen={groupForm.reset}
                     onConfirm={(e, close) =>
-                      groupForm.handleSubmit((form) => {
+                      groupForm.handleSubmit(form => {
                         asyncUpdate.call(_.id, form).then(close)
                       })()
                     }
@@ -242,8 +242,8 @@ export const AdminGroups = () => {
           loading={asyncItemCreate.loading}
           onClose={() => setSelectedGroupId(undefined)}
           confirmDisabled={!accessForm.formState.isValid}
-          onConfirm={(e) =>
-            accessForm.handleSubmit((f) => {
+          onConfirm={e =>
+            accessForm.handleSubmit(f => {
               if (selectedGroupId?.accessId) {
                 asyncItemItem.call(selectedGroupId.accessId, {
                   ...f,

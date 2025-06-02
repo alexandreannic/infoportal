@@ -12,13 +12,13 @@ export const useObjectState = <T extends object>(initialState: T): UseObjectStat
   const [state, setState] = useState<T>(initialState)
 
   const update = useCallback((updates: Partial<T>) => {
-    setState((prevState) => ({...prevState, ...updates}))
+    setState(prevState => ({...prevState, ...updates}))
   }, [])
 
   const reset = useCallback(() => setState(initialState), [initialState])
 
   const setProperty = useCallback(<K extends keyof T>(key: K, value: T[K]) => {
-    setState((prevState) => ({...prevState, [key]: value}))
+    setState(prevState => ({...prevState, [key]: value}))
   }, [])
 
   return {get: state, set: setState, update, reset, setProperty}

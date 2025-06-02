@@ -69,7 +69,7 @@ export const Fender = ({
     <Box
       {...props}
       sx={{
-        transition: (t) => t.transitions.create('all'),
+        transition: t => t.transitions.create('all'),
         display: 'flex',
         textAlign: 'center',
         alignItems: 'center',

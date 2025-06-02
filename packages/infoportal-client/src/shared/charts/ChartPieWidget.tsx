@@ -87,7 +87,7 @@ export const ChartPieWidget = ({
                 <Txt
                   sx={{
                     fontSize,
-                    color: (t) => (evolution > 0 ? t.palette.success.main : t.palette.error.main),
+                    color: t => (evolution > 0 ? t.palette.success.main : t.palette.error.main),
                     display: 'inline-flex',
                     alignItems: 'center',
                   }}

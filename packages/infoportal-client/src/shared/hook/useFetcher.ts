@@ -33,7 +33,7 @@ export const useFetcher = <F extends Func<Promise<any>>, E = any>(
   fetcher: F,
   {
     initialValue,
-    mapError = (_) => _,
+    mapError = _ => _,
   }: {
     initialValue?: FetcherResult<F>
     mapError?: (_: any) => E
@@ -57,7 +57,7 @@ export const useFetcher = <F extends Func<Promise<any>>, E = any>(
   const fetch = ({force = true, clean = true}: FetchParams = {}, ...args: any[]): Promise<FetcherResult<F>> => {
     fetch$.current.queryRef = fetch$.current.queryRef + 1
     const currQueryRef = fetch$.current.queryRef
-    setCallIndex((_) => _ + 1)
+    setCallIndex(_ => _ + 1)
     if (!force) {
       if (fetch$.current.query) {
         return fetch$.current.query!
@@ -81,7 +81,7 @@ export const useFetcher = <F extends Func<Promise<any>>, E = any>(
         }
         fetch$.current.query = undefined
       })
-      .catch((e) => {
+      .catch(e => {
         if (currQueryRef === fetch$.current.queryRef) {
           setEntity(undefined)
           setError(mapError(e))

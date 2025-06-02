@@ -12,7 +12,7 @@ export const AppHeaderFeatures = (props: Omit<IpIconBtnProps, 'children'>) => {
   const t = useTheme()
   return (
     <>
-      <IpIconBtn children="apps" onClick={(e) => setAnchorEl(e.currentTarget)} {...props} />
+      <IpIconBtn children="apps" onClick={e => setAnchorEl(e.currentTarget)} {...props} />
       <Popover
         anchorEl={anchorEl}
         anchorOrigin={{

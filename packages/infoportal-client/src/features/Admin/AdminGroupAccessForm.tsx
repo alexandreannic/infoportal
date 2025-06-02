@@ -39,7 +39,7 @@ export const AdminGroupAccessForm = ({form}: {form: UseFormReturn<IAccessForm>})
               dense
               error={!!form.formState.errors.selectBy}
               {...field}
-              onChange={(e) => {
+              onChange={e => {
                 setTimeout(() => {
                   form.setValue('drcJob', null)
                   form.setValue('drcOffice', null)

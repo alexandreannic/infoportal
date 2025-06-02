@@ -52,7 +52,7 @@ export const mapMultipleChoices = <T>(
   if (!value) {
     return defaultValue
   }
-  Object.keys(map).forEach((k) => {
+  Object.keys(map).forEach(k => {
     if (value?.includes(k)) res.push(map[k])
   })
   return res

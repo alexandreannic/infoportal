@@ -53,13 +53,13 @@ export class KoboHelper {
     (_: number): Date
     (_: undefined): undefined
     (_?: number | undefined): Date | undefined
-  } = (koboTs) => (koboTs ? new Date(koboTs * 1000) : undefined) as any
+  } = koboTs => (koboTs ? new Date(koboTs * 1000) : undefined) as any
 
   static readonly findAttachmentId = (
     attachments?: Kobo.Submission.Attachment[],
     fileName?: string,
   ): number | undefined => {
-    return fileName ? attachments?.find((x) => x.filename.includes(fileName))?.id : undefined
+    return fileName ? attachments?.find(x => x.filename.includes(fileName))?.id : undefined
   }
 
   static readonly mapValidation = {

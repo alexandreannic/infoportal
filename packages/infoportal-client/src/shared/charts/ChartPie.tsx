@@ -74,7 +74,7 @@ export const ChartPie = <T extends Record<string, number>>({
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '1.25em',
-            fontWeight: (t) => t.typography.fontWeightBold,
+            fontWeight: t => t.typography.fontWeightBold,
           }}
         >
           {valueInMiddle}
@@ -82,10 +82,10 @@ export const ChartPie = <T extends Record<string, number>>({
       )}
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
-          {!hideTooltip && <Tooltip formatter={(_) => toPercent(+_)} />}
+          {!hideTooltip && <Tooltip formatter={_ => toPercent(+_)} />}
           {children}
           <Pie
-            data={Obj.toArray(data).map((_) => {
+            data={Obj.toArray(data).map(_ => {
               _.name = m[_.name]
               return _
             })}
@@ -100,7 +100,7 @@ export const ChartPie = <T extends Record<string, number>>({
             {...props}
             // label={renderCustomizedLabel(data)}
           >
-            {colors && Object.keys(colors).map((k) => <Cell key={k} fill={colors[k] ?? theme.palette.primary.main} />)}
+            {colors && Object.keys(colors).map(k => <Cell key={k} fill={colors[k] ?? theme.palette.primary.main} />)}
           </Pie>
         </PieChart>
       </ResponsiveContainer>

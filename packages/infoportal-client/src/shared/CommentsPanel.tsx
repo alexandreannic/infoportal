@@ -23,7 +23,7 @@ export const CommentsPanel = memo(({data, height = 650, pageSize = 5}: CommentsP
   const {m, formatDateTime} = useI18n()
   return (
     <Box sx={{maxHeight: height, overflowY: 'auto'}}>
-      {data.slice(0, limit).map((row) => (
+      {data.slice(0, limit).map(row => (
         <Box
           key={row.id}
           sx={{
@@ -31,7 +31,7 @@ export const CommentsPanel = memo(({data, height = 650, pageSize = 5}: CommentsP
             pr: 1,
             '&:not(:last-of-type)': {
               mb: 2,
-              borderBottom: (t) => `1px solid ${t.palette.divider}`,
+              borderBottom: t => `1px solid ${t.palette.divider}`,
             },
           }}
         >
@@ -56,13 +56,13 @@ export const CommentsPanel = memo(({data, height = 650, pageSize = 5}: CommentsP
             variant="outlined"
             sx={{mr: 1}}
             color="primary"
-            onClick={() => setLimit((_) => _ - pageSize)}
+            onClick={() => setLimit(_ => _ - pageSize)}
           >
             {m.viewNMore(pageSize)}
           </IpBtn>
         )}
         {limit < data.length && (
-          <IpBtn icon="add" variant="outlined" color="primary" onClick={() => setLimit((_) => _ + pageSize)}>
+          <IpBtn icon="add" variant="outlined" color="primary" onClick={() => setLimit(_ => _ + pageSize)}>
             {m.viewNMore(pageSize)}
           </IpBtn>
         )}

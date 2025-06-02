@@ -26,7 +26,7 @@ export const AppHeaderContainer = ({children, sx, ...props}: BoxProps) => {
   useEffect(() => {
     setHydrated(true) // Prevents SSR mismatch
     header$ = null
-    map(props.id, (id) => {
+    map(props.id, id => {
       const fn = () => redesignHeaderOnTop(id)
       window.addEventListener('scroll', fn)
       return () => window.removeEventListener('scroll', fn)
@@ -61,7 +61,7 @@ export const AppHeaderContainer = ({children, sx, ...props}: BoxProps) => {
           // boxShadow: t.shadows[3],
           // mb: 2,
           pl: 2,
-          borderBottom: (t) => `1px solid ${t.palette.divider}`,
+          borderBottom: t => `1px solid ${t.palette.divider}`,
           ...sx,
         }}
       >

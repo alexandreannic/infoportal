@@ -36,7 +36,7 @@ export const ChartBar = <K extends string>(props: Props<K>) => {
       sx={{
         textAlign: 'center',
         mt: 2,
-        color: (t) => t.palette.text.disabled,
+        color: t => t.palette.text.disabled,
       }}
     >
       <Icon sx={{fontSize: '3em !important'}}>block</Icon>
@@ -64,10 +64,10 @@ export const ChartBarContent = <K extends string>({
     percents,
   } = useMemo(() => {
     const values = Obj.values(data) as BarChartData[]
-    const maxValue = Math.max(...values.map((_) => _.value))
+    const maxValue = Math.max(...values.map(_ => _.value))
     const sumValue = values.reduce((sum, _) => _.value + sum, 0)
     // const base = values[0]?.base ?? sumValue
-    const percents = values.map((_) => (_.value / (_.base ?? sumValue)) * 100)
+    const percents = values.map(_ => (_.value / (_.base ?? sumValue)) * 100)
     return {
       values,
       maxValue,
@@ -121,12 +121,10 @@ export const ChartBarContent = <K extends string>({
                       : {
                           mb: i === values.length - 1 ? 0 : 1,
                           borderBottom:
-                            i === values.length - 1 && !showLastBorder
-                              ? 'none'
-                              : (t) => `1px solid ${t.palette.divider}`,
-                          transition: (t) => t.transitions.create('background'),
+                            i === values.length - 1 && !showLastBorder ? 'none' : t => `1px solid ${t.palette.divider}`,
+                          transition: t => t.transitions.create('background'),
                           '&:hover': {
-                            background: (t) => alpha(item.color ?? t.palette.primary.main, 0.1),
+                            background: t => alpha(item.color ?? t.palette.primary.main, 0.1),
                           },
                         }),
                   }}
@@ -165,8 +163,8 @@ export const ChartBarContent = <K extends string>({
                           sx={{
                             flex: 1,
                             minWidth: 52,
-                            color: (t) => t.palette.primary.main,
-                            fontWeight: (t) => t.typography.fontWeightBold,
+                            color: t => t.palette.primary.main,
+                            fontWeight: t => t.typography.fontWeightBold,
                           }}
                         >
                           {percents[i].toFixed(1)}%
@@ -176,12 +174,12 @@ export const ChartBarContent = <K extends string>({
                   </Box>
                   <Box
                     sx={{
-                      transition: (t) => t.transitions.create('width', {duration: 800, delay: 0}),
+                      transition: t => t.transitions.create('width', {duration: 800, delay: 0}),
                       width: 0,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'flex-end',
-                      borderBottom: (t) => `${barHeight}px solid ${t.palette.primary.main}`,
+                      borderBottom: t => `${barHeight}px solid ${t.palette.primary.main}`,
                     }}
                     style={{
                       width: appeared ? `calc(${percentOfMax * 0.9}%)` : 0,

@@ -74,17 +74,17 @@ export class KoboService {
     if (!user.admin) {
       const access = await this.access
         .searchForUser({featureId: AppFeatureId.kobo_database, user})
-        .then((_) => seq(_).filter((_) => _.params?.koboFormId === params.formId))
+        .then(_ => seq(_).filter(_ => _.params?.koboFormId === params.formId))
       if (access.length === 0) return ApiPaginateHelper.make()([])
-      const hasEmptyFilter = access.some((_) => !_.params?.filters || Object.keys(_.params.filters).length === 0)
+      const hasEmptyFilter = access.some(_ => !_.params?.filters || Object.keys(_.params.filters).length === 0)
       if (!hasEmptyFilter) {
         const accessFilters = access
-          .map((_) => _.params?.filters)
+          .map(_ => _.params?.filters)
           .compact()
           .reduce<Record<string, string[]>>((acc, x) => {
             Obj.entries(x).forEach(([k, v]) => {
               if (Array.isArray(x[k])) {
-                acc[k] = seq([...(acc[k] ?? []), ...(x[k] ?? [])]).distinct((_) => _)
+                acc[k] = seq([...(acc[k] ?? []), ...(x[k] ?? [])]).distinct(_ => _)
               } else {
                 acc[k] = v as any
               }
@@ -104,18 +104,18 @@ export class KoboService {
   }
 
   readonly searchAnswersByUsersAccess = logPerformance({
-    message: (p) => `Fetch ${p.formId} by ${p.user?.email}`,
-    showResult: (res) => `(${res ? res.data.length : '...'} rows)`,
+    message: p => `Fetch ${p.formId} by ${p.user?.email}`,
+    showResult: res => `(${res ? res.data.length : '...'} rows)`,
     logger: (m: string) => this.log.info(m),
     fn: this._searchAnswersByUsersAccess,
   })
 
   readonly searchAnswers = app.cache.request({
     key: AppCacheKey.KoboAnswers,
-    cacheIf: (params) => {
+    cacheIf: params => {
       return false
     },
-    genIndex: (p) => p.formId,
+    genIndex: p => p.formId,
     ttlMs: duration(1, 'day').toMs,
     fn: (params: {
       // includeMeta?: boolean
@@ -148,8 +148,8 @@ export class KoboService {
               },
               formId,
               AND: {
-                OR: filters.filterBy?.flatMap((filter) =>
-                  Util.ensureArr(filter.value).map((v) => ({
+                OR: filters.filterBy?.flatMap(filter =>
+                  Util.ensureArr(filter.value).map(v => ({
                     answers: {
                       path: [filter.column],
                       ...(v
@@ -165,8 +165,8 @@ export class KoboService {
               },
             },
           })
-          .then((_) =>
-            _.map((d) => ({
+          .then(_ =>
+            _.map(d => ({
               start: d.start,
               end: d.end,
               date: d.date,
@@ -225,7 +225,7 @@ export class KoboService {
   }
 
   readonly createMany = (formId: Kobo.FormId, answers: KoboSubmission[]) => {
-    const inserts = answers.map((_) => KoboService.mapKoboAnswer(formId, _))
+    const inserts = answers.map(_ => KoboService.mapKoboAnswer(formId, _))
     return this.prisma.koboAnswers.createMany({
       data: inserts,
       skipDuplicates: true,
@@ -312,7 +312,7 @@ export class KoboService {
 
   readonly getSchema = app.cache.request({
     key: AppCacheKey.KoboSchema,
-    genIndex: (_) => _.formId,
+    genIndex: _ => _.formId,
     ttlMs: duration(2, 'day').toMs,
     fn: async ({formId}: {formId: Kobo.FormId}): Promise<Kobo.Form> => {
       const sdk = await this.sdkGenerator.getBy.formId(formId)
@@ -342,14 +342,14 @@ export class KoboService {
     const koboFormDetails = await this.getSchema({formId})
     const indexLabel = seq(koboFormDetails.content.survey)
       .compactBy('name')
-      .filter((_) => koboQuestionType.includes(_.type))
-      .reduceObject<Record<string, Kobo.Form.Question>>((_) => [_.name, _])
+      .filter(_ => koboQuestionType.includes(_.type))
+      .reduceObject<Record<string, Kobo.Form.Question>>(_ => [_.name, _])
     const indexOptionsLabels = seq(koboFormDetails.content.choices).reduceObject<Record<string, undefined | string>>(
-      (_) => [_.name, _.label?.[langIndex]],
+      _ => [_.name, _.label?.[langIndex]],
     )
-    return flatAnswers.map((d) => {
+    return flatAnswers.map(d => {
       const translated = {} as DbKoboAnswer
-      Obj.keys(d).forEach((k) => {
+      Obj.keys(d).forEach(k => {
         const translatedKey = indexLabel[k]?.label?.[langIndex] ?? k
         const translatedValue = (() => {
           if (k === 'submissionTime') {
@@ -366,7 +366,7 @@ export class KoboService {
               start: () => format(d[k], 'yyyy-MM-dd'),
               end: () => format(d[k], 'yyyy-MM-dd'),
             },
-            (_) => indexOptionsLabels[d[k]] ?? d[k],
+            _ => indexOptionsLabels[d[k]] ?? d[k],
           )
         })()
         ;(translated as any)[translatedKey.replace(/(<([^>]+)>)/gi, '')] = translatedValue
@@ -424,7 +424,7 @@ export class KoboService {
   private static readonly safeJsonValue = (_: string): string => _.replace(/'/g, "''")
 
   private static readonly safeIds = (ids: string[]): string[] => {
-    return ids.map((_) => {
+    return ids.map(_ => {
       if (!/^\d+$/.test(_)) throw new AppError.WrongFormat(`Invalid id ${_}`)
       return `'${_}'`
     })
@@ -450,7 +450,7 @@ export class KoboService {
           id: {in: answerIds},
         },
       }),
-      this.sdkGenerator.getBy.formId(formId).then((_) => _.v2.submission.delete({formId, submissionIds: answerIds})),
+      this.sdkGenerator.getBy.formId(formId).then(_ => _.v2.submission.delete({formId, submissionIds: answerIds})),
     ])
     this.history.create({
       type: 'delete',
@@ -573,13 +573,13 @@ export class KoboService {
     authorEmail: string
   }) => {
     const safeTags = Obj.keys(tags)
-      .map((key) => {
+      .map(key => {
         if (/[{}'"]/.test(key)) throw new AppError.WrongFormat(`Invalid key ${key}`)
         return `tags = jsonb_set(COALESCE(tags, '{}'::jsonb), '{${key}}', '${KoboService.safeJsonValue(JSON.stringify(tags[key]))}')`
       })
       .join(',')
     await Promise.all([
-      Obj.keys(tags).map((tag) => {
+      Obj.keys(tags).map(tag => {
         this.history.create({
           type: 'tag',
           formId,

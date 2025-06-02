@@ -58,17 +58,17 @@ export namespace KoboUpdateModal {
     const [value, setValue] = useState<any>()
     const {m} = useI18n()
     const _options = useMemo(() => {
-      const harmonized: KoboEditModalOption[] | undefined = options?.map((x) =>
+      const harmonized: KoboEditModalOption[] | undefined = options?.map(x =>
         typeof x === 'string' ? {value: x, label: x} : x,
       ) as any
       const resetOption: KoboEditModalOption = {value: null, label: 'BLANK', desc: ' '}
-      return [resetOption, ...(harmonized ?? [])].map((_) => (
+      return [resetOption, ...(harmonized ?? [])].map(_ => (
         <ScRadioGroupItem
           dense
           disabled={
             type === 'select_multiple' &&
             _.value !== null &&
-            ((value ?? []) as KoboEditModalOption[]).some((_) => _ === null)
+            ((value ?? []) as KoboEditModalOption[]).some(_ => _ === null)
           }
           key={_.value}
           value={_.value}
@@ -126,7 +126,7 @@ export namespace KoboUpdateModal {
                 }
                 case 'select_multiple': {
                   return (
-                    <ScRadioGroup dense multiple value={value ?? []} onChange={(_) => setValue(_)}>
+                    <ScRadioGroup dense multiple value={value ?? []} onChange={_ => setValue(_)}>
                       {_options}
                     </ScRadioGroup>
                   )
@@ -134,12 +134,12 @@ export namespace KoboUpdateModal {
                 case 'text':
                 case 'calculate': {
                   return (
-                    <IpInput multiline maxRows={9} fullWidth value={value} onChange={(e) => setValue(e.target.value)} />
+                    <IpInput multiline maxRows={9} fullWidth value={value} onChange={e => setValue(e.target.value)} />
                   )
                 }
                 case 'integer':
                 case 'decimal': {
-                  return <IpInput type="number" fullWidth value={value} onChange={(e) => setValue(e.target.value)} />
+                  return <IpInput type="number" fullWidth value={value} onChange={e => setValue(e.target.value)} />
                 }
                 case 'datetime':
                 case 'date': {
@@ -188,7 +188,7 @@ export namespace KoboUpdateModal {
         type={columnDef?.type as any}
         options={
           columnDef
-            ? schema?.helper.choicesIndex[columnDef.select_from_list_name!]?.map((_) => ({
+            ? schema?.helper.choicesIndex[columnDef.select_from_list_name!]?.map(_ => ({
                 value: _.name,
                 desc: _.name,
                 label: schema.translate.choice(columnName, _.name),
@@ -227,7 +227,7 @@ export namespace KoboUpdateModal {
         fetcherUpdate={fetcherUpdate}
         title={`${m.edit} (${answerIds.length}) - ${m.validation}`}
         type="select_one"
-        options={Obj.values(KoboValidation).map((_) => ({
+        options={Obj.values(KoboValidation).map(_ => ({
           value: _,
           label: _,
           before: (

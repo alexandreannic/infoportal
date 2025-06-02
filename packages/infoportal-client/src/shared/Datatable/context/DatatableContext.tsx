@@ -61,7 +61,7 @@ export const DatatableProvider = <T extends DatatableRow>({
 }) => {
   const selected = useSetState<string>()
   const columnsIndex = useMemo(
-    () => seq(columns).reduceObject<Record<string, DatatableColumn.InnerProps<T>>>((_) => [_.id, _]),
+    () => seq(columns).reduceObject<Record<string, DatatableColumn.InnerProps<T>>>(_ => [_.id, _]),
     [columns],
   )
   const data = useDatatableData<T>({

@@ -34,7 +34,7 @@ export const DatatableHead = (() => {
       <thead>
         <TableHeadSectionCell hasCheckboxColumn={!!select?.getId} columns={columns} onHideColumns={onHideColumns} />
         <tr className="tr">
-          {map(select?.getId, (getId) => (
+          {map(select?.getId, getId => (
             <th className="td th td-center td-width0 td-sticky-start">
               <Checkbox
                 size="small"
@@ -69,7 +69,7 @@ export const DatatableHead = (() => {
                       center: 'td-center',
                       right: 'td-right',
                     },
-                    (_) => '',
+                    _ => '',
                   ),
                 ].join(' ')}
               >
@@ -82,7 +82,7 @@ export const DatatableHead = (() => {
         </tr>
         <tr>
           {select?.getId && <td className="td-sticky-start td" />}
-          {columns.map((c) => {
+          {columns.map(c => {
             const sortedByThis = search.sortBy === c.id
             const active = sortedByThis || !!filters[c.id]
             return (
@@ -94,8 +94,8 @@ export const DatatableHead = (() => {
                 <DatatableHeadTdBody
                   column={c}
                   active={active}
-                  onOpenStats={(e) => onOpenStats(c.id, e)}
-                  onOpenFilter={(e) => onOpenFilter(c.id, e)}
+                  onOpenStats={e => onOpenStats(c.id, e)}
+                  onOpenFilter={e => onOpenFilter(c.id, e)}
                 />
               </td>
             )
@@ -160,13 +160,13 @@ const DatatableHeadTdBody = ({
           case 'select_multiple':
           case 'date':
           case 'number':
-            return <TableIconBtn children="bar_chart" onClick={(e) => onOpenStats(e)} />
+            return <TableIconBtn children="bar_chart" onClick={e => onOpenStats(e)} />
           case 'id':
             return <DatatableHeadCopyIds column={column} />
         }
       })()}
       {column.type && (
-        <TableIconBtn color={active ? 'primary' : undefined} children="filter_alt" onClick={(e) => onOpenFilter(e)} />
+        <TableIconBtn color={active ? 'primary' : undefined} children="filter_alt" onClick={e => onOpenFilter(e)} />
       )}
     </span>
   )

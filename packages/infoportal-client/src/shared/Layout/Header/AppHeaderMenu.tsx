@@ -14,7 +14,7 @@ const Row = ({icon, children}: {icon: string; children: ReactNode}) => {
         alignItems: 'center',
       }}
     >
-      <Icon sx={{mr: 1, my: 0.25, color: (t) => t.palette.text.secondary}}>{icon}</Icon>
+      <Icon sx={{mr: 1, my: 0.25, color: t => t.palette.text.secondary}}>{icon}</Icon>
       <Txt block color="hint">
         {children}
       </Txt>
@@ -32,7 +32,7 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
   }
   return (
     <>
-      <AppAvatar size={36} email={session.session.email} onClick={(e) => setAnchorEl(e.currentTarget)} {...props} />
+      <AppAvatar size={36} email={session.session.email} onClick={e => setAnchorEl(e.currentTarget)} {...props} />
       <Popover
         anchorEl={anchorEl}
         anchorOrigin={{

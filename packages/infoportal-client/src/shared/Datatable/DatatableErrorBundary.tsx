@@ -71,7 +71,7 @@ export class DatatableErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
           </IpBtn>
 
           <Box
-            sx={(t) => ({
+            sx={t => ({
               fontFamily: 'monospace',
               py: 1,
               mt: 2,

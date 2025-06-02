@@ -46,7 +46,7 @@ export class AccessSdk {
       return !featureId || access.featureId === featureId
     }
 
-  readonly create: AccessCreate = async (body) => {
+  readonly create: AccessCreate = async body => {
     return this.client.put<Access>(`/access`, {body})
   }
 
@@ -59,11 +59,11 @@ export class AccessSdk {
   }
 
   readonly search: SearchByFeature = <T = any>(params: AccessSearch): Promise<Access<T>[]> => {
-    return this.client.get<Record<keyof Access, any>[]>(`/access`, {qs: params}).then((_) => _.map(Access.map))
+    return this.client.get<Record<keyof Access, any>[]>(`/access`, {qs: params}).then(_ => _.map(Access.map))
   }
 
   readonly searchForConnectedUser: SearchByFeature = <T = any>(params: AccessSearch): Promise<Access<T>[]> => {
-    return this.client.get<Record<keyof Access, any>[]>(`/access/me`, {qs: params}).then((_) => _.map(Access.map))
+    return this.client.get<Record<keyof Access, any>[]>(`/access/me`, {qs: params}).then(_ => _.map(Access.map))
   }
 
   // readonly searchByFeature: SearchByFeature = (featureId) => {

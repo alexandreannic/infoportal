@@ -60,7 +60,7 @@ export const PeriodPickerNative = ({min, max, value, onChange, label, fullWidth,
           className: 'aa-datepicker-min',
         }}
         InputProps={{
-          sx: (_) => ({
+          sx: _ => ({
             borderBottomRightRadius: 0,
             borderTopRightRadius: 0,
           }),
@@ -76,7 +76,7 @@ export const PeriodPickerNative = ({min, max, value, onChange, label, fullWidth,
         value={end}
         onChange={handleEndChange}
         InputProps={{
-          sx: (_) => ({
+          sx: _ => ({
             borderBottomLeftRadius: 0,
             borderTopLeftRadius: 0,
           }),

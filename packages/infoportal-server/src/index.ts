@@ -35,19 +35,19 @@ export const App = (config: AppConf = appConf) => {
         }),
         winston.format.colorize(),
         winston.format.simple(),
-        format.printf((props) => `${props.timestamp} [${props.label}] ${props.level}: ${props.message}`),
+        format.printf(props => `${props.timestamp} [${props.label}] ${props.level}: ${props.message}`),
       ),
       transports: [
         ...(config.production && !config.cors.allowOrigin.includes('localhost')
           ? [
-            new Syslog({
-              host: 'logs.papertrailapp.com',
-              port: 32079,
-              protocol: 'tls4',
-              localhost: os.hostname(),
-              eol: '\n',
-            }),
-          ]
+              new Syslog({
+                host: 'logs.papertrailapp.com',
+                port: 32079,
+                protocol: 'tls4',
+                localhost: os.hostname(),
+                eol: '\n',
+              }),
+            ]
           : []),
         new winston.transports.Console({
           level: appConf.logLevel,
@@ -106,7 +106,7 @@ const startApp = async (conf: AppConf) => {
   // } else {
   start()
   if (appConf.production) {
-    process.on('uncaughtException', (err) => {
+    process.on('uncaughtException', err => {
       log.error('Uncaught Exception:', err)
       process.exit(1)
     })

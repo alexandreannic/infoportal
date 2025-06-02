@@ -10,7 +10,7 @@ export class IpPacer {
       if (queue.length > 0) {
         const copy = [...queue]
         queue = []
-        fn(copy).catch((e) => {
+        fn(copy).catch(e => {
           this.log.error(`Failed to insert ${copy.length}`)
           return Promise.reject(e)
         })

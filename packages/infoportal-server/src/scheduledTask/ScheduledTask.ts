@@ -10,8 +10,7 @@ export class ScheduledTask {
     private koboApiService = new KoboSyncServer(prisma),
     private conf = appConf,
     private log = app.logger('ScheduledTask'),
-  ) {
-  }
+  ) {}
 
   readonly start = async () => {
     cron.schedule('0 2 * * *', () => {

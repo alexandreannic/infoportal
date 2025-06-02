@@ -108,7 +108,7 @@ export class KoboMapper {
 
   static readonly mapAnswerMetaData = (
     k: Partial<Record<keyof KoboSubmissionMetaData, any>>,
-    fnMapTags: (x: any) => any = (_) => _,
+    fnMapTags: (x: any) => any = _ => _,
   ): KoboSubmissionFlat<any, KoboBaseTags> => {
     delete (k as any)['deviceid']
     return {

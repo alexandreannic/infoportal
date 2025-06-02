@@ -153,7 +153,7 @@ export class KoboSyncServer {
   private readonly _syncApiFormAnswers = async (formId: Kobo.FormId): Promise<KoboSyncServerResult> => {
     const sdk = await this.koboSdkGenerator.getBy.formId(formId)
     this.debug(formId, `Fetch remote answers...`)
-    const remoteAnswers = await sdk.v2.submission.getRaw({formId}).then((_) => _.results.map(KoboSyncServer.mapAnswer))
+    const remoteAnswers = await sdk.v2.submission.getRaw({formId}).then(_ => _.results.map(KoboSyncServer.mapAnswer))
     const remoteIdsIndex: Map<Kobo.FormId, KoboSubmission> = remoteAnswers.reduce(
       (map, curr) => map.set(curr.id, curr),
       new Map<Kobo.FormId, KoboSubmission>(),
@@ -163,7 +163,7 @@ export class KoboSyncServer {
     this.debug(formId, `Fetch local answers...`)
     const localAnswersIndex = await this.prisma.koboAnswers
       .findMany({where: {formId, deletedAt: null}, select: {id: true, lastValidatedTimestamp: true, uuid: true}})
-      .then((_) => {
+      .then(_ => {
         return _.reduce(
           (map, {id, ...rest}) => map.set(id, rest),
           new Map<Kobo.FormId, {lastValidatedTimestamp: null | number; uuid: UUID}>(),
@@ -172,7 +172,7 @@ export class KoboSyncServer {
     this.debug(formId, `Fetch local answers... ${localAnswersIndex.size} fetched.`)
 
     const handleDelete = async () => {
-      const idsToDelete = [...localAnswersIndex.keys()].filter((_) => !remoteIdsIndex.has(_))
+      const idsToDelete = [...localAnswersIndex.keys()].filter(_ => !remoteIdsIndex.has(_))
       const tracker = genUUID().slice(0, 5)
       this.info(formId, `Handle delete ${tracker} (${idsToDelete.length})...`)
       if (idsToDelete.length) {
@@ -186,7 +186,7 @@ export class KoboSyncServer {
         concurrency: 1,
         data: idsToDelete,
         size: this.conf.db.maxPreparedStatementParams,
-        fn: (ids) => {
+        fn: ids => {
           return this.prisma.koboAnswers.updateMany({
             data: {
               deletedAt: new Date(),
@@ -200,10 +200,10 @@ export class KoboSyncServer {
     }
 
     const handleCreate = async () => {
-      const notInsertedAnswers = remoteAnswers.filter((_) => !localAnswersIndex.has(_.id))
+      const notInsertedAnswers = remoteAnswers.filter(_ => !localAnswersIndex.has(_.id))
       this.debug(formId, `Handle create (${notInsertedAnswers.length})...`)
       await this.service.createMany(formId, notInsertedAnswers)
-      const inserts = notInsertedAnswers.map((_) => {
+      const inserts = notInsertedAnswers.map(_ => {
         const res: Prisma.KoboAnswersUncheckedCreateInput = {
           formId,
           answers: _.answers,
@@ -244,7 +244,7 @@ export class KoboSyncServer {
         .compact()
       this.debug(formId, `Handle validation (${answersToUpdate.length})...`)
       await Promise.all(
-        answersToUpdate.map((a) => {
+        answersToUpdate.map(a => {
           this.event.emit(GlobalEvent.Event.KOBO_VALIDATION_EDITED_FROM_KOBO, {
             formId,
             answerIds: [a.id],
@@ -274,16 +274,16 @@ export class KoboSyncServer {
       const previewsAnswersById = await this.prisma.koboAnswers
         .findMany({
           select: {id: true, answers: true},
-          where: {id: {in: answersToUpdate.map((_) => _.id)}},
+          where: {id: {in: answersToUpdate.map(_ => _.id)}},
         })
-        .then((_) =>
+        .then(_ =>
           seq(_).groupByAndApply(
-            (_) => _.id,
-            (_) => _[0].answers as Record<string, any>,
+            _ => _.id,
+            _ => _[0].answers as Record<string, any>,
           ),
         )
       await Promise.all(
-        answersToUpdate.map((a) => {
+        answersToUpdate.map(a => {
           this.event.emit(GlobalEvent.Event.KOBO_ANSWER_EDITED_FROM_KOBO, {
             formId,
             answerIds: [a.id],
@@ -325,9 +325,9 @@ export class KoboSyncServer {
   }
 
   private readonly syncApiFormAnswers = logPerformance({
-    logger: (_) => this.log.info(_),
-    message: (formId) => `Sync answers for ${formId}.`,
-    showResult: (r) =>
+    logger: _ => this.log.info(_),
+    message: formId => `Sync answers for ${formId}.`,
+    showResult: r =>
       `${r.answersCreated.length} created, ${r.answersUpdated.length} updated, ${r.answersIdsDeleted.length} deleted.`,
     fn: this._syncApiFormAnswers,
   })

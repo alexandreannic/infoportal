@@ -28,7 +28,7 @@ export const ChartBarStackedSplit = ({
     '#FF6F61',
     '#7FDBFF',
   ]
-  const allKeys = seq(data.flatMap(({key, ...other}) => Object.keys(other))).distinct((_) => _)
+  const allKeys = seq(data.flatMap(({key, ...other}) => Object.keys(other))).distinct(_ => _)
   height = height ?? width ?? 340
   width = width ?? '100%'
   return (

@@ -33,15 +33,15 @@ export const KoboAnswersProvider = ({children}: {children: ReactNode}) => {
   const fetcher = useFetchers(
     async (id: Kobo.SubmissionId) => {
       const [schema, answers] = await Promise.all([
-        ctxSchema.fetchById(id).then((_) => KoboSchemaHelper.buildHelper({schema: _})),
+        ctxSchema.fetchById(id).then(_ => KoboSchemaHelper.buildHelper({schema: _})),
         api.kobo.answer.searchByAccess({formId: id}),
       ])
       return {
         ...answers,
-        data: answers.data.map((_) => KoboMapper.mapAnswerBySchema(schema.questionIndex, _)),
+        data: answers.data.map(_ => KoboMapper.mapAnswerBySchema(schema.questionIndex, _)),
       }
     },
-    {requestKey: (_) => _[0]},
+    {requestKey: _ => _[0]},
   )
 
   const byId = useMemo(() => {
@@ -54,7 +54,7 @@ export const KoboAnswersProvider = ({children}: {children: ReactNode}) => {
         return fetcher.fetch(p, id) as any
       },
       find: (answerId: Kobo.SubmissionId) => {
-        return fetcher.get[id]?.data.find((_) => _.id === answerId) as KoboMappedAnswer
+        return fetcher.get[id]?.data.find(_ => _.id === answerId) as KoboMappedAnswer
       },
       loading: fetcher.loading[id],
     })

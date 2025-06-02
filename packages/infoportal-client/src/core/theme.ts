@@ -12,19 +12,19 @@ export const makeStyle = (_: SxProps<Theme>) => _
 
 export const sxUtils = makeSx({
   fontBig: {
-    fontSize: (t) => t.typography.fontSize * 1.15,
+    fontSize: t => t.typography.fontSize * 1.15,
   },
   fontNormal: {
-    fontSize: (t) => t.typography.fontSize,
+    fontSize: t => t.typography.fontSize,
   },
   fontSmall: {
-    fontSize: (t) => t.typography.fontSize * 0.85,
+    fontSize: t => t.typography.fontSize * 0.85,
   },
   fontTitle: {
-    fontSize: (t) => t.typography.fontSize * 1.3,
+    fontSize: t => t.typography.fontSize * 1.3,
   },
   fontBigTitle: {
-    fontSize: (t) => t.typography.fontSize * 1.6,
+    fontSize: t => t.typography.fontSize * 1.6,
   },
   tdActions: {
     textAlign: 'right',
@@ -598,14 +598,14 @@ export const themeLightScrollbar: SxProps<Theme> = {
     height: '10px',
   },
   '&::-webkit-scrollbar-track': {
-    borderTop: (t) => '1px solid ' + t.palette.divider,
+    borderTop: t => '1px solid ' + t.palette.divider,
     // borderRadius: 40,
   },
   '&::-webkit-scrollbar-thumb': {
     border: '3px solid transparent',
     height: '4px',
     borderRadius: 40,
-    background: (t) => t.palette.text.disabled,
+    background: t => t.palette.text.disabled,
     backgroundClip: 'content-box',
     // backgroundColor: 'darkgrey',
   },

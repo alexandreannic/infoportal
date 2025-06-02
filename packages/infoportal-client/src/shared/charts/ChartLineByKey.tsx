@@ -21,18 +21,18 @@ export const ChartLineByKey = <T extends {end: Date}, K extends KeyOfType<T, und
   translations?: Partial<Record<T[K], string>>
 }) => {
   const transform: ChartLineData[] = useMemo(() => {
-    return Obj.entries(data.groupBy((_) => format(getDate(_), 'yyyy-MM'))).map(([date, group]) => {
+    return Obj.entries(data.groupBy(_ => format(getDate(_), 'yyyy-MM'))).map(([date, group]) => {
       const res = {} as ChartLineData
       group
-        .map((_) => _[question])
-        .filter((_) => _ !== undefined && (!displayedValues || displayedValues?.includes(_ as any)))
-        .forEach((_) => {
+        .map(_ => _[question])
+        .filter(_ => _ !== undefined && (!displayedValues || displayedValues?.includes(_ as any)))
+        .forEach(_ => {
           // @ts-ignore
           if (!res[_]) res[_] = 1
           // @ts-ignore
           else res[_] += 1
         })
-      Obj.keys(res).forEach((k) => {
+      Obj.keys(res).forEach(k => {
         res[k] = Math.round((res[k] / group.length) * 100)
       })
       res.name = date

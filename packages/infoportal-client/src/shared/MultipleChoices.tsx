@@ -44,9 +44,9 @@ export const useMultipleChoices = <T extends string>({
 }: UseMultipleChoicesProps<T>): UseMultipleChoicesRes<T> => {
   const [innerValue, setInnerValue] = useState<T[]>(value ?? initialValue ?? [])
 
-  const allValues = useMemo(() => options.map((_) => _.value), [options])
+  const allValues = useMemo(() => options.map(_ => _.value), [options])
 
-  const someChecked = !!allValues.find((_) => innerValue?.includes(_))
+  const someChecked = !!allValues.find(_ => innerValue?.includes(_))
 
   const allChecked = allValues.length === innerValue?.length
 
@@ -55,7 +55,7 @@ export const useMultipleChoices = <T extends string>({
   }
 
   const onClick = (v: T) => {
-    setInnerValue((prev) => (prev.includes(v) ? prev.filter((_) => _ !== v) : [...prev, v]))
+    setInnerValue(prev => (prev.includes(v) ? prev.filter(_ => _ !== v) : [...prev, v]))
   }
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export const useMultipleChoices = <T extends string>({
         ? [{value: DatatableUtils.blank, label: DatatableUtils.blankLabel} as MultipleChoicesChoice<any>]
         : []),
       ...options,
-    ].map((_) => ({
+    ].map(_ => ({
       ..._,
       key: _.key ?? _.value,
       checked: innerValue.includes(_.value),

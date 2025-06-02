@@ -47,7 +47,7 @@ export const DashboardFilterOptions = ({
   Pick<BoxProps, 'sx'>) => {
   const options = useCallback(() => props.options(), [props.options])
   const valuesLabel = useCallback(() => {
-    return value.map((_) => (options() ?? []).find((o) => o.value === _)?.label)
+    return value.map(_ => (options() ?? []).find(o => o.value === _)?.label)
   }, [value, options])
 
   return (
@@ -60,7 +60,7 @@ export const DashboardFilterOptions = ({
           {value.length > 1 && <>&nbsp;+ {value.length - 1}</>}
         </>
       }
-      children={(open) => open && <DashboardFilterOptionsContent {...props} value={value} onChange={onChange} />}
+      children={open => open && <DashboardFilterOptionsContent {...props} value={value} onChange={onChange} />}
       {...props}
     />
   )
@@ -109,7 +109,7 @@ export const DashboardFilterOptionsContent = ({
           choices.onClick(e.target.name)
         }}
       >
-        {choices.options.map((o) => (
+        {choices.options.map(o => (
           <FormControlLabel
             key={o.value}
             control={<Checkbox size="small" name={o.value ?? undefined} checked={o.checked} />}

@@ -94,7 +94,7 @@ export const KoboUpdateProvider = ({children}: {children: ReactNode}) => {
     if (!currentAnswers) return
     ctxAnswers.byId(formId).set({
       ...currentAnswers,
-      data: currentAnswers.data.map((a) => {
+      data: currentAnswers.data.map(a => {
         if (idsIndex.has(a.id)) {
           if (isTag) {
             if (!a.tags) a.tags = {}
@@ -161,7 +161,7 @@ export const KoboUpdateProvider = ({children}: {children: ReactNode}) => {
             answerIds: p.answerIds,
           })
         })
-        .catch((e) => {
+        .catch(e => {
           ctxAnswers.byId(p.formId).fetch({force: true, clean: false})
           return Promise.reject(e)
         })
@@ -182,10 +182,10 @@ export const KoboUpdateProvider = ({children}: {children: ReactNode}) => {
           if (!currentAnswers) return
           ctxAnswers.byId(formId).set({
             ...currentAnswers,
-            data: currentAnswers.data.filter((a) => !idsIndex.has(a.id)),
+            data: currentAnswers.data.filter(a => !idsIndex.has(a.id)),
           })
         })
-        .catch((e) => {
+        .catch(e => {
           toastHttpError(e)
           ctxAnswers.byId(formId).fetch({force: true, clean: false})
           return Promise.reject(e)

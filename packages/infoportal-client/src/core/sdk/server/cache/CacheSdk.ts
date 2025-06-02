@@ -6,8 +6,8 @@ export class CacheSdk {
   constructor(private client: ApiClient) {}
 
   readonly get = (): Promise<Record<string, IpCacheData<any>>> => {
-    return this.client.get<Record<string, IpCacheData<any>>>(`/cache`).then((res) => {
-      return Obj.mapValues(res, (_) => {
+    return this.client.get<Record<string, IpCacheData<any>>>(`/cache`).then(res => {
+      return Obj.mapValues(res, _ => {
         if (_.lastUpdate) _.lastUpdate = new Date(_.lastUpdate)
         return _
       })

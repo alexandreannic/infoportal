@@ -18,7 +18,7 @@ export const PeriodPickerMui2 = ({min, max, value, onChange, label, fullWidth, s
   const shortcutsItems: PickersShortcutsItem<DateRange<Date>>[] = useMemo(() => {
     const today = new Date()
     const limit = 7
-    const months: PickersShortcutsItem<DateRange<Date>>[] = mapFor(limit, (i) => {
+    const months: PickersShortcutsItem<DateRange<Date>>[] = mapFor(limit, i => {
       const currentDate = subMonths(today, limit - 1 - i)
       return {
         label: format(currentDate, 'MMMM yyyy'),
@@ -47,14 +47,14 @@ export const PeriodPickerMui2 = ({min, max, value, onChange, label, fullWidth, s
           ref={anchor as any}
           label={label?.[0] ?? m.start}
           value={start}
-          onClick={() => setOpen((_) => !_)}
+          onClick={() => setOpen(_ => !_)}
           onChange={console.log}
           sx={{marginRight: '-1px'}}
           inputProps={{
             className: 'aa-datepicker-min',
           }}
           InputProps={{
-            sx: (_) => ({
+            sx: _ => ({
               borderBottomRightRadius: 0,
               borderTopRightRadius: 0,
             }),
@@ -70,12 +70,12 @@ export const PeriodPickerMui2 = ({min, max, value, onChange, label, fullWidth, s
           size="small"
           fullWidth={fullWidth}
           InputLabelProps={{shrink: true}}
-          onClick={() => setOpen((_) => !_)}
+          onClick={() => setOpen(_ => !_)}
           label={label?.[1] ?? m.end}
           value={end}
           onChange={console.log}
           InputProps={{
-            sx: (_) => ({
+            sx: _ => ({
               borderBottomLeftRadius: 0,
               borderTopLeftRadius: 0,
             }),

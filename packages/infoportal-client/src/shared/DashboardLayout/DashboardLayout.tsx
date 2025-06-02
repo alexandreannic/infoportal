@@ -23,15 +23,15 @@ const style = makeSx({
     marginTop: '-30px',
     paddingTop: '70px',
     mb: 2,
-    transition: (t) => t.transitions.create('all'),
+    transition: t => t.transitions.create('all'),
   },
   sectionShrinked: {
     mb: 0,
   },
   iconExpand: {
-    transition: (t) => t.transitions.create('all'),
+    transition: t => t.transitions.create('all'),
     ml: 1,
-    color: (t) => t.palette.text.disabled,
+    color: t => t.palette.text.disabled,
   },
   iconExpendShrinked: {
     transform: 'rotate(180deg)',
@@ -39,9 +39,9 @@ const style = makeSx({
 })
 
 const spyTitles = (sections: string[], fn: (sectionName: string) => void) => {
-  const sections$ = sections.map((_) => document.getElementById(_))
+  const sections$ = sections.map(_ => document.getElementById(_))
   const set = () => {
-    const index = sections$.findIndex((_) => window.scrollY >= (_?.offsetTop ?? -1) - 140)
+    const index = sections$.findIndex(_ => window.scrollY >= (_?.offsetTop ?? -1) - 140)
     fn(sections[index])
   }
   window.addEventListener('scroll', set)
@@ -81,12 +81,12 @@ export const DashboardLayout = ({
   useEffect(() => {
     if (!sections) return
     if (sections.length === 0) return
-    spyTitles(sections.map((_) => _.name).reverse(), (s: string) => {
+    spyTitles(sections.map(_ => _.name).reverse(), (s: string) => {
       if (s && s !== activeSection) {
         setActiveSection(s)
       }
     })
-    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault()
         // @ts-ignore
@@ -108,9 +108,9 @@ export const DashboardLayout = ({
             id={dashboardHeaderId}
           />
         }
-        sidebar={map(sections, (_) => (
+        sidebar={map(sections, _ => (
           <Sidebar headerId={dashboardHeaderId} showThemeToggle>
-            {_.map((s) => (
+            {_.map(s => (
               <SidebarItem icon={s.icon} key={s.name} href={'#' + s.name} active={activeSection === s.name}>
                 {s.title}
               </SidebarItem>
@@ -120,7 +120,7 @@ export const DashboardLayout = ({
       >
         <Page width={pageWidth} sx={{mb: 2}}>
           {beforeSection}
-          {sections?.map((s) => (
+          {sections?.map(s => (
             <Box key={s.name}>
               <Typography
                 id={s.name}

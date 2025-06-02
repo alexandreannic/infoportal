@@ -39,7 +39,7 @@ export namespace DataFilter {
   }
 
   export const buildOptions = (opt: string[], addBlank?: boolean): ShapeOption[] => {
-    return [...(addBlank ? [blankOption] : []), ...opt.map((_) => buildOption(_))]
+    return [...(addBlank ? [blankOption] : []), ...opt.map(_ => buildOption(_))]
   }
 
   export const buildOption = (value: string, label?: ReactNode): ShapeOption => {
@@ -66,15 +66,15 @@ export namespace DataFilter {
         .map(([filterName, filterValue]) => {
           if (!filterValue || filterValue.length <= 0) return
           const shape = shapes[filterName]!
-          if (shape.customFilter) return (_) => shape.customFilter!(filterValue, _)
+          if (shape.customFilter) return _ => shape.customFilter!(filterValue, _)
           if (!shape.getValue) throw new Error('Either getValue or customFilter should be defined for ' + filterName)
           if (shape.multiple)
-            return (_) =>
-              !!filterValue.find((f) => {
+            return _ =>
+              !!filterValue.find(f => {
                 const v = shape.getValue!(_)
                 return (f === DataFilter.blank && (v ?? []).length === 0) || v?.includes(f as any)
               })
-          return (_) => filterValue.includes(shape.getValue!(_) as any)
+          return _ => filterValue.includes(shape.getValue!(_) as any)
         }),
     ) as Seq<TData>
   }

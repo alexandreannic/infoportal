@@ -40,8 +40,8 @@ export const NumberChoicesPopover = <T,>({
   const chart = useMemo(() => {
     const mapped = seq(data)
       .map((_, i) => (mapValues ? mapValues(_, i) : _[question]))
-      .filter((_) => _ !== undefined && _ !== '')
-      .map((_) => +_)
+      .filter(_ => _ !== undefined && _ !== '')
+      .map(_ => +_)
     const min = Math.min(...mapped)
     const max = Math.max(...mapped)
     const sum = mapped.sum()
@@ -104,7 +104,7 @@ export const MultipleChoicesPopover = <T extends DatatableRow>({
       }
     })()
     return chart
-      .setLabel(seq(translations).reduceObject<Record<string, ReactNode>>((_) => [_.value!, _.label!]))
+      .setLabel(seq(translations).reduceObject<Record<string, ReactNode>>(_ => [_.value!, _.label!]))
       .sortBy.value()
       .get()
   }, [getValue, data, translations])

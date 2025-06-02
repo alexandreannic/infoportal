@@ -39,14 +39,14 @@ export const useDatabaseView = (formId: Kobo.FormId) => {
   )
 
   const asyncViewDelete = useAsync((id: UUID) =>
-    api.databaseView.delete(id).then((_) => {
-      fetcherViews.set((_) => _?.filter((_) => _.id !== id))
+    api.databaseView.delete(id).then(_ => {
+      fetcherViews.set(_ => _?.filter(_ => _.id !== id))
     }),
   )
 
   const currentView = useMemo(() => {
     if (!fetcherViews.get) return
-    const match = fetcherViews.get.find((_) => _.id === currentViewId)
+    const match = fetcherViews.get.find(_ => _.id === currentViewId)
     return match ?? fetcherViews.get[0]
   }, [currentViewId, fetcherViews.get])
 
@@ -56,7 +56,7 @@ export const useDatabaseView = (formId: Kobo.FormId) => {
   const asyncViewUpdate = useAsync(async (view: DatabaseView, changes: Partial<Pick<DatabaseView, 'visibility'>>) => {
     if (!canUpdateView(view)) return
     api.databaseView.update({id: view.id, ...changes})
-    fetcherViews.set((_) => _?.map((_) => (_.id === view.id ? {..._, ...changes} : _)))
+    fetcherViews.set(_ => _?.map(_ => (_.id === view.id ? {..._, ...changes} : _)))
   })
 
   const asyncColUpdate = async (
@@ -65,13 +65,13 @@ export const useDatabaseView = (formId: Kobo.FormId) => {
   ) => {
     if (!canUpdateView(view)) return
     api.databaseView.updateCol(view.id, body)
-    fetcherViews.set((views) => {
-      return views?.map((v) => {
+    fetcherViews.set(views => {
+      return views?.map(v => {
         if (v.id !== view.id) return v
-        if (v.details.some((_) => _.name === body.name))
+        if (v.details.some(_ => _.name === body.name))
           return {
             ...v,
-            details: v.details.map((col) => (col.name === body.name ? {...col, ...body} : col)),
+            details: v.details.map(col => (col.name === body.name ? {...col, ...body} : col)),
           }
         return {
           ...v,
@@ -83,17 +83,15 @@ export const useDatabaseView = (formId: Kobo.FormId) => {
 
   const asyncViewCreate = useAsync(async (params: Pick<DatabaseView, 'name' | 'visibility'>) => {
     const res = await api.databaseView.create({...params, databaseId: formId})
-    fetcherViews.set((_) => [...(_ ?? []), res])
+    fetcherViews.set(_ => [...(_ ?? []), res])
   })
 
   const hiddenColumns = useMemo(() => {
-    return (
-      currentView?.details?.filter((_) => _.visibility === DatabaseViewColVisibility.Hidden)?.map((_) => _.name) ?? []
-    )
+    return currentView?.details?.filter(_ => _.visibility === DatabaseViewColVisibility.Hidden)?.map(_ => _.name) ?? []
   }, [currentView])
 
   const colsById = useMemo(() => {
-    return seq(currentView?.details ?? []).groupByFirst((_) => _.name)
+    return seq(currentView?.details ?? []).groupByFirst(_ => _.name)
   }, [currentView])
 
   const onResizeColumn = useCallback(
@@ -111,11 +109,11 @@ export const useDatabaseView = (formId: Kobo.FormId) => {
       const touchedColumns: Seq<Pick<DatabaseViewCol, 'name' | 'visibility'>> = seq([
         ...(currentView?.details ?? []),
         ...seq(columns)
-          .filter((_) => !(currentView?.details.map((_) => _.name) ?? []).includes(_))
-          .map((_) => ({name: _, visibility: DatabaseViewColVisibility.Visible})),
+          .filter(_ => !(currentView?.details.map(_ => _.name) ?? []).includes(_))
+          .map(_ => ({name: _, visibility: DatabaseViewColVisibility.Visible})),
       ])
       const columnUpdates = touchedColumns
-        .map((_) => {
+        .map(_ => {
           if (_.visibility === DatabaseViewColVisibility.Hidden && !hidden.has(_.name))
             return {name: _.name, visibility: DatabaseViewColVisibility.Visible}
           if (_.visibility === DatabaseViewColVisibility.Visible && hidden.has(_.name))
@@ -123,7 +121,7 @@ export const useDatabaseView = (formId: Kobo.FormId) => {
           return
         })
         .compact()
-      columnUpdates?.forEach((_) => asyncColUpdate(currentView, _))
+      columnUpdates?.forEach(_ => asyncColUpdate(currentView, _))
     },
     [currentView],
   )

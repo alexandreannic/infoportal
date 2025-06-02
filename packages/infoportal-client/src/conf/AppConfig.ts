@@ -20,7 +20,7 @@ const e = env(import.meta.env)
 
 export const appConfig = {
   /** @deprecated not working*/
-  production: e((_) => _?.toLowerCase() === 'production', defaultValue(true))('NODE_ENV'),
+  production: e(_ => _?.toLowerCase() === 'production', defaultValue(true))('NODE_ENV'),
   muiProLicenseKey: e()(Env.VITE_MUI_PRO_LICENSE_KEY),
   koboServerUrl: 'https://kobo.drc.ngo',
   contact: 'alexandre.annic@drc.ngo',

@@ -69,7 +69,7 @@ export class ProxyService {
 
   readonly redirect = async ({slug, ipAddresses}: {slug: string; ipAddresses: string[]}) => {
     const data = await this.search()
-    const match = data.find((_) => _.slug === slug)
+    const match = data.find(_ => _.slug === slug)
     if (match && ProxyService.isEnabled(match)) {
       this.prisma.proxyUsage.create({
         data: {

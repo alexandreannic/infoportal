@@ -29,12 +29,7 @@ export const DrcJobInputMultiple = (
       value={props.value ?? []}
       // renderOption={(props, _) => <Txt truncate>{_.label?.[0]?.replace(/<[^>]+>/g, '') ?? _.name}</Txt>}
       renderInput={({InputProps, ...inputProps}) => (
-        <IpInput
-          {...inputProps}
-          {...InputProps}
-          helperText={null}
-          label={m.drcJob}
-        />
+        <IpInput {...inputProps} {...InputProps} helperText={null} label={m.drcJob} />
       )}
       {...props}
     />

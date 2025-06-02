@@ -35,7 +35,7 @@ export const useDatatableData = <T extends DatatableRow>({
       offset: 0,
     },
     {
-      transformFromStorage: (_) => {
+      transformFromStorage: _ => {
         _.offset = 0
         return _
       },
@@ -49,7 +49,7 @@ export const useDatatableData = <T extends DatatableRow>({
   const resetSearch = () => setSearch({limit: defaultLimit, offset: 0})
 
   const onOrderBy = useCallback((columnId: string, orderBy?: OrderBy) => {
-    setSearch((prev) => ({...prev, orderBy, sortBy: columnId}))
+    setSearch(prev => ({...prev, orderBy, sortBy: columnId}))
   }, [])
 
   const filteredData = useMemo(() => {
@@ -145,7 +145,7 @@ const filterBy = <T extends DatatableRow>({
         case 'id': {
           const typedFilter = filter as DatatableFilterTypeMapping['id']
           const filteredIds = typedFilter.split(/\s/)
-          return (row) => {
+          return row => {
             let v = col.render(row).value as string | undefined
             if (v === undefined) return false
             if (filteredIds.length === 1) return v.includes(filteredIds[0])
@@ -155,7 +155,7 @@ const filterBy = <T extends DatatableRow>({
         }
         case 'date': {
           const typedFilter = filter as DatatableFilterTypeMapping['date']
-          return (row) => {
+          return row => {
             let v = col.render(row).value as Date | undefined
             if (v === undefined) return false
             if (!((v as any) instanceof Date)) {
@@ -169,7 +169,7 @@ const filterBy = <T extends DatatableRow>({
         }
         case 'select_one': {
           const typedFilter = filter as DatatableFilterTypeMapping['select_one']
-          return (row) => {
+          return row => {
             const v = col.render(row).value as string
             if (v === undefined) return false
             return typedFilter.includes(v)
@@ -177,14 +177,14 @@ const filterBy = <T extends DatatableRow>({
         }
         case 'select_multiple': {
           const typedFilter = filter as DatatableFilterTypeMapping['select_multiple']
-          return (row) => {
+          return row => {
             const v = col.render(row).value as string[]
-            return v.some((_) => typedFilter.includes(_))
+            return v.some(_ => typedFilter.includes(_))
           }
         }
         case 'number': {
           const typedFilter = filter as DatatableFilterTypeMapping['number']
-          return (row) => {
+          return row => {
             const v = col.render(row).value as number | undefined
             const min = typedFilter[0] as number | undefined
             const max = typedFilter[1] as number | undefined
@@ -194,7 +194,7 @@ const filterBy = <T extends DatatableRow>({
         default: {
           if (!col.type) return
           const typedFilter = filter as DatatableFilterTypeMapping['string']
-          return (row) => {
+          return row => {
             const v = col.render(row).value
             if (v === DatatableUtils.blank && typedFilter?.filterBlank !== false) return false
             if (typedFilter?.value === undefined) return true

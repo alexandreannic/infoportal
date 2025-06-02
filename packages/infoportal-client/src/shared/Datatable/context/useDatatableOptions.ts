@@ -20,13 +20,13 @@ export const useDatatableOptions = <T extends DatatableRow>({
   columnsIndex: Record<KeyOf<T>, DatatableColumn.InnerProps<any>>
 }) => {
   const automaticOptionColumns = useMemo(
-    () => columns.filter((_) => (_.type === 'select_multiple' || _.type === 'select_one') && _.options === undefined),
+    () => columns.filter(_ => (_.type === 'select_multiple' || _.type === 'select_one') && _.options === undefined),
     [columns],
   )
 
   useEffect(
     function resetAutomaticRef() {
-      automaticOptionColumns.forEach((c) => {
+      automaticOptionColumns.forEach(c => {
         optionsRef.delete(c.id)
       })
     },
@@ -45,9 +45,9 @@ export const useDatatableOptions = <T extends DatatableRow>({
               columnId,
               seq(data.filterExceptBy(columnId))
                 ?.map(col.render)
-                .distinct((_) => _.value)
+                .distinct(_ => _.value)
                 .sort((a, b) => (b.value ?? '').localeCompare(a.value ?? ''))
-                .map((_) => DatatableUtils.buildCustomOption(_.value as string, _.option as string)),
+                .map(_ => DatatableUtils.buildCustomOption(_.value as string, _.option as string)),
             )
           } else if (col.type === 'select_multiple') {
             throw new Error(`options not implemented for ${columnId}.`)

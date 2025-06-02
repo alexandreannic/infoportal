@@ -50,7 +50,7 @@ export const KoboSelectTag = <
         })
       }}
       options={enumKeys.map(
-        (_) =>
+        _ =>
           ({
             value: _,
             children: translate ? translate[_] : _,

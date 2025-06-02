@@ -92,7 +92,7 @@ export class ApiClient {
           // params: options?.qs,
           data: options?.body,
           paramsSerializer: {
-            encode: (params) => qs.stringify(params, {arrayFormat: 'repeat'}),
+            encode: params => qs.stringify(params, {arrayFormat: 'repeat'}),
           },
         })
         .then(options?.mapData ?? mapData ?? ((_: AxiosResponse) => _.data))
@@ -132,18 +132,18 @@ export class ApiClient {
     }
 
     this.postGetPdf = async (url: string, options?: RequestOption) => {
-      return requestUsingFetchApi('POST', url, options).then((_) => _.blob())
+      return requestUsingFetchApi('POST', url, options).then(_ => _.blob())
     }
 
     this.getPdf = async (url: string, options?: RequestOption) => {
-      return requestUsingFetchApi('GET', url, options).then((_) => _.blob())
+      return requestUsingFetchApi('GET', url, options).then(_ => _.blob())
     }
   }
 
   private static readonly buildOptions = async (
     options?: RequestOption,
     headers?: any,
-    requestInterceptor: (_?: RequestOption) => RequestOption | Promise<RequestOption> = (_) => _!,
+    requestInterceptor: (_?: RequestOption) => RequestOption | Promise<RequestOption> = _ => _!,
   ): Promise<RequestOption> => {
     const interceptedOptions = await requestInterceptor(options)
     return {
