@@ -8,7 +8,8 @@ import {ApiPaginate, ApiPagination} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Kobo} from 'kobo-sdk'
 import {KoboValidation} from 'infoportal-common'
 
-export interface KoboAnswerFilter {
+export interface KoboAnswerSearch {
+  readonly formId: UUID
   readonly paginate?: ApiPagination
   readonly filters?: AnswersFilters
 }
@@ -26,67 +27,23 @@ export type KoboUpdateAnswers<T extends Record<string, any> = any, K extends Key
   answer: T[K] | null
 }
 
-export type KoboUpdateTag = {
-  formId: Kobo.FormId
-  answerIds: Kobo.SubmissionId[]
-  tags: Record<string, any>
-}
-
-interface KoboAnswerSearch {
-  <
-    TKoboAnswer extends Record<string, any>,
-    TTags extends KoboBaseTags = KoboBaseTags,
-    TCustomAnswer extends KoboSubmissionFlat<any, TTags> = KoboSubmissionFlat<TKoboAnswer, TTags>,
-  >(
-    _: KoboAnswerFilter & {
-      readonly formId: UUID
-      readonly fnMapKobo?: (_: Record<string, string | undefined>) => TKoboAnswer
-      readonly fnMapTags?: (_?: any) => TTags
-      readonly fnMapCustom: (_: KoboSubmissionFlat<TKoboAnswer, TTags>) => TCustomAnswer
-    },
-  ): Promise<ApiPaginate<TCustomAnswer>>
-
-  <TKoboAnswer extends Record<string, any>, TTags extends KoboBaseTags = KoboBaseTags>(
-    _: KoboAnswerFilter & {
-      readonly formId: UUID
-      readonly fnMapKobo?: (_: Record<string, string | undefined>) => TKoboAnswer
-      readonly fnMapTags?: (_?: any) => TTags
-      readonly fnMapCustom?: undefined
-    },
-  ): Promise<ApiPaginate<KoboSubmissionFlat<TKoboAnswer, TTags>>>
-}
-
 export class KoboAnswerSdk {
   constructor(private client: ApiClient) {}
 
-  readonly searchByAccess: KoboAnswerSearch = ({
-    formId,
-    filters,
-    paginate,
-    fnMapKobo = (_: any) => _,
-    fnMapTags = (_?: any) => _,
-    fnMapCustom,
-  }: any) => {
+  readonly searchByAccess = ({formId, filters = {}, paginate = {offset: 0, limit: 100000}}: KoboAnswerSearch) => {
     return this.client
-      .post<
-        ApiPaginate<KoboSubmission>
-      >(`/kobo/answer/${formId}/by-access`, {body: {...KoboAnswerSdk.mapFilters(filters), ...paginate}})
-      .then(KoboMapper.mapPaginateAnswer(fnMapKobo, fnMapTags, fnMapCustom))
+      .post<ApiPaginate<KoboSubmission>>(`/kobo/answer/${formId}/by-access`, {
+        body: {...KoboAnswerSdk.mapFilters(filters), ...paginate},
+      })
+      .then(KoboMapper.mapPaginateAnswer)
   }
 
-  readonly search: KoboAnswerSearch = ({
-    formId,
-    filters = {},
-    paginate = {offset: 0, limit: 100000},
-    fnMapKobo = (_: any) => _,
-    fnMapTags = (_?: any) => _,
-    fnMapCustom,
-  }: any) => {
+  readonly search = ({formId, filters = {}, paginate = {offset: 0, limit: 100000}}: KoboAnswerSearch) => {
     return this.client
-      .post<
-        ApiPaginate<KoboSubmission>
-      >(`/kobo/answer/${formId}`, {body: {...KoboAnswerSdk.mapFilters(filters), ...paginate}})
-      .then(KoboMapper.mapPaginateAnswer(fnMapKobo, fnMapTags, fnMapCustom))
+      .post<ApiPaginate<KoboSubmission>>(`/kobo/answer/${formId}`, {
+        body: {...KoboAnswerSdk.mapFilters(filters), ...paginate},
+      })
+      .then(KoboMapper.mapPaginateAnswer)
   }
 
   readonly delete = async ({answerIds, formId}: {answerIds: Kobo.SubmissionId[]; formId: Kobo.FormId}) => {
@@ -115,11 +72,6 @@ export class KoboAnswerSdk {
         answer,
       },
     })
-  }
-
-  readonly updateTag = ({formId, answerIds, tags}: KoboUpdateTag) => {
-    for (let k in tags) if (tags[k] === undefined) tags[k] = null
-    return this.client.patch(`/kobo/answer/${formId}/tag`, {body: {tags, answerIds: answerIds}})
   }
 
   private static mapFilters = (_?: AnswersFilters): AnswersFilters | undefined => {

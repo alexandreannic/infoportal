@@ -56,24 +56,6 @@ export class ControllerKoboAnswer {
     res.send(data)
   }
 
-  readonly updateTag = async (req: Request, res: Response, next: NextFunction) => {
-    const email = req.session.user?.email ?? 'unknown'
-    const params = await yup
-      .object({
-        formId: yup.string().required(),
-      })
-      .validate(req.params)
-    const body = await yup
-      .object({
-        answerIds: yup.array().of(yup.string().required()).required(),
-        tags: yup.mixed().required(),
-      })
-      .validate(req.body)
-
-    const data = await this.service.updateTags({...params, ...body, authorEmail: email})
-    res.send()
-  }
-
   readonly updateValidation = async (req: Request, res: Response, next: NextFunction) => {
     const email = req.session.user?.email ?? 'unknown'
     const params = await yup

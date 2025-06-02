@@ -11,7 +11,7 @@ import {KoboSchemaHelper, KoboSubmissionFlat} from 'infoportal-common'
 const Context = React.createContext({} as KoboAnswersContext)
 
 export interface OpenModalProps {
-  answer: KoboSubmissionFlat<any, any>
+  answer: KoboSubmissionFlat
   formId: Kobo.FormId
 }
 

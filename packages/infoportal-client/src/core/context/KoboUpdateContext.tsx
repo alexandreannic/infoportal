@@ -1,6 +1,6 @@
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useState} from 'react'
-import {KoboEditModalOption, KoboUpdateModal, KoboUpdateModalType} from '@/shared/koboEdit/KoboUpdateModal'
-import {KoboUpdateAnswers, KoboUpdateTag, KoboUpdateValidation} from '@/core/sdk/server/kobo/KoboAnswerSdk'
+import {KoboUpdateModal} from '@/shared/koboEdit/KoboUpdateModal'
+import {KoboUpdateAnswers, KoboUpdateValidation} from '@/core/sdk/server/kobo/KoboAnswerSdk'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useAsync, UseAsyncMultiple} from '@/shared/hook/useAsync'
@@ -19,10 +19,6 @@ export namespace KoboUpdate {
           target: 'validation'
           params: UpdateDialog.ById.Validation
         }
-      | {
-          target: 'tag'
-          params: UpdateDialog.ById.Tag
-        }
   }
 
   namespace UpdateDialog {
@@ -33,22 +29,11 @@ export namespace KoboUpdate {
       export type Validation = Omit<KoboUpdateValidation, 'status'> & {
         onSuccess?: (params: KoboUpdateValidation) => void
       }
-      export type Tag = Omit<KoboUpdate.Update.ById.Tag, 'value'> & {
-        type: KoboUpdateModalType
-        options?: KoboEditModalOption[] | string[]
-        onSuccess?: (params: KoboUpdateTag) => void
-      }
     }
   }
 
   export namespace Update {
     export namespace ById {
-      export type Tag = {
-        formId: Kobo.FormId
-        answerIds: Kobo.SubmissionId[]
-        tag: string
-        value: any
-      }
       export type Answer = KoboUpdateAnswers
       export type Validation = KoboUpdateValidation
     }
@@ -57,7 +42,6 @@ export namespace KoboUpdate {
 
 export interface KoboUpdateContext {
   asyncUpdateById: {
-    tag: UseAsyncMultiple<(_: KoboUpdate.Update.ById.Tag) => Promise<void>>
     answer: UseAsyncMultiple<(_: KoboUpdate.Update.ById.Answer) => Promise<void>>
     validation: UseAsyncMultiple<(_: KoboUpdate.Update.ById.Validation) => Promise<void>>
   }
@@ -79,14 +63,12 @@ export const KoboUpdateProvider = ({children}: {children: ReactNode}) => {
   const _updateCacheById = ({
     formId,
     key,
-    isTag,
     value,
     answerIds,
   }: {
     answerIds: Kobo.SubmissionId[]
     formId: string
     key: string
-    isTag?: boolean
     value: any
   }) => {
     const idsIndex = new Set(answerIds)
@@ -96,10 +78,7 @@ export const KoboUpdateProvider = ({children}: {children: ReactNode}) => {
       ...currentAnswers,
       data: currentAnswers.data.map(a => {
         if (idsIndex.has(a.id)) {
-          if (isTag) {
-            if (!a.tags) a.tags = {}
-            ;(a.tags as any)[key] = value
-          } else a[key] = value
+          a[key] = value
         }
         return {...a}
       }),
@@ -117,7 +96,6 @@ export const KoboUpdateProvider = ({children}: {children: ReactNode}) => {
       _updateCacheById({
         formId: p.formId,
         key: p.question,
-        isTag: false,
         value: p.answer,
         answerIds: p.answerIds,
       })
@@ -140,31 +118,6 @@ export const KoboUpdateProvider = ({children}: {children: ReactNode}) => {
         key,
         value: params.status,
       })
-    },
-    {requestKey: ([_]) => _.formId},
-  )
-
-  const asyncUpdateTagById = useAsync(
-    async (p: KoboUpdate.Update.ById.Tag) => {
-      await api.kobo.answer
-        .updateTag({
-          answerIds: p.answerIds,
-          formId: p.formId,
-          tags: {[p.tag]: p.value},
-        })
-        .then(() => {
-          _updateCacheById({
-            formId: p.formId,
-            key: p.tag,
-            isTag: true,
-            value: p.value,
-            answerIds: p.answerIds,
-          })
-        })
-        .catch(e => {
-          ctxAnswers.byId(p.formId).fetch({force: true, clean: false})
-          return Promise.reject(e)
-        })
     },
     {requestKey: ([_]) => _.formId},
   )
@@ -199,7 +152,6 @@ export const KoboUpdateProvider = ({children}: {children: ReactNode}) => {
       value={{
         asyncDeleteById,
         asyncUpdateById: {
-          tag: asyncUpdateTagById,
           answer: asyncUpdateAnswerById,
           validation: asyncUpdateValidationById,
         },
@@ -216,18 +168,6 @@ export const KoboUpdateProvider = ({children}: {children: ReactNode}) => {
               <KoboUpdateModal.Answer
                 formId={openDialog.params.formId}
                 columnName={openDialog.params.question}
-                answerIds={openDialog.params.answerIds}
-                onClose={() => setOpenDialog(null)}
-                onUpdated={openDialog.params.onSuccess}
-              />
-            )
-          case 'tag':
-            return (
-              <KoboUpdateModal.Tag
-                type={openDialog.params.type}
-                formId={openDialog.params.formId}
-                tag={openDialog.params.tag}
-                options={openDialog.params.options}
                 answerIds={openDialog.params.answerIds}
                 onClose={() => setOpenDialog(null)}
                 onUpdated={openDialog.params.onSuccess}

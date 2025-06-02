@@ -102,7 +102,7 @@ export const DatabaseKoboAnswerViewDialog = ({
   answer,
 }: {
   formId: Kobo.FormId
-  answer: KoboMappedAnswer<any>
+  answer: KoboMappedAnswer
   onClose: () => void
   open: boolean
 }) => {
@@ -155,7 +155,7 @@ const KoboAnswerFormView = ({
 }: {
   schema: KoboSchemaHelper.Bundle
   showQuestionWithoutAnswer?: boolean
-  answer: KoboMappedAnswer<any>
+  answer: KoboMappedAnswer
   formId: Kobo.FormId
 }) => {
   return (
@@ -181,7 +181,7 @@ const KoboAnswerQuestionView = ({
   formId: Kobo.FormId
   schema: KoboSchemaHelper.Bundle
   questionSchema: NonNullableKey<Kobo.Form.Question, 'name'>
-  answer: KoboMappedAnswer<any>
+  answer: KoboMappedAnswer
 }) => {
   const langIndex = useKoboSchemaContext()
   const {formatDateTime} = useI18n()

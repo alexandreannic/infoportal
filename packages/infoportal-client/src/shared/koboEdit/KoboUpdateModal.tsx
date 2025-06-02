@@ -240,44 +240,4 @@ export namespace KoboUpdateModal {
       />
     )
   }
-
-  export const Tag = ({
-    formId,
-    tag,
-    answerIds,
-    type,
-    options,
-    onClose,
-    onUpdated,
-  }: {
-    formId: Kobo.FormId
-    tag: string
-    type: KoboUpdateModalType
-    answerIds: Kobo.SubmissionId[]
-    options?: string[] | KoboEditModalOption[]
-    onClose?: () => void
-    onUpdated?: (_: any) => void
-  }) => {
-    const {m} = useI18n()
-    const ctxKoboUpdate = useKoboUpdateContext()
-    const ctxSchema = useKoboSchemaContext()
-
-    const fetcherUpdate = useFetcher((value: any) => {
-      return ctxKoboUpdate.asyncUpdateById.tag.call({formId, answerIds, tag, value}).then(() => {
-        onUpdated?.(value)
-        return answerIds.length
-      })
-    })
-
-    return (
-      <Custom
-        onClose={onClose}
-        fetcherUpdate={fetcherUpdate}
-        title={`${m.edit} (${answerIds.length})`}
-        subTitle={ctxSchema.byId2(formId).get?.schema.name}
-        type={type}
-        options={options}
-      />
-    )
-  }
 }

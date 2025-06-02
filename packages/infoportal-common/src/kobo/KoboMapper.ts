@@ -10,7 +10,7 @@ export enum KoboValidation {
   UnderReview = 'UnderReview',
 }
 
-export type KoboSubmissionMetaData<TTag extends Record<string, any> | undefined = undefined> = {
+export type KoboSubmissionMetaData = {
   start: Date
   /** Refresh whenever submission is updated */
   end: Date
@@ -29,20 +29,13 @@ export type KoboSubmissionMetaData<TTag extends Record<string, any> | undefined 
   lastValidatedTimestamp?: number
   source?: string
   updatedAt?: Date
-  tags?: TTag
 }
 
-export type KoboSubmission<
-  T extends Record<string, any> = Record<string, any>,
-  TTag extends Record<string, any> | undefined = undefined,
-> = KoboSubmissionMetaData<TTag> & {
-  answers: T
+export type KoboSubmission = KoboSubmissionMetaData & {
+  answers: Record<string, any>
 }
 
-export type KoboSubmissionFlat<
-  T extends Record<string, any> = Record<string, string | undefined>,
-  TTag extends Record<string, any> | undefined = KoboBaseTags,
-> = KoboSubmissionMetaData<TTag> & T
+export type KoboSubmissionFlat = KoboSubmissionMetaData & Record<string, any>
 
 export interface KoboBaseTags {
   _validation?: KoboValidation
