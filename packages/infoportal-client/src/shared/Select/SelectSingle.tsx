@@ -9,10 +9,8 @@ import {
   SelectProps,
   SxProps,
   Theme,
-  useTheme,
 } from '@mui/material'
 import React, {ReactNode, useMemo} from 'react'
-import {useI18n} from '@/core/i18n'
 import {makeSx} from '@/core/theme'
 import {Txt} from '@/shared'
 
@@ -99,9 +97,6 @@ export const IpSelectSingle = <T extends TType>({
   placeholder,
   ...props
 }: IpSelectSingleProps<T>) => {
-  const {m} = useI18n()
-  // const [innerValue, setInnerValue] = useState<T | null>(null)
-
   const options = useMemo(() => {
     const _options = props.options ?? []
     if (typeof _options[0] === 'string') {
@@ -118,7 +113,7 @@ export const IpSelectSingle = <T extends TType>({
         size="small"
         margin="dense"
         id={id}
-        value={value ?? defaultValue ?? IGNORED_VALUE_EMPTY}
+        value={value ?? IGNORED_VALUE_EMPTY}
         defaultValue={defaultValue}
         //<div style={{minWidth: 20}}>
         //  <CircularProgress size={20}/>

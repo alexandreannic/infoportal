@@ -30,6 +30,7 @@ import {map, seq} from '@axanc/ts-utils'
 import {NavLink} from 'react-router-dom'
 import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/columnBySchema'
 import {Kobo} from 'kobo-sdk'
+import {DialogProps} from '@toolpad/core'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -96,29 +97,22 @@ export const DatabaseKoboAnswerViewPage = () => {
   )
 }
 
-export const DatabaseKoboAnswerViewDialog = ({
+export const DialogAnswerView = ({
   onClose,
-  formId,
-  answer,
-}: {
+  payload: {schema, formId, answer},
+}: DialogProps<{
   formId: Kobo.FormId
+  schema: KoboSchemaHelper.Bundle
   answer: KoboMappedAnswer
-  onClose: () => void
-  open: boolean
-}) => {
+}>) => {
   const {m} = useI18n()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
-  const ctxSchema = useKoboSchemaContext()
-
-  useEffect(() => {
-    ctxSchema.fetchById(formId)
-  }, [formId])
 
   return (
     <Dialog open={true}>
       <DialogTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
-          <NavLink to={databaseIndex.siteMap.answer.absolute(formId, answer.id)} onClick={onClose}>
+          <NavLink to={databaseIndex.siteMap.answer.absolute(formId, answer.id)} onClick={() => onClose()}>
             <IpIconBtn color="primary">open_in_new</IpIconBtn>
           </NavLink>
           {answer.id}
@@ -131,17 +125,15 @@ export const DatabaseKoboAnswerViewDialog = ({
         </Box>
       </DialogTitle>
       <DialogContent>
-        {map(ctxSchema.byId[formId]?.get, schema => (
-          <KoboAnswerFormView
-            schema={schema}
-            formId={formId}
-            showQuestionWithoutAnswer={showQuestionWithoutAnswer}
-            answer={answer}
-          />
-        ))}
+        <KoboAnswerFormView
+          schema={schema}
+          formId={formId}
+          showQuestionWithoutAnswer={showQuestionWithoutAnswer}
+          answer={answer}
+        />
       </DialogContent>
       <DialogActions>
-        <IpBtn onClick={onClose}>{m.close}</IpBtn>
+        <IpBtn onClick={() => onClose()}>{m.close}</IpBtn>
       </DialogActions>
     </Dialog>
   )

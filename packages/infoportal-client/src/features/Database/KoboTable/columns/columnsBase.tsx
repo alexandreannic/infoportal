@@ -18,6 +18,7 @@ export const getColumnsBase = ({
   m,
   ctxEdit,
   openViewAnswer,
+  openEditAnswer,
   getRow = _ => _,
   asyncEdit,
 }: {
@@ -25,6 +26,7 @@ export const getColumnsBase = ({
   asyncEdit: DatabaseKoboContext['asyncEdit']
   getRow?: (_: any) => KoboSubmissionFlat
   openViewAnswer: KoboAnswersContext['openView']
+  openEditAnswer: KoboAnswersContext['openEdit']
   formId: Kobo.FormId
   selectedIds: Kobo.SubmissionId[]
   canEdit?: boolean
@@ -42,17 +44,23 @@ export const getColumnsBase = ({
           label: (
             <>
               <TableIconBtn
+                disabled={!canEdit}
+                tooltip={m.editKobo}
+                children="edit"
+                onClick={() => openEditAnswer({answer: _, formId: formId})}
+              />
+              <TableIconBtn
                 tooltip={m.view}
                 children="visibility"
                 onClick={() => openViewAnswer({answer: _, formId: formId})}
               />
-              <TableIconBtn
-                disabled={!canEdit}
-                tooltip={m.editKobo}
-                target="_blank"
-                href={asyncEdit(_.id)}
-                children="edit"
-              />
+              {/*<TableIconBtn*/}
+              {/*  disabled={!canEdit}*/}
+              {/*  tooltip={m.editKobo}*/}
+              {/*  target="_blank"*/}
+              {/*  href={asyncEdit(_.id)}*/}
+              {/*  children="edit"*/}
+              {/*/>*/}
             </>
           ),
         }

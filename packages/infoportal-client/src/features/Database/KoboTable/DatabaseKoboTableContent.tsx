@@ -113,6 +113,7 @@ export const DatabaseKoboTableContent = ({
       asyncEdit: ctx.asyncEdit,
       ctxEdit: ctxKoboUpdate,
       openViewAnswer: ctxAnswers.openView,
+      openEditAnswer: ctxAnswers.openEdit,
     })
     return [...base, ...schemaColumns].map(_ => ({
       ..._,
@@ -186,7 +187,7 @@ export const DatabaseKoboTableContent = ({
             <IpSelectSingle<number>
               hideNullOption
               sx={{maxWidth: 128, mr: 1}}
-              defaultValue={ctxSchema.langIndex}
+              value={ctxSchema.langIndex}
               onChange={ctxSchema.setLangIndex}
               options={[
                 {children: 'XML', value: -1},

@@ -129,7 +129,7 @@ const _Datatable = <T extends DatatableRow>({
   const t = useTheme()
   const ctx = useDatatableContext()
   const _generateXLSFromArray = useAsync(DatatableXlsGenerator.download)
-  useEffect(() => ctx.select?.onSelect(ctx.selected.toArray()), [ctx.selected.get])
+  useEffect(() => ctx.select?.onSelect(ctx.selected.toArray), [ctx.selected.toArray])
   const {m} = useI18n()
 
   const exportToCSV = () => {
@@ -291,6 +291,11 @@ const _Datatable = <T extends DatatableRow>({
           page={ctx.data.search.offset / ctx.data.search.limit}
           onPageChange={(event: unknown, newPage: number) => {
             ctx.data.setSearch(prev => ({...prev, offset: newPage * ctx.data.search.limit}))
+          }}
+          slotProps={{
+            select: {
+              native: true,
+            },
           }}
           onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             const newLimit = parseInt(event.target.value, 10)

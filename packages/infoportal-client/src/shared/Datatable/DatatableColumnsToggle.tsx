@@ -85,7 +85,7 @@ export const DatatableColumnToggle = ({
                   </Txt>{' '}
                   / {columns.length} {m._koboDatabase.currentlyDisplayed}
                 </Txt>
-                <IpBtn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray())}>
+                <IpBtn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
                   {m.save}
                 </IpBtn>
               </>

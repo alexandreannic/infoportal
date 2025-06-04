@@ -28,22 +28,13 @@ import {Util} from '../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
 import Event = GlobalEvent.Event
 
-export type DbKoboAnswer<T extends Record<string, any> = Record<string, any>> = KoboSubmission<T, any> & {
+export type DbKoboAnswer = KoboSubmission & {
   formId: Kobo.FormId
 }
 
 export interface KoboAnswerFilter {
   filters?: KoboAnswersFilters
   paginate?: ApiPagination
-}
-
-interface KoboAnswerSearch<
-  TAnswer extends Record<string, any> = Record<string, string | undefined>,
-  TTags extends Record<string, any> | undefined = undefined,
-> extends KoboAnswerFilter {
-  formId: UUID
-  fnMap?: (_: Record<string, string | undefined>) => TAnswer
-  fnMapTags?: (_?: any) => TTags
 }
 
 export class KoboService {
@@ -359,14 +350,14 @@ export class KoboService {
             indexLabel[k]?.type,
             {
               select_multiple: () =>
-                d[k]
+                (d[k] as string)
                   ?.split(' ')
                   .map((_: any) => indexOptionsLabels[_])
                   .join('|'),
-              start: () => format(d[k], 'yyyy-MM-dd'),
-              end: () => format(d[k], 'yyyy-MM-dd'),
+              start: () => format(d[k] as Date, 'yyyy-MM-dd'),
+              end: () => format(d[k] as Date, 'yyyy-MM-dd'),
             },
-            _ => indexOptionsLabels[d[k]] ?? d[k],
+            _ => indexOptionsLabels[d[k] as string] ?? d[k],
           )
         })()
         ;(translated as any)[translatedKey.replace(/(<([^>]+)>)/gi, '')] = translatedValue

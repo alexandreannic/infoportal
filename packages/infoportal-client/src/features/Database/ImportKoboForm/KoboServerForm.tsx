@@ -185,7 +185,11 @@ export const KoboServerFormDialog = ({
   open,
   onClose,
   payload,
-}: DialogProps<UseAsyncSimple<(_: KoboServerCreate) => Promise<KoboServer>>, void | KoboServer>) => {
+}: DialogProps<{
+  call: (_: KoboServerCreate) => Promise<void>
+  loading?: boolean
+  error?: string
+}>) => {
   const {m} = useI18n()
   return (
     <Dialog open={open} onClose={() => onClose()}>

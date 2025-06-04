@@ -1,12 +1,14 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {FetchParams, useFetchers} from '@/shared/hook/useFetchers'
-import React, {ReactNode, useContext, useMemo, useState} from 'react'
+import React, {ReactNode, useCallback, useContext, useMemo} from 'react'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
 import {KoboMappedAnswer, KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
-import {DatabaseKoboAnswerViewDialog} from '@/features/Database/KoboEntry/DatabaseKoboAnswerView'
 import {Kobo} from 'kobo-sdk'
 import {KoboSchemaHelper, KoboSubmissionFlat} from 'infoportal-common'
+import {useDialogs} from '@toolpad/core'
+import {DialogAnswerView} from '@/features/Database/Dialog/DialogAnswerView'
+import {DialogAnswerEdit} from '@/features/Database/Dialog/DialogAnswerEdit'
 
 const Context = React.createContext({} as KoboAnswersContext)
 
@@ -16,6 +18,7 @@ export interface OpenModalProps {
 }
 
 export type KoboAnswersContext = {
+  openEdit: (_: OpenModalProps) => void
   openView: (_: OpenModalProps) => void
   byId: (id: Kobo.FormId) => {
     find: (_: Kobo.SubmissionId) => KoboMappedAnswer | undefined
@@ -29,6 +32,7 @@ export type KoboAnswersContext = {
 export const KoboAnswersProvider = ({children}: {children: ReactNode}) => {
   const {api} = useAppSettings()
   const ctxSchema = useKoboSchemaContext()
+  const dialogs = useDialogs()
 
   const fetcher = useFetchers(
     async (id: Kobo.SubmissionId) => {
@@ -60,24 +64,31 @@ export const KoboAnswersProvider = ({children}: {children: ReactNode}) => {
     })
   }, [fetcher.getAsMap])
 
-  const [editPopup, setEditPopup] = useState<OpenModalProps | undefined>()
+  const openView = useCallback(
+    (_: OpenModalProps) => {
+      const schema = ctxSchema.byId[_.formId]?.get!
+      dialogs.open(DialogAnswerView, {schema, ..._})
+    },
+    [ctxSchema.byId],
+  )
+
+  const openEdit = useCallback(
+    (_: OpenModalProps) => {
+      const schema = ctxSchema.byId[_.formId]?.get!
+      dialogs.open(DialogAnswerEdit, {schema, ..._})
+    },
+    [ctxSchema.byId],
+  )
 
   return (
     <Context.Provider
       value={{
         byId,
-        openView: setEditPopup,
+        openView,
+        openEdit,
       }}
     >
       {children}
-      {editPopup && (
-        <DatabaseKoboAnswerViewDialog
-          open={true}
-          onClose={() => setEditPopup(undefined)}
-          answer={editPopup.answer}
-          formId={editPopup.formId}
-        />
-      )}
     </Context.Provider>
   )
 }

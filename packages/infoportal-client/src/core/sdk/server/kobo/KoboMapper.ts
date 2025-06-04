@@ -85,13 +85,13 @@ export class KoboMapper {
   }
 
   static readonly unmapAnswerBySchema = (
-    indexedSchema: Record<string, Kobo.Form.Question>,
+    schemaQuestionIndex: Record<string, Kobo.Form.Question>,
     mapped: KoboMappedAnswer,
   ): KoboSubmissionFlat => {
     const flat: KoboSubmissionFlat = {...mapped}
 
     Obj.entries(flat).forEach(([question, answer]) => {
-      const type = indexedSchema[question]?.type
+      const type = schemaQuestionIndex[question]?.type
       if (!type || !answer) return
       switch (type) {
         case 'today':
@@ -109,7 +109,7 @@ export class KoboMapper {
         }
         case 'begin_repeat': {
           if (Array.isArray(answer)) {
-            flat[question] = answer.map(item => KoboMapper.unmapAnswerBySchema(indexedSchema, item))
+            flat[question] = answer.map(item => KoboMapper.unmapAnswerBySchema(schemaQuestionIndex, item))
           }
           break
         }

@@ -40,22 +40,38 @@ export const SelectKoboForm = ({serverId, onAdded}: {serverId: UUID; onAdded?: (
               id: m.live,
               width: 0,
               head: 'has_deployment',
-              renderQuick: _ =>
-                _.has_deployment ? (
-                  <Icon fontSize="small" color="success">
-                    check_circle
-                  </Icon>
-                ) : (
-                  <Icon fontSize="small" color="error">
-                    disabled
-                  </Icon>
-                ),
+              type: 'select_one',
+              render: _ => {
+                return {
+                  value: '' + _.has_deployment,
+                  label: _.has_deployment ? (
+                    <Icon fontSize="small" color="success">
+                      check_circle
+                    </Icon>
+                  ) : (
+                    <Icon fontSize="small" color="error">
+                      disabled
+                    </Icon>
+                  ),
+                }
+              },
             },
-            {id: 'uid', head: m.id, renderQuick: _ => _.uid},
-            {id: 'name', head: m.name, renderQuick: _ => _.name},
-            {id: 'date_created', head: m.createdAt, renderQuick: _ => formatDate(_.date_created)},
+            {id: 'uid', type: 'id', head: m.id, renderQuick: _ => _.uid},
+            {type: 'string', id: 'name', head: m.name, renderQuick: _ => _.name},
             {
-              width: 20,
+              type: 'date',
+              id: 'date_created',
+              head: m.createdAt,
+              render: _ => {
+                return {
+                  value: _.date_created,
+                  label: formatDate(_.date_created),
+                }
+              },
+            },
+            {
+              type: 'number',
+              width: 0,
               align: 'right',
               id: 'deployment__submission_count',
               head: m.submissions,

@@ -41,7 +41,6 @@ export const ImportKobo = () => {
     dialog.open(KoboServerFormDialog, {
       call: asyncCreate.call,
       loading: asyncCreate.loading,
-      callIndex: asyncCreate.callIndex,
       error: asyncCreate.error,
     })
   }
