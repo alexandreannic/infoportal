@@ -22,7 +22,7 @@ export class ControllerUser {
         email: yup.string().optional(),
       })
       .validate(req.params)
-    const avatar = await this.service.getUserAvatarByEmail(email ?? req.session.user?.email!)
+    const avatar = await this.service.getUserAvatarByEmail(email ?? req.session.session?.email!)
     if (!avatar) {
       res.send()
       // throw new AppError.NotFound('user_not_found')
@@ -39,13 +39,13 @@ export class ControllerUser {
       })
       .validate(req.body)
 
-    const email = req.session.user?.email
+    const email = req.session.session?.email
     if (!email) {
       throw new SessionError.UserNotConnected()
     }
     const data = await this.service.update({email, ...user})
-    req.session.user = {
-      ...req.session.user,
+    req.session.session = {
+      ...req.session.session,
       ...(Util.removeUndefined(data) as any),
     }
     res.send(data)

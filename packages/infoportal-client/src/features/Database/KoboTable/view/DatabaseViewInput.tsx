@@ -37,7 +37,7 @@ export const DatabaseViewInput = ({sx, view: ctx}: {view: UseDatabaseView; sx?: 
               readOnly={
                 view.name === DatabaseViewDefaultName ||
                 (view.visibility === DatabaseViewVisibility.Sealed &&
-                  view.createdBy !== session.email &&
+                  view.createdBy !== session.user.email &&
                   !session.admin)
               }
               open={open === view.id}

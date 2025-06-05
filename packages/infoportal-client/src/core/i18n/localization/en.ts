@@ -246,8 +246,6 @@ export const en = Object.freeze({
     phone: 'Phone',
     payName: 'Payment contact name',
     payPhone: 'Payment contact phone',
-    drcEmail: 'DRC Email',
-    drcOffice: 'DRC Office',
     finance: 'Finance',
     admin: 'Admin',
     inPerson: 'In person',

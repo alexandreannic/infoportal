@@ -1,3 +1,5 @@
+import {UUID} from 'infoportal-common'
+
 export interface User {
   email: string
   name: string
@@ -6,7 +8,7 @@ export interface User {
   drcJob?: string
   createdAt?: Date
   lastConnectedAt?: Date
-  drcOffice?: string
+  workspaceId: UUID
 }
 
 export class User {

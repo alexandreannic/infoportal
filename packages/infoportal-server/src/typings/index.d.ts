@@ -1,4 +1,4 @@
-import {UserSession} from '../feature/session/UserSession.js'
+import {AppSession} from '../feature/session/AppSession.js'
 
 // export = session;
 //
@@ -11,6 +11,6 @@ import {UserSession} from '../feature/session/UserSession.js'
 declare module 'express-session' {
   interface SessionData {
     // Declare additional properties or methods for the session data
-    user: UserSession
+    session: AppSession
   }
 }

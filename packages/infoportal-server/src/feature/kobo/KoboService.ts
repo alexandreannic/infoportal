@@ -15,7 +15,7 @@ import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {duration, fnSwitch, Obj, seq} from '@axanc/ts-utils'
 import {format} from 'date-fns'
 import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAnswer.js'
-import {UserSession} from '../session/UserSession.js'
+import {AppSession} from '../session/AppSession.js'
 import {AccessService} from '../access/AccessService.js'
 import {AppFeatureId} from '../access/AccessType.js'
 import {GlobalEvent} from '../../core/GlobalEvent.js'
@@ -59,7 +59,7 @@ export class KoboService {
     formId: string
     filters: KoboAnswersFilters
     paginate?: Partial<ApiPagination>
-    user?: UserSession
+    user?: AppSession
   }): Promise<ApiPaginate<DbKoboAnswer>> => {
     if (!user) return ApiPaginateHelper.make()([])
     if (!user.admin) {

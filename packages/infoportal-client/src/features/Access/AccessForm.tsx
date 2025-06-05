@@ -102,7 +102,7 @@ export const AccessFormInputEmail = ({form}: {form: UseFormReturn<IAccessForm>})
   const required = form.watch('selectBy') === 'email'
   return (
     <IpInput
-      label={m.drcEmail}
+      label={m.email}
       error={!!form.formState.errors.email}
       helperText={form.formState.errors.email?.message as string}
       required={required}

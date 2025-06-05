@@ -1,5 +1,5 @@
 import {Prisma, PrismaClient} from '@prisma/client'
-import {yup} from '../../helper/Utils.js'
+import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {InferType} from 'yup'
 import {UUID} from 'infoportal-common'
 import {app, AppCacheKey} from '../../index.js'
@@ -34,9 +34,7 @@ export class ProxyService {
       expireAt: yup.date().optional(),
       disabled: yup.boolean().optional(),
     }),
-    id: yup.object({
-      id: yup.string().required(),
-    }),
+    id: idParamsSchema,
     redirect: yup.object({
       slug: yup.string().required(),
     }),

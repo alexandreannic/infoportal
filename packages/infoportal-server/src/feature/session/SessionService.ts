@@ -1,20 +1,23 @@
-import {PrismaClient, User as PUser} from '@prisma/client'
+import {PrismaClient, User} from '@prisma/client'
 import {app, AppLogger} from '../../index.js'
 import {AuthenticationProvider} from '@microsoft/microsoft-graph-client/src/IAuthenticationProvider'
 import {AuthenticationProviderOptions} from '@microsoft/microsoft-graph-client/src/IAuthenticationProviderOptions'
 import {Client} from '@microsoft/microsoft-graph-client'
 import {SessionError} from './SessionErrors.js'
-// import {User} from '@microsoft/msgraph-sdk-javascript/lib/src/models/user'
 import {google} from 'googleapis'
+import {GroupService} from '../group/GroupService'
+import {WorkspaceService} from '../workspace/WorkspaceService'
+import {AccessService} from '../access/AccessService'
+import {AppSession} from './AppSession'
 
-type User = {
-  mail?: string
-  jobTitle?: string
-}
+// import {User} from '@microsoft/msgraph-sdk-javascript/lib/src/models/user'
 
 export class SessionService {
   constructor(
     private prisma: PrismaClient,
+    private group = new GroupService(prisma),
+    private workspace = new WorkspaceService(prisma),
+    private access = new AccessService(prisma),
     private log: AppLogger = app.logger('SessionService'),
   ) {}
 
@@ -87,7 +90,10 @@ export class SessionService {
     const msGraphSdk = Client.initWithMiddleware({
       authProvider: new MyCustomAuthenticationProvider(),
     })
-    const msUser: User = await msGraphSdk.api('/me').get()
+    const msUser: {
+      mail?: string
+      jobTitle?: string
+    } = await msGraphSdk.api('/me').get()
     const avatar = await msGraphSdk
       .api('/me/photo/$value')
       .get()
@@ -122,7 +128,7 @@ export class SessionService {
     name: string
     email: string
     drcJob?: string
-  }): Promise<PUser> => {
+  }): Promise<User> => {
     const user = await this.prisma.user.findFirst({where: {email}})
     if (!user) {
       this.log.info(`Create account ${email}.`)
@@ -159,5 +165,19 @@ export class SessionService {
         at: new Date(),
       },
     })
+  }
+
+  readonly get = async (user: User): Promise<AppSession> => {
+    const [groups, accesses, workspaces] = await Promise.all([
+      this.group.search({user}),
+      this.access.searchForUser({user}),
+      this.workspace.getByUser(user.email),
+    ])
+    return {
+      groups,
+      accesses,
+      workspaces,
+      user,
+    }
   }
 }

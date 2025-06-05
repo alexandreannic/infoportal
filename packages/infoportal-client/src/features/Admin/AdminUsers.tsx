@@ -140,7 +140,7 @@ export const AdminUsers = () => {
               align: 'right',
               renderQuick: _ => (
                 <IpIconBtn
-                  disabled={_.email === conf.contact || _.email === session.email}
+                  disabled={_.email === conf.contact || _.email === session.user.email}
                   children="visibility"
                   loading={_connectAs.loading}
                   onClick={() => connectAs(_.email)}

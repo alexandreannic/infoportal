@@ -5,15 +5,9 @@ import {UUID} from 'infoportal-common'
 import {UserSdk} from '@/core/sdk/server/user/UserSdk'
 
 interface SearchByFeature {
-  ({
-    featureId,
-    email,
-  }: {
-    featureId: AppFeatureId.kobo_database
-    email?: string
-  }): Promise<Access<KoboDatabaseAccessParams>[]>
+  (_?: {featureId: AppFeatureId.kobo_database; email?: string}): Promise<Access<KoboDatabaseAccessParams>[]>
 
-  ({featureId, email}: {featureId?: AppFeatureId; email?: string}): Promise<Access<any>[]>
+  (_?: {featureId?: AppFeatureId; email?: string}): Promise<Access<any>[]>
 }
 
 type FeatureCreateBase = Omit<Access, 'drcJob' | 'id' | 'createdAt' | 'updatedAt' | 'featureId' | 'params'> & {
@@ -58,11 +52,11 @@ export class AccessSdk {
     return this.client.delete<Access>(`/access/${id}`)
   }
 
-  readonly search: SearchByFeature = <T = any>(params: AccessSearch): Promise<Access<T>[]> => {
+  readonly search: SearchByFeature = <T = any>(params?: AccessSearch): Promise<Access<T>[]> => {
     return this.client.get<Record<keyof Access, any>[]>(`/access`, {qs: params}).then(_ => _.map(Access.map))
   }
 
-  readonly searchForConnectedUser: SearchByFeature = <T = any>(params: AccessSearch): Promise<Access<T>[]> => {
+  readonly searchForConnectedUser: SearchByFeature = <T = any>(params?: AccessSearch): Promise<Access<T>[]> => {
     return this.client.get<Record<keyof Access, any>[]>(`/access/me`, {qs: params}).then(_ => _.map(Access.map))
   }
 

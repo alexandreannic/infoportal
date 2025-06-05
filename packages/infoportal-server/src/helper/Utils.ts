@@ -18,6 +18,10 @@ export type MappedColumn<T, O = string> = {
   [P in keyof T]: T[P] extends undefined | Date | string | number | boolean | any[] ? O : MappedColumn<T[P], O>
 }
 
+export const idParamsSchema = yup.object({
+  id: yup.string().required(),
+})
+
 export const previewList = (list: (string | number)[], toPrint = 1) => {
   const displayedItems = list.splice(0, toPrint).join(',')
   const rest = list.length - toPrint

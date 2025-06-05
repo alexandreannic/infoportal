@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
 import {AccessService} from '../../feature/access/AccessService.js'
 import {GroupItemService} from '../../feature/group/GroupItemService.js'
-import {yup} from '../../helper/Utils.js'
+import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {GroupService} from '../../feature/group/GroupService.js'
 
 export class ControllerGroup {
@@ -12,9 +12,7 @@ export class ControllerGroup {
     private itemService = new GroupItemService(prisma),
   ) {}
 
-  static readonly idSchema = yup.object({
-    id: yup.string().required(),
-  })
+  static readonly idSchema = idParamsSchema
 
   static readonly searchGroupSchema = yup.object({
     name: yup.string().optional(),
@@ -44,11 +42,6 @@ export class ControllerGroup {
     const filters = await ControllerGroup.searchGroupSchema.validate(req.body)
     const data = await this.service.search(filters)
     res.send(data)
-  }
-
-  readonly getMine = async (req: Request, res: Response, next: NextFunction) => {
-    const groups = await this.service.search({user: req.session.user})
-    res.send(groups)
   }
 
   readonly createItem = async (req: Request, res: Response, next: NextFunction) => {

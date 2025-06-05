@@ -1,10 +1,10 @@
-import {FeatureAccess, FeatureAccessLevel, Prisma, PrismaClient} from '@prisma/client'
+import {FeatureAccess, FeatureAccessLevel, Prisma, PrismaClient, User} from '@prisma/client'
 import {Access, AppFeatureId, KoboDatabaseFeatureParams} from './AccessType.js'
 import {yup} from '../../helper/Utils.js'
 import {Obj} from '@axanc/ts-utils'
 import {InferType} from 'yup'
 import {UUID} from 'infoportal-common'
-import {UserSession} from '../session/UserSession.js'
+import {AppSession} from '../session/AppSession.js'
 import {app, AppLogger} from '../../index.js'
 
 export type AccessCreateParams = InferType<typeof AccessService.createSchema>
@@ -19,7 +19,7 @@ interface SearchByFeature {
     user,
   }: {
     featureId?: AppFeatureId.kobo_database
-    user?: UserSession
+    user?: User
   }): Promise<Access<KoboDatabaseFeatureParams>[]>
 }
 
@@ -28,10 +28,6 @@ export class AccessService {
     private prisma: PrismaClient,
     private log: AppLogger = app.logger('AccessService'),
   ) {}
-
-  static readonly idParamsSchema = yup.object({
-    id: yup.string().required(),
-  })
 
   static readonly drcOfficeSchema = yup.string()
   static readonly drcJobSchema = yup.string().required() //yup.mixed<DrcJob>().oneOf(Obj.values(DrcJob)),
@@ -58,7 +54,7 @@ export class AccessService {
     featureId: yup.mixed<AppFeatureId>().oneOf(Obj.values(AppFeatureId)),
   })
 
-  private readonly searchFromAccess = async ({featureId, user}: {featureId?: AppFeatureId; user?: UserSession}) => {
+  private readonly searchFromAccess = async ({featureId, user}: {featureId?: AppFeatureId; user?: User}) => {
     return this.prisma.featureAccess.findMany({
       distinct: ['id'],
       where: {
@@ -70,10 +66,7 @@ export class AccessService {
                 {
                   OR: [
                     {email: {equals: user.email, mode: 'insensitive' as const}},
-                    {
-                      OR: [{drcOffice: user.drcOffice}, {drcOffice: null}, {drcOffice: ''}],
-                      drcJob: {equals: user.drcJob, mode: 'insensitive' as const},
-                    },
+                    {drcJob: {equals: user.drcJob, mode: 'insensitive' as const}},
                   ],
                 },
               ]
@@ -84,7 +77,7 @@ export class AccessService {
     })
   }
 
-  private readonly searchFromGroup = async ({featureId, user}: {featureId?: AppFeatureId; user?: UserSession}) => {
+  private readonly searchFromGroup = async ({featureId, user}: {featureId?: AppFeatureId; user?: User}) => {
     return this.prisma.featureAccess.findMany({
       include: {
         group: {include: {items: true}},
@@ -146,7 +139,6 @@ export class AccessService {
             ...body,
             drcJob,
             level: body.level,
-            drcOffice: body.drcOffice,
             email: body.email,
             groupId: body.groupId,
             featureId: body.featureId,
@@ -163,7 +155,6 @@ export class AccessService {
       data: {
         level: body.level,
         drcJob: body.drcJob,
-        drcOffice: body.drcOffice,
       },
     })
   }

@@ -39,13 +39,13 @@ export class ControllerKoboApi {
   }
 
   readonly syncAnswersAll = async (req: Request, res: Response, next: NextFunction) => {
-    await this.syncService.syncApiAnswersToDbAll(req.session.user?.email)
+    await this.syncService.syncApiAnswersToDbAll(req.session.session?.email)
     res.send()
   }
 
   readonly syncAnswersByForm = async (req: Request, res: Response, next: NextFunction) => {
     const {formId} = await this.extractParams(req)
-    await this.syncService.syncApiAnswersToDbByForm({formId, updatedBy: req.session.user?.email})
+    await this.syncService.syncApiAnswersToDbByForm({formId, updatedBy: req.session.session?.email})
     res.send()
   }
 

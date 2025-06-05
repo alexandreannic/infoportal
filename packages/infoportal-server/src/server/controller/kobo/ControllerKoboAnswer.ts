@@ -39,7 +39,7 @@ export class ControllerKoboAnswer {
   ) {}
 
   readonly updateAnswers = async (req: Request, res: Response, next: NextFunction) => {
-    const email = req.session.user?.email ?? 'unknown'
+    const email = req.session.session?.email ?? 'unknown'
     const params = await yup
       .object({
         formId: yup.string().required(),
@@ -57,7 +57,7 @@ export class ControllerKoboAnswer {
   }
 
   readonly updateValidation = async (req: Request, res: Response, next: NextFunction) => {
-    const email = req.session.user?.email ?? 'unknown'
+    const email = req.session.session?.email ?? 'unknown'
     const params = await yup
       .object({
         formId: yup.string().required(),
@@ -74,7 +74,7 @@ export class ControllerKoboAnswer {
   }
 
   readonly deleteAnswers = async (req: Request, res: Response, next: NextFunction) => {
-    const email = req.session.user?.email ?? 'unknown'
+    const email = req.session.session?.email ?? 'unknown'
     const {formId} = await yup
       .object({
         formId: yup.string().required(),
@@ -100,7 +100,7 @@ export class ControllerKoboAnswer {
 
   readonly searchByUserAccess = async (req: Request, res: Response, next: NextFunction) => {
     const {formId} = req.params
-    const user = req.session.user
+    const user = req.session.session
     const filters = await answersFiltersValidation.validate(req.body)
     const paginate = await validateApiPaginate.validate(req.body)
     const answers = await this.service.searchAnswersByUsersAccess({formId, filters, paginate, user})
