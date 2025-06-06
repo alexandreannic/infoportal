@@ -69,7 +69,7 @@ export const AccessTable = ({
         },
         {
           id: 'drcOffice',
-          head: m.drcOffice,
+          head: m.location,
           renderQuick: _ => _.drcOffice,
           type: 'select_one',
           options: () =>

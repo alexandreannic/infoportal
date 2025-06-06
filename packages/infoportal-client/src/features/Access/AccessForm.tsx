@@ -121,7 +121,7 @@ export const AccessFormInputDrcOffice = ({form}: {form: UseFormReturn<IAccessFor
       name="drcOffice"
       control={form.control}
       render={({field: {onChange, ...field}}) => (
-        <IpSelectSingle<string> {...field} label={m.drcOffice} onChange={_ => onChange(_)} options={[]} />
+        <IpSelectSingle<string> {...field} label={m.location} onChange={_ => onChange(_)} options={[]} />
       )}
     />
   )
@@ -239,7 +239,7 @@ export const AccessFormInputGroup = ({form}: {form: UseFormReturn<IAccessForm>})
               },
               {
                 id: 'drcOffice',
-                head: m.drcOffice,
+                head: m.location,
                 type: 'select_one',
                 renderQuick: _ => _.drcOffice,
               },

@@ -44,6 +44,7 @@
     "eslint": "8.56.0",
     "exceljs": "^4.4.0",
     "html2canvas": "^1.4.1",
+    "immer": "^10.1.1",
     "infoportal-common": "1.0.0",
     "kobo-sdk": "^2.2.0",
     "lodash.debounce": "^4.0.8",

@@ -17,7 +17,7 @@ export namespace AppError {
   }
 
   export class Forbidden extends Base {
-    constructor(message: string) {
+    constructor(message: string = '') {
       super(message)
     }
   }

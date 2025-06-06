@@ -21,19 +21,19 @@ import {UserService} from '../feature/user/UserService.js'
 import {ControllerDatabaseView} from './controller/ControllerDatabaseView.js'
 import {ControllerKoboApiXlsImport} from './controller/kobo/ControllerKoboApiXlsImport.js'
 import {ControllerWorkspace} from './controller/ControllerWorkspace.js'
-import {Session} from 'express-session'
+import {AuthRequest} from '../typings'
 
-export interface AuthenticatedRequest extends Request {
-  user?: AppSession
+export const isAuthenticated = (req: Request): req is AuthRequest => {
+  return !!req.session && !!req.session.user
 }
 
 export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Routes')) => {
-  const errorCatcher = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
+  const errorCatcher = <T extends Request>(handler: (req: T, res: Response, next: NextFunction) => Promise<void>) => {
+    return async (req: T, res: Response, next: NextFunction) => {
       try {
         await handler(req, res, next)
       } catch (err) {
-        log.error(req.url + '' + req.session.session?.email)
+        log.error(req.url + '' + req.session.user?.email)
         next(err)
       }
     }
@@ -66,7 +66,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       // } as any
       // next()
       try {
-        const email = req.session.session?.email
+        const email = req.session.user?.email
         if (!email) {
           throw new AppError.Forbidden('auth_user_not_connected')
         }
@@ -77,6 +77,8 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         if (adminOnly && !user.admin) {
           throw new AppError.Forbidden('user_not_admin')
         }
+        res.locals.session = req.session as Required<AppSession>
+
         next()
       } catch (e) {
         next(e)
@@ -93,9 +95,10 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session/me', errorCatcher(session.getMe))
 
-    router.put('/workspace', workspace.create)
-    router.post('/workspace/:id', workspace.update)
-    router.delete('/workspace/:id', workspace.remove)
+    router.put('/workspace', auth(), errorCatcher(workspace.create))
+    router.post('/workspace/check-slug', auth(), errorCatcher(workspace.checkSlug))
+    router.post('/workspace/:id', auth(), errorCatcher(workspace.update))
+    router.delete('/workspace/:id', errorCatcher(workspace.remove))
 
     router.get('/proxy/:slug', errorCatcher(proxy.redirect))
     router.put('/proxy', auth({adminOnly: true}), errorCatcher(proxy.create))

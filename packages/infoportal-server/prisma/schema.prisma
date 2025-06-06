@@ -11,11 +11,12 @@ datasource db {
 }
 
 model Workspace {
-  id              String          @id @default(uuid())
-  createdAt       DateTime        @default(now())
+  id              String            @id @default(uuid())
+  createdAt       DateTime          @default(now())
   createdBy       String
   name            String
-  slug            String
+  slug            String            @unique
+  sector          String?
   KoboServer      KoboServer[]
   KoboForm        KoboForm[]
   Users           User[]
@@ -24,6 +25,23 @@ model Workspace {
   Proxys          Proxy[]
   EmailOutBoxs    EmailOutBox[]
   FeatureAccesses FeatureAccess[]
+  WorkspaceAccess WorkspaceAccess[]
+}
+
+enum WorkspaceAccessLevel {
+  Admin
+  User
+}
+
+model WorkspaceAccess {
+  id          String               @id @default(uuid())
+  createdAt   DateTime             @default(now())
+  createdBy   String
+  level       WorkspaceAccessLevel
+  user        User                 @relation(fields: [userId], references: [id])
+  userId      String
+  workspace   Workspace            @relation(fields: [workspaceId], references: [id])
+  workspaceId String
 }
 
 model KoboServer {
@@ -106,20 +124,20 @@ model KoboAnswersHistory {
 }
 
 model User {
-  id              String         @id @default(uuid())
-  email           String         @unique
+  id              String            @id @default(uuid())
+  email           String            @unique
   createdBy       String?
-  createdAt       DateTime       @default(now())
+  createdAt       DateTime          @default(now())
   lastConnectedAt DateTime?
   accessToken     String?
   name            String?
   drcJob          String?
-  avatar          Bytes?         @db.ByteA
-  drcOffice       String?
-  admin           Boolean        @default(false)
+  avatar          Bytes?            @db.ByteA
+  admin           Boolean           @default(false)
   officer         String?
   activities      UserActivity[]
   workspaces      Workspace[]
+  WorkspaceAccess WorkspaceAccess[]
 
   @@index([email])
 }
@@ -173,7 +191,6 @@ model GroupItem {
   id        String             @id @default(uuid())
   createdAt DateTime           @default(now())
   drcJob    String?
-  drcOffice String?
   email     String?
   level     FeatureAccessLevel
   group     Group?             @relation(fields: [groupId], references: [id])

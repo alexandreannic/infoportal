@@ -7,7 +7,6 @@ const iconSize = 94
 
 export const AppHeaderFeatures = (props: Omit<IpIconBtnProps, 'children'>) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
-  const {session, accesses} = useSession()
   const open = !!anchorEl
   const t = useTheme()
   return (

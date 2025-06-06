@@ -2,13 +2,12 @@ import {FormControl, FormHelperText, InputLabel, OutlinedInput, OutlinedInputPro
 import React, {ReactNode, useEffect, useRef} from 'react'
 
 export interface IpInputProps extends OutlinedInputProps, Pick<TextFieldProps, 'InputProps' | 'InputLabelProps'> {
-  small?: boolean
   label?: string
   helperText?: ReactNode
 }
 
 export const IpInput = React.forwardRef(
-  ({small, label, sx, error, InputLabelProps, id, helperText = '', ...props}: IpInputProps, ref) => {
+  ({size = 'small', label, sx, error, InputLabelProps, id, helperText = '', ...props}: IpInputProps, ref) => {
     // const id = useMemo(() => Math.random() + '', [])
     const inputElement = useRef<HTMLInputElement | null>(null)
     useEffect(() => {
@@ -16,7 +15,7 @@ export const IpInput = React.forwardRef(
     }, [])
 
     return (
-      <FormControl size="small" sx={{width: '100%', ...sx}} error={error}>
+      <FormControl size={size} sx={{width: '100%', ...sx}} error={error}>
         <InputLabel {...InputLabelProps} htmlFor={id}>
           {label}
         </InputLabel>
@@ -27,7 +26,7 @@ export const IpInput = React.forwardRef(
           id={id}
           {...props}
           ref={ref}
-          size="small"
+          size={size}
           margin="dense"
         />
         {helperText !== null && <FormHelperText>{helperText}&nbsp;</FormHelperText>}

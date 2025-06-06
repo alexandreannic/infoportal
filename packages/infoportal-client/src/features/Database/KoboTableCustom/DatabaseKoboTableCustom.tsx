@@ -171,9 +171,7 @@ export const DatabaseTableCustomRoute = () => {
       _ => _.formId,
       group =>
         seq(
-          ctxAnswers
-            .byId(group[0].formId)
-            .get?.data.filter(_ => !_.tags || _.tags._validation !== KoboValidation.Rejected)!,
+          ctxAnswers.byId(group[0].formId).get?.data.filter(_ => _.validationStatus !== KoboValidation.Rejected)!,
         ).groupByFirst(_ => (_ as any)[group[0].colName]),
     )
     return dataSets[0]!.map((row, i) => {

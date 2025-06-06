@@ -42,7 +42,6 @@ const noEditableColsId: Set<string> = new Set<keyof KoboSubmissionMetaData>([
   'validatedBy',
   'lastValidatedTimestamp',
   'geolocation',
-  'tags',
 ])
 
 const editableColsType: Set<Kobo.Form.QuestionType> = new Set([

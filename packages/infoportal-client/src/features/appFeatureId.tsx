@@ -1,5 +1,5 @@
 import {Obj} from '@axanc/ts-utils'
-import {UserSession} from '@/core/sdk/server/session/Session'
+import {Session} from '@/core/sdk/server/session/Session'
 import {Access} from '@/core/sdk/server/access/Access'
 
 export enum AppFeatureId {
@@ -14,7 +14,7 @@ export interface AppFeature {
   color: string
   path: string
   category: 'programs' | 'general' | 'settings'
-  showIf?: (_?: UserSession, a?: Access[]) => boolean | undefined
+  showIf?: (_?: Session, a?: Access[]) => boolean | undefined
 }
 
 export const appFeaturesIndex: Record<AppFeatureId, AppFeature> = {
@@ -33,7 +33,7 @@ export const appFeaturesIndex: Record<AppFeatureId, AppFeature> = {
     color: 'silver',
     path: '/admin',
     category: 'settings',
-    showIf: _ => _ && _?.admin,
+    showIf: _ => _ && _?.user.admin,
   },
 } as const
 

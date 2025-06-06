@@ -4,7 +4,6 @@ import {yup} from '../../helper/Utils.js'
 import {Obj} from '@axanc/ts-utils'
 import {InferType} from 'yup'
 import {UUID} from 'infoportal-common'
-import {AppSession} from '../session/AppSession.js'
 import {app, AppLogger} from '../../index.js'
 
 export type AccessCreateParams = InferType<typeof AccessService.createSchema>

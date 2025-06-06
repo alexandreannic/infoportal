@@ -1,16 +1,14 @@
 import {AppSession} from '../feature/session/AppSession.js'
-
-// export = session;
-//
-// declare module 'express' {
-//   interface SessionData {
-//     user: UserSession
-//   }
-// }
+import {Request} from 'express'
+import {Session} from 'express-session'
 
 declare module 'express-session' {
-  interface SessionData {
+  interface SessionData extends Partial<AppSession> {
     // Declare additional properties or methods for the session data
-    session: AppSession
+    // session: AppSession
   }
+}
+
+export interface AuthRequest extends Request {
+  session: Session & Required<AppSession>
 }

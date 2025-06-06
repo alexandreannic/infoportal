@@ -37,14 +37,16 @@ export const DatabaseAccessRoute = () => {
 export const DatabaseAccess = ({formId, form}: {formId: Kobo.FormId; form: Kobo.Form}) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
-  const {session, accesses} = useSession()
+  const {session} = useSession()
 
   const accessSum = useMemo(() => {
     return Access.toSum(
-      accesses.filter(Access.filterByFeature(AppFeatureId.kobo_database)).filter(_ => _.params?.koboFormId === formId),
-      session.admin,
+      session.accesses
+        .filter(Access.filterByFeature(AppFeatureId.kobo_database))
+        .filter(_ => _.params?.koboFormId === formId),
+      session.user.admin,
     )
-  }, [session, accesses])
+  }, [session, session.accesses])
 
   const requestInConstToFixTsInference = () =>
     api.access.search({featureId: AppFeatureId.kobo_database}).then(_ => _.filter(_ => _.params?.koboFormId === formId))

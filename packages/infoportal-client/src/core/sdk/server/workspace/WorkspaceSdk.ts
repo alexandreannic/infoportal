@@ -6,6 +6,10 @@ import {UUID} from 'infoportal-common'
 export class WorkspaceSdk {
   constructor(private client: ApiClient) {}
 
+  readonly checkSlug = (slug: string): Promise<{isFree: boolean; suggestedSlug: string}> => {
+    return this.client.post(`/workspace/check-slug`, {body: {slug}})
+  }
+
   readonly create = (body: WorkspaceCreate) => {
     return this.client.put<Workspace>(`/workspace`, {body: body})
   }
