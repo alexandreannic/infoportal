@@ -19,14 +19,14 @@ export class ControllerKoboForm {
       .validate(req.body)
     const data = await this.service.add({
       ...body,
-      uploadedBy: req.session.session?.email!,
+      uploadedBy: req.session.app?.user.email!,
     })
     res.send(data)
   }
 
   readonly refreshAll = async (req: Request, res: Response, next: NextFunction) => {
     await this.service.refreshAll({
-      uploadedBy: req.session.session?.email!,
+      uploadedBy: req.session.app?.user.email!,
     })
     res.send()
   }

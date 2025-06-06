@@ -5,6 +5,7 @@ export type Workspace = {
   createdAt: Date
   createdBy: string
   name: string
+  slug: string
 }
 
 export type WorkspaceCreate = Omit<Workspace, 'id' | 'createdAt' | 'createdBy'>

@@ -218,7 +218,7 @@ export const DatabaseKoboTableContent = ({
                 tooltip={<div dangerouslySetInnerHTML={{__html: m._koboDatabase.pullDataAt(ctx.form.updatedAt)}} />}
                 onClick={ctx.asyncRefresh.call}
               />
-              {session.admin && (
+              {session.user.admin && (
                 <DatabaseImportBtn
                   onUploadNewData={file => handleImportData(file, 'create')}
                   onUpdateExistingData={file => handleImportData(file, 'update')}

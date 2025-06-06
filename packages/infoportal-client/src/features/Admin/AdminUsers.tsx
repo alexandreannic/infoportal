@@ -115,7 +115,7 @@ export const AdminUsers = () => {
             {
               id: 'drcOffice',
               type: 'select_one',
-              head: m.drcOffice,
+              head: m.location,
               renderQuick: _ => _.drcOffice,
               // options: () => seq(_users.get?.map(_ => _.drcOffice)).distinct(_ => _).compact().map(_ => ({value: _, label: _}))
             },

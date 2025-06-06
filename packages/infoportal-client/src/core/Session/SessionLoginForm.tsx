@@ -8,7 +8,7 @@ import {useI18n} from '@/core/i18n'
 import {useIpToast} from '@/core/useToast'
 import {mapPromise} from '@axanc/ts-utils'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {UserSession} from '@/core/sdk/server/session/Session'
+import {Session} from '@/core/sdk/server/session/Session'
 import {CenteredContent} from '@/shared/CenteredContent'
 import {useAsync} from '@/shared/hook/useAsync'
 import {useGoogleLogin} from '@react-oauth/google'
@@ -56,7 +56,7 @@ const BtnLogin = ({
   )
 }
 
-export const SessionLoginForm = ({setSession}: {setSession: (_: UserSession) => void}) => {
+export const SessionLoginForm = ({setSession}: {setSession: (_: Session) => void}) => {
   const {api} = useAppSettings()
   const {m} = useI18n()
   const {toastError} = useIpToast()

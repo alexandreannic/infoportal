@@ -1,4 +1,4 @@
-import {KoboForm, Prisma, PrismaClient} from '@prisma/client'
+import {KoboForm, Prisma, PrismaClient, User} from '@prisma/client'
 import {
   ApiPaginate,
   ApiPaginateHelper,
@@ -59,7 +59,7 @@ export class KoboService {
     formId: string
     filters: KoboAnswersFilters
     paginate?: Partial<ApiPagination>
-    user?: AppSession
+    user?: User
   }): Promise<ApiPaginate<DbKoboAnswer>> => {
     if (!user) return ApiPaginateHelper.make()([])
     if (!user.admin) {

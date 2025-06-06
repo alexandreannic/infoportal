@@ -2,6 +2,8 @@ import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
 import {AccessService} from '../../feature/access/AccessService.js'
 import {idParamsSchema} from '../../helper/Utils.js'
+import {isAuthenticated} from '../Routes.js'
+import {AppError} from '../../helper/Errors.js'
 
 export class ControllerAccess {
   constructor(
@@ -35,8 +37,9 @@ export class ControllerAccess {
   }
 
   readonly searchMine = async (req: Request, res: Response, next: NextFunction) => {
+    if (!isAuthenticated(req)) throw new AppError.Forbidden()
     const qs = await AccessService.searchSchema.validate(req.query)
-    const data = await this.service.searchForUser({...qs, user: req.session.session})
+    const data = await this.service.searchForUser({...qs, user: req.session.app.user})
     res.send(data)
   }
 }

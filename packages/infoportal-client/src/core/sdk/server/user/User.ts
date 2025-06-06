@@ -6,6 +6,7 @@ export interface User {
   accessToken: string
   admin?: boolean
   drcJob?: string
+  drcOffice?: string
   createdAt?: Date
   lastConnectedAt?: Date
   workspaceId: UUID

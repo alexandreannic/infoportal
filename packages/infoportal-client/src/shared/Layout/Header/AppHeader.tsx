@@ -12,6 +12,8 @@ import {useI18n} from '@/core/i18n'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Obj} from '@axanc/ts-utils'
 import {styleUtils} from '@/core/theme'
+import {IpSelectSingle} from '@/shared/Select/SelectSingle'
+import {useSession} from '@/core/Session/SessionContext'
 
 interface Props extends BoxProps {}
 
@@ -24,6 +26,7 @@ const lightThemeIcons = {
 export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) => {
   const {sidebarOpen, showSidebarButton, setSidebarOpen, title} = useLayoutContext()
   const {m} = useI18n()
+  const {session} = useSession()
   const t = useTheme()
   const {
     theme: {brightness, setBrightness},
@@ -99,6 +102,7 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
       >
         <IpIconBtn children={lightThemeIcons[brightness ?? 'auto']} />
       </PopoverWrapper>
+      <IpSelectSingle options={session.workspaces.map(_ => ({value: _.slug, children: _.name}))} />
       <IpIconBtn children="home" />
       <AppHeaderFeatures sx={{mr: 1}} />
       <AppHeaderMenu />

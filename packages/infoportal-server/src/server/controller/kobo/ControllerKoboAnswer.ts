@@ -8,6 +8,8 @@ import {validateApiPaginate} from '../../../core/Type.js'
 import {Kobo} from 'kobo-sdk'
 import {Obj} from '@axanc/ts-utils'
 import {app} from '../../../index.js'
+import {isAuthenticated} from '../../Routes.js'
+import {AppError} from '../../../helper/Errors.js'
 
 export interface KoboAnswersFilters extends Partial<Period> {
   ids?: Kobo.FormId[]
@@ -39,7 +41,7 @@ export class ControllerKoboAnswer {
   ) {}
 
   readonly updateAnswers = async (req: Request, res: Response, next: NextFunction) => {
-    const email = req.session.session?.email ?? 'unknown'
+    const email = req.session.app?.user.email ?? 'unknown'
     const params = await yup
       .object({
         formId: yup.string().required(),
@@ -57,7 +59,7 @@ export class ControllerKoboAnswer {
   }
 
   readonly updateValidation = async (req: Request, res: Response, next: NextFunction) => {
-    const email = req.session.session?.email ?? 'unknown'
+    const email = req.session.app?.user.email ?? 'unknown'
     const params = await yup
       .object({
         formId: yup.string().required(),
@@ -74,7 +76,7 @@ export class ControllerKoboAnswer {
   }
 
   readonly deleteAnswers = async (req: Request, res: Response, next: NextFunction) => {
-    const email = req.session.session?.email ?? 'unknown'
+    const email = req.session.app?.user.email ?? 'unknown'
     const {formId} = await yup
       .object({
         formId: yup.string().required(),
@@ -99,8 +101,9 @@ export class ControllerKoboAnswer {
   }
 
   readonly searchByUserAccess = async (req: Request, res: Response, next: NextFunction) => {
+    if (!isAuthenticated(req)) throw new AppError.Forbidden()
     const {formId} = req.params
-    const user = req.session.session
+    const user = req.session.app.user
     const filters = await answersFiltersValidation.validate(req.body)
     const paginate = await validateApiPaginate.validate(req.body)
     const answers = await this.service.searchAnswersByUsersAccess({formId, filters, paginate, user})

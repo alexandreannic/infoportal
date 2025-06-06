@@ -1,5 +1,5 @@
-import {PrismaClient} from '@prisma/client'
-import {idParamsSchema, yup} from '../../helper/Utils.js'
+import {PrismaClient, User} from '@prisma/client'
+import {genShortid, idParamsSchema, yup} from '../../helper/Utils.js'
 import {InferType} from 'yup'
 import {slugify, UUID} from 'infoportal-common'
 
@@ -10,7 +10,11 @@ export class WorkspaceService {
 
   static readonly schema = {
     id: idParamsSchema,
+    slug: yup.object({
+      slug: yup.string().required(),
+    }),
     create: yup.object({
+      slug: yup.string().required(),
       name: yup.string().required(),
     }),
     update: yup.object({
@@ -18,7 +22,8 @@ export class WorkspaceService {
     }),
   }
 
-  private readonly getUniqSlug = async (baseSlug: string) => {
+  readonly getUniqSlug = async (name: string) => {
+    const baseSlug = slugify(name)
     const existingSlugs = await this.prisma.workspace
       .findMany({
         select: {slug: true},
@@ -29,9 +34,8 @@ export class WorkspaceService {
       .then(_ => _.map(_ => _.slug))
 
     let slug = baseSlug
-    let counter = 1
     while (existingSlugs.includes(slug)) {
-      slug = `${baseSlug}-${counter++}`
+      slug = `${baseSlug}-${genShortid()}`
     }
     return slug
   }
@@ -48,13 +52,22 @@ export class WorkspaceService {
     })
   }
 
-  readonly create = async (data: WorkspaceCreate, createdBy: string) => {
-    const slug = await this.getUniqSlug(slugify(data.name))
+  readonly create = async (data: WorkspaceCreate, user: User) => {
     return this.prisma.workspace.create({
       data: {
         ...data,
-        slug,
-        createdBy,
+        createdBy: user.email,
+        WorkspaceAccess: {
+          create: {
+            createdBy: user.email,
+            level: 'Admin',
+            user: {
+              connect: {
+                email: user.email,
+              },
+            },
+          },
+        },
       },
     })
   }

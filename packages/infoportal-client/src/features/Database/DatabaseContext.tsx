@@ -25,7 +25,7 @@ export const Context = React.createContext({} as DatabaseContext)
 export const useDatabaseContext = () => useContext(Context)
 
 export const DatabaseProvider = ({children}: {children: ReactNode}) => {
-  const {session, accesses} = useSession()
+  const {session} = useSession()
   const {api} = useAppSettings()
   const _forms = useFetcher(
     () =>
@@ -45,11 +45,11 @@ export const DatabaseProvider = ({children}: {children: ReactNode}) => {
   }, [])
 
   const koboAccesses = useMemo(() => {
-    return accesses.filter(Access.filterByFeature(AppFeatureId.kobo_database)).map(_ => _.params?.koboFormId)
-  }, [accesses])
+    return session.accesses.filter(Access.filterByFeature(AppFeatureId.kobo_database)).map(_ => _.params?.koboFormId)
+  }, [session.accesses])
 
   const formsAccessible = useMemo(() => {
-    return _forms.get?.filter(_ => session.admin || koboAccesses.includes(_.id))
+    return _forms.get?.filter(_ => session.user.admin || koboAccesses.includes(_.id))
   }, [koboAccesses, _forms.get])
 
   useEffectFn(_forms.error, toastHttpError)
@@ -58,7 +58,7 @@ export const DatabaseProvider = ({children}: {children: ReactNode}) => {
     <Context.Provider
       value={{
         _forms,
-        isAdmin: session.admin,
+        isAdmin: session.user.admin,
         formsAccessible,
         getForm,
       }}
