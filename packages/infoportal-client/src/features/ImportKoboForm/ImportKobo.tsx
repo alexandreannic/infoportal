@@ -7,11 +7,11 @@ import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {useAsync, useEffectFn, useFetcher} from '@axanc/react-hooks'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useDialogs} from '@toolpad/core'
-import {KoboServerFormDialog} from '@/features/Database/ImportKoboForm/KoboServerForm'
+import {KoboServerFormDialog} from '@/features/ImportKoboForm/KoboServerForm'
 import {KoboServerCreate} from '@/core/sdk/server/kobo/KoboMapper'
 import {UUID} from 'infoportal-common'
 import {useIpToast} from '@/core/useToast'
-import {SelectKoboForm} from '@/features/Database/ImportKoboForm/SelectKoboForm'
+import {SelectKoboForm} from '@/features/ImportKoboForm/SelectKoboForm'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 
 export const ImportKobo = () => {
