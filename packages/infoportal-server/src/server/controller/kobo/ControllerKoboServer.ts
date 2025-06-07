@@ -1,8 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
-import {yup} from '../../../helper/Utils.js'
+import {idParamsSchema, yup} from '../../../helper/Utils.js'
 import {KoboService} from '../../../feature/kobo/KoboService.js'
-import {ProxyService} from '../../../feature/proxy/ProxyService'
 
 export class ControllerKoboServer {
   constructor(
@@ -17,9 +16,7 @@ export class ControllerKoboServer {
       urlV1: yup.string().required(),
       token: yup.string().required(),
     }),
-    id: yup.object({
-      id: yup.string().required(),
-    }),
+    id: idParamsSchema,
   }
   readonly getAll = async (req: Request, res: Response, next: NextFunction) => {
     const servers = await this.pgClient.koboServer.findMany()

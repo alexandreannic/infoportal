@@ -109,6 +109,9 @@ export const en = Object.freeze({
     Pending: 'Pending',
     history: 'History',
     recap: 'Recap',
+    onboardingTitle: "Let's start with a name for your workspace",
+    enterProjectName: 'Enter your workspace name',
+    workspaceId: 'Workspace ID',
     Approved: 'Approved',
     updatingTag: (rowsCount: number, key: string, value: string) => `Updating ${key}=${value} on ${rowsCount} rows...`,
     cannotUpdateTag: (rowsCount: number, key: string, value: string) =>
@@ -246,8 +249,6 @@ export const en = Object.freeze({
     phone: 'Phone',
     payName: 'Payment contact name',
     payPhone: 'Payment contact phone',
-    drcEmail: 'DRC Email',
-    drcOffice: 'DRC Office',
     finance: 'Finance',
     admin: 'Admin',
     inPerson: 'In person',

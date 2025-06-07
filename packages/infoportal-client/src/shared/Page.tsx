@@ -5,7 +5,7 @@ import {Txt} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 
 export interface PageProps extends BoxProps {
-  width?: number | 'xs' | 'md' | 'lg' | 'full'
+  width?: number | 'xxs' | 'xs' | 'md' | 'lg' | 'full'
   animation?: 'none' | 'default' | 'translateLeft'
   className?: any
   style?: object
@@ -48,6 +48,7 @@ export const PagePlaceholder = (props: Pick<PageProps, 'width'>) => {
   const width =
     typeof props.width === 'string'
       ? {
+          xxs: 480,
           xs: 780,
           md: 1000,
           lg: 1200,
@@ -66,6 +67,7 @@ export const Page = ({children, sx, loading, animation = 'default', animationDep
   const width =
     typeof props.width === 'string'
       ? {
+          xxs: 520,
           xs: 780,
           md: 1000,
           lg: 1240,

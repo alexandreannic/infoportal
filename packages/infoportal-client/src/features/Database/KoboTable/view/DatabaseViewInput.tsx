@@ -37,8 +37,8 @@ export const DatabaseViewInput = ({sx, view: ctx}: {view: UseDatabaseView; sx?: 
               readOnly={
                 view.name === DatabaseViewDefaultName ||
                 (view.visibility === DatabaseViewVisibility.Sealed &&
-                  view.createdBy !== session.email &&
-                  !session.admin)
+                  view.createdBy !== session.user.email &&
+                  !session.user.admin)
               }
               open={open === view.id}
               onDelete={() => ctx.asyncViewDelete.call(view.id)}

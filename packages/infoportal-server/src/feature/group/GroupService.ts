@@ -1,10 +1,10 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient, User} from '@prisma/client'
 import {yup} from '../../helper/Utils.js'
 import {InferType} from 'yup'
 import {UUID} from 'infoportal-common'
 import {format} from 'date-fns'
 import {AppFeatureId} from '../access/AccessType.js'
-import {UserSession} from '../session/UserSession.js'
+import {AppSession} from '../session/AppSession.js'
 
 export type GroupCreateParams = InferType<typeof GroupService.createSchema>
 export type GroupUpdateParams = InferType<typeof GroupService.updateSchema>
@@ -60,7 +60,7 @@ export class GroupService {
     })
   }
 
-  readonly search = ({featureId, name, user}: {user?: UserSession; name?: string; featureId?: UUID}) => {
+  readonly search = ({featureId, name, user}: {user?: User; name?: string; featureId?: UUID}) => {
     return this.prisma.group.findMany({
       include: {
         items: true,

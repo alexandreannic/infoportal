@@ -8,11 +8,11 @@ import React, {useEffect, useMemo} from 'react'
 import {Txt} from '@/shared/Txt'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {Icon, useTheme} from '@mui/material'
-import {databaseIndex} from '@/features/Database/databaseIndex'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {fnSwitch, seq} from '@axanc/ts-utils'
+import {seq} from '@axanc/ts-utils'
 import {NavLink} from 'react-router-dom'
+import {router} from '@/Router'
 
 export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
   const {api} = useAppSettings()
@@ -171,7 +171,7 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
                   align: 'right',
                   head: '',
                   renderQuick: _ => (
-                    <NavLink to={databaseIndex.siteMap.database.absolute(_.id)}>
+                    <NavLink to={router.database.form.root(_.id)}>
                       <TableIconBtn color="primary" children="chevron_right" />
                     </NavLink>
                   ),

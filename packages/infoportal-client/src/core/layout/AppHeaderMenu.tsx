@@ -23,16 +23,16 @@ const Row = ({icon, children}: {icon: string; children: ReactNode}) => {
 }
 
 export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
-  const session = useSession()
+  const {session, logout} = useSession()
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
   const open = !!anchorEl
   const {m} = useI18n()
-  if (!session.session) {
+  if (!session) {
     return <></>
   }
   return (
     <>
-      <AppAvatar size={36} email={session.session.email} onClick={e => setAnchorEl(e.currentTarget)} {...props} />
+      <AppAvatar size={36} email={session.user.email} onClick={e => setAnchorEl(e.currentTarget)} {...props} />
       <Popover
         anchorEl={anchorEl}
         anchorOrigin={{
@@ -45,14 +45,14 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
         <Box>
           <Box sx={{p: 2}}>
             <Txt bold block size="big">
-              {session.session.name}
+              {session.user.name}
             </Txt>
-            <Row icon="email">{session.session.email}</Row>
-            <Row icon="badge">{session.session.drcJob}</Row>
-            <Row icon="location_on">{session.session.drcOffice}</Row>
+            <Row icon="email">{session.user.email}</Row>
+            <Row icon="badge">{session.user.drcJob}</Row>
+            {session.user.admin && <Row icon="shield_person">{m.admin}</Row>}
           </Box>
           <Box sx={{px: 2}}>
-            <IpBtn icon="logout" variant="outlined" onClick={session.logout} sx={{mb: 2}}>
+            <IpBtn icon="logout" variant="outlined" onClick={logout} sx={{mb: 2}}>
               {m.logout}
             </IpBtn>
           </Box>

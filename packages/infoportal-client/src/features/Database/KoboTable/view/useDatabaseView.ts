@@ -51,7 +51,7 @@ export const useDatabaseView = (formId: Kobo.FormId) => {
   }, [currentViewId, fetcherViews.get])
 
   const canUpdateView = (v: DatabaseView) =>
-    !!v && (v.visibility !== DatabaseViewVisibility.Sealed || v.createdBy === session.email)
+    !!v && (v.visibility !== DatabaseViewVisibility.Sealed || v.createdBy === session.user.email)
 
   const asyncViewUpdate = useAsync(async (view: DatabaseView, changes: Partial<Pick<DatabaseView, 'visibility'>>) => {
     if (!canUpdateView(view)) return

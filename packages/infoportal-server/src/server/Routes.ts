@@ -10,7 +10,6 @@ import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer.js'
 import {Server} from './Server.js'
 import {ControllerAccess} from './controller/ControllerAccess.js'
 import {ControllerUser} from './controller/ControllerUser.js'
-import {UserSession} from '../feature/session/UserSession.js'
 import {AppError} from '../helper/Errors.js'
 import {ControllerProxy} from './controller/ControllerProxy.js'
 import {ControllerGroup} from './controller/ControllerGroup.js'
@@ -20,18 +19,20 @@ import {ControllerCache} from './controller/ControllerCache.js'
 import {UserService} from '../feature/user/UserService.js'
 import {ControllerDatabaseView} from './controller/ControllerDatabaseView.js'
 import {ControllerKoboApiXlsImport} from './controller/kobo/ControllerKoboApiXlsImport.js'
+import {ControllerWorkspace} from './controller/ControllerWorkspace.js'
+import {AuthRequest} from '../typings'
 
-export interface AuthenticatedRequest extends Request {
-  user?: UserSession
+export const isAuthenticated = (req: Request): req is AuthRequest => {
+  return !!req.session.app && !!req.session.app.user
 }
 
 export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Routes')) => {
-  const errorCatcher = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
+  const errorCatcher = <T extends Request>(handler: (req: T, res: Response, next: NextFunction) => Promise<void>) => {
+    return async (req: T, res: Response, next: NextFunction) => {
       try {
         await handler(req, res, next)
       } catch (err) {
-        log.error(req.url + '' + req.session.user?.email)
+        log.error(req.url + '' + req.session.app?.user.email)
         next(err)
       }
     }
@@ -39,6 +40,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
 
   const router = express.Router()
   const main = new ControllerMain()
+  const workspace = new ControllerWorkspace(prisma)
   const koboForm = new ControllerKoboForm(prisma)
   const koboServer = new ControllerKoboServer(prisma)
   const koboAnswer = new ControllerKoboAnswer(prisma)
@@ -57,13 +59,13 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const auth =
     ({adminOnly = false}: {adminOnly?: boolean} = {}) =>
     async (req: Request, res: Response, next: NextFunction) => {
-      // req.session.user = {
+      //req.session.app.user = {
       //   email: 'alexandre.annic@drc.ngo',
       //   admin: true,
       // } as any
       // next()
       try {
-        const email = req.session.user?.email
+        const email = req.session.app?.user.email
         if (!email) {
           throw new AppError.Forbidden('auth_user_not_connected')
         }
@@ -88,7 +90,12 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     router.post('/session/connect-as', auth({adminOnly: true}), errorCatcher(session.connectAs))
     router.post('/session/connect-as-revert', auth(), errorCatcher(session.revertConnectAs))
     router.delete('/session', errorCatcher(session.logout))
-    router.get('/session', errorCatcher(session.get))
+    router.get('/session/me', errorCatcher(session.getMe))
+
+    router.put('/workspace', auth(), errorCatcher(workspace.create))
+    router.post('/workspace/check-slug', auth(), errorCatcher(workspace.checkSlug))
+    router.post('/workspace/:id', auth(), errorCatcher(workspace.update))
+    router.delete('/workspace/:id', errorCatcher(workspace.remove))
 
     router.get('/proxy/:slug', errorCatcher(proxy.redirect))
     router.put('/proxy', auth({adminOnly: true}), errorCatcher(proxy.create))
@@ -96,7 +103,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     router.delete('/proxy/:id', auth({adminOnly: true}), errorCatcher(proxy.delete))
     router.get('/proxy', errorCatcher(proxy.search))
 
-    router.get('/group/me', auth(), errorCatcher(accessGroup.getMine))
     router.get('/group/item', auth({adminOnly: true}), errorCatcher(accessGroup.getItems))
     router.post('/group/item/:id', auth({adminOnly: true}), errorCatcher(accessGroup.updateItem))
     router.delete('/group/item/:id', auth({adminOnly: true}), errorCatcher(accessGroup.removeItem))

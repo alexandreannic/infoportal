@@ -29,7 +29,7 @@ export class ControllerDatabaseView {
         databaseId: yup.string().optional(),
       })
       .validate(req.body)
-    const data = await this.service.search({...body, email: req.session.user?.email})
+    const data = await this.service.search({...body, email: req.session.app?.user.email})
     res.send(data)
   }
 
@@ -42,7 +42,7 @@ export class ControllerDatabaseView {
       })
       .validate(req.body)
     const data = await this.service.create({
-      createdBy: req.session.user?.email,
+      createdBy: req.session.app?.user.email,
       createdAt: new Date(),
       ...body,
     })
@@ -81,7 +81,7 @@ export class ControllerDatabaseView {
       .validate(req.body)
     const data = await this.service.updateCol({
       viewId: params.viewId,
-      updatedBy: req.session.user?.email,
+      updatedBy: req.session.app?.user.email,
       body: {...body, name: params.colName},
     })
     res.send(data)

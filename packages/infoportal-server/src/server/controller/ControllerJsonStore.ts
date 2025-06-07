@@ -24,7 +24,7 @@ export class ControllerJsonStore {
       })
       .validate(req.body)
     const exist = await this.prisma.jsonStore.findFirst({where: {key}})
-    const email = req.session.user?.email ?? 'unknown'
+    const email = req.session.app?.user.email ?? 'unknown'
     const data = exist
       ? await this.prisma.jsonStore.update({
           where: {key},
@@ -51,7 +51,7 @@ export class ControllerJsonStore {
         json: yup.mixed().required(),
       })
       .validate(req.body)
-    const email = req.session.user?.email ?? 'unknown'
+    const email = req.session.app?.user.email ?? 'unknown'
     const current = await this.prisma.jsonStore.findFirst({where: {key}})
     const data = current
       ? await this.prisma.jsonStore.update({

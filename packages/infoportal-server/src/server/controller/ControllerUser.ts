@@ -22,7 +22,7 @@ export class ControllerUser {
         email: yup.string().optional(),
       })
       .validate(req.params)
-    const avatar = await this.service.getUserAvatarByEmail(email ?? req.session.user?.email!)
+    const avatar = await this.service.getUserAvatarByEmail(email ?? req.session.app?.user.email!)
     if (!avatar) {
       res.send()
       // throw new AppError.NotFound('user_not_found')
@@ -39,16 +39,16 @@ export class ControllerUser {
       })
       .validate(req.body)
 
-    const email = req.session.user?.email
+    const email = req.session.app?.user.email
     if (!email) {
       throw new SessionError.UserNotConnected()
     }
-    const data = await this.service.update({email, ...user})
-    req.session.user = {
-      ...req.session.user,
-      ...(Util.removeUndefined(data) as any),
+    const updatedUser = await this.service.update({email, ...user})
+    req.session = {
+      ...req.session,
+      ...(Util.removeUndefined(updatedUser) as any),
     }
-    res.send(data)
+    res.send(updatedUser)
   }
 
   readonly getDrcJobs = async (req: Request, res: Response, next: NextFunction) => {

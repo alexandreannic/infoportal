@@ -1,17 +1,19 @@
 import {alpha, BoxProps, Icon, MenuItem, useTheme} from '@mui/material'
 import {Txt} from '@/shared'
-import {layoutConfig} from '../index'
+import {layoutConfig} from '@/shared/Layout'
 import React from 'react'
-import {useLayoutContext} from '../LayoutContext'
-import {AppHeaderMenu} from '@/shared/Layout/Header/AppHeaderMenu'
-import {AppHeaderFeatures} from '@/shared/Layout/Header/AppHeaderFeatures'
+import {useLayoutContext} from '@/shared/Layout/LayoutContext'
+import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
+import {AppHeaderFeatures} from '@/core/layout/AppHeaderFeatures'
 import {IpIconBtn} from '@/shared/IconBtn'
-import {AppHeaderContainer} from '@/shared/Layout/Header/AppHeaderContainer'
+import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {PopoverWrapper} from '@/shared/PopoverWrapper'
 import {useI18n} from '@/core/i18n'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Obj} from '@axanc/ts-utils'
 import {styleUtils} from '@/core/theme'
+import {IpSelectSingle} from '@/shared/Select/SelectSingle'
+import {useSession} from '@/core/Session/SessionContext'
 
 interface Props extends BoxProps {}
 
@@ -24,6 +26,7 @@ const lightThemeIcons = {
 export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) => {
   const {sidebarOpen, showSidebarButton, setSidebarOpen, title} = useLayoutContext()
   const {m} = useI18n()
+  const {session} = useSession()
   const t = useTheme()
   const {
     theme: {brightness, setBrightness},
@@ -99,6 +102,7 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
       >
         <IpIconBtn children={lightThemeIcons[brightness ?? 'auto']} />
       </PopoverWrapper>
+      <IpSelectSingle sx={{width: 200}} options={session.workspaces.map(_ => ({value: _.slug, children: _.name}))} />
       <IpIconBtn children="home" />
       <AppHeaderFeatures sx={{mr: 1}} />
       <AppHeaderMenu />

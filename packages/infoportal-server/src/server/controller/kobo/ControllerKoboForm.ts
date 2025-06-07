@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
 import {KoboFormService} from '../../../feature/kobo/KoboFormService.js'
 import * as yup from 'yup'
+import {idParamsSchema} from '../../../helper/Utils.js'
 
 export class ControllerKoboForm {
   constructor(
@@ -18,14 +19,14 @@ export class ControllerKoboForm {
       .validate(req.body)
     const data = await this.service.add({
       ...body,
-      uploadedBy: req.session.user?.email!,
+      uploadedBy: req.session.app?.user.email!,
     })
     res.send(data)
   }
 
   readonly refreshAll = async (req: Request, res: Response, next: NextFunction) => {
     await this.service.refreshAll({
-      uploadedBy: req.session.user?.email!,
+      uploadedBy: req.session.app?.user.email!,
     })
     res.send()
   }
@@ -36,11 +37,7 @@ export class ControllerKoboForm {
   }
 
   readonly get = async (req: Request, res: Response, next: NextFunction) => {
-    const {id} = await yup
-      .object({
-        id: yup.string().required(),
-      })
-      .validate(req.params)
+    const {id} = await idParamsSchema.validate(req.params)
     const data = await this.service.get(id)
     res.send(data)
   }

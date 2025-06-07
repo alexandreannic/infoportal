@@ -12,11 +12,17 @@ export const yup = _yup
 
 export const genUUID = v4
 
+export const genShortid = (length: number = 4) => genUUID().replace(/-/g, '').slice(0, 4)
+
 export const toYYYYMMDD = (_: Date) => format(_, 'yyyy-MM-dd') //_.toString().substring(0, 10)
 
 export type MappedColumn<T, O = string> = {
   [P in keyof T]: T[P] extends undefined | Date | string | number | boolean | any[] ? O : MappedColumn<T[P], O>
 }
+
+export const idParamsSchema = yup.object({
+  id: yup.string().required(),
+})
 
 export const previewList = (list: (string | number)[], toPrint = 1) => {
   const displayedItems = list.splice(0, toPrint).join(',')
