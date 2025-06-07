@@ -1,6 +1,6 @@
-import {Route, Routes} from 'react-router-dom'
+import {Navigate, Route, Routes} from 'react-router-dom'
 import {objectToQueryString} from 'infoportal-common'
-import {DatabaseHome} from '@/features/Database/Database'
+import {Database} from '@/features/Database/Database'
 import {DatabaseList} from './features/Database/DatabaseList'
 import {DatabaseTableCustomRoute} from '@/features/Database/KoboTableCustom/DatabaseKoboTableCustom'
 import {DatabaseAccessRoute} from './features/Database/Access/DatabaseAccess'
@@ -9,6 +9,11 @@ import {DatabaseKoboRepeatRoute} from './features/Database/RepeatGroup/DatabaseK
 import {DatabaseHistory} from '@/features/Database/History/DatabaseHistory'
 import {ImportKobo} from './features/Database/ImportKoboForm/ImportKobo'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
+import {AdminUsers} from '@/features/Admin/AdminUsers'
+import {AdminProxy} from '@/features/Admin/AdminProxy'
+import {AdminGroups} from '@/features/Admin/AdminGroups'
+import {AdminCache} from '@/features/Admin/AdminCache'
+import React from 'react'
 
 export const router = {
   root: '/',
@@ -47,17 +52,23 @@ export const Router = () => {
     <Routes>
       <Route path={router.root} element={<div>Dashboard</div>} />
       <Route path={router.importKoboForm} element={<ImportKobo />} />
-      <Route path={router.database.root} element={<DatabaseHome />}>
-        {/*<Route index element={<Navigate to={router.database.relative} />} />*/}
+      <Route path={router.settings.root}>
+        <Route path={router.settings.users} element={<AdminUsers />} />
+        <Route path={router.settings.proxy} element={<AdminProxy />} />
+        <Route path={router.settings.group} element={<AdminGroups />} />
+        <Route path={router.settings.cache} element={<AdminCache />} />
+      </Route>
+      <Route path={router.database.root}>
         <Route path={pathDatabase(router.database.list)} element={<DatabaseList forms={ctx.formsAccessible} />} />
         <Route path={pathDatabase(router.database.custom())} element={<DatabaseTableCustomRoute />} />
-        <Route>
+        <Route path={pathDatabase(router.database.form.root())} element={<Database />}>
           <Route path={pathForm(router.database.form.answer())} element={<DatabaseKoboAnswerViewPage />} />
           <Route path={pathForm(router.database.form.access())} element={<DatabaseAccessRoute />} />
           <Route path={pathForm(router.database.form.history())} element={<DatabaseHistory />} />
           <Route path={pathForm(router.database.form.group())} element={<DatabaseKoboRepeatRoute />} />
-          {/*Persisted components across routes: */}
-          {/*<Route path={router.database.relative} element={<></>} />*/}
+          <Route index element={<Navigate to={pathForm(router.database.form.answers())} />} />
+          {/*Persisted components across routes. */}
+          <Route path={pathForm(router.database.form.answers())} element={<></>} />
         </Route>
       </Route>
     </Routes>

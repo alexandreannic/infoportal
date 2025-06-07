@@ -3,13 +3,13 @@ import {IpBtn} from '@/shared/Btn'
 import {useI18n} from '@/core/i18n'
 import {KoboMappedAnswer, KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
 import React, {useRef} from 'react'
-import {databaseIndex} from '@/features/Database/databaseIndex'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {NavLink} from 'react-router-dom'
 import {Kobo} from 'kobo-sdk'
 import {DialogProps} from '@toolpad/core'
 import {XlsFormFiller, XlsFormFillerHandle} from 'xls-form-filler'
 import {KoboSchemaHelper} from 'infoportal-common'
+import {router} from '@/Router'
 
 export const DialogAnswerEdit = ({
   onClose,
@@ -25,7 +25,7 @@ export const DialogAnswerEdit = ({
     <Dialog open={true}>
       <DialogTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
-          <NavLink to={databaseIndex.siteMap.answer.absolute(formId, answer.id)} onClick={() => onClose()}>
+          <NavLink to={router.database.form.answer(formId, answer.id)} onClick={() => onClose()}>
             <IpIconBtn color="primary">open_in_new</IpIconBtn>
           </NavLink>
           {answer.id}
@@ -45,7 +45,9 @@ export const DialogAnswerEdit = ({
       </DialogContent>
       <DialogActions>
         <IpBtn onClick={() => onClose()}>{m.close}</IpBtn>
-        <IpBtn variant="contained" icon="check" onClick={() => formRef.current?.submit()}>{m.save}</IpBtn>
+        <IpBtn variant="contained" icon="check" onClick={() => formRef.current?.submit()}>
+          {m.save}
+        </IpBtn>
       </DialogActions>
     </Dialog>
   )

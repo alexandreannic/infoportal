@@ -22,7 +22,6 @@ import {Datatable} from '@/shared/Datatable/Datatable'
 import {Page} from '@/shared/Page'
 import {useParams} from 'react-router'
 import * as yup from 'yup'
-import {databaseIndex} from '@/features/Database/databaseIndex'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
@@ -31,6 +30,7 @@ import {NavLink} from 'react-router-dom'
 import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/columnBySchema'
 import {Kobo} from 'kobo-sdk'
 import {DialogProps} from '@toolpad/core'
+import {router} from '@/Router'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -112,7 +112,7 @@ export const DialogAnswerView = ({
     <Dialog open={true}>
       <DialogTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
-          <NavLink to={databaseIndex.siteMap.answer.absolute(formId, answer.id)} onClick={() => onClose()}>
+          <NavLink to={router.database.form.answer(formId, answer.id)} onClick={() => onClose()}>
             <IpIconBtn color="primary">open_in_new</IpIconBtn>
           </NavLink>
           {answer.id}

@@ -11,12 +11,12 @@ import {useEffect, useMemo} from 'react'
 import {useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {databaseIndex} from '@/features/Database/databaseIndex'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {
   columnBySchemaGenerator,
   ColumnBySchemaGeneratorProps,
 } from '@/features/Database/KoboTable/columns/columnBySchema'
+import {router} from '@/Router'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -130,7 +130,7 @@ const DatabaseKoboRepeat = ({
       schema,
       t,
       m,
-      onRepeatGroupClick: _ => navigate(databaseIndex.siteMap.group.absolute(formId, _.name, _.row.id, _.row._index)),
+      onRepeatGroupClick: _ => navigate(router.database.form.group(formId, _.name, _.row.id, _.row._index)),
       groupName: groupInfo.name,
     })
     return {
@@ -153,8 +153,8 @@ const DatabaseKoboRepeat = ({
         <NavLink
           to={
             groupInfo.depth > 1
-              ? databaseIndex.siteMap.group.absolute(formId, paths[paths.length - 2], qs.id)
-              : databaseIndex.siteMap.database.absolute(formId)
+              ? router.database.form.group(formId, paths[paths.length - 2], qs.id)
+              : router.database.form.answers(formId)
           }
         >
           <IpBtn variant="contained" icon="arrow_back">

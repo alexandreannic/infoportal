@@ -19,7 +19,6 @@ import {DatabaseViewInput} from '@/features/Database/KoboTable/view/DatabaseView
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/columnBySchema'
-import {databaseIndex} from '@/features/Database/databaseIndex'
 import {useNavigate} from 'react-router-dom'
 import {getColumnsForRepeatGroup} from '@/features/Database/RepeatGroup/DatabaseKoboRepeatGroup'
 import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
@@ -31,6 +30,7 @@ import {useAsync} from '@/shared/hook/useAsync'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {DatabaseImportBtn} from '@/features/Database/KoboTable/DatabaseImportBtn'
 import {generateEmptyXlsTemplate} from '@/features/Database/KoboTable/generateEmptyXlsFile'
+import {router} from '@/Router'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -75,8 +75,7 @@ export const DatabaseKoboTableContent = ({
       formId: ctx.form.id,
       schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,
-      onRepeatGroupClick: _ =>
-        navigate(databaseIndex.siteMap.group.absolute(ctx.form.id, _.name, _.row.id, _.row._index)),
+      onRepeatGroupClick: _ => navigate(router.database.form.group(ctx.form.id, _.name, _.row.id, _.row._index)),
       onEdit:
         selectedIds.length > 0
           ? questionName =>
@@ -96,8 +95,7 @@ export const DatabaseKoboTableContent = ({
       data: ctx.data ?? [],
       formId: ctx.form.id,
       schema: ctx.schema,
-      onRepeatGroupClick: _ =>
-        navigate(databaseIndex.siteMap.group.absolute(ctx.form.id, _.name, _.row.id, _.row._index)),
+      onRepeatGroupClick: _ => navigate(router.database.form.group(ctx.form.id, _.name, _.row.id, _.row._index)),
       display: ctx.groupDisplay.get,
       m,
       t,

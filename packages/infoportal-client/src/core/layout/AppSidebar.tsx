@@ -1,5 +1,4 @@
 import {NavLink} from 'react-router-dom'
-import {databaseIndex} from '@/features/Database/databaseIndex'
 import {Sidebar, SidebarItem} from '@/shared/Layout/Sidebar'
 import {Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
 import {Fender, Txt} from '@/shared'
@@ -10,6 +9,7 @@ import {useI18n} from '@/core/i18n'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {KoboFormSdk, KoboParsedFormName} from '@/core/sdk/server/kobo/KoboFormSdk'
 import {customForms} from '@/features/Database/KoboTableCustom/DatabaseKoboTableCustom'
+import {router} from '@/Router'
 
 type Form = {
   id: string
@@ -30,14 +30,14 @@ export const AppSidebar = () => {
         ctx.formsAccessible?.map(_ => ({
           ..._,
           id: _.id,
-          url: databaseIndex.siteMap.home(_.id),
+          url: router.database.form.root(_.id),
           archived: _.deploymentStatus === 'archived',
           parsedName: KoboFormSdk.parseFormName(_.name),
         })) ?? [],
       custom: customForms
         .filter(c => ctx.formsAccessible?.some(_ => _.id === c.forms[0]?.id))
         .map(_ => ({
-          url: databaseIndex.siteMap.custom(_.id),
+          url: router.database.custom(_.id),
           id: _.id,
           custom: true,
           archived: _.forms.every(fa => {
@@ -58,14 +58,42 @@ export const AppSidebar = () => {
 
   return (
     <Sidebar headerId="app-header">
-      <NavLink to={databaseIndex.siteMap.importKoboForm}>
+      <NavLink to={router.settings.users}>
+        {({isActive}) => (
+          <SidebarItem icon="group" active={isActive}>
+            {m.users}
+          </SidebarItem>
+        )}
+      </NavLink>
+      <NavLink to={router.settings.group}>
+        {({isActive}) => (
+          <SidebarItem icon="groups" active={isActive}>
+            {m.group}
+          </SidebarItem>
+        )}
+      </NavLink>
+      <NavLink to={router.settings.proxy}>
+        {({isActive}) => (
+          <SidebarItem icon="settings_input_antenna" active={isActive}>
+            {m.proxy}
+          </SidebarItem>
+        )}
+      </NavLink>
+      <NavLink to={router.settings.cache}>
+        {({isActive}) => (
+          <SidebarItem icon="memory" active={isActive}>
+            {m.serverCache}
+          </SidebarItem>
+        )}
+      </NavLink>
+      <NavLink to={router.importKoboForm}>
         {({isActive, isPending}) => (
           <SidebarItem icon="add" active={isActive}>
             {m.importFromKobo}
           </SidebarItem>
         )}
       </NavLink>
-      <NavLink to={databaseIndex.siteMap.index}>
+      <NavLink to={router.database.list}>
         {({isActive, isPending}) => <SidebarItem icon="home">{m.forms}</SidebarItem>}
       </NavLink>
       {ctx._forms.loading ? (
