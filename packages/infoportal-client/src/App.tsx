@@ -20,6 +20,11 @@ import {ProtectRoute, SessionProvider} from '@/core/Session/SessionContext'
 import {ToastProvider} from '@/shared/Toast'
 import {Database} from '@/features/Database/Database'
 import {DialogsProvider} from '@toolpad/core'
+import {DatabaseProvider} from '@/features/Database/DatabaseContext'
+import {Router} from '@/Router'
+import {Layout} from '@/shared/Layout'
+import {AppHeader} from '@/core/layout/AppHeader'
+import {AppSidebar} from '@/core/layout/AppSidebar'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -57,10 +62,10 @@ const AppWithConfig = () => {
         _ => <MsalProvider children={_} instance={msal} />,
         _ => <HashRouter children={_} />,
         _ => <DialogsProvider children={_} />,
+        _ => <SessionProvider children={_} />,
         _ => <KoboSchemaProvider children={_} />,
         _ => <KoboAnswersProvider children={_} />,
         _ => <KoboUpdateProvider children={_} />,
-        _ => <SessionProvider children={_} />,
       ]}
     >
       <AppWithBaseContext />
@@ -98,14 +103,17 @@ const AppWithBaseContext = () => {
             {m.appInMaintenance}
           </Txt>
           <Icon sx={{fontSize: '90px !important', color: t => t.palette.text.disabled}}>engineering</Icon>
-          <Box></Box>
         </Box>
       </CenteredContent>
     )
   }
   return (
     <ProtectRoute>
-      <Database />
+      <DatabaseProvider>
+        <Layout header={<AppHeader />} sidebar={<AppSidebar />}>
+          <Router />
+        </Layout>
+      </DatabaseProvider>
     </ProtectRoute>
   )
 }

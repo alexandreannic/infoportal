@@ -4,11 +4,11 @@ import {LayoutProvider, useLayoutContext} from './LayoutContext'
 import {Box, LinearProgress} from '@mui/material'
 import {layoutConfig} from './index'
 import {defaultSpacing} from '../../core/theme'
-import {AppHeader} from './Header/AppHeader'
+import {AppHeader} from '../../core/layout/AppHeader'
 
 export interface LayoutProps {
   sidebar?: ReactElement<any>
-  header?: ReactElement<any>
+  header: ReactElement<any>
   title?: string
   children?: ReactNode
   loading?: boolean
@@ -20,7 +20,7 @@ export const Layout = ({
   // loading,
   sidebar,
   loading,
-  header = <AppHeader id="app-header" />,
+  header,
   title,
   mobileBreakpoint,
   children,

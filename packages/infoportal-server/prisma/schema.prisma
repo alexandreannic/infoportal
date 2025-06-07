@@ -19,7 +19,6 @@ model Workspace {
   sector          String?
   KoboServer      KoboServer[]
   KoboForm        KoboForm[]
-  Users           User[]
   Groups          Group[]
   AccessTokens    AccessToken[]
   Proxys          Proxy[]
@@ -132,11 +131,11 @@ model User {
   accessToken     String?
   name            String?
   drcJob          String?
+  drcOffice       String?
   avatar          Bytes?            @db.ByteA
   admin           Boolean           @default(false)
   officer         String?
   activities      UserActivity[]
-  workspaces      Workspace[]
   WorkspaceAccess WorkspaceAccess[]
 
   @@index([email])
@@ -191,6 +190,7 @@ model GroupItem {
   id        String             @id @default(uuid())
   createdAt DateTime           @default(now())
   drcJob    String?
+  drcOffice String?
   email     String?
   level     FeatureAccessLevel
   group     Group?             @relation(fields: [groupId], references: [id])

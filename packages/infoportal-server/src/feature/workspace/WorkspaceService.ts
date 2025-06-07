@@ -41,15 +41,26 @@ export class WorkspaceService {
   }
 
   readonly getByUser = async (email: string) => {
-    return this.prisma.workspace.findMany({
-      where: {
-        Users: {
-          some: {
+    return this.prisma.workspaceAccess
+      .findMany({
+        where: {
+          user: {
             email,
           },
         },
-      },
-    })
+        select: {
+          level: true,
+          workspace: true,
+        },
+      })
+      .then(_ => {
+        return _.map(_ => {
+          return {
+            ..._.workspace,
+            level: _.level,
+          }
+        })
+      })
   }
 
   readonly create = async (data: WorkspaceCreate, user: User) => {

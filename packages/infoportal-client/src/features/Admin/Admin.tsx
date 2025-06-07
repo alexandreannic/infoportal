@@ -1,7 +1,7 @@
 import {NavLink, Route, Routes} from 'react-router-dom'
 import React from 'react'
 import {AdminUsers} from '@/features/Admin/AdminUsers'
-import {AppHeader} from '@/shared/Layout/Header/AppHeader'
+import {AppHeader} from '@/core/layout/AppHeader'
 import {Sidebar, SidebarBody, SidebarItem} from '@/shared/Layout/Sidebar'
 import {useI18n} from '@/core/i18n'
 import {Layout} from '@/shared/Layout'

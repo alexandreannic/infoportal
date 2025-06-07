@@ -22,9 +22,9 @@ export class ControllerSession extends Controller {
       const user = await this.prisma.user.findFirstOrThrow({where: {email: this.conf.ownerEmail}})
       req.session.app = await this.service.get(user)
     }
-    const user = req.session!
-    if (!user) throw new AppError.Forbidden('No access.')
-    res.send(user)
+    const session = req.session.app!
+    if (!session) throw new AppError.Forbidden('No access.')
+    res.send(session)
   }
 
   readonly logout = async (req: Request, res: Response, next: NextFunction) => {
@@ -71,13 +71,12 @@ export class ControllerSession extends Controller {
   }
 
   readonly track = async (req: Request, res: Response, next: NextFunction) => {
-    if (!isAuthenticated(req)) throw new AppError.Forbidden()
     const body = await yup
       .object({
         detail: yup.string().optional(),
       })
       .validate(req.body)
-    await this.service.saveActivity({email: req.session.app.user.email, detail: body.detail})
+    await this.service.saveActivity({email: req.session.app?.user.email ?? 'not_connected', detail: body.detail})
     res.send()
   }
 }

@@ -2,7 +2,7 @@ import {alpha, Box, BoxProps, GlobalStyles, Typography, useTheme} from '@mui/mat
 import {DRCLogo, EULogo} from '@/shared/logo/logo'
 import React, {ReactNode} from 'react'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
-import {AppHeaderContainer} from '@/shared/Layout/Header/AppHeaderContainer'
+import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {IpIconBtn} from '@/shared/IconBtn'
 
 export const DashboardHeader = ({
