@@ -14,7 +14,7 @@ import {AdminProxy} from '@/features/Admin/AdminProxy'
 import {AdminGroups} from '@/features/Admin/AdminGroups'
 import {AdminCache} from '@/features/Admin/AdminCache'
 import React from 'react'
-import {Home} from '@/features/Home/Home'
+import {Workspaces} from '@/features/Workspace/Workspaces'
 
 export const router = {
   root: '/',
@@ -63,7 +63,7 @@ export const Router = () => {
   const ctx = useDatabaseContext()
   return (
     <Routes>
-      <Route path={router.root} element={<Home />} />
+      <Route path={router.root} element={<Workspaces />} />
       <Route path={router.ws().importKoboForm} element={<ImportKobo />} />
       <Route path={router.ws().settings.root}>
         <Route path={router.ws().settings.users} element={<AdminUsers />} />

@@ -89,9 +89,10 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
 
       <IpSelectSingle
         value={wsId}
+        hideNullOption
         onChange={_ => _ && changeWorkspace(_)}
         sx={{width: 200, mr: 0.5}}
-        options={session.workspaces.map(_ => ({
+        options={session?.workspaces.map(_ => ({
           value: _.slug,
           children: (
             <>

@@ -53,6 +53,7 @@ export const en = Object.freeze({
     others: 'Others',
     other: 'Other',
     exist: 'Exist',
+    createWorkspace: 'Create Workspace',
     notExist: 'Not exist',
     area: 'Area',
     men: 'Men',

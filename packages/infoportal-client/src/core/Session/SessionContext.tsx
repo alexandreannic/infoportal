@@ -14,7 +14,7 @@ import {useAsync} from '@/shared/hook/useAsync'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {GoogleOAuthProvider} from '@react-oauth/google'
 import {appConfig} from '@/conf/AppConfig'
-import {Onboarding} from '@/features/Onboarding/Onboarding'
+import {WorkspaceCreate} from '@/features/Workspace/WorkspaceCreate'
 
 export interface SessionContext {
   session: Session
@@ -110,7 +110,7 @@ export const ProtectRoute = ({adminOnly, children}: {children: ReactNode; adminO
     )
   }
   if (session.workspaces.length === 0) {
-    return <Onboarding />
+    return <WorkspaceCreate />
   }
   return (
     <>
