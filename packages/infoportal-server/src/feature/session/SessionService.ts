@@ -8,7 +8,7 @@ import {google} from 'googleapis'
 import {GroupService} from '../group/GroupService.js'
 import {WorkspaceService} from '../workspace/WorkspaceService.js'
 import {AccessService} from '../access/AccessService.js'
-import {AppSession} from './AppSession.js'
+import {AppSession, UserProfile} from './AppSession.js'
 
 // import {User} from '@microsoft/msgraph-sdk-javascript/lib/src/models/user'
 
@@ -167,7 +167,7 @@ export class SessionService {
     })
   }
 
-  readonly get = async (user: User): Promise<AppSession> => {
+  readonly get = async (user: User): Promise<UserProfile> => {
     const [groups, accesses, workspaces] = await Promise.all([
       this.group.search({user}),
       this.access.searchForUser({user}),

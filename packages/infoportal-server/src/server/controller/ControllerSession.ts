@@ -18,13 +18,13 @@ export class ControllerSession extends Controller {
   }
 
   readonly getMe = async (req: Request, res: Response, next: NextFunction) => {
+    if (!isAuthenticated(req)) throw new AppError.Forbidden('No access.')
     if (this.conf.production && req.hostname === 'localhost') {
       const user = await this.prisma.user.findFirstOrThrow({where: {email: this.conf.ownerEmail}})
       req.session.app = await this.service.get(user)
     }
-    const session = req.session.app!
-    if (!session) throw new AppError.Forbidden('No access.')
-    res.send(session)
+    const profile = await this.service.get(req.session.app.user)
+    res.send(profile)
   }
 
   readonly logout = async (req: Request, res: Response, next: NextFunction) => {
@@ -42,7 +42,7 @@ export class ControllerSession extends Controller {
       })
       .validate(req.body)
     const connectedUser = await this.service.login(user)
-    req.session.app = await this.service.get(connectedUser)
+    req.session.app = {user: connectedUser}
     res.send(req.session.app)
   }
 
@@ -57,16 +57,15 @@ export class ControllerSession extends Controller {
 
   readonly connectAs = async (req: Request, res: Response, next: NextFunction) => {
     if (!isAuthenticated(req)) throw new AppError.Forbidden()
-    const connectedUser = req.session.app.user
     const body = await yup
       .object({
         email: yup.string().required(),
       })
       .validate(req.body)
-    const user = await this.prisma.user.findFirstOrThrow({where: {email: body.email}})
-    if (user.email === connectedUser.email) throw new SessionError.UserNoAccess()
-    req.session.app = await this.service.get(user)
-    req.session.app.originalEmail = connectedUser.email
+    const connectAsUser = await this.prisma.user.findFirstOrThrow({where: {email: body.email}})
+    if (connectAsUser.id === req.session.app.user.id) throw new SessionError.UserNoAccess()
+    req.session.app.user.id = connectAsUser.id
+    req.session.app.originalEmail = req.session.app.user.email
     res.send(req.session.app)
   }
 

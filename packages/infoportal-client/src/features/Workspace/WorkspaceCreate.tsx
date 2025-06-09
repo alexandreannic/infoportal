@@ -71,7 +71,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
       slug: '',
       sector: '',
     })
-    onClose()
+    onClose?.()
     setSession(prev =>
       produce(prev, draft => {
         draft?.workspaces.push(created)
