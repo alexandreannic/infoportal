@@ -20,10 +20,11 @@ import {ProtectRoute, SessionProvider} from '@/core/Session/SessionContext'
 import {ToastProvider} from '@/shared/Toast'
 import {DialogsProvider} from '@toolpad/core'
 import {DatabaseProvider} from '@/features/Database/DatabaseContext'
-import {Router} from '@/Router'
+import {router, Router} from '@/Router'
 import {Layout} from '@/shared/Layout'
 import {AppHeader} from '@/core/layout/AppHeader'
 import {AppSidebar} from '@/core/layout/AppSidebar'
+import {WorkspaceProvider} from '@/core/context/WorkspaceContext'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -65,6 +66,7 @@ const AppWithConfig = () => {
         _ => <KoboSchemaProvider children={_} />,
         _ => <KoboAnswersProvider children={_} />,
         _ => <KoboUpdateProvider children={_} />,
+        _ => <WorkspaceProvider api={api} children={_} />,
       ]}
     >
       <AppWithBaseContext />
@@ -80,6 +82,8 @@ const AppWithBaseContext = () => {
     // initSentry(appConfigConfig)
     api.session.track(location.pathname)
   }, [location.pathname])
+
+  console.log(location.pathname)
 
   if (settings.conf.appOff) {
     return (
@@ -109,7 +113,7 @@ const AppWithBaseContext = () => {
   return (
     <ProtectRoute>
       <DatabaseProvider>
-        <Layout header={<AppHeader />} sidebar={<AppSidebar />}>
+        <Layout header={<AppHeader />} sidebar={location.pathname !== router.root ? <AppSidebar /> : <></>}>
           <Router />
         </Layout>
       </DatabaseProvider>

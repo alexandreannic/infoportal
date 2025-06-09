@@ -9,7 +9,7 @@ import {useI18n} from '@/core/i18n'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {KoboFormSdk, KoboParsedFormName} from '@/core/sdk/server/kobo/KoboFormSdk'
 import {customForms} from '@/features/Database/KoboTableCustom/DatabaseKoboTableCustom'
-import {router} from '@/Router'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 
 type Form = {
   id: string
@@ -23,6 +23,7 @@ export const AppSidebar = () => {
   const ctx = useDatabaseContext()
   const {m} = useI18n()
   const t = useTheme()
+  const {router} = useWorkspaceRouter()
 
   const parsedFormNames: Record<string, Seq<Form>> = useMemo(() => {
     const mapped: Record<string, Form[]> = {
@@ -30,7 +31,7 @@ export const AppSidebar = () => {
         ctx.formsAccessible?.map(_ => ({
           ..._,
           id: _.id,
-          url: router.database.form.root(_.id),
+          url: router.database.form(_.id).root,
           archived: _.deploymentStatus === 'archived',
           parsedName: KoboFormSdk.parseFormName(_.name),
         })) ?? [],

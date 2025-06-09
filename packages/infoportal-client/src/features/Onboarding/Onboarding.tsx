@@ -11,6 +11,7 @@ import {useFetcher} from '@/shared/hook/useFetcher'
 import {useAsync} from '@/shared/hook/useAsync'
 import {useSession} from '@/core/Session/SessionContext'
 import {produce} from 'immer'
+import {useWorkspace} from '@/core/context/WorkspaceContext'
 
 type Form = {
   slug: string
@@ -19,7 +20,9 @@ type Form = {
 }
 
 export const Onboarding = () => {
+  const ctxWorkspace = useWorkspace()
   const {m} = useI18n()
+
   const {api} = useAppSettings()
   const {setSession} = useSession()
   const t = useTheme()
@@ -28,7 +31,6 @@ export const Onboarding = () => {
   const [disableSlug, setDisableSlug] = useState(true)
 
   const fetchCheckSlug = useFetcher(api.workspace.checkSlug)
-  const asyncCreate = useAsync(api.workspace.create)
 
   useEffectFn(form.watch('name'), name => {
     if (name === '') {
@@ -53,7 +55,7 @@ export const Onboarding = () => {
   })
 
   const submit = async () => {
-    const created = await asyncCreate.call(form.getValues())
+    const created = await ctxWorkspace.asyncCreate.call({}, form.getValues())
     setSession(prev =>
       produce(prev, draft => {
         draft?.workspaces.push(created)
@@ -128,7 +130,7 @@ export const Onboarding = () => {
           )}
         />
         <Box display="flex" justifyContent="flex-end" mt={3}>
-          <IpBtn variant="contained" size="large" loading={asyncCreate.loading} onClick={submit}>
+          <IpBtn variant="contained" size="large" loading={ctxWorkspace.asyncCreate.loading} onClick={submit}>
             {m.create}
           </IpBtn>
         </Box>

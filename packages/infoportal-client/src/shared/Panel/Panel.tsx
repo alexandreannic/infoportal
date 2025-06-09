@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {forwardRef, ReactNode} from 'react'
-import {Box, Card, CardProps, LinearProgress} from '@mui/material'
+import {Box, Card, CardProps, LinearProgress, useTheme} from '@mui/material'
 import {PanelHead} from './PanelHead'
 import {PanelFeatures} from '@/shared/Panel/PanelFeatures'
 
@@ -24,7 +24,7 @@ export const Panel = forwardRef(
         ref={ref}
         elevation={elevation}
         sx={{
-          border: t => `1px solid ${t.palette.divider}`,
+          // border: t => `1px solid ${t.palette.divider}`,
           position: 'relative',
           background: t => t.palette.background.paper,
           borderRadius: t => t.shape.borderRadius + 'px',
@@ -46,9 +46,9 @@ export const Panel = forwardRef(
             elevation > 0 && {
               border: 'none',
             }),
-          '&:hover .panel-actions': {
-            display: 'block',
-          },
+          // '&:hover .panel-actions': {
+          //   display: 'block',
+          // },
           ...sx,
         }}
         {...other}

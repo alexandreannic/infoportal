@@ -22,7 +22,7 @@ export class WorkspaceSdk {
     return this.client.delete<void>(`/workspace/${id}`)
   }
 
-  readonly getMine = () => {
-    return this.client.get<Workspace[]>(`/workspace/mine`)
-  }
+  // readonly getMine = () => {
+  //   return this.client.get<Workspace[]>(`/workspace`)
+  // }
 }

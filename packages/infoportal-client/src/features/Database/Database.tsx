@@ -10,7 +10,7 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
 import {appConfig} from '@/conf/AppConfig'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
-import {router} from '@/Router'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 
 export const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -24,6 +24,7 @@ export const Database = () => {
   const ctxSchema = useKoboSchemaContext()
   const fetcherAnswers = useKoboAnswersContext().byId(formId)
   const {pathname} = useLocation()
+  const {router} = useWorkspaceRouter()
 
   useEffect(() => {
     if (ctx.getForm(formId)?.name) setTitle(m._koboDatabase.title(ctx.getForm(formId)?.name))
@@ -52,8 +53,8 @@ export const Database = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={NavLink}
-          value={router.database.form.answers(formId)}
-          to={router.database.form.answers(formId)}
+          value={router.database.form(formId).answers}
+          to={router.database.form(formId).answers}
           label={m.data}
         />
         <Tab
@@ -61,8 +62,8 @@ export const Database = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={NavLink}
-          value={router.database.form.access(formId)}
-          to={router.database.form.access(formId)}
+          value={router.database.form(formId).access}
+          to={router.database.form(formId).access}
           label={m.access}
         />
         <Tab
@@ -70,8 +71,8 @@ export const Database = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={NavLink}
-          value={router.database.form.history(formId)}
-          to={router.database.form.history(formId)}
+          value={router.database.form(formId).history}
+          to={router.database.form(formId).history}
           label={m.history}
         />
         {schema &&
@@ -82,13 +83,13 @@ export const Database = () => {
               key={_}
               sx={{minHeight: 34, py: 1}}
               component={NavLink}
-              value={router.database.form.group(formId, _)}
-              to={router.database.form.group(formId, _)}
+              value={router.database.form(formId).group(_)}
+              to={router.database.form(formId).group(_)}
               label={schema.translate.question(_)}
             />
           ))}
       </Tabs>
-      <div style={{display: pathname === router.database.form.answers(formId) ? 'block' : 'none'}}>
+      <div style={{display: pathname === router.database.form(formId).answers ? 'block' : 'none'}}>
         <DatabaseTableRoute />
       </div>
       <Outlet />

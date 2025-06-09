@@ -91,8 +91,8 @@ export type AppThemeParams = {
 
 export const defaultAppThemeParams = {
   light: {
-    backgroundDefault: '#fff',
-    // backgroundDefault: '#f6f8fc',
+    // backgroundDefault: '#fff',
+    backgroundDefault: '#f6f8fc',
     backgroundPaper: '#fff',
   },
   dark: {

@@ -1,4 +1,4 @@
-import {Navigate, Route, Routes} from 'react-router-dom'
+import {Navigate, Route, Routes, useParams} from 'react-router-dom'
 import {objectToQueryString} from 'infoportal-common'
 import {Database} from '@/features/Database/Database'
 import {DatabaseList} from './features/Database/DatabaseList'
@@ -14,61 +14,80 @@ import {AdminProxy} from '@/features/Admin/AdminProxy'
 import {AdminGroups} from '@/features/Admin/AdminGroups'
 import {AdminCache} from '@/features/Admin/AdminCache'
 import React from 'react'
+import {Home} from '@/features/Home/Home'
 
 export const router = {
   root: '/',
-  importKoboForm: '/import-kobo',
-  settings: {
-    root: '/settings',
-    users: '/settings/users',
-    proxy: '/settings/proxy',
-    group: '/settings/group',
-    cache: '/settings/cache',
-  },
-  database: {
-    root: '/database',
-    list: `/database/list`,
-    custom: (id = ':id') => `/database/custom/${id}`,
-    form: {
-      root: (formId = ':formId') => `/database/${formId}`,
-      answers: (formId = ':formId') => `/database/${formId}/data`,
-      access: (formId = ':formId') => `/database/${formId}/access`,
-      history: (formId = ':formId') => `/database/${formId}/history`,
-      answer: (formId = ':formId', answerId = ':answerId') => `/database/${formId}/data/${answerId}`,
-      group: (formId = ':formId', group = ':group', id?: string, index?: number) => {
-        const qs = (id?: string, index?: number) => (id ? '?' + objectToQueryString({id, index}) : '')
-        return `/database/${formId}/group/${group}${qs(id, index)}`
+  ws: (wsId = ':wsId') => {
+    const base = `/${wsId}`
+    const settings = {
+      root: `${base}/settings`,
+      users: `${base}/settings/users`,
+      proxy: `${base}/settings/proxy`,
+      group: `${base}/settings/group`,
+      cache: `${base}/settings/cache`,
+    }
+    const database = {
+      root: `${base}/database`,
+      list: `${base}/database/list`,
+      custom: (id = ':id') => `${base}/database/custom/${id}`,
+      form: (formId = ':formId') => {
+        const formBase = `${base}/database/${formId}`
+        return {
+          root: formBase,
+          answers: `${formBase}/data`,
+          access: `${formBase}/access`,
+          history: `${formBase}/history`,
+          answer: (answerId = ':answerId') => `${formBase}/data/${answerId}`,
+          group: (group = ':group', id?: string, index?: number) => {
+            const qs = (id?: string, index?: number) => (id ? '?' + objectToQueryString({id, index}) : '')
+            return `${formBase}/group/${group}${qs(id, index)}`
+          },
+        }
       },
-    },
+    }
+    return {
+      root: base,
+      importKoboForm: `${base}/import-kobo`,
+      settings,
+      database,
+    }
   },
 }
 
+export const useWsRouter = () => {
+  const wsId = useParams().wsId
+  if (!wsId) throw new Error('Missing :wsId')
+  return router.ws(wsId)
+}
+
+const path = (absolute: string, base?: string) => (base ? absolute.replace(base + '/', '') : absolute)
+const pathDatabase = (absolute: string) => path(absolute, router.ws().database.root)
+const pathForm = (absolute: string) => path(absolute, router.ws().database.form().root)
+
 export const Router = () => {
-  const path = (absolute: string, base?: string) => (base ? absolute.replace(base + '/', '') : absolute)
-  const pathDatabase = (absolute: string) => path(absolute, router.database.root)
-  const pathForm = (absolute: string) => path(absolute, router.database.form.root())
   const ctx = useDatabaseContext()
   return (
     <Routes>
-      <Route path={router.root} element={<div>Dashboard</div>} />
-      <Route path={router.importKoboForm} element={<ImportKobo />} />
-      <Route path={router.settings.root}>
-        <Route path={router.settings.users} element={<AdminUsers />} />
-        <Route path={router.settings.proxy} element={<AdminProxy />} />
-        <Route path={router.settings.group} element={<AdminGroups />} />
-        <Route path={router.settings.cache} element={<AdminCache />} />
+      <Route path={router.root} element={<Home />} />
+      <Route path={router.ws().importKoboForm} element={<ImportKobo />} />
+      <Route path={router.ws().settings.root}>
+        <Route path={router.ws().settings.users} element={<AdminUsers />} />
+        <Route path={router.ws().settings.proxy} element={<AdminProxy />} />
+        <Route path={router.ws().settings.group} element={<AdminGroups />} />
+        <Route path={router.ws().settings.cache} element={<AdminCache />} />
       </Route>
-      <Route path={router.database.root}>
-        <Route path={pathDatabase(router.database.list)} element={<DatabaseList forms={ctx.formsAccessible} />} />
-        <Route path={pathDatabase(router.database.custom())} element={<DatabaseTableCustomRoute />} />
-        <Route path={pathDatabase(router.database.form.root())} element={<Database />}>
-          <Route path={pathForm(router.database.form.answer())} element={<DatabaseKoboAnswerViewPage />} />
-          <Route path={pathForm(router.database.form.access())} element={<DatabaseAccessRoute />} />
-          <Route path={pathForm(router.database.form.history())} element={<DatabaseHistory />} />
-          <Route path={pathForm(router.database.form.group())} element={<DatabaseKoboRepeatRoute />} />
-          <Route index element={<Navigate to={pathForm(router.database.form.answers())} />} />
+      <Route path={router.ws().database.root}>
+        <Route path={pathDatabase(router.ws().database.list)} element={<DatabaseList forms={ctx.formsAccessible} />} />
+        <Route path={pathDatabase(router.ws().database.custom())} element={<DatabaseTableCustomRoute />} />
+        <Route path={pathDatabase(router.ws().database.form().root)} element={<Database />}>
+          <Route path={pathForm(router.ws().database.form().answer())} element={<DatabaseKoboAnswerViewPage />} />
+          <Route path={pathForm(router.ws().database.form().access)} element={<DatabaseAccessRoute />} />
+          <Route path={pathForm(router.ws().database.form().history)} element={<DatabaseHistory />} />
+          <Route path={pathForm(router.ws().database.form().group())} element={<DatabaseKoboRepeatRoute />} />
+          <Route index element={<Navigate to={pathForm(router.ws().database.form().answers)} />} />
           {/*Persisted components across routes. */}
-          <Route path={pathForm(router.database.form.answers())} element={<></>} />
+          <Route path={pathForm(router.ws().database.form().answers)} element={<></>} />
         </Route>
       </Route>
     </Routes>

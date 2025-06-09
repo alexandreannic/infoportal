@@ -13,6 +13,9 @@ import {Obj} from '@axanc/ts-utils'
 import {styleUtils} from '@/core/theme'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {useSession} from '@/core/Session/SessionContext'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {Link} from 'react-router-dom'
+import {router} from '@/Router'
 
 interface Props extends BoxProps {}
 
@@ -24,6 +27,7 @@ const lightThemeIcons = {
 
 export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) => {
   const {sidebarOpen, showSidebarButton, setSidebarOpen, title} = useLayoutContext()
+  const {wsId, changeWorkspace} = useWorkspaceRouter()
   const {m} = useI18n()
   const {session} = useSession()
   const t = useTheme()
@@ -82,6 +86,21 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
         />
         {children}
       </div>
+
+      <IpSelectSingle
+        value={wsId}
+        onChange={_ => _ && changeWorkspace(_)}
+        sx={{width: 200, mr: 0.5}}
+        options={session.workspaces.map(_ => ({
+          value: _.slug,
+          children: (
+            <>
+              <Txt bold>{_.name}</Txt>&nbsp;•&nbsp;<Txt color="hint">{_.slug}</Txt>
+            </>
+          ),
+        }))}
+      />
+
       <PopoverWrapper
         content={close =>
           Obj.entries(lightThemeIcons).map(([theme, icon]) => (
@@ -101,8 +120,9 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
       >
         <IpIconBtn children={lightThemeIcons[brightness ?? 'auto']} />
       </PopoverWrapper>
-      <IpSelectSingle sx={{width: 200}} options={session.workspaces.map(_ => ({value: _.slug, children: _.name}))} />
-      <IpIconBtn children="home" />
+      <Link to={router.root}>
+        <IpIconBtn children="home" />
+      </Link>
       <AppHeaderMenu />
     </AppHeaderContainer>
   )
