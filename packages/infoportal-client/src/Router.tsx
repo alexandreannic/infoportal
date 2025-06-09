@@ -55,12 +55,6 @@ export const router = {
   },
 }
 
-export const useWsRouter = () => {
-  const wsId = useParams().wsId
-  if (!wsId) throw new Error('Missing :wsId')
-  return router.ws(wsId)
-}
-
 const path = (absolute: string, base?: string) => (base ? absolute.replace(base + '/', '') : absolute)
 const pathDatabase = (absolute: string) => path(absolute, router.ws().database.root)
 const pathForm = (absolute: string) => path(absolute, router.ws().database.form().root)

@@ -292,11 +292,6 @@ const _Datatable = <T extends DatatableRow>({
           onPageChange={(event: unknown, newPage: number) => {
             ctx.data.setSearch(prev => ({...prev, offset: newPage * ctx.data.search.limit}))
           }}
-          slotProps={{
-            select: {
-              native: true,
-            },
-          }}
           onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             const newLimit = parseInt(event.target.value, 10)
             const newPage = Math.floor(ctx.data.search.offset / newLimit)

@@ -12,6 +12,7 @@ const Row = ({icon, children}: {icon: string; children: ReactNode}) => {
       sx={{
         display: 'flex',
         alignItems: 'center',
+        mb: .5,
       }}
     >
       <Icon sx={{mr: 1, my: 0.25, color: t => t.palette.text.secondary}}>{icon}</Icon>
@@ -44,12 +45,12 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
       >
         <Box>
           <Box sx={{p: 2}}>
-            <Txt bold block size="big">
+            <Txt bold block size="big" mb={1}>
               {session.user.name}
             </Txt>
             <Row icon="email">{session.user.email}</Row>
             <Row icon="badge">{session.user.drcJob}</Row>
-            {session.user.admin && <Row icon="shield_person">{m.admin}</Row>}
+            {session.user.admin && <Row icon="shield">{m.admin}</Row>}
           </Box>
           <Box sx={{px: 2}}>
             <IpBtn icon="logout" variant="outlined" onClick={logout} sx={{mb: 2}}>

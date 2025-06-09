@@ -218,7 +218,6 @@ export const muiTheme = ({
             boxSizing: 'border-box',
             // Delete padding inserted by @mui that is supposed to cover the scrollbar width
             // but which is insanely huge here for some reason.
-            paddingRight: '0 !important',
           },
           ul: {
             marginTop: '.5em',
