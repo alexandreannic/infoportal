@@ -9,6 +9,7 @@ import {KoboSchemaHelper, KoboSubmissionFlat} from 'infoportal-common'
 import {useDialogs} from '@toolpad/core'
 import {DialogAnswerView} from '@/features/Database/Dialog/DialogAnswerView'
 import {DialogAnswerEdit} from '@/features/Database/Dialog/DialogAnswerEdit'
+import {useWorkspaceRouter} from './WorkspaceContext'
 
 const Context = React.createContext({} as KoboAnswersContext)
 
@@ -31,6 +32,7 @@ export type KoboAnswersContext = {
 
 export const KoboAnswersProvider = ({children}: {children: ReactNode}) => {
   const {api} = useAppSettings()
+  const {workspaceId} = useWorkspaceRouter()
   const ctxSchema = useKoboSchemaContext()
   const dialogs = useDialogs()
 
@@ -38,7 +40,7 @@ export const KoboAnswersProvider = ({children}: {children: ReactNode}) => {
     async (id: Kobo.SubmissionId) => {
       const [schema, answers] = await Promise.all([
         ctxSchema.fetchById(id).then(_ => KoboSchemaHelper.buildHelper({schema: _})),
-        api.kobo.answer.searchByAccess({formId: id}),
+        api.kobo.answer.searchByAccess({workspaceId, formId: id}),
       ])
       return {
         ...answers,

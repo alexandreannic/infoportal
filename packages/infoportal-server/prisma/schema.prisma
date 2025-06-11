@@ -25,6 +25,8 @@ model Workspace {
   EmailOutBoxs    EmailOutBox[]
   FeatureAccesses FeatureAccess[]
   WorkspaceAccess WorkspaceAccess[]
+
+  @@index([slug])
 }
 
 enum WorkspaceAccessLevel {

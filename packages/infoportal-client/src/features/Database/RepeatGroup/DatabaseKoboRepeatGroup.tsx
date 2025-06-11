@@ -1,22 +1,22 @@
-import {IpBtn, Page} from '@/shared'
-import {Panel} from '@/shared/Panel'
-import {NavLink, useNavigate, useParams, useSearchParams} from 'react-router-dom'
-import {map} from '@axanc/ts-utils'
-import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
-import {Kobo} from 'kobo-sdk'
-import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from 'infoportal-common'
-import * as yup from 'yup'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
-import {useEffect, useMemo} from 'react'
-import {useTheme} from '@mui/material'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 import {useI18n} from '@/core/i18n'
-import {Datatable} from '@/shared/Datatable/Datatable'
-import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {
   columnBySchemaGenerator,
   ColumnBySchemaGeneratorProps,
 } from '@/features/Database/KoboTable/columns/columnBySchema'
-import {router} from '@/Router'
+import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
+import {IpBtn, Page} from '@/shared'
+import {Datatable} from '@/shared/Datatable/Datatable'
+import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
+import {Panel} from '@/shared/Panel'
+import {map} from '@axanc/ts-utils'
+import {useTheme} from '@mui/material'
+import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
+import {useEffect, useMemo} from 'react'
+import {NavLink, useNavigate, useParams, useSearchParams} from 'react-router-dom'
+import * as yup from 'yup'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -108,6 +108,7 @@ const DatabaseKoboRepeat = ({
   schema: KoboSchemaHelper.Bundle
 }) => {
   const [searchParams] = useSearchParams()
+  const {router} = useWorkspaceRouter()
   const navigate = useNavigate()
   const qs = {
     id: searchParams.get('id') ?? undefined,
@@ -130,7 +131,7 @@ const DatabaseKoboRepeat = ({
       schema,
       t,
       m,
-      onRepeatGroupClick: _ => navigate(router.database.form.group(formId, _.name, _.row.id, _.row._index)),
+      onRepeatGroupClick: _ => navigate(router.database.form(formId).group(_.name, _.row.id, _.row._index)),
       groupName: groupInfo.name,
     })
     return {
@@ -153,8 +154,8 @@ const DatabaseKoboRepeat = ({
         <NavLink
           to={
             groupInfo.depth > 1
-              ? router.database.form.group(formId, paths[paths.length - 2], qs.id)
-              : router.database.form.answers(formId)
+              ? router.database.form(formId).group(paths[paths.length - 2], qs.id)
+              : router.database.form(formId).answers
           }
         >
           <IpBtn variant="contained" icon="arrow_back">

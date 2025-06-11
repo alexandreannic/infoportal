@@ -10,10 +10,12 @@ import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {UUID} from 'infoportal-common'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {Datatable} from '@/shared/Datatable/Datatable'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 
 export const SelectKoboForm = ({serverId, onAdded}: {serverId: UUID; onAdded?: () => void}) => {
   const {api} = useAppSettings()
   const {m, formatDate} = useI18n()
+  const {workspaceId} = useWorkspaceRouter()
   const {toastHttpError} = useIpToast()
   const ctx = useDatabaseContext()
   const t = useTheme()
@@ -85,7 +87,7 @@ export const SelectKoboForm = ({serverId, onAdded}: {serverId: UUID; onAdded?: (
               renderQuick: form => (
                 <IpBtn
                   size="small"
-                  onClick={() => asyncAdd.call({serverId, uid: form.uid}).then(onAdded)}
+                  onClick={() => asyncAdd.call({workspaceId, serverId, uid: form.uid}).then(onAdded)}
                   disabled={!form.has_deployment || !ctx._forms.get || !!ctx._forms.get.find(_ => _.id === form.uid)}
                 >
                   {m.add}

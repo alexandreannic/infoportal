@@ -8,7 +8,7 @@ import {AppHeader} from '../../core/layout/AppHeader'
 
 export interface LayoutProps {
   sidebar?: ReactElement<any>
-  header: ReactElement<any>
+  header?: ReactElement<any>
   title?: string
   children?: ReactNode
   loading?: boolean

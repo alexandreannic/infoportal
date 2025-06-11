@@ -1,27 +1,28 @@
-import {KoboForm} from '@/core/sdk/server/kobo/KoboMapper'
+import {useAppSettings} from '@/core/context/ConfigContext'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 import {useI18n} from '@/core/i18n'
+import {KoboFormSdk} from '@/core/sdk/server/kobo/KoboFormSdk'
+import {KoboForm} from '@/core/sdk/server/kobo/KoboMapper'
+import {Datatable} from '@/shared/Datatable/Datatable'
 import {Page, PageTitle} from '@/shared/Page'
 import {Panel} from '@/shared/Panel'
-import {KoboFormSdk} from '@/core/sdk/server/kobo/KoboFormSdk'
 import {TableIconBtn} from '@/shared/TableIcon'
-import React, {useEffect, useMemo} from 'react'
 import {Txt} from '@/shared/Txt'
-import {Datatable} from '@/shared/Datatable/Datatable'
-import {Icon, useTheme} from '@mui/material'
 import {useFetcher} from '@/shared/hook/useFetcher'
-import {useAppSettings} from '@/core/context/ConfigContext'
 import {seq} from '@axanc/ts-utils'
+import {Icon, useTheme} from '@mui/material'
+import {useEffect, useMemo} from 'react'
 import {NavLink} from 'react-router-dom'
-import {router} from '@/Router'
 
 export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
   const {api} = useAppSettings()
+  const {workspaceId, router} = useWorkspaceRouter()
   const fetcherServers = useFetcher(api.kobo.server.getAll)
   const {formatDate, m} = useI18n()
   const t = useTheme()
 
   useEffect(() => {
-    fetcherServers.fetch()
+    fetcherServers.fetch({}, {workspaceId})
   }, [])
   const indexServers = useMemo(() => {
     return seq(fetcherServers.get).groupByFirst(_ => _.id)
@@ -171,7 +172,7 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
                   align: 'right',
                   head: '',
                   renderQuick: _ => (
-                    <NavLink to={router.database.form.root(_.id)}>
+                    <NavLink to={router.database.form(_.id).root}>
                       <TableIconBtn color="primary" children="chevron_right" />
                     </NavLink>
                   ),

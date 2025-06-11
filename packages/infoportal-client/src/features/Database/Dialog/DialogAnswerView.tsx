@@ -31,6 +31,7 @@ import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/col
 import {Kobo} from 'kobo-sdk'
 import {DialogProps} from '@toolpad/core'
 import {router} from '@/Router'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -106,13 +107,14 @@ export const DialogAnswerView = ({
   answer: KoboMappedAnswer
 }>) => {
   const {m} = useI18n()
+  const {router} = useWorkspaceRouter()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
 
   return (
     <Dialog open={true}>
       <DialogTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
-          <NavLink to={router.database.form.answer(formId, answer.id)} onClick={() => onClose()}>
+          <NavLink to={router.database.form(formId).answer(answer.id)} onClick={() => onClose()}>
             <IpIconBtn color="primary">open_in_new</IpIconBtn>
           </NavLink>
           {answer.id}

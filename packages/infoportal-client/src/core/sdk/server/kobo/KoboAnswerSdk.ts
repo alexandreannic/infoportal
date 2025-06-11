@@ -9,18 +9,21 @@ import {Kobo} from 'kobo-sdk'
 import {KoboValidation} from 'infoportal-common'
 
 export interface KoboAnswerSearch {
-  readonly formId: UUID
-  readonly paginate?: ApiPagination
-  readonly filters?: AnswersFilters
+  workspaceId: UUID
+  formId: UUID
+  paginate?: ApiPagination
+  filters?: AnswersFilters
 }
 
 export type KoboUpdateValidation = {
+  workspaceId: UUID
   formId: Kobo.FormId
   answerIds: Kobo.SubmissionId[]
   status: KoboValidation | null
 }
 
 export type KoboUpdateAnswers<T extends Record<string, any> = any, K extends KeyOf<T> = any> = {
+  workspaceId: UUID
   formId: Kobo.FormId
   answerIds: Kobo.SubmissionId[]
   question: K
@@ -30,28 +33,41 @@ export type KoboUpdateAnswers<T extends Record<string, any> = any, K extends Key
 export class KoboAnswerSdk {
   constructor(private client: ApiClient) {}
 
-  readonly searchByAccess = ({formId, filters = {}, paginate = {offset: 0, limit: 100000}}: KoboAnswerSearch) => {
+  readonly searchByAccess = ({
+    formId,
+    workspaceId,
+    filters = {},
+    paginate = {offset: 0, limit: 100000},
+  }: KoboAnswerSearch) => {
     return this.client
-      .post<ApiPaginate<KoboSubmission>>(`/kobo/answer/${formId}/by-access`, {
+      .post<ApiPaginate<KoboSubmission>>(`/${workspaceId}/kobo/answer/${formId}/by-access`, {
         body: {...KoboAnswerSdk.mapFilters(filters), ...paginate},
       })
       .then(KoboMapper.mapPaginateAnswer)
   }
 
-  readonly search = ({formId, filters = {}, paginate = {offset: 0, limit: 100000}}: KoboAnswerSearch) => {
+  readonly search = ({formId, workspaceId, filters = {}, paginate = {offset: 0, limit: 100000}}: KoboAnswerSearch) => {
     return this.client
-      .post<ApiPaginate<KoboSubmission>>(`/kobo/answer/${formId}`, {
+      .post<ApiPaginate<KoboSubmission>>(`/${workspaceId}/kobo/answer/${formId}`, {
         body: {...KoboAnswerSdk.mapFilters(filters), ...paginate},
       })
       .then(KoboMapper.mapPaginateAnswer)
   }
 
-  readonly delete = async ({answerIds, formId}: {answerIds: Kobo.SubmissionId[]; formId: Kobo.FormId}) => {
-    await this.client.delete(`/kobo/answer/${formId}`, {body: {answerIds}})
+  readonly delete = async ({
+    workspaceId,
+    answerIds,
+    formId,
+  }: {
+    workspaceId: UUID
+    answerIds: Kobo.SubmissionId[]
+    formId: Kobo.FormId
+  }) => {
+    await this.client.delete(`/${workspaceId}/kobo/answer/${formId}`, {body: {answerIds}})
   }
 
-  readonly updateValidation = ({formId, answerIds, status}: KoboUpdateValidation) => {
-    return this.client.patch(`/kobo/answer/${formId}/validation`, {
+  readonly updateValidation = ({workspaceId, formId, answerIds, status}: KoboUpdateValidation) => {
+    return this.client.patch(`/${workspaceId}/kobo/answer/${formId}/validation`, {
       body: {
         answerIds: answerIds,
         status,
@@ -60,12 +76,13 @@ export class KoboAnswerSdk {
   }
 
   readonly updateAnswers = <T extends Record<string, any>, K extends KeyOf<T>>({
+    workspaceId,
     formId,
     answerIds,
     question,
     answer,
   }: KoboUpdateAnswers<T, K>) => {
-    return this.client.patch(`/kobo/answer/${formId}`, {
+    return this.client.patch(`/${workspaceId}/kobo/answer/${formId}`, {
       body: {
         answerIds: answerIds,
         question,

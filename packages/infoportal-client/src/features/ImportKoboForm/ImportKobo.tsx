@@ -13,9 +13,11 @@ import {UUID} from 'infoportal-common'
 import {useIpToast} from '@/core/useToast'
 import {SelectKoboForm} from '@/features/ImportKoboForm/SelectKoboForm'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 
 export const ImportKobo = () => {
   const {m} = useI18n()
+  const {workspaceId} = useWorkspaceRouter()
   const {api} = useAppSettings()
   const dialog = useDialogs()
   const {toastHttpError} = useIpToast()
@@ -32,7 +34,7 @@ export const ImportKobo = () => {
   })
 
   useEffect(() => {
-    fetch.fetch()
+    fetch.fetch({}, {workspaceId})
   }, [])
 
   useEffectFn(asyncDelete.error, toastHttpError)
@@ -46,7 +48,7 @@ export const ImportKobo = () => {
   }
 
   const handleDelete = async (id: UUID) => {
-    await asyncDelete.call(id)
+    await asyncDelete.call({id, workspaceId})
     if (!asyncDelete.error) fetch.set(prev => (prev ?? []).filter(_ => _.id !== id))
   }
 
@@ -81,7 +83,10 @@ export const ImportKobo = () => {
         </PanelBody>
       </Panel>
       <Collapse in={!!selectedServerId} mountOnEnter unmountOnExit>
-        <SelectKoboForm serverId={selectedServerId!} onAdded={() => ctx._forms.fetch({force: true, clean: false})} />
+        <SelectKoboForm
+          serverId={selectedServerId!}
+          onAdded={() => ctx._forms.fetch({force: true, clean: false}, {workspaceId})}
+        />
       </Collapse>
     </Page>
   )

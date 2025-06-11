@@ -20,19 +20,22 @@ export class ControllerKoboForm {
     const data = await this.service.add({
       ...body,
       uploadedBy: req.session.app?.user.email!,
+      workspaceId: req.params.workspaceId,
     })
     res.send(data)
   }
 
   readonly refreshAll = async (req: Request, res: Response, next: NextFunction) => {
     await this.service.refreshAll({
-      uploadedBy: req.session.app?.user.email!,
+      byEmail: req.session.app?.user.email!,
+      wsId: req.params.workspaceId,
     })
     res.send()
   }
 
   readonly getAll = async (req: Request, res: Response, next: NextFunction) => {
-    const data = await this.service.getAll()
+    const data = await this.service.getAll({wsId: req.params.workspaceId})
+    console.log('getAll', data)
     res.send(data)
   }
 

@@ -12,6 +12,7 @@ import {useAsync} from '@/shared/hook/useAsync'
 import {useSession} from '@/core/Session/SessionContext'
 import {produce} from 'immer'
 import {useWorkspace} from '@/core/context/WorkspaceContext'
+import {useIpToast} from '@/core/useToast'
 
 type Form = {
   slug: string
@@ -25,6 +26,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
 
   const {api} = useAppSettings()
   const {setSession} = useSession()
+  const {toastHttpError} = useIpToast()
   const t = useTheme()
 
   const form = useForm<Form>()
@@ -65,18 +67,17 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
   }, [watch.slug])
 
   const submit = async () => {
-    const created = await ctxWorkspace.asyncCreate.call(form.getValues())
-    form.reset({
-      name: '',
-      slug: '',
-      sector: '',
-    })
-    onClose?.()
-    setSession(prev =>
-      produce(prev, draft => {
-        draft?.workspaces.push(created)
-      }),
-    )
+    try {
+      await ctxWorkspace.asyncCreate.call(form.getValues())
+      form.reset({
+        name: '',
+        slug: '',
+        sector: '',
+      })
+      onClose?.()
+    } catch (e) {
+      toastHttpError(e)
+    }
   }
 
   return (

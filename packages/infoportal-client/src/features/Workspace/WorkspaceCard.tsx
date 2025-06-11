@@ -40,9 +40,10 @@ export const WorkspaceCard = ({workspace}: {workspace: Workspace}) => {
   const t = useTheme()
 
   return (
-    <Link to={router.ws(workspace.slug).root}>
+    <Link to={router.ws(workspace.id).root}>
       <Panel
         sx={{
+          mb: 0,
           minHeight: 200,
           p: 2,
           transition: t.transitions.create(''),

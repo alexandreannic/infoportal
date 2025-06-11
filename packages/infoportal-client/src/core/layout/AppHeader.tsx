@@ -1,21 +1,20 @@
-import {alpha, BoxProps, Icon, MenuItem, useTheme} from '@mui/material'
-import {Txt} from '@/shared'
-import {layoutConfig} from '@/shared/Layout'
-import React from 'react'
-import {useLayoutContext} from '@/shared/Layout/LayoutContext'
-import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
-import {IpIconBtn} from '@/shared/IconBtn'
-import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
-import {PopoverWrapper} from '@/shared/PopoverWrapper'
-import {useI18n} from '@/core/i18n'
-import {useAppSettings} from '@/core/context/ConfigContext'
-import {Obj} from '@axanc/ts-utils'
-import {styleUtils} from '@/core/theme'
-import {IpSelectSingle} from '@/shared/Select/SelectSingle'
-import {useSession} from '@/core/Session/SessionContext'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
-import {Link} from 'react-router-dom'
-import {router} from '@/Router'
+import { router } from '@/Router'
+import { useSession } from '@/core/Session/SessionContext'
+import { useAppSettings } from '@/core/context/ConfigContext'
+import { useMaybeWorkspaceRouter } from '@/core/context/WorkspaceContext'
+import { useI18n } from '@/core/i18n'
+import { AppHeaderContainer } from '@/core/layout/AppHeaderContainer'
+import { AppHeaderMenu } from '@/core/layout/AppHeaderMenu'
+import { styleUtils } from '@/core/theme'
+import { Txt } from '@/shared'
+import { IpIconBtn } from '@/shared/IconBtn'
+import { layoutConfig } from '@/shared/Layout'
+import { useLayoutContext } from '@/shared/Layout/LayoutContext'
+import { PopoverWrapper } from '@/shared/PopoverWrapper'
+import { IpSelectSingle } from '@/shared/Select/SelectSingle'
+import { Obj } from '@axanc/ts-utils'
+import { alpha, BoxProps, Icon, MenuItem, useTheme } from '@mui/material'
+import { Link } from 'react-router-dom'
 
 interface Props extends BoxProps {}
 
@@ -27,7 +26,7 @@ const lightThemeIcons = {
 
 export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) => {
   const {sidebarOpen, showSidebarButton, setSidebarOpen, title} = useLayoutContext()
-  const {wsId, changeWorkspace} = useWorkspaceRouter()
+  const {workspaceId, changeWorkspace} = useMaybeWorkspaceRouter()
   const {m} = useI18n()
   const {session} = useSession()
   const t = useTheme()
@@ -88,12 +87,12 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
       </div>
 
       <IpSelectSingle
-        value={wsId}
+        value={workspaceId}
         hideNullOption
         onChange={_ => _ && changeWorkspace(_)}
         sx={{width: 200, mr: 0.5}}
         options={session?.workspaces.map(_ => ({
-          value: _.slug,
+          value: _.id,
           children: (
             <>
               <Txt bold>{_.name}</Txt>&nbsp;•&nbsp;<Txt color="hint">{_.slug}</Txt>

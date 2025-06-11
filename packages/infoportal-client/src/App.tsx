@@ -83,8 +83,6 @@ const AppWithBaseContext = () => {
     api.session.track(location.pathname)
   }, [location.pathname])
 
-  console.log(location.pathname)
-
   if (settings.conf.appOff) {
     return (
       <CenteredContent>

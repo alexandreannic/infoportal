@@ -1,4 +1,4 @@
-import {KoboBaseTags, KoboSubmission, KoboSubmissionFlat, KoboSubmissionMetaData} from 'infoportal-common'
+import {KoboBaseTags, KoboSubmission, KoboSubmissionFlat, KoboSubmissionMetaData, UUID} from 'infoportal-common'
 import {Obj} from '@axanc/ts-utils'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Kobo} from 'kobo-sdk'
@@ -11,6 +11,7 @@ export type KoboServer = {
   url: string
   urlV1: string
   token: string
+  workspaceId: UUID
 }
 
 export interface KoboForm {

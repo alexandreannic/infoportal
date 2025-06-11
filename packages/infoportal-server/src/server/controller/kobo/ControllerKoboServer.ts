@@ -18,15 +18,16 @@ export class ControllerKoboServer {
     }),
     id: idParamsSchema,
   }
+  
   readonly getAll = async (req: Request, res: Response, next: NextFunction) => {
-    const servers = await this.pgClient.koboServer.findMany()
+    const servers = await this.pgClient.koboServer.findMany({where: {workspaceId: req.params.workspaceId}})
     res.send(servers)
   }
 
   readonly create = async (req: Request, res: Response, next: NextFunction) => {
     const payload = await ControllerKoboServer.schema.create.validate(req.body)
     const data = await this.pgClient.koboServer.create({
-      data: payload,
+      data: {workspaceId: req.params.workspaceId, ...payload},
     })
     res.send(data)
   }

@@ -1,36 +1,36 @@
-import React, {useMemo, useState} from 'react'
-import {useI18n} from '@/core/i18n'
-import {Kobo} from 'kobo-sdk'
-import {KoboFlattenRepeatedGroup} from 'infoportal-common'
-import {IpIconBtn} from '@/shared/IconBtn'
-import {Alert, AlertProps, Icon, useTheme} from '@mui/material'
-import {useDatabaseKoboTableContext} from '@/features/Database/KoboTable/DatabaseKoboContext'
-import {DatabaseTableProps} from '@/features/Database/KoboTable/DatabaseKoboTable'
-import {DatabaseKoboSyncBtn} from '@/features/Database/KoboTable/DatabaseKoboSyncBtn'
-import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
-import {Datatable} from '@/shared/Datatable/Datatable'
-import {useCustomSelectedHeader} from '@/features/Database/KoboTable/customization/useCustomSelectedHeader'
-import {useKoboUpdateContext} from '@/core/context/KoboUpdateContext'
-import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {appConfig} from '@/conf/AppConfig'
-import {getColumnsBase} from '@/features/Database/KoboTable/columns/columnsBase'
-import {IpSelectSingle} from '@/shared/Select/SelectSingle'
-import {DatabaseViewInput} from '@/features/Database/KoboTable/view/DatabaseViewInput'
-import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
+import {useAppSettings} from '@/core/context/ConfigContext'
+import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
+import {useKoboUpdateContext} from '@/core/context/KoboUpdateContext'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useI18n} from '@/core/i18n'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
-import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/columnBySchema'
-import {useNavigate} from 'react-router-dom'
-import {getColumnsForRepeatGroup} from '@/features/Database/RepeatGroup/DatabaseKoboRepeatGroup'
-import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
-import {databaseKoboDisplayBuilder} from '@/features/Database/KoboTable/groupDisplay/DatabaseKoboDisplay'
-import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useSession} from '@/core/Session/SessionContext'
 import {useIpToast} from '@/core/useToast'
-import {useAsync} from '@/shared/hook/useAsync'
-import {useAppSettings} from '@/core/context/ConfigContext'
+import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/columnBySchema'
+import {getColumnsBase} from '@/features/Database/KoboTable/columns/columnsBase'
+import {useCustomSelectedHeader} from '@/features/Database/KoboTable/customization/useCustomSelectedHeader'
 import {DatabaseImportBtn} from '@/features/Database/KoboTable/DatabaseImportBtn'
+import {useDatabaseKoboTableContext} from '@/features/Database/KoboTable/DatabaseKoboContext'
+import {DatabaseKoboSyncBtn} from '@/features/Database/KoboTable/DatabaseKoboSyncBtn'
+import {DatabaseTableProps} from '@/features/Database/KoboTable/DatabaseKoboTable'
 import {generateEmptyXlsTemplate} from '@/features/Database/KoboTable/generateEmptyXlsFile'
-import {router} from '@/Router'
+import {databaseKoboDisplayBuilder} from '@/features/Database/KoboTable/groupDisplay/DatabaseKoboDisplay'
+import {DatabaseViewInput} from '@/features/Database/KoboTable/view/DatabaseViewInput'
+import {getColumnsForRepeatGroup} from '@/features/Database/RepeatGroup/DatabaseKoboRepeatGroup'
+import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
+import {Datatable} from '@/shared/Datatable/Datatable'
+import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
+import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
+import {useAsync} from '@/shared/hook/useAsync'
+import {IpIconBtn} from '@/shared/IconBtn'
+import {IpSelectSingle} from '@/shared/Select/SelectSingle'
+import {Alert, AlertProps, Icon, useTheme} from '@mui/material'
+import {KoboFlattenRepeatedGroup} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
+import {useMemo, useState} from 'react'
+import {useNavigate} from 'react-router-dom'
+import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -51,6 +51,7 @@ export const DatabaseKoboTableContent = ({
   onFiltersChange,
   onDataChange,
 }: Pick<DatabaseTableProps, 'onFiltersChange' | 'onDataChange'>) => {
+  const {router} = useWorkspaceRouter()
   const {m} = useI18n()
   const t = useTheme()
   const navigate = useNavigate()
@@ -75,7 +76,7 @@ export const DatabaseKoboTableContent = ({
       formId: ctx.form.id,
       schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,
-      onRepeatGroupClick: _ => navigate(router.database.form.group(ctx.form.id, _.name, _.row.id, _.row._index)),
+      onRepeatGroupClick: _ => navigate(router.database.form(ctx.form.id).group(_.name, _.row.id, _.row._index)),
       onEdit:
         selectedIds.length > 0
           ? questionName =>
@@ -95,7 +96,7 @@ export const DatabaseKoboTableContent = ({
       data: ctx.data ?? [],
       formId: ctx.form.id,
       schema: ctx.schema,
-      onRepeatGroupClick: _ => navigate(router.database.form.group(ctx.form.id, _.name, _.row.id, _.row._index)),
+      onRepeatGroupClick: _ => navigate(router.database.form(ctx.form.id).group(_.name, _.row.id, _.row._index)),
       display: ctx.groupDisplay.get,
       m,
       t,

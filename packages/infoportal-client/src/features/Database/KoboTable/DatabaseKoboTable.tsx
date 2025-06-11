@@ -21,6 +21,7 @@ import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {FetchParams} from '@/shared/hook/useFetchers'
 import {DatatableSkeleton} from '@/shared/Datatable/DatatableSkeleton'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 
 export const DatabaseTableRoute = () => {
   const ctx = useDatabaseContext()
@@ -62,9 +63,10 @@ export const DatabaseTable = ({
 }: DatabaseTableProps) => {
   const {api} = useAppSettings()
   const {session} = useSession()
+  const {workspaceId} = useWorkspaceRouter()
   const ctxSchema = useKoboSchemaContext()
   const fetcherAnswers = useKoboAnswersContext().byId(formId)
-  const fetcherForm = useFetcher(() => (form ? Promise.resolve(form) : api.kobo.form.get(formId)))
+  const fetcherForm = useFetcher(() => (form ? Promise.resolve(form) : api.kobo.form.get({workspaceId, formId})))
 
   const access = useMemo(() => {
     const list = session.accesses

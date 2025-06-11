@@ -15,6 +15,8 @@ import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {GoogleOAuthProvider} from '@react-oauth/google'
 import {appConfig} from '@/conf/AppConfig'
 import {WorkspaceCreate} from '@/features/Workspace/WorkspaceCreate'
+import {Page, PageTitle} from '@/shared'
+import {maxWidth} from '@mui/system'
 
 export interface SessionContext {
   session: Session
@@ -110,7 +112,16 @@ export const ProtectRoute = ({adminOnly, children}: {children: ReactNode; adminO
     )
   }
   if (session.workspaces.length === 0) {
-    return <WorkspaceCreate />
+    return (
+      <Page sx={{maxWidth: 400}}>
+        <CenteredContent>
+          <div>
+            <PageTitle>{m.onboardingTitle}</PageTitle>
+            <WorkspaceCreate />
+          </div>
+        </CenteredContent>
+      </Page>
+    )
   }
   return (
     <>

@@ -17,26 +17,28 @@ export const _WorkspaceContext = React.createContext({} as WorkspaceContext)
 
 export const useWorkspace = () => useContext(_WorkspaceContext)
 
-export const useWorkspaceRouter = () => {
+export const useMaybeWorkspaceRouter = () => {
   const navigate = useNavigate()
   const location = useLocation()
   return useMemo(() => {
-    const wsId = location.pathname.match(/^\/([^/]+)/)?.[1]
     return {
-      wsId,
-      navigate,
-      router: router.ws(wsId),
       changeWorkspace: (wsId: string) => navigate(router.ws(wsId).root),
+      workspaceId: location.pathname.match(/^\/([^/]+)/)?.[1],
     }
-  }, [location, navigate])
+  }, [navigate, location])
 }
-// const buildCrud = (api: ApiSdk) =>
-//   useCrudList('id', {
-//     c: api.workspace.create,
-//     r: api.workspace.getMine,
-//     u: api.workspace.update,
-//     d: api.workspace.delete,
-//   })
+
+export const useWorkspaceRouter = () => {
+  const maybe = useMaybeWorkspaceRouter()
+  return useMemo(() => {
+    if (!maybe.workspaceId) throw new Error(`Missing workspaceId in URI '${location.pathname}'`)
+    return {
+      workspaceId: maybe.workspaceId,
+      router: router.ws(maybe.workspaceId),
+      changeWorkspace: maybe.changeWorkspace,
+    }
+  }, [maybe])
+}
 
 export const WorkspaceProvider = ({api, children}: {api: ApiSdk; children: ReactNode}) => {
   const {setSession} = useSession()

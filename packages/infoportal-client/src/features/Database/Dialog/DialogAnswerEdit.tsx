@@ -1,15 +1,15 @@
-import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from '@mui/material'
-import {IpBtn} from '@/shared/Btn'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 import {useI18n} from '@/core/i18n'
 import {KoboMappedAnswer, KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
-import React, {useRef} from 'react'
+import {IpBtn} from '@/shared/Btn'
 import {IpIconBtn} from '@/shared/IconBtn'
-import {NavLink} from 'react-router-dom'
-import {Kobo} from 'kobo-sdk'
+import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from '@mui/material'
 import {DialogProps} from '@toolpad/core'
-import {XlsFormFiller, XlsFormFillerHandle} from 'xls-form-filler'
 import {KoboSchemaHelper} from 'infoportal-common'
-import {router} from '@/Router'
+import {Kobo} from 'kobo-sdk'
+import {useRef} from 'react'
+import {NavLink} from 'react-router-dom'
+import {XlsFormFiller, XlsFormFillerHandle} from 'xls-form-filler'
 
 export const DialogAnswerEdit = ({
   onClose,
@@ -20,12 +20,13 @@ export const DialogAnswerEdit = ({
   answer: KoboMappedAnswer
 }>) => {
   const formRef = useRef<XlsFormFillerHandle>(null)
+  const {router} = useWorkspaceRouter()
   const {m} = useI18n()
   return (
     <Dialog open={true}>
       <DialogTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
-          <NavLink to={router.database.form.answer(formId, answer.id)} onClick={() => onClose()}>
+          <NavLink to={router.database.form(formId).answer(answer.id)} onClick={() => onClose()}>
             <IpIconBtn color="primary">open_in_new</IpIconBtn>
           </NavLink>
           {answer.id}
