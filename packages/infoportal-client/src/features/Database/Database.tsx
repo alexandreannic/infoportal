@@ -40,14 +40,7 @@ export const Database = () => {
 
   return (
     <>
-      <Tabs
-        variant="scrollable"
-        scrollButtons="auto"
-        value={pathname}
-        sx={{
-          borderBottom: t => `1px solid ${t.palette.divider}`,
-        }}
-      >
+      <Tabs variant="scrollable" scrollButtons="auto" value={pathname}>
         <Tab
           icon={<Icon>{appConfig.icons.dataTable}</Icon>}
           iconPosition="start"

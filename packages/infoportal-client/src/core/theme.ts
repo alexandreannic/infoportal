@@ -275,9 +275,26 @@ export const muiTheme = ({
           },
         },
       },
+      MuiTab: {
+        defaultProps: {
+          disableTouchRipple: true,
+          disableRipple: true,
+        },
+      },
       MuiTabs: {
         styleOverrides: {
+          indicator: {
+            top: 2,
+            marginLeft: 2,
+            bottom: 2,
+            height: 'auto',
+            background: alpha(baseTheme.palette.primary.main, 0.18),
+            borderRadius: baseTheme.shape.borderRadius + 'px',
+          },
           root: {
+            background: baseTheme.palette.background.paper,
+            borderRadius: baseTheme.shape.borderRadius + 'px',
+            boxShadow: baseTheme.shadows[1],
             minHeight: 0,
           },
         },

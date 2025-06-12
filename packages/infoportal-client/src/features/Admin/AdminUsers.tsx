@@ -37,7 +37,7 @@ export const AdminUsers = () => {
   const filteredData = _users.get
 
   return (
-    <Page width="lg">
+    <Page width="full">
       <Panel>
         <Datatable
           loading={_users.loading}

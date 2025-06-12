@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {useState, useEffect} from 'react'
-import {Box, BoxProps, Slide, SwipeableDrawer, Switch} from '@mui/material'
+import {alpha, Box, BoxProps, Slide, SwipeableDrawer, Switch, useTheme} from '@mui/material'
 import {useLayoutContext} from '../LayoutContext'
 import {layoutConfig} from '../index'
 import {SidebarFooter} from './SidebarFooter'
@@ -47,6 +47,7 @@ export const Sidebar = ({
   const app = useAppSettings()
   const {isMobileWidth, sidebarOpen, setSidebarOpen, sidebarPinned, setSidebarPinned} = useLayoutContext()
   const {m} = useI18n()
+  const t = useTheme()
 
   const [mounted, setMounted] = useState(false)
 
@@ -75,7 +76,13 @@ export const Sidebar = ({
   return (
     <SwipeableDrawer
       ModalProps={{
+        // hideBackdrop: true,
         disableScrollLock: true,
+        BackdropProps: {
+          sx: {
+            backgroundColor: 'transparent', // makes it invisible
+          },
+        },
       }}
       PaperProps={{
         id,
@@ -83,6 +90,7 @@ export const Sidebar = ({
           mr: 2,
           top: layoutConfig.headerHeight,
           background: 'transparent',
+          boxShadow: 'none',
           position: 'fixed',
           border: 'none',
           bottom: 0,
@@ -100,14 +108,19 @@ export const Sidebar = ({
       <Slide direction="right" in={true}>
         <Box
           sx={{
-            background: isTemporary ? t => t.palette.background.default : undefined,
+            m: 1,
+            borderRadius: t.shape.borderRadius + 'px',
+            boxShadow: t.shadows[2],
+            backdropFilter: 'blur(8px)',
+            background: alpha(t.palette.background.paper, 0.8),
+            // background: isTemporary ? t => t.palette.background.default : undefined,
             width: layoutConfig.sidebarWith,
             height: '100%',
             transition: t => t.transitions.create('width'),
             overflowY: 'auto',
             display: 'flex',
             flexDirection: 'column',
-            borderRadius: 0,
+            // borderRadius: 0,
             ...sx,
           }}
           {...props}

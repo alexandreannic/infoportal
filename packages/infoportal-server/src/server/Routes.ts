@@ -118,10 +118,10 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     router.post('/access/:id', auth(), errorCatcher(access.update))
     router.delete('/access/:id', auth(), errorCatcher(access.remove))
 
-    router.post('/user/me', auth(), errorCatcher(user.updateMe))
-    router.get('/user', auth(), errorCatcher(user.search))
-    router.get('/user/avatar/:email', auth(), errorCatcher(user.avatar))
-    router.get('/user/drc-job', auth(), errorCatcher(user.getDrcJobs))
+    router.post('/:workspaceId/user/me', auth(), errorCatcher(user.updateMe))
+    router.get('/:workspaceId/user', auth(), errorCatcher(user.search))
+    router.get('/:workspaceId/user/avatar/:email', auth(), errorCatcher(user.avatar))
+    router.get('/:workspaceId/user/drc-job', auth(), errorCatcher(user.getDrcJobs))
 
     router.post('/proxy-request', errorCatcher(main.proxy))
 

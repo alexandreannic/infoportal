@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {ReactNode} from 'react'
 import {Box, ButtonBase, ButtonBaseProps, Icon} from '@mui/material'
-import {alpha} from '@mui/material/styles'
+import {alpha, styled, useTheme} from '@mui/material/styles'
 import {fnSwitch} from '@axanc/ts-utils'
 import {makeSx} from '@/core/theme'
 
@@ -9,6 +9,7 @@ const css = makeSx({
   i: {
     textAlign: 'center',
     mr: 1.5,
+    ml: -.5,
   },
 })
 
@@ -35,11 +36,12 @@ export const SidebarItem = ({
   sx,
   ...props
 }: SidebarItemProps) => {
+  const t = useTheme()
   return (
     <ButtonBase
       disableRipple={!props.onClick && !props.href}
       sx={{
-        width: '100%',
+        width: `calc(100% - ${t.spacing(2)})`,
         transition: t => t.transitions.create('all'),
         display: 'flex',
         alignItems: 'center',
@@ -61,6 +63,7 @@ export const SidebarItem = ({
         color: t => t.palette.text.secondary,
         pr: 1,
         pl: 1.5,
+        mx: 1,
         my:
           1 /
           fnSwitch(
@@ -72,8 +75,9 @@ export const SidebarItem = ({
             },
             () => 2,
           ),
-        borderTopRightRadius: 42,
-        borderBottomRightRadius: 42,
+        borderRadius: (t.shape.borderRadius - 2) + 'px',
+        // borderTopRightRadius: 42,
+        // borderBottomRightRadius: 42,
         ...(props.disabled && {
           opacity: 0.5,
         }),

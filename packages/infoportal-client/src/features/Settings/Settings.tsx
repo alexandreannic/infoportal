@@ -1,7 +1,9 @@
 import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 import {useI18n} from '@/core/i18n'
 import {Page, PageTitle} from '@/shared'
+import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
+import {useEffect} from 'react'
 import {Outlet, useLocation} from 'react-router'
 import {NavLink} from 'react-router-dom'
 
@@ -9,10 +11,14 @@ export const Settings = () => {
   const {m} = useI18n()
   const {pathname} = useLocation()
   const {router} = useWorkspaceRouter()
+  const {setTitle} = useLayoutContext()
 
+  useEffect(() => {
+    setTitle(m.settings)
+  }, [])
   return (
-    <Page>
-      <PageTitle>{m.settings}</PageTitle>
+    <>
+      {/* <PageTitle>{m.settings}</PageTitle> */}
       <Tabs
         variant="scrollable"
         scrollButtons="auto"
@@ -59,6 +65,6 @@ export const Settings = () => {
         />
       </Tabs>
       <Outlet />
-    </Page>
+    </>
   )
 }
