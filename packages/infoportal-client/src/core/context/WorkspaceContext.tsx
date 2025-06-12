@@ -27,7 +27,7 @@ export const useWorkspaceRouter = () => {
     return {
       router: router.ws(workspaceId),
       changeWorkspace: (wsId: string) => navigate(router.ws(wsId).root),
-      workspaceId: location.pathname.match(/^\/([^/]+)/)?.[1],
+      workspaceId,
     }
   }, [navigate, location])
 }

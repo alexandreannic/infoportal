@@ -13,8 +13,10 @@ import {seq} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
 import {useEffect, useMemo} from 'react'
 import {NavLink} from 'react-router-dom'
+import {useDatabaseContext} from './DatabaseContext'
 
-export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
+export const DatabaseList = () => {
+  const ctx = useDatabaseContext()
   const {api} = useAppSettings()
   const {workspaceId, router} = useWorkspaceRouter()
   const fetcherServers = useFetcher(api.kobo.server.getAll)
@@ -24,13 +26,14 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
   useEffect(() => {
     fetcherServers.fetch({}, {workspaceId})
   }, [])
+
   const indexServers = useMemo(() => {
     return seq(fetcherServers.get).groupByFirst(_ => _.id)
   }, [fetcherServers.get])
 
   return (
     <Page width="full">
-      {forms && forms.length > 0 && (
+      {ctx.formsAccessible && ctx.formsAccessible.length > 0 && (
         <>
           <PageTitle>{m.selectADatabase}</PageTitle>
           <Panel>
@@ -38,7 +41,7 @@ export const DatabaseList = ({forms}: {forms?: KoboForm[]}) => {
               showExportBtn
               defaultLimit={500}
               id="kobo-index"
-              data={forms}
+              data={ctx.formsAccessible}
               columns={[
                 {
                   id: 'status',

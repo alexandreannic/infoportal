@@ -1,4 +1,4 @@
-import {Navigate, Route, Routes, useParams} from 'react-router-dom'
+import {Navigate, Outlet, Route, Routes, useParams} from 'react-router-dom'
 import {objectToQueryString} from 'infoportal-common'
 import {Database} from '@/features/Database/Database'
 import {DatabaseList} from './features/Database/DatabaseList'
@@ -27,48 +27,41 @@ import {AppHeader} from './core/layout/AppHeader'
 export const router = {
   root: '/',
   ws: (wsId = ':wsId') => {
-    const base = `/${wsId}`
-    const settings = {
-      root: `${base}/settings`,
-      users: `${base}/settings/users`,
-      proxy: `${base}/settings/proxy`,
-      group: `${base}/settings/group`,
-      cache: `${base}/settings/cache`,
-    }
-    const database = {
-      root: `${base}/database`,
-      list: `${base}/database/list`,
-      custom: (id = ':id') => `${base}/database/custom/${id}`,
-      form: (formId = ':formId') => {
-        const formBase = `${base}/database/${formId}`
-        return {
-          root: formBase,
-          answers: `${formBase}/data`,
-          access: `${formBase}/access`,
-          history: `${formBase}/history`,
-          answer: (answerId = ':answerId') => `${formBase}/data/${answerId}`,
-          group: (group = ':group', id?: string, index?: number) => {
-            const qs = (id?: string, index?: number) => (id ? '?' + objectToQueryString({id, index}) : '')
-            return `${formBase}/group/${group}${qs(id, index)}`
-          },
-        }
-      },
-    }
     return {
-      root: base,
-      importKoboForm: `${base}/import-kobo`,
-      settings,
-      database,
+      root: `/${wsId}`,
+      importKoboForm: `/${wsId}/import-kobo`,
+      settings: {
+        root: `/${wsId}/settings`,
+        users: `/${wsId}/settings/users`,
+        proxy: `/${wsId}/settings/proxy`,
+        group: `/${wsId}/settings/group`,
+        cache: `/${wsId}/settings/cache`,
+      },
+      database: {
+        root: `/${wsId}/database`,
+        list: `/${wsId}/database/list`,
+        custom: (id = ':id') => `/${wsId}/database/custom/${id}`,
+        form: (formId = ':formId') => {
+          return {
+            root: `/${wsId}/database/${formId}`,
+            answers: `/${wsId}/database/${formId}/data`,
+            access: `/${wsId}/database/${formId}/access`,
+            history: `/${wsId}/database/${formId}/history`,
+            answer: (answerId = ':answerId') => `/${wsId}/database/${formId}/data/${answerId}`,
+            group: (group = ':group', id?: string, index?: number) => {
+              const qs = (id?: string, index?: number) => (id ? '?' + objectToQueryString({id, index}) : '')
+              return `/${wsId}/database/${formId}/group/${group}${qs(id, index)}`
+            },
+          }
+        },
+      },
     }
   },
 }
 
-const path = (absolute: string, base?: string) => (base ? absolute.replace(base + '/', '') : absolute)
-const pathDatabase = (absolute: string) => path(absolute, router.ws().database.root)
-const pathForm = (absolute: string) => path(absolute, router.ws().database.form().root)
+const extractPath = (route: string) => route.slice(route.lastIndexOf('/') + 1)
 
 export const Router = () => {
-  const ctx = useDatabaseContext()
   return (
     <Routes>
       <Route path={router.root} element={<Workspaces />} />
@@ -77,7 +70,6 @@ export const Router = () => {
         element={
           <Provide
             providers={[
-              // _ => <WorkspaceProvider children={_} />,
               _ => <KoboSchemaProvider children={_} />,
               _ => <KoboAnswersProvider children={_} />,
               _ => <KoboUpdateProvider children={_} />,
@@ -85,32 +77,29 @@ export const Router = () => {
             ]}
           >
             <Layout header={<AppHeader />} sidebar={<AppSidebar />}>
-              <></>
+              <Outlet />
             </Layout>
           </Provide>
         }
       >
-        <Route path={router.ws().importKoboForm} element={<ImportKobo />} />
-        <Route path={router.ws().settings.root}>
-          <Route path={router.ws().settings.users} element={<AdminUsers />} />
-          <Route path={router.ws().settings.proxy} element={<AdminProxy />} />
-          <Route path={router.ws().settings.group} element={<AdminGroups />} />
-          <Route path={router.ws().settings.cache} element={<AdminCache />} />
+        <Route path={extractPath(router.ws().importKoboForm)} element={<ImportKobo />} />
+        <Route path={extractPath(router.ws().settings.root)}>
+          <Route path={extractPath(router.ws().settings.users)} element={<AdminUsers />} />
+          <Route path={extractPath(router.ws().settings.proxy)} element={<AdminProxy />} />
+          <Route path={extractPath(router.ws().settings.group)} element={<AdminGroups />} />
+          <Route path={extractPath(router.ws().settings.cache)} element={<AdminCache />} />
         </Route>
-        <Route path={router.ws().database.root}>
-          <Route
-            path={pathDatabase(router.ws().database.list)}
-            element={<DatabaseList forms={ctx.formsAccessible} />}
-          />
-          <Route path={pathDatabase(router.ws().database.custom())} element={<DatabaseTableCustomRoute />} />
-          <Route path={pathDatabase(router.ws().database.form().root)} element={<Database />}>
-            <Route path={pathForm(router.ws().database.form().answer())} element={<DatabaseKoboAnswerViewPage />} />
-            <Route path={pathForm(router.ws().database.form().access)} element={<DatabaseAccessRoute />} />
-            <Route path={pathForm(router.ws().database.form().history)} element={<DatabaseHistory />} />
-            <Route path={pathForm(router.ws().database.form().group())} element={<DatabaseKoboRepeatRoute />} />
-            <Route index element={<Navigate to={pathForm(router.ws().database.form().answers)} />} />
+        <Route path={extractPath(router.ws().database.root)}>
+          <Route index path={extractPath(router.ws().database.list)} element={<DatabaseList />} />
+          <Route path={extractPath(router.ws().database.custom())} element={<DatabaseTableCustomRoute />} />
+          <Route path={extractPath(router.ws().database.form().root)} element={<Database />}>
+            <Route path={extractPath(router.ws().database.form().answer())} element={<DatabaseKoboAnswerViewPage />} />
+            <Route path={extractPath(router.ws().database.form().access)} element={<DatabaseAccessRoute />} />
+            <Route path={extractPath(router.ws().database.form().history)} element={<DatabaseHistory />} />
+            <Route path={extractPath(router.ws().database.form().group())} element={<DatabaseKoboRepeatRoute />} />
+            <Route index element={<Navigate to={extractPath(router.ws().database.form().answers)} />} />
             {/*Persisted components across routes. */}
-            <Route path={pathForm(router.ws().database.form().answers)} element={<></>} />
+            <Route path={extractPath(router.ws().database.form().answers)} element={<></>} />
           </Route>
         </Route>
       </Route>
