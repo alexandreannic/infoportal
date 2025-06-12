@@ -6,6 +6,7 @@ import {produce} from 'immer'
 import {UseAsyncSimple} from '@axanc/react-hooks'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {router} from '@/Router'
+import {useAppSettings} from './ConfigContext'
 
 export interface WorkspaceContext {
   asyncCreate: UseAsyncSimple<ApiSdk['workspace']['create']>
@@ -17,30 +18,22 @@ export const _WorkspaceContext = React.createContext({} as WorkspaceContext)
 
 export const useWorkspace = () => useContext(_WorkspaceContext)
 
-export const useMaybeWorkspaceRouter = () => {
+export const useWorkspaceRouter = () => {
   const navigate = useNavigate()
   const location = useLocation()
   return useMemo(() => {
+    const workspaceId = location.pathname.match(/^\/([^/]+)/)?.[1]
+    if (!workspaceId) throw new Error(`Missing workspaceId in URI '${location.pathname}'`)
     return {
+      router: router.ws(workspaceId),
       changeWorkspace: (wsId: string) => navigate(router.ws(wsId).root),
       workspaceId: location.pathname.match(/^\/([^/]+)/)?.[1],
     }
   }, [navigate, location])
 }
 
-export const useWorkspaceRouter = () => {
-  const maybe = useMaybeWorkspaceRouter()
-  return useMemo(() => {
-    if (!maybe.workspaceId) throw new Error(`Missing workspaceId in URI '${location.pathname}'`)
-    return {
-      workspaceId: maybe.workspaceId,
-      router: router.ws(maybe.workspaceId),
-      changeWorkspace: maybe.changeWorkspace,
-    }
-  }, [maybe])
-}
-
-export const WorkspaceProvider = ({api, children}: {api: ApiSdk; children: ReactNode}) => {
+export const WorkspaceProvider = ({children}: {children: ReactNode}) => {
+  const {api} = useAppSettings()
   const {setSession} = useSession()
   const asyncCreate = useAsync(async (...args: Parameters<typeof api.workspace.create>) => {
     const res = await api.workspace.create(...args)

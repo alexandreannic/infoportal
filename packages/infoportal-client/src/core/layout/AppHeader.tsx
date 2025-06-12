@@ -1,7 +1,7 @@
 import { router } from '@/Router'
 import { useSession } from '@/core/Session/SessionContext'
 import { useAppSettings } from '@/core/context/ConfigContext'
-import { useMaybeWorkspaceRouter } from '@/core/context/WorkspaceContext'
+import { useWorkspaceRouter } from '@/core/context/WorkspaceContext'
 import { useI18n } from '@/core/i18n'
 import { AppHeaderContainer } from '@/core/layout/AppHeaderContainer'
 import { AppHeaderMenu } from '@/core/layout/AppHeaderMenu'
@@ -26,7 +26,7 @@ const lightThemeIcons = {
 
 export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) => {
   const {sidebarOpen, showSidebarButton, setSidebarOpen, title} = useLayoutContext()
-  const {workspaceId, changeWorkspace} = useMaybeWorkspaceRouter()
+  const {workspaceId, changeWorkspace} = useWorkspaceRouter()
   const {m} = useI18n()
   const {session} = useSession()
   const t = useTheme()

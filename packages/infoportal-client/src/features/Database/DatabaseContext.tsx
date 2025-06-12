@@ -1,6 +1,6 @@
 import {useSession} from '@/core/Session/SessionContext'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useMaybeWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {Access} from '@/core/sdk/server/access/Access'
 import {KoboFormSdk} from '@/core/sdk/server/kobo/KoboFormSdk'
@@ -27,7 +27,7 @@ export const Context = React.createContext({} as DatabaseContext)
 export const useDatabaseContext = () => useContext(Context)
 
 export const DatabaseProvider = ({children}: {children: ReactNode}) => {
-  const {workspaceId} = useMaybeWorkspaceRouter()
+  const {workspaceId} = useWorkspaceRouter()
   const {session} = useSession()
   const {api} = useAppSettings()
   const _forms = useFetcher(

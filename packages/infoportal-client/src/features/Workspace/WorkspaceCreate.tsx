@@ -38,6 +38,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
     name: form.watch('name'),
     slug: form.watch('slug'),
   }
+
   useEffect(() => {
     if (watch.name === '') {
       form.setValue('slug', '')
@@ -55,7 +56,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
   }, [watch.name])
 
   useEffect(() => {
-    if (disableSlug) return
+    if (disableSlug || watch.slug === '') return
     fetchCheckSlug.fetch({force: true, clean: true}, watch.slug).then(res => {
       if (res.isFree) form.clearErrors('slug')
       else

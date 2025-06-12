@@ -17,14 +17,14 @@ model Workspace {
   name            String
   slug            String            @unique
   sector          String?
-  KoboServer      KoboServer[]
-  KoboForm        KoboForm[]
-  Groups          Group[]
-  AccessTokens    AccessToken[]
-  Proxys          Proxy[]
-  EmailOutBoxs    EmailOutBox[]
-  FeatureAccesses FeatureAccess[]
-  WorkspaceAccess WorkspaceAccess[]
+  koboServer      KoboServer[]
+  koboForm        KoboForm[]
+  groups          Group[]
+  accessTokens    AccessToken[]
+  proxys          Proxy[]
+  emailOutBoxs    EmailOutBox[]
+  featureAccesses FeatureAccess[]
+  workspaceAccess WorkspaceAccess[]
 
   @@index([slug])
 }
@@ -51,7 +51,7 @@ model KoboServer {
   url         String
   urlV1       String?
   token       String
-  KoboForm    KoboForm[]
+  koboForm    KoboForm[]
   workspace   Workspace? @relation(fields: [workspaceId], references: [id])
   workspaceId String?
 }
@@ -74,8 +74,8 @@ model KoboForm {
   uploadedBy         String?
   enketoUrl          String?
   submissionsCount   Int?
-  KoboAnswers        KoboAnswers[]
-  KoboAnswersHistory KoboAnswersHistory[]
+  koboAnswers        KoboAnswers[]
+  koboAnswersHistory KoboAnswersHistory[]
   workspaces         Workspace[]
 }
 
@@ -138,7 +138,7 @@ model User {
   admin           Boolean           @default(false)
   officer         String?
   activities      UserActivity[]
-  WorkspaceAccess WorkspaceAccess[]
+  workspaceAccess WorkspaceAccess[]
 
   @@index([email])
 }

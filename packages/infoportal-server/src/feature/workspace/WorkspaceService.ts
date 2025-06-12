@@ -68,7 +68,7 @@ export class WorkspaceService {
       data: {
         ...data,
         createdBy: user.email,
-        WorkspaceAccess: {
+        workspaceAccess: {
           create: {
             createdBy: user.email,
             level: 'Admin',

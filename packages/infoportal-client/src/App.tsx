@@ -1,30 +1,23 @@
-import React, {useEffect, useMemo} from 'react'
-import {Provide} from '@/shared/Provide'
-import {Box, CssBaseline, Icon, ThemeProvider} from '@mui/material'
-import {I18nProvider, useI18n} from '@/core/i18n'
-import {CenteredContent, Txt} from '@/shared'
-import {ApiSdk} from '@/core/sdk/server/ApiSdk'
-import {ApiClient} from '@/core/sdk/server/ApiClient'
-import {AppSettingsProvider, useAppSettings} from '@/core/context/ConfigContext'
 import {appConfig} from '@/conf/AppConfig'
-import {MsalProvider} from '@azure/msal-react'
+import {AppSettingsProvider, useAppSettings} from '@/core/context/ConfigContext'
+import {WorkspaceProvider} from '@/core/context/WorkspaceContext'
+import {I18nProvider, useI18n} from '@/core/i18n'
 import {getMsalInstance} from '@/core/msal'
+import {ApiClient} from '@/core/sdk/server/ApiClient'
+import {ApiSdk} from '@/core/sdk/server/ApiSdk'
+import {ProtectRoute, SessionProvider} from '@/core/Session/SessionContext'
+import {Router} from '@/Router'
+import {CenteredContent, Txt} from '@/shared'
 import {DRCLogo} from '@/shared/logo/logo'
+import {Provide} from '@/shared/Provide'
+import {ToastProvider} from '@/shared/Toast'
+import {MsalProvider} from '@azure/msal-react'
+import {Box, CssBaseline, Icon, ThemeProvider} from '@mui/material'
 import {LocalizationProvider} from '@mui/x-date-pickers-pro'
 import {AdapterDateFns} from '@mui/x-date-pickers-pro/AdapterDateFnsV3'
-import {KoboSchemaProvider} from '@/features/KoboSchema/KoboSchemaContext'
-import {KoboUpdateProvider} from '@/core/context/KoboUpdateContext'
-import {KoboAnswersProvider} from '@/core/context/KoboAnswersContext'
-import {HashRouter, useLocation} from 'react-router-dom'
-import {ProtectRoute, SessionProvider} from '@/core/Session/SessionContext'
-import {ToastProvider} from '@/shared/Toast'
 import {DialogsProvider} from '@toolpad/core'
-import {DatabaseProvider} from '@/features/Database/DatabaseContext'
-import {router, Router} from '@/Router'
-import {Layout} from '@/shared/Layout'
-import {AppHeader} from '@/core/layout/AppHeader'
-import {AppSidebar} from '@/core/layout/AppSidebar'
-import {WorkspaceProvider} from '@/core/context/WorkspaceContext'
+import {useEffect, useMemo} from 'react'
+import {HashRouter, useLocation} from 'react-router-dom'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -63,10 +56,10 @@ const AppWithConfig = () => {
         _ => <HashRouter children={_} />,
         _ => <DialogsProvider children={_} />,
         _ => <SessionProvider children={_} />,
-        _ => <KoboSchemaProvider children={_} />,
-        _ => <KoboAnswersProvider children={_} />,
-        _ => <KoboUpdateProvider children={_} />,
-        _ => <WorkspaceProvider api={api} children={_} />,
+        // _ => <KoboSchemaProvider children={_} />,
+        // _ => <KoboAnswersProvider children={_} />,
+        // _ => <KoboUpdateProvider children={_} />,
+        _ => <WorkspaceProvider children={_} />,
       ]}
     >
       <AppWithBaseContext />
@@ -110,11 +103,7 @@ const AppWithBaseContext = () => {
   }
   return (
     <ProtectRoute>
-      <DatabaseProvider>
-        <Layout header={<AppHeader />} sidebar={location.pathname !== router.root ? <AppSidebar /> : <></>}>
-          <Router />
-        </Layout>
-      </DatabaseProvider>
+      <Router />
     </ProtectRoute>
   )
 }

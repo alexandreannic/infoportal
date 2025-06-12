@@ -134,7 +134,7 @@ export class SessionService {
       this.log.info(`Create account ${email}.`)
       return this.prisma.user.create({
         data: {
-          email,
+          email: email.trim().toLowerCase(),
           name,
           accessToken,
           drcJob: drcJob,
@@ -173,6 +173,7 @@ export class SessionService {
       this.access.searchForUser({user}),
       this.workspace.getByUser(user.email),
     ])
+    console.log('workspaces', user.email, workspaces)
     return {
       groups,
       accesses,
