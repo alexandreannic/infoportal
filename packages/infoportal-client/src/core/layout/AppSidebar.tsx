@@ -59,31 +59,10 @@ export const AppSidebar = () => {
 
   return (
     <Sidebar headerId="app-header">
-      <NavLink to={router.settings.users}>
+      <NavLink to={router.settings.root}>
         {({isActive}) => (
-          <SidebarItem icon="group" active={isActive}>
-            {m.users}
-          </SidebarItem>
-        )}
-      </NavLink>
-      <NavLink to={router.settings.group}>
-        {({isActive}) => (
-          <SidebarItem icon="groups" active={isActive}>
-            {m.group}
-          </SidebarItem>
-        )}
-      </NavLink>
-      <NavLink to={router.settings.proxy}>
-        {({isActive}) => (
-          <SidebarItem icon="settings_input_antenna" active={isActive}>
-            {m.proxy}
-          </SidebarItem>
-        )}
-      </NavLink>
-      <NavLink to={router.settings.cache}>
-        {({isActive}) => (
-          <SidebarItem icon="memory" active={isActive}>
-            {m.serverCache}
+          <SidebarItem icon="settings" active={isActive}>
+            {m.settings}
           </SidebarItem>
         )}
       </NavLink>

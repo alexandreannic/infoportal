@@ -110,6 +110,7 @@ export const en = Object.freeze({
     Pending: 'Pending',
     history: 'History',
     recap: 'Recap',
+    settings: 'Settings',
     onboardingTitle: "Let's start with a name for your workspace",
     enterProjectName: 'Enter your workspace name',
     workspaceId: 'Workspace ID',
