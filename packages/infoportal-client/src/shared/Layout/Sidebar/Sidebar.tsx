@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {useState, useEffect} from 'react'
-import {Box, BoxProps, SwipeableDrawer, Switch} from '@mui/material'
+import {Box, BoxProps, Slide, SwipeableDrawer, Switch} from '@mui/material'
 import {useLayoutContext} from '../LayoutContext'
 import {layoutConfig} from '../index'
 import {SidebarFooter} from './SidebarFooter'
@@ -97,41 +97,47 @@ export const Sidebar = ({
       onClose={() => setSidebarOpen(false)}
       variant={isTemporary ? 'temporary' : 'persistent'}
     >
-      <Box
-        sx={{
-          background: isTemporary ? t => t.palette.background.default : undefined,
-          width: layoutConfig.sidebarWith,
-          height: '100%',
-          transition: t => t.transitions.create('width'),
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          borderRadius: 0,
-          ...sx,
-        }}
-        {...props}
-      >
-        <SidebarHeader hidden={!isTemporary} />
-        <SidebarBody>{children}</SidebarBody>
-        <SidebarFooter>
-          {showThemeToggle && (
-            <SidebarItem
-              onClick={stopPropagation(() => app.theme.setBrightness(_ => (_ === 'dark' ? 'light' : 'dark')))}
-              icon="dark_mode"
-              sx={{mr: 0, pr: 0}}
-            >
-              {m.theme}
-              <Switch color="primary" sx={{ml: 'auto'}} checked={app.theme.brightness === 'dark'} />
-            </SidebarItem>
-          )}
-          {!isMobileWidth && (
-            <SidebarItem onClick={stopPropagation(() => setSidebarPinned(_ => !_))} icon="push_pin" sx={{mr: 0, pr: 0}}>
-              {m.pin}
-              <Switch color="primary" sx={{ml: 'auto'}} checked={sidebarPinned} />
-            </SidebarItem>
-          )}
-        </SidebarFooter>
-      </Box>
+      <Slide direction="right" in={true}>
+        <Box
+          sx={{
+            background: isTemporary ? t => t.palette.background.default : undefined,
+            width: layoutConfig.sidebarWith,
+            height: '100%',
+            transition: t => t.transitions.create('width'),
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            borderRadius: 0,
+            ...sx,
+          }}
+          {...props}
+        >
+          <SidebarHeader hidden={!isTemporary} />
+          <SidebarBody>{children}</SidebarBody>
+          <SidebarFooter>
+            {showThemeToggle && (
+              <SidebarItem
+                onClick={stopPropagation(() => app.theme.setBrightness(_ => (_ === 'dark' ? 'light' : 'dark')))}
+                icon="dark_mode"
+                sx={{mr: 0, pr: 0}}
+              >
+                {m.theme}
+                <Switch color="primary" sx={{ml: 'auto'}} checked={app.theme.brightness === 'dark'} />
+              </SidebarItem>
+            )}
+            {!isMobileWidth && (
+              <SidebarItem
+                onClick={stopPropagation(() => setSidebarPinned(_ => !_))}
+                icon="push_pin"
+                sx={{mr: 0, pr: 0}}
+              >
+                {m.pin}
+                <Switch color="primary" sx={{ml: 'auto'}} checked={sidebarPinned} />
+              </SidebarItem>
+            )}
+          </SidebarFooter>
+        </Box>
+      </Slide>
     </SwipeableDrawer>
   )
 }

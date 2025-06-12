@@ -1,5 +1,5 @@
 import {alpha, Box, BoxProps, GlobalStyles, useTheme} from '@mui/material'
-import React, {useEffect, useState} from 'react'
+import React, {forwardRef, useEffect, useState} from 'react'
 import {layoutConfig} from '@/shared/Layout'
 import {map} from '@axanc/ts-utils'
 
@@ -19,7 +19,7 @@ const redesignHeaderOnTop = (headerId: string) => {
   }
 }
 
-export const AppHeaderContainer = ({children, sx, ...props}: BoxProps) => {
+export const AppHeaderContainer = forwardRef(({children, sx, ...props}: BoxProps, ref) => {
   const t = useTheme()
   const [hydrated, setHydrated] = useState(false)
 
@@ -46,6 +46,7 @@ export const AppHeaderContainer = ({children, sx, ...props}: BoxProps) => {
       />
 
       <Box
+        ref={ref}
         {...props}
         className={hydrated ? undefined : headerStickyClass} // Prevents hydration mismatch
         sx={{
@@ -70,4 +71,4 @@ export const AppHeaderContainer = ({children, sx, ...props}: BoxProps) => {
       {/*</Slide>*/}
     </>
   )
-}
+})
