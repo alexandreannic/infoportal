@@ -275,12 +275,6 @@ export const muiTheme = ({
           },
         },
       },
-      MuiTab: {
-        defaultProps: {
-          disableTouchRipple: true,
-          disableRipple: true,
-        },
-      },
       MuiTabs: {
         styleOverrides: {
           indicator: {
@@ -289,7 +283,7 @@ export const muiTheme = ({
             bottom: 2,
             height: 'auto',
             background: alpha(baseTheme.palette.primary.main, 0.18),
-            borderRadius: baseTheme.shape.borderRadius + 'px',
+            borderRadius: baseTheme.shape.borderRadius - 2 + 'px',
           },
           root: {
             background: baseTheme.palette.background.paper,
@@ -300,6 +294,9 @@ export const muiTheme = ({
         },
       },
       MuiTab: {
+        defaultProps: {
+          disableRipple: true,
+        },
         styleOverrides: {
           root: {
             textTransform: 'none',

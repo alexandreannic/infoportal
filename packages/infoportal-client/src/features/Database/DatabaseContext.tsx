@@ -1,18 +1,17 @@
-import {useSession} from '@/core/Session/SessionContext'
-import {useAppSettings} from '@/core/context/ConfigContext'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
-import {ApiSdk} from '@/core/sdk/server/ApiSdk'
-import {Access} from '@/core/sdk/server/access/Access'
-import {KoboFormSdk} from '@/core/sdk/server/kobo/KoboFormSdk'
-import {KoboForm} from '@/core/sdk/server/kobo/KoboMapper'
-import {useIpToast} from '@/core/useToast'
-import {AppFeatureId} from '@/features/appFeatureId'
-import {useFetcher, UseFetcher} from '@/shared/hook/useFetcher'
-import {useEffectFn} from '@axanc/react-hooks'
-import {seq} from '@axanc/ts-utils'
-import {UUID} from 'infoportal-common'
-import {Kobo} from 'kobo-sdk'
-import React, {ReactNode, useContext, useEffect, useMemo} from 'react'
+import { useSession } from '@/core/Session/SessionContext'
+import { useAppSettings } from '@/core/context/ConfigContext'
+import { useWorkspaceRouter } from '@/core/context/WorkspaceContext'
+import { ApiSdk } from '@/core/sdk/server/ApiSdk'
+import { Access } from '@/core/sdk/server/access/Access'
+import { KoboForm } from '@/core/sdk/server/kobo/KoboMapper'
+import { useIpToast } from '@/core/useToast'
+import { AppFeatureId } from '@/features/appFeatureId'
+import { useFetcher, UseFetcher } from '@/shared/hook/useFetcher'
+import { useEffectFn } from '@axanc/react-hooks'
+import { seq } from '@axanc/ts-utils'
+import { UUID } from 'infoportal-common'
+import { Kobo } from 'kobo-sdk'
+import React, { ReactNode, useContext, useEffect, useMemo } from 'react'
 
 export interface DatabaseContext {
   _forms: UseFetcher<(_: string) => ReturnType<ApiSdk['kobo']['form']['getAll']>>
@@ -32,9 +31,7 @@ export const DatabaseProvider = ({children}: {children: ReactNode}) => {
   const {api} = useAppSettings()
   const _forms = useFetcher(
     (workspaceId: UUID) =>
-      api.kobo.form
-        .getAll({workspaceId})
-        .then(_ => seq(_).sortByString(_ => KoboFormSdk.parseFormName(_.name).program ?? '')) as Promise<KoboForm[]>,
+      api.kobo.form.getAll({workspaceId}).then(_ => seq(_).sortByString(_ => _.name)) as Promise<KoboForm[]>,
   )
   const {toastHttpError} = useIpToast()
 

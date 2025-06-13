@@ -1,22 +1,42 @@
-import {NavLink} from 'react-router-dom'
-import {Sidebar, SidebarItem} from '@/shared/Layout/Sidebar'
-import {Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
-import {Fender, Txt} from '@/shared'
-import {Obj, seq, Seq} from '@axanc/ts-utils'
-import {SidebarSection} from '@/shared/Layout/Sidebar/SidebarSection'
-import React, {useMemo} from 'react'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 import {useI18n} from '@/core/i18n'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
-import {KoboFormSdk, KoboParsedFormName} from '@/core/sdk/server/kobo/KoboFormSdk'
-import {customForms} from '@/features/Database/KoboTableCustom/DatabaseKoboTableCustom'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {Fender, Txt} from '@/shared'
+import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
+import {Box, BoxProps, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
+import {useMemo, useState} from 'react'
+import {NavLink} from 'react-router-dom'
+import {styleUtils} from '../theme'
+import {Controller, useForm} from 'react-hook-form'
+import Fuse from 'fuse.js'
 
 type Form = {
   id: string
-  custom?: boolean
+  // custom?: boolean
   url: string
-  parsedName: KoboParsedFormName
+  name: string
   archived?: boolean
+}
+
+const SearchInput = ({sx, ...props}: React.InputHTMLAttributes<HTMLInputElement> & Pick<BoxProps, 'sx'>) => {
+  const t = useTheme()
+  return (
+    <Box
+      display="flex"
+      alignItems="center"
+      sx={{
+        m: 1,
+        mb: 0.5,
+        borderRadius: t.shape.borderRadius + 'px',
+        background: styleUtils(t).color.toolbar,
+        pl: 1,
+        ...sx,
+      }}
+    >
+      <Icon color="disabled">search</Icon>
+      <Box component="input" {...props} sx={{ml: 1, height: 36, border: 'none', background: 'none', width: '100%'}} />
+    </Box>
+  )
 }
 
 export const AppSidebar = () => {
@@ -24,38 +44,46 @@ export const AppSidebar = () => {
   const {m} = useI18n()
   const t = useTheme()
   const {router} = useWorkspaceRouter()
+  const searchForm = useForm<{name: string}>()
+  const values = searchForm.watch()
 
-  const parsedFormNames: Record<string, Seq<Form>> = useMemo(() => {
-    const mapped: Record<string, Form[]> = {
-      forms:
-        ctx.formsAccessible?.map(_ => ({
-          ..._,
-          id: _.id,
-          url: router.database.form(_.id).root,
-          archived: _.deploymentStatus === 'archived',
-          parsedName: KoboFormSdk.parseFormName(_.name),
-        })) ?? [],
-      custom: customForms
-        .filter(c => ctx.formsAccessible?.some(_ => _.id === c.forms[0]?.id))
-        .map(_ => ({
-          url: router.database.custom(_.id),
-          id: _.id,
-          custom: true,
-          archived: _.forms.every(fa => {
-            const form = ctx.formsAccessible?.find(fa => fa.id === _.id)
-            return !form || form.deploymentStatus === 'archived'
-          }),
-          parsedName: KoboFormSdk.parseFormName(_.name),
-        })),
-    }
-    const grouped = seq([...mapped.forms, ...mapped.custom]).groupBy(
-      _ => _.parsedName.program?.toUpperCase() ?? m.others,
+  const forms = useMemo(() => {
+    return (
+      ctx.formsAccessible?.map(_ => ({
+        ..._,
+        id: _.id,
+        url: router.database.form(_.id).root,
+        archived: _.deploymentStatus === 'archived',
+        name: _.name,
+      })) ?? []
     )
-    return new Obj(grouped)
-      .map((k, v) => [k, v.sort((a, b) => a.parsedName.name.localeCompare(b.parsedName.name))])
-      .sort(([ak], [bk]) => ak.localeCompare(bk))
-      .get()
+    // custom: customForms
+    //   .filter(c => ctx.formsAccessible?.some(_ => _.id === c.forms[0]?.id))
+    //   .map(_ => ({
+    //     url: router.database.custom(_.id),
+    //     id: _.id,
+    //     custom: true,
+    //     archived: _.forms.every(fa => {
+    //       const form = ctx.formsAccessible?.find(fa => fa.id === _.id)
+    //       return !form || form.deploymentStatus === 'archived'
+    //     }),
+    //     parsedName: KoboFormSdk.parseFormName(_.name),
+    //   })),
   }, [ctx.formsAccessible])
+
+  const fuse = useMemo(() => {
+    return new Fuse(forms, {
+      keys: ['name'],
+      includeScore: true,
+      isCaseSensitive: false,
+      threshold: 0.4,
+    })
+  }, [forms])
+
+  const filteredForms = useMemo(() => {
+    if (!values.name || values.name === '') return forms
+    return fuse.search(values.name).map(res => res.item)
+  }, [values])
 
   return (
     <Sidebar headerId="app-header">
@@ -76,6 +104,7 @@ export const AppSidebar = () => {
       <NavLink to={router.database.list}>
         {({isActive, isPending}) => <SidebarItem icon="home">{m.forms}</SidebarItem>}
       </NavLink>
+      <SidebarHr />
       {ctx._forms.loading ? (
         <>
           <SidebarItem size="tiny">
@@ -99,51 +128,52 @@ export const AppSidebar = () => {
           sx={{mt: 2, color: t.palette.text.disabled}}
         />
       ) : (
-        Obj.entries(parsedFormNames)?.map(([category, forms]) => (
-          <SidebarSection dense title={category} key={category}>
-            {forms.map((_: Form) => (
-              <Tooltip key={_.id} title={_.parsedName.name} placement="right-end">
-                <NavLink to={_.url}>
-                  {({isActive, isPending}) => (
-                    <SidebarItem
-                      size={forms.length > 30 ? 'tiny' : 'small'}
-                      sx={{height: 26}}
-                      onClick={() => undefined}
-                      key={_.id}
-                      active={isActive}
-                      iconEnd={
-                        <>
-                          {_.custom && (
-                            <Icon
-                              fontSize="small"
-                              sx={{marginLeft: '4px', marginRight: '-4px', verticalAlign: 'middle'}}
-                            >
-                              device_hub
-                            </Icon>
-                          )}
-                          {_.archived && (
-                            <Icon
-                              fontSize="small"
-                              color="disabled"
-                              sx={{marginLeft: '4px', marginRight: '-4px', verticalAlign: 'middle'}}
-                            >
-                              archive
-                            </Icon>
-                          )}
-                        </>
-                      }
-                    >
-                      <Txt sx={{color: _.archived ? t.palette.text.disabled : undefined}}>
-                        {_.parsedName.name}
-                        {_.custom && <span style={{fontWeight: 300}}> ({m._koboDatabase.mergedDb})</span>}
-                      </Txt>
-                    </SidebarItem>
-                  )}
-                </NavLink>
-              </Tooltip>
-            ))}
-          </SidebarSection>
-        ))
+        <>
+          <Controller
+            name="name"
+            control={searchForm.control}
+            render={({field}) => <SearchInput placeholder={m.searchInForms(forms.length) + '...'} {...field} />}
+          />
+
+          {filteredForms.map((_: Form) => (
+            <Tooltip key={_.id} title={_.name} placement="right-end">
+              <NavLink to={_.url}>
+                {({isActive, isPending}) => (
+                  <SidebarItem
+                    size={'tiny'}
+                    sx={{height: 26}}
+                    onClick={() => undefined}
+                    key={_.id}
+                    active={isActive}
+                    iconEnd={
+                      <>
+                        {/* {_.custom && (
+                          <Icon fontSize="small" sx={{marginLeft: '4px', marginRight: '-4px', verticalAlign: 'middle'}}>
+                            device_hub
+                          </Icon>
+                        )} */}
+                        {_.archived && (
+                          <Icon
+                            fontSize="small"
+                            color="disabled"
+                            sx={{marginLeft: '4px', marginRight: '-4px', verticalAlign: 'middle'}}
+                          >
+                            archive
+                          </Icon>
+                        )}
+                      </>
+                    }
+                  >
+                    <Txt sx={{color: _.archived ? t.palette.text.disabled : undefined}}>
+                      {_.name}
+                      {/* {_.custom && <span style={{fontWeight: 300}}> ({m._koboDatabase.mergedDb})</span>} */}
+                    </Txt>
+                  </SidebarItem>
+                )}
+              </NavLink>
+            </Tooltip>
+          ))}
+        </>
       )}
     </Sidebar>
   )

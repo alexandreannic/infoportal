@@ -29,7 +29,7 @@ export const DatabaseViewInput = ({sx, view: ctx}: {view: UseDatabaseView; sx?: 
         <Box sx={{p: 1, minWidth: 200, width: 380}}>
           <PanelTitle sx={{mb: 0.5}}>{m._datatable.view}</PanelTitle>
           <IpAlert color="info" icon={<Icon>help</Icon>} sx={{mb: 1}} deletable="permanent" id="db-view-info">
-            <b>Views</b> save your column visibility and column width settings and can be shared with other users
+            <b>Views</b> save your column visibility and width. They can be shared with other users.
           </IpAlert>
           {ctx.fetcherViews.get?.map(view => (
             <DatabaseViewInputRow

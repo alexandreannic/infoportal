@@ -43,6 +43,7 @@
     "dotenv": "^16.3.1",
     "eslint": "8.56.0",
     "exceljs": "^4.4.0",
+    "fuse.js": "^7.1.0",
     "html2canvas": "^1.4.1",
     "immer": "^10.1.1",
     "infoportal-common": "1.0.0",

@@ -41,7 +41,7 @@ export const SidebarItem = ({
     <ButtonBase
       disableRipple={!props.onClick && !props.href}
       sx={{
-        width: `calc(100% - ${t.spacing(2)})`,
+        width: `calc(100% - ${t.spacing(1)})`,
         transition: t => t.transitions.create('all'),
         display: 'flex',
         alignItems: 'center',
@@ -63,7 +63,7 @@ export const SidebarItem = ({
         color: t => t.palette.text.secondary,
         pr: 1,
         pl: 1.5,
-        mx: 1,
+        mx: .5,
         my:
           1 /
           fnSwitch(
