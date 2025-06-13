@@ -12,7 +12,7 @@ export class ControllerUser {
   ) {}
 
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
-    const data = await this.service.getAll()
+    const data = await this.service.getAll({workspaceId: req.params.workspaceId})
     res.send(data)
   }
 

@@ -35,7 +35,6 @@ export class ControllerKoboForm {
 
   readonly getAll = async (req: Request, res: Response, next: NextFunction) => {
     const data = await this.service.getAll({wsId: req.params.workspaceId})
-    console.log('getAll', data)
     res.send(data)
   }
 

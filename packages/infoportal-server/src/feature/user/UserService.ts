@@ -1,5 +1,6 @@
-import {Prisma, PrismaClient} from '@prisma/client'
-import {app, AppCacheKey, AppLogger} from '../../index.js'
+import {PrismaClient} from '@prisma/client'
+import {UUID} from 'infoportal-common'
+import {app, AppLogger} from '../../index.js'
 
 export class UserService {
   private static instance: UserService
@@ -21,47 +22,34 @@ export class UserService {
     return UserService.instance
   }
 
-  private async loadUsersCache(): Promise<Prisma.UserCreateInput[]> {
-    if (!this.cache.get(AppCacheKey.Users)) {
-      this.log.info('Load users from database')
-      const request = this.prisma.user.findMany({
-        orderBy: {lastConnectedAt: 'desc'},
-        select: {
-          id: true,
-          accessToken: true,
-          activities: false,
-          admin: true,
-          avatar: false,
-          createdBy: true,
-          createdAt: true,
-          drcOffice: true,
-          drcJob: true,
-          email: true,
-          lastConnectedAt: true,
-          name: true,
-          officer: true,
+  readonly getAll = async ({workspaceId}: {workspaceId: UUID}) => {
+    return this.prisma.user.findMany({
+      where: {
+        workspaceAccess: {
+          some: {workspaceId},
         },
-      })
-      this.cache.set({key: AppCacheKey.Users, value: request})
-      return request
-    }
-    return this.cache.get(AppCacheKey.Users) as any
-  }
-
-  readonly getAll = async () => {
-    return this.loadUsersCache()
+      },
+      orderBy: {lastConnectedAt: 'desc'},
+      select: {
+        id: true,
+        accessToken: true,
+        activities: false,
+        admin: true,
+        avatar: false,
+        createdBy: true,
+        createdAt: true,
+        drcOffice: true,
+        drcJob: true,
+        email: true,
+        lastConnectedAt: true,
+        name: true,
+        officer: true,
+      },
+    })
   }
 
   readonly getUserByEmail = async (email: string) => {
-    const cache = await this.loadUsersCache()
-    let user = cache.find(user => user.email === email)
-    if (!user) {
-      user = await this.prisma.user.findUnique({where: {email}}).then(_ => _ ?? undefined)
-      if (user) {
-        cache.push(user!)
-      }
-    }
-    return user
+    return this.prisma.user.findUnique({where: {email}}).then(_ => _ ?? undefined)
   }
 
   readonly getUserAvatarByEmail = async (email: string): Promise<Buffer | undefined> => {
@@ -72,10 +60,6 @@ export class UserService {
     const updatedUser = await this.prisma.user.update({
       where: {email},
       data: {drcOffice},
-    })
-    this.cache.set({
-      key: AppCacheKey.Users,
-      value: this.loadUsersCache().then(_ => _.map(_ => (_.email === email ? updatedUser : _))),
     })
     return updatedUser
   }

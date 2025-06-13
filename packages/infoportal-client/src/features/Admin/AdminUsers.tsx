@@ -13,20 +13,20 @@ import {useFetcher} from '@/shared/hook/useFetcher'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {useNavigate} from 'react-router-dom'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 
 export const AdminUsers = () => {
   const {api, conf} = useAppSettings()
+  const {workspaceId} = useWorkspaceRouter()
   const {session, setSession} = useSession()
   const _connectAs = useFetcher(api.session.connectAs)
   const _users = useFetcher(api.user.search)
   const {m, formatDate, formatDateTime} = useI18n()
   const navigate = useNavigate()
 
-  const [showDummyAccounts, setShowDummyAccounts] = useState(false)
-
   useEffect(() => {
-    _users.fetch({clean: false}, {includeDummy: showDummyAccounts})
-  }, [showDummyAccounts])
+    _users.fetch({clean: false}, {workspaceId})
+  }, [workspaceId])
 
   const connectAs = async (email: string) => {
     const session = await _connectAs.fetch({force: true, clean: true}, email)
@@ -43,14 +43,6 @@ export const AdminUsers = () => {
           loading={_users.loading}
           id="users"
           showExportBtn
-          header={
-            <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
-              <Txt sx={{fontSize: '1rem'}} color="hint">
-                {m.showDummyAccounts}
-              </Txt>
-              <Switch value={showDummyAccounts} onChange={e => setShowDummyAccounts(e.target.checked)} />
-            </Box>
-          }
           defaultLimit={100}
           data={filteredData}
           columns={[
