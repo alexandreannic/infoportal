@@ -42,8 +42,9 @@ export class ControllerSession extends Controller {
       })
       .validate(req.body)
     const connectedUser = await this.service.login(user)
+    const session = await this.service.get(connectedUser)
     req.session.app = {user: connectedUser}
-    res.send(req.session.app)
+    res.send(session)
   }
 
   readonly revertConnectAs = async (req: Request, res: Response, next: NextFunction) => {

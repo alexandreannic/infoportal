@@ -21,6 +21,7 @@ import {ControllerDatabaseView} from './controller/ControllerDatabaseView.js'
 import {ControllerKoboApiXlsImport} from './controller/kobo/ControllerKoboApiXlsImport.js'
 import {ControllerWorkspace} from './controller/ControllerWorkspace.js'
 import {AuthRequest} from '../typings'
+import {ControllerWorkspaceAccess} from './controller/ControllerWorkspaceAccess.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -41,6 +42,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const router = express.Router()
   const main = new ControllerMain()
   const workspace = new ControllerWorkspace(prisma)
+  const workspaceAccess = new ControllerWorkspaceAccess(prisma)
   const koboForm = new ControllerKoboForm(prisma)
   const koboServer = new ControllerKoboServer(prisma)
   const koboAnswer = new ControllerKoboAnswer(prisma)
@@ -96,6 +98,8 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     router.post('/workspace/check-slug', auth(), errorCatcher(workspace.checkSlug))
     router.post('/workspace/:id', auth(), errorCatcher(workspace.update))
     router.delete('/workspace/:id', errorCatcher(workspace.remove))
+
+    router.put('/workspace-access', errorCatcher(workspaceAccess.create))
 
     router.get('/proxy/:slug', errorCatcher(proxy.redirect))
     router.put('/proxy', auth({adminOnly: true}), errorCatcher(proxy.create))

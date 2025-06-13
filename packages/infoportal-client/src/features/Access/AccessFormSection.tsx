@@ -1,6 +1,10 @@
 import {Box, Icon, useTheme} from '@mui/material'
-import {Txt} from '@/shared/Txt'
+import {Txt, TxtProps} from '@/shared/Txt'
 import React, {ReactNode} from 'react'
+
+export const Label = (props: TxtProps) => {
+  return <Txt block uppercase bold color="hint" fontSize="small" {...props} />
+}
 
 export const AccessFormSection = ({label, icon, children}: {icon?: string; children: ReactNode; label: string}) => {
   const t = useTheme()
@@ -23,9 +27,7 @@ export const AccessFormSection = ({label, icon, children}: {icon?: string; child
         >
           <Icon fontSize="small">{icon ?? 'check_circle'}</Icon>
         </Box>
-        <Txt block uppercase bold color="hint" fontSize="small">
-          {label}
-        </Txt>
+        <Label>{label}</Label>
       </Box>
       <Box
         sx={{

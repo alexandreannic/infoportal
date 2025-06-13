@@ -173,7 +173,6 @@ export class SessionService {
       this.access.searchForUser({user}),
       this.workspace.getByUser(user.email),
     ])
-    console.log('workspaces', user.email, workspaces)
     return {
       groups,
       accesses,

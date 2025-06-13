@@ -24,6 +24,7 @@ import {Layout} from './shared/Layout'
 import {AppSidebar} from './core/layout/AppSidebar'
 import {AppHeader} from './core/layout/AppHeader'
 import {Settings} from './features/Settings/Settings'
+import { FormCreator } from './features/FormCreator/FormCreator'
 
 export const router = {
   root: '/',
@@ -48,6 +49,7 @@ export const router = {
             answers: `/${wsId}/database/${formId}/data`,
             access: `/${wsId}/database/${formId}/access`,
             history: `/${wsId}/database/${formId}/history`,
+            formCreator: `/${wsId}/database/${formId}/form-creator`,
             answer: (answerId = ':answerId') => `/${wsId}/database/${formId}/data/${answerId}`,
             group: (group = ':group', id?: string, index?: number) => {
               const qs = (id?: string, index?: number) => (id ? '?' + objectToQueryString({id, index}) : '')
@@ -96,6 +98,7 @@ export const Router = () => {
           <Route path={path(router.ws().database.custom())} element={<DatabaseTableCustomRoute />} />
           <Route path={path(router.ws().database.form().root)} element={<Database />}>
             <Route path={path(router.ws().database.form().answer())} element={<DatabaseKoboAnswerViewPage />} />
+            <Route path={path(router.ws().database.form().formCreator)} element={<FormCreator />} />
             <Route path={path(router.ws().database.form().access)} element={<DatabaseAccessRoute />} />
             <Route path={path(router.ws().database.form().history)} element={<DatabaseHistory />} />
             <Route path={path(router.ws().database.form().group())} element={<DatabaseKoboRepeatRoute />} />

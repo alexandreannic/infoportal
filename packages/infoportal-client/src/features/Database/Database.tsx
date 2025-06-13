@@ -51,6 +51,15 @@ export const Database = () => {
           label={m.data}
         />
         <Tab
+          icon={<Icon>edit</Icon>}
+          iconPosition="start"
+          sx={{minHeight: 34, py: 1}}
+          component={NavLink}
+          value={router.database.form(formId).formCreator}
+          to={router.database.form(formId).formCreator}
+          label={m.data}
+        />
+        <Tab
           icon={<Icon>lock</Icon>}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}

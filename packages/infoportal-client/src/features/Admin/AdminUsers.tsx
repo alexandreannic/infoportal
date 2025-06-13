@@ -1,28 +1,35 @@
-import {Page} from '@/shared/Page'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import React, {useEffect, useState} from 'react'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 import {useI18n} from '@/core/i18n'
 import {useSession} from '@/core/Session/SessionContext'
+import {IpBtn, Modal} from '@/shared'
+import {AppAvatar} from '@/shared/AppAvatar'
+import {Datatable} from '@/shared/Datatable/Datatable'
+import {useFetcher} from '@/shared/hook/useFetcher'
 import {IpIconBtn} from '@/shared/IconBtn'
+import {Page} from '@/shared/Page'
 import {Panel} from '@/shared/Panel'
 import {TableIcon} from '@/shared/TableIcon'
 import {Txt} from '@/shared/Txt'
-import {Box, Switch} from '@mui/material'
 import {seq} from '@axanc/ts-utils'
-import {useFetcher} from '@/shared/hook/useFetcher'
-import {Datatable} from '@/shared/Datatable/Datatable'
-import {AppAvatar} from '@/shared/AppAvatar'
+import {useEffect, useMemo} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {AddUserForm} from './AddUserForm'
+import {useAsync} from '@/shared/hook/useAsync'
+import {useIpToast} from '@/core/useToast'
 
 export const AdminUsers = () => {
   const {api, conf} = useAppSettings()
   const {workspaceId} = useWorkspaceRouter()
+  const {toastHttpError} = useIpToast()
   const {session, setSession} = useSession()
   const _connectAs = useFetcher(api.session.connectAs)
   const _users = useFetcher(api.user.search)
   const {m, formatDate, formatDateTime} = useI18n()
   const navigate = useNavigate()
+  const asyncCreateAccess = useAsync(api.workspaceAccess.create)
+
+  useEffect(() => asyncCreateAccess.error && toastHttpError(asyncCreateAccess.error), [asyncCreateAccess.error])
 
   useEffect(() => {
     _users.fetch({clean: false}, {workspaceId})
@@ -36,6 +43,8 @@ export const AdminUsers = () => {
 
   const filteredData = _users.get
 
+  const emailsLists = useMemo(() => _users.get?.map(_ => _.email), [_users.get])
+
   return (
     <Page width="full">
       <Panel>
@@ -45,6 +54,28 @@ export const AdminUsers = () => {
           showExportBtn
           defaultLimit={100}
           data={filteredData}
+          header={
+            <Modal
+              onClose={null}
+              title={m.addUser}
+              content={close => (
+                <AddUserForm
+                  existingEmails={emailsLists}
+                  loading={asyncCreateAccess.loading}
+                  onClose={close}
+                  onSubmit={_ =>
+                    asyncCreateAccess
+                      .call({..._, workspaceId})
+                      .then(() => _users.fetch({force: true, clean: false}, {workspaceId}))
+                  }
+                />
+              )}
+            >
+              <IpBtn icon="person_add" variant="contained">
+                {m.addUser}
+              </IpBtn>
+            </Modal>
+          }
           columns={[
             {
               width: 0,

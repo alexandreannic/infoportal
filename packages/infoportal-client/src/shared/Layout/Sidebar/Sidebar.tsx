@@ -110,7 +110,7 @@ export const Sidebar = ({
           sx={{
             m: 1,
             borderRadius: t.shape.borderRadius + 'px',
-            boxShadow: t.shadows[2],
+            boxShadow: t.shadows[1],
             backdropFilter: 'blur(8px)',
             background: alpha(t.palette.background.paper, 0.8),
             // background: isTemporary ? t => t.palette.background.default : undefined,

@@ -293,6 +293,18 @@ export const muiTheme = ({
           },
         },
       },
+      MuiBackdrop: {
+        styleOverrides: {
+          invisible: {
+            background: 'none',
+            backdropFilter: 'none',
+          },
+          root: {
+            backdropFilter: 'blur(3px)',
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          },
+        },
+      },
       MuiTab: {
         defaultProps: {
           disableRipple: true,

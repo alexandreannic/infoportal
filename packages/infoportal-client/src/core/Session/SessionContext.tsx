@@ -15,7 +15,7 @@ import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {GoogleOAuthProvider} from '@react-oauth/google'
 import {appConfig} from '@/conf/AppConfig'
 import {WorkspaceCreate} from '@/features/Workspace/WorkspaceCreate'
-import {Page, PageTitle} from '@/shared'
+import {IpBtn, Page, PageTitle} from '@/shared'
 import {maxWidth} from '@mui/system'
 
 export interface SessionContext {
@@ -116,6 +116,10 @@ export const ProtectRoute = ({adminOnly, children}: {children: ReactNode; adminO
       <Page sx={{maxWidth: 400}}>
         <CenteredContent>
           <div>
+            {/* <Txt>{session.user.email}</Txt> */}
+            <IpBtn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
+              {session.user.email}
+            </IpBtn>
             <PageTitle>{m.onboardingTitle}</PageTitle>
             <WorkspaceCreate />
           </div>
