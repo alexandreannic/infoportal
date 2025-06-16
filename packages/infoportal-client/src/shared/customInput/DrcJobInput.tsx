@@ -4,16 +4,18 @@ import React, {useEffect} from 'react'
 import {useI18n} from '@/core/i18n'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useFetcher} from '@/shared/hook/useFetcher'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 
 export const DrcJobInputMultiple = (
   props: Omit<AutocompleteProps<string, any, any, any>, 'renderInput' | 'options'>,
 ) => {
+  const {workspaceId} = useWorkspaceRouter()
   const {m} = useI18n()
   const {api} = useAppSettings()
   const drcJobsFetcher = useFetcher(api.user.fetchDrcJobs)
 
   useEffect(() => {
-    drcJobsFetcher.fetch()
+    drcJobsFetcher.fetch({}, {workspaceId})
   }, [])
 
   return (

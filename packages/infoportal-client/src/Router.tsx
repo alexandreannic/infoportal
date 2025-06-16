@@ -24,7 +24,7 @@ import {Layout} from './shared/Layout'
 import {AppSidebar} from './core/layout/AppSidebar'
 import {AppHeader} from './core/layout/AppHeader'
 import {Settings} from './features/Settings/Settings'
-import { FormCreator } from './features/FormCreator/FormCreator'
+import {FormCreator} from './features/FormCreator/FormCreator'
 
 export const router = {
   root: '/',
@@ -62,7 +62,11 @@ export const router = {
   },
 }
 
-const path = (route: string) => route.slice(route.lastIndexOf('/') + 1)
+const path = (route: string, tokensToKeep = 1) => {
+  const tokens = route.split('/').filter(Boolean) // remove empty parts
+  const keptTokens = tokens.slice(-tokensToKeep)
+  return keptTokens.join('/')
+}
 
 export const Router = () => {
   return (
@@ -101,7 +105,7 @@ export const Router = () => {
             <Route path={path(router.ws().database.form().formCreator)} element={<FormCreator />} />
             <Route path={path(router.ws().database.form().access)} element={<DatabaseAccessRoute />} />
             <Route path={path(router.ws().database.form().history)} element={<DatabaseHistory />} />
-            <Route path={path(router.ws().database.form().group())} element={<DatabaseKoboRepeatRoute />} />
+            <Route path={path(router.ws().database.form().group(), 2)} element={<DatabaseKoboRepeatRoute />} />
             <Route index element={<Navigate to={path(router.ws().database.form().answers)} />} />
             {/*Persisted components across routes. */}
             <Route path={path(router.ws().database.form().answers)} element={<></>} />

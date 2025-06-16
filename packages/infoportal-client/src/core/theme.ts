@@ -92,7 +92,8 @@ export type AppThemeParams = {
 export const defaultAppThemeParams = {
   light: {
     // backgroundDefault: '#fff',
-    backgroundDefault: '#f6f8fc',
+    // backgroundDefault: '#f6f8fc',
+    backgroundDefault: '#f4f6fa',
     backgroundPaper: '#fff',
   },
   dark: {
@@ -288,7 +289,7 @@ export const muiTheme = ({
           root: {
             background: baseTheme.palette.background.paper,
             borderRadius: baseTheme.shape.borderRadius + 'px',
-            boxShadow: baseTheme.shadows[1],
+            // boxShadow: baseTheme.shadows[1],
             minHeight: 0,
           },
         },

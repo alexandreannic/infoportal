@@ -88,6 +88,11 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
         </div>
 
         <IpSelectSingle
+          startAdornment={
+            <Icon color="disabled" sx={{mr: 1}}>
+              workspaces
+            </Icon>
+          }
           value={workspaceId}
           hideNullOption
           onChange={_ => _ && changeWorkspace(_)}

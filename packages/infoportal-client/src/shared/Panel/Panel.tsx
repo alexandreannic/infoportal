@@ -25,7 +25,7 @@ export const Panel = forwardRef(
         elevation={elevation}
         sx={{
           // border: t => `1px solid ${t.palette.divider}`,
-          boxShadow: t => t.shadows[1],
+          // boxShadow: t => t.shadows[1],
           position: 'relative',
           background: t => t.palette.background.paper,
           borderRadius: t => t.shape.borderRadius + 'px',

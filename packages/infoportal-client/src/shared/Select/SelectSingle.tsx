@@ -34,6 +34,7 @@ export type IpSelectSingleBaseProps<T extends TType = string> = {
   multiple?: false
   hideNullOption?: boolean
   renderValue?: SelectProps<T>['renderValue']
+  startAdornment?: SelectProps<T>['startAdornment']
 }
 
 export type IpSelectSingleNullableProps<T extends TType = string> = IpSelectSingleBaseProps<T> & {

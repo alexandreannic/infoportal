@@ -12,6 +12,7 @@ import {UseFetcher} from '@/shared/hook/useFetcher'
 import {Txt} from '@/shared/Txt'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useFetcher} from '@/shared/hook/useFetcher'
+import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 
 export const AccessTable = ({
   isAdmin,
@@ -29,13 +30,14 @@ export const AccessTable = ({
   // data: Access[] | undefined
   header?: ReactNode
 }) => {
+  const {workspaceId} = useWorkspaceRouter()
   const {m, formatDate, formatDateTime} = useI18n()
   const {api} = useAppSettings()
   const _update = useAsync(api.access.update, {requestKey: ([id]) => id})
   const drcJobs = useFetcher(api.user.fetchDrcJobs)
 
   useEffect(() => {
-    drcJobs.fetch()
+    drcJobs.fetch({}, {workspaceId})
     fetcherData.fetch({force: true, clean: false})
   }, [_update.callIndex])
 
