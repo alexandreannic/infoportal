@@ -1,26 +1,16 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {FetchParams, useFetchers} from '@/shared/hook/useFetchers'
-import React, {ReactNode, useCallback, useContext, useMemo} from 'react'
+import React, {ReactNode, useContext, useMemo} from 'react'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
-import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
+import {useKoboSchemaContext} from '@/core/store/useLangIndex'
 import {KoboMappedAnswer, KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
 import {Kobo} from 'kobo-sdk'
-import {KoboSchemaHelper, KoboSubmissionFlat} from 'infoportal-common'
-import {useDialogs} from '@toolpad/core'
-import {DialogAnswerView} from '@/features/Database/Dialog/DialogAnswerView'
-import {DialogAnswerEdit} from '@/features/Database/Dialog/DialogAnswerEdit'
+import {KoboSchemaHelper} from 'infoportal-common'
 import {useWorkspaceRouter} from './WorkspaceContext'
 
 const Context = React.createContext({} as KoboAnswersContext)
 
-export interface OpenModalProps {
-  answer: KoboSubmissionFlat
-  formId: Kobo.FormId
-}
-
 export type KoboAnswersContext = {
-  openEdit: (_: OpenModalProps) => void
-  openView: (_: OpenModalProps) => void
   byId: (id: Kobo.FormId) => {
     find: (_: Kobo.SubmissionId) => KoboMappedAnswer | undefined
     set: (value: ApiPaginate<KoboMappedAnswer>) => void
@@ -34,7 +24,6 @@ export const KoboAnswersProvider = ({children}: {children: ReactNode}) => {
   const {api} = useAppSettings()
   const {workspaceId} = useWorkspaceRouter()
   const ctxSchema = useKoboSchemaContext()
-  const dialogs = useDialogs()
 
   const fetcher = useFetchers(
     async (id: Kobo.SubmissionId) => {
@@ -66,28 +55,10 @@ export const KoboAnswersProvider = ({children}: {children: ReactNode}) => {
     })
   }, [fetcher.getAsMap])
 
-  const openView = useCallback(
-    (_: OpenModalProps) => {
-      const schema = ctxSchema.byId[_.formId]?.get!
-      dialogs.open(DialogAnswerView, {schema, ..._})
-    },
-    [ctxSchema.byId],
-  )
-
-  const openEdit = useCallback(
-    (_: OpenModalProps) => {
-      const schema = ctxSchema.byId[_.formId]?.get!
-      dialogs.open(DialogAnswerEdit, {schema, ..._})
-    },
-    [ctxSchema.byId],
-  )
-
   return (
     <Context.Provider
       value={{
         byId,
-        openView,
-        openEdit,
       }}
     >
       {children}

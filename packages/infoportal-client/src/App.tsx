@@ -15,6 +15,7 @@ import {MsalProvider} from '@azure/msal-react'
 import {Box, CssBaseline, Icon, ThemeProvider} from '@mui/material'
 import {LocalizationProvider} from '@mui/x-date-pickers-pro'
 import {AdapterDateFns} from '@mui/x-date-pickers-pro/AdapterDateFnsV3'
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {DialogsProvider} from '@toolpad/core'
 import {useEffect, useMemo} from 'react'
 import {HashRouter, useLocation} from 'react-router-dom'
@@ -26,6 +27,8 @@ const api = new ApiSdk(
     baseUrl: appConfig.apiURL,
   }),
 )
+
+export const queryClient = new QueryClient()
 
 const App = () => {
   // @ts-ignore
@@ -60,6 +63,7 @@ const AppWithConfig = () => {
         // _ => <KoboAnswersProvider children={_} />,
         // _ => <KoboUpdateProvider children={_} />,
         _ => <WorkspaceProvider children={_} />,
+        _ => <QueryClientProvider client={queryClient} children={_} />,
       ]}
     >
       <AppWithBaseContext />

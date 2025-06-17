@@ -20,6 +20,7 @@ export interface UseFetchers<F extends Func<Promise<any>>, K extends Key = any, 
   fetch: Fetch<F>
   getAsArr: FetcherResult<F>[]
   getAsMap: UseMap<K, FetcherResult<F>>
+  set: UseMap<K, FetcherResult<F>>['set']
   get: Partial<Record<K, FetcherResult<F>>>
   clearCache: () => void
   loading: Partial<Record<K, boolean>>
@@ -101,6 +102,7 @@ export const useFetchers: UseFetchersFn = <F extends Func<Promise<any>>, K exten
   return {
     getAsArr: list,
     getAsMap: entities,
+    set: entities.set,
     get: entities.toObject,
     loading: loadings.toObject,
     error: errors.toObject,

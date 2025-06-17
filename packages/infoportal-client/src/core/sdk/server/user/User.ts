@@ -1,6 +1,7 @@
 import {UUID} from 'infoportal-common'
 
 export interface User {
+  id: UUID
   email: string
   name: string
   accessToken: string

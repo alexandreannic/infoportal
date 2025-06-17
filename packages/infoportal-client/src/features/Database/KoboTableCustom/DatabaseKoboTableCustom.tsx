@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import {Page} from '@/shared/Page'
 import {Panel} from '@/shared/Panel'
-import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
+import {useKoboDialogs, useKoboSchemaContext} from '@/core/store/useLangIndex'
 import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {useParams} from 'react-router'
 import * as yup from 'yup'
@@ -21,6 +21,7 @@ import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {useKoboUpdateContext} from '@/core/context/KoboUpdateContext'
 import {ArchiveAlert} from '@/features/Database/KoboTable/DatabaseKoboTableContent'
 import {KoboSchemaHelper, KoboValidation} from 'infoportal-common'
+import { useFormSchema } from '@/core/query/useFormSchema'
 
 interface CustomForm {
   id: string
@@ -131,6 +132,8 @@ export const DatabaseTableCustomRoute = () => {
   const ctxSchema = useKoboSchemaContext()
   const ctxAnswers = useKoboAnswersContext()
 
+  const {openEdit, openView} = useKoboDialogs()
+
   const customForm = useMemo(() => customForms.find(_ => _.id === id), [id])
   const formIds = useMemo(() => customForm!.forms.map(_ => _.id), [id])
   const {setTitle} = useLayoutContext()
@@ -220,8 +223,8 @@ export const DatabaseTableCustomRoute = () => {
           formId,
           canEdit: true,
           m,
-          openViewAnswer: ctxAnswers.openView,
-          openEditAnswer: ctxAnswers.openEdit,
+          openViewAnswer: openView,
+          openEditAnswer: openEdit,
           ctxEdit: ctxKoboUpdate,
           asyncEdit: (answerId: Kobo.SubmissionId) => api.koboApi.getEditUrl({formId: formId, answerId}),
           getRow: _ => (_[formId] ?? {}) as any,

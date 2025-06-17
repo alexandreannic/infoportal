@@ -2,6 +2,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 import {useI18n} from '@/core/i18n'
 import {useSession} from '@/core/Session/SessionContext'
+import {useCreateUser, useWorkspaceUsers} from '@/core/query/useUsersQuery'
 import {IpBtn, Modal} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Datatable} from '@/shared/Datatable/Datatable'
@@ -12,28 +13,20 @@ import {Panel} from '@/shared/Panel'
 import {TableIcon} from '@/shared/TableIcon'
 import {Txt} from '@/shared/Txt'
 import {seq} from '@axanc/ts-utils'
-import {useEffect, useMemo} from 'react'
+import {useMemo} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {AddUserForm} from './AddUserForm'
-import {useAsync} from '@/shared/hook/useAsync'
-import {useIpToast} from '@/core/useToast'
 
 export const AdminUsers = () => {
-  const {api, conf} = useAppSettings()
   const {workspaceId} = useWorkspaceRouter()
-  const {toastHttpError} = useIpToast()
+  const queryUsers = useWorkspaceUsers(workspaceId)
+  const queryUserCreate = useCreateUser(workspaceId)
+
+  const {api, conf} = useAppSettings()
   const {session, setSession} = useSession()
   const _connectAs = useFetcher(api.session.connectAs)
-  const _users = useFetcher(api.user.search)
   const {m, formatDate, formatDateTime} = useI18n()
   const navigate = useNavigate()
-  const asyncCreateAccess = useAsync(api.workspaceAccess.create)
-
-  useEffect(() => asyncCreateAccess.error && toastHttpError(asyncCreateAccess.error), [asyncCreateAccess.error])
-
-  useEffect(() => {
-    _users.fetch({clean: false}, {workspaceId})
-  }, [workspaceId])
 
   const connectAs = async (email: string) => {
     const session = await _connectAs.fetch({force: true, clean: true}, email)
@@ -41,19 +34,17 @@ export const AdminUsers = () => {
     setSession(session)
   }
 
-  const filteredData = _users.get
-
-  const emailsLists = useMemo(() => _users.get?.map(_ => _.email), [_users.get])
+  const emailsLists = useMemo(() => queryUsers.data?.map(_ => _.email), [queryUsers.data])
 
   return (
     <Page width="full">
       <Panel>
         <Datatable
-          loading={_users.loading}
+          loading={queryUsers.isLoading}
           id="users"
           showExportBtn
           defaultLimit={100}
-          data={filteredData}
+          data={queryUsers.data}
           header={
             <Modal
               onClose={null}
@@ -61,13 +52,9 @@ export const AdminUsers = () => {
               content={close => (
                 <AddUserForm
                   existingEmails={emailsLists}
-                  loading={asyncCreateAccess.loading}
+                  loading={queryUserCreate.isPending}
                   onClose={close}
-                  onSubmit={_ =>
-                    asyncCreateAccess
-                      .call({..._, workspaceId})
-                      .then(() => _users.fetch({force: true, clean: false}, {workspaceId}))
-                  }
+                  onSubmit={_ => queryUserCreate.mutateAsync(_)}
                 />
               )}
             >
@@ -130,7 +117,7 @@ export const AdminUsers = () => {
               renderQuick: _ => _.drcJob,
               type: 'select_one',
               options: () =>
-                seq(_users.get?.map(_ => _.drcJob))
+                seq(queryUsers.data?.map(_ => _.drcJob))
                   .distinct(_ => _)
                   .compact()
                   .map(_ => ({value: _, label: _})),
@@ -140,7 +127,7 @@ export const AdminUsers = () => {
               type: 'select_one',
               head: m.location,
               renderQuick: _ => _.drcOffice,
-              // options: () => seq(_users.get?.map(_ => _.drcOffice)).distinct(_ => _).compact().map(_ => ({value: _, label: _}))
+              // options: () => seq(ctxUser.fetchSearch.get?.map(_ => _.drcOffice)).distinct(_ => _).compact().map(_ => ({value: _, label: _}))
             },
             {
               type: 'select_one',

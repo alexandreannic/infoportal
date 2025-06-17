@@ -1,11 +1,11 @@
-import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 import {useI18n} from '@/core/i18n'
+import {useAnswers} from '@/core/query/useAnswers'
+import {useFormSchema} from '@/core/query/useFormSchema'
 import {
   columnBySchemaGenerator,
   ColumnBySchemaGeneratorProps,
 } from '@/features/Database/KoboTable/columns/columnBySchema'
-import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
 import {IpBtn, Page} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
@@ -14,7 +14,7 @@ import {map} from '@axanc/ts-utils'
 import {useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
-import {useEffect, useMemo} from 'react'
+import {useMemo} from 'react'
 import {NavLink, useNavigate, useParams, useSearchParams} from 'react-router-dom'
 import * as yup from 'yup'
 
@@ -24,18 +24,18 @@ const databaseUrlParamsValidation = yup.object({
 })
 
 export const DatabaseKoboRepeatRoute = () => {
-  const ctxSchema = useKoboSchemaContext()
   const {formId, group} = databaseUrlParamsValidation.validateSync(useParams())
-  const schemaLoader = ctxSchema.byId[formId]
+  const querySchema = useFormSchema(formId)
+
   return (
     <Page
       width="full"
       sx={{p: 0, pb: 0, mb: 0}}
       animation="translateLeft"
       animationDeps={[formId]}
-      loading={schemaLoader?.loading}
+      loading={querySchema.isLoading}
     >
-      {map(schemaLoader?.get, schema => (
+      {map(querySchema.data, schema => (
         <Panel sx={{mb: 0}}>
           <DatabaseKoboRepeat schema={schema} group={group} formId={formId} />
         </Panel>
@@ -107,23 +107,21 @@ const DatabaseKoboRepeat = ({
   group: string
   schema: KoboSchemaHelper.Bundle
 }) => {
-  const [searchParams] = useSearchParams()
+  const t = useTheme()
+  const {m} = useI18n()
   const {router} = useWorkspaceRouter()
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+
   const qs = {
     id: searchParams.get('id') ?? undefined,
     index: searchParams.get('index') ?? undefined,
   }
-  const fetcherAnswers = useKoboAnswersContext().byId(formId)
-  const data = fetcherAnswers.get?.data
-  const t = useTheme()
-  const {m} = useI18n()
+
+  const queryAnswers = useAnswers(formId)
+  const data = queryAnswers.data?.data
   const groupInfo = schema.helper.group.getByName(group)!
   const paths = groupInfo.pathArr
-
-  useEffect(() => {
-    fetcherAnswers.fetch({force: false, clean: false})
-  }, [formId])
 
   const {columns, filters} = useMemo(() => {
     const res = getColumnsForRepeatGroup({
@@ -144,8 +142,8 @@ const DatabaseKoboRepeat = ({
   }, [formId, group, schema, data])
 
   const flat = useMemo(() => {
-    return KoboFlattenRepeatedGroup.run({data: fetcherAnswers.get?.data ?? [], path: paths})
-  }, [fetcherAnswers.get?.data, groupInfo])
+    return KoboFlattenRepeatedGroup.run({data: data ?? [], path: paths})
+  }, [data, groupInfo])
 
   return (
     <Datatable

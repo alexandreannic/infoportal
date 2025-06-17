@@ -16,7 +16,6 @@ import {GoogleOAuthProvider} from '@react-oauth/google'
 import {appConfig} from '@/conf/AppConfig'
 import {WorkspaceCreate} from '@/features/Workspace/WorkspaceCreate'
 import {IpBtn, Page, PageTitle} from '@/shared'
-import {maxWidth} from '@mui/system'
 
 export interface SessionContext {
   session: Session

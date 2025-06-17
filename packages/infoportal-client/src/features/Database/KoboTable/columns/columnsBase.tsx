@@ -5,28 +5,28 @@ import {SelectStatusBy} from '@/shared/customInput/SelectStatus'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import React from 'react'
 import {Messages} from '@/core/i18n/localization/en'
-import {KoboSubmissionFlat} from 'infoportal-common'
+import {KoboSubmissionFlat, UUID} from 'infoportal-common'
 import {KoboAnswersContext} from '@/core/context/KoboAnswersContext'
 import {DatabaseKoboContext} from '@/features/Database/KoboTable/DatabaseKoboContext'
 import {Kobo} from 'kobo-sdk'
 import {KoboUpdateContext} from '@/core/context/KoboUpdateContext'
+import {useKoboDialogs} from '@/core/store/useLangIndex'
+import {useQueryAnswerUpdate} from '@/core/query/useQueryUpdate'
 
 export const getColumnsBase = ({
   selectedIds,
   formId,
   canEdit,
   m,
-  ctxEdit,
-  openViewAnswer,
-  openEditAnswer,
+  dialogs,
   getRow = _ => _,
-  asyncEdit,
+  queryUpdate,
+  workspaceId,
 }: {
-  ctxEdit: KoboUpdateContext
-  asyncEdit: DatabaseKoboContext['asyncEdit']
+  workspaceId: UUID
+  queryUpdate: ReturnType<typeof useQueryAnswerUpdate>
   getRow?: (_: any) => KoboSubmissionFlat
-  openViewAnswer: KoboAnswersContext['openView']
-  openEditAnswer: KoboAnswersContext['openEdit']
+  dialogs: ReturnType<typeof useKoboDialogs>
   formId: Kobo.FormId
   selectedIds: Kobo.SubmissionId[]
   canEdit?: boolean
@@ -47,12 +47,12 @@ export const getColumnsBase = ({
                 disabled={!canEdit}
                 tooltip={m.editKobo}
                 children="edit"
-                onClick={() => openEditAnswer({answer: _, formId: formId})}
+                onClick={() => dialogs.openEdit({answer: _, formId: formId})}
               />
               <TableIconBtn
                 tooltip={m.view}
                 children="visibility"
-                onClick={() => openViewAnswer({answer: _, formId: formId})}
+                onClick={() => dialogs.openView({answer: _, formId: formId})}
               />
               {/*<TableIconBtn*/}
               {/*  disabled={!canEdit}*/}
@@ -72,12 +72,10 @@ export const getColumnsBase = ({
       subHeader: selectedIds.length > 0 && (
         <TableEditCellBtn
           onClick={() =>
-            ctxEdit.openById({
-              target: 'validation',
-              params: {
-                formId: formId,
-                answerIds: selectedIds,
-              },
+            dialogs.openBulkEditValidation({
+              formId,
+              answerIds: selectedIds,
+              workspaceId,
             })
           }
         />
@@ -97,7 +95,8 @@ export const getColumnsBase = ({
               disabled={!canEdit}
               value={value}
               onChange={e => {
-                ctxEdit.asyncUpdateById.validation.call({
+                queryUpdate.updateValidation.mutate({
+                  workspaceId,
                   formId: formId,
                   answerIds: [getRow(row).id],
                   status: e,

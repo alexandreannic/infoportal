@@ -4,11 +4,11 @@ import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {Fender, Txt} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
 import {Box, BoxProps, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
-import {useMemo, useState} from 'react'
+import Fuse from 'fuse.js'
+import {useMemo} from 'react'
+import {Controller, useForm} from 'react-hook-form'
 import {NavLink} from 'react-router-dom'
 import {styleUtils} from '../theme'
-import {Controller, useForm} from 'react-hook-form'
-import Fuse from 'fuse.js'
 
 type Form = {
   id: string

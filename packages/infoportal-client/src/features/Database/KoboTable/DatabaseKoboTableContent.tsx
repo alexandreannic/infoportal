@@ -1,7 +1,5 @@
 import {appConfig} from '@/conf/AppConfig'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
-import {useKoboUpdateContext} from '@/core/context/KoboUpdateContext'
 import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 import {useI18n} from '@/core/i18n'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
@@ -18,7 +16,7 @@ import {generateEmptyXlsTemplate} from '@/features/Database/KoboTable/generateEm
 import {databaseKoboDisplayBuilder} from '@/features/Database/KoboTable/groupDisplay/DatabaseKoboDisplay'
 import {DatabaseViewInput} from '@/features/Database/KoboTable/view/DatabaseViewInput'
 import {getColumnsForRepeatGroup} from '@/features/Database/RepeatGroup/DatabaseKoboRepeatGroup'
-import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
+import {useKoboDialogs, useLangIndex} from '@/core/store/useLangIndex'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
@@ -31,6 +29,7 @@ import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
+import {useQueryAnswerUpdate} from '@/core/query/useQueryUpdate'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -51,15 +50,17 @@ export const DatabaseKoboTableContent = ({
   onFiltersChange,
   onDataChange,
 }: Pick<DatabaseTableProps, 'onFiltersChange' | 'onDataChange'>) => {
-  const {router} = useWorkspaceRouter()
+  const {router, workspaceId} = useWorkspaceRouter()
   const {m} = useI18n()
   const t = useTheme()
+  const langIndex = useLangIndex(_ => _.langIndex)
+  const setLangIndex = useLangIndex(_ => _.setLangIndex)
   const navigate = useNavigate()
   const {session} = useSession()
   const ctx = useDatabaseKoboTableContext()
-  const ctxSchema = useKoboSchemaContext()
-  const ctxAnswers = useKoboAnswersContext()
-  const ctxKoboUpdate = useKoboUpdateContext()
+  const dialogs = useKoboDialogs()
+  const queryUpdate = useQueryAnswerUpdate()
+
   const [selectedIds, setSelectedIds] = useState<Kobo.SubmissionId[]>([])
 
   const flatData: KoboMappedAnswer[] | undefined = useMemo(() => {
@@ -80,13 +81,11 @@ export const DatabaseKoboTableContent = ({
       onEdit:
         selectedIds.length > 0
           ? questionName =>
-              ctxKoboUpdate.openById({
-                target: 'answer',
-                params: {
-                  formId: ctx.form.id,
-                  question: questionName,
-                  answerIds: selectedIds,
-                },
+              dialogs.openBulkEditAnswers({
+                workspaceId,
+                formId: ctx.form.id,
+                question: questionName,
+                answerIds: selectedIds,
               })
           : undefined,
       m,
@@ -101,18 +100,17 @@ export const DatabaseKoboTableContent = ({
       m,
       t,
     }).transformColumns(schemaColumns)
-  }, [ctx.data, ctx.schema.schema, ctxSchema.langIndex, selectedIds, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
+  }, [ctx.data, ctx.schema.schema, langIndex, selectedIds, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: DatatableColumn.Props<any>[] = useMemo(() => {
     const base = getColumnsBase({
       selectedIds,
+      queryUpdate: queryUpdate,
+      workspaceId,
       formId: ctx.form.id,
       canEdit: ctx.access.write,
       m,
-      asyncEdit: ctx.asyncEdit,
-      ctxEdit: ctxKoboUpdate,
-      openViewAnswer: ctxAnswers.openView,
-      openEditAnswer: ctxAnswers.openEdit,
+      dialogs,
     })
     return [...base, ...schemaColumns].map(_ => ({
       ..._,
@@ -186,8 +184,8 @@ export const DatabaseKoboTableContent = ({
             <IpSelectSingle<number>
               hideNullOption
               sx={{maxWidth: 128, mr: 1}}
-              value={ctxSchema.langIndex}
-              onChange={ctxSchema.setLangIndex}
+              value={langIndex}
+              onChange={setLangIndex}
               options={[
                 {children: 'XML', value: -1},
                 ...ctx.schema.schemaSanitized.content.translations.map((_, i) => ({children: _, value: i})),
