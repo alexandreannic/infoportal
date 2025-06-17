@@ -1,4 +1,3 @@
-import {UUID} from 'infoportal-common'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {useQuery} from '@tanstack/react-query'

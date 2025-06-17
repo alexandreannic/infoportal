@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {forwardRef, ReactNode} from 'react'
-import {Box, Card, CardProps, LinearProgress, useTheme} from '@mui/material'
+import {Box, Card, CardProps, LinearProgress} from '@mui/material'
 import {PanelHead} from './PanelHead'
 import {PanelFeatures} from '@/shared/Panel/PanelFeatures'
 

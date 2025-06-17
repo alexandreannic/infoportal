@@ -21,7 +21,6 @@ import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {useKoboUpdateContext} from '@/core/context/KoboUpdateContext'
 import {ArchiveAlert} from '@/features/Database/KoboTable/DatabaseKoboTableContent'
 import {KoboSchemaHelper, KoboValidation} from 'infoportal-common'
-import { useFormSchema } from '@/core/query/useFormSchema'
 
 interface CustomForm {
   id: string

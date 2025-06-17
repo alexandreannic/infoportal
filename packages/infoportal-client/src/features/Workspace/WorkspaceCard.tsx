@@ -1,5 +1,5 @@
 import {Workspace} from '@/core/sdk/server/workspace/Workspace'
-import {Box, BoxProps, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
+import {Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
 import {Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Panel} from '@/shared/Panel'

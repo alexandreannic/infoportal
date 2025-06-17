@@ -2,8 +2,6 @@ import {sleep} from '@axanc/ts-utils'
 // import { Loader, Map, LatLngLiteral, Marker } from 'google.maps';
 import {useEffect} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {IpAlert, Txt} from '@/shared'
-import * as React from 'react'
 
 declare const google: any
 

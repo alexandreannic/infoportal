@@ -1,6 +1,5 @@
 import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
 import {useI18n} from '@/core/i18n'
-import {Page, PageTitle} from '@/shared'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {useEffect} from 'react'

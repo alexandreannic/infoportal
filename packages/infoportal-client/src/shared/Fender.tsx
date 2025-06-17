@@ -1,7 +1,7 @@
 import {ReactNode} from 'react'
 import {Box, BoxProps, CircularProgress, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {sxUtils} from '@/core/theme'
-import {fnSwitch, match} from '@axanc/ts-utils'
+import {fnSwitch} from '@axanc/ts-utils'
 
 type State = 'loading' | 'error' | 'empty' | 'success' | 'warning'
 
