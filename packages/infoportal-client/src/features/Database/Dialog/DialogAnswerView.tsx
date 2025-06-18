@@ -1,6 +1,6 @@
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
-import {useQueryAnswers} from '@/core/query/useQueryAnswers'
+import {useQueryAnswer} from '@/core/query/useQueryAnswer'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useLangIndex} from '@/core/store/useLangIndex'
@@ -42,7 +42,7 @@ export const DatabaseKoboAnswerViewPage = () => {
   const {m} = useI18n()
   const {formId, answerId} = databaseUrlParamsValidation.validateSync(useParams())
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
-  const queryAnswers = useQueryAnswers(formId)
+  const queryAnswers = useQueryAnswer(formId)
   const querySchema = useQuerySchema(formId)
 
   const answer = useMemo(() => {

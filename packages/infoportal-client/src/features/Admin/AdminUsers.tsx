@@ -1,12 +1,9 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
-import {useSession} from '@/core/Session/SessionContext'
-import {useCreateUser, useWorkspaceUsers} from '@/core/query/useUsersQuery'
 import {IpBtn, Modal} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {useFetcher} from '@/shared/hook/useFetcher'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {Page} from '@/shared/Page'
 import {Panel} from '@/shared/Panel'
@@ -17,34 +14,33 @@ import {useMemo} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {AddUserForm} from './AddUserForm'
 import {useQuerySession} from '@/core/query/useQuerySession'
+import {useQueryUser} from '@/core/query/useQueryUser'
 
 export const AdminUsers = () => {
-  const {workspaceId} = useWorkspaceRouter()
-  const queryUsers = useWorkspaceUsers(workspaceId)
-  const queryUserCreate = useCreateUser(workspaceId)
-
-  const {conf} = useAppSettings()
-  const querySession = useQuerySession()
-
   const {m, formatDate, formatDateTime} = useI18n()
+  const {conf} = useAppSettings()
+  const {workspaceId} = useWorkspaceRouter()
   const navigate = useNavigate()
+
+  const querySession = useQuerySession()
+  const queryUser = useQueryUser(workspaceId)
 
   const connectAs = async (email: string) => {
     await querySession.connectAs.mutateAsync(email)
     await navigate('/')
   }
 
-  const emailsLists = useMemo(() => queryUsers.data?.map(_ => _.email), [queryUsers.data])
+  const emailsLists = useMemo(() => queryUser.get.data?.map(_ => _.email), [queryUser.get.data])
 
   return (
     <Page width="full">
       <Panel>
         <Datatable
-          loading={queryUsers.isLoading}
+          loading={queryUser.get.isLoading}
           id="users"
           showExportBtn
           defaultLimit={100}
-          data={queryUsers.data}
+          data={queryUser.get.data}
           header={
             <Modal
               onClose={null}
@@ -52,9 +48,9 @@ export const AdminUsers = () => {
               content={close => (
                 <AddUserForm
                   existingEmails={emailsLists}
-                  loading={queryUserCreate.isPending}
+                  loading={queryUser.create.isPending}
                   onClose={close}
-                  onSubmit={_ => queryUserCreate.mutateAsync(_)}
+                  onSubmit={_ => queryUser.create.mutateAsync(_)}
                 />
               )}
             >
@@ -117,7 +113,7 @@ export const AdminUsers = () => {
               renderQuick: _ => _.drcJob,
               type: 'select_one',
               options: () =>
-                seq(queryUsers.data?.map(_ => _.drcJob))
+                seq(queryUser.get.data?.map(_ => _.drcJob))
                   .distinct(_ => _)
                   .compact()
                   .map(_ => ({value: _, label: _})),

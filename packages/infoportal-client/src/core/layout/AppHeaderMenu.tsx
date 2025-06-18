@@ -5,6 +5,7 @@ import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
 import {IpBtn} from '@/shared/Btn'
 import {AppAvatar} from '@/shared/AppAvatar'
+import {useQuerySession} from '@/core/query/useQuerySession'
 
 const Row = ({icon, children}: {icon: string; children: ReactNode}) => {
   return (
@@ -12,7 +13,7 @@ const Row = ({icon, children}: {icon: string; children: ReactNode}) => {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        mb: .5,
+        mb: 0.5,
       }}
     >
       <Icon sx={{mr: 1, my: 0.25, color: t => t.palette.text.secondary}}>{icon}</Icon>
@@ -24,16 +25,17 @@ const Row = ({icon, children}: {icon: string; children: ReactNode}) => {
 }
 
 export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
-  const {session, logout} = useSession()
+  const querySession = useQuerySession()
+  const me = querySession.getMe.data
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
   const open = !!anchorEl
   const {m} = useI18n()
-  if (!session) {
+  if (!me) {
     return <></>
   }
   return (
     <>
-      <AppAvatar size={36} email={session.user.email} onClick={e => setAnchorEl(e.currentTarget)} {...props} />
+      <AppAvatar size={36} email={me.email} onClick={e => setAnchorEl(e.currentTarget)} {...props} />
       <Popover
         anchorEl={anchorEl}
         anchorOrigin={{
@@ -46,14 +48,14 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
         <Box>
           <Box sx={{p: 2}}>
             <Txt bold block size="big" mb={1}>
-              {session.user.name}
+              {me.name}
             </Txt>
-            <Row icon="email">{session.user.email}</Row>
-            <Row icon="badge">{session.user.drcJob}</Row>
-            {session.user.admin && <Row icon="shield">{m.admin}</Row>}
+            <Row icon="email">{me.email}</Row>
+            <Row icon="badge">{me.drcJob}</Row>
+            {me.admin && <Row icon="shield">{m.admin}</Row>}
           </Box>
           <Box sx={{px: 2}}>
-            <IpBtn icon="logout" variant="outlined" onClick={logout} sx={{mb: 2}}>
+            <IpBtn icon="logout" variant="outlined" onClick={() => querySession.logout.mutate()} sx={{mb: 2}}>
               {m.logout}
             </IpBtn>
           </Box>

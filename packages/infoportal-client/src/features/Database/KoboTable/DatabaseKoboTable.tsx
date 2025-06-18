@@ -1,7 +1,7 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {queryKeys} from '@/core/query/store'
-import {useQueryAnswers} from '@/core/query/useQueryAnswers'
+import {useQueryAnswer} from '@/core/query/useQueryAnswer'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Access, AccessLevel} from '@/core/sdk/server/access/Access'
@@ -69,7 +69,7 @@ export const DatabaseTable = ({
 
   const querySchema = useQuerySchema(formId)
 
-  const queryAnswers = useQueryAnswers(formId)
+  const queryAnswers = useQueryAnswer(formId)
 
   const fetcherForm = useFetcher(() => (form ? Promise.resolve(form) : api.kobo.form.get({workspaceId, formId})))
 

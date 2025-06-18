@@ -8,7 +8,7 @@ import {queryKeys} from './store'
 import {useQuerySchema} from './useQuerySchema'
 import {duration} from '@axanc/ts-utils'
 
-export const useQueryAnswers = (formId: Kobo.FormId) => {
+export const useQueryAnswer = (formId: Kobo.FormId) => {
   const {api} = useAppSettings()
   const {workspaceId} = useWorkspaceRouter()
   const queryClient = useQueryClient()

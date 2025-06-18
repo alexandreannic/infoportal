@@ -1,6 +1,6 @@
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
-import {useQueryAnswers} from '@/core/query/useQueryAnswers'
+import {useQueryAnswer} from '@/core/query/useQueryAnswer'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {
   columnBySchemaGenerator,
@@ -118,7 +118,7 @@ const DatabaseKoboRepeat = ({
     index: searchParams.get('index') ?? undefined,
   }
 
-  const queryAnswers = useQueryAnswers(formId)
+  const queryAnswers = useQueryAnswer(formId)
   const data = queryAnswers.data?.data
   const groupInfo = schema.helper.group.getByName(group)!
   const paths = groupInfo.pathArr
