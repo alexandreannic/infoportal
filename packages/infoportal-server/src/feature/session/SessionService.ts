@@ -41,6 +41,13 @@ export class SessionService {
     const oauth2Client = new google.auth.OAuth2()
     oauth2Client.setCredentials({access_token: userBody.accessToken})
 
+    const jobTitle = await google
+      .admin({version: 'directory_v1', auth: oauth2Client})
+      .users.get({userKey: 'me'})
+      .then(user => {
+        return user.data.organizations?.[0]?.title
+      })
+
     const oauth2 = google.oauth2({version: 'v2', auth: oauth2Client})
     const userInfo = await oauth2.userinfo.get()
     const email = userInfo.data.email
@@ -65,6 +72,7 @@ export class SessionService {
       email,
       accessToken: userBody.accessToken,
       name,
+      drcJob: jobTitle,
       avatar,
     })
 
