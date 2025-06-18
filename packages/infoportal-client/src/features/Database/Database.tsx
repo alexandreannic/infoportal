@@ -1,16 +1,15 @@
-import React, {useEffect, useMemo} from 'react'
+import {appConfig} from '@/conf/AppConfig'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
-import * as yup from 'yup'
-import {NavLink, Outlet} from 'react-router-dom'
-import {Icon, Tab, Tabs} from '@mui/material'
-import {useLocation, useParams} from 'react-router'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {DatabaseTableRoute} from '@/features/Database/KoboTable/DatabaseKoboTable'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
-import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
-import {appConfig} from '@/conf/AppConfig'
-import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {Icon, Tab, Tabs} from '@mui/material'
+import {useEffect, useMemo} from 'react'
+import {useLocation, useParams} from 'react-router'
+import {NavLink, Outlet} from 'react-router-dom'
+import * as yup from 'yup'
 
 export const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -20,20 +19,20 @@ export const Database = () => {
   const {formId} = databaseUrlParamsValidation.validateSync(useParams())
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
+
+  const querySchema = useQuerySchema(formId)
+
   const ctx = useDatabaseContext()
-  const ctxSchema = useKoboSchemaContext()
-  const fetcherAnswers = useKoboAnswersContext().byId(formId)
+
   const {pathname} = useLocation()
   const {router} = useWorkspaceRouter()
 
   useEffect(() => {
     if (ctx.getForm(formId)?.name) setTitle(m._koboDatabase.title(ctx.getForm(formId)?.name))
-    ctxSchema.fetchById(formId)
-    fetcherAnswers.fetch({force: false})
     return () => setTitle(m._koboDatabase.title())
   }, [ctx._forms.get, formId])
 
-  const schema = ctxSchema.byId[formId]?.get
+  const schema = querySchema.data
   const repeatGroups = useMemo(() => {
     return schema?.helper.group.search().map(_ => _.name)
   }, [schema])

@@ -10,7 +10,7 @@ import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {UUID} from 'infoportal-common'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 
 export const SelectKoboForm = ({serverId, onAdded}: {serverId: UUID; onAdded?: () => void}) => {
   const {api} = useAppSettings()

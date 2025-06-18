@@ -1,4 +1,4 @@
-import {KoboBaseTags, KoboSubmission, KoboSubmissionFlat, KoboSubmissionMetaData, UUID} from 'infoportal-common'
+import {KoboSubmission, KoboSubmissionFlat, KoboSubmissionMetaData, UUID} from 'infoportal-common'
 import {Obj} from '@axanc/ts-utils'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Kobo} from 'kobo-sdk'

@@ -1,8 +1,7 @@
 import React, {ReactElement, ReactNode, useEffect, useState} from 'react'
 import {ScRadioGroupItemProps} from './RadioGroupItem'
-import {Box, FormHelperText} from '@mui/material'
+import {Box, FormHelperText, Theme} from '@mui/material'
 import {styled, SxProps} from '@mui/system'
-import {Theme} from '@mui/material'
 import {styleUtils} from '@/core/theme'
 
 interface BaseProps<T> {
@@ -40,7 +39,7 @@ const isMultiple = <T,>(multiple: boolean | undefined, t: T | T[]): t is T[] => 
 const Label = styled('div')(({theme}) => ({
   color: theme.palette.text.secondary,
   fontSize: styleUtils(theme as Theme).fontSize.small,
-  marginBottom: theme.spacing(.5),
+  marginBottom: theme.spacing(0.5),
 }))
 
 const _ScRadioGroup = <T,>(

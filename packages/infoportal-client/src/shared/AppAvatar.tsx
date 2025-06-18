@@ -1,6 +1,7 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Box, BoxProps, Icon} from '@mui/material'
 import {makeStyles} from 'tss-react/mui'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 
 const useStyles = makeStyles<{url?: string; size: number; tooltipSize?: number}>()((t, {url, size, tooltipSize}) => ({
   root: {
@@ -28,8 +29,9 @@ export const AppAvatar = ({
   // hideTooltip?: boolean
 } & BoxProps) => {
   const {api} = useAppSettings()
+  const {workspaceId} = useWorkspaceRouter()
   const {classes} = useStyles({
-    url: email ? api.user.avatarUrl(email) : undefined,
+    url: email ? api.user.avatarUrl({workspaceId, email}) : undefined,
     size,
   })
   return (

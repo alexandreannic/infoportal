@@ -1,4 +1,4 @@
-import {alpha, Box, BoxProps, Checkbox, Icon, Radio, styled} from '@mui/material'
+import {alpha, Box, BoxProps, Checkbox, Icon, Radio} from '@mui/material'
 import React, {ReactNode} from 'react'
 
 const defaultMuiRadioPadding = 9

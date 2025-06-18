@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {useState, useEffect} from 'react'
+import {useEffect, useState} from 'react'
 import {alpha, Box, BoxProps, Slide, SwipeableDrawer, Switch, useTheme} from '@mui/material'
 import {useLayoutContext} from '../LayoutContext'
 import {layoutConfig} from '../index'
@@ -9,8 +9,8 @@ import {SidebarBody} from './SidebarBody'
 import {SidebarHeader} from './SidebarHeader'
 import {useI18n} from '../../../core/i18n'
 import {Utils} from '@/utils/utils'
-import stopPropagation = Utils.stopPropagation
 import {useAppSettings} from '@/core/context/ConfigContext'
+import stopPropagation = Utils.stopPropagation
 
 let sidebar: HTMLElement | null = null
 let header: HTMLElement | null = null

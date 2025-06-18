@@ -4,7 +4,6 @@ import {LayoutProvider, useLayoutContext} from './LayoutContext'
 import {Box, LinearProgress} from '@mui/material'
 import {layoutConfig} from './index'
 import {defaultSpacing} from '../../core/theme'
-import {AppHeader} from '../../core/layout/AppHeader'
 
 export interface LayoutProps {
   sidebar?: ReactElement<any>

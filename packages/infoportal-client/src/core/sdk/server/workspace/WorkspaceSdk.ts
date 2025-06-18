@@ -1,5 +1,4 @@
 import {ApiClient} from '@/core/sdk/server/ApiClient'
-import {User} from '@/core/sdk/server/user/User'
 import {Workspace, WorkspaceCreate, WorkspaceUpdate} from '@/core/sdk/server/workspace/Workspace'
 import {UUID} from 'infoportal-common'
 

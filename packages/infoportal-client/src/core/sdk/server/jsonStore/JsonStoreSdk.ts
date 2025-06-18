@@ -1,5 +1,5 @@
+import {UUID} from 'infoportal-common'
 import {ApiClient} from '../ApiClient'
-import {UUID} from 'crypto'
 
 export type JsonStore<T> = {
   id: UUID

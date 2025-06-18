@@ -1,20 +1,20 @@
-import {Page} from '@/shared/Page'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {databaseUrlParamsValidation} from '@/features/Database/Database'
-import {useParams} from 'react-router'
-import {useFetcher} from '@/shared/hook/useFetcher'
-import React, {useEffect} from 'react'
-import {Datatable} from '@/shared/Datatable/Datatable'
 import {useI18n} from '@/core/i18n'
-import {Panel} from '@/shared/Panel'
-import {alpha, Icon, useTheme} from '@mui/material'
-import {fnSwitch, map} from '@axanc/ts-utils'
-import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
-import {TableIcon} from '@/shared/TableIcon'
 import {KoboAnswerHistory} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistory'
-import {AppAvatar} from '@/shared/AppAvatar'
-import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {databaseUrlParamsValidation} from '@/features/Database/Database'
 import {Txt} from '@/shared'
+import {AppAvatar} from '@/shared/AppAvatar'
+import {Datatable} from '@/shared/Datatable/Datatable'
+import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
+import {useFetcher} from '@/shared/hook/useFetcher'
+import {Page} from '@/shared/Page'
+import {Panel} from '@/shared/Panel'
+import {TableIcon} from '@/shared/TableIcon'
+import {fnSwitch, map} from '@axanc/ts-utils'
+import {alpha, Icon, useTheme} from '@mui/material'
+import {useEffect} from 'react'
+import {useParams} from 'react-router'
 
 export const DatabaseHistory = () => {
   const {formId} = databaseUrlParamsValidation.validateSync(useParams())
@@ -22,11 +22,10 @@ export const DatabaseHistory = () => {
   const {m, formatDateTime, formatDate} = useI18n()
   const {api} = useAppSettings()
   const fetcher = useFetcher(() => api.kobo.answerHistory.search({formId}))
-  const ctxSchema = useKoboSchemaContext()
-  const schema = ctxSchema.byId2(formId).get
+  const querySchema = useQuerySchema(formId)
+  const schema = querySchema.data
 
   useEffect(() => {
-    ctxSchema.fetchById(formId)
     fetcher.fetch()
   }, [])
 

@@ -1,6 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Kobo} from 'kobo-sdk'
-import {KoboSchemaHelper, KoboCustomDirective, nullValuesToUndefined} from 'infoportal-common'
+import {KoboCustomDirective, KoboSchemaHelper, nullValuesToUndefined} from 'infoportal-common'
 import {AppFeatureId} from '@/features/appFeatureId'
 import React, {ReactElement, useCallback, useMemo} from 'react'
 import {Modal, Txt} from '@/shared'

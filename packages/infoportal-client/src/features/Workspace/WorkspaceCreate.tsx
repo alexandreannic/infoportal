@@ -1,18 +1,14 @@
-import {CenteredContent, IpBtn, IpIconBtn, Page, PageTitle} from '@/shared'
+import {IpBtn, IpIconBtn} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {IpInput} from '@/shared/Input/Input'
-import {Box, Button, CardActions, CircularProgress, useTheme} from '@mui/material'
+import {Box, CardActions, CircularProgress} from '@mui/material'
 import {useEffect, useState} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useEffectFn} from '@axanc/react-hooks'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Controller, useForm} from 'react-hook-form'
 import {useFetcher} from '@/shared/hook/useFetcher'
-import {useAsync} from '@/shared/hook/useAsync'
-import {useSession} from '@/core/Session/SessionContext'
-import {produce} from 'immer'
-import {useWorkspace} from '@/core/context/WorkspaceContext'
 import {useIpToast} from '@/core/useToast'
+import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
 
 type Form = {
   slug: string
@@ -21,13 +17,11 @@ type Form = {
 }
 
 export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
-  const ctxWorkspace = useWorkspace()
+  const {api} = useAppSettings()
+  const {toastHttpError} = useIpToast()
   const {m} = useI18n()
 
-  const {api} = useAppSettings()
-  const {setSession} = useSession()
-  const {toastHttpError} = useIpToast()
-  const t = useTheme()
+  const queryWorkspaces = useQueryWorkspace()
 
   const form = useForm<Form>()
   const [disableSlug, setDisableSlug] = useState(true)
@@ -69,7 +63,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
 
   const submit = async () => {
     try {
-      await ctxWorkspace.asyncCreate.call(form.getValues())
+      await queryWorkspaces.create.mutate(form.getValues())
       form.reset({
         name: '',
         slug: '',
@@ -151,7 +145,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
             {m.close}
           </IpBtn>
         )}
-        <IpBtn variant="contained" size="large" loading={ctxWorkspace.asyncCreate.loading} onClick={submit}>
+        <IpBtn variant="contained" size="large" loading={queryWorkspaces.create.isPending} onClick={submit}>
           {m.create}
         </IpBtn>
       </CardActions>

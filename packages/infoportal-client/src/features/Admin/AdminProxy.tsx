@@ -8,7 +8,7 @@ import {Switch} from '@mui/material'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {Controller, useForm} from 'react-hook-form'
 import {IpInput} from '@/shared/Input/Input'
-import {Regexp, slugify} from 'infoportal-common'
+import {NullableFn, Regexp, slugify} from 'infoportal-common'
 import {Txt} from '@/shared/Txt'
 import {TableIconBtn} from '@/shared/TableIcon'
 import {Proxy} from '@/core/sdk/server/proxy/Proxy'
@@ -17,7 +17,6 @@ import {Modal} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {formatDateTime} from '@/core/i18n/localization/en'
 import {appConfig} from '@/conf/AppConfig'
-import {NullableFn} from 'infoportal-common'
 
 interface CreateForm {
   name: string

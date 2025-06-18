@@ -16,6 +16,7 @@ import {useSession} from '@/core/Session/SessionContext'
 import {AccessTable} from '@/features/Access/AccessTable'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {Kobo} from 'kobo-sdk'
+import {useQuerySession} from '@/core/query/useQuerySession'
 
 export const DatabaseAccessRoute = () => {
   const {api} = useAppSettings()
@@ -37,14 +38,16 @@ export const DatabaseAccessRoute = () => {
 export const DatabaseAccess = ({formId, form}: {formId: Kobo.FormId; form: Kobo.Form}) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
-  const {session} = useSession()
+  const querySession = useQuerySession()
+
+  const session = querySession.getMe.data
 
   const accessSum = useMemo(() => {
     return Access.toSum(
       session.accesses
         .filter(Access.filterByFeature(AppFeatureId.kobo_database))
         .filter(_ => _.params?.koboFormId === formId),
-      session.user.admin,
+      session.admin,
     )
   }, [session, session.accesses])
 

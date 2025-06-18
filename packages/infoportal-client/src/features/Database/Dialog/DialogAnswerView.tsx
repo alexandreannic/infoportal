@@ -1,3 +1,18 @@
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
+import {useI18n} from '@/core/i18n'
+import {useQueryAnswer} from '@/core/query/useQueryAnswer'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
+import {useLangIndex} from '@/core/store/useLangIndex'
+import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/columnBySchema'
+import {IpBtn} from '@/shared/Btn'
+import {Datatable} from '@/shared/Datatable/Datatable'
+import {IpIconBtn} from '@/shared/IconBtn'
+import {Page} from '@/shared/Page'
+import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
+import {KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
+import {Txt} from '@/shared/Txt'
+import {map, seq} from '@axanc/ts-utils'
 import {
   Alert,
   Box,
@@ -10,28 +25,13 @@ import {
   Switch,
   useTheme,
 } from '@mui/material'
-import {IpBtn} from '@/shared/Btn'
-import {useI18n} from '@/core/i18n'
-import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
-import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
-import React, {useEffect, useMemo, useState} from 'react'
-import {KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
-import {Txt} from '@/shared/Txt'
-import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
-import {Datatable} from '@/shared/Datatable/Datatable'
-import {Page} from '@/shared/Page'
-import {useParams} from 'react-router'
-import * as yup from 'yup'
-import {IpIconBtn} from '@/shared/IconBtn'
-import {useKoboAnswersContext} from '@/core/context/KoboAnswersContext'
-import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
-import {map, seq} from '@axanc/ts-utils'
-import {NavLink} from 'react-router-dom'
-import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/columnBySchema'
-import {Kobo} from 'kobo-sdk'
 import {DialogProps} from '@toolpad/core'
-import {router} from '@/Router'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
+import {Kobo} from 'kobo-sdk'
+import {useMemo, useState} from 'react'
+import {useParams} from 'react-router'
+import {NavLink} from 'react-router-dom'
+import * as yup from 'yup'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -42,28 +42,23 @@ export const DatabaseKoboAnswerViewPage = () => {
   const {m} = useI18n()
   const {formId, answerId} = databaseUrlParamsValidation.validateSync(useParams())
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
-  const ctxAnswers = useKoboAnswersContext().byId(formId)
-  const ctxSchema = useKoboSchemaContext()
-
-  useEffect(() => {
-    ctxAnswers.fetch({})
-    ctxSchema.fetchById(formId)
-  }, [formId])
+  const queryAnswers = useQueryAnswer(formId)
+  const querySchema = useQuerySchema(formId)
 
   const answer = useMemo(() => {
-    return ctxAnswers.find(answerId)
-  }, [formId, ctxAnswers.get])
+    return queryAnswers.find(answerId)
+  }, [formId, queryAnswers.data])
 
   return (
     <Page>
-      {ctxAnswers.loading || ctxSchema.byId[formId]?.loading ? (
+      {queryAnswers.isLoading || querySchema.isLoading ? (
         <>
           <Skeleton />
           <Skeleton />
           <Skeleton />
         </>
       ) : (
-        (map(answer, ctxSchema.byId[formId]?.get, (a, schema) => (
+        (map(answer, querySchema.data, (a, schema) => (
           <Panel>
             <PanelHead
               action={
@@ -177,7 +172,7 @@ const KoboAnswerQuestionView = ({
   questionSchema: NonNullableKey<Kobo.Form.Question, 'name'>
   answer: KoboMappedAnswer
 }) => {
-  const langIndex = useKoboSchemaContext()
+  const langIndex = useLangIndex()
   const {formatDateTime} = useI18n()
   const {m} = useI18n()
   const t = useTheme()

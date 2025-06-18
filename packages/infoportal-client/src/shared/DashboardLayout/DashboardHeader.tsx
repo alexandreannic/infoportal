@@ -1,4 +1,4 @@
-import {alpha, Box, BoxProps, GlobalStyles, Typography, useTheme} from '@mui/material'
+import {alpha, Box, BoxProps, Typography, useTheme} from '@mui/material'
 import {DRCLogo, EULogo} from '@/shared/logo/logo'
 import React, {ReactNode} from 'react'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'

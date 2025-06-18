@@ -1,5 +1,5 @@
 import {Access, AccessLevel} from '@/core/sdk/server/access/Access'
-import React, {ReactNode, useEffect, useState} from 'react'
+import React, {ReactNode, useEffect} from 'react'
 import {useI18n} from '@/core/i18n'
 import {UUID} from 'infoportal-common'
 import {useAsync, UseAsyncMultiple} from '@/shared/hook/useAsync'
@@ -8,11 +8,10 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {TableIconBtn} from '@/shared/TableIcon'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
-import {UseFetcher} from '@/shared/hook/useFetcher'
+import {UseFetcher, useFetcher} from '@/shared/hook/useFetcher'
 import {Txt} from '@/shared/Txt'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {useFetcher} from '@/shared/hook/useFetcher'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 
 export const AccessTable = ({
   isAdmin,

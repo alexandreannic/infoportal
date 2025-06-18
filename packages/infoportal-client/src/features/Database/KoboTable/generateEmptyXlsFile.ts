@@ -1,9 +1,9 @@
 import * as ExcelJS from 'exceljs'
 import {Utils} from '@/utils/utils'
 import {Kobo} from 'kobo-sdk'
+import {KoboSchemaHelper} from 'infoportal-common'
 import Question = Kobo.Form.Question
 import Choice = Kobo.Form.Choice
-import {KoboSchemaHelper} from 'infoportal-common'
 
 export const generateEmptyXlsTemplate = async (
   schemaBundle: KoboSchemaHelper.Bundle,

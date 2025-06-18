@@ -1,7 +1,7 @@
-import {useKoboSchemaContext} from '@/features/KoboSchema/KoboSchemaContext'
-import {useEffect, useMemo} from 'react'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {KeyOf} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
+import {useMemo} from 'react'
 
 export const useKoboColumnDef = <T extends Record<string, any>>({
   formId,
@@ -10,17 +10,14 @@ export const useKoboColumnDef = <T extends Record<string, any>>({
   formId: Kobo.FormId
   columnName: KeyOf<T>
 }) => {
-  const ctx = useKoboSchemaContext()
-  useEffect(() => {
-    ctx.fetchById(formId)
-  }, [formId])
+  const querySchema = useQuerySchema(formId)
 
   return useMemo(() => {
-    const schema = ctx.byId[formId]?.get
+    const schema = querySchema.data
     return {
-      loading: ctx.byId[formId]?.loading,
+      loading: querySchema.isLoading,
       schema,
       columnDef: schema?.helper.questionIndex[columnName as string],
     }
-  }, [ctx.byId, formId, columnName])
+  }, [formId, columnName])
 }
