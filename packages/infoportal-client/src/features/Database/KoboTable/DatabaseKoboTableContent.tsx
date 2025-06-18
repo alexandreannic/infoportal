@@ -1,6 +1,6 @@
 import {appConfig} from '@/conf/AppConfig'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useSession} from '@/core/Session/SessionContext'
@@ -119,7 +119,7 @@ export const DatabaseKoboTableContent = ({
   }, [schemaColumns, ctx.view.currentView])
 
   const {api} = useAppSettings()
-  const selectedHeader = useCustomSelectedHeader({access: ctx.access, formId: ctx.form.id, selectedIds})
+  const selectedHeader = useCustomSelectedHeader({workspaceId, access: ctx.access, formId: ctx.form.id, selectedIds})
   const _importFromXLS = useAsync(api.importData.importFromXLSFile)
   const {toastHttpError} = useIpToast()
 

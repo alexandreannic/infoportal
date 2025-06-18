@@ -1,6 +1,6 @@
 import {useSession} from '@/core/Session/SessionContext'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {Access} from '@/core/sdk/server/access/Access'
 import {KoboForm} from '@/core/sdk/server/kobo/KoboMapper'
@@ -14,7 +14,7 @@ import {Kobo} from 'kobo-sdk'
 import React, {ReactNode, useContext, useEffect, useMemo} from 'react'
 
 export interface DatabaseContext {
-  _forms: UseFetcher<(_: string) => ReturnType<ApiSdk['kobo']['form']['getAll']>>
+  _forms: UseFetcher<ApiSdk['kobo']['form']['getAll']>
   isAdmin?: boolean
   getForm: (_: Kobo.FormId) => KoboForm | undefined
   formsAccessible?: KoboForm[]
@@ -30,7 +30,7 @@ export const DatabaseProvider = ({children}: {children: ReactNode}) => {
   const {session} = useSession()
   const {api} = useAppSettings()
   const _forms = useFetcher(
-    (workspaceId: UUID) =>
+    ({workspaceId}: {workspaceId: UUID}) =>
       api.kobo.form.getAll({workspaceId}).then(_ => seq(_).sortByString(_ => _.name)) as Promise<KoboForm[]>,
   )
   const {toastHttpError} = useIpToast()
@@ -41,7 +41,7 @@ export const DatabaseProvider = ({children}: {children: ReactNode}) => {
   }, [_forms.get])
 
   useEffect(() => {
-    if (workspaceId) _forms.fetch({}, workspaceId)
+    if (workspaceId) _forms.fetch({}, {workspaceId})
   }, [workspaceId])
 
   const koboAccesses = useMemo(() => {

@@ -1,4 +1,4 @@
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {KoboMappedAnswer, KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
 import {IpBtn} from '@/shared/Btn'

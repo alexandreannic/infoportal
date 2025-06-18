@@ -1,4 +1,4 @@
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {Fender, Txt} from '@/shared'

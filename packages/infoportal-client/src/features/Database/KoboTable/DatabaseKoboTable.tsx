@@ -1,8 +1,8 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {queryKeys} from '@/core/query/store'
-import {useAnswers} from '@/core/query/useAnswers'
-import {useFormSchema} from '@/core/query/useFormSchema'
+import {useQueryAnswers} from '@/core/query/useQueryAnswers'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Access, AccessLevel} from '@/core/sdk/server/access/Access'
 import {KoboForm, KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
@@ -67,9 +67,9 @@ export const DatabaseTable = ({
   const {session} = useSession()
   const {workspaceId} = useWorkspaceRouter()
 
-  const querySchema = useFormSchema(formId)
+  const querySchema = useQuerySchema(formId)
 
-  const queryAnswers = useAnswers(formId)
+  const queryAnswers = useQueryAnswers(formId)
 
   const fetcherForm = useFetcher(() => (form ? Promise.resolve(form) : api.kobo.form.get({workspaceId, formId})))
 
@@ -119,7 +119,7 @@ export const DatabaseTable = ({
           access={access}
           refetch={refetch}
           loading={loading}
-          data={fetcherAnswers.get?.data}
+          data={queryAnswers.data?.data}
           form={form}
         >
           <DatabaseKoboTableContent onFiltersChange={onFiltersChange} onDataChange={onDataChange} />

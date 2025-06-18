@@ -1,30 +1,33 @@
 import {ReactNode} from 'react'
 import {IpBtn, Modal, Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {useKoboUpdateContext} from '@/core/context/KoboUpdateContext'
 import {Kobo} from 'kobo-sdk'
 import {AccessSum} from '@/core/sdk/server/access/Access'
+import {useQueryAnswerUpdate} from '@/core/query/useQueryUpdate'
+import {UUID} from 'infoportal-common'
 
 export const useCustomSelectedHeader = ({
   formId,
   access,
+  workspaceId,
   selectedIds,
 }: {
+  workspaceId: UUID
   access: AccessSum
   formId: Kobo.FormId
   selectedIds: Kobo.SubmissionId[]
 }): ReactNode => {
   const {m} = useI18n()
-  const ctx = useKoboUpdateContext()
-
+  const query = useQueryAnswerUpdate()
   return (
     <>
       {access.write && (
         <Modal
-          loading={ctx.asyncDeleteById.anyLoading}
+          loading={query.remove.isPending}
           onConfirm={(event, close) =>
-            ctx.asyncDeleteById
-              .call({
+            query.remove
+              .mutateAsync({
+                workspaceId,
                 formId,
                 answerIds: selectedIds,
               })

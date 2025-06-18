@@ -1,7 +1,7 @@
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
-import {useAnswers} from '@/core/query/useAnswers'
-import {useFormSchema} from '@/core/query/useFormSchema'
+import {useQueryAnswers} from '@/core/query/useQueryAnswers'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {
   columnBySchemaGenerator,
   ColumnBySchemaGeneratorProps,
@@ -25,7 +25,7 @@ const databaseUrlParamsValidation = yup.object({
 
 export const DatabaseKoboRepeatRoute = () => {
   const {formId, group} = databaseUrlParamsValidation.validateSync(useParams())
-  const querySchema = useFormSchema(formId)
+  const querySchema = useQuerySchema(formId)
 
   return (
     <Page
@@ -118,7 +118,7 @@ const DatabaseKoboRepeat = ({
     index: searchParams.get('index') ?? undefined,
   }
 
-  const queryAnswers = useAnswers(formId)
+  const queryAnswers = useQueryAnswers(formId)
   const data = queryAnswers.data?.data
   const groupInfo = schema.helper.group.getByName(group)!
   const paths = groupInfo.pathArr

@@ -1,5 +1,5 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {KoboFormSdk} from '@/core/sdk/server/kobo/KoboFormSdk'
 import {Datatable} from '@/shared/Datatable/Datatable'

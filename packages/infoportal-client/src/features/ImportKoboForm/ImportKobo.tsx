@@ -13,7 +13,7 @@ import {UUID} from 'infoportal-common'
 import {useIpToast} from '@/core/useToast'
 import {SelectKoboForm} from '@/features/ImportKoboForm/SelectKoboForm'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 
 export const ImportKobo = () => {
   const {m} = useI18n()

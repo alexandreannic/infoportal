@@ -4,7 +4,7 @@ import React, {useEffect} from 'react'
 import {useI18n} from '@/core/i18n'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useFetcher} from '@/shared/hook/useFetcher'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 
 export const DrcJobInputMultiple = (
   props: Omit<AutocompleteProps<string, any, any, any>, 'renderInput' | 'options'>,
@@ -41,10 +41,11 @@ export const DrcJobInputMultiple = (
 export const DrcJobInputSingle = (props: Omit<AutocompleteProps<string, any, any, any>, 'renderInput' | 'options'>) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
+  const {workspaceId} = useWorkspaceRouter()
   const drcJobsFetcher = useFetcher(api.user.fetchDrcJobs)
 
   useEffect(() => {
-    drcJobsFetcher.fetch()
+    drcJobsFetcher.fetch({}, {workspaceId})
   }, [])
 
   return (

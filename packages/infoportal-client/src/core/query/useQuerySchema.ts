@@ -7,7 +7,7 @@ import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {queryKeys} from './store'
 
-export const useFormSchema = (formId: Kobo.FormId) => {
+export const useQuerySchema = (formId: Kobo.FormId) => {
   const {api} = useAppSettings()
   const langIndex = useLangIndex(state => state.langIndex)
   const {toastAndThrowHttpError} = useIpToast()
@@ -22,5 +22,5 @@ export const useFormSchema = (formId: Kobo.FormId) => {
 }
 
 export const getSchema = (queryClient: QueryClient, formId: Kobo.FormId): undefined | KoboSchemaHelper.Bundle => {
-  return queryClient.getQueryData<KoboSchemaHelper.Bundle>([queryKeys.formSchema, formId])
+  return queryClient.getQueryData<KoboSchemaHelper.Bundle>(queryKeys.formSchema(formId))
 }

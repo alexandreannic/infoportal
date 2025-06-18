@@ -1,6 +1,5 @@
 import {appConfig} from '@/conf/AppConfig'
 import {AppSettingsProvider, useAppSettings} from '@/core/context/ConfigContext'
-import {WorkspaceProvider} from '@/core/context/WorkspaceContext'
 import {I18nProvider, useI18n} from '@/core/i18n'
 import {getMsalInstance} from '@/core/msal'
 import {ApiClient} from '@/core/sdk/server/ApiClient'
@@ -19,6 +18,7 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {DialogsProvider} from '@toolpad/core'
 import {useEffect, useMemo} from 'react'
 import {HashRouter, useLocation} from 'react-router-dom'
+import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -57,16 +57,13 @@ const AppWithConfig = () => {
         _ => <I18nProvider children={_} />,
         _ => <MsalProvider children={_} instance={msal} />,
         _ => <HashRouter children={_} />,
-        _ => <DialogsProvider children={_} />,
         _ => <SessionProvider children={_} />,
-        // _ => <KoboSchemaProvider children={_} />,
-        // _ => <KoboAnswersProvider children={_} />,
-        // _ => <KoboUpdateProvider children={_} />,
-        _ => <WorkspaceProvider children={_} />,
         _ => <QueryClientProvider client={queryClient} children={_} />,
+        _ => <DialogsProvider children={_} />,
       ]}
     >
       <AppWithBaseContext />
+      {settings.conf.production && <ReactQueryDevtools initialIsOpen={false} />}
     </Provide>
   )
 }

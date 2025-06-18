@@ -2,17 +2,17 @@ import {useQuery, useQueryClient} from '@tanstack/react-query'
 import {ApiPaginate} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useAppSettings} from '../context/ConfigContext'
-import {useWorkspaceRouter} from '../context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {KoboMappedAnswer, KoboMapper} from '../sdk/server/kobo/KoboMapper'
 import {queryKeys} from './store'
-import {useFormSchema} from './useFormSchema'
+import {useQuerySchema} from './useQuerySchema'
 import {duration} from '@axanc/ts-utils'
 
-export const useAnswers = (formId: Kobo.FormId) => {
+export const useQueryAnswers = (formId: Kobo.FormId) => {
   const {api} = useAppSettings()
   const {workspaceId} = useWorkspaceRouter()
   const queryClient = useQueryClient()
-  const querySchema = useFormSchema(formId)
+  const querySchema = useQuerySchema(formId)
 
   const query = useQuery<ApiPaginate<KoboMappedAnswer>>({
     queryKey: queryKeys.answers(formId),

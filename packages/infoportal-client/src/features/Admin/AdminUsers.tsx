@@ -1,5 +1,5 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useSession} from '@/core/Session/SessionContext'
 import {useCreateUser, useWorkspaceUsers} from '@/core/query/useUsersQuery'
@@ -16,22 +16,22 @@ import {seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {AddUserForm} from './AddUserForm'
+import {useQuerySession} from '@/core/query/useQuerySession'
 
 export const AdminUsers = () => {
   const {workspaceId} = useWorkspaceRouter()
   const queryUsers = useWorkspaceUsers(workspaceId)
   const queryUserCreate = useCreateUser(workspaceId)
 
-  const {api, conf} = useAppSettings()
-  const {session, setSession} = useSession()
-  const _connectAs = useFetcher(api.session.connectAs)
+  const {conf} = useAppSettings()
+  const querySession = useQuerySession()
+
   const {m, formatDate, formatDateTime} = useI18n()
   const navigate = useNavigate()
 
   const connectAs = async (email: string) => {
-    const session = await _connectAs.fetch({force: true, clean: true}, email)
+    await querySession.connectAs.mutateAsync(email)
     await navigate('/')
-    setSession(session)
   }
 
   const emailsLists = useMemo(() => queryUsers.data?.map(_ => _.email), [queryUsers.data])
@@ -150,9 +150,9 @@ export const AdminUsers = () => {
               align: 'right',
               renderQuick: _ => (
                 <IpIconBtn
-                  disabled={_.email === conf.contact || _.email === session.user.email}
+                  disabled={_.email === conf.contact || _.email === querySession.getMe.data?.email}
                   children="visibility"
-                  loading={_connectAs.loading}
+                  loading={querySession.connectAs.isPending}
                   onClick={() => connectAs(_.email)}
                   tooltip={m.connectAs}
                 />

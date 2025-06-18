@@ -1,7 +1,6 @@
 import {router} from '@/Router'
-import {useSession} from '@/core/Session/SessionContext'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useQueryWorkspace, useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
@@ -25,14 +24,17 @@ const lightThemeIcons = {
 } as const
 
 export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) => {
+  const {m} = useI18n()
+  const t = useTheme()
+
   const {sidebarOpen, showSidebarButton, setSidebarOpen, title} = useLayoutContext()
   const {workspaceId, changeWorkspace} = useWorkspaceRouter()
-  const {m} = useI18n()
-  const {session} = useSession()
-  const t = useTheme()
+
+  const queryWorkspaces = useQueryWorkspace()
   const {
     theme: {brightness, setBrightness},
   } = useAppSettings()
+
   return (
     <Slide direction="down" in={true}>
       <AppHeaderContainer
@@ -97,7 +99,7 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
           hideNullOption
           onChange={_ => _ && changeWorkspace(_)}
           sx={{width: 200, mr: 0.5}}
-          options={session?.workspaces.map(_ => ({
+          options={(queryWorkspaces.get.data ?? []).map(_ => ({
             value: _.id,
             children: (
               <>

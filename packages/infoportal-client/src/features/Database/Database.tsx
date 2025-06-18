@@ -1,7 +1,7 @@
 import {appConfig} from '@/conf/AppConfig'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
-import {useFormSchema} from '@/core/query/useFormSchema'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {DatabaseTableRoute} from '@/features/Database/KoboTable/DatabaseKoboTable'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
@@ -20,7 +20,7 @@ export const Database = () => {
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
 
-  const querySchema = useFormSchema(formId)
+  const querySchema = useQuerySchema(formId)
 
   const ctx = useDatabaseContext()
 

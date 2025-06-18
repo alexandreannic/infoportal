@@ -5,7 +5,7 @@ import {useDialogs} from '@toolpad/core'
 import {KoboSubmissionFlat, UUID} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {create} from 'zustand'
-import {getSchema} from '../query/useFormSchema'
+import {getSchema} from '../query/useQuerySchema'
 import {KoboUpdateModal} from '@/shared/koboEdit/KoboUpdateModal'
 
 type LangIndex = {
@@ -67,12 +67,18 @@ export const useKoboDialogs = () => {
     },
     openView: (params: OpenModalProps) => {
       const schema = getSchema(queryClient, params.formId)
-      if (!schema) return
+      if (!schema) {
+        console.error(`Missing schema ${params.formId}`)
+        return
+      }
       dialogs.open(DialogAnswerView, {schema, ...params})
     },
     openEdit: (params: OpenModalProps) => {
       const schema = getSchema(queryClient, params.formId)
-      if (!schema) return
+      if (!schema) {
+        console.error(`Missing schema ${params.formId}`)
+        return
+      }
       dialogs.open(DialogAnswerEdit, {schema, ...params})
     },
   }

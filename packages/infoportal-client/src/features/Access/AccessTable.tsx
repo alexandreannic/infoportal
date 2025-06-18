@@ -11,7 +11,7 @@ import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {UseFetcher, useFetcher} from '@/shared/hook/useFetcher'
 import {Txt} from '@/shared/Txt'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {useWorkspaceRouter} from '@/core/context/WorkspaceContext'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 
 export const AccessTable = ({
   isAdmin,

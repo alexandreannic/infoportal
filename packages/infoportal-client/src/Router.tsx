@@ -2,7 +2,6 @@ import {Navigate, Outlet, Route, Routes} from 'react-router-dom'
 import {objectToQueryString} from 'infoportal-common'
 import {Database} from '@/features/Database/Database'
 import {DatabaseList} from './features/Database/DatabaseList'
-import {DatabaseTableCustomRoute} from '@/features/Database/KoboTableCustom/DatabaseKoboTableCustom'
 import {DatabaseAccessRoute} from './features/Database/Access/DatabaseAccess'
 import {DatabaseKoboAnswerViewPage} from '@/features/Database/Dialog/DialogAnswerView'
 import {DatabaseKoboRepeatRoute} from './features/Database/RepeatGroup/DatabaseKoboRepeatGroup'
@@ -16,9 +15,6 @@ import {AdminCache} from '@/features/Admin/AdminCache'
 import React from 'react'
 import {Workspaces} from '@/features/Workspace/Workspaces'
 import {Provide} from './shared'
-import {KoboSchemaProvider} from './core/store/useLangIndex'
-import {KoboAnswersProvider} from './core/context/KoboAnswersContext'
-import {KoboUpdateProvider} from './core/context/KoboUpdateContext'
 import {Layout} from './shared/Layout'
 import {AppSidebar} from './core/layout/AppSidebar'
 import {AppHeader} from './core/layout/AppHeader'
@@ -74,14 +70,7 @@ export const Router = () => {
       <Route
         path={router.ws().root}
         element={
-          <Provide
-            providers={[
-              _ => <KoboSchemaProvider children={_} />,
-              _ => <KoboAnswersProvider children={_} />,
-              _ => <KoboUpdateProvider children={_} />,
-              _ => <DatabaseProvider children={_} />,
-            ]}
-          >
+          <Provide providers={[_ => <DatabaseProvider children={_} />]}>
             <Layout header={<AppHeader />} sidebar={<AppSidebar />}>
               <Outlet />
             </Layout>
@@ -98,7 +87,6 @@ export const Router = () => {
         </Route>
         <Route path={path(router.ws().database.root)}>
           <Route index path={path(router.ws().database.list)} element={<DatabaseList />} />
-          <Route path={path(router.ws().database.custom())} element={<DatabaseTableCustomRoute />} />
           <Route path={path(router.ws().database.form().root)} element={<Database />}>
             <Route path={path(router.ws().database.form().answer())} element={<DatabaseKoboAnswerViewPage />} />
             <Route path={path(router.ws().database.form().formCreator)} element={<FormCreator />} />
