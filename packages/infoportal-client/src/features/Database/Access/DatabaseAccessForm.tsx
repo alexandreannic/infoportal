@@ -1,6 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Kobo} from 'kobo-sdk'
-import {KoboCustomDirective, KoboSchemaHelper, nullValuesToUndefined} from 'infoportal-common'
+import {KoboCustomDirective, KoboSchemaHelper, nullValuesToUndefined, UUID} from 'infoportal-common'
 import {AppFeatureId} from '@/features/appFeatureId'
 import React, {ReactElement, useCallback, useMemo} from 'react'
 import {Modal, Txt} from '@/shared'
@@ -17,6 +17,7 @@ import {AccessForm, IAccessForm} from '@/features/Access/AccessForm'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {DirectiveTemplate, koboIconMap} from '@/features/Database/KoboTable/columns/columnBySchema'
+import {useQueryAccess} from '@/core/query/useQueryAccess'
 
 interface Form extends IAccessForm {
   question?: string
@@ -27,10 +28,12 @@ export const DatabaseAccessForm = ({
   formId,
   children,
   form,
+  workspaceId,
   onAdded,
 }: {
   onAdded?: () => void
   children: ReactElement
+  workspaceId: UUID
   formId: Kobo.FormId
   form: Kobo.Form
 }) => {
@@ -38,18 +41,7 @@ export const DatabaseAccessForm = ({
   const survey = form.content.survey
 
   const {m} = useI18n()
-  const {toastHttpError} = useIpToast()
-  const {api} = useAppSettings()
-
-  const _addAccess = useAsync(api.access.create)
-  const requestInConstToFixTsInference = (databaseId: Kobo.FormId) =>
-    api.access
-      .search({featureId: AppFeatureId.kobo_database})
-      .then(_ => _.filter(_ => _.params?.koboFormId === databaseId))
-  const _access = useFetcher(requestInConstToFixTsInference)
-
-  useEffectFn(_addAccess.error, toastHttpError)
-  useEffectFn(_access.error, toastHttpError)
+  const queryAccess = useQueryAccess(workspaceId)
 
   const accessForm = useForm<Form>()
 
@@ -88,8 +80,8 @@ export const DatabaseAccessForm = ({
   )
 
   const submit = ({selectBy, question, questionAnswer, ...f}: Form) => {
-    _addAccess
-      .call({
+    queryAccess.create
+      .mutateAsync({
         ...nullValuesToUndefined(f),
         featureId: AppFeatureId.kobo_database,
         params: KoboDatabaseAccessParams.create({
@@ -102,7 +94,7 @@ export const DatabaseAccessForm = ({
 
   return (
     <Modal
-      loading={_addAccess.loading}
+      loading={queryAccess.getAll.isLoading}
       confirmDisabled={!accessForm.formState.isValid}
       onConfirm={(_, close) =>
         accessForm.handleSubmit(_ => {
@@ -112,7 +104,7 @@ export const DatabaseAccessForm = ({
       }
       content={
         <Box sx={{width: 500}}>
-          <AccessForm form={accessForm} />
+          <AccessForm form={accessForm} workspaceId={workspaceId} />
           <AccessFormSection icon="filter_alt" label={m.filter}>
             <Controller
               name="question"

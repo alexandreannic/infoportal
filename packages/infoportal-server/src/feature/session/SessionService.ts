@@ -15,9 +15,7 @@ import {AppSession, UserProfile} from './AppSession.js'
 export class SessionService {
   constructor(
     private prisma: PrismaClient,
-    private group = new GroupService(prisma),
     private workspace = new WorkspaceService(prisma),
-    private access = new AccessService(prisma),
     private log: AppLogger = app.logger('SessionService'),
   ) {}
 
@@ -41,12 +39,12 @@ export class SessionService {
     const oauth2Client = new google.auth.OAuth2()
     oauth2Client.setCredentials({access_token: userBody.accessToken})
 
-    const jobTitle = await google
-      .admin({version: 'directory_v1', auth: oauth2Client})
-      .users.get({userKey: 'me'})
-      .then(user => {
-        return user.data.organizations?.[0]?.title
-      })
+    // const jobTitle = await google
+    //   .admin({version: 'directory_v1', auth: oauth2Client})
+    //   .users.get({userKey: 'me'})
+    //   .then(user => {
+    //     return user.data.organizations?.[0]?.title
+    //   })
 
     const oauth2 = google.oauth2({version: 'v2', auth: oauth2Client})
     const userInfo = await oauth2.userinfo.get()
@@ -72,7 +70,7 @@ export class SessionService {
       email,
       accessToken: userBody.accessToken,
       name,
-      drcJob: jobTitle,
+      // drcJob: jobTitle,
       avatar,
     })
 
@@ -176,14 +174,8 @@ export class SessionService {
   }
 
   readonly get = async (user: User): Promise<UserProfile> => {
-    const [groups, accesses, workspaces] = await Promise.all([
-      this.group.search({user}),
-      this.access.searchForUser({user}),
-      this.workspace.getByUser(user.email),
-    ])
+    const workspaces = await this.workspace.getByUser(user.email)
     return {
-      groups,
-      accesses,
       workspaces,
       user,
     }

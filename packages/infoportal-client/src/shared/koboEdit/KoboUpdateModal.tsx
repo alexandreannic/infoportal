@@ -14,7 +14,7 @@ import {Kobo} from 'kobo-sdk'
 import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {Obj} from '@axanc/ts-utils'
 import {DialogProps} from '@toolpad/core'
-import {useQueryAnswerUpdate} from '@/core/query/useQueryUpdate'
+import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 
 export type KoboEditModalOption = {
   value: string | null

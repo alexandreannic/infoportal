@@ -5,17 +5,22 @@ import {UUID} from 'infoportal-common'
 import {UserSdk} from '@/core/sdk/server/user/UserSdk'
 
 interface SearchByFeature {
-  (_?: {featureId: AppFeatureId.kobo_database; email?: string}): Promise<Access<KoboDatabaseAccessParams>[]>
+  (_: {
+    workspaceId: UUID
+    featureId: AppFeatureId.kobo_database
+    email?: string
+  }): Promise<Access<KoboDatabaseAccessParams>[]>
 
-  (_?: {featureId?: AppFeatureId; email?: string}): Promise<Access<any>[]>
+  (_: {workspaceId: UUID; featureId?: AppFeatureId; email?: string}): Promise<Access<any>[]>
 }
 
 type FeatureCreateBase = Omit<Access, 'drcJob' | 'id' | 'createdAt' | 'updatedAt' | 'featureId' | 'params'> & {
   drcJob?: string[]
   groupId?: UUID
+  workspaceId: UUID
 }
 
-interface AccessUpdate extends Pick<Access, 'drcJob' | 'drcOffice' | 'level'> {}
+interface AccessUpdate extends Pick<Access, 'id' | 'workspaceId' | 'drcJob' | 'drcOffice' | 'level'> {}
 
 interface AccessCreate {
   (
@@ -40,24 +45,31 @@ export class AccessSdk {
       return !featureId || access.featureId === featureId
     }
 
-  readonly create: AccessCreate = async body => {
-    return this.client.put<Access>(`/access`, {body})
+  readonly create: AccessCreate = async ({workspaceId, ...body}) => {
+    return this.client.put<Access>(`/${workspaceId}/access`, {body})
   }
 
-  readonly update = async (id: string, body: AccessUpdate) => {
-    return this.client.post<Access>(`/access/${id}`, {body})
+  readonly update = async ({workspaceId, id, ...body}: AccessUpdate) => {
+    return this.client.post<Access>(`/${workspaceId}/access/${id}`, {body})
   }
 
-  readonly remove = (id: UUID) => {
-    return this.client.delete<Access>(`/access/${id}`)
+  readonly remove = ({workspaceId, id}: {workspaceId: UUID; id: UUID}) => {
+    return this.client.delete<Access>(`/${workspaceId}/access/${id}`)
   }
 
-  readonly search: SearchByFeature = <T = any>(params?: AccessSearch): Promise<Access<T>[]> => {
-    return this.client.get<Record<keyof Access, any>[]>(`/access`, {qs: params}).then(_ => _.map(Access.map))
+  readonly search: SearchByFeature = <T = any>({workspaceId, ...params}: AccessSearch): Promise<Access<T>[]> => {
+    return this.client
+      .get<Record<keyof Access, any>[]>(`/${workspaceId}/access`, {qs: params})
+      .then(_ => _.map(Access.map))
   }
 
-  readonly searchForConnectedUser: SearchByFeature = <T = any>(params?: AccessSearch): Promise<Access<T>[]> => {
-    return this.client.get<Record<keyof Access, any>[]>(`/access/me`, {qs: params}).then(_ => _.map(Access.map))
+  readonly searchForConnectedUser: SearchByFeature = <T = any>({
+    workspaceId,
+    ...params
+  }: AccessSearch): Promise<Access<T>[]> => {
+    return this.client
+      .get<Record<keyof Access, any>[]>(`/${workspaceId}/access/me`, {qs: params})
+      .then(_ => _.map(Access.map))
   }
 
   // readonly searchByFeature: SearchByFeature = (featureId) => {

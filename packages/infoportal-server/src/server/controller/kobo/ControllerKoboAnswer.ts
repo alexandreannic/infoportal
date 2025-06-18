@@ -8,7 +8,7 @@ import {validateApiPaginate} from '../../../core/Type.js'
 import {Kobo} from 'kobo-sdk'
 import {Obj} from '@axanc/ts-utils'
 import {app} from '../../../index.js'
-import {isAuthenticated} from '../../Routes.js'
+import {getWorkspaceId, isAuthenticated} from '../../Routes.js'
 import {AppError} from '../../../helper/Errors.js'
 
 export interface KoboAnswersFilters extends Partial<Period> {
@@ -102,11 +102,12 @@ export class ControllerKoboAnswer {
 
   readonly searchByUserAccess = async (req: Request, res: Response, next: NextFunction) => {
     if (!isAuthenticated(req)) throw new AppError.Forbidden()
+    const workspaceId = getWorkspaceId(req)
     const {formId} = req.params
     const user = req.session.app.user
     const filters = await answersFiltersValidation.validate(req.body)
     const paginate = await validateApiPaginate.validate(req.body)
-    const answers = await this.service.searchAnswersByUsersAccess({formId, filters, paginate, user})
+    const answers = await this.service.searchAnswersByUsersAccess({workspaceId, formId, filters, paginate, user})
     res.send(answers)
   }
 }

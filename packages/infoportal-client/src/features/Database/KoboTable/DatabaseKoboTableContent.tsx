@@ -29,7 +29,7 @@ import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
-import {useQueryAnswerUpdate} from '@/core/query/useQueryUpdate'
+import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()

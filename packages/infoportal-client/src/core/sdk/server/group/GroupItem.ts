@@ -2,6 +2,7 @@ import {UUID} from 'infoportal-common'
 import {AccessLevel} from '@/core/sdk/server/access/Access'
 
 export interface Group {
+  workspaceId: UUID
   id: UUID
   name: string
   desc?: string

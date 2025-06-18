@@ -2,7 +2,6 @@ import {appConfig} from '@/conf/AppConfig'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {DatabaseTableRoute} from '@/features/Database/KoboTable/DatabaseKoboTable'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
@@ -10,32 +9,38 @@ import {useEffect, useMemo} from 'react'
 import {useLocation, useParams} from 'react-router'
 import {NavLink, Outlet} from 'react-router-dom'
 import * as yup from 'yup'
+import {useQueryForm} from '@/core/query/useQueryForm'
 
 export const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
 })
 
 export const Database = () => {
+  const {workspaceId} = useWorkspaceRouter()
   const {formId} = databaseUrlParamsValidation.validateSync(useParams())
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
-
-  const querySchema = useQuerySchema(formId)
-
-  const ctx = useDatabaseContext()
-
   const {pathname} = useLocation()
   const {router} = useWorkspaceRouter()
 
+  const querySchema = useQuerySchema(formId)
+  const queryForm = useQueryForm(workspaceId)
+
+  const currentForm = queryForm.getForm(formId)
+
   useEffect(() => {
-    if (ctx.getForm(formId)?.name) setTitle(m._koboDatabase.title(ctx.getForm(formId)?.name))
+    if (currentForm) setTitle(m._koboDatabase.title(currentForm.name))
     return () => setTitle(m._koboDatabase.title())
-  }, [ctx._forms.get, formId])
+  }, [queryForm.accessibleForms.data, formId])
 
   const schema = querySchema.data
   const repeatGroups = useMemo(() => {
     return schema?.helper.group.search().map(_ => _.name)
   }, [schema])
+
+  if (!currentForm) {
+    return <></>
+  }
 
   return (
     <>
@@ -91,7 +96,7 @@ export const Database = () => {
           ))}
       </Tabs>
       <div style={{display: pathname === router.database.form(formId).answers ? 'block' : 'none'}}>
-        <DatabaseTableRoute />
+        <DatabaseTableRoute form={currentForm} />
       </div>
       <Outlet />
     </>

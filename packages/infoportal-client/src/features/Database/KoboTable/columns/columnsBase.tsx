@@ -8,7 +8,7 @@ import {Messages} from '@/core/i18n/localization/en'
 import {KoboSubmissionFlat, UUID} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useKoboDialogs} from '@/core/store/useLangIndex'
-import {useQueryAnswerUpdate} from '@/core/query/useQueryUpdate'
+import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 
 export const getColumnsBase = ({
   selectedIds,

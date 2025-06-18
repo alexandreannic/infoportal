@@ -5,12 +5,27 @@ import {UUID} from 'infoportal-common'
 import {InferType} from 'yup'
 import {AccessService} from '../access/AccessService.js'
 
-export type GroupItemCreateParams = InferType<typeof GroupItemService.createSchema>
-export type GroupItemUpdateParams = InferType<typeof GroupItemService.updateSchema>
+export type GroupItemCreateParams = InferType<typeof GroupItemService.schema.create>
+export type GroupItemUpdateParams = InferType<typeof GroupItemService.schema.update>
 
 export class GroupItemService {
   constructor(private prisma: PrismaClient) {}
 
+  static readonly schema = {
+    create: yup.object({
+      level: AccessService.levelSchema,
+      drcJob: yup.array().of(AccessService.drcJobSchema).nullable(),
+      drcOffice: AccessService.drcOfficeSchema.nullable(),
+      email: yup.string().nullable(),
+    }),
+
+    update: yup.object({
+      level: yup.mixed<FeatureAccessLevel>().oneOf(Obj.values(FeatureAccessLevel)).optional(),
+      drcJob: AccessService.drcJobSchema.optional().nullable(),
+      drcOffice: AccessService.drcOfficeSchema.optional().nullable(),
+      email: yup.string().optional().nullable(),
+    })
+  }
   static readonly createSchema = yup.object({
     level: AccessService.levelSchema,
     drcJob: yup.array().of(AccessService.drcJobSchema).nullable(),

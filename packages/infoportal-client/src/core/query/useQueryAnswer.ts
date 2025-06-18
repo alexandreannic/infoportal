@@ -4,7 +4,7 @@ import {Kobo} from 'kobo-sdk'
 import {useAppSettings} from '../context/ConfigContext'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {KoboMappedAnswer, KoboMapper} from '../sdk/server/kobo/KoboMapper'
-import {queryKeys} from './store'
+import {queryKeys} from './query.index'
 import {useQuerySchema} from './useQuerySchema'
 import {duration} from '@axanc/ts-utils'
 

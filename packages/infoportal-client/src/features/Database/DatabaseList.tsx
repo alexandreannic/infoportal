@@ -1,4 +1,3 @@
-import {useAppSettings} from '@/core/context/ConfigContext'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {KoboFormSdk} from '@/core/sdk/server/kobo/KoboFormSdk'
@@ -7,32 +6,31 @@ import {Page, PageTitle} from '@/shared/Page'
 import {Panel} from '@/shared/Panel'
 import {TableIconBtn} from '@/shared/TableIcon'
 import {Txt} from '@/shared/Txt'
-import {useFetcher} from '@/shared/hook/useFetcher'
 import {seq} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
-import {useEffect, useMemo} from 'react'
+import {useMemo} from 'react'
 import {NavLink} from 'react-router-dom'
-import {useDatabaseContext} from './DatabaseContext'
+import {useQueryServer} from '@/core/query/useQueryServer'
+
+import {useQueryForm} from '@/core/query/useQueryForm'
 
 export const DatabaseList = () => {
-  const ctx = useDatabaseContext()
-  const {api} = useAppSettings()
   const {workspaceId, router} = useWorkspaceRouter()
-  const fetcherServers = useFetcher(api.kobo.server.getAll)
   const {formatDate, m} = useI18n()
   const t = useTheme()
 
-  useEffect(() => {
-    fetcherServers.fetch({}, {workspaceId})
-  }, [])
+  const queryServer = useQueryServer(workspaceId)
+  const queryForm = useQueryForm(workspaceId)
+
+  const formsAccessible = queryForm.accessibleForms.data
 
   const indexServers = useMemo(() => {
-    return seq(fetcherServers.get).groupByFirst(_ => _.id)
-  }, [fetcherServers.get])
+    return seq(queryServer.getAll.data).groupByFirst(_ => _.id)
+  }, [queryServer.getAll.data])
 
   return (
     <Page width="full">
-      {ctx.formsAccessible && ctx.formsAccessible.length > 0 && (
+      {formsAccessible && formsAccessible.length > 0 && (
         <>
           <PageTitle>{m.selectADatabase}</PageTitle>
           <Panel>
@@ -40,7 +38,7 @@ export const DatabaseList = () => {
               showExportBtn
               defaultLimit={500}
               id="kobo-index"
-              data={ctx.formsAccessible}
+              data={formsAccessible}
               columns={[
                 {
                   id: 'status',

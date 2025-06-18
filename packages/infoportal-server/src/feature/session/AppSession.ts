@@ -8,7 +8,5 @@ export type AppSession = {
 
 export type UserProfile = {
   user: User
-  groups: Group[]
-  accesses: Access[]
   workspaces: Workspace[]
 }

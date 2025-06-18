@@ -17,6 +17,8 @@ import {AccessTable} from '@/features/Access/AccessTable'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {Kobo} from 'kobo-sdk'
 import {useQuerySession} from '@/core/query/useQuerySession'
+import {useQueryAccess} from '@/core/query/useQueryAccess'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 
 export const DatabaseAccessRoute = () => {
   const {api} = useAppSettings()
@@ -37,45 +39,30 @@ export const DatabaseAccessRoute = () => {
 
 export const DatabaseAccess = ({formId, form}: {formId: Kobo.FormId; form: Kobo.Form}) => {
   const {m} = useI18n()
-  const {api} = useAppSettings()
+  const {workspaceId} = useWorkspaceRouter()
   const querySession = useQuerySession()
+  const queryAccess = useQueryAccess(workspaceId)
 
-  const session = querySession.getMe.data
+  const session = querySession.getMe.data!
 
   const accessSum = useMemo(() => {
-    return Access.toSum(
-      session.accesses
-        .filter(Access.filterByFeature(AppFeatureId.kobo_database))
-        .filter(_ => _.params?.koboFormId === formId),
-      session.admin,
-    )
-  }, [session, session.accesses])
-
-  const requestInConstToFixTsInference = () =>
-    api.access.search({featureId: AppFeatureId.kobo_database}).then(_ => _.filter(_ => _.params?.koboFormId === formId))
-  const _get = useFetcher(requestInConstToFixTsInference)
-  const _remove = useAsync(api.access.remove, {requestKey: _ => _[0]})
+    return Access.toSum(queryAccess.accessesByFormIdMap[formId] ?? [], session.admin)
+  }, [session, queryAccess.getKoboAccess])
 
   const refresh = () => {
-    _get.fetch({force: true, clean: false})
+    queryAccess.getAll.refetch()
   }
-
-  useEffect(() => {
-    _get.fetch({})
-  }, [formId])
 
   return (
     <Box>
       <Panel>
         <AccessTable
           isAdmin={accessSum.admin}
-          asyncRemove={_remove}
-          fetcherData={_get}
           renderParams={(_: KoboDatabaseAccessParams) => JSON.stringify(_.filters)}
           onRemoved={refresh}
           header={
             accessSum.admin && (
-              <DatabaseAccessForm formId={formId} form={form} onAdded={refresh}>
+              <DatabaseAccessForm workspaceId={workspaceId} formId={formId} form={form} onAdded={refresh}>
                 <IpBtn sx={{mr: 1}} variant="contained" icon="person_add">
                   {m.grantAccess}
                 </IpBtn>

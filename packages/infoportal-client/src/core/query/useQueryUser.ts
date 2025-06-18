@@ -3,7 +3,7 @@ import {WorkspaceAccessLevel} from '@prisma/client'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
-import {queryKeys} from './store'
+import {queryKeys} from './query.index'
 import {UUID} from 'infoportal-common'
 
 export const useQueryUser = (workspaceId: UUID) => {
@@ -13,7 +13,7 @@ export const useQueryUser = (workspaceId: UUID) => {
   const queryClient = useQueryClient()
 
   const get = useQuery({
-    queryKey: queryKeys.workspaceUsers(workspaceId),
+    queryKey: queryKeys.user(workspaceId),
     queryFn: () => api.user.search({workspaceId}).catch(toastAndThrowHttpError),
     staleTime: duration(10, 'minute'),
   })
@@ -23,7 +23,7 @@ export const useQueryUser = (workspaceId: UUID) => {
       return api.workspaceAccess.create({..._, workspaceId})
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: queryKeys.workspaceUsers(workspaceId)})
+      queryClient.invalidateQueries({queryKey: queryKeys.user(workspaceId)})
     },
     onError: toastHttpError,
   })

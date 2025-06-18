@@ -11,8 +11,8 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {DrcJobInputMultiple} from '@/shared/customInput/DrcJobInput'
-import {useFetcher} from '@/shared/hook/useFetcher'
 import {Datatable} from '@/shared/Datatable/Datatable'
+import {useQueryGroup} from '@/core/query/useQueryGroup'
 
 export interface IAccessForm {
   selectBy?: 'email' | 'job' | 'group' | null
@@ -23,7 +23,7 @@ export interface IAccessForm {
   level: AccessLevel
 }
 
-export const AccessForm = ({form}: {form: UseFormReturn<IAccessForm>}) => {
+export const AccessForm = ({workspaceId, form}: {workspaceId: UUID; form: UseFormReturn<IAccessForm>}) => {
   const {m} = useI18n()
   const watchSelectBy = form.watch('selectBy')
   const watch = form.watch()
@@ -72,7 +72,7 @@ export const AccessForm = ({form}: {form: UseFormReturn<IAccessForm>}) => {
           {
             group: (
               <>
-                <AccessFormInputGroup form={form} />
+                <AccessFormInputGroup workspaceId={workspaceId} form={form} />
               </>
             ),
             job: (
@@ -164,17 +164,13 @@ export const AccessFormInputDrcJob = ({form, sx}: {form: UseFormReturn<IAccessFo
   )
 }
 
-export const AccessFormInputGroup = ({form}: {form: UseFormReturn<IAccessForm>}) => {
+export const AccessFormInputGroup = ({workspaceId, form}: {workspaceId: UUID; form: UseFormReturn<IAccessForm>}) => {
   const {m} = useI18n()
-  const {api} = useAppSettings()
-  const fetcherGroups = useFetcher(api.group.search)
-  const groupIndex = useMemo(() => {
-    return seq(fetcherGroups.get).groupByFirst(_ => _.id)
-  }, [fetcherGroups.get])
+  const queryGroup = useQueryGroup(workspaceId)
 
-  useEffect(() => {
-    fetcherGroups.fetch()
-  }, [])
+  const groupIndex = useMemo(() => {
+    return seq(queryGroup.getAll.data).groupByFirst(_ => _.id)
+  }, [queryGroup.getAll.data])
 
   return (
     <>
@@ -187,10 +183,10 @@ export const AccessFormInputGroup = ({form}: {form: UseFormReturn<IAccessForm>})
             {...field}
             value={groupIndex[field.value!]}
             onChange={(e: any, _) => _ && onChange(_.id ?? undefined)}
-            loading={fetcherGroups.loading}
+            loading={queryGroup.getAll.isLoading}
             getOptionLabel={_ => _.name}
             // renderTags={_ => }
-            options={fetcherGroups.get ?? []}
+            options={queryGroup.getAll.data ?? []}
             renderOption={(props, option, state, ownerState) => (
               <Box
                 sx={{

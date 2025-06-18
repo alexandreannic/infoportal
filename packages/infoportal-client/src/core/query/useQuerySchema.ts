@@ -5,14 +5,15 @@ import {KoboSchemaHelper} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
-import {queryKeys} from './store'
+import {queryKeys} from './query.index'
+import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 
 export const useQuerySchema = (formId: Kobo.FormId) => {
   const {api} = useAppSettings()
   const langIndex = useLangIndex(state => state.langIndex)
   const {toastAndThrowHttpError} = useIpToast()
   return useQuery({
-    queryKey: queryKeys.formSchema(formId),
+    queryKey: queryKeys.schema(formId),
     queryFn: async () => {
       const schema = await api.koboApi.getSchema({id: formId}).catch(toastAndThrowHttpError)
       return KoboSchemaHelper.buildBundle({schema: schema!, langIndex})
@@ -22,5 +23,5 @@ export const useQuerySchema = (formId: Kobo.FormId) => {
 }
 
 export const getSchema = (queryClient: QueryClient, formId: Kobo.FormId): undefined | KoboSchemaHelper.Bundle => {
-  return queryClient.getQueryData<KoboSchemaHelper.Bundle>(queryKeys.formSchema(formId))
+  return queryClient.getQueryData<KoboSchemaHelper.Bundle>(queryKeys.schema(formId))
 }

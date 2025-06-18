@@ -2,6 +2,10 @@ import {addMonths, differenceInMonths, isAfter, isBefore, startOfMonth} from 'da
 import {isValidElement, ReactElement, ReactNode} from 'react'
 
 export namespace Utils {
+  export const stableStringify = (obj: any): string => {
+    return JSON.stringify(obj, Object.keys(obj).sort())
+  }
+
   export const clearParenthesis = (_: string) => _.replaceAll(/(.*)\([^(]*\)/g, '$1')
 
   export const extractInnerText = (node: ReactNode | ReactElement): string => {

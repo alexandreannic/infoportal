@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
 import {AccessService} from '../../feature/access/AccessService.js'
 import {idParamsSchema} from '../../helper/Utils.js'
-import {isAuthenticated} from '../Routes.js'
+import {getWorkspaceId, isAuthenticated} from '../Routes.js'
 import {AppError} from '../../helper/Errors.js'
 
 export class ControllerAccess {
@@ -12,7 +12,10 @@ export class ControllerAccess {
   ) {}
 
   readonly create = async (req: Request, res: Response, next: NextFunction) => {
-    const body = await AccessService.createSchema.validate(req.body)
+    const body = await AccessService.createSchema.validate({
+      ...req.body,
+      workspaceId: req.params.workspaceId,
+    })
     const data = await this.service.create(body)
     res.send(data)
   }
@@ -31,15 +34,21 @@ export class ControllerAccess {
   }
 
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
+    const workspaceId = getWorkspaceId(req)
     const qs = await AccessService.searchSchema.validate(req.query)
-    const data = await this.service.searchForUser(qs)
+    const data = await this.service.searchForUser({workspaceId, ...qs})
     res.send(data)
   }
 
   readonly searchMine = async (req: Request, res: Response, next: NextFunction) => {
     if (!isAuthenticated(req)) throw new AppError.Forbidden()
+    const workspaceId = getWorkspaceId(req)
     const qs = await AccessService.searchSchema.validate(req.query)
-    const data = await this.service.searchForUser({...qs, user: req.session.app.user})
+    const data = await this.service.searchForUser({
+      workspaceId,
+      ...qs,
+      user: req.session.app.user,
+    })
     res.send(data)
   }
 }

@@ -22,9 +22,14 @@ import {ControllerKoboApiXlsImport} from './controller/kobo/ControllerKoboApiXls
 import {ControllerWorkspace} from './controller/ControllerWorkspace.js'
 import {AuthRequest} from '../typings'
 import {ControllerWorkspaceAccess} from './controller/ControllerWorkspaceAccess.js'
+import {UUID} from 'infoportal-common'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
+}
+
+export const getWorkspaceId = (req: Request): UUID => {
+  return req.params.workspaceId
 }
 
 export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Routes')) => {
@@ -94,6 +99,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session/me', errorCatcher(session.getMe))
 
+    router.get('/workspace/:id/me', auth(), errorCatcher(workspace.getMe))
     router.put('/workspace', auth(), errorCatcher(workspace.create))
     router.post('/workspace/check-slug', auth(), errorCatcher(workspace.checkSlug))
     router.post('/workspace/:id', auth(), errorCatcher(workspace.update))
@@ -107,20 +113,20 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     router.delete('/proxy/:id', auth({adminOnly: true}), errorCatcher(proxy.delete))
     router.get('/proxy', errorCatcher(proxy.search))
 
-    router.get('/group/item', auth({adminOnly: true}), errorCatcher(accessGroup.getItems))
-    router.post('/group/item/:id', auth({adminOnly: true}), errorCatcher(accessGroup.updateItem))
-    router.delete('/group/item/:id', auth({adminOnly: true}), errorCatcher(accessGroup.removeItem))
-    router.put('/group/:id/item', auth({adminOnly: true}), errorCatcher(accessGroup.createItem))
-    router.post('/group', auth({adminOnly: true}), errorCatcher(accessGroup.searchWithItems))
-    router.put('/group', auth({adminOnly: true}), errorCatcher(accessGroup.create))
-    router.post('/group/:id', auth({adminOnly: true}), errorCatcher(accessGroup.update))
-    router.delete('/group/:id', auth({adminOnly: true}), errorCatcher(accessGroup.remove))
+    router.get('/:workspaceId/group/item', auth({adminOnly: true}), errorCatcher(accessGroup.getItems))
+    router.post('/:workspaceId/group/item/:id', auth({adminOnly: true}), errorCatcher(accessGroup.updateItem))
+    router.delete('/:workspaceId/group/item/:id', auth({adminOnly: true}), errorCatcher(accessGroup.removeItem))
+    router.put('/:workspaceId/group/:id/item', auth({adminOnly: true}), errorCatcher(accessGroup.createItem))
+    router.post('/:workspaceId/group', auth({adminOnly: true}), errorCatcher(accessGroup.searchWithItems))
+    router.put('/:workspaceId/group', auth({adminOnly: true}), errorCatcher(accessGroup.create))
+    router.post('/:workspaceId/group/:id', auth({adminOnly: true}), errorCatcher(accessGroup.update))
+    router.delete('/:workspaceId/group/:id', auth({adminOnly: true}), errorCatcher(accessGroup.remove))
 
-    router.get('/access/me', auth(), errorCatcher(access.searchMine))
-    router.get('/access', auth(), errorCatcher(access.search))
-    router.put('/access', auth(), errorCatcher(access.create))
-    router.post('/access/:id', auth(), errorCatcher(access.update))
-    router.delete('/access/:id', auth(), errorCatcher(access.remove))
+    router.get('/:workspaceId/access/me', auth(), errorCatcher(access.searchMine))
+    router.get('/:workspaceId/access', auth(), errorCatcher(access.search))
+    router.put('/:workspaceId/access', auth(), errorCatcher(access.create))
+    router.post('/:workspaceId/access/:id', auth(), errorCatcher(access.update))
+    router.delete('/:workspaceId/access/:id', auth(), errorCatcher(access.remove))
 
     router.post('/:workspaceId/user/me', auth(), errorCatcher(user.updateMe))
     router.get('/:workspaceId/user', auth(), errorCatcher(user.search))

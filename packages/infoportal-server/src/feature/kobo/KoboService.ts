@@ -54,17 +54,19 @@ export class KoboService {
 
   private readonly _searchAnswersByUsersAccess = async ({
     user,
+    workspaceId,
     ...params
   }: {
     formId: string
     filters: KoboAnswersFilters
     paginate?: Partial<ApiPagination>
     user?: User
+    workspaceId: UUID
   }): Promise<ApiPaginate<DbKoboAnswer>> => {
     if (!user) return ApiPaginateHelper.make()([])
     if (!user.admin) {
       const access = await this.access
-        .searchForUser({featureId: AppFeatureId.kobo_database, user})
+        .searchForUser({workspaceId, featureId: AppFeatureId.kobo_database, user})
         .then(_ => seq(_).filter(_ => _.params?.koboFormId === params.formId))
       if (access.length === 0) return ApiPaginateHelper.make()([])
       const hasEmptyFilter = access.some(_ => !_.params?.filters || Object.keys(_.params.filters).length === 0)

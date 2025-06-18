@@ -1,6 +1,5 @@
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
-import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {Fender, Txt} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
 import {Box, BoxProps, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
@@ -9,6 +8,8 @@ import {useMemo} from 'react'
 import {Controller, useForm} from 'react-hook-form'
 import {NavLink} from 'react-router-dom'
 import {styleUtils} from '../theme'
+
+import {useQueryForm} from '@/core/query/useQueryForm'
 
 type Form = {
   id: string
@@ -40,16 +41,17 @@ const SearchInput = ({sx, ...props}: React.InputHTMLAttributes<HTMLInputElement>
 }
 
 export const AppSidebar = () => {
-  const ctx = useDatabaseContext()
+  const {workspaceId} = useWorkspaceRouter()
   const {m} = useI18n()
   const t = useTheme()
   const {router} = useWorkspaceRouter()
   const searchForm = useForm<{name: string}>()
   const values = searchForm.watch()
+  const queryForm = useQueryForm(workspaceId)
 
   const forms = useMemo(() => {
     return (
-      ctx.formsAccessible?.map(_ => ({
+      queryForm.accessibleForms.data?.map(_ => ({
         ..._,
         id: _.id,
         url: router.database.form(_.id).root,
@@ -69,7 +71,7 @@ export const AppSidebar = () => {
     //     }),
     //     parsedName: KoboFormSdk.parseFormName(_.name),
     //   })),
-  }, [ctx.formsAccessible])
+  }, [queryForm.accessibleForms.data])
 
   const fuse = useMemo(() => {
     return new Fuse(forms, {
@@ -105,7 +107,7 @@ export const AppSidebar = () => {
         {({isActive, isPending}) => <SidebarItem icon="home">{m.forms}</SidebarItem>}
       </NavLink>
       <SidebarHr />
-      {ctx._forms.loading ? (
+      {queryForm.accessibleForms.isLoading ? (
         <>
           <SidebarItem size="tiny">
             <Skeleton sx={{width: 160, height: 30}} />
@@ -120,7 +122,7 @@ export const AppSidebar = () => {
             <Skeleton sx={{width: 160, height: 30}} />
           </SidebarItem>
         </>
-      ) : ctx.formsAccessible?.length === 0 ? (
+      ) : queryForm.accessibleForms.data?.length === 0 ? (
         <Fender
           type="empty"
           size="small"

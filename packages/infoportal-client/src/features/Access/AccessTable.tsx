@@ -12,42 +12,37 @@ import {UseFetcher, useFetcher} from '@/shared/hook/useFetcher'
 import {Txt} from '@/shared/Txt'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
+import {useQueryAccess} from '@/core/query/useQueryAccess'
 
 export const AccessTable = ({
   isAdmin,
   header,
   onRemoved,
   renderParams = _ => JSON.stringify(_),
-  fetcherData,
-  asyncRemove,
 }: {
   isAdmin?: boolean
-  fetcherData: UseFetcher<() => Promise<Access[]>>
-  asyncRemove: UseAsyncMultiple<(_: UUID) => Promise<any>>
   renderParams?: (_: any) => ReactNode
   onRemoved?: (_: UUID) => void
-  // data: Access[] | undefined
   header?: ReactNode
 }) => {
   const {workspaceId} = useWorkspaceRouter()
-  const {m, formatDate, formatDateTime} = useI18n()
+  const {m, formatDate} = useI18n()
   const {api} = useAppSettings()
-  const _update = useAsync(api.access.update, {requestKey: ([id]) => id})
   const drcJobs = useFetcher(api.user.fetchDrcJobs)
+  const queryAccess = useQueryAccess(workspaceId)
 
   useEffect(() => {
     drcJobs.fetch({}, {workspaceId})
-    fetcherData.fetch({force: true, clean: false})
-  }, [_update.callIndex])
+  }, [])
 
   return (
     <Datatable<Access>
       defaultLimit={100}
       id="access"
       getRenderRowKey={_ => _.id}
-      loading={fetcherData.loading}
+      loading={queryAccess.getAll.isLoading}
       header={header}
-      data={fetcherData.get}
+      data={queryAccess.getAll.data}
       columns={[
         {
           width: 80,
@@ -74,7 +69,7 @@ export const AccessTable = ({
           renderQuick: _ => _.drcOffice,
           type: 'select_one',
           options: () =>
-            seq(fetcherData.get?.map(_ => _.drcOffice))
+            seq(queryAccess.getAll.data?.map(_ => _.drcOffice))
               .distinct(_ => _)
               .compact()
               .map(_ => ({value: _, label: _})),
@@ -105,7 +100,7 @@ export const AccessTable = ({
                   <IpSelectSingle<AccessLevel>
                     value={row.level}
                     placeholder=""
-                    onChange={_ => _update.call(row.id, {level: _ as AccessLevel})}
+                    onChange={_ => queryAccess.update.mutate({id: row.id, level: _ as AccessLevel})}
                     hideNullOption
                     disabled={!!row.groupName}
                     options={Obj.keys(AccessLevel)}
@@ -135,8 +130,8 @@ export const AccessTable = ({
                 renderQuick: (_: Access) => {
                   return (
                     <TableIconBtn
-                      loading={asyncRemove.loading[_.id]}
-                      onClick={() => asyncRemove.call(_.id).then(() => onRemoved?.(_.id))}
+                      loading={queryAccess.remove.isPending}
+                      onClick={() => queryAccess.remove.mutateAsync({id: _.id}).then(() => onRemoved?.(_.id))}
                       children="delete"
                     />
                   )

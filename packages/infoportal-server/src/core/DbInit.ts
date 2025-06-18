@@ -96,11 +96,11 @@ export class DbInit {
       //     koboFormId: KoboIndex.byName('protectionHh_2_1').id,
       //   }),
       // },
-      {
-        createdBy: createdBySystem,
-        email: appConf.ownerEmail,
-        level: FeatureAccessLevel.Admin,
-      },
+      // {
+      //   createdBy: createdBySystem,
+      //   email: appConf.ownerEmail,
+      //   level: FeatureAccessLevel.Admin,
+      // },
     ]
     await Promise.all(
       access.map(_ =>

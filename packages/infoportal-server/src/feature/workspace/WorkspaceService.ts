@@ -2,11 +2,17 @@ import {PrismaClient, User} from '@prisma/client'
 import {genShortid, idParamsSchema, yup} from '../../helper/Utils.js'
 import {InferType} from 'yup'
 import {slugify, UUID} from 'infoportal-common'
+import {GroupService} from '../group/GroupService.js'
+import {AccessService} from '../access/AccessService.js'
 
 export type WorkspaceCreate = InferType<typeof WorkspaceService.schema.create>
 
 export class WorkspaceService {
-  constructor(private prisma: PrismaClient) {}
+  constructor(
+    private prisma: PrismaClient,
+    private group = new GroupService(prisma),
+    private access = new AccessService(prisma),
+  ) {}
 
   static readonly schema = {
     id: idParamsSchema,
@@ -20,6 +26,17 @@ export class WorkspaceService {
     update: yup.object({
       name: yup.string().required(),
     }),
+  }
+
+  readonly getMe = async ({workspaceId, user}: {workspaceId: UUID; user: User}) => {
+    const [accesses, groups] = await Promise.all([
+      this.access.searchForUser({workspaceId, user}),
+      this.group.search({workspaceId, user}),
+    ])
+    return {
+      accesses,
+      groups,
+    }
   }
 
   readonly getUniqSlug = async (name: string) => {

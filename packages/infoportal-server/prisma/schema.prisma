@@ -176,18 +176,20 @@ model FeatureAccess {
   params      Json?
   groupId     String?
   group       Group?             @relation(fields: [groupId], references: [id])
-  workspaces  Workspace[]
+  workspace   Workspace          @relation(fields: [workspaceId], references: [id])
+  workspaceId String
 }
 
 model Group {
-  id         String          @id @default(uuid())
-  createdAt  DateTime        @default(now())
-  createdBy  String?
-  name       String          @unique
-  desc       String?
-  accesses   FeatureAccess[]
-  items      GroupItem[]
-  workspaces Workspace[]
+  id          String          @id @default(uuid())
+  createdAt   DateTime        @default(now())
+  createdBy   String?
+  name        String          @unique
+  desc        String?
+  accesses    FeatureAccess[]
+  items       GroupItem[]
+  workspace   Workspace       @relation(fields: [workspaceId], references: [id])
+  workspaceId String
 }
 
 model GroupItem {

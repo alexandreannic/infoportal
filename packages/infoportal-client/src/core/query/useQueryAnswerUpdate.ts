@@ -1,7 +1,7 @@
 import {QueryClient, useMutation, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {Kobo} from 'kobo-sdk'
-import {queryKeys} from './store'
+import {queryKeys} from './query.index'
 import {ApiPaginate, KoboValidation, UUID} from 'infoportal-common'
 import {KoboMappedAnswer} from '../sdk/server/kobo/KoboMapper'
 

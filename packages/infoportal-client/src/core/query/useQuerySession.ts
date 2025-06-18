@@ -1,6 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {queryKeys} from '@/core/query/store'
+import {queryKeys} from '@/core/query/query.index'
 import {Session} from '@/core/sdk/server/session/Session'
 import {useI18n} from '@/core/i18n'
 import {useIpToast} from '@/core/useToast'
@@ -13,7 +13,6 @@ export const useQuerySession = () => {
 
   const setSessionDataAndCache = (data: Session) => {
     queryClient.setQueryData(queryKeys.workspaces(), data.workspaces)
-    queryClient.setQueryData(queryKeys.access(), data.accesses)
     return data.user
   }
 

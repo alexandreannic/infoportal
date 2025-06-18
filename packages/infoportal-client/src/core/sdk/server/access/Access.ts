@@ -15,6 +15,7 @@ export const accessLevelIcon: Record<AccessLevel, string> = {
 }
 
 export interface Access<T = any> {
+  workspaceId: UUID
   id: string
   featureId?: AppFeatureId
   params?: T
@@ -42,11 +43,13 @@ export class KoboDatabaseAccessParams {
 }
 
 export interface AccessSearch {
+  workspaceId: UUID
   featureId?: AppFeatureId
 }
 
 interface FilterByFeature {
   (f: AppFeatureId.kobo_database): (_: Access<any>) => _ is Access<KoboDatabaseAccessParams>
+
   (f: AppFeatureId): (_: Access<any>) => _ is Access<any>
 }
 

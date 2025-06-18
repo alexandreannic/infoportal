@@ -7,14 +7,12 @@ import {DatabaseKoboAnswerViewPage} from '@/features/Database/Dialog/DialogAnswe
 import {DatabaseKoboRepeatRoute} from './features/Database/RepeatGroup/DatabaseKoboRepeatGroup'
 import {DatabaseHistory} from '@/features/Database/History/DatabaseHistory'
 import {ImportKobo} from '@/features/ImportKoboForm/ImportKobo'
-import {DatabaseProvider} from '@/features/Database/DatabaseContext'
 import {AdminUsers} from '@/features/Admin/AdminUsers'
 import {AdminProxy} from '@/features/Admin/AdminProxy'
 import {AdminGroups} from '@/features/Admin/AdminGroups'
 import {AdminCache} from '@/features/Admin/AdminCache'
 import React from 'react'
 import {Workspaces} from '@/features/Workspace/Workspaces'
-import {Provide} from './shared'
 import {Layout} from './shared/Layout'
 import {AppSidebar} from './core/layout/AppSidebar'
 import {AppHeader} from './core/layout/AppHeader'
@@ -70,11 +68,9 @@ export const Router = () => {
       <Route
         path={router.ws().root}
         element={
-          <Provide providers={[_ => <DatabaseProvider children={_} />]}>
-            <Layout header={<AppHeader />} sidebar={<AppSidebar />}>
-              <Outlet />
-            </Layout>
-          </Provide>
+          <Layout header={<AppHeader />} sidebar={<AppSidebar />}>
+            <Outlet />
+          </Layout>
         }
       >
         <Route path={path(router.ws().importKoboForm)} element={<ImportKobo />} />

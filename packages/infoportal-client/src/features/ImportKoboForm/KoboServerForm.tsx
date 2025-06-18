@@ -1,7 +1,7 @@
 import {IpInput} from '@/shared/Input/Input'
 import {useI18n} from '@/core/i18n'
 import {Controller, useForm} from 'react-hook-form'
-import {Regexp} from 'infoportal-common'
+import {Regexp, UUID} from 'infoportal-common'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {Obj} from '@axanc/ts-utils'
 import {useEffect, useState} from 'react'
@@ -12,6 +12,7 @@ import {Box, CardActions, CircularProgress, Dialog, DialogContent, DialogTitle, 
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {KoboServer, KoboServerCreate} from '@/core/sdk/server/kobo/KoboMapper'
 import {DialogProps} from '@toolpad/core'
+import {useQueryServer} from '@/core/query/useQueryServer'
 
 const servers = {
   EU: {v1: 'https://kc-eu.kobotoolbox.org', v2: 'https://eu.kobotoolbox.org'},
@@ -186,21 +187,20 @@ export const KoboServerFormDialog = ({
   onClose,
   payload,
 }: DialogProps<{
-  call: (_: KoboServerCreate) => Promise<void>
-  loading?: boolean
-  error?: string
+  workspaceId: UUID
 }>) => {
   const {m} = useI18n()
+  const queryCreate = useQueryServer(payload.workspaceId).create
   return (
     <Dialog open={open} onClose={() => onClose()}>
       <DialogTitle>{m.addNewKoboAccount}</DialogTitle>
       <DialogContent>
-        {payload.error && <IpAlert color="error" content={payload.error} />}
+        {queryCreate.error && <IpAlert color="error" content={queryCreate.error.message} />}
         <KoboServerForm
-          loading={payload.loading}
+          loading={queryCreate.isPending}
           onCancel={onClose}
           onSubmit={_ => {
-            payload.call(_).then(onClose)
+            queryCreate.mutateAsync(_).then(() => onClose())
           }}
         />
       </DialogContent>

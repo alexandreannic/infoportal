@@ -10,6 +10,12 @@ export class ControllerWorkspace {
     private service = new WorkspaceService(prisma),
   ) {}
 
+  readonly getMe = async (req: Request, res: Response, next: NextFunction) => {
+    if (!isAuthenticated(req)) throw new AppError.Forbidden()
+    const data = await this.service.getMe({user: req.session.app?.user, workspaceId: req.params.workspaceId})
+    res.send(data)
+  }
+
   readonly checkSlug = async (req: Request, res: Response, next: NextFunction) => {
     if (!isAuthenticated(req)) throw new AppError.Forbidden()
     const {slug} = await WorkspaceService.schema.slug.validate(req.body)
@@ -23,7 +29,7 @@ export class ControllerWorkspace {
   readonly create = async (req: Request, res: Response, next: NextFunction) => {
     if (!isAuthenticated(req)) throw new AppError.Forbidden()
     const body = await WorkspaceService.schema.create.validate(req.body)
-    const connectedUser =req.session.app.user
+    const connectedUser = req.session.app.user
     const data = await this.service.create(body, connectedUser)
     res.send(data)
   }

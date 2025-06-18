@@ -18,6 +18,8 @@ import {nullValuesToUndefined, UUID} from 'infoportal-common'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {Group} from '@/core/sdk/server/group/GroupItem'
 import {Datatable} from '@/shared/Datatable/Datatable'
+import {useQueryGroup} from '@/core/query/useQueryGroup'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 
 interface GoupForm {
   name: string
@@ -25,37 +27,15 @@ interface GoupForm {
 }
 
 export const AdminGroups = () => {
+  const {workspaceId} = useWorkspaceRouter()
   const {api} = useAppSettings()
   const {m, formatDate, formatDateTime} = useI18n()
 
   const groupForm = useForm<GoupForm>()
   const accessForm = useForm<IAccessForm>()
 
-  const fetcher = useFetcher(api.group.search)
-  const asyncCreate = useAsync(api.group.create)
-  const asyncUpdate = useAsync(api.group.update)
-  const asyncRemove = useAsync(api.group.remove, {requestKey: _ => _[0]})
-  const asyncItemCreate = useAsync(api.group.createItem)
-  const asyncItemItem = useAsync(api.group.updateItem)
-  const asyncItemDelete = useAsync(api.group.deleteItem, {requestKey: _ => _[0]})
-  const asyncDuplicate = useAsync(
-    async (g: Group) => {
-      const {id, items, createdAt, name, ...params} = g
-      const newGroup = await asyncCreate.call({
-        name: `${name} (copy)`,
-        ...params,
-      })
-      await Promise.all(
-        items.map(item => {
-          return api.group.createItem(newGroup.id, {
-            ...item,
-            drcJob: item.drcJob ? [item.drcJob] : undefined,
-          })
-        }),
-      )
-    },
-    {requestKey: _ => _[0].id},
-  )
+  const query = useQueryGroup(workspaceId)
+  const queryGet = query.getAll
 
   const [selectedGroupId, setSelectedGroupId] = useState<
     | {
@@ -65,27 +45,12 @@ export const AdminGroups = () => {
     | undefined
   >()
 
-  useEffect(() => {
-    fetcher.fetch()
-  }, [])
-
-  useEffect(() => {
-    fetcher.fetch({force: true, clean: false})
-  }, [
-    asyncCreate.callIndex,
-    asyncUpdate.callIndex,
-    asyncRemove.callIndex,
-    asyncItemDelete.callIndex,
-    asyncItemItem.callIndex,
-    asyncItemCreate.callIndex,
-  ])
-
   return (
-    <Page width="lg">
+    <Page width="full">
       <Panel>
         <Datatable
-          data={fetcher.get}
-          loading={fetcher.loading}
+          data={queryGet.data}
+          loading={queryGet.isLoading}
           id="group"
           header={
             <>
@@ -93,7 +58,7 @@ export const AdminGroups = () => {
                 onOpen={groupForm.reset}
                 onConfirm={(e, close) =>
                   groupForm.handleSubmit(form => {
-                    asyncCreate.call(form).then(close)
+                    query.create.mutateAsync(form).then(close)
                   })()
                 }
                 title={m._admin.createGroup}
@@ -152,7 +117,7 @@ export const AdminGroups = () => {
                         })
                         setSelectedGroupId({groupId: _.id, accessId: item.id})
                       }}
-                      onDelete={e => asyncItemDelete.call(item.id)}
+                      onDelete={e => query.deleteItem.mutate({id: item.id})}
                       sx={{mr: 0.5, my: 0.25}}
                       icon={<Icon>{accessLevelIcon[item.level]}</Icon>}
                       size="small"
@@ -189,7 +154,12 @@ export const AdminGroups = () => {
                     onOpen={groupForm.reset}
                     onConfirm={(e, close) =>
                       groupForm.handleSubmit(form => {
-                        asyncUpdate.call(_.id, form).then(close)
+                        query.update
+                          .mutateAsync({
+                            ...form,
+                            id: _.id,
+                          })
+                          .then(close)
                       })()
                     }
                     title={m._admin.createGroup}
@@ -219,16 +189,16 @@ export const AdminGroups = () => {
                   <IpIconBtn
                     size="small"
                     tooltip={m.duplicate}
-                    onClick={() => asyncDuplicate.call(_)}
-                    loading={asyncDuplicate.loading[_.id]}
+                    onClick={() => query.duplicate.mutate(_)}
+                    loading={query.duplicate.isPending}
                   >
                     content_copy
                   </IpIconBtn>
                   <IpIconBtn
                     size="small"
                     tooltip={m.remove}
-                    onClick={() => asyncRemove.call(_.id)}
-                    loading={asyncRemove.loading[_.id]}
+                    onClick={() => query.remove.mutate({id: _.id})}
+                    loading={query.remove.isPending}
                   >
                     delete
                   </IpIconBtn>
@@ -239,17 +209,25 @@ export const AdminGroups = () => {
         />
         <BasicDialog
           open={!!selectedGroupId}
-          loading={asyncItemCreate.loading}
+          loading={query.createItem.isPending}
           onClose={() => setSelectedGroupId(undefined)}
           confirmDisabled={!accessForm.formState.isValid}
           onConfirm={e =>
             accessForm.handleSubmit(f => {
               if (selectedGroupId?.accessId) {
-                asyncItemItem.call(selectedGroupId.accessId, {
+                query.updateItem.mutate({
                   ...f,
                   drcJob: f.drcJob?.[0] ?? null,
+                  itemId: selectedGroupId?.accessId,
                 })
-              } else asyncItemCreate.call(selectedGroupId?.groupId!, nullValuesToUndefined(f))
+              } else if (selectedGroupId?.groupId) {
+                query.createItem.mutate({
+                  ...f,
+                  groupId: selectedGroupId?.groupId!,
+                })
+              } else {
+                throw new Error(`Missing selectedGroupId: ${JSON.stringify(selectedGroupId)}`)
+              }
               setSelectedGroupId(undefined)
             })()
           }

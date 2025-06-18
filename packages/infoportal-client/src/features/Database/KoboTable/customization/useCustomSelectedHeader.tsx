@@ -3,7 +3,7 @@ import {IpBtn, Modal, Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Kobo} from 'kobo-sdk'
 import {AccessSum} from '@/core/sdk/server/access/Access'
-import {useQueryAnswerUpdate} from '@/core/query/useQueryUpdate'
+import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {UUID} from 'infoportal-common'
 
 export const useCustomSelectedHeader = ({

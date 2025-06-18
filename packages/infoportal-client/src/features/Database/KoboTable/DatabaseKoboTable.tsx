@@ -1,15 +1,12 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
-import {queryKeys} from '@/core/query/store'
+import {queryKeys} from '@/core/query/query.index'
 import {useQueryAnswer} from '@/core/query/useQueryAnswer'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
-import {Access, AccessLevel} from '@/core/sdk/server/access/Access'
+import {AccessLevel} from '@/core/sdk/server/access/Access'
 import {KoboForm, KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useSession} from '@/core/Session/SessionContext'
-import {AppFeatureId} from '@/features/appFeatureId'
-import {databaseUrlParamsValidation} from '@/features/Database/Database'
-import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {DatabaseKoboTableProvider} from '@/features/Database/KoboTable/DatabaseKoboContext'
 import {DatabaseKoboTableContent} from '@/features/Database/KoboTable/DatabaseKoboTableContent'
 import {DatatableSkeleton} from '@/shared/Datatable/DatatableSkeleton'
@@ -23,21 +20,15 @@ import {Skeleton} from '@mui/material'
 import {useIsFetching} from '@tanstack/react-query'
 import {Kobo} from 'kobo-sdk'
 import {useCallback, useEffect, useMemo} from 'react'
-import {useParams} from 'react-router'
+import {useQueryAccess} from '@/core/query/useQueryAccess'
 
-export const DatabaseTableRoute = () => {
-  const ctx = useDatabaseContext()
-  const {formId} = databaseUrlParamsValidation.validateSync(useParams())
+export const DatabaseTableRoute = ({form}: {form: KoboForm}) => {
   return (
-    <>
-      {map(ctx.getForm(formId), form => (
-        <Page width="full" sx={{p: 0, pb: 0, mb: 0}}>
-          <Panel sx={{mb: 0}}>
-            <DatabaseTable form={form} formId={formId} />
-          </Panel>
-        </Page>
-      ))}
-    </>
+    <Page width="full" sx={{p: 0, pb: 0, mb: 0}}>
+      <Panel sx={{mb: 0}}>
+        <DatabaseTable form={form} formId={form.id} />
+      </Panel>
+    </Page>
   )
 }
 
@@ -68,20 +59,18 @@ export const DatabaseTable = ({
   const {workspaceId} = useWorkspaceRouter()
 
   const querySchema = useQuerySchema(formId)
-
   const queryAnswers = useQueryAnswer(formId)
+  const queryAccess = useQueryAccess(formId)
 
   const fetcherForm = useFetcher(() => (form ? Promise.resolve(form) : api.kobo.form.get({workspaceId, formId})))
 
   const access = useMemo(() => {
-    const list = session.accesses
-      .filter(Access.filterByFeature(AppFeatureId.kobo_database))
-      .filter(_ => _.params?.koboFormId === formId)
+    const list = queryAccess.accessesByFormIdMap[formId] ?? []
     const admin = session.user.admin || !!list.find(_ => _.level === AccessLevel.Admin)
     const write = admin || !!list.find(_ => _.level === AccessLevel.Write)
     const read = write || list.length > 0
     return {admin, write, read}
-  }, [session.accesses])
+  }, [queryAccess.accessesByFormIdMap])
 
   useEffect(() => {
     fetcherForm.fetch()
@@ -97,7 +86,7 @@ export const DatabaseTable = ({
 
   const anyLoading =
     useIsFetching({
-      queryKey: queryKeys.formSchema(),
+      queryKey: queryKeys.schema(),
     }) > 0
 
   return (

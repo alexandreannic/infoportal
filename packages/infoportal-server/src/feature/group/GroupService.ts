@@ -1,29 +1,38 @@
 import {PrismaClient, User} from '@prisma/client'
-import {yup} from '../../helper/Utils.js'
+import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {InferType} from 'yup'
 import {UUID} from 'infoportal-common'
 import {format} from 'date-fns'
 import {AppFeatureId} from '../access/AccessType.js'
 import {AppSession} from '../session/AppSession.js'
 
-export type GroupCreateParams = InferType<typeof GroupService.createSchema>
-export type GroupUpdateParams = InferType<typeof GroupService.updateSchema>
+export type GroupCreateParams = InferType<typeof GroupService.schema.create>
+export type GroupUpdateParams = InferType<typeof GroupService.schema.update>
 
 export class GroupService {
   constructor(private prisma: PrismaClient) {}
 
-  static readonly createSchema = yup.object({
-    name: yup.string().optional(),
-    desc: yup.string().optional(),
-  })
-
-  static readonly updateSchema = yup.object({
-    name: yup.string().required(),
-  })
+  static readonly schema = {
+    create: yup.object({
+      workspaceId: yup.string().required(),
+      name: yup.string().optional(),
+      desc: yup.string().optional(),
+    }),
+    update: yup.object({
+      name: yup.string().required(),
+    }),
+    search: yup.object({
+      workspaceId: yup.string().required(),
+      name: yup.string().optional(),
+      featureId: yup.string().optional(),
+    }),
+    id: idParamsSchema,
+  }
 
   readonly create = (body: GroupCreateParams) => {
     return this.prisma.group.create({
       data: {
+        workspaceId: body.workspaceId,
         name: body.name ?? `New group ${format(new Date(), 'yyyy-MM-dd')}`,
         desc: body.desc,
       },
@@ -60,13 +69,24 @@ export class GroupService {
     })
   }
 
-  readonly search = ({featureId, name, user}: {user?: User; name?: string; featureId?: UUID}) => {
+  readonly search = ({
+    featureId,
+    workspaceId,
+    name,
+    user,
+  }: {
+    workspaceId: UUID
+    user?: User
+    name?: string
+    featureId?: UUID
+  }) => {
     return this.prisma.group.findMany({
       include: {
         items: true,
       },
       where: {
         name,
+        workspaceId,
         accesses: {
           every: {featureId},
         },

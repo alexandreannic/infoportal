@@ -14,9 +14,11 @@ export interface FeatureAccesses extends FeatureAccess {
 
 interface SearchByFeature {
   ({
+    workspaceId,
     featureId,
     user,
   }: {
+    workspaceId: UUID
     featureId?: AppFeatureId.kobo_database
     user?: User
   }): Promise<Access<KoboDatabaseFeatureParams>[]>
@@ -34,6 +36,7 @@ export class AccessService {
   static readonly featureIdSchema = yup.mixed<AppFeatureId>().oneOf(Obj.values(AppFeatureId))
 
   static readonly createSchema = yup.object({
+    workspaceId: yup.string().required(),
     featureId: AccessService.featureIdSchema,
     level: AccessService.levelSchema,
     drcOffice: AccessService.drcOfficeSchema.optional().nullable(),
@@ -53,10 +56,19 @@ export class AccessService {
     featureId: yup.mixed<AppFeatureId>().oneOf(Obj.values(AppFeatureId)),
   })
 
-  private readonly searchFromAccess = async ({featureId, user}: {featureId?: AppFeatureId; user?: User}) => {
+  private readonly searchFromAccess = async ({
+    workspaceId,
+    featureId,
+    user,
+  }: {
+    workspaceId: UUID
+    featureId?: AppFeatureId
+    user?: User
+  }) => {
     return this.prisma.featureAccess.findMany({
       distinct: ['id'],
       where: {
+        workspaceId,
         AND: [
           {groupId: null},
           {featureId: featureId},
@@ -76,12 +88,21 @@ export class AccessService {
     })
   }
 
-  private readonly searchFromGroup = async ({featureId, user}: {featureId?: AppFeatureId; user?: User}) => {
+  private readonly searchFromGroup = async ({
+    workspaceId,
+    featureId,
+    user,
+  }: {
+    workspaceId: UUID
+    featureId?: AppFeatureId
+    user?: User
+  }) => {
     return this.prisma.featureAccess.findMany({
       include: {
         group: {include: {items: true}},
       },
       where: {
+        workspaceId,
         featureId: featureId,
         groupId: {not: null},
         group: user
@@ -109,10 +130,10 @@ export class AccessService {
 
   // TODO Perf can be optimized using a single SQL query
   // @ts-ignore
-  readonly searchForUser: SearchByFeature = async ({featureId, user}: any) => {
+  readonly searchForUser: SearchByFeature = async ({workspaceId, featureId, user}) => {
     const [fromGroup, fromAccess] = await Promise.all([
-      this.searchFromGroup({featureId, user}),
-      this.searchFromAccess({featureId, user}),
+      this.searchFromGroup({workspaceId, featureId, user}),
+      this.searchFromAccess({workspaceId, featureId, user}),
     ])
     return [
       ...fromAccess,

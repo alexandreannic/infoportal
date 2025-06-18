@@ -1,42 +1,36 @@
-import {useEffectFn, useFetcher} from '@axanc/react-hooks'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useEffect} from 'react'
 import {IpBtn} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Icon, useTheme} from '@mui/material'
-import {useIpToast} from '@/core/useToast'
-import {useAsync} from '@/shared/hook/useAsync'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {UUID} from 'infoportal-common'
-import {useDatabaseContext} from '@/features/Database/DatabaseContext'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
+import {useQueryForm} from '@/core/query/useQueryForm'
+import {useQuery} from '@tanstack/react-query'
+import {queryKeys} from '@/core/query/query.index'
 
 export const SelectKoboForm = ({serverId, onAdded}: {serverId: UUID; onAdded?: () => void}) => {
   const {api} = useAppSettings()
   const {m, formatDate} = useI18n()
   const {workspaceId} = useWorkspaceRouter()
-  const {toastHttpError} = useIpToast()
-  const ctx = useDatabaseContext()
   const t = useTheme()
-  const asyncAdd = useAsync(api.kobo.form.add)
-  const fetchForms = useFetcher(api.koboApi.searchSchemas)
+  const queryForms = useQueryForm(workspaceId)
 
-  useEffectFn(asyncAdd.error, toastHttpError)
-
-  useEffect(() => {
-    fetchForms.fetch({}, {serverId})
-  }, [serverId])
+  const queryKoboForms = useQuery({
+    queryKey: queryKeys.koboForm(serverId),
+    queryFn: () => api.koboApi.searchSchemas({serverId}),
+  })
 
   return (
-    <Panel loading={fetchForms.loading || asyncAdd.loading}>
+    <Panel loading={queryKoboForms.isLoading || queryForms.create.isPending}>
       <PanelHead>{m._koboDatabase.registerNewForm}</PanelHead>
       <PanelBody>
         <Datatable
           id="select-kobo-form"
           sx={{overflow: 'hidden', border: `1px solid ${t.palette.divider}`, borderRadius: t.shape.borderRadius + 'px'}}
           header={null}
-          data={fetchForms.get}
+          data={queryKoboForms.data}
           columns={[
             {
               id: m.live,
@@ -87,8 +81,12 @@ export const SelectKoboForm = ({serverId, onAdded}: {serverId: UUID; onAdded?: (
               renderQuick: form => (
                 <IpBtn
                   size="small"
-                  onClick={() => asyncAdd.call({workspaceId, serverId, uid: form.uid}).then(onAdded)}
-                  disabled={!form.has_deployment || !ctx._forms.get || !!ctx._forms.get.find(_ => _.id === form.uid)}
+                  onClick={() => queryForms.create.mutateAsync({serverId, uid: form.uid}).then(onAdded)}
+                  disabled={
+                    !form.has_deployment ||
+                    !queryForms.accessibleForms.data ||
+                    !!queryForms.accessibleForms.data.find(_ => _.id === form.uid)
+                  }
                 >
                   {m.add}
                 </IpBtn>
