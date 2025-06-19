@@ -46,6 +46,31 @@ export const sxUtils = makeSx({
   },
 } as const)
 
+const fadeShadow = ({
+  color = '#000',
+  opacity = 0.1,
+  y = 1,
+  blur = 4,
+  spread = 0,
+}: {
+  color?: string
+  opacity?: number
+  y?: number
+  blur?: number
+  spread?: number
+}): string => `0px ${y}px ${blur}px ${spread}px ${alpha(color, opacity)}`
+
+const lightShadows = Array.from({length: 25}, (_, i) =>
+  i === 0
+    ? 'none'
+    : fadeShadow({
+        color: '#000',
+        opacity: 0.08 + i * 0.004,
+        y: 2 + i * 0.5,
+        blur: 5 + i * 0.5,
+      }),
+)
+
 export const styleUtils = (t: Theme) => ({
   gridSpacing: 3 as any,
   fontSize: {
@@ -125,6 +150,7 @@ export const muiTheme = ({
     cssVariables: {
       colorSchemeSelector: 'class',
     },
+    shadows: lightShadows as any,
     spacing,
     colorSchemes: {
       light: {
@@ -232,7 +258,7 @@ export const muiTheme = ({
             backgroundSize: 'cover',
             // background: 'linear-gradient(to bottom, #c8e6f9, #f2f4fb)',
             '&:before': {
-              content: t.palette.mode == 'light'  ? '" "' : undefined,
+              content: t.palette.mode == 'light' ? '" "' : undefined,
               top: 0,
               right: 0,
               bottom: 0,
@@ -311,12 +337,25 @@ export const muiTheme = ({
             background: theme.palette.background.paper,
             borderRadius: theme.shape.borderRadius + 'px',
             // boxShadow: theme.shadows[1],
-            minHeight: 0,
+            minHeight: 40,
             borderBottom: 'none !important',
           }),
         },
       },
-
+      MuiTab: {
+        defaultProps: {
+          disableRipple: true,
+        },
+        styleOverrides: {
+          root: ({theme}) => ({
+            color: theme.palette.text.primary,
+            textTransform: 'none',
+            fontWeight: 600,
+            minHeight: 40,
+            minWidth: '80px !important',
+          }),
+        },
+      },
       MuiPaper: {
         styleOverrides: {
           root: ({theme}) => ({
@@ -335,20 +374,6 @@ export const muiTheme = ({
             backdropFilter: 'blur(4px)',
             backgroundColor: 'rgba(255, 255, 255, 0.5)',
           },
-        },
-      },
-      MuiTab: {
-        defaultProps: {
-          disableRipple: true,
-        },
-        styleOverrides: {
-          root: ({theme}) => ({
-            color: theme.palette.text.primary,
-            textTransform: 'none',
-            fontWeight: 600,
-            minHeight: 40,
-            minWidth: '80px !important',
-          }),
         },
       },
       MuiChip: {

@@ -35,7 +35,7 @@ export const LayoutProvider = ({
 }: LayoutProviderProps) => {
   const [title, setTitle] = useState(_title)
   const [pageWidth, setPageWidth] = useState(getWidth())
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [sidebarPinned, setSidebarPinned] = useState(true)
   const t = useTheme()
 

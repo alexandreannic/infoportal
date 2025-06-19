@@ -5,7 +5,7 @@ import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {useMemo} from 'react'
 import {router} from '@/Router'
-import {Workspace} from '@/core/sdk/server/workspace/Workspace'
+import {Workspace} from '../sdk/server/workspace/Workspace'
 
 export const useQueryWorkspace = () => {
   const {api} = useAppSettings()
@@ -14,7 +14,8 @@ export const useQueryWorkspace = () => {
   const get = useQuery({
     queryKey: queryKeys.workspaces(),
     queryFn: () => Promise.resolve([] as Workspace[]), // Assigned by sesion.getMe
-    enabled: false,
+    staleTime: Infinity,
+    // enabled: false,
   })
 
   const create = useMutation({
@@ -46,6 +47,20 @@ export const useQueryWorkspace = () => {
     create,
     update,
   }
+}
+
+export const useWorkspaceRouterMaybe = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  return useMemo(() => {
+    const workspaceId = location.pathname.match(/^\/([^/]+)/)?.[1]
+    // if (!workspaceId) throw new Error(`Missing workspaceId in URI '${location.pathname}'`)
+    return {
+      router: router.ws(workspaceId),
+      changeWorkspace: (wsId: string) => navigate(router.ws(wsId).root),
+      workspaceId,
+    }
+  }, [navigate, location])
 }
 
 export const useWorkspaceRouter = () => {

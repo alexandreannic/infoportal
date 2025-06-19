@@ -1,9 +1,7 @@
 import * as React from 'react'
 import {ReactElement, ReactNode} from 'react'
-import {LayoutProvider, useLayoutContext} from './LayoutContext'
+import {LayoutProvider} from './LayoutContext'
 import {Box, LinearProgress} from '@mui/material'
-import {layoutConfig} from './index'
-import {defaultSpacing} from '../../core/theme'
 
 export interface LayoutProps {
   sidebar?: ReactElement<any>
@@ -35,30 +33,34 @@ export const Layout = ({
 }
 
 const LayoutUsingContext = ({sidebar, header, children}: Pick<LayoutProps, 'sidebar' | 'header' | 'children'>) => {
-  const {sidebarOpen, sidebarPinned, isMobileWidth} = useLayoutContext()
   return (
-    <>
+    <Box sx={{display: 'flex', flexDirection: 'column', maxHeight: '100vh'}}>
       {header}
-      {sidebar}
       <Box
-        component="main"
         sx={{
-          mt: 0.75,
-          // mb: .75,
-          pr: 1,
-          transition: t => t.transitions.create('all'),
-          paddingLeft:
-            (sidebar && sidebarOpen && sidebarPinned && !isMobileWidth
-              ? layoutConfig.sidebarWith + defaultSpacing * 2
-              : defaultSpacing) + 'px',
-          // overflow: 'hidden',
-          position: 'relative',
           display: 'flex',
-          flexDirection: 'column',
+          flex: '1 1 auto',
+          minHeight: 0,
         }}
       >
-        {children}
+        {sidebar}
+        <Box
+          component="main"
+          sx={{
+            overflowY: 'scroll',
+            flex: 1,
+            px: 1,
+            transition: t => t.transitions.create('all'),
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            marginTop: -5,
+            paddingTop: 6,
+          }}
+        >
+          {children}
+        </Box>
       </Box>
-    </>
+    </Box>
   )
 }

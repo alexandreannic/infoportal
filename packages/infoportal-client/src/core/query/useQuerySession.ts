@@ -2,13 +2,11 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {Session} from '@/core/sdk/server/session/Session'
-import {useI18n} from '@/core/i18n'
 import {useIpToast} from '@/core/useToast'
 
 export const useQuerySession = () => {
   const {api} = useAppSettings()
-  const {m} = useI18n()
-  const {toastError, toastHttpError} = useIpToast()
+  const {toastHttpError} = useIpToast()
   const queryClient = useQueryClient()
 
   const setSessionDataAndCache = ({workspaces, originalEmail, user}: Session) => {
@@ -18,13 +16,14 @@ export const useQuerySession = () => {
   }
 
   const getMe = useQuery({
+    retry: 0,
     queryKey: queryKeys.session(),
     queryFn: async () => {
       try {
         const data = await api.session.getMe()
         return setSessionDataAndCache(data)
       } catch (e) {
-        toastError(m.youDontHaveAccess)
+        // toastError(m.youDontHaveAccess)
         throw e
       }
     },

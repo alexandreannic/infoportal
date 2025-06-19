@@ -5,7 +5,6 @@ import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
 import {IpBtn} from '@/shared/Btn'
 import {AppAvatar} from '@/shared/AppAvatar'
-import {useQuerySession} from '@/core/query/useQuerySession'
 
 const Row = ({icon, children}: {icon: string; children: ReactNode}) => {
   return (
@@ -26,7 +25,7 @@ const Row = ({icon, children}: {icon: string; children: ReactNode}) => {
 
 export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
   const {user, logout} = useSession()
-  const me = user.user
+  const me = user
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
   const open = !!anchorEl
   const {m} = useI18n()
@@ -55,7 +54,7 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
             {me.admin && <Row icon="shield">{m.admin}</Row>}
           </Box>
           <Box sx={{px: 2}}>
-            <IpBtn icon="logout" variant="outlined" onClick={() => logout()} sx={{mb: 2}}>
+            <IpBtn icon="logout" variant="outlined" onClick={logout} sx={{mb: 2}}>
               {m.logout}
             </IpBtn>
           </Box>

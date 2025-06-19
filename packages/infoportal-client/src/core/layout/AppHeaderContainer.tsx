@@ -1,6 +1,5 @@
 import {alpha, Box, BoxProps, GlobalStyles, useTheme} from '@mui/material'
 import React, {forwardRef, useEffect, useState} from 'react'
-import {layoutConfig} from '@/shared/Layout'
 import {map} from '@axanc/ts-utils'
 
 let header$: HTMLElement | null = null
@@ -53,16 +52,14 @@ export const AppHeaderContainer = forwardRef(({children, sx, ...props}: BoxProps
           position: 'sticky',
           top: 0,
           zIndex: 2,
-          minHeight: layoutConfig.headerHeight,
-          px: layoutConfig.headerPx,
+          px: 2,
           display: 'flex',
           backdropFilter: 'blur(12px)',
           alignItems: 'center',
           // Because on Windows, sticky-header is not working properly
-          // boxShadow: t.shadows[3],
+          boxShadow: t.shadows[5],
           // mb: 2,
           pl: 2,
-          borderBottom: t => `1px solid ${t.palette.divider}`,
           ...sx,
         }}
       >

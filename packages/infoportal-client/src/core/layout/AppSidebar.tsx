@@ -7,8 +7,7 @@ import Fuse from 'fuse.js'
 import {useMemo} from 'react'
 import {Controller, useForm} from 'react-hook-form'
 import {NavLink} from 'react-router-dom'
-import {getComponentStyleOverride, styleUtils} from '../theme'
-
+import {styleUtils} from '../theme'
 import {useQueryForm} from '@/core/query/useQueryForm'
 
 type Form = {
