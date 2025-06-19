@@ -1,5 +1,3 @@
-import {useAppSettings} from '@/core/context/ConfigContext'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {queryKeys} from '@/core/query/query.index'
 import {useQueryAnswer} from '@/core/query/useQueryAnswer'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
@@ -11,14 +9,13 @@ import {DatabaseKoboTableProvider} from '@/features/Database/KoboTable/DatabaseK
 import {DatabaseKoboTableContent} from '@/features/Database/KoboTable/DatabaseKoboTableContent'
 import {DatatableSkeleton} from '@/shared/Datatable/DatatableSkeleton'
 import {DatatableFilterValue} from '@/shared/Datatable/util/datatableType'
-import {useFetcher} from '@/shared/hook/useFetcher'
 import {FetchParams} from '@/shared/hook/useFetchers'
 import {Panel} from '@/shared/Panel'
 import {map} from '@axanc/ts-utils'
 import {Skeleton} from '@mui/material'
 import {useIsFetching} from '@tanstack/react-query'
 import {Kobo} from 'kobo-sdk'
-import {useCallback, useEffect, useMemo} from 'react'
+import {useCallback, useMemo} from 'react'
 import {useQueryAccess} from '@/core/query/useQueryAccess'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {UUID} from 'infoportal-common'
@@ -40,14 +37,13 @@ export interface DatabaseTableProps {
 
 export const DatabaseTable = ({
   workspaceId,
-  form,
   formId,
   onFiltersChange,
   onDataChange,
   dataFilter,
   overrideEditAccess,
 }: DatabaseTableProps) => {
-  const {session} = useSession()
+  const session = useSession()
 
   const queryForm = useQueryForm(workspaceId)
   const querySchema = useQuerySchema(formId)

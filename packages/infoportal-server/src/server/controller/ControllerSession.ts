@@ -24,7 +24,7 @@ export class ControllerSession extends Controller {
       req.session.app = await this.service.get(user)
     }
     const profile = await this.service.get(req.session.app.user)
-    res.send(profile)
+    res.send({...req.session.app, ...profile})
   }
 
   readonly logout = async (req: Request, res: Response, next: NextFunction) => {
@@ -65,7 +65,7 @@ export class ControllerSession extends Controller {
       .validate(req.body)
     const connectAsUser = await this.prisma.user.findFirstOrThrow({where: {email: body.email}})
     if (connectAsUser.id === req.session.app.user.id) throw new SessionError.UserNoAccess()
-    req.session.app.user.id = connectAsUser.id
+    req.session.app = await this.service.get(connectAsUser)
     req.session.app.originalEmail = req.session.app.user.email
     res.send(req.session.app)
   }

@@ -6,6 +6,7 @@ import {Utils} from '@/utils/utils'
 export const queryKeys = {
   session: () => ['session'],
   workspaces: () => ['workspaces'],
+  originalEmail: () => ['originalEmail'],
   koboForm: (workspaceId?: UUID) => ['koboForm', ...(workspaceId ? [workspaceId] : [])],
   server: (workspaceId?: UUID) => ['server', ...(workspaceId ? [workspaceId] : [])],
   access: (workspaceId?: UUID) => ['access', ...(workspaceId ? [workspaceId] : [])],

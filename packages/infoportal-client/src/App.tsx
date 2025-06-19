@@ -59,13 +59,13 @@ const AppWithConfig = () => {
         _ => <I18nProvider children={_} />,
         _ => <MsalProvider children={_} instance={msal} />,
         _ => <HashRouter children={_} />,
-        _ => <SessionProvider children={_} />,
         _ => <QueryClientProvider client={queryClient} children={_} />,
+        _ => <SessionProvider children={_} />,
         _ => <DialogsProvider children={_} />,
       ]}
     >
       <AppWithBaseContext />
-      {settings.conf.production && <ReactQueryDevtools initialIsOpen={false} />}
+      {!settings.conf.production && <ReactQueryDevtools initialIsOpen={false} />}
     </Provide>
   )
 }

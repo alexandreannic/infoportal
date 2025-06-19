@@ -11,9 +11,10 @@ export const useQuerySession = () => {
   const {toastError, toastHttpError} = useIpToast()
   const queryClient = useQueryClient()
 
-  const setSessionDataAndCache = (data: Session) => {
-    queryClient.setQueryData(queryKeys.workspaces(), data.workspaces)
-    return data.user
+  const setSessionDataAndCache = ({workspaces, originalEmail, user}: Session) => {
+    queryClient.setQueryData(queryKeys.workspaces(), workspaces)
+    queryClient.setQueryData(queryKeys.originalEmail(), originalEmail)
+    return user
   }
 
   const getMe = useQuery({
@@ -56,6 +57,7 @@ export const useQuerySession = () => {
   })
 
   return {
+    originalEmail: queryClient.getQueryData<string>(queryKeys.originalEmail()),
     getMe,
     connectAs,
     revertConnectAs,

@@ -55,6 +55,7 @@ export const en = Object.freeze({
     notExist: 'Not exist',
     area: 'Area',
     men: 'Men',
+    return: 'Return',
     lightTheme: {
       light: 'Light',
       dark: 'Dark',

@@ -13,6 +13,7 @@ import {CenteredContent} from '@/shared/CenteredContent'
 import {useAsync} from '@/shared/hook/useAsync'
 import {useGoogleLogin} from '@react-oauth/google'
 import {ButtonProps} from '@mui/material/Button'
+import {User} from '@/core/sdk/server/user/User'
 
 const BtnLogin = ({
   title,
@@ -56,7 +57,7 @@ const BtnLogin = ({
   )
 }
 
-export const SessionLoginForm = ({setSession}: {setSession: (_: Session) => void}) => {
+export const SessionLoginForm = ({setSession}: {setSession: (_: User) => void}) => {
   const {api} = useAppSettings()
   const {m} = useI18n()
   const {toastError} = useIpToast()
@@ -65,7 +66,7 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: Session) => void
   const _saveSession = useAsync(
     mapPromise({
       promise: api.session.login,
-      mapThen: setSession,
+      mapThen: _ => setSession(_.user),
     }),
   )
   useEffectFn(_saveSession.error, () => toastError(m.youDontHaveAccess))

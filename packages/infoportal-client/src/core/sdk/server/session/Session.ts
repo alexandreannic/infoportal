@@ -12,6 +12,7 @@ export type Session = {
 export class SessionHelper {
   static readonly map = (_: any): Session => {
     return {
+      ..._,
       // groups: _.groups.map(GroupHelper.map),
       // accesses: _.accesses.map(Access.map),
       user: _.user,

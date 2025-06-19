@@ -2,7 +2,7 @@ import {appConfig} from '@/conf/AppConfig'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {DatabaseTable, DatabaseTableRoute} from '@/features/Database/KoboTable/DatabaseKoboTable'
+import {DatabaseTable} from '@/features/Database/KoboTable/DatabaseKoboTable'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {useEffect, useMemo} from 'react'
@@ -58,7 +58,7 @@ export const Database = () => {
           component={NavLink}
           value={router.database.form(formId).formCreator}
           to={router.database.form(formId).formCreator}
-          label={m.data}
+          label={m.form}
         />
         <Tab
           icon={<Icon>lock</Icon>}
@@ -77,6 +77,15 @@ export const Database = () => {
           value={router.database.form(formId).history}
           to={router.database.form(formId).history}
           label={m.history}
+        />
+        <Tab
+          icon={<Icon>settings</Icon>}
+          iconPosition="start"
+          sx={{minHeight: 34, py: 1}}
+          component={NavLink}
+          value={router.database.form(formId).history}
+          to={router.database.form(formId).history}
+          label={m.settings}
         />
         {schema &&
           repeatGroups?.map(_ => (

@@ -1,5 +1,4 @@
-import {Group, User, Workspace} from '@prisma/client'
-import {Access} from '../access/AccessType'
+import {User, Workspace} from '@prisma/client'
 
 export type AppSession = {
   user: User

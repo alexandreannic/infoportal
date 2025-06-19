@@ -20,7 +20,7 @@ export const DatabaseViewInput = ({sx, view: ctx}: {view: UseDatabaseView; sx?: 
   const {m, formatDate} = useI18n()
   const t = useTheme()
   const [open, setOpen] = useState<string | undefined>(undefined)
-  const {session} = useSession()
+  const session = useSession()
 
   const formCreate = useForm<FormCreate>()
   return (

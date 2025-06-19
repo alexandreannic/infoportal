@@ -56,7 +56,7 @@ export const DatabaseKoboTableContent = ({
   const langIndex = useLangIndex(_ => _.langIndex)
   const setLangIndex = useLangIndex(_ => _.setLangIndex)
   const navigate = useNavigate()
-  const {session} = useSession()
+  const session = useSession()
   const ctx = useDatabaseKoboTableContext()
   const dialogs = useKoboDialogs()
   const queryUpdate = useQueryAnswerUpdate()

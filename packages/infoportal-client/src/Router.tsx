@@ -2,7 +2,7 @@ import {Navigate, Outlet, Route, Routes} from 'react-router-dom'
 import {objectToQueryString} from 'infoportal-common'
 import {Database} from '@/features/Database/Database'
 import {DatabaseList} from './features/Database/DatabaseList'
-import {DatabaseAccessRoute} from './features/Database/Access/DatabaseAccess'
+import {DatabaseAccess} from './features/Database/Access/DatabaseAccess'
 import {DatabaseKoboAnswerViewPage} from '@/features/Database/Dialog/DialogAnswerView'
 import {DatabaseKoboRepeatRoute} from './features/Database/RepeatGroup/DatabaseKoboRepeatGroup'
 import {DatabaseHistory} from '@/features/Database/History/DatabaseHistory'
@@ -86,7 +86,7 @@ export const Router = () => {
           <Route path={path(router.ws().database.form().root)} element={<Database />}>
             <Route path={path(router.ws().database.form().answer())} element={<DatabaseKoboAnswerViewPage />} />
             <Route path={path(router.ws().database.form().formCreator)} element={<FormCreator />} />
-            <Route path={path(router.ws().database.form().access)} element={<DatabaseAccessRoute />} />
+            <Route path={path(router.ws().database.form().access)} element={<DatabaseAccess />} />
             <Route path={path(router.ws().database.form().history)} element={<DatabaseHistory />} />
             <Route path={path(router.ws().database.form().group(), 2)} element={<DatabaseKoboRepeatRoute />} />
             <Route index element={<Navigate to={path(router.ws().database.form().answers)} />} />

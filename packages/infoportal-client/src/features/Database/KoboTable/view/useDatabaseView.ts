@@ -20,7 +20,7 @@ export const DatabaseViewDefaultName = 'Default'
 
 export const useDatabaseView = (formId: Kobo.FormId) => {
   const {api} = useAppSettings()
-  const {session} = useSession()
+  const session = useSession()
   const [currentViewId, setCurrentViewId] = usePersistentState<string | undefined>(undefined, {
     storageKey: 'db-view' + formId,
   })

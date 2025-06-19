@@ -15,18 +15,18 @@ import {useNavigate} from 'react-router-dom'
 import {AddUserForm} from './AddUserForm'
 import {useQuerySession} from '@/core/query/useQuerySession'
 import {useQueryUser} from '@/core/query/useQueryUser'
+import {useSession} from '@/core/Session/SessionContext'
 
 export const AdminUsers = () => {
   const {m, formatDate, formatDateTime} = useI18n()
   const {conf} = useAppSettings()
   const {workspaceId} = useWorkspaceRouter()
   const navigate = useNavigate()
-
-  const querySession = useQuerySession()
+  const ctxSession = useSession()
   const queryUser = useQueryUser(workspaceId)
 
   const connectAs = async (email: string) => {
-    await querySession.connectAs.mutateAsync(email)
+    await ctxSession.connectAs.mutateAsync(email)
     await navigate('/')
   }
 
@@ -146,9 +146,9 @@ export const AdminUsers = () => {
               align: 'right',
               renderQuick: _ => (
                 <IpIconBtn
-                  disabled={_.email === conf.contact || _.email === querySession.getMe.data?.email}
+                  disabled={_.email === conf.contact || _.email === ctxSession.user.email}
                   children="visibility"
-                  loading={querySession.connectAs.isPending}
+                  loading={ctxSession.connectAs.isPending}
                   onClick={() => connectAs(_.email)}
                   tooltip={m.connectAs}
                 />

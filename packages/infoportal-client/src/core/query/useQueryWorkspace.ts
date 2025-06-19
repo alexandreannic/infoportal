@@ -1,7 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {produce} from 'immer'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useSession} from '@/core/Session/SessionContext'
 import {queryKeys} from '@/core/query/query.index'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {useLocation, useNavigate} from 'react-router-dom'
@@ -11,7 +9,6 @@ import {Workspace} from '@/core/sdk/server/workspace/Workspace'
 
 export const useQueryWorkspace = () => {
   const {api} = useAppSettings()
-  const {setSession} = useSession()
   const queryClient = useQueryClient()
 
   const get = useQuery({
@@ -23,11 +20,6 @@ export const useQueryWorkspace = () => {
   const create = useMutation({
     mutationFn: api.workspace.create,
     onSuccess: res => {
-      setSession(prev =>
-        produce(prev, draft => {
-          draft?.workspaces.push(res)
-        }),
-      )
       queryClient.invalidateQueries({queryKey: queryKeys.workspaces()})
     },
   })
@@ -37,12 +29,6 @@ export const useQueryWorkspace = () => {
       return api.workspace.update(...args)
     },
     onSuccess: res => {
-      setSession(prev =>
-        produce(prev, draft => {
-          const i = draft?.workspaces.findIndex(w => w.id === res.id)
-          if (i !== undefined && i !== -1) draft!.workspaces[i] = res
-        }),
-      )
       queryClient.invalidateQueries({queryKey: queryKeys.workspaces()})
     },
   })
@@ -50,12 +36,6 @@ export const useQueryWorkspace = () => {
   const remove = useMutation({
     mutationFn: api.workspace.delete,
     onSuccess: (_, id) => {
-      setSession(prev =>
-        produce(prev, draft => {
-          const i = draft?.workspaces.findIndex(w => w.id === id)
-          if (i !== undefined && i !== -1) draft!.workspaces.splice(i, 1)
-        }),
-      )
       queryClient.invalidateQueries({queryKey: queryKeys.workspaces()})
     },
   })

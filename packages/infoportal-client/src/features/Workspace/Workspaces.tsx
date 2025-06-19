@@ -1,12 +1,12 @@
 import {Modal, Page} from '@/shared'
-import {useSession} from '@/core/Session/SessionContext'
 import {WorkspaceCard, WorkspaceCardAdd} from '@/features/Workspace/WorkspaceCard'
 import {Grid2} from '@mui/material'
 import {WorkspaceCreate} from '@/features/Workspace/WorkspaceCreate'
 import {useI18n} from '@/core/i18n'
+import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
 
 export const Workspaces = () => {
-  const {session} = useSession()
+  const queryWorkspace = useQueryWorkspace()
   const {m} = useI18n()
   return (
     <Page>
@@ -21,7 +21,7 @@ export const Workspaces = () => {
             <WorkspaceCardAdd />
           </Modal>
         </Grid2>
-        {session?.workspaces?.map(_ => (
+        {queryWorkspace.get.data?.map(_ => (
           <Grid2 key={_.slug} size={{xs: 6, sm: 4, md: 3}}>
             <WorkspaceCard workspace={_} />
           </Grid2>

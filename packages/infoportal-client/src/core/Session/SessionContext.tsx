@@ -1,35 +1,38 @@
-import React, {Dispatch, ReactNode, SetStateAction, useCallback, useContext, useEffect} from 'react'
-import {useEffectFn} from '@axanc/react-hooks'
+import React, {ReactNode, useContext} from 'react'
 import {useI18n} from '@/core/i18n'
-import {useAppSettings} from '@/core/context/ConfigContext'
-import {Session} from '@/core/sdk/server/session/Session'
 import {Box, LinearProgress} from '@mui/material'
-import {useIpToast} from '@/core/useToast'
 import {SessionLoginForm} from '@/core/Session/SessionLoginForm'
 import {CenteredContent} from '@/shared/CenteredContent'
 import {Fender} from '@/shared/Fender'
 import {IpIconBtn} from '@/shared/IconBtn'
-import {UseFetcher, useFetcher} from '@/shared/hook/useFetcher'
-import {useAsync} from '@/shared/hook/useAsync'
-import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {GoogleOAuthProvider} from '@react-oauth/google'
 import {appConfig} from '@/conf/AppConfig'
 import {WorkspaceCreate} from '@/features/Workspace/WorkspaceCreate'
 import {IpBtn, Page, PageTitle} from '@/shared'
+import {useQuerySession} from '@/core/query/useQuerySession'
+import {useQueryClient} from '@tanstack/react-query'
+import {queryKeys} from '@/core/query/query.index'
+import {User} from '@/core/sdk/server/user/User'
+import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
 
 export interface SessionContext {
-  session: Session
-  logout: () => void
-  setSession: Dispatch<SetStateAction<Session | undefined>>
+  originalEmail?: string
+  user: User
+  logout: ReturnType<typeof useQuerySession>['logout']
+  connectAs: ReturnType<typeof useQuerySession>['connectAs']
+  revertConnectAs: ReturnType<typeof useQuerySession>['revertConnectAs']
+  setUser: (_: User) => void
 }
 
 const Context = React.createContext(
   {} as {
-    session?: SessionContext['session']
+    originalEmail?: SessionContext['originalEmail']
+    user?: SessionContext['user']
     logout: SessionContext['logout']
-    setSession: SessionContext['setSession']
+    connectAs: SessionContext['connectAs']
+    revertConnectAs: SessionContext['revertConnectAs']
+    setUser: SessionContext['setUser']
     loading?: boolean
-    fetcherSession: UseFetcher<ApiSdk['session']['getMe']>
   },
 )
 
@@ -41,33 +44,29 @@ export const useSession = (): SessionContext => {
     throw new Error('useSession must be used within ProtectRoute')
   }
   return {
-    session: ctx.session!,
+    revertConnectAs: ctx.revertConnectAs!,
+    originalEmail: ctx.originalEmail,
+    connectAs: ctx.connectAs!,
+    user: ctx.user!,
     logout: ctx.logout,
-    setSession: ctx.setSession,
+    setUser: ctx.setUser,
   }
 }
 
 export const SessionProvider = ({children}: {children: ReactNode}) => {
-  const {api} = useAppSettings()
-  const fetcherSession = useFetcher(api.session.getMe)
-  const session = fetcherSession.get
-
-  const logout = useCallback(() => {
-    api.session.logout()
-    fetcherSession.set(undefined)
-  }, [])
-
-  useEffect(() => {
-    fetcherSession.fetch()
-  }, [])
+  const querySession = useQuerySession()
+  const user = querySession.getMe.data
+  const queryClient = useQueryClient()
 
   return (
     <Context.Provider
       value={{
-        fetcherSession,
-        session,
-        setSession: fetcherSession.set,
-        logout,
+        originalEmail: querySession.originalEmail,
+        revertConnectAs: querySession.revertConnectAs,
+        connectAs: querySession.connectAs,
+        user: user,
+        setUser: (_: User) => queryClient.setQueryData(queryKeys.session(), _),
+        logout: querySession.logout,
       }}
     >
       {children}
@@ -76,48 +75,42 @@ export const SessionProvider = ({children}: {children: ReactNode}) => {
 }
 
 export const ProtectRoute = ({adminOnly, children}: {children: ReactNode; adminOnly?: boolean}) => {
-  const {api} = useAppSettings()
   const {m} = useI18n()
-  const {toastError} = useIpToast()
-  const {fetcherSession, session, logout} = useSessionPending()
-  useEffectFn(fetcherSession.error, () => toastError(m.youDontHaveAccess))
+  const querySession = useQuerySession()
+  const queryWorkspace = useQueryWorkspace()
+  const {user, originalEmail, revertConnectAs, setUser, logout} = useSessionPending()
 
-  const _revertConnectAs = useAsync<any>(async () => {
-    const session = await api.session.revertConnectAs()
-    fetcherSession.set(session)
-  })
-
-  if (fetcherSession.loading) {
+  if (querySession.getMe.isPending) {
     return (
       <CenteredContent>
         <LinearProgress sx={{mt: 2, width: 200}} />
       </CenteredContent>
     )
   }
-  if (!session) {
+  if (!user) {
     return (
       <CenteredContent>
         <GoogleOAuthProvider clientId={appConfig.gooogle.clientId}>
-          <SessionLoginForm setSession={fetcherSession.set} />
+          <SessionLoginForm setSession={setUser} />
         </GoogleOAuthProvider>
       </CenteredContent>
     )
   }
-  if (adminOnly && !session.user.admin) {
+  if (adminOnly && !user.admin) {
     return (
       <CenteredContent>
         <Fender type="error" />
       </CenteredContent>
     )
   }
-  if (session.workspaces.length === 0) {
+  if (queryWorkspace.get.data?.length === 0) {
     return (
       <Page sx={{maxWidth: 400}}>
         <CenteredContent>
           <div>
             {/* <Txt>{session.user.email}</Txt> */}
-            <IpBtn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
-              {session.user.email}
+            <IpBtn onClick={() => logout.mutate()} icon="arrow_back" sx={{mb: 2}}>
+              {user.email}
             </IpBtn>
             <PageTitle>{m.onboardingTitle}</PageTitle>
             <WorkspaceCreate />
@@ -128,12 +121,19 @@ export const ProtectRoute = ({adminOnly, children}: {children: ReactNode; adminO
   }
   return (
     <>
-      {session.originalEmail && (
+      {originalEmail && (
         <Box sx={{px: 2, py: 0.25, background: t => t.palette.background.paper}}>
-          Connected as <b>{session.user.email}</b>. Go back as <b>{session.originalEmail}</b>
-          <IpIconBtn loading={_revertConnectAs.loading} onClick={_revertConnectAs.call} color="primary">
-            logout
-          </IpIconBtn>
+          Connected as <b>{user.email}</b>. Go back as <b>{originalEmail}</b>
+          <IpBtn
+            sx={{ml: 1}}
+            loading={revertConnectAs.isPending}
+            onClick={() => revertConnectAs.mutate()}
+            variant="contained"
+            icon="logout"
+            size="small"
+          >
+            {m.return}
+          </IpBtn>
         </Box>
       )}
       {children}

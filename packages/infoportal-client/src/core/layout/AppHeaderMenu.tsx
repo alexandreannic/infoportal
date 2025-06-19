@@ -25,8 +25,8 @@ const Row = ({icon, children}: {icon: string; children: ReactNode}) => {
 }
 
 export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
-  const querySession = useQuerySession()
-  const me = querySession.getMe.data
+  const {user, logout} = useSession()
+  const me = user.user
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
   const open = !!anchorEl
   const {m} = useI18n()
@@ -55,7 +55,7 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
             {me.admin && <Row icon="shield">{m.admin}</Row>}
           </Box>
           <Box sx={{px: 2}}>
-            <IpBtn icon="logout" variant="outlined" onClick={() => querySession.logout.mutate()} sx={{mb: 2}}>
+            <IpBtn icon="logout" variant="outlined" onClick={() => logout()} sx={{mb: 2}}>
               {m.logout}
             </IpBtn>
           </Box>

@@ -61,14 +61,14 @@ export const styleUtils = (t: Theme) => ({
   },
   color: {
     inputBackActive: {
-      background: alpha(t.palette.primary.main, 0.18)
+      background: alpha(t.palette.primary.main, 0.18),
       // background: alpha('#c7eaff', 0.8),
     },
     inputBackHover: {
-      background: alpha('#c7eaff', 0.55),
+      background: t.palette.mode === 'light' ? alpha('#c7eaff', 0.55) : alpha('#0fa1f9', 0.55),
     },
     inputBack: {
-      background: alpha('#c7eaff', 0.35),
+      background: t.palette.mode === 'light' ? alpha('#c7eaff', 0.38) : alpha('#0fa1f9', 0.3),
       backdropFilter: 'blur(20px)',
     },
     // input: 'rgba(100,100,220,.04)',
@@ -232,12 +232,12 @@ export const muiTheme = ({
             backgroundSize: 'cover',
             // background: 'linear-gradient(to bottom, #c8e6f9, #f2f4fb)',
             '&:before': {
-              content: '" "',
+              content: t.palette.mode == 'light'  ? '" "' : undefined,
               top: 0,
               right: 0,
               bottom: 0,
               left: 0,
-              background: 'rgba(255,255,255, .3)',
+              background: 'rgba(255,255,255, .2)',
               position: 'fixed',
             },
           },
@@ -437,27 +437,31 @@ export const muiTheme = ({
       },
       MuiOutlinedInput: {
         styleOverrides: {
-          root: ({theme}) =>
-            theme.palette.mode === 'light'
-              ? {
-                  ...styleUtils(theme).color.inputBack,
-                  '&:hover fieldset': {
-                    borderColor: alpha(colorPrimary.main, 0.1) + ` !important`,
-                  },
-                }
-              : {},
-          notchedOutline: ({theme}) =>
-            theme.palette.mode === 'light'
-              ? {
-                  transition: 'border-color 140ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-                  // background: 'rgba(255, 255, 255, .5)',
-                  border: 'none',
-                  // background: styleUtils(theme).color.input,
-                  // borderColor: styleUtils(theme).color.inputBorder,
-                }
-              : {
-                  borderColor: '#d9dce0',
-                },
+          root: ({theme}) => ({
+            ...styleUtils(theme).color.inputBack,
+          }),
+          notchedOutline: ({theme}) => ({
+            border: 'none',
+          }),
+          //   theme.palette.mode === 'light'
+          //     ? {
+          //         '&:hover fieldset': {
+          //           borderColor: alpha(colorPrimary.main, 0.1) + ` !important`,
+          //         },
+          //       }
+          //     : {},
+          // notchedOutline: ({theme}) =>
+          //   theme.palette.mode === 'light'
+          //     ? {
+          //         transition: 'border-color 140ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+          //         // background: 'rgba(255, 255, 255, .5)',
+          //         border: 'none',
+          //         // background: styleUtils(theme).color.input,
+          //         // borderColor: styleUtils(theme).color.inputBorder,
+          //       }
+          //     : {
+          //         borderColor: '#d9dce0',
+          //       },
         },
       },
     },
