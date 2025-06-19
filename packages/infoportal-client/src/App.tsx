@@ -19,6 +19,7 @@ import {DialogsProvider} from '@toolpad/core'
 import {useEffect, useMemo} from 'react'
 import {HashRouter, useLocation} from 'react-router-dom'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
+import {defaultTheme} from '@/core/theme'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -47,12 +48,13 @@ const App = () => {
 const AppWithConfig = () => {
   const settings = useAppSettings()
   const msal = useMemo(() => getMsalInstance(settings.conf), [settings.conf])
+
   return (
     <Provide
       providers={[
         _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns} />,
         _ => <ToastProvider children={_} />,
-        _ => <ThemeProvider theme={settings.theme.theme} children={_} />,
+        _ => <ThemeProvider theme={defaultTheme} children={_} />,
         _ => <CssBaseline children={_} />,
         _ => <I18nProvider children={_} />,
         _ => <MsalProvider children={_} instance={msal} />,

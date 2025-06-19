@@ -28,8 +28,7 @@ const useStyles = makeStyles<{loading?: boolean; variant?: IpBtnVariant}>()((t, 
         input: {
           borderRadius: t.shape.borderRadius + 'px',
           fontWeight: 500,
-          background: styleUtils(t).color.input,
-          border: '1px solid ' + styleUtils(t).color.inputBorder,
+          ...styleUtils(t).color.inputBack,
           textTransform: 'inherit',
           '&:hover': {
             background: alpha(t.palette.primary.main, 0.2),

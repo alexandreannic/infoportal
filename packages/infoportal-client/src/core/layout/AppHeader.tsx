@@ -12,7 +12,7 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {PopoverWrapper} from '@/shared/PopoverWrapper'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Obj} from '@axanc/ts-utils'
-import {alpha, BoxProps, Icon, MenuItem, Slide, useTheme} from '@mui/material'
+import {alpha, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme} from '@mui/material'
 import {Link} from 'react-router-dom'
 
 interface Props extends BoxProps {}
@@ -20,7 +20,7 @@ interface Props extends BoxProps {}
 const lightThemeIcons = {
   light: 'light_mode',
   dark: 'dark_mode',
-  auto: 'brightness_medium',
+  system: 'brightness_medium',
 } as const
 
 export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) => {
@@ -31,9 +31,7 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
   const {workspaceId, changeWorkspace} = useWorkspaceRouter()
 
   const queryWorkspaces = useQueryWorkspace()
-  const {
-    theme: {brightness, setBrightness},
-  } = useAppSettings()
+  const {mode, setMode} = useColorScheme()
 
   return (
     <Slide direction="down" in={true}>
@@ -114,9 +112,9 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
             Obj.entries(lightThemeIcons).map(([theme, icon]) => (
               <MenuItem
                 key={theme}
-                selected={brightness === theme}
+                selected={mode === theme}
                 onClick={() => {
-                  setBrightness(theme)
+                  setMode(theme)
                   close()
                 }}
               >
@@ -126,7 +124,7 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
             ))
           }
         >
-          <IpIconBtn children={lightThemeIcons[brightness ?? 'auto']} />
+          <IpIconBtn children={lightThemeIcons[mode ?? 'system']} />
         </PopoverWrapper>
         <Link to={router.root}>
           <IpIconBtn children="home" />

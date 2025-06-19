@@ -1,5 +1,6 @@
-import {alpha, Box, BoxProps, Checkbox, Icon, Radio} from '@mui/material'
+import {alpha, Box, BoxProps, Checkbox, Icon, Radio, useTheme} from '@mui/material'
 import React, {ReactNode} from 'react'
+import {styleUtils} from '@/core/theme'
 
 const defaultMuiRadioPadding = 9
 
@@ -43,6 +44,8 @@ export const ScRadioGroupItem = <T,>({
   sx,
   ...rest
 }: ScRadioGroupItemProps<T>) => {
+  const t = useTheme()
+  const borderColorActive = 'transparent'
   const minHeight = dense ? 34 : 50
   return (
     <Box
@@ -54,21 +57,23 @@ export const ScRadioGroupItem = <T,>({
         px: dense ? 1.5 : 2,
         display: 'flex',
         alignItems: 'flex-start',
-        border: t => '1px solid ' + t.palette.divider,
+        border: '2px solid ' + 'transparent',
+        ...styleUtils(t).color.inputBack,
         paddingBottom: '2px',
         transition: 'all .2s ease-in-out',
         cursor: 'pointer',
+        borderRadius: '4px',
         ...(inline
           ? {
               borderRightColor: 'transparent',
               '&:last-of-type': {
-                borderRight: t => '1px solid ' + t.palette.divider,
-                borderBottomRightRadius: t => t.shape.borderRadius,
-                borderTopRightRadius: t => t.shape.borderRadius,
+                borderRight: '2px solid ' + 'transparent',
+                borderBottomRightRadius: t.shape.borderRadius,
+                borderTopRightRadius: t.shape.borderRadius,
               },
               '&:first-of-type': {
-                borderBottomLeftRadius: t => t.shape.borderRadius,
-                borderTopLeftRadius: t => t.shape.borderRadius,
+                borderBottomLeftRadius: t.shape.borderRadius,
+                borderTopLeftRadius: t.shape.borderRadius,
               },
               '&:not(:first-of-type)': {
                 marginLeft: '-1px',
@@ -77,39 +82,42 @@ export const ScRadioGroupItem = <T,>({
           : {
               borderBottomColor: 'transparent',
               '&:last-of-type': {
-                borderBottom: t => '1px solid ' + t.palette.divider,
-                borderBottomRightRadius: t => t.shape.borderRadius,
-                borderBottomLeftRadius: t => t.shape.borderRadius,
+                borderBottom: '2px solid ' + 'transparent',
+                borderBottomRightRadius: t.shape.borderRadius,
+                borderBottomLeftRadius: t.shape.borderRadius,
               },
               '&:first-of-type': {
-                borderTopRightRadius: t => t.shape.borderRadius,
-                borderTopLeftRadius: t => t.shape.borderRadius,
+                borderTopRightRadius: t.shape.borderRadius,
+                borderTopLeftRadius: t.shape.borderRadius,
               },
               '&:not(:first-of-type)': {
-                marginTop: '-2px',
+                marginTop: '2px',
               },
             }),
-        '&:hover': disabled
-          ? {}
-          : {
-              zIndex: 1,
-              border: t => `1px solid ${t.palette.primary.main}`,
-              background: 'rgba(0,0,0,.04)',
-            },
+        '&:hover':
+          disabled || selected
+            ? {}
+            : {
+                zIndex: 1,
+                border: `2px solid ${borderColorActive}`,
+                ...styleUtils(t).color.inputBackHover,
+              },
         ...(disabled && {
           opacity: 0.8,
         }),
         ...(selected && {
           zIndex: 1,
-          border: t => `1px solid ${t.palette.primary.main} !important`,
-          background: t => alpha(t.palette.primary.main, 0.1),
-          boxShadow: t => `inset 0 0 0 1px ${t.palette.primary.main}`,
+          border: `2px solid ${borderColorActive} !important`,
+          // background: alpha(t.palette.primary.main, 0.5),
+          ...styleUtils(t).color.inputBackActive,
+          // color: t.palette.primary.main,
+          // boxShadow:`inset 0 0 0 1px ${t.palette.primary.main}`,
         }),
         ...(error && {
           '&$rootSelected': {
-            borderColor: t => t.palette.error.main + ' !important',
+            borderColor: t.palette.error.main + ' !important',
           },
-          boxShadow: t => `inset 0 0 0 1px ${t.palette.error.main}`,
+          // boxShadow:`inset 0 0 0 1px ${t.palette.error.main}`,
         }),
       }}
       // className={classes(css.root, selected && css.rootSelected, error && css.rootError, className)}
@@ -142,9 +150,7 @@ export const ScRadioGroupItem = <T,>({
           />
         ))}
       {before}
-      {icon && (
-        <Icon sx={{color: iconColor ?? (t => t.palette.text.disabled), mr: 1, alignSelf: 'center'}}>{icon}</Icon>
-      )}
+      {icon && <Icon sx={{color: iconColor ?? t.palette.text.disabled, mr: 1, alignSelf: 'center'}}>{icon}</Icon>}
       <Box
         sx={{
           alignSelf: 'center',
@@ -160,11 +166,9 @@ export const ScRadioGroupItem = <T,>({
           }),
         }}
       >
-        {title && <Box>{title}</Box>}
+        {title && title}
         {description && (
-          <Box sx={{color: t => t.palette.text.secondary, fontSize: t => t.typography.fontSize * 0.9}}>
-            {description}
-          </Box>
+          <Box sx={{color: t.palette.text.secondary, fontSize: t.typography.fontSize * 0.9}}>{description}</Box>
         )}
         {children && children}
       </Box>

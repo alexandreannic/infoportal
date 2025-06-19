@@ -60,9 +60,20 @@ export const styleUtils = (t: Theme) => ({
     return `${t.spacing(top)} ${t.spacing(right)} ${t.spacing(bottom)} ${t.spacing(left)}`
   },
   color: {
-    input: 'rgba(100,100,220,.04)',
+    inputBackActive: {
+      background: alpha(t.palette.primary.main, 0.18)
+      // background: alpha('#c7eaff', 0.8),
+    },
+    inputBackHover: {
+      background: alpha('#c7eaff', 0.55),
+    },
+    inputBack: {
+      background: alpha('#c7eaff', 0.35),
+      backdropFilter: 'blur(20px)',
+    },
+    // input: 'rgba(100,100,220,.04)',
     // inputBorder: 'rgba(0,0,0,0)',// 'rgba(0, 0, 0, 0.12)',
-    inputBorder: 'rgba(0, 0, 0, 0.11)',
+    // inputBorder: 'rgba(0, 0, 0, 0.11)',
     toolbar: t.palette.mode === 'dark' ? t.palette.background.paper : 'rgb(237, 242, 250)', //'#e9eef6',
     // toolbar: t.palette.mode === 'dark' ? t.palette.background.paper :'#ebf1f9',//'#e9eef6',
     success: '#00b79f',
@@ -82,37 +93,19 @@ export const defaultSpacing = 8
 export type AppThemeParams = {
   mainColor?: string
   fontSize?: number
-  backgroundPaper?: string
-  backgroundDefault?: string
   cardElevation?: number
   dark?: boolean
   spacing?: number
-}
-
-export const defaultAppThemeParams = {
-  light: {
-    // backgroundDefault: '#fff',
-    // backgroundDefault: '#f6f8fc',
-    backgroundDefault: '#f4f6fa',
-    backgroundPaper: '#fff',
-  },
-  dark: {
-    backgroundDefault: '#031525',
-    backgroundPaper: '#0d2136',
-  },
 }
 
 export const muiTheme = ({
   dark,
   mainColor = '#0073e6',
   // mainColor = '#c9000a',
-  backgroundPaper,
-  backgroundDefault,
   cardElevation,
   spacing = defaultSpacing,
   fontSize = 14,
 }: AppThemeParams = {}): Theme => {
-  const colorOverOpaque = dark ? '#070707' : '#fafafa'
   const defaultRadius = 12
   const fontFamily = '"Open Sans", sans-serif'
   // const mainColor = '#af161e'
@@ -126,25 +119,45 @@ export const muiTheme = ({
     light: lighten('#1a73e8', 0.3),
     dark: darken('#1a73e8', 0.3),
   }
-  const baseTheme = createTheme({
+
+  return createTheme({
+    defaultColorScheme: dark ? 'dark' : 'light',
+    cssVariables: {
+      colorSchemeSelector: 'class',
+    },
     spacing,
-    palette: {
-      action: {
-        focus: alpha(mainColor, 0.1),
-        focusOpacity: 0.1,
+    colorSchemes: {
+      light: {
+        palette: {
+          warning: orange,
+          primary: colorPrimary,
+          secondary: colorSecondary,
+          error: red,
+          action: {
+            focus: alpha(mainColor, 0.1),
+            focusOpacity: 0.1,
+          },
+          background: {
+            default: 'rgba(255, 255, 255, 0.6)',
+            paper: 'rgba(255, 255, 255, 0.6)',
+          },
+        },
       },
-      warning: orange,
-      primary: colorPrimary,
-      secondary: colorSecondary,
-      error: red,
-      mode: dark ? 'dark' : 'light',
-      background: {
-        default:
-          backgroundDefault ??
-          (dark ? defaultAppThemeParams.dark.backgroundDefault : defaultAppThemeParams.light.backgroundDefault),
-        paper:
-          backgroundPaper ??
-          (dark ? defaultAppThemeParams.dark.backgroundPaper : defaultAppThemeParams.light.backgroundPaper),
+      dark: {
+        palette: {
+          warning: orange,
+          primary: colorPrimary,
+          secondary: colorSecondary,
+          error: red,
+          action: {
+            focus: alpha(mainColor, 0.1),
+            focusOpacity: 0.1,
+          },
+          background: {
+            default: '#031525',
+            paper: '#0d2136',
+          },
+        },
       },
     },
     shape: {
@@ -171,12 +184,9 @@ export const muiTheme = ({
         fontSize: '1.3em',
       },
     },
-  })
-
-  const theme: ThemeOptions = {
     components: {
       MuiCssBaseline: {
-        styleOverrides: {
+        styleOverrides: t => ({
           '*': {
             boxSizing: 'border-box',
           },
@@ -190,7 +200,7 @@ export const muiTheme = ({
             src: 'url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format("woff2")',
           },
           // '.Mui-error': {
-          //   color: baseTheme.palette.error.main + ' !important',
+          //   color: theme.palette.error.main + ' !important',
           // },
           '.recharts-surface': {
             overflow: 'visible',
@@ -213,22 +223,33 @@ export const muiTheme = ({
             display: 'none',
           },
           body: {
+            minHeight: '100vh',
             margin: 0,
             fontSize: '1rem',
             lineHeight: '1.5',
             boxSizing: 'border-box',
-            // Delete padding inserted by @mui that is supposed to cover the scrollbar width
-            // but which is insanely huge here for some reason.
+            background: t.palette.mode === 'dark' ? t.palette.background.default : 'url(/bg2.png)',
+            backgroundSize: 'cover',
+            // background: 'linear-gradient(to bottom, #c8e6f9, #f2f4fb)',
+            '&:before': {
+              content: '" "',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              background: 'rgba(255,255,255, .3)',
+              position: 'fixed',
+            },
           },
           ul: {
             marginTop: '.5em',
           },
           p: {
-            ...baseTheme.typography.body1,
+            ...t.typography.body1,
             textAlign: 'justify',
           },
           '.link': {
-            color: baseTheme.palette.info.main,
+            color: t.palette.info.main,
             textDecoration: 'underline',
           },
           a: {
@@ -240,11 +261,11 @@ export const muiTheme = ({
           },
           '.ip-border': {
             overflow: 'hidden',
-            border: `1px solid ${baseTheme.palette.divider}`,
+            border: `1px solid ${t.palette.divider}`,
             borderRadius: defaultRadius,
           },
-          ...tableTheme(baseTheme, colorOverOpaque),
-        },
+          ...tableTheme(t),
+        }),
       },
       MuiBadge: {
         styleOverrides: {
@@ -259,9 +280,9 @@ export const muiTheme = ({
             fontWeight: 'bold',
             borderRadius: 20,
           },
-          outlinedPrimary: {
-            borderColor: baseTheme.palette.divider,
-          },
+          outlinedPrimary: ({theme}) => ({
+            borderColor: theme.palette.divider,
+          }),
         },
       },
       MuiCard: {
@@ -271,27 +292,37 @@ export const muiTheme = ({
         styleOverrides: {
           root: {
             border: 'none',
-            // border: `1px solid ${baseTheme.palette.divider}`,
+            // border: `1px solid ${theme.palette.divider}`,
             //       borderRadius: defaultRadius,
           },
         },
       },
       MuiTabs: {
         styleOverrides: {
-          indicator: {
+          indicator: ({theme}) => ({
             top: 2,
             marginLeft: 2,
             bottom: 2,
             height: 'auto',
-            background: alpha(baseTheme.palette.primary.main, 0.18),
-            borderRadius: baseTheme.shape.borderRadius - 2 + 'px',
-          },
-          root: {
-            background: baseTheme.palette.background.paper,
-            borderRadius: baseTheme.shape.borderRadius + 'px',
-            // boxShadow: baseTheme.shadows[1],
+            background: alpha(theme.palette.primary.main, 0.18),
+            borderRadius: theme.shape.borderRadius - 2 + 'px',
+          }),
+          root: ({theme}) => ({
+            background: theme.palette.background.paper,
+            borderRadius: theme.shape.borderRadius + 'px',
+            // boxShadow: theme.shadows[1],
             minHeight: 0,
-          },
+            borderBottom: 'none !important',
+          }),
+        },
+      },
+
+      MuiPaper: {
+        styleOverrides: {
+          root: ({theme}) => ({
+            backdropFilter: 'blur(20px)',
+            background: theme.palette.background.paper,
+          }),
         },
       },
       MuiBackdrop: {
@@ -301,8 +332,8 @@ export const muiTheme = ({
             backdropFilter: 'none',
           },
           root: {
-            backdropFilter: 'blur(3px)',
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            backdropFilter: 'blur(4px)',
+            backgroundColor: 'rgba(255, 255, 255, 0.5)',
           },
         },
       },
@@ -311,30 +342,31 @@ export const muiTheme = ({
           disableRipple: true,
         },
         styleOverrides: {
-          root: {
+          root: ({theme}) => ({
+            color: theme.palette.text.primary,
             textTransform: 'none',
             fontWeight: 600,
             minHeight: 40,
             minWidth: '80px !important',
-          },
+          }),
         },
       },
       MuiChip: {
         styleOverrides: {
-          outlined: {
-            borderColor: baseTheme.palette.divider,
-          },
+          outlined: ({theme}) => ({
+            borderColor: theme.palette.divider,
+          }),
         },
       },
       MuiMenuItem: {
         styleOverrides: {
-          root: {
+          root: ({theme}) => ({
             // fontSize: '1rem',
             // minHeight: 40,
-            [baseTheme.breakpoints.up('xs')]: {
+            [theme.breakpoints.up('xs')]: {
               // minHeight: 42,
             },
-          },
+          }),
         },
       },
       MuiDialogTitle: {
@@ -382,10 +414,10 @@ export const muiTheme = ({
       },
       MuiTooltip: {
         styleOverrides: {
-          tooltip: {
-            fontSize: baseTheme.typography.fontSize,
+          tooltip: ({theme}) => ({
+            fontSize: theme.typography.fontSize,
             fontWeight: 'normal',
-          },
+          }),
         },
       },
       MuiIcon: {
@@ -397,47 +429,42 @@ export const muiTheme = ({
       },
       MuiIconButton: {
         styleOverrides: {
-          root: {
+          root: ({theme}) => ({
+            color: theme.palette.text.primary,
             spacing: 6,
-          },
+          }),
         },
       },
-      MuiOutlinedInput: dark
-        ? {}
-        : {
-            styleOverrides: {
-              root: {
-                '&:hover fieldset': {
-                  borderColor: alpha(colorPrimary.main, 0.5) + ` !important`,
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: ({theme}) =>
+            theme.palette.mode === 'light'
+              ? {
+                  ...styleUtils(theme).color.inputBack,
+                  '&:hover fieldset': {
+                    borderColor: alpha(colorPrimary.main, 0.1) + ` !important`,
+                  },
+                }
+              : {},
+          notchedOutline: ({theme}) =>
+            theme.palette.mode === 'light'
+              ? {
+                  transition: 'border-color 140ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+                  // background: 'rgba(255, 255, 255, .5)',
+                  border: 'none',
+                  // background: styleUtils(theme).color.input,
+                  // borderColor: styleUtils(theme).color.inputBorder,
+                }
+              : {
+                  borderColor: '#d9dce0',
                 },
-              },
-              notchedOutline: {
-                transition: 'border-color 140ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-                background: styleUtils(baseTheme).color.input,
-                borderColor: styleUtils(baseTheme).color.inputBorder,
-              },
-            },
-          },
+        },
+      },
     },
-  }
-  return createTheme({
-    ...baseTheme,
-    ...theme,
-    ...(dark
-      ? {
-          MuiOutlinedInput: {
-            styleOverrides: {
-              notchedOutline: {
-                borderColor: '#d9dce0',
-              },
-            },
-          },
-        }
-      : ({} as any)),
   })
 }
 
-const tableTheme = (t: Theme, colorOverOpaque: string) => ({
+const tableTheme = (t: Theme) => ({
   '@keyframes shake': {
     '0%': {transform: 'rotate(0)'},
     '20%': {transform: 'rotate(-25deg)'},
@@ -596,7 +623,7 @@ const tableTheme = (t: Theme, colorOverOpaque: string) => ({
     color: t.palette.text.secondary,
   },
   '.table tbody tr:hover td': {
-    background: colorOverOpaque,
+    background: t.palette.mode === 'dark' ? '#070707' : '#fff',
   },
   //
   // 'table.sheet': {
@@ -608,7 +635,7 @@ const tableTheme = (t: Theme, colorOverOpaque: string) => ({
   // },
   // '.sheet td': {
   //   padding: '2px',
-  //   borderBottom: `1px solid ${baseTheme.palette.divider}`
+  //   borderBottom: `1px solid ${theme.palette.divider}`
   //   // background: 'red',
   // },
 })
@@ -636,3 +663,15 @@ export const themeLightScrollbar: SxProps<Theme> = {
     // backgroundColor: 'darkgrey',
   },
 }
+
+export function getComponentStyleOverride<T = any>(theme: Theme, componentName: string, slot: string): T | undefined {
+  const slotOverride = (theme.components as any)?.[componentName]?.styleOverrides?.[slot]
+
+  if (typeof slotOverride === 'function') {
+    return slotOverride({theme})
+  }
+
+  return slotOverride
+}
+
+export const defaultTheme = muiTheme()

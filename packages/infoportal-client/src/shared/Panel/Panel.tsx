@@ -26,6 +26,8 @@ export const Panel = forwardRef(
         sx={{
           // border: t => `1px solid ${t.palette.divider}`,
           // boxShadow: t => t.shadows[1],
+          // boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+
           position: 'relative',
           background: t => t.palette.background.paper,
           borderRadius: t => t.shape.borderRadius + 'px',

@@ -21,7 +21,6 @@ export const SidebarHeader = ({hidden, children, sx, ...props}: SidebarHeaderPro
         display: 'flex',
         alignItems: 'center',
         px: layoutConfig.headerPx,
-        borderTop: t => '1px solid ' + t.palette.divider,
         borderBottom: t => '1px solid ' + t.palette.divider,
         ...(hidden && {
           height: 0,

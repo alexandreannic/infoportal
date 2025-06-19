@@ -60,7 +60,7 @@ export const SidebarItem = ({
         whiteSpace: 'nowrap',
         textAlign: 'left',
         textOverflow: 'ellipsis',
-        color: t => t.palette.text.secondary,
+        color: t => t.palette.text.primary,
         pr: 1,
         pl: 1.5,
         mx: 0.5,
@@ -95,7 +95,14 @@ export const SidebarItem = ({
       }}
       {...props}
     >
-      {icon && (typeof icon === 'string' ? <Icon sx={css.i}>{icon}</Icon> : <Box sx={css.i}>{icon}</Box>)}
+      {icon &&
+        (typeof icon === 'string' ? (
+          <Icon fontSize={size === 'small' ? 'small' : 'medium'} sx={css.i}>
+            {icon}
+          </Icon>
+        ) : (
+          <Box sx={css.i}>{icon}</Box>
+        ))}
       <Box
         sx={{
           width: '100%',

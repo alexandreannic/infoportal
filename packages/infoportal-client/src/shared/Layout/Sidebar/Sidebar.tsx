@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {useEffect, useState} from 'react'
-import {alpha, Box, BoxProps, Slide, SwipeableDrawer, Switch, useTheme} from '@mui/material'
+import {Box, BoxProps, Slide, SwipeableDrawer, Switch, useTheme} from '@mui/material'
 import {useLayoutContext} from '../LayoutContext'
 import {layoutConfig} from '../index'
 import {SidebarFooter} from './SidebarFooter'
@@ -9,7 +9,6 @@ import {SidebarBody} from './SidebarBody'
 import {SidebarHeader} from './SidebarHeader'
 import {useI18n} from '../../../core/i18n'
 import {Utils} from '@/utils/utils'
-import {useAppSettings} from '@/core/context/ConfigContext'
 import stopPropagation = Utils.stopPropagation
 
 let sidebar: HTMLElement | null = null
@@ -44,7 +43,6 @@ export const Sidebar = ({
   showThemeToggle?: boolean
   headerId?: string
 }) => {
-  const app = useAppSettings()
   const {isMobileWidth, sidebarOpen, setSidebarOpen, sidebarPinned, setSidebarPinned} = useLayoutContext()
   const {m} = useI18n()
   const t = useTheme()
@@ -87,11 +85,13 @@ export const Sidebar = ({
       PaperProps={{
         id,
         sx: {
+          m: 1,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
           mr: 2,
           top: layoutConfig.headerHeight,
           background: 'transparent',
-          boxShadow: 'none',
           position: 'fixed',
+          borderRadius: t.shape.borderRadius + 'px',
           border: 'none',
           bottom: 0,
           height: 'auto',
@@ -108,12 +108,10 @@ export const Sidebar = ({
       <Slide direction="right" in={true}>
         <Box
           sx={{
-            m: 1,
             borderRadius: t.shape.borderRadius + 'px',
-            boxShadow: t.shadows[1],
-            backdropFilter: 'blur(8px)',
-            background: alpha(t.palette.background.paper, 0.8),
-            // background: isTemporary ? t => t.palette.background.default : undefined,
+            // boxShadow: t.shadows[1],
+            // background: alpha(t.palette.background.paper, 0.8),
+            background: isTemporary ? t => t.palette.background.default : t.palette.background.paper,
             width: layoutConfig.sidebarWith,
             height: '100%',
             transition: t => t.transitions.create('width'),
@@ -128,24 +126,15 @@ export const Sidebar = ({
           <SidebarHeader hidden={!isTemporary} />
           <SidebarBody>{children}</SidebarBody>
           <SidebarFooter>
-            {showThemeToggle && (
-              <SidebarItem
-                onClick={stopPropagation(() => app.theme.setBrightness(_ => (_ === 'dark' ? 'light' : 'dark')))}
-                icon="dark_mode"
-                sx={{mr: 0, pr: 0}}
-              >
-                {m.theme}
-                <Switch color="primary" sx={{ml: 'auto'}} checked={app.theme.brightness === 'dark'} />
-              </SidebarItem>
-            )}
             {!isMobileWidth && (
               <SidebarItem
+                size="small"
                 onClick={stopPropagation(() => setSidebarPinned(_ => !_))}
                 icon="push_pin"
                 sx={{mr: 0, pr: 0}}
               >
                 {m.pin}
-                <Switch color="primary" sx={{ml: 'auto'}} checked={sidebarPinned} />
+                <Switch size="small" color="primary" sx={{ml: 'auto'}} checked={sidebarPinned} />
               </SidebarItem>
             )}
           </SidebarFooter>

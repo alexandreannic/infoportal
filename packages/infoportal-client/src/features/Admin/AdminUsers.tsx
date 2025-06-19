@@ -54,7 +54,7 @@ export const AdminUsers = () => {
                 />
               )}
             >
-              <IpBtn icon="person_add" variant="contained">
+              <IpBtn icon="person_add" variant="outlined">
                 {m.addUser}
               </IpBtn>
             </Modal>

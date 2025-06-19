@@ -63,7 +63,7 @@ export const DatabaseAccess = ({formId, form}: {formId: Kobo.FormId; form: Kobo.
           header={
             accessSum.admin && (
               <DatabaseAccessForm workspaceId={workspaceId} formId={formId} form={form} onAdded={refresh}>
-                <IpBtn sx={{mr: 1}} variant="contained" icon="person_add">
+                <IpBtn sx={{mr: 1}} variant="outlined" icon="person_add">
                   {m.grantAccess}
                 </IpBtn>
               </DatabaseAccessForm>

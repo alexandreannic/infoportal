@@ -75,7 +75,7 @@ export const AddUserForm = ({
       />
       <PanelFoot sx={{mt: 2, p: 0}} alignEnd>
         {onClose && <IpBtn onClick={onClose}>{m.close}</IpBtn>}
-        <IpBtn variant="contained" type="submit" disabled={!form.formState.isValid} onClick={submit} loading={loading}>
+        <IpBtn variant="outlined" type="submit" disabled={!form.formState.isValid} onClick={submit} loading={loading}>
           {m.submit}
         </IpBtn>
       </PanelFoot>

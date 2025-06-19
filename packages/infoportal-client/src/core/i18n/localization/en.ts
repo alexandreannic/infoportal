@@ -58,7 +58,7 @@ export const en = Object.freeze({
     lightTheme: {
       light: 'Light',
       dark: 'Dark',
-      auto: 'Device default',
+      system: 'Device default',
     },
     noComment: 'No comment',
     answers: 'Answers',

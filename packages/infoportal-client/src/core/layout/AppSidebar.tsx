@@ -7,7 +7,7 @@ import Fuse from 'fuse.js'
 import {useMemo} from 'react'
 import {Controller, useForm} from 'react-hook-form'
 import {NavLink} from 'react-router-dom'
-import {styleUtils} from '../theme'
+import {getComponentStyleOverride, styleUtils} from '../theme'
 
 import {useQueryForm} from '@/core/query/useQueryForm'
 
@@ -29,7 +29,7 @@ const SearchInput = ({sx, ...props}: React.InputHTMLAttributes<HTMLInputElement>
         m: 1,
         mb: 0.5,
         borderRadius: t.shape.borderRadius + 'px',
-        background: styleUtils(t).color.toolbar,
+        ...styleUtils(t).color.inputBack,
         pl: 1,
         ...sx,
       }}
