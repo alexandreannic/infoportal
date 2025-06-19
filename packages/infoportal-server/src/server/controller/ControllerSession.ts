@@ -24,7 +24,7 @@ export class ControllerSession extends Controller {
       req.session.app = await this.service.get(user)
     }
     const profile = await this.service.get(req.session.app.user)
-    res.send({...req.session.app, ...profile})
+    res.send({...profile, ...req.session.app})
   }
 
   readonly logout = async (req: Request, res: Response, next: NextFunction) => {

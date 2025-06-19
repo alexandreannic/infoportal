@@ -1,13 +1,11 @@
 import {router} from '@/Router'
-import {useAppSettings} from '@/core/context/ConfigContext'
-import {useQueryWorkspace, useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
+import {useQueryWorkspace, useWorkspaceRouterMaybe} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
 import {styleUtils} from '@/core/theme'
 import {Txt} from '@/shared'
 import {IpIconBtn} from '@/shared/IconBtn'
-import {layoutConfig} from '@/shared/Layout'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {PopoverWrapper} from '@/shared/PopoverWrapper'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
@@ -28,7 +26,7 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
   const t = useTheme()
 
   const {sidebarOpen, showSidebarButton, setSidebarOpen, title} = useLayoutContext()
-  const {workspaceId, changeWorkspace} = useWorkspaceRouter()
+  const {workspaceId, changeWorkspace} = useWorkspaceRouterMaybe()
 
   const queryWorkspaces = useQueryWorkspace()
   const {mode, setMode} = useColorScheme()
@@ -38,8 +36,8 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
       <AppHeaderContainer
         component="header"
         sx={{
-          minHeight: layoutConfig.headerHeight,
-          px: layoutConfig.headerPx,
+          minHeight: 44,
+          px: 2,
           py: 0.5,
           display: 'flex',
           alignItems: 'center',
@@ -87,26 +85,27 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
           {children}
         </div>
 
-        <IpSelectSingle
-          startAdornment={
-            <Icon color="disabled" sx={{mr: 1}}>
-              workspaces
-            </Icon>
-          }
-          value={workspaceId}
-          hideNullOption
-          onChange={_ => _ && changeWorkspace(_)}
-          sx={{width: 200, mr: 0.5}}
-          options={(queryWorkspaces.get.data ?? []).map(_ => ({
-            value: _.id,
-            children: (
-              <>
-                <Txt bold>{_.name}</Txt>&nbsp;•&nbsp;<Txt color="hint">{_.slug}</Txt>
-              </>
-            ),
-          }))}
-        />
-
+        {workspaceId && (
+          <IpSelectSingle
+            startAdornment={
+              <Icon color="disabled" sx={{mr: 1}}>
+                workspaces
+              </Icon>
+            }
+            value={workspaceId}
+            hideNullOption
+            onChange={_ => _ && changeWorkspace(_)}
+            sx={{width: 200, mr: 0.5}}
+            options={(queryWorkspaces.get.data ?? []).map(_ => ({
+              value: _.id,
+              children: (
+                <>
+                  <Txt bold>{_.name}</Txt>&nbsp;•&nbsp;<Txt color="hint">{_.slug}</Txt>
+                </>
+              ),
+            }))}
+          />
+        )}
         <PopoverWrapper
           content={close =>
             Obj.entries(lightThemeIcons).map(([theme, icon]) => (

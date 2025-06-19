@@ -1,5 +1,5 @@
 import {Fender} from '@/shared/Fender'
-import {Layout} from '@/shared/Layout'
+import {Layout} from '@/shared/Layout/Layout'
 import {Page} from '@/shared/Page'
 
 export const NoFeatureAccessPage = () => {

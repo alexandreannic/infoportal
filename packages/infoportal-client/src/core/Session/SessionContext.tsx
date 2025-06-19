@@ -4,7 +4,6 @@ import {Box, LinearProgress} from '@mui/material'
 import {SessionLoginForm} from '@/core/Session/SessionLoginForm'
 import {CenteredContent} from '@/shared/CenteredContent'
 import {Fender} from '@/shared/Fender'
-import {IpIconBtn} from '@/shared/IconBtn'
 import {GoogleOAuthProvider} from '@react-oauth/google'
 import {appConfig} from '@/conf/AppConfig'
 import {WorkspaceCreate} from '@/features/Workspace/WorkspaceCreate'
@@ -14,11 +13,12 @@ import {useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {User} from '@/core/sdk/server/user/User'
 import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {useNavigate} from 'react-router-dom'
 
 export interface SessionContext {
   originalEmail?: string
   user: User
-  logout: ReturnType<typeof useQuerySession>['logout']
+  logout: () => Promise<void>
   connectAs: ReturnType<typeof useQuerySession>['connectAs']
   revertConnectAs: ReturnType<typeof useQuerySession>['revertConnectAs']
   setUser: (_: User) => void
@@ -57,6 +57,7 @@ export const SessionProvider = ({children}: {children: ReactNode}) => {
   const querySession = useQuerySession()
   const user = querySession.getMe.data
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   return (
     <Context.Provider
@@ -66,7 +67,10 @@ export const SessionProvider = ({children}: {children: ReactNode}) => {
         connectAs: querySession.connectAs,
         user: user,
         setUser: (_: User) => queryClient.setQueryData(queryKeys.session(), _),
-        logout: querySession.logout,
+        logout: async () => {
+          await querySession.logout.mutateAsync()
+          await navigate('/')
+        },
       }}
     >
       {children}
@@ -109,7 +113,7 @@ export const ProtectRoute = ({adminOnly, children}: {children: ReactNode; adminO
         <CenteredContent>
           <div>
             {/* <Txt>{session.user.email}</Txt> */}
-            <IpBtn onClick={() => logout.mutate()} icon="arrow_back" sx={{mb: 2}}>
+            <IpBtn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
               {user.email}
             </IpBtn>
             <PageTitle>{m.onboardingTitle}</PageTitle>
