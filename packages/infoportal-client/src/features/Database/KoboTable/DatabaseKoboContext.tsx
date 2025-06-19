@@ -43,7 +43,7 @@ export const DatabaseKoboTableProvider = (props: {
   loading?: boolean
   refetch: (p?: FetchParams) => Promise<void>
   access: DatabaseKoboContext['access']
-  form: DatabaseKoboContext['form']
+  form: KoboForm
   data?: KoboMappedAnswer[]
 }) => {
   const {form, data, children, refetch} = props
@@ -105,6 +105,7 @@ export const DatabaseKoboTableProvider = (props: {
         ...props,
         externalFilesIndex: indexExternalFiles,
         asyncRefresh,
+        form,
         asyncEdit,
         view,
         groupDisplay,

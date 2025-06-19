@@ -13,7 +13,6 @@ import {DatatableSkeleton} from '@/shared/Datatable/DatatableSkeleton'
 import {DatatableFilterValue} from '@/shared/Datatable/util/datatableType'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {FetchParams} from '@/shared/hook/useFetchers'
-import {Page} from '@/shared/Page'
 import {Panel} from '@/shared/Panel'
 import {map} from '@axanc/ts-utils'
 import {Skeleton} from '@mui/material'
@@ -21,18 +20,11 @@ import {useIsFetching} from '@tanstack/react-query'
 import {Kobo} from 'kobo-sdk'
 import {useCallback, useEffect, useMemo} from 'react'
 import {useQueryAccess} from '@/core/query/useQueryAccess'
-
-export const DatabaseTableRoute = ({form}: {form: KoboForm}) => {
-  return (
-    <Page width="full" sx={{p: 0, pb: 0, mb: 0}}>
-      <Panel sx={{mb: 0}}>
-        <DatabaseTable form={form} formId={form.id} />
-      </Panel>
-    </Page>
-  )
-}
+import {useQueryForm} from '@/core/query/useQueryForm'
+import {UUID} from 'infoportal-common'
 
 export interface DatabaseTableProps {
+  workspaceId: UUID
   form?: KoboForm
   formId: Kobo.FormId
   dataFilter?: (_: KoboMappedAnswer) => boolean
@@ -47,6 +39,7 @@ export interface DatabaseTableProps {
 }
 
 export const DatabaseTable = ({
+  workspaceId,
   form,
   formId,
   onFiltersChange,
@@ -54,15 +47,12 @@ export const DatabaseTable = ({
   dataFilter,
   overrideEditAccess,
 }: DatabaseTableProps) => {
-  const {api} = useAppSettings()
   const {session} = useSession()
-  const {workspaceId} = useWorkspaceRouter()
 
+  const queryForm = useQueryForm(workspaceId)
   const querySchema = useQuerySchema(formId)
   const queryAnswers = useQueryAnswer(formId)
   const queryAccess = useQueryAccess(formId)
-
-  const fetcherForm = useFetcher(() => (form ? Promise.resolve(form) : api.kobo.form.get({workspaceId, formId})))
 
   const access = useMemo(() => {
     const list = queryAccess.accessesByFormIdMap[formId] ?? []
@@ -71,10 +61,6 @@ export const DatabaseTable = ({
     const read = write || list.length > 0
     return {admin, write, read}
   }, [queryAccess.accessesByFormIdMap])
-
-  useEffect(() => {
-    fetcherForm.fetch()
-  }, [formId])
 
   const loading = queryAnswers.isLoading
   const refetch = useCallback(
@@ -90,7 +76,7 @@ export const DatabaseTable = ({
     }) > 0
 
   return (
-    <>
+    <Panel>
       {anyLoading && loading && (
         <>
           <Skeleton sx={{mx: 1, height: 54}} />
@@ -101,19 +87,19 @@ export const DatabaseTable = ({
       {/*  <>*/}
       {/*  </>*/}
       {/*)}*/}
-      {map(fetcherForm.get, querySchema.data, (form, schema) => (
+      {map(queryForm.getForm(formId), querySchema.data, (form, schema) => (
         <DatabaseKoboTableProvider
+          form={form}
           schema={schema}
           dataFilter={dataFilter}
           access={access}
           refetch={refetch}
           loading={loading}
           data={queryAnswers.data?.data}
-          form={form}
         >
           <DatabaseKoboTableContent onFiltersChange={onFiltersChange} onDataChange={onDataChange} />
         </DatabaseKoboTableProvider>
       ))}
-    </>
+    </Panel>
   )
 }

@@ -2,7 +2,7 @@ import {appConfig} from '@/conf/AppConfig'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {DatabaseTableRoute} from '@/features/Database/KoboTable/DatabaseKoboTable'
+import {DatabaseTable, DatabaseTableRoute} from '@/features/Database/KoboTable/DatabaseKoboTable'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {useEffect, useMemo} from 'react'
@@ -10,6 +10,7 @@ import {useLocation, useParams} from 'react-router'
 import {NavLink, Outlet} from 'react-router-dom'
 import * as yup from 'yup'
 import {useQueryForm} from '@/core/query/useQueryForm'
+import {Page} from '@/shared'
 
 export const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -37,10 +38,6 @@ export const Database = () => {
   const repeatGroups = useMemo(() => {
     return schema?.helper.group.search().map(_ => _.name)
   }, [schema])
-
-  if (!currentForm) {
-    return <></>
-  }
 
   return (
     <>
@@ -95,9 +92,12 @@ export const Database = () => {
             />
           ))}
       </Tabs>
-      <div style={{display: pathname === router.database.form(formId).answers ? 'block' : 'none'}}>
-        <DatabaseTableRoute form={currentForm} />
-      </div>
+      <Page
+        width="full"
+        sx={{p: 0, pb: 0, mb: 0, display: pathname === router.database.form(formId).answers ? 'block' : 'none'}}
+      >
+        <DatabaseTable workspaceId={workspaceId} form={currentForm} formId={formId} />
+      </Page>
       <Outlet />
     </>
   )
