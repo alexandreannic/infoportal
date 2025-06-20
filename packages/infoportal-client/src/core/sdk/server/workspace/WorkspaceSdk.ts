@@ -5,8 +5,8 @@ import {UUID} from 'infoportal-common'
 export class WorkspaceSdk {
   constructor(private client: ApiClient) {}
 
-  readonly getMe = (id: UUID) => {
-    return this.client.get(`/workspace/${id}/me`)
+  readonly getMine = () => {
+    return this.client.get(`/workspace/me`)
   }
 
   readonly checkSlug = (slug: string): Promise<{isFree: boolean; suggestedSlug: string}> => {

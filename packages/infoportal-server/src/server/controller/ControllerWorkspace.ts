@@ -10,9 +10,9 @@ export class ControllerWorkspace {
     private service = new WorkspaceService(prisma),
   ) {}
 
-  readonly getMe = async (req: Request, res: Response, next: NextFunction) => {
+  readonly getMine = async (req: Request, res: Response, next: NextFunction) => {
     if (!isAuthenticated(req)) throw new AppError.Forbidden()
-    const data = await this.service.getMe({user: req.session.app?.user, workspaceId: req.params.workspaceId})
+    const data = await this.service.getByUser(req.session.app.user.email)
     res.send(data)
   }
 

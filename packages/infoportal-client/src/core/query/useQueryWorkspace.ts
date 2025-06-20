@@ -5,7 +5,6 @@ import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {useMemo} from 'react'
 import {router} from '@/Router'
-import {Workspace} from '../sdk/server/workspace/Workspace'
 
 export const useQueryWorkspace = () => {
   const {api} = useAppSettings()
@@ -13,9 +12,7 @@ export const useQueryWorkspace = () => {
 
   const get = useQuery({
     queryKey: queryKeys.workspaces(),
-    queryFn: () => Promise.resolve([] as Workspace[]), // Assigned by sesion.getMe
-    staleTime: Infinity,
-    // enabled: false,
+    queryFn: () => api.workspace.getMine(),
   })
 
   const create = useMutation({

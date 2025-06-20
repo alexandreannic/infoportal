@@ -99,7 +99,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session/me', errorCatcher(session.getMe))
 
-    router.get('/workspace/:id/me', auth(), errorCatcher(workspace.getMe))
+    router.get('/workspace/me', auth(), errorCatcher(workspace.getMine))
     router.put('/workspace', auth(), errorCatcher(workspace.create))
     router.post('/workspace/check-slug', auth(), errorCatcher(workspace.checkSlug))
     router.post('/workspace/:id', auth(), errorCatcher(workspace.update))
