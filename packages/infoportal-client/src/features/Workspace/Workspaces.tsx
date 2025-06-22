@@ -1,6 +1,6 @@
 import {Modal, Page} from '@/shared'
 import {WorkspaceCard, WorkspaceCardAdd} from '@/features/Workspace/WorkspaceCard'
-import {Grid2} from '@mui/material'
+import {Grid2, Skeleton} from '@mui/material'
 import {WorkspaceCreate} from '@/features/Workspace/WorkspaceCreate'
 import {useI18n} from '@/core/i18n'
 import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
@@ -21,6 +21,17 @@ export const Workspaces = () => {
             <WorkspaceCardAdd />
           </Modal>
         </Grid2>
+        {queryWorkspace.get.isLoading && (
+          <Grid2 size={{xs: 6, sm: 4, md: 3}}>
+            <Skeleton
+              variant="rectangular"
+              sx={theme => ({
+                height: '100%',
+                borderRadius: theme.shape.borderRadius + 'px',
+              })}
+            />
+          </Grid2>
+        )}
         {queryWorkspace.get.data?.map(_ => (
           <Grid2 key={_.slug} size={{xs: 6, sm: 4, md: 3}}>
             <WorkspaceCard workspace={_} />
