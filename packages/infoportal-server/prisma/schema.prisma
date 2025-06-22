@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Workspace {
-  id              String            @id @default(uuid())
+  id              String            @id @default(uuid()) @db.Uuid
   createdAt       DateTime          @default(now())
   createdBy       String
   name            String
@@ -35,27 +35,27 @@ enum WorkspaceAccessLevel {
 }
 
 model WorkspaceAccess {
-  id          String               @id @default(uuid())
+  id          String               @id @default(uuid()) @db.Uuid
   createdAt   DateTime             @default(now())
   createdBy   String
   level       WorkspaceAccessLevel
   user        User                 @relation(fields: [userId], references: [id])
-  userId      String
+  userId      String               @db.Uuid
   workspace   Workspace            @relation(fields: [workspaceId], references: [id])
-  workspaceId String
+  workspaceId String               @db.Uuid
 
   @@unique([workspaceId, userId])
 }
 
 model KoboServer {
-  id          String     @id @default(uuid())
+  id          String     @id @default(uuid()) @db.Uuid
   name        String
   url         String
   urlV1       String?
   token       String
   koboForm    KoboForm[]
   workspace   Workspace? @relation(fields: [workspaceId], references: [id])
-  workspaceId String?
+  workspaceId String?    @db.Uuid
 }
 
 enum DeploymentStatus {
@@ -64,11 +64,17 @@ enum DeploymentStatus {
   draft
 }
 
+enum FormSource {
+  kobo
+  internal
+}
+
 model KoboForm {
-  id                 String               @id @default(uuid())
+  id                 String               @id @default(dbgenerated()) @db.VarChar(32)
   name               String
   server             KoboServer           @relation(fields: [serverId], references: [id])
-  serverId           String
+  serverId           String               @db.Uuid
+  source             FormSource           @default(kobo)
   createdAt          DateTime             @default(now())
   updatedAt          DateTime?
   deploymentStatus   DeploymentStatus?
@@ -76,9 +82,27 @@ model KoboForm {
   uploadedBy         String?
   enketoUrl          String?
   submissionsCount   Int?
+  activeVersion      FormSchema?          @relation("ActiveVersion", fields: [activeVersionId], references: [id])
+  activeVersionId    String?              @unique // ensure only one version is active per form
   koboAnswers        KoboAnswers[]
   koboAnswersHistory KoboAnswersHistory[]
   workspaces         Workspace[]
+  koboVersion        FormSchema[]
+}
+
+model FormSchema {
+  id            String     @id @default(cuid()) @db.VarChar(32)
+  version       Int
+  message       String?
+  uploadedBy    String
+  createdAt     DateTime   @default(now())
+  source        FormSource
+  schema        Json
+  form          KoboForm   @relation(fields: [formId], references: [id])
+  formId        String
+  activeForForm KoboForm?  @relation("ActiveVersion")
+
+  @@unique([source, version])
 }
 
 model KoboAnswers {
@@ -94,11 +118,11 @@ model KoboAnswers {
   submissionTime         DateTime
   validationStatus       String?
   validatedBy            String?
+  source                 FormSource           @default(kobo)
   lastValidatedTimestamp Int?
   geolocation            String?
   answers                Json
   attachments            Json[]
-  source                 String?
   deletedAt              DateTime?
   deletedBy              String?
   tags                   Json?
@@ -111,7 +135,7 @@ model KoboAnswers {
 }
 
 model KoboAnswersHistory {
-  id       String        @id @default(uuid())
+  id       String        @id @default(uuid()) @db.Uuid
   form     KoboForm?     @relation(fields: [formId], references: [id])
   formId   String?
   answerId String?
@@ -126,8 +150,13 @@ model KoboAnswersHistory {
   @@index([formId])
 }
 
+enum UserProvider {
+  google
+  microsoft
+}
+
 model User {
-  id              String            @id @default(uuid())
+  id              String            @id @default(uuid()) @db.Uuid
   email           String            @unique
   createdBy       String?
   createdAt       DateTime          @default(now())
@@ -141,16 +170,17 @@ model User {
   officer         String?
   activities      UserActivity[]
   workspaceAccess WorkspaceAccess[]
+  provider        UserProvider?     @default(google)
 
   @@index([email])
 }
 
 model UserActivity {
-  id     String   @id @default(uuid())
+  id     String   @id @default(uuid()) @db.Uuid
   at     DateTime @default(now())
   user   User?    @relation(fields: [userId], references: [id])
   detail String?
-  userId String?
+  userId String?  @db.Uuid
 }
 
 enum FeatureAccessLevel {
@@ -164,7 +194,7 @@ enum FeatureAccessType {
 }
 
 model FeatureAccess {
-  id          String             @id @default(uuid())
+  id          String             @id @default(uuid()) @db.Uuid
   createdBy   String?
   createdAt   DateTime           @default(now())
   updatedAt   DateTime?
@@ -174,14 +204,14 @@ model FeatureAccess {
   email       String?
   level       FeatureAccessLevel
   params      Json?
-  groupId     String?
+  groupId     String?            @db.Uuid
   group       Group?             @relation(fields: [groupId], references: [id])
   workspace   Workspace          @relation(fields: [workspaceId], references: [id])
-  workspaceId String
+  workspaceId String             @db.Uuid
 }
 
 model Group {
-  id          String          @id @default(uuid())
+  id          String          @id @default(uuid()) @db.Uuid
   createdAt   DateTime        @default(now())
   createdBy   String?
   name        String          @unique
@@ -189,22 +219,22 @@ model Group {
   accesses    FeatureAccess[]
   items       GroupItem[]
   workspace   Workspace       @relation(fields: [workspaceId], references: [id])
-  workspaceId String
+  workspaceId String          @db.Uuid
 }
 
 model GroupItem {
-  id        String             @id @default(uuid())
+  id        String             @id @default(uuid()) @db.Uuid
   createdAt DateTime           @default(now())
   drcJob    String?
   drcOffice String?
   email     String?
   level     FeatureAccessLevel
   group     Group?             @relation(fields: [groupId], references: [id])
-  groupId   String?
+  groupId   String?            @db.Uuid
 }
 
 model AccessToken {
-  id         String      @id @default(uuid())
+  id         String      @id @default(uuid()) @db.Uuid
   createdBy  DateTime    @default(now())
   name       String
   workspaces Workspace[]
@@ -218,7 +248,7 @@ model Session {
 }
 
 model Proxy {
-  id         String       @id @default(uuid())
+  id         String       @id @default(uuid()) @db.Uuid
   createdAt  DateTime     @default(now())
   expireAt   DateTime?
   createdBy  String?
@@ -231,15 +261,15 @@ model Proxy {
 }
 
 model ProxyUsage {
-  id          String   @id @default(uuid())
+  id          String   @id @default(uuid()) @db.Uuid
   createdAt   DateTime @default(now())
   ipAddresses String[]
   proxy       Proxy    @relation(fields: [proxyId], references: [id])
-  proxyId     String
+  proxyId     String   @db.Uuid
 }
 
 model JsonStore {
-  id        String    @id @default(uuid())
+  id        String    @id @default(uuid()) @db.Uuid
   createdAt DateTime  @default(now())
   updatedAt DateTime?
   updatedBy String
@@ -248,7 +278,7 @@ model JsonStore {
 }
 
 model DatabaseView {
-  id         String                 @id @default(uuid())
+  id         String                 @id @default(uuid()) @db.Uuid
   databaseId String
   name       String
   createdAt  DateTime               @default(now())
@@ -266,7 +296,7 @@ model DatabaseView {
 model DatabaseViewCol {
   name       String
   view       DatabaseView?              @relation(fields: [viewId], references: [id], onDelete: Cascade)
-  viewId     String
+  viewId     String                     @db.Uuid
   width      Int?
   visibility DatabaseViewColVisibility? @default(Visible)
 
