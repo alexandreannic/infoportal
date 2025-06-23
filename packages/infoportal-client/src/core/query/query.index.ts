@@ -11,7 +11,12 @@ export const queryKeys = {
   server: (workspaceId?: UUID) => ['server', ...(workspaceId ? [workspaceId] : [])],
   access: (workspaceId?: UUID) => ['access', ...(workspaceId ? [workspaceId] : [])],
   user: (workspaceId?: UUID) => ['user', ...(workspaceId ? [workspaceId] : [])],
-  schema: (workspaceId?: UUID) => ['schema', ...(workspaceId ? [workspaceId] : [])],
+  koboSchema: (formId: Kobo.FormId) => ['koboSchema', formId],
+  schema: (workspaceId?: UUID, formId?: Kobo.FormId) => [
+    'schema',
+    ...(workspaceId ? [workspaceId] : []),
+    ...(formId ? [formId] : []),
+  ],
   form: (formId?: Kobo.FormId) => ['form', formId],
   group: (workspaceId?: UUID, args?: Omit<ApiSdk['group']['search'], 'workspaceId'>) => {
     return ['group', ...(workspaceId ? [workspaceId] : []), ...(args ? [Utils.stableStringify(args)] : [])]

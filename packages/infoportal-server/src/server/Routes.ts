@@ -23,6 +23,8 @@ import {ControllerWorkspace} from './controller/ControllerWorkspace.js'
 import {AuthRequest} from '../typings'
 import {ControllerWorkspaceAccess} from './controller/ControllerWorkspaceAccess.js'
 import {UUID} from 'infoportal-common'
+import {ControllerSchema} from './controller/kobo/ControllerSchema.js'
+import multer from 'multer'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -32,8 +34,10 @@ export const getWorkspaceId = (req: Request): UUID => {
   return req.params.workspaceId
 }
 
+const uploader = multer({dest: 'uploads/'})
+
 export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Routes')) => {
-  const errorCatcher = <T extends Request>(handler: (req: T, res: Response, next: NextFunction) => Promise<void>) => {
+  const safe = <T extends Request>(handler: (req: T, res: Response, next: NextFunction) => Promise<void>) => {
     return async (req: T, res: Response, next: NextFunction) => {
       try {
         await handler(req, res, next)
@@ -44,7 +48,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     }
   }
 
-  const router = express.Router()
+  const r = express.Router()
   const main = new ControllerMain()
   const workspace = new ControllerWorkspace(prisma)
   const workspaceAccess = new ControllerWorkspaceAccess(prisma)
@@ -52,6 +56,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const koboServer = new ControllerKoboServer(prisma)
   const koboAnswer = new ControllerKoboAnswer(prisma)
   const koboApi = new ControllerKoboApi(prisma)
+  const schema = new ControllerSchema(prisma)
   const session = new ControllerSession(prisma)
   const access = new ControllerAccess(prisma)
   const accessGroup = new ControllerGroup(prisma)
@@ -90,100 +95,107 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     }
 
   try {
-    router.get('/', errorCatcher(main.ping))
+    r.get('/', safe(main.ping))
 
-    router.post('/session/track', errorCatcher(session.track))
-    router.post('/session/login', errorCatcher(session.login))
-    router.post('/session/connect-as', auth({adminOnly: true}), errorCatcher(session.connectAs))
-    router.post('/session/connect-as-revert', auth(), errorCatcher(session.revertConnectAs))
-    router.delete('/session', errorCatcher(session.logout))
-    router.get('/session/me', errorCatcher(session.getMe))
+    r.post('/session/track', safe(session.track))
+    r.post('/session/login', safe(session.login))
+    r.post('/session/connect-as', auth({adminOnly: true}), safe(session.connectAs))
+    r.post('/session/connect-as-revert', auth(), safe(session.revertConnectAs))
+    r.delete('/session', safe(session.logout))
+    r.get('/session/me', safe(session.getMe))
 
-    router.get('/workspace/me', auth(), errorCatcher(workspace.getMine))
-    router.put('/workspace', auth(), errorCatcher(workspace.create))
-    router.post('/workspace/check-slug', auth(), errorCatcher(workspace.checkSlug))
-    router.post('/workspace/:id', auth(), errorCatcher(workspace.update))
-    router.delete('/workspace/:id', errorCatcher(workspace.remove))
+    r.get('/workspace/me', auth(), safe(workspace.getMine))
+    r.put('/workspace', auth(), safe(workspace.create))
+    r.post('/workspace/check-slug', auth(), safe(workspace.checkSlug))
+    r.post('/workspace/:id', auth(), safe(workspace.update))
+    r.delete('/workspace/:id', safe(workspace.remove))
 
-    router.put('/workspace-access', errorCatcher(workspaceAccess.create))
+    r.put('/workspace-access', safe(workspaceAccess.create))
 
-    router.get('/proxy/:slug', errorCatcher(proxy.redirect))
-    router.put('/proxy', auth({adminOnly: true}), errorCatcher(proxy.create))
-    router.post('/proxy/:id', auth({adminOnly: true}), errorCatcher(proxy.update))
-    router.delete('/proxy/:id', auth({adminOnly: true}), errorCatcher(proxy.delete))
-    router.get('/proxy', errorCatcher(proxy.search))
+    r.get('/proxy/:slug', safe(proxy.redirect))
+    r.put('/proxy', auth({adminOnly: true}), safe(proxy.create))
+    r.post('/proxy/:id', auth({adminOnly: true}), safe(proxy.update))
+    r.delete('/proxy/:id', auth({adminOnly: true}), safe(proxy.delete))
+    r.get('/proxy', safe(proxy.search))
 
-    router.get('/:workspaceId/group/item', auth({adminOnly: true}), errorCatcher(accessGroup.getItems))
-    router.post('/:workspaceId/group/item/:id', auth({adminOnly: true}), errorCatcher(accessGroup.updateItem))
-    router.delete('/:workspaceId/group/item/:id', auth({adminOnly: true}), errorCatcher(accessGroup.removeItem))
-    router.put('/:workspaceId/group/:id/item', auth({adminOnly: true}), errorCatcher(accessGroup.createItem))
-    router.post('/:workspaceId/group', auth({adminOnly: true}), errorCatcher(accessGroup.searchWithItems))
-    router.put('/:workspaceId/group', auth({adminOnly: true}), errorCatcher(accessGroup.create))
-    router.post('/:workspaceId/group/:id', auth({adminOnly: true}), errorCatcher(accessGroup.update))
-    router.delete('/:workspaceId/group/:id', auth({adminOnly: true}), errorCatcher(accessGroup.remove))
+    r.get('/:workspaceId/group/item', auth({adminOnly: true}), safe(accessGroup.getItems))
+    r.post('/:workspaceId/group/item/:id', auth({adminOnly: true}), safe(accessGroup.updateItem))
+    r.delete('/:workspaceId/group/item/:id', auth({adminOnly: true}), safe(accessGroup.removeItem))
+    r.put('/:workspaceId/group/:id/item', auth({adminOnly: true}), safe(accessGroup.createItem))
+    r.post('/:workspaceId/group', auth({adminOnly: true}), safe(accessGroup.searchWithItems))
+    r.put('/:workspaceId/group', auth({adminOnly: true}), safe(accessGroup.create))
+    r.post('/:workspaceId/group/:id', auth({adminOnly: true}), safe(accessGroup.update))
+    r.delete('/:workspaceId/group/:id', auth({adminOnly: true}), safe(accessGroup.remove))
 
-    router.get('/:workspaceId/access/me', auth(), errorCatcher(access.searchMine))
-    router.get('/:workspaceId/access', auth(), errorCatcher(access.search))
-    router.put('/:workspaceId/access', auth(), errorCatcher(access.create))
-    router.post('/:workspaceId/access/:id', auth(), errorCatcher(access.update))
-    router.delete('/:workspaceId/access/:id', auth(), errorCatcher(access.remove))
+    r.get('/:workspaceId/access/me', auth(), safe(access.searchMine))
+    r.get('/:workspaceId/access', auth(), safe(access.search))
+    r.put('/:workspaceId/access', auth(), safe(access.create))
+    r.post('/:workspaceId/access/:id', auth(), safe(access.update))
+    r.delete('/:workspaceId/access/:id', auth(), safe(access.remove))
 
-    router.get('/user/avatar/:email', auth(), errorCatcher(user.avatar))
-    router.post('/:workspaceId/user/me', auth(), errorCatcher(user.updateMe))
-    router.get('/:workspaceId/user', auth(), errorCatcher(user.search))
-    router.get('/:workspaceId/user/drc-job', auth(), errorCatcher(user.getDrcJobs))
+    r.get('/user/avatar/:email', auth(), safe(user.avatar))
+    r.post('/:workspaceId/user/me', auth(), safe(user.updateMe))
+    r.get('/:workspaceId/user', auth(), safe(user.search))
+    r.get('/:workspaceId/user/drc-job', auth(), safe(user.getDrcJobs))
 
-    router.post('/proxy-request', errorCatcher(main.proxy))
+    r.post('/proxy-request', safe(main.proxy))
 
-    router.post('/kobo-api/webhook', errorCatcher(koboApi.handleWebhookNewAnswers))
-    router.post('/kobo-api/sync', auth({adminOnly: true}), errorCatcher(koboApi.syncAnswersAll))
-    router.post('/kobo-api/schema', auth(), errorCatcher(koboApi.searchSchemas))
-    router.post('/kobo-api/:formId/sync', auth(), errorCatcher(koboApi.syncAnswersByForm))
-    router.get(
+    r.post('/kobo-api/webhook', safe(koboApi.handleWebhookNewAnswers))
+    r.post('/kobo-api/sync', auth({adminOnly: true}), safe(koboApi.syncAnswersAll))
+    r.post('/kobo-api/schema', auth(), safe(koboApi.searchSchemas))
+    r.post('/kobo-api/:formId/sync', auth(), safe(koboApi.syncAnswersByForm))
+    r.get(
       '/kobo-api/:formId/submission/:submissionId/attachment/:attachmentId',
-      errorCatcher(koboApi.getAttachementsWithoutAuth),
+      safe(koboApi.getAttachementsWithoutAuth),
     )
-    router.get('/kobo-api/:formId/schema', auth(), errorCatcher(koboApi.getSchema))
-    router.get('/kobo-api/:formId/edit-url/:answerId', errorCatcher(koboApi.edit))
-    router.post('/kobo-api/proxy', errorCatcher(koboApi.proxy))
-    router.post(
+    r.get('/kobo-api/:formId/schema', auth(), safe(koboApi.getSchema))
+    r.get('/kobo-api/:formId/edit-url/:answerId', safe(koboApi.edit))
+    r.post('/kobo-api/proxy', safe(koboApi.proxy))
+    r.post(
       '/kobo-api/:formId/import-from-xls',
       auth(),
-      Server.upload.single('aa-file'),
-      errorCatcher(importData.handleFileUpload),
+      uploader.single('uf-import-answers'),
+      safe(importData.handleFileUpload),
     )
 
-    router.post('/kobo-answer-history/search', errorCatcher(koboAnswerHistory.search))
+    r.post('/kobo-answer-history/search', safe(koboAnswerHistory.search))
 
-    router.put('/:workspaceId/kobo/server', auth(), errorCatcher(koboServer.create))
-    router.delete('/:workspaceId/kobo/server/:id', auth(), errorCatcher(koboServer.delete))
-    router.get('/:workspaceId/kobo/server', auth(), errorCatcher(koboServer.getAll))
-    router.get('/:workspaceId/kobo/form', auth(), errorCatcher(koboForm.getAll))
-    router.post('/:workspaceId/kobo/form/refresh', auth(), errorCatcher(koboForm.refreshAll))
-    router.get('/:workspaceId/kobo/form/:id', auth(), errorCatcher(koboForm.get))
-    router.put('/:workspaceId/kobo/form', auth(), errorCatcher(koboForm.add))
-    router.post('/:workspaceId/kobo/answer/:formId/by-access', auth(), errorCatcher(koboAnswer.searchByUserAccess))
-    router.patch('/:workspaceId/kobo/answer/:formId/validation', auth(), errorCatcher(koboAnswer.updateValidation))
-    router.patch('/:workspaceId/kobo/answer/:formId', auth(), errorCatcher(koboAnswer.updateAnswers))
-    router.delete('/:workspaceId/kobo/answer/:formId', auth({adminOnly: true}), errorCatcher(koboAnswer.deleteAnswers))
-    router.post('/:workspaceId/kobo/answer/:formId', errorCatcher(koboAnswer.search))
+    r.put('/:workspaceId/kobo/server', auth(), safe(koboServer.create))
+    r.delete('/:workspaceId/kobo/server/:id', auth(), safe(koboServer.delete))
+    r.get('/:workspaceId/kobo/server', auth(), safe(koboServer.getAll))
 
-    router.post(`/database-view/:viewId/col/:colName`, auth(), errorCatcher(databaseView.updateCol))
-    router.post(`/database-view`, auth(), errorCatcher(databaseView.search))
-    router.put(`/database-view/:databaseId`, auth(), errorCatcher(databaseView.create))
-    router.post(`/database-view/:id`, auth(), errorCatcher(databaseView.update))
-    router.delete(`/database-view/:viewId`, auth(), errorCatcher(databaseView.delete))
+    r.get('/:workspaceId/form', auth(), safe(koboForm.getAll))
+    r.post('/:workspaceId/form/refresh', auth(), safe(koboForm.refreshAll))
+    r.get('/:workspaceId/form/:id', auth(), safe(koboForm.get))
+    r.put('/:workspaceId/form', auth(), safe(koboForm.add))
 
-    router.get('/json-store/:key', auth(), errorCatcher(jsonStore.get))
-    router.put('/json-store', auth(), errorCatcher(jsonStore.set))
-    router.patch('/json-store', auth(), errorCatcher(jsonStore.update))
+    r.post('/:workspaceId/form/:formId/schema', auth(), uploader.single('uf-xlsform'), safe(schema.uploadXlsForm))
+    r.post('/:workspaceId/form/:formId/schema/validate', auth(), uploader.single('uf-xlsform'), safe(schema.validateXlsForm))
+    r.get('/:workspaceId/form/:formId/schema', auth(), safe(schema.get))
+    r.post('/:workspaceId/form/:formId/schema/:versionId', auth(), safe(schema.updateVersion))
 
-    router.get('/cache', cacheController.get)
-    router.post('/cache/clear', cacheController.clear)
+    r.post('/:workspaceId/form/:formId/answer/by-access', auth(), safe(koboAnswer.searchByUserAccess))
+    r.patch('/:workspaceId/form/:formId/answer/validation', auth(), safe(koboAnswer.updateValidation))
+    r.patch('/:workspaceId/form/:formId/answer', auth(), safe(koboAnswer.updateAnswers))
+    r.delete('/:workspaceId/form/:formId/answer', auth({adminOnly: true}), safe(koboAnswer.deleteAnswers))
+    r.post('/:workspaceId/form/:formId/answer', safe(koboAnswer.search))
 
-    // router.get('/legalaid', auth(), errorCatcher(legalaid.index))
-    // router.get('/ecrec', auth(), errorCatcher(ecrec.index))
-    // router.get('/*', errorCatcher(ecrec.index))
+    r.post(`/database-view/:viewId/col/:colName`, auth(), safe(databaseView.updateCol))
+    r.post(`/database-view`, auth(), safe(databaseView.search))
+    r.put(`/database-view/:databaseId`, auth(), safe(databaseView.create))
+    r.post(`/database-view/:id`, auth(), safe(databaseView.update))
+    r.delete(`/database-view/:viewId`, auth(), safe(databaseView.delete))
+
+    r.get('/json-store/:key', auth(), safe(jsonStore.get))
+    r.put('/json-store', auth(), safe(jsonStore.set))
+    r.patch('/json-store', auth(), safe(jsonStore.update))
+
+    r.get('/cache', cacheController.get)
+    r.post('/cache/clear', cacheController.clear)
+
+    // r.get('/legalaid', auth(), safe(legalaid.index))
+    // r.get('/ecrec', auth(), safe(ecrec.index))
+    // r.get('/*', safe(ecrec.index))
   } catch (e) {
     if (e instanceof Error) {
       log.error(e.toString())
@@ -191,5 +203,5 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     log.error(e)
     console.error(e)
   }
-  return router
+  return r
 }

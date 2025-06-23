@@ -16,6 +16,7 @@ import {DatabaseViewSdk} from '@/core/sdk/server/databaseView/DatabaseViewSdk'
 import {ImportFromXlsDataSdk} from '@/core/sdk/server/importXls/ImportFromXlsSdk'
 import {WorkspaceSdk} from '@/core/sdk/server/workspace/WorkspaceSdk'
 import {WorkspaceAccessSdk} from './workspace/WorkspaceAccessSdk'
+import {SchemaSdk} from '@/core/sdk/server/kobo/SchemaSdk'
 
 export class ApiSdk {
   constructor(private client: ApiClient) {
@@ -25,6 +26,7 @@ export class ApiSdk {
     this.kobo = {
       answerHistory: new KoboAnswerHistorySdk(this.client),
       answer: new KoboAnswerSdk(this.client),
+      schema: new SchemaSdk(this.client),
       server: new KoboServerSdk(this.client),
       form: new KoboFormSdk(this.client),
     }
@@ -57,6 +59,7 @@ export class ApiSdk {
   readonly kobo: {
     answerHistory: KoboAnswerHistorySdk
     answer: KoboAnswerSdk
+    schema: SchemaSdk
     server: KoboServerSdk
     form: KoboFormSdk
   }

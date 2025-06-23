@@ -26,5 +26,6 @@
     "tsx": "^4.19.3"
   },
   "dependencies": {
+    "await-to-js": "^3.0.0"
   }
 }

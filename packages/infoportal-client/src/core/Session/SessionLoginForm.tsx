@@ -1,4 +1,4 @@
-import {Box, ButtonBase, Icon, Theme} from '@mui/material'
+import {Box, ButtonBase, Icon, Theme, useTheme} from '@mui/material'
 import {DRCLogo} from '@/shared/logo/logo'
 import {Txt} from '@/shared/Txt'
 import React from 'react'
@@ -26,11 +26,13 @@ const BtnLogin = ({
   title: string
   desc?: string
 }) => {
+  const t = useTheme()
   return (
     <ButtonBase
       sx={{
         ...sx,
-        boxShadow: (t: Theme) => t.shadows[2],
+        background: t.palette.background.paper,
+        boxShadow: t.shadows[2],
         display: 'flex',
         alignItems: 'center',
         // margin: 'auto',

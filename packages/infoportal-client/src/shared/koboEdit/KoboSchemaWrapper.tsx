@@ -1,4 +1,4 @@
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {useQueryKoboSchema} from '@/core/query/useQueryKoboSchema'
 import {KeyOf} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {useMemo} from 'react'
@@ -10,7 +10,7 @@ export const useKoboColumnDef = <T extends Record<string, any>>({
   formId: Kobo.FormId
   columnName: KeyOf<T>
 }) => {
-  const querySchema = useQuerySchema(formId)
+  const querySchema = useQueryKoboSchema(formId)
 
   return useMemo(() => {
     const schema = querySchema.data

@@ -39,7 +39,7 @@ export class KoboAnswerSdk {
     paginate = {offset: 0, limit: 100000},
   }: KoboAnswerSearch) => {
     return this.client
-      .post<ApiPaginate<KoboSubmission>>(`/${workspaceId}/kobo/answer/${formId}/by-access`, {
+      .post<ApiPaginate<KoboSubmission>>(`/${workspaceId}/form/${formId}/answer/by-access`, {
         body: {...KoboAnswerSdk.mapFilters(filters), ...paginate},
       })
       .then(KoboMapper.mapPaginateAnswer)
@@ -47,7 +47,7 @@ export class KoboAnswerSdk {
 
   readonly search = ({formId, workspaceId, filters = {}, paginate = {offset: 0, limit: 100000}}: KoboAnswerSearch) => {
     return this.client
-      .post<ApiPaginate<KoboSubmission>>(`/${workspaceId}/kobo/answer/${formId}`, {
+      .post<ApiPaginate<KoboSubmission>>(`/${workspaceId}/form/${formId}/answer`, {
         body: {...KoboAnswerSdk.mapFilters(filters), ...paginate},
       })
       .then(KoboMapper.mapPaginateAnswer)
@@ -62,11 +62,11 @@ export class KoboAnswerSdk {
     answerIds: Kobo.SubmissionId[]
     formId: Kobo.FormId
   }) => {
-    await this.client.delete(`/${workspaceId}/kobo/answer/${formId}`, {body: {answerIds}})
+    await this.client.delete(`/${workspaceId}/form/${formId}/answer`, {body: {answerIds}})
   }
 
   readonly updateValidation = ({workspaceId, formId, answerIds, status}: KoboUpdateValidation) => {
-    return this.client.patch(`/${workspaceId}/kobo/answer/${formId}/validation`, {
+    return this.client.patch(`/${workspaceId}/form/${formId}/answer/validation`, {
       body: {
         answerIds: answerIds,
         status,
@@ -81,7 +81,7 @@ export class KoboAnswerSdk {
     question,
     answer,
   }: KoboUpdateAnswers<T, K>) => {
-    return this.client.patch(`/${workspaceId}/kobo/answer/${formId}`, {
+    return this.client.patch(`/${workspaceId}/form/${formId}/answer`, {
       body: {
         answerIds: answerIds,
         question,

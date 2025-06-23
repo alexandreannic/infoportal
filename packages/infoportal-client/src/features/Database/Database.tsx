@@ -1,7 +1,7 @@
 import {appConfig} from '@/conf/AppConfig'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {useQueryKoboSchema} from '@/core/query/useQueryKoboSchema'
 import {DatabaseTable} from '@/features/Database/KoboTable/DatabaseKoboTable'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
@@ -24,7 +24,7 @@ export const Database = () => {
   const {pathname} = useLocation()
   const {router} = useWorkspaceRouter()
 
-  const querySchema = useQuerySchema(formId)
+  const querySchema = useQueryKoboSchema(formId)
   const queryForm = useQueryForm(workspaceId)
 
   const currentForm = queryForm.getForm(formId)

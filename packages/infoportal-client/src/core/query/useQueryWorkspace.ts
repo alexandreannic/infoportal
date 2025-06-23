@@ -5,12 +5,14 @@ import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {useMemo} from 'react'
 import {router} from '@/Router'
+import {duration} from '@axanc/ts-utils'
 
 export const useQueryWorkspace = () => {
   const {api} = useAppSettings()
   const queryClient = useQueryClient()
 
   const get = useQuery({
+    staleTime: duration(20, 'minute'),
     queryKey: queryKeys.workspaces(),
     queryFn: () => api.workspace.getMine(),
   })

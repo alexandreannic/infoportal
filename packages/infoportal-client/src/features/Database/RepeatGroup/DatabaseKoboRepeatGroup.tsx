@@ -1,7 +1,7 @@
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQueryAnswer} from '@/core/query/useQueryAnswer'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {useQueryKoboSchema} from '@/core/query/useQueryKoboSchema'
 import {
   columnBySchemaGenerator,
   ColumnBySchemaGeneratorProps,
@@ -25,7 +25,7 @@ const databaseUrlParamsValidation = yup.object({
 
 export const DatabaseKoboRepeatRoute = () => {
   const {formId, group} = databaseUrlParamsValidation.validateSync(useParams())
-  const querySchema = useQuerySchema(formId)
+  const querySchema = useQueryKoboSchema(formId)
 
   return (
     <Page

@@ -6,6 +6,10 @@ export class ImportFromXlsDataSdk {
   constructor(private client: ApiClient) {}
 
   readonly importFromXLSFile = (formId: FormId, file: File, action: 'create' | 'update') => {
-    return this.client.postFile(`kobo-api/${formId}/import-from-xls`, {qs: {action}, file})
+    return this.client.postFile(`kobo-api/${formId}/import-from-xls`, {
+      qs: {action},
+      uploadName: 'uf-import-answers',
+      file,
+    })
   }
 }

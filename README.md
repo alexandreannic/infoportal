@@ -18,3 +18,7 @@ Information Management, ensuring that all mission data is harmonized and properl
 
 [my.papertrailapp.com](https://my.papertrailapp.com/groups/39251744/events)
 
+###
+
+- Install Java, Python and `pyxforms` 
+

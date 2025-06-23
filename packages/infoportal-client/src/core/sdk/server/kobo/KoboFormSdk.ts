@@ -35,18 +35,18 @@ export class KoboFormSdk {
   }
 
   readonly refreshAll = ({workspaceId}: {workspaceId: UUID}): Promise<KoboForm> => {
-    return this.client.post(`/${workspaceId}/kobo/form/refresh`)
+    return this.client.post(`/${workspaceId}/form/refresh`)
   }
 
   readonly add = ({workspaceId, ...body}: KoboFormCreate): Promise<KoboForm> => {
-    return this.client.put(`/${workspaceId}/kobo/form`, {body})
+    return this.client.put(`/${workspaceId}/form`, {body})
   }
 
   readonly get = ({formId, workspaceId}: {workspaceId: UUID; formId: string}): Promise<KoboForm> => {
-    return this.client.get(`/${workspaceId}/kobo/form/${formId}`).then(KoboFormHelper.map)
+    return this.client.get(`/${workspaceId}/form/${formId}`).then(KoboFormHelper.map)
   }
 
   readonly getAll = ({workspaceId}: {workspaceId: UUID}): Promise<KoboForm[]> => {
-    return this.client.get(`/${workspaceId}/kobo/form`).then(_ => _.map(KoboFormHelper.map))
+    return this.client.get(`/${workspaceId}/form`).then(_ => _.map(KoboFormHelper.map))
   }
 }

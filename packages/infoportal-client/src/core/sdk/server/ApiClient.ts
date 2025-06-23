@@ -152,9 +152,9 @@ export class ApiClient {
     }
   }
 
-  readonly postFile = <T = any>(uri: string, options: RequestOption & {file: File}): Promise<T> => {
+  readonly postFile = <T = any>(uri: string, options: RequestOption & {uploadName: string, file: File}): Promise<T> => {
     const form = new FormData()
-    form.append('aa-file', options.file)
+    form.append(options.uploadName, options.file)
     return this.request('POST', uri, {
       ...options,
       headers: {

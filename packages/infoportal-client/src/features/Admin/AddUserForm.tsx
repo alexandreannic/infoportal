@@ -1,5 +1,4 @@
 import {useI18n} from '@/core/i18n'
-import {User} from '@/core/sdk/server/user/User'
 import {IpBtn} from '@/shared'
 import {IpInput} from '@/shared/Input/Input'
 import {PanelFoot} from '@/shared/Panel/PanelFoot'

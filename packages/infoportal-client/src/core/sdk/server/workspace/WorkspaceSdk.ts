@@ -6,7 +6,7 @@ export class WorkspaceSdk {
   constructor(private client: ApiClient) {}
 
   readonly getMine = () => {
-    return this.client.get(`/workspace/me`)
+    return this.client.get<Workspace[]>(`/workspace/me`)
   }
 
   readonly checkSlug = (slug: string): Promise<{isFree: boolean; suggestedSlug: string}> => {

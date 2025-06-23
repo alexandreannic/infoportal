@@ -93,6 +93,7 @@ model KoboForm {
 model FormSchema {
   id            String     @id @default(cuid()) @db.VarChar(32)
   version       Int
+  fileName      String?
   message       String?
   uploadedBy    String
   createdAt     DateTime   @default(now())

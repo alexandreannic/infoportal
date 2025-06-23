@@ -5,20 +5,20 @@ import {useAppSettings} from '../context/ConfigContext'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {KoboMappedAnswer, KoboMapper} from '../sdk/server/kobo/KoboMapper'
 import {queryKeys} from './query.index'
-import {useQuerySchema} from './useQuerySchema'
+import {useQueryKoboSchema} from './useQueryKoboSchema'
 import {duration} from '@axanc/ts-utils'
 
 export const useQueryAnswer = (formId: Kobo.FormId) => {
   const {api} = useAppSettings()
   const {workspaceId} = useWorkspaceRouter()
   const queryClient = useQueryClient()
-  const querySchema = useQuerySchema(formId)
+  const querySchema = useQueryKoboSchema(formId)
 
   const query = useQuery<ApiPaginate<KoboMappedAnswer>>({
     queryKey: queryKeys.answers(formId),
     queryFn: async () => {
       const answersPromise = api.kobo.answer.searchByAccess({workspaceId, formId})
-      const schema = querySchema.data ?? (await querySchema.refetch().then(r => r.data!))
+      const schema = querySchema.data// ?? (await querySchema.refetch().then(r => r.data!))
       const answers = await answersPromise
       return {
         ...answers,

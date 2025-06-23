@@ -16,7 +16,7 @@ export const useQueryServer = (workspaceId: UUID) => {
   const {toastAndThrowHttpError, toastHttpError} = useIpToast()
 
   const getAll = useQuery({
-    queryKey: queryKeys.access(workspaceId),
+    queryKey: queryKeys.server(workspaceId),
     queryFn: async () => {
       return api.kobo.server.getAll({workspaceId}).catch(toastAndThrowHttpError)
     },
@@ -27,7 +27,7 @@ export const useQueryServer = (workspaceId: UUID) => {
     mutationFn: async (args: Omit<Params<'delete'>, 'workspaceId'>) => {
       return api.kobo.server.delete({...args, workspaceId})
     },
-    onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
+    onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.server(workspaceId)}),
     onError: toastHttpError,
   })
 
@@ -35,7 +35,7 @@ export const useQueryServer = (workspaceId: UUID) => {
     mutationFn: async args => {
       return api.kobo.server.create({...args, workspaceId})
     },
-    onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
+    onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.server(workspaceId)}),
     onError: toastHttpError,
   })
 

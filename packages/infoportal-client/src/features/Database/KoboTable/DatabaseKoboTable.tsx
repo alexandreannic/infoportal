@@ -1,6 +1,6 @@
 import {queryKeys} from '@/core/query/query.index'
 import {useQueryAnswer} from '@/core/query/useQueryAnswer'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {useQueryKoboSchema} from '@/core/query/useQueryKoboSchema'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {AccessLevel} from '@/core/sdk/server/access/Access'
 import {KoboForm, KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
@@ -46,9 +46,9 @@ export const DatabaseTable = ({
   const session = useSession()
 
   const queryForm = useQueryForm(workspaceId)
-  const querySchema = useQuerySchema(formId)
+  const querySchema = useQueryKoboSchema(formId)
   const queryAnswers = useQueryAnswer(formId)
-  const queryAccess = useQueryAccess(formId)
+  const queryAccess = useQueryAccess(workspaceId)
 
   const access = useMemo(() => {
     const list = queryAccess.accessesByFormIdMap[formId] ?? []
@@ -68,7 +68,7 @@ export const DatabaseTable = ({
 
   const anyLoading =
     useIsFetching({
-      queryKey: queryKeys.schema(),
+      queryKey: queryKeys.koboSchema(formId),
     }) > 0
 
   return (

@@ -1,4 +1,4 @@
-import express, {NextFunction, Request, Response} from 'express'
+import express, {Request, Response} from 'express'
 import bodyParser from 'body-parser'
 import {getRoutes} from './Routes.js'
 import {app} from '../index.js'
@@ -7,7 +7,6 @@ import {genUUID} from '../helper/Utils.js'
 import {HttpError} from './controller/Controller.js'
 import {PrismaClient} from '@prisma/client'
 import session from 'express-session'
-import multer from 'multer'
 import {AppError} from '../helper/Errors.js'
 import {PrismaSessionStore} from '@quixo3/prisma-session-store'
 import cookieParser from 'cookie-parser'
@@ -25,8 +24,6 @@ export class Server {
     // private legalaidSdk: LegalaidSdk,
     private log = app.logger('Server'),
   ) {}
-
-  static readonly upload = multer({dest: 'uploads/'})
 
   readonly errorHandler = (err: HttpError, req: Request, res: Response, next: (err?: any) => void) => {
     const errorId = genUUID().split('-')[0]

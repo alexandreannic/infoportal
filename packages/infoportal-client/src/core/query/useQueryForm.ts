@@ -18,7 +18,7 @@ export const useQueryForm = (workspaceId: UUID) => {
   const queryClient = useQueryClient()
 
   const accessibleForms = useQuery({
-    queryKey: queryKeys.schema(workspaceId),
+    queryKey: queryKeys.form(workspaceId),
     queryFn: async () => {
       return api.kobo.form
         .getAll({workspaceId})
@@ -33,7 +33,7 @@ export const useQueryForm = (workspaceId: UUID) => {
     mutationFn: async args => {
       return api.kobo.form.add({workspaceId, ...args})
     },
-    onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
+    onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)}),
     onError: toastHttpError,
   })
 

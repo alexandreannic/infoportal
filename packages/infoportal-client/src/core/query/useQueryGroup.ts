@@ -28,7 +28,6 @@ export const useQueryGroup = (workspaceId: UUID) => {
       return api.group.create({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
-
     onError: toastHttpError,
   })
 

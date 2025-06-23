@@ -192,7 +192,7 @@ export class KoboSyncServer {
               deletedAt: new Date(),
               deletedBy: 'system-sync-' + tracker,
             },
-            where: {source: null, formId, id: {in: ids}},
+            where: {formId, id: {in: ids}},
           })
         },
       })

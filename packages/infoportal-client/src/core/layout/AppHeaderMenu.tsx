@@ -1,22 +1,32 @@
 import React, {ReactNode} from 'react'
 import {useSession} from '@/core/Session/SessionContext'
-import {Box, BoxProps, Icon, Popover} from '@mui/material'
+import {Box, BoxProps, Icon, Popover, SxProps, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
 import {IpBtn} from '@/shared/Btn'
 import {AppAvatar} from '@/shared/AppAvatar'
 
-const Row = ({icon, children}: {icon: string; children: ReactNode}) => {
+const Row = ({
+  icon,
+  sxIcon,
+  sxText,
+  children,
+}: {
+  icon: string
+  sxText?: SxProps
+  sxIcon?: SxProps
+  children: ReactNode
+}) => {
   return (
     <Box
       sx={{
         display: 'flex',
         alignItems: 'center',
-        mb: 0.5,
+        mb: 1.5,
       }}
     >
-      <Icon sx={{mr: 1, my: 0.25, color: t => t.palette.text.secondary}}>{icon}</Icon>
-      <Txt block color="hint">
+      <Icon sx={{mr: 1, color: t => t.palette.text.secondary, ...sxIcon}}>{icon}</Icon>
+      <Txt block color="hint" sx={sxText}>
         {children}
       </Txt>
     </Box>
@@ -26,6 +36,7 @@ const Row = ({icon, children}: {icon: string; children: ReactNode}) => {
 export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
   const {user, logout} = useSession()
   const me = user
+  const t = useTheme()
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
   const open = !!anchorEl
   const {m} = useI18n()
@@ -51,7 +62,11 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
             </Txt>
             <Row icon="email">{me.email}</Row>
             <Row icon="badge">{me.drcJob}</Row>
-            {me.admin && <Row icon="shield">{m.admin}</Row>}
+            {me.admin && (
+              <Row icon="offline_pin" sxText={{color: t.palette.success.main, fontWeight: t.typography.fontWeightBold}} sxIcon={{color: t.palette.success.main}}>
+                {m.admin}
+              </Row>
+            )}
           </Box>
           <Box sx={{px: 2}}>
             <IpBtn icon="logout" variant="outlined" onClick={logout} sx={{mb: 2}}>
