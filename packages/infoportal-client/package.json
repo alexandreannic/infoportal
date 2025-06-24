@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@axanc/react-hooks": "^1.13.4",
-    "@axanc/ts-utils": "2.3.2",
+    "@axanc/ts-utils": "2.3.3",
     "@azure/msal-browser": "^4.9.0",
     "@azure/msal-react": "^3.0.8",
     "@emotion/react": "^11.11.1",
@@ -53,6 +53,7 @@
     "html2canvas": "^1.4.1",
     "immer": "^10.1.1",
     "infoportal-common": "1.0.0",
+    "infoportal-api-sdk": "1.0.0",
     "kobo-sdk": "^2.2.7",
     "lodash.debounce": "^4.0.8",
     "qs": "^6.11.2",

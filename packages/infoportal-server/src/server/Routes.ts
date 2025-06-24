@@ -7,7 +7,6 @@ import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerKoboForm} from './controller/kobo/ControllerKoboForm.js'
 import {ControllerKoboServer} from './controller/kobo/ControllerKoboServer.js'
 import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer.js'
-import {Server} from './Server.js'
 import {ControllerAccess} from './controller/ControllerAccess.js'
 import {ControllerUser} from './controller/ControllerUser.js'
 import {AppError} from '../helper/Errors.js'
@@ -23,8 +22,11 @@ import {ControllerWorkspace} from './controller/ControllerWorkspace.js'
 import {AuthRequest} from '../typings'
 import {ControllerWorkspaceAccess} from './controller/ControllerWorkspaceAccess.js'
 import {UUID} from 'infoportal-common'
-import {ControllerSchema} from './controller/kobo/ControllerSchema.js'
+import {ControllerFormVersion} from './controller/kobo/ControllerFormVersion.js'
 import multer from 'multer'
+import {initServer} from '@ts-rest/express'
+import {ipContract} from 'infoportal-api-sdk'
+import {SchemaService} from '../feature/kobo/SchemaService'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -56,7 +58,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const koboServer = new ControllerKoboServer(prisma)
   const koboAnswer = new ControllerKoboAnswer(prisma)
   const koboApi = new ControllerKoboApi(prisma)
-  const schema = new ControllerSchema(prisma)
+  const formVersion = new ControllerFormVersion(prisma)
   const session = new ControllerSession(prisma)
   const access = new ControllerAccess(prisma)
   const accessGroup = new ControllerGroup(prisma)
@@ -94,7 +96,22 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       }
     }
 
+  const service = new SchemaService(prisma)
   try {
+    const s = initServer()
+    const formRouter = s.router(ipContract, {
+      form: {
+        version: {
+          getByFormId: async ({params}) => {
+            return {
+              status: 200,
+              body: service.get({formId: params.formId}),
+            }
+          },
+        },
+      },
+    })
+
     r.get('/', safe(main.ping))
 
     r.post('/session/track', safe(session.track))
@@ -170,7 +187,12 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.put('/:workspaceId/form', auth(), safe(koboForm.add))
 
     r.post('/:workspaceId/form/:formId/schema', auth(), uploader.single('uf-xlsform'), safe(schema.uploadXlsForm))
-    r.post('/:workspaceId/form/:formId/schema/validate', auth(), uploader.single('uf-xlsform'), safe(schema.validateXlsForm))
+    r.post(
+      '/:workspaceId/form/:formId/schema/validate',
+      auth(),
+      uploader.single('uf-xlsform'),
+      safe(schema.validateXlsForm),
+    )
     r.get('/:workspaceId/form/:formId/schema', auth(), safe(schema.get))
     r.post('/:workspaceId/form/:formId/schema/:versionId', auth(), safe(schema.updateVersion))
 

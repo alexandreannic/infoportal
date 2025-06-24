@@ -5,7 +5,7 @@ import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {queryKeys} from './query.index'
 import {duration} from '@axanc/ts-utils'
-import {Schema} from '@/core/sdk/server/kobo/SchemaSdk'
+import {Schema} from '@/core/sdk/server/kobo/FormVersionSdk'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 
 type Params<T extends keyof ApiSdk['kobo']['schema']> = Parameters<ApiSdk['kobo']['schema'][T]>[0]

@@ -4,18 +4,18 @@ import {createTwoFilesPatch} from 'diff'
 import {html} from 'diff2html'
 import 'react-diff-view/style/index.css'
 import 'diff2html/bundles/css/diff2html.min.css'
-import {Box, useColorScheme, useTheme} from '@mui/material'
+import {Box, BoxProps, useColorScheme, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared'
 import {fnSwitch, match} from '@axanc/ts-utils'
 import {ColorSchemeType} from 'diff2html/lib/types'
 
-type Props = {
+type Props = BoxProps & {
   oldJson: any
   newJson: any
 }
 
-export const DiffView = ({oldJson, newJson}: Props) => {
+export const DiffView = ({oldJson, newJson, sx, ...props}: Props) => {
   const {mode} = useColorScheme()
   const oldStr = JSON.stringify(oldJson, null, 2)
   const newStr = JSON.stringify(newJson, null, 2)
@@ -63,7 +63,9 @@ export const DiffView = ({oldJson, newJson}: Props) => {
         '& .d2h-file-header': {
           display: 'none',
         },
+        ...sx
       }}
+      {...props}
     >
       <Txt bold size="big" block sx={{pl: 2, py: 0.5, borderBottom: '1px solid', borderColor: t.palette.divider}}>
         {m.differences}

@@ -1,6 +1,5 @@
-import {orange, red} from '@mui/material/colors'
+import {green, orange, red} from '@mui/material/colors'
 import {alpha, createTheme, darken, SxProps, Theme} from '@mui/material'
-import {ThemeOptions} from '@mui/material/styles/createTheme'
 import {lighten} from '@mui/system/colorManipulator'
 
 export const combineSx = (...sxs: (SxProps<Theme> | undefined | false)[]): SxProps<Theme> => {
@@ -156,6 +155,7 @@ export const muiTheme = ({
       light: {
         palette: {
           warning: orange,
+          success: green,
           primary: colorPrimary,
           secondary: colorSecondary,
           error: red,
@@ -165,13 +165,14 @@ export const muiTheme = ({
           },
           background: {
             default: 'rgba(255, 255, 255, 0.6)',
-            paper: 'rgba(255, 255, 255, 0.6)',
+            paper: 'rgba(255, 255, 255, 0.5)',
           },
         },
       },
       dark: {
         palette: {
           warning: orange,
+          success: green,
           primary: colorPrimary,
           secondary: colorSecondary,
           error: red,
@@ -341,6 +342,11 @@ export const muiTheme = ({
             borderBottom: 'none !important',
           }),
         },
+      },
+      MuiGrid2: {
+        defaultProps: {
+          spacing: 1,
+        }
       },
       MuiTab: {
         defaultProps: {

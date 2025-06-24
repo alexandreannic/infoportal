@@ -8,17 +8,26 @@
     "moduleResolution": "bundler",
     "outDir": "./lib",
     "paths": {
-      "infoportal-common/*": ["../infoportal-common/src/*"],
-      "*": ["./*"]
+      "infoportal-common/*": [
+        "../infoportal-common/src/*"
+      ],
+      "*": [
+        "./*"
+      ]
     }
   },
   "references": [
     {
-      "path": "../infoportal-common"
+      "path": [
+        "../infoportal-common",
+        "../infoportal-api-sdk"
+      ]
     }
   ],
   "ts-node": {
     "files": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

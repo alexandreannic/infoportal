@@ -31,7 +31,7 @@ export const Panel = forwardRef(
           position: 'relative',
           background: t => t.palette.background.paper,
           borderRadius: t => t.shape.borderRadius + 'px',
-          mb: 2,
+          mb: 1,
           ...(hoverable && {
             cursor: 'pointer',
             transition: t => t.transitions.create('all'),

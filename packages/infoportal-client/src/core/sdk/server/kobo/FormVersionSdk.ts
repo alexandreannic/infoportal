@@ -1,7 +1,11 @@
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {UUID} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
-import {FormSchema} from '@prisma/client'
+import {FormVersion} from '@prisma/client'
+
+type Schema = Omit<FormVersion, 'schema'> & {
+  schema: Kobo.Form['content']
+}
 
 export type PyxformResponse = {
   code: number
@@ -10,12 +14,12 @@ export type PyxformResponse = {
 }
 
 export type SchemaDetails = {
-  active: FormSchema
-  last: FormSchema
-  all: Omit<FormSchema, 'id' | 'version' | 'message' | 'uploadedBy' | 'createdAt'>
+  active: Schema
+  last: Schema
+  all: Pick<Schema, 'id' | 'version' | 'message' | 'uploadedBy' | 'createdAt'>[]
 }
 
-export class SchemaSdk {
+export class FormVersionSdk {
   constructor(private client: ApiClient) {}
 
   readonly validateXlsForm = ({
