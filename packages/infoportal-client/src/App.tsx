@@ -20,6 +20,8 @@ import {useEffect, useMemo} from 'react'
 import {HashRouter, useLocation} from 'react-router-dom'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {defaultTheme} from '@/core/theme'
+import {buildIpClient} from 'infoportal-api-sdk'
+import {IpClient} from 'infoportal-api-sdk/lib'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -29,6 +31,8 @@ const api = new ApiSdk(
   }),
 )
 
+const apiv2: IpClient = buildIpClient(appConfig.apiURL)
+
 export const queryClient = new QueryClient()
 
 const App = () => {
@@ -37,7 +41,7 @@ const App = () => {
     <Provide
       providers={[
         // (_) => <AppCacheProvider {...props} children={_} />,
-        _ => <AppSettingsProvider api={api} children={_} />,
+        _ => <AppSettingsProvider api={api} apiv2={apiv2} children={_} />,
       ]}
     >
       <AppWithConfig />

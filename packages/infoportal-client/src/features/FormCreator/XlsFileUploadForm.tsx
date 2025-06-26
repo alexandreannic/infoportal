@@ -2,17 +2,17 @@ import {Controller, useForm} from 'react-hook-form'
 import {DragDropFileInput} from '@/shared/DragDropFileInput'
 import React, {useMemo, useState} from 'react'
 import {IpBtn} from '@/shared'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useI18n} from '@/core/i18n'
 import {Kobo} from 'kobo-sdk'
 import {UUID} from 'infoportal-common'
 import {IpInput} from '@/shared/Input/Input'
-import {PyxformResponse} from '@/core/sdk/server/kobo/FormVersionSdk'
 import {Alert, AlertTitle, CircularProgress} from '@mui/material'
 import {DiffView} from '@/features/FormCreator/DiffView'
 import * as xlsx from 'xlsx'
 import {SchemaParser} from '@/features/FormCreator/SchemaParser'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
+import {Ip} from 'infoportal-api-sdk'
 
 type Form = {
   message?: string
@@ -21,23 +21,24 @@ type Form = {
 
 export const XlsFileUploadForm = ({
   onSubmit,
-  oldShema,
+  lastSchema,
   workspaceId,
   formId,
 }: {
-  oldShema?: object
+  lastSchema?: object
   onSubmit: (f: Form) => void
   workspaceId: UUID
   formId: Kobo.FormId
 }) => {
   const {m} = useI18n()
   const form = useForm<Form>()
-  const querySchema = useQuerySchema({workspaceId, formId})
-  const [validation, setValidation] = useState<PyxformResponse>()
+  const querySchema = useQueryVersion({workspaceId, formId})
+  const [validation, setValidation] = useState<Ip.Form.Schema.Validation>()
 
   const watched = {
     xlsFile: form.watch('xlsFile'),
   }
+
   const schemaJson = useMemo(() => {
     if (!watched.xlsFile || (validation?.code && validation.code >= 200)) return
     return watched.xlsFile.arrayBuffer().then(data => {
@@ -50,7 +51,13 @@ export const XlsFileUploadForm = ({
       <Panel>
         <PanelHead
           action={
-            <IpBtn icon="add" variant="contained" type="submit" loading={querySchema.upload.isPending}>
+            <IpBtn
+              icon="add"
+              disabled={!form.formState.isValid}
+              variant="contained"
+              type="submit"
+              loading={querySchema.upload.isPending}
+            >
               {m.import}
             </IpBtn>
           }
@@ -72,17 +79,28 @@ export const XlsFileUploadForm = ({
             )}
           />
 
-          <DragDropFileInput
-            onClear={() => {
-              form.unregister('xlsFile')
+          <Controller
+            name="xlsFile"
+            control={form.control}
+            rules={{
+              required: true,
             }}
-            onFilesSelected={async _ => {
-              const file = _.item(0)
-              if (!file) return
-              form.setValue('xlsFile', file)
-              querySchema.validateXls.mutateAsync(file).then(setValidation)
-            }}
-            sx={{mb: 1}}
+            render={({field, fieldState}) => (
+              <DragDropFileInput
+                error={fieldState.error?.message}
+                onClear={() => {
+                  form.unregister('xlsFile')
+                }}
+                onFilesSelected={async _ => {
+                  const file = _.item(0)
+                  if (!file) return
+                  field.onChange({target: {value: file}})
+                  // form.setValue('xlsFile', file)
+                  querySchema.validateXls.mutateAsync(file).then(setValidation)
+                }}
+                sx={{mb: 1}}
+              />
+            )}
           />
           {watched.xlsFile &&
             (querySchema.validateXls.isPending ? (
@@ -103,7 +121,7 @@ export const XlsFileUploadForm = ({
                 </Alert>
               )
             ))}
-          {schemaJson && <DiffView oldJson={oldShema} newJson={schemaJson} sx={{mt: 1}}/>}
+          {schemaJson && <DiffView oldJson={lastSchema} newJson={schemaJson} sx={{mt: 1}} />}
         </PanelBody>
       </Panel>
     </form>

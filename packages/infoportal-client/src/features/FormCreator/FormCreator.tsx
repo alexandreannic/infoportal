@@ -1,64 +1,55 @@
 import {AppAvatar, Page, Txt} from '@/shared'
 import {Box, Grid2, Icon, useTheme} from '@mui/material'
-import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
+import {Panel, PanelBody} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
-import React from 'react'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import React, {useMemo} from 'react'
+import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useParams} from 'react-router'
 import {databaseUrlParamsValidation} from '@/features/Database/Database'
 import {XlsFileUploadForm} from '@/features/FormCreator/XlsFileUploadForm'
-import {SchemaDetails} from '@/core/sdk/server/kobo/FormVersionSdk'
 import {seq} from '@axanc/ts-utils'
 import {capitalize} from 'infoportal-common'
-import {XlsFormFiller} from 'xls-form-filler'
+import {FormCreatorPreview} from '@/features/FormCreator/FormCreatorPreview'
+import {Ip} from 'infoportal-api-sdk'
 
 export const FormCreator = () => {
   const {m} = useI18n()
   const {workspaceId} = useWorkspaceRouter()
   const {formId} = databaseUrlParamsValidation.validateSync(useParams())
 
-  const querySchema = useQuerySchema({workspaceId, formId})
+  const queryVersion = useQueryVersion({workspaceId, formId})
 
-  console.log(querySchema.get.data)
+  const activeVersion = useMemo(() => {
+    console.log(queryVersion.get.data)
+    return queryVersion.get.data?.find(_ => _.status === 'active')
+  }, [queryVersion.get.data])
+
   return (
     <Page width="full">
       <Grid2 container>
         <Grid2 size={{xs: 12, md: 5}}>
-
-              <XlsFileUploadForm
-                oldShema={querySchema.get.data?.last?.schema as object}
-                workspaceId={workspaceId}
-                formId={formId}
-                onSubmit={form => querySchema.upload.mutateAsync(form)}
-              />
+          <XlsFileUploadForm
+            lastSchema={seq(queryVersion.get.data ?? []).last()}
+            workspaceId={workspaceId}
+            formId={formId}
+            onSubmit={form => queryVersion.upload.mutateAsync(form)}
+          />
         </Grid2>
         <Grid2 size={{xs: 12, md: 7}}>
           <Panel>
             <PanelBody>
-              {seq(querySchema.get.data?.all ?? [])
+              {seq(queryVersion.get.data ?? [])
                 .sort((a, b) => {
                   return (a.version - b.version) * -1
                 })
                 .map(_ => (
-                  <VersionRow key={_.id} version={_} active={_.id === querySchema.get.data?.active?.id} />
+                  <VersionRow key={_.id} version={_} active={_.id === activeVersion?.id} />
                 ))}
             </PanelBody>
           </Panel>
-          {querySchema.get.data?.last && (
-            <Panel>
-              <PanelHead>{m.preview}</PanelHead>
-              <PanelBody>
-                <XlsFormFiller
-                  survey={querySchema.get.data?.last.schema}
-                  hideActions
-                  onSubmit={_ => {
-                    console.log('HERE')
-                    console.log(_)
-                  }}
-                />
-              </PanelBody>
-            </Panel>
+          {activeVersion && (
+            <FormCreatorPreview workspaceId={workspaceId} formId={formId} versionId={activeVersion.id} />
           )}
         </Grid2>
       </Grid2>
@@ -66,7 +57,7 @@ export const FormCreator = () => {
   )
 }
 
-const VersionRow = ({version, active}: {active: boolean; version: SchemaDetails['all'][number]}) => {
+const VersionRow = ({version, active}: {active: boolean; version: Ip.Form.Version}) => {
   const {m, formatDateTime, dateFromNow} = useI18n()
   const t = useTheme()
   return (
