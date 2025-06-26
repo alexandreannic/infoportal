@@ -18,10 +18,7 @@
   },
   "references": [
     {
-      "path": [
-        "../infoportal-common",
-        "../infoportal-api-sdk"
-      ]
+      "path": "../infoportal-common"
     }
   ],
   "ts-node": {

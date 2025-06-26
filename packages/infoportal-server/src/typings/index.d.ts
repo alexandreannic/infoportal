@@ -9,7 +9,7 @@ declare module 'express-session' {
   }
 }
 
-export interface AuthRequest extends Request {
+export type AuthRequest<T extends Request = Request> = T & {
   session: Session & {
     app: AppSession
   }

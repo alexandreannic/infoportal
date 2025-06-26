@@ -78,11 +78,11 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     files?: unknown //Express.Multer.File[]
   }
 
-  const auth2 = async <T extends HandlerArgs>(
+  const checkAccess = async <T extends HandlerArgs>(
     access: Access = {},
-    params: T,
+    args: T,
   ): Promise<Omit<T, 'req'> & {req: AuthRequest}> => {
-    const email = params.req.session.app?.user.email
+    const email = args.req.session.app?.user.email
     if (!email) {
       throw new AppError.Forbidden('auth_user_not_connected')
     }
@@ -93,7 +93,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     if (access.level === 'admin' && access.scope === 'global' && !user.admin) {
       throw new AppError.Forbidden('user_not_admin')
     }
-    return params as any
+    return args as any
   }
 
   const ok = <T>(body: T): {status: 200; body: T} => {
@@ -126,20 +126,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     }
   }
 
-  // function withAuth<TArgs extends HandlerArgs, TResult>(
-  //   options: {ensureFile?: boolean; adminOnly?: boolean},
-  //   handler: (args: Omit<TArgs, 'req'> & {req: AuthRequest}) => Promise<TResult>,
-  // ): (args: TArgs) => Promise<{status: 200; body: TResult}> {
-  //   return async args => {
-  //     await auth2(options, args)
-  //     if (options.ensureFile) {
-  //       if (!args.req.file) throw new Error('No file found.')
-  //     }
-  //     const result = await handler(args as any)
-  //     return ok(result)
-  //   }
-  // }
-
   type Access = {
     level?: 'read' | 'write' | 'admin'
     scope?: 'global' | 'workspace' | 'form'
@@ -150,15 +136,15 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     access?: Access
   }
 
-  type EnrichedRequest<Opts extends WithAuthOptions> = AuthRequest &
+  type EnrichedRequest<TArgs extends HandlerArgs, Opts extends WithAuthOptions> = AuthRequest<TArgs['req']> &
     (Opts['ensureFile'] extends true ? {file: Express.Multer.File} : {}) // & (Opts['access'] extends true ? {admin: true} : {})
 
-  function auth3<Opts extends WithAuthOptions, TArgs extends HandlerArgs, TResult>(
+  function controller<Opts extends WithAuthOptions, TArgs extends HandlerArgs, TResult>(
     options: Opts,
-    handler: (args: Omit<TArgs, 'req'> & {req: EnrichedRequest<Opts>}) => Promise<TResult>,
+    handler: (args: Omit<TArgs, 'req'> & {req: EnrichedRequest<TArgs, Opts>}) => Promise<TResult>,
   ): (args: TArgs) => Promise<{status: 200; body: TResult}> {
     return async (args: TArgs) => {
-      await auth2(options.access, args as any)
+      await checkAccess(options.access, args as any)
 
       if (options.ensureFile && !args.req.file) {
         throw new AppError.BadRequest('Missing file.')
@@ -168,23 +154,29 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     }
   }
 
-  const service = new FormVersionService(prisma)
+  const formVersion = new FormVersionService(prisma)
 
   const s = initServer()
   const tsRestRouter = s.router(ipContract, {
     form: {
       version: {
-        uploadXlsForm: auth3({ensureFile: true}, async ({params, req}) => {
-          return service.upload({uploadedBy: req.session.app.user.email, formId: params.formId, file: req.file!})
+        validateXlsForm: {
+          middleware: [uploader.single('file')],
+          handler: controller({ensureFile: true}, async ({req}) => {
+            return formVersion.validateAndParse(req.file.path)
+          }),
+        },
+        uploadXlsForm: {
+          middleware: [uploader.single('file')],
+          handler: controller({ensureFile: true}, async ({params, req}) => {
+            return formVersion.upload({uploadedBy: req.session.app.user.email, formId: params.formId, file: req.file!})
+          }),
+        },
+        getSchema: controller({ensureFile: true}, async ({req, params}) => {
+          return formVersion.getSchema({formId: params.formId, versionId: params.versionId})
         }),
-        getSchema: auth3({ensureFile: true}, async ({req, params}) => {
-          return service.getSchema({formId: params.formId, versionId: params.versionId})
-        }),
-        validateXlsForm: auth3({}, ({params, req, res}) => {
-          return service.validateAndParse(req.file!.path)
-        }),
-        getByFormId: auth3({}, ({params}) => {
-          return service.getVersions({formId: params.formId})
+        getByFormId: controller({}, ({params}) => {
+          return formVersion.getVersions({formId: params.formId})
         }),
       },
     },

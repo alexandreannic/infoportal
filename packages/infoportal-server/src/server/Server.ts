@@ -84,7 +84,7 @@ export class Server {
     app.use(cookieParser())
     app.use(
       session({
-        secret: '669d73f2-fc68-4b75-88ac-c2da4af60aa3',
+        secret: appConf.sessionSecret,
         resave: false,
         saveUninitialized: false,
         name: 'infoportal-session2',
@@ -96,7 +96,7 @@ export class Server {
           dbRecordIdFunction: undefined,
         }),
         cookie: {
-          domain: appConf.production ? '.drc.ngo' : undefined,
+          domain: undefined, //appConf.production ? '.drc.ngo' : undefined,
           secure: appConf.production,
           // httpOnly: true,
           sameSite: appConf.production ? 'none' : undefined,
@@ -106,13 +106,9 @@ export class Server {
     )
     app.use(bodyParser.json({limit: '512mb'}))
     app.use(bodyParser.urlencoded({extended: false}))
-    const {tsRestRoutes, rawRoutes} = getRoutes(
-      this.pgClient,
-      // this.ecrecSdk,
-      // this.legalaidSdk,
-    )
-    createExpressEndpoints(ipContract, tsRestRoutes, app)
+    const {tsRestRoutes, rawRoutes} = getRoutes(this.pgClient)
     app.use(rawRoutes)
+    createExpressEndpoints(ipContract, tsRestRoutes, app)
     // app.use(Sentry.Handlers.errorHandler())
     app.use(this.errorHandler)
     app.listen(this.conf.port, () => {
@@ -120,5 +116,3 @@ export class Server {
     })
   }
 }
-
-// https://kobo.humanitarianresponse.info/api/v2/assets/aEvwuJkHVRiRQRKBNFNocH/data/79f86d1b-248a-4969-90e0-6e157ab47007/enketo/edit/?return_url=false

@@ -14,12 +14,13 @@ export class XlsFormParser {
     const {stdout, stderr} = await execFilePromise('python3', ['-m', 'pyxform.xls2xform', filePath, '--json'])
     const err: PyxResponse = stderr !== '' ? JSON.parse(stderr) : undefined
     const out: PyxResponse = stdout !== '' ? JSON.parse(stdout) : undefined
-    const status = out ? 'success' : err.code < 200 ? 'warning' : 'error'
+    const output = {...err, ...out}
+    const status = output.code === 100 ? 'success' : err.code < 200 ? 'warning' : 'error'
     if (status === 'error') {
-      return {status, ...err}
+      return {status, ...output}
     }
     const schema = this.parse(filePath)
-    return {...out, status, schema}
+    return {...output, status, schema}
   }
 
   static readonly parse = (filePath: string): Kobo.Form['content'] => {
