@@ -7,7 +7,6 @@ import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerKoboForm} from './controller/kobo/ControllerKoboForm.js'
 import {ControllerKoboServer} from './controller/kobo/ControllerKoboServer.js'
 import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer.js'
-import {Server} from './Server.js'
 import {ControllerAccess} from './controller/ControllerAccess.js'
 import {ControllerUser} from './controller/ControllerUser.js'
 import {AppError} from '../helper/Errors.js'
@@ -23,8 +22,10 @@ import {ControllerWorkspace} from './controller/ControllerWorkspace.js'
 import {AuthRequest} from '../typings'
 import {ControllerWorkspaceAccess} from './controller/ControllerWorkspaceAccess.js'
 import {UUID} from 'infoportal-common'
-import {ControllerSchema} from './controller/kobo/ControllerSchema.js'
 import multer from 'multer'
+import {initServer} from '@ts-rest/express'
+import {ipContract} from 'infoportal-api-sdk'
+import {FormVersionService} from '../feature/kobo/FormVersionService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -56,7 +57,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const koboServer = new ControllerKoboServer(prisma)
   const koboAnswer = new ControllerKoboAnswer(prisma)
   const koboApi = new ControllerKoboApi(prisma)
-  const schema = new ControllerSchema(prisma)
   const session = new ControllerSession(prisma)
   const access = new ControllerAccess(prisma)
   const accessGroup = new ControllerGroup(prisma)
@@ -68,9 +68,40 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const cacheController = new ControllerCache()
   const importData = new ControllerKoboApiXlsImport(prisma)
 
-  const auth =
-    ({adminOnly = false}: {adminOnly?: boolean} = {}) =>
-    async (req: Request, res: Response, next: NextFunction) => {
+  interface HandlerArgs<TReq = Request, TParams = any, TBody = any> {
+    req: Request
+    res: Response
+    params: TParams
+    body?: TBody
+    headers: any
+    file?: unknown //Express.Multer.File
+    files?: unknown //Express.Multer.File[]
+  }
+
+  const checkAccess = async <T extends HandlerArgs>(
+    access: Access = {},
+    args: T,
+  ): Promise<Omit<T, 'req'> & {req: AuthRequest}> => {
+    const email = args.req.session.app?.user.email
+    if (!email) {
+      throw new AppError.Forbidden('auth_user_not_connected')
+    }
+    const user = await UserService.getInstance(prisma).getUserByEmail(email)
+    if (!user) {
+      throw new AppError.Forbidden('user_not_allowed')
+    }
+    if (access.level === 'admin' && access.scope === 'global' && !user.admin) {
+      throw new AppError.Forbidden('user_not_admin')
+    }
+    return args as any
+  }
+
+  const ok = <T>(body: T): {status: 200; body: T} => {
+    return {status: 200, body}
+  }
+
+  const auth = (options: {adminOnly?: true} = {}) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
       //req.session.app.user = {
       //   email: 'alexandre.annic@drc.ngo',
       //   admin: true,
@@ -85,7 +116,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         if (!user) {
           throw new AppError.Forbidden('user_not_allowed')
         }
-        if (adminOnly && !user.admin) {
+        if (options.adminOnly && !user.admin) {
           throw new AppError.Forbidden('user_not_admin')
         }
         next()
@@ -93,6 +124,63 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         next(e)
       }
     }
+  }
+
+  type Access = {
+    level?: 'read' | 'write' | 'admin'
+    scope?: 'global' | 'workspace' | 'form'
+  }
+
+  type WithAuthOptions = {
+    ensureFile?: boolean
+    access?: Access
+  }
+
+  type EnrichedRequest<TArgs extends HandlerArgs, Opts extends WithAuthOptions> = AuthRequest<TArgs['req']> &
+    (Opts['ensureFile'] extends true ? {file: Express.Multer.File} : {}) // & (Opts['access'] extends true ? {admin: true} : {})
+
+  function controller<Opts extends WithAuthOptions, TArgs extends HandlerArgs, TResult>(
+    options: Opts,
+    handler: (args: Omit<TArgs, 'req'> & {req: EnrichedRequest<TArgs, Opts>}) => Promise<TResult>,
+  ): (args: TArgs) => Promise<{status: 200; body: TResult}> {
+    return async (args: TArgs) => {
+      await checkAccess(options.access, args as any)
+
+      if (options.ensureFile && !args.req.file) {
+        throw new AppError.BadRequest('Missing file.')
+      }
+
+      return ok(await handler(args as any)) // still needs `as any`, but contained
+    }
+  }
+
+  const formVersion = new FormVersionService(prisma)
+
+  const s = initServer()
+  const tsRestRouter = s.router(ipContract, {
+    form: {
+      version: {
+        validateXlsForm: {
+          middleware: [uploader.single('file')],
+          handler: controller({ensureFile: true}, async ({req}) => {
+            return formVersion.validateAndParse(req.file.path)
+          }),
+        },
+        uploadXlsForm: {
+          middleware: [uploader.single('file')],
+          handler: controller({ensureFile: true}, async ({params, req}) => {
+            return formVersion.upload({uploadedBy: req.session.app.user.email, formId: params.formId, file: req.file!})
+          }),
+        },
+        getSchema: controller({ensureFile: true}, async ({req, params}) => {
+          return formVersion.getSchema({formId: params.formId, versionId: params.versionId})
+        }),
+        getByFormId: controller({}, ({params}) => {
+          return formVersion.getVersions({formId: params.formId})
+        }),
+      },
+    },
+  })
 
   try {
     r.get('/', safe(main.ping))
@@ -169,10 +257,15 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.get('/:workspaceId/form/:id', auth(), safe(koboForm.get))
     r.put('/:workspaceId/form', auth(), safe(koboForm.add))
 
-    r.post('/:workspaceId/form/:formId/schema', auth(), uploader.single('uf-xlsform'), safe(schema.uploadXlsForm))
-    r.post('/:workspaceId/form/:formId/schema/validate', auth(), uploader.single('uf-xlsform'), safe(schema.validateXlsForm))
-    r.get('/:workspaceId/form/:formId/schema', auth(), safe(schema.get))
-    r.post('/:workspaceId/form/:formId/schema/:versionId', auth(), safe(schema.updateVersion))
+    // r.post('/:workspaceId/form/:formId/schema', auth(), uploader.single('uf-xlsform'), safe(schema.uploadXlsForm))
+    // r.post(
+    //   '/:workspaceId/form/:formId/schema/validate',
+    //   auth(),
+    //   uploader.single('uf-xlsform'),
+    //   safe(schema.validateXlsForm),
+    // )
+    // r.get('/:workspaceId/form/:formId/schema', auth(), safe(schema.get))
+    // r.post('/:workspaceId/form/:formId/schema/:versionId', auth(), safe(schema.updateVersion))
 
     r.post('/:workspaceId/form/:formId/answer/by-access', auth(), safe(koboAnswer.searchByUserAccess))
     r.patch('/:workspaceId/form/:formId/answer/validation', auth(), safe(koboAnswer.updateValidation))
@@ -203,5 +296,5 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     log.error(e)
     console.error(e)
   }
-  return r
+  return {rawRoutes: r, tsRestRoutes: tsRestRouter}
 }

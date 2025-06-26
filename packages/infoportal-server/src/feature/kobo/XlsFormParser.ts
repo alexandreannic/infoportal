@@ -2,31 +2,29 @@ import xlsx from 'xlsx'
 import {Kobo} from 'kobo-sdk'
 import {promisify} from 'util'
 import {execFile} from 'child_process'
+import {Ip} from 'infoportal-api-sdk'
 
 const execFilePromise = promisify(execFile)
 
-export type PyxformResponse = {
-  code: number
-  message: string
-  warnings?: string[]
-}
-
-export class XlsParsingError extends Error {}
-
-export class SchemaParser {
+export class XlsFormParser {
   constructor() {}
 
-  static readonly validateXls = async (filePath: string): Promise<PyxformResponse> => {
+  static readonly validateAndParse = async (filePath: string): Promise<Ip.Form.Schema.Validation> => {
+    type PyxResponse = Pick<Ip.Form.Schema.Validation, 'code' | 'message' | 'warnings'>
     const {stdout, stderr} = await execFilePromise('python3', ['-m', 'pyxform.xls2xform', filePath, '--json'])
-    const err: PyxformResponse = stderr !== '' ? JSON.parse(stderr) : undefined
-    const out: PyxformResponse = stdout !== '' ? JSON.parse(stdout) : undefined
-    if (err && err.code >= 200) throw new XlsParsingError(stderr)
-    return err ?? out
+    const err: PyxResponse = stderr !== '' ? JSON.parse(stderr) : undefined
+    const out: PyxResponse = stdout !== '' ? JSON.parse(stdout) : undefined
+    const output = {...err, ...out}
+    const status = output.code === 100 ? 'success' : err.code < 200 ? 'warning' : 'error'
+    if (status === 'error') {
+      return {status, ...output}
+    }
+    const schema = this.parse(filePath)
+    return {...output, status, schema}
   }
 
-  static readonly xlsToJson = (filePath: string): Kobo.Form['content'] => {
+  static readonly parse = (filePath: string): Kobo.Form['content'] => {
     const workbook = xlsx.readFile(filePath)
-
     const sheetToJson = <T>(name: string): T[] => {
       const sheet = workbook.Sheets[name]
       return sheet ? xlsx.utils.sheet_to_json<T>(sheet) : []

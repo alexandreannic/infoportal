@@ -3,9 +3,11 @@ import {app} from '../../index.js'
 import {appConf} from '../../core/conf/AppConf.js'
 import {Kobo} from 'kobo-sdk'
 import {yup} from '../../helper/Utils.js'
-import {SchemaParser} from './SchemaParser.js'
+import {XlsFormParser} from './XlsFormParser.js'
+import UUID = Kobo.Submission.UUID
+import {Ip} from 'infoportal-api-sdk'
 
-export class SchemaService {
+export class FormVersionService {
   constructor(
     private prisma: PrismaClient,
     private log = app.logger('SchemaService'),
@@ -16,7 +18,14 @@ export class SchemaService {
     formId: yup.object({
       formId: yup.string().required(),
     }),
+    versionId: yup.object({
+      formId: yup.string().required(),
+      versionId: yup.string().required(),
+    }),
   }
+
+  readonly validateAndParse = XlsFormParser.validateAndParse
+
   readonly upload = async ({
     formId,
     uploadedBy,
@@ -26,31 +35,35 @@ export class SchemaService {
     formId: Kobo.FormId
     file: Express.Multer.File
   }) => {
-    const validation = await SchemaParser.validateXls(file.path)
-    const schemaJson = await SchemaParser.xlsToJson(file.path)
-    const schema = await this.saveSchema({formId, schemaJson, uploadedBy})
-    return {validation, schema}
+    const validation = await XlsFormParser.validateAndParse(file.path)
+    if (!validation.schema || validation.status === 'error') {
+      throw new Error('Invalid XLSForm')
+    }
+    return this.createNewVersion({fileName: file.filename, formId, schemaJson: validation.schema, uploadedBy})
   }
 
-  private readonly saveSchema = async ({
+  private readonly createNewVersion = async ({
     schemaJson,
     formId,
     uploadedBy,
+    fileName,
   }: {
+    fileName?: string
     formId: Kobo.Form.Id
     schemaJson: Kobo.Form['content']
     uploadedBy: string
   }) => {
     return this.prisma.$transaction(async tx => {
-      const latest = await tx.formSchema.findFirst({
+      const latest = await tx.formVersion.findFirst({
         where: {formId},
         orderBy: {version: 'desc'},
       })
       const nextVersion = (latest?.version ?? 0) + 1
       if (latest && JSON.stringify(latest?.schema) === JSON.stringify(schemaJson))
         throw new Error('No change in schema.')
-      const schema = await tx.formSchema.create({
+      const schema = await tx.formVersion.create({
         data: {
+          fileName,
           formId,
           source: 'internal',
           version: nextVersion,
@@ -63,27 +76,19 @@ export class SchemaService {
     })
   }
 
-  readonly get = async ({formId}: {formId: Kobo.FormId}) => {
-    const [active, last, all] = await Promise.all([
-      this.prisma.koboForm
-        .findFirst({
-          select: {activeVersion: true},
-          where: {id: formId},
-        })
-        .then(_ => _?.activeVersion),
-      this.prisma.formSchema.findFirst({
-        where: {formId},
-        orderBy: {version: 'desc'},
-      }),
-      this.getVersions({formId}),
-    ])
-    return {active, last, all}
+  readonly getVersions = ({formId}: {formId: Kobo.FormId}): Promise<Ip.Form.Version[]> => {
+    return this.prisma.formVersion.findMany({
+      omit: {schema: true},
+      where: {formId},
+    })
   }
 
-  readonly getVersions = ({formId}: {formId: Kobo.FormId}) => {
-    return this.prisma.formSchema.findMany({
-      select: {id: true, version: true, message: true, uploadedBy: true, createdAt: true},
-      where: {formId},
+  readonly getSchema = ({formId, versionId}: {versionId: UUID; formId: Kobo.FormId}) => {
+    return this.prisma.formVersion.findFirstOrThrow({
+      where: {
+        formId,
+        id: versionId,
+      },
     })
   }
 }

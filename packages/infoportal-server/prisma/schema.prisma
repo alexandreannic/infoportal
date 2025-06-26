@@ -82,26 +82,29 @@ model KoboForm {
   uploadedBy         String?
   enketoUrl          String?
   submissionsCount   Int?
-  activeVersion      FormSchema?          @relation("ActiveVersion", fields: [activeVersionId], references: [id])
-  activeVersionId    String?              @unique // ensure only one version is active per form
   koboAnswers        KoboAnswers[]
   koboAnswersHistory KoboAnswersHistory[]
   workspaces         Workspace[]
-  koboVersion        FormSchema[]
+  koboVersion        FormVersion[]
 }
 
-model FormSchema {
-  id            String     @id @default(cuid()) @db.VarChar(32)
-  version       Int
-  fileName      String?
-  message       String?
-  uploadedBy    String
-  createdAt     DateTime   @default(now())
-  source        FormSource
-  schema        Json
-  form          KoboForm   @relation(fields: [formId], references: [id])
-  formId        String
-  activeForForm KoboForm?  @relation("ActiveVersion")
+enum FormVersionStatus {
+  active
+  inactive
+}
+
+model FormVersion {
+  id         String            @id @default(cuid()) @db.VarChar(32)
+  version    Int
+  fileName   String?
+  message    String?
+  uploadedBy String
+  createdAt  DateTime          @default(now())
+  source     FormSource
+  schema     Json
+  status     FormVersionStatus @default(inactive)
+  form       KoboForm          @relation(fields: [formId], references: [id])
+  formId     String
 
   @@unique([source, version])
 }

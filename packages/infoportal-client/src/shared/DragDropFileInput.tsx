@@ -1,4 +1,4 @@
-import {Box, Typography, Paper, Icon, useTheme, Chip, BoxProps} from '@mui/material'
+import {Box, Typography, Paper, Icon, useTheme, Chip, BoxProps, Alert} from '@mui/material'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 import {useCallback, useState} from 'react'
 import {useI18n} from '@/core/i18n'
@@ -10,8 +10,10 @@ export function DragDropFileInput({
   onClear,
   accept = '.xlsx, .xls',
   multiple = false,
+  error,
   sx,
 }: {
+  error?: string
   onFilesSelected: (files: FileList) => void
   onClear?: () => void
   accept?: string
@@ -50,7 +52,7 @@ export function DragDropFileInput({
         p: 3,
         border: '2px dashed',
         backgroundColor: isDragActive ? t.palette.primary.light : styleUtils(t).color.inputBack,
-        borderColor: isDragActive ? 'primary.main' : t.palette.divider,
+        borderColor: error ? 'primary.error.main' : isDragActive ? 'primary.main' : t.palette.divider,
         textAlign: 'center',
         cursor: 'pointer',
         transition: '0.2s',
@@ -96,6 +98,7 @@ export function DragDropFileInput({
           ))}
         </Box>
       )}
+      {error && <Alert color="error">{error}</Alert>}
     </Box>
   )
 }
