@@ -22,11 +22,10 @@ import {ControllerWorkspace} from './controller/ControllerWorkspace.js'
 import {AuthRequest} from '../typings'
 import {ControllerWorkspaceAccess} from './controller/ControllerWorkspaceAccess.js'
 import {UUID} from 'infoportal-common'
-import {ControllerFormVersion} from './controller/kobo/ControllerFormVersion.js'
 import multer from 'multer'
 import {initServer} from '@ts-rest/express'
 import {ipContract} from 'infoportal-api-sdk'
-import {SchemaService} from '../feature/kobo/SchemaService'
+import {FormVersionService} from '../feature/kobo/FormVersionService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -58,7 +57,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const koboServer = new ControllerKoboServer(prisma)
   const koboAnswer = new ControllerKoboAnswer(prisma)
   const koboApi = new ControllerKoboApi(prisma)
-  const formVersion = new ControllerFormVersion(prisma)
   const session = new ControllerSession(prisma)
   const access = new ControllerAccess(prisma)
   const accessGroup = new ControllerGroup(prisma)
@@ -70,9 +68,40 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const cacheController = new ControllerCache()
   const importData = new ControllerKoboApiXlsImport(prisma)
 
-  const auth =
-    ({adminOnly = false}: {adminOnly?: boolean} = {}) =>
-    async (req: Request, res: Response, next: NextFunction) => {
+  interface HandlerArgs<TReq = Request, TParams = any, TBody = any> {
+    req: Request
+    res: Response
+    params: TParams
+    body?: TBody
+    headers: any
+    file?: unknown //Express.Multer.File
+    files?: unknown //Express.Multer.File[]
+  }
+
+  const auth2 = async <T extends HandlerArgs>(
+    access: Access = {},
+    params: T,
+  ): Promise<Omit<T, 'req'> & {req: AuthRequest}> => {
+    const email = params.req.session.app?.user.email
+    if (!email) {
+      throw new AppError.Forbidden('auth_user_not_connected')
+    }
+    const user = await UserService.getInstance(prisma).getUserByEmail(email)
+    if (!user) {
+      throw new AppError.Forbidden('user_not_allowed')
+    }
+    if (access.level === 'admin' && access.scope === 'global' && !user.admin) {
+      throw new AppError.Forbidden('user_not_admin')
+    }
+    return params as any
+  }
+
+  const ok = <T>(body: T): {status: 200; body: T} => {
+    return {status: 200, body}
+  }
+
+  const auth = (options: {adminOnly?: true} = {}) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
       //req.session.app.user = {
       //   email: 'alexandre.annic@drc.ngo',
       //   admin: true,
@@ -87,7 +116,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         if (!user) {
           throw new AppError.Forbidden('user_not_allowed')
         }
-        if (adminOnly && !user.admin) {
+        if (options.adminOnly && !user.admin) {
           throw new AppError.Forbidden('user_not_admin')
         }
         next()
@@ -95,23 +124,73 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         next(e)
       }
     }
+  }
 
-  const service = new SchemaService(prisma)
-  try {
-    const s = initServer()
-    const formRouter = s.router(ipContract, {
-      form: {
-        version: {
-          getByFormId: async ({params}) => {
-            return {
-              status: 200,
-              body: service.get({formId: params.formId}),
-            }
-          },
-        },
+  // function withAuth<TArgs extends HandlerArgs, TResult>(
+  //   options: {ensureFile?: boolean; adminOnly?: boolean},
+  //   handler: (args: Omit<TArgs, 'req'> & {req: AuthRequest}) => Promise<TResult>,
+  // ): (args: TArgs) => Promise<{status: 200; body: TResult}> {
+  //   return async args => {
+  //     await auth2(options, args)
+  //     if (options.ensureFile) {
+  //       if (!args.req.file) throw new Error('No file found.')
+  //     }
+  //     const result = await handler(args as any)
+  //     return ok(result)
+  //   }
+  // }
+
+  type Access = {
+    level?: 'read' | 'write' | 'admin'
+    scope?: 'global' | 'workspace' | 'form'
+  }
+
+  type WithAuthOptions = {
+    ensureFile?: boolean
+    access?: Access
+  }
+
+  type EnrichedRequest<Opts extends WithAuthOptions> = AuthRequest &
+    (Opts['ensureFile'] extends true ? {file: Express.Multer.File} : {}) // & (Opts['access'] extends true ? {admin: true} : {})
+
+  function auth3<Opts extends WithAuthOptions, TArgs extends HandlerArgs, TResult>(
+    options: Opts,
+    handler: (args: Omit<TArgs, 'req'> & {req: EnrichedRequest<Opts>}) => Promise<TResult>,
+  ): (args: TArgs) => Promise<{status: 200; body: TResult}> {
+    return async (args: TArgs) => {
+      await auth2(options.access, args as any)
+
+      if (options.ensureFile && !args.req.file) {
+        throw new AppError.BadRequest('Missing file.')
+      }
+
+      return ok(await handler(args as any)) // still needs `as any`, but contained
+    }
+  }
+
+  const service = new FormVersionService(prisma)
+
+  const s = initServer()
+  const tsRestRouter = s.router(ipContract, {
+    form: {
+      version: {
+        uploadXlsForm: auth3({ensureFile: true}, async ({params, req}) => {
+          return service.upload({uploadedBy: req.session.app.user.email, formId: params.formId, file: req.file!})
+        }),
+        getSchema: auth3({ensureFile: true}, async ({req, params}) => {
+          return service.getSchema({formId: params.formId, versionId: params.versionId})
+        }),
+        validateXlsForm: auth3({}, ({params, req, res}) => {
+          return service.validateAndParse(req.file!.path)
+        }),
+        getByFormId: auth3({}, ({params}) => {
+          return service.getVersions({formId: params.formId})
+        }),
       },
-    })
+    },
+  })
 
+  try {
     r.get('/', safe(main.ping))
 
     r.post('/session/track', safe(session.track))
@@ -186,15 +265,15 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.get('/:workspaceId/form/:id', auth(), safe(koboForm.get))
     r.put('/:workspaceId/form', auth(), safe(koboForm.add))
 
-    r.post('/:workspaceId/form/:formId/schema', auth(), uploader.single('uf-xlsform'), safe(schema.uploadXlsForm))
-    r.post(
-      '/:workspaceId/form/:formId/schema/validate',
-      auth(),
-      uploader.single('uf-xlsform'),
-      safe(schema.validateXlsForm),
-    )
-    r.get('/:workspaceId/form/:formId/schema', auth(), safe(schema.get))
-    r.post('/:workspaceId/form/:formId/schema/:versionId', auth(), safe(schema.updateVersion))
+    // r.post('/:workspaceId/form/:formId/schema', auth(), uploader.single('uf-xlsform'), safe(schema.uploadXlsForm))
+    // r.post(
+    //   '/:workspaceId/form/:formId/schema/validate',
+    //   auth(),
+    //   uploader.single('uf-xlsform'),
+    //   safe(schema.validateXlsForm),
+    // )
+    // r.get('/:workspaceId/form/:formId/schema', auth(), safe(schema.get))
+    // r.post('/:workspaceId/form/:formId/schema/:versionId', auth(), safe(schema.updateVersion))
 
     r.post('/:workspaceId/form/:formId/answer/by-access', auth(), safe(koboAnswer.searchByUserAccess))
     r.patch('/:workspaceId/form/:formId/answer/validation', auth(), safe(koboAnswer.updateValidation))
@@ -225,5 +304,5 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     log.error(e)
     console.error(e)
   }
-  return r
+  return {rawRoutes: r, tsRestRoutes: tsRestRouter}
 }

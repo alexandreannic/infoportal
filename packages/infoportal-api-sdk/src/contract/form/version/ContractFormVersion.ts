@@ -51,7 +51,7 @@ export const formVersionContract = initContract().router({
       formId: schema.formId,
     }),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form.Version>,
+      200: z.array(z.custom<Ip.Form.Version>()),
     },
   },
 

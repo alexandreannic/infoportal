@@ -5,6 +5,7 @@ import {Kobo} from 'kobo-sdk'
 import {yup} from '../../helper/Utils.js'
 import {XlsFormParser} from './XlsFormParser.js'
 import UUID = Kobo.Submission.UUID
+import {Ip} from 'infoportal-api-sdk'
 
 export class FormVersionService {
   constructor(
@@ -22,6 +23,9 @@ export class FormVersionService {
       versionId: yup.string().required(),
     }),
   }
+
+  readonly validateAndParse = XlsFormParser.validateAndParse
+
   readonly upload = async ({
     formId,
     uploadedBy,
@@ -72,7 +76,7 @@ export class FormVersionService {
     })
   }
 
-  readonly getVersions = ({formId}: {formId: Kobo.FormId}) => {
+  readonly getVersions = ({formId}: {formId: Kobo.FormId}): Promise<Ip.Form.Version[]> => {
     return this.prisma.formVersion.findMany({
       omit: {schema: true},
       where: {formId},

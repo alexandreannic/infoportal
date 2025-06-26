@@ -1,3 +1,3 @@
-export {ipContract} from './contract/Contract'
-export {Ip} from './core/Types'
-export {buildIpClient} from './core/IpClient'
+export * from './contract/Contract'
+export * from './core/Types'
+export * from './core/IpClient'

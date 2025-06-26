@@ -13,6 +13,8 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import {duration} from '@axanc/ts-utils'
 import * as console from 'console'
+import {createExpressEndpoints} from '@ts-rest/express'
+import {ipContract} from 'infoportal-api-sdk'
 // import * as Sentry from '@sentry/node'
 // import sessionFileStore from 'session-file-store'
 
@@ -104,13 +106,13 @@ export class Server {
     )
     app.use(bodyParser.json({limit: '512mb'}))
     app.use(bodyParser.urlencoded({extended: false}))
-    app.use(
-      getRoutes(
-        this.pgClient,
-        // this.ecrecSdk,
-        // this.legalaidSdk,
-      ),
+    const {tsRestRoutes, rawRoutes} = getRoutes(
+      this.pgClient,
+      // this.ecrecSdk,
+      // this.legalaidSdk,
     )
+    createExpressEndpoints(ipContract, tsRestRoutes, app)
+    app.use(rawRoutes)
     // app.use(Sentry.Handlers.errorHandler())
     app.use(this.errorHandler)
     app.listen(this.conf.port, () => {

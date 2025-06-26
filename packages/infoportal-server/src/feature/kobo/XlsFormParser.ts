@@ -2,22 +2,15 @@ import xlsx from 'xlsx'
 import {Kobo} from 'kobo-sdk'
 import {promisify} from 'util'
 import {execFile} from 'child_process'
+import {Ip} from 'infoportal-api-sdk'
 
 const execFilePromise = promisify(execFile)
-
-export type ValidationResult = {
-  status: 'error' | 'warning' | 'success'
-  code: number
-  message: string
-  warnings?: string[]
-  schema?: Kobo.Form['content']
-}
 
 export class XlsFormParser {
   constructor() {}
 
-  static readonly validateAndParse = async (filePath: string): Promise<ValidationResult> => {
-    type PyxResponse = Pick<ValidationResult, 'code' | 'message' | 'warnings'>
+  static readonly validateAndParse = async (filePath: string): Promise<Ip.Form.Schema.Validation> => {
+    type PyxResponse = Pick<Ip.Form.Schema.Validation, 'code' | 'message' | 'warnings'>
     const {stdout, stderr} = await execFilePromise('python3', ['-m', 'pyxform.xls2xform', filePath, '--json'])
     const err: PyxResponse = stderr !== '' ? JSON.parse(stderr) : undefined
     const out: PyxResponse = stdout !== '' ? JSON.parse(stdout) : undefined
