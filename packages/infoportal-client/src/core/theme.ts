@@ -70,6 +70,19 @@ const lightShadows = Array.from({length: 25}, (_, i) =>
       }),
 )
 
+const createDarkShadows = (primaryColor: string): string[] => {
+  return Array.from({length: 25}, (_, i) =>
+    i === 0
+      ? 'none'
+      : fadeShadow({
+          color: alpha(primaryColor, 1), // full color
+          opacity: 0.12 + i * 0.004, // slightly stronger opacity for dark
+          y: 2 + i * 0.5,
+          blur: 5 + i * 0.5,
+        }),
+  )
+}
+
 export const styleUtils = (t: Theme) => ({
   gridSpacing: 3 as any,
   fontSize: {
@@ -165,7 +178,7 @@ export const muiTheme = ({
           },
           background: {
             default: 'rgba(255, 255, 255, 0.6)',
-            paper: 'rgba(255, 255, 255, 0.5)',
+            paper: 'rgba(255, 255, 255, 0.6)',
           },
         },
       },
@@ -250,7 +263,7 @@ export const muiTheme = ({
             display: 'none',
           },
           body: {
-            minHeight: '100vh',
+            height: '100vh',
             margin: 0,
             fontSize: '1rem',
             lineHeight: '1.5',
@@ -264,7 +277,7 @@ export const muiTheme = ({
               right: 0,
               bottom: 0,
               left: 0,
-              background: 'rgba(255,255,255, .2)',
+              background: 'rgba(255,255,255, .1)',
               position: 'fixed',
             },
           },
@@ -346,7 +359,7 @@ export const muiTheme = ({
       MuiGrid2: {
         defaultProps: {
           spacing: 1,
-        }
+        },
       },
       MuiTab: {
         defaultProps: {
@@ -378,7 +391,8 @@ export const muiTheme = ({
           },
           root: {
             backdropFilter: 'blur(4px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            // backgroundColor: 'rgba(255, 255, 255, 0.5)',
           },
         },
       },

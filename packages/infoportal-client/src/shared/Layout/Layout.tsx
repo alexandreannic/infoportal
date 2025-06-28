@@ -34,7 +34,7 @@ export const Layout = ({
 
 const LayoutUsingContext = ({sidebar, header, children}: Pick<LayoutProps, 'sidebar' | 'header' | 'children'>) => {
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column', maxHeight: '100vh'}}>
+    <Box component="main" sx={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
       {header}
       <Box
         sx={{
@@ -45,7 +45,6 @@ const LayoutUsingContext = ({sidebar, header, children}: Pick<LayoutProps, 'side
       >
         {sidebar}
         <Box
-          component="main"
           sx={{
             overflowY: 'scroll',
             flex: 1,

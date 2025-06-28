@@ -36,16 +36,10 @@ const apiv2: IpClient = buildIpClient(appConfig.apiURL)
 export const queryClient = new QueryClient()
 
 const App = () => {
-  // @ts-ignore
   return (
-    <Provide
-      providers={[
-        // (_) => <AppCacheProvider {...props} children={_} />,
-        _ => <AppSettingsProvider api={api} apiv2={apiv2} children={_} />,
-      ]}
-    >
+    <AppSettingsProvider api={api} apiv2={apiv2}>
       <AppWithConfig />
-    </Provide>
+    </AppSettingsProvider>
   )
 }
 

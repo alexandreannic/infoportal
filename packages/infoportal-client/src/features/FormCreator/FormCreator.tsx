@@ -21,7 +21,6 @@ export const FormCreator = () => {
   const queryVersion = useQueryVersion({workspaceId, formId})
 
   const activeVersion = useMemo(() => {
-    console.log(queryVersion.get.data)
     return queryVersion.get.data?.find(_ => _.status === 'active')
   }, [queryVersion.get.data])
 
