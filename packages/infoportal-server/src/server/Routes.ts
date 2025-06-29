@@ -168,8 +168,13 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         },
         uploadXlsForm: {
           middleware: [uploader.single('file')],
-          handler: controller({ensureFile: true}, async ({params, req}) => {
-            return formVersion.upload({uploadedBy: req.session.app.user.email, formId: params.formId, file: req.file!})
+          handler: controller({ensureFile: true}, async ({params, req, body}) => {
+            return formVersion.upload({
+              uploadedBy: req.session.app.user.email,
+              formId: params.formId,
+              file: req.file!,
+              message: body.message,
+            })
           }),
         },
         getSchema: controller({ensureFile: true}, async ({req, params}) => {

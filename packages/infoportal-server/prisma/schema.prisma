@@ -106,7 +106,7 @@ model FormVersion {
   form       KoboForm          @relation(fields: [formId], references: [id])
   formId     String
 
-  @@unique([source, version])
+  @@unique([formId, source, version])
 }
 
 model KoboAnswers {

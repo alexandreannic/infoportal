@@ -1,18 +1,21 @@
 import {Controller, useForm} from 'react-hook-form'
 import {DragDropFileInput} from '@/shared/DragDropFileInput'
-import React, {useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useRef, useState} from 'react'
 import {IpBtn} from '@/shared'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useI18n} from '@/core/i18n'
 import {Kobo} from 'kobo-sdk'
 import {UUID} from 'infoportal-common'
 import {IpInput} from '@/shared/Input/Input'
-import {Alert, AlertTitle, CircularProgress} from '@mui/material'
+import {Alert, AlertTitle, CircularProgress, Skeleton} from '@mui/material'
 import {DiffView} from '@/features/FormCreator/DiffView'
 import * as xlsx from 'xlsx'
 import {SchemaParser} from '@/features/FormCreator/SchemaParser'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {Ip} from 'infoportal-api-sdk'
+import {Stepper, StepperHandle} from '@/shared/Stepper/Stepper'
+import {StepperActions} from '@/shared/Stepper/StepperActions'
+import {useQuery} from '@tanstack/react-query'
 
 type Form = {
   message?: string
@@ -26,102 +29,167 @@ export const XlsFileUploadForm = ({
   formId,
 }: {
   lastSchema?: object
-  onSubmit: (f: Form) => void
+  onSubmit?: (f: Form) => Promise<any>
   workspaceId: UUID
   formId: Kobo.FormId
 }) => {
   const {m} = useI18n()
-  const form = useForm<Form>()
-  const querySchema = useQueryVersion({workspaceId, formId})
+  const {
+    formState: {isValid},
+    ...form
+  } = useForm<Form>({defaultValues: {message: ''}, mode: 'onChange'})
+  const queryVersion = useQueryVersion({workspaceId, formId})
   const [validation, setValidation] = useState<Ip.Form.Schema.Validation>()
+  const stepperRef = useRef<StepperHandle>(null)
 
   const watched = {
     xlsFile: form.watch('xlsFile'),
   }
 
-  const schemaJson = useMemo(() => {
-    if (!watched.xlsFile || (validation?.code && validation.code >= 200)) return
-    return watched.xlsFile.arrayBuffer().then(data => {
-      SchemaParser.xlsToJson(xlsx.read(data, {type: 'array'}))
-    })
-  }, [watched.xlsFile])
+  const schemaJsonQuery = useQuery({
+    queryKey: ['schemaJson'],
+    queryFn: async () => {
+      const data = await watched.xlsFile.arrayBuffer()
+      return SchemaParser.xlsToJson(xlsx.read(data, {type: 'array'}))
+    },
+    enabled: !!watched.xlsFile && (!validation?.code || validation.code < 200),
+  })
+
+  const importButton = (label = m.skipAndSubmit) => (
+    <IpBtn
+      icon="send"
+      sx={{mr: 1, marginLeft: 'auto'}}
+      disabled={!isValid || !validation || validation.status === 'error'}
+      variant="contained"
+      type="submit"
+      loading={queryVersion.upload.isPending}
+    >
+      {label}
+    </IpBtn>
+  )
+
+  const submit = async (values: Form) => {
+    try {
+      onSubmit?.(values)
+      await queryVersion.upload.mutateAsync(values)
+      form.reset()
+      stepperRef.current?.goTo(0)
+    } catch (e) {
+      console.warn(e)
+    }
+  }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <form onSubmit={form.handleSubmit(submit)}>
       <Panel>
-        <PanelHead
-          action={
-            <IpBtn
-              icon="add"
-              disabled={!form.formState.isValid}
-              variant="contained"
-              type="submit"
-              loading={querySchema.upload.isPending}
-            >
-              {m.import}
-            </IpBtn>
-          }
-        >
-          {m.importXlsFile}
-        </PanelHead>
+        <PanelHead>{m.importXlsFile}</PanelHead>
         <PanelBody>
-          <Controller
-            name="message"
-            control={form.control}
-            render={({field, fieldState}) => (
-              <IpInput
-                sx={{mt: 1}}
-                label={`${m.message} (${m.optional})`}
-                {...field}
-                error={!!fieldState.error}
-                helperText={fieldState.error?.message}
-              />
-            )}
-          />
-
-          <Controller
-            name="xlsFile"
-            control={form.control}
-            rules={{
-              required: true,
-            }}
-            render={({field, fieldState}) => (
-              <DragDropFileInput
-                error={fieldState.error?.message}
-                onClear={() => {
-                  form.unregister('xlsFile')
-                }}
-                onFilesSelected={async _ => {
-                  const file = _.item(0)
-                  if (!file) return
-                  field.onChange({target: {value: file}})
-                  // form.setValue('xlsFile', file)
-                  querySchema.validateXls.mutateAsync(file).then(setValidation)
-                }}
-                sx={{mb: 1}}
-              />
-            )}
-          />
-          {watched.xlsFile &&
-            (querySchema.validateXls.isPending ? (
-              <Alert severity="info" icon={<CircularProgress size={20} color="inherit" />}>
-                Validation...
-              </Alert>
-            ) : (
-              validation && (
-                <Alert severity={validation.code === 100 ? 'success' : validation.warnings ? 'warning' : 'error'}>
-                  <AlertTitle>{validation.message}</AlertTitle>
-                  {validation.warnings && (
-                    <ul style={{paddingLeft: 0, marginLeft: 0, listStylePosition: 'outside'}}>
-                      {validation.warnings.map((_, i) => (
-                        <li key={i}>{_}</li>
-                      ))}
-                    </ul>
-                  )}
-                </Alert>
-              )
-            ))}
-          {schemaJson && <DiffView oldJson={lastSchema} newJson={schemaJson} sx={{mt: 1}} />}
+          <Stepper
+            ref={stepperRef}
+            steps={[
+              {
+                name: 'select',
+                label: m.selectXlsForm,
+                component: () => (
+                  <>
+                    <Controller
+                      name="xlsFile"
+                      control={form.control}
+                      rules={{
+                        required: true,
+                      }}
+                      render={({field, fieldState}) => (
+                        <DragDropFileInput
+                          error={fieldState.error?.message}
+                          onClear={() => {
+                            form.unregister('xlsFile')
+                          }}
+                          onFilesSelected={async _ => {
+                            const file = _.item(0)
+                            if (!file) return
+                            field.onChange({target: {value: file}})
+                            stepperRef.current?.next()
+                            // form.setValue('xlsFile', file)
+                            queryVersion.validateXls.mutateAsync(file).then(setValidation)
+                          }}
+                          sx={{mb: 1}}
+                        />
+                      )}
+                    />
+                    <StepperActions disableNext={!watched.xlsFile} />
+                  </>
+                ),
+              },
+              {
+                name: 'validate',
+                label: m.validate,
+                component: () =>
+                  watched.xlsFile &&
+                  (queryVersion.validateXls.isPending ? (
+                    <Alert severity="info" icon={<CircularProgress size={20} color="inherit" />}>
+                      Validation...
+                    </Alert>
+                  ) : (
+                    validation && (
+                      <>
+                        <Alert
+                          severity={validation.code === 100 ? 'success' : validation.code < 200 ? 'warning' : 'error'}
+                        >
+                          <AlertTitle>
+                            {validation.code === 100 ? m.success : validation.code < 200 ? m.warning : m.error}
+                          </AlertTitle>
+                          {validation.message}
+                          {validation.warnings && (
+                            <ul style={{paddingLeft: 0, marginLeft: 0, listStylePosition: 'outside'}}>
+                              {validation.warnings.map((_, i) => (
+                                <li key={i}>{_}</li>
+                              ))}
+                            </ul>
+                          )}
+                        </Alert>
+                        <StepperActions disableNext={validation.status === 'error'}>{importButton()}</StepperActions>
+                      </>
+                    )
+                  )),
+              },
+              {
+                name: 'check',
+                label: m.checkDiff,
+                component: () => (
+                  <>
+                    <StepperActions>{importButton(m.import)}</StepperActions>
+                    {schemaJsonQuery.isPending && <Skeleton />}
+                    {schemaJsonQuery.data && (
+                      <DiffView oldJson={lastSchema} newJson={schemaJsonQuery.data} sx={{mt: 1}} />
+                    )}
+                    <StepperActions>{importButton(m.import)}</StepperActions>
+                  </>
+                ),
+              },
+              {
+                name: 'submit',
+                label: m.submit,
+                component: () => (
+                  <>
+                    <Controller
+                      name="message"
+                      control={form.control}
+                      render={({field, fieldState}) => (
+                        <IpInput
+                          sx={{mt: 1}}
+                          label={`${m.message} (${m.optional})`}
+                          {...field}
+                          error={!!fieldState.error}
+                          helperText={fieldState.error?.message}
+                        />
+                      )}
+                    />
+                    <StepperActions hideNext>{importButton(m.import)}</StepperActions>
+                  </>
+                ),
+              },
+            ]}
+          ></Stepper>
         </PanelBody>
       </Panel>
     </form>

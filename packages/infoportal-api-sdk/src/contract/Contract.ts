@@ -1,5 +1,5 @@
 import {formVersionContract} from './form/version/ContractFormVersion'
-import {initContract} from '@ts-rest/core'
+import {initContract, ServerInferRequest, ClientInferRequest} from '@ts-rest/core'
 
 export const ipContract = initContract().router({
   form: {

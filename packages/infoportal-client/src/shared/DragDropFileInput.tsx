@@ -12,7 +12,9 @@ export function DragDropFileInput({
   multiple = false,
   error,
   sx,
+  value,
 }: {
+  value?: FileList
   error?: string
   onFilesSelected: (files: FileList) => void
   onClear?: () => void

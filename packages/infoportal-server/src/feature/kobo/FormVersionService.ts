@@ -6,6 +6,8 @@ import {yup} from '../../helper/Utils.js'
 import {XlsFormParser} from './XlsFormParser.js'
 import UUID = Kobo.Submission.UUID
 import {Ip} from 'infoportal-api-sdk'
+import {ServerInferRequest} from '@ts-rest/core'
+import {ipContract} from 'infoportal-api-sdk/lib'
 
 export class FormVersionService {
   constructor(
@@ -27,10 +29,10 @@ export class FormVersionService {
   readonly validateAndParse = XlsFormParser.validateAndParse
 
   readonly upload = async ({
-    formId,
-    uploadedBy,
     file,
+    ...rest
   }: {
+    message?: string
     uploadedBy: string
     formId: Kobo.FormId
     file: Express.Multer.File
@@ -39,15 +41,15 @@ export class FormVersionService {
     if (!validation.schema || validation.status === 'error') {
       throw new Error('Invalid XLSForm')
     }
-    return this.createNewVersion({fileName: file.filename, formId, schemaJson: validation.schema, uploadedBy})
+    return this.createNewVersion({fileName: file.filename, schemaJson: validation.schema, ...rest})
   }
 
   private readonly createNewVersion = async ({
     schemaJson,
     formId,
-    uploadedBy,
-    fileName,
+    ...rest
   }: {
+    message?: string
     fileName?: string
     formId: Kobo.Form.Id
     schemaJson: Kobo.Form['content']
@@ -63,12 +65,11 @@ export class FormVersionService {
         throw new Error('No change in schema.')
       const schema = await tx.formVersion.create({
         data: {
-          fileName,
           formId,
           source: 'internal',
           version: nextVersion,
-          uploadedBy,
           schema: schemaJson,
+          ...rest,
         },
       })
       const versions = await this.getVersions({formId})

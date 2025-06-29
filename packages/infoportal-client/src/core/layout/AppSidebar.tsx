@@ -4,7 +4,7 @@ import {Fender, Txt} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
 import {Box, BoxProps, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
 import Fuse from 'fuse.js'
-import {useMemo} from 'react'
+import {forwardRef, useMemo} from 'react'
 import {Controller, useForm} from 'react-hook-form'
 import {NavLink} from 'react-router-dom'
 import {styleUtils} from '../theme'
@@ -18,26 +18,29 @@ type Form = {
   archived?: boolean
 }
 
-const SearchInput = ({sx, ...props}: React.InputHTMLAttributes<HTMLInputElement> & Pick<BoxProps, 'sx'>) => {
-  const t = useTheme()
-  return (
-    <Box
-      display="flex"
-      alignItems="center"
-      sx={{
-        m: 1,
-        mb: 0.5,
-        borderRadius: t.shape.borderRadius + 'px',
-        ...styleUtils(t).color.inputBack,
-        pl: 1,
-        ...sx,
-      }}
-    >
-      <Icon color="disabled">search</Icon>
-      <Box component="input" {...props} sx={{ml: 1, height: 36, border: 'none', background: 'none', width: '100%'}} />
-    </Box>
-  )
-}
+const SearchInput = forwardRef(
+  ({sx, ...props}: React.InputHTMLAttributes<HTMLInputElement> & Pick<BoxProps, 'sx'>, ref) => {
+    const t = useTheme()
+    return (
+      <Box
+        display="flex"
+        alignItems="center"
+        ref={ref}
+        sx={{
+          m: 1,
+          mb: 0.5,
+          borderRadius: t.shape.borderRadius + 'px',
+          ...styleUtils(t).color.inputBack,
+          pl: 1,
+          ...sx,
+        }}
+      >
+        <Icon color="disabled">search</Icon>
+        <Box component="input" {...props} sx={{ml: 1, height: 36, border: 'none', background: 'none', width: '100%'}} />
+      </Box>
+    )
+  },
+)
 
 export const AppSidebar = () => {
   const {workspaceId} = useWorkspaceRouter()

@@ -15,7 +15,7 @@ type Props = BoxProps & {
   newJson: any
 }
 
-export const DiffView = ({oldJson, newJson, sx, ...props}: Props) => {
+export const DiffView = ({oldJson = {}, newJson, sx, ...props}: Props) => {
   const {mode} = useColorScheme()
   const oldStr = JSON.stringify(oldJson, null, 2)
   const newStr = JSON.stringify(newJson, null, 2)
@@ -58,12 +58,12 @@ export const DiffView = ({oldJson, newJson, sx, ...props}: Props) => {
           border: 'none',
           margin: 0,
         },
-        '& .d2h-code-linenumber': {borderLeft: 'none'},
+        '& .d2h-code-linenumber': {width: '4em', borderLeft: 'none'},
         '& .d2h-code-linenumber:first-of-type': {background: 'none'},
         '& .d2h-file-header': {
           display: 'none',
         },
-        ...sx
+        ...sx,
       }}
       {...props}
     >
