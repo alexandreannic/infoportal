@@ -1,6 +1,13 @@
 import React from 'react'
-import {DateRange, DateRangePicker, PickersShortcutsItem, SingleInputDateRangeField} from '@mui/x-date-pickers-pro'
-import {unstable_useMultiInputDateRangeField as useMultiInputDateRangeField} from '@mui/x-date-pickers-pro/MultiInputDateRangeField'
+import {
+  DateRange,
+  DateRangePicker,
+  PickersShortcutsItem,
+  SingleInputDateRangeField,
+  useDateRangeManager,
+} from '@mui/x-date-pickers-pro'
+// import {unstable_useMultiInputDateRangeField as useMultiInputDateRangeField} from '@mui/x-date-pickers-pro/MultiInputDateRangeField'
+import {unstable_useMultiInputRangeField as useMultiInputDateRangeField} from '@mui/x-date-pickers-pro/hooks'
 import {Box, TextField} from '@mui/material'
 import {endOfMonth, format, startOfMonth, subMonths} from 'date-fns'
 import {PeriodPickerProps} from '@/shared/PeriodPicker/PeriodPickerNative'
@@ -88,14 +95,13 @@ const BrowserMultiInputDateRangeField = React.forwardRef<HTMLDivElement, any>((p
   } = props
 
   const {inputRef: startInputRef, ...startTextFieldProps} = slotProps?.textField || {}
-
   const {inputRef: endInputRef, ...endTextFieldProps} = slotProps?.textField || {}
-
+  const manager = useDateRangeManager(props)
   const {
-    startDate: {sectionListRef: startRef, ...startDateProps},
-    endDate: {sectionListRef: endRef, ...endDateProps},
+    startTextField: {sectionListRef: startRef, ...startDateProps},
+    endTextField: {sectionListRef: endRef, ...endDateProps},
   } = useMultiInputDateRangeField({
-    sharedProps: {
+    internalProps: {
       value,
       defaultValue,
       format,
@@ -111,10 +117,13 @@ const BrowserMultiInputDateRangeField = React.forwardRef<HTMLDivElement, any>((p
       selectedSections,
       onSelectedSectionsChange,
     },
+    rootProps: {
+      startInputRef,
+      endInputRef,
+    } ,
+    manager,
     startTextFieldProps,
     endTextFieldProps,
-    unstableStartFieldRef: startInputRef,
-    unstableEndFieldRef: endInputRef,
   })
 
   return (

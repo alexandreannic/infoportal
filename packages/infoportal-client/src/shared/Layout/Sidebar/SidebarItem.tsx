@@ -75,7 +75,7 @@ export const SidebarItem = ({
             },
             () => 2,
           ),
-        borderRadius: t.shape.borderRadius - 2 + 'px',
+        borderRadius: parseInt('' + t.shape.borderRadius) - 2 + 'px',
         // borderTopRightRadius: 42,
         // borderBottomRightRadius: 42,
         ...(props.disabled && {

@@ -159,9 +159,9 @@ export const muiTheme = ({
 
   return createTheme({
     defaultColorScheme: dark ? 'dark' : 'light',
-    cssVariables: {
-      colorSchemeSelector: 'class',
-    },
+    // cssVariables: {
+    //   colorSchemeSelector: 'class',
+    // },
     shadows: lightShadows as any,
     spacing,
     colorSchemes: {
@@ -345,7 +345,7 @@ export const muiTheme = ({
             bottom: 2,
             height: 'auto',
             background: alpha(theme.palette.primary.main, 0.18),
-            borderRadius: theme.shape.borderRadius - 2 + 'px',
+            borderRadius: parseInt(theme.shape.borderRadius + '') - 2 + 'px',
           }),
           root: ({theme}) => ({
             background: theme.palette.background.paper,
@@ -356,7 +356,7 @@ export const muiTheme = ({
           }),
         },
       },
-      MuiGrid2: {
+      MuiGrid: {
         defaultProps: {
           spacing: 1,
         },

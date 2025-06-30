@@ -1,5 +1,5 @@
 import {AppAvatar, Page, Txt} from '@/shared'
-import {Box, Grid2, Icon, useTheme} from '@mui/material'
+import {Box, Grid, Icon, useTheme} from '@mui/material'
 import {Panel, PanelBody} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
 import React, {useMemo} from 'react'
@@ -26,16 +26,16 @@ export const FormCreator = () => {
 
   return (
     <Page width="full">
-      <Grid2 container>
-        <Grid2 size={{xs: 12, md: 5}}>
+      <Grid container>
+        <Grid size={{xs: 12, md: 5}}>
           <XlsFileUploadForm
             lastSchema={seq(queryVersion.get.data ?? []).last()}
             workspaceId={workspaceId}
             formId={formId}
             onSubmit={form => queryVersion.upload.mutateAsync(form)}
           />
-        </Grid2>
-        <Grid2 size={{xs: 12, md: 7}}>
+        </Grid>
+        <Grid size={{xs: 12, md: 7}}>
           <Panel>
             <PanelBody>
               {seq(queryVersion.get.data ?? [])
@@ -50,8 +50,8 @@ export const FormCreator = () => {
           {activeVersion && (
             <FormCreatorPreview workspaceId={workspaceId} formId={formId} versionId={activeVersion.id} />
           )}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Page>
   )
 }

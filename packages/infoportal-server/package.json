@@ -55,7 +55,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
-    "@axanc/ts-utils": "2.3.3",
+    "@axanc/ts-utils": "2.3.4",
     "@azure/msal-common": "^15.4.0",
     "@azure/msal-node": "^3.4.1",
     "@microsoft/microsoft-graph-client": "^3.0.5",

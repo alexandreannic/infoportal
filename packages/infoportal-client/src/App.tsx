@@ -11,9 +11,10 @@ import {DRCLogo} from '@/shared/logo/logo'
 import {Provide} from '@/shared/Provide'
 import {ToastProvider} from '@/shared/Toast'
 import {MsalProvider} from '@azure/msal-react'
-import {Box, CssBaseline, Icon, ThemeProvider} from '@mui/material'
+import {ThemeProvider} from '@mui/material/styles'
+import {Box, CssBaseline, Icon} from '@mui/material'
 import {LocalizationProvider} from '@mui/x-date-pickers-pro'
-import {AdapterDateFns} from '@mui/x-date-pickers-pro/AdapterDateFnsV3'
+import {AdapterDateFns} from '@mui/x-date-pickers-pro/AdapterDateFns'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {DialogsProvider} from '@toolpad/core'
 import {useEffect, useMemo} from 'react'
@@ -52,7 +53,7 @@ const AppWithConfig = () => {
       providers={[
         _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns} />,
         _ => <ToastProvider children={_} />,
-        _ => <ThemeProvider theme={defaultTheme} children={_} />,
+        _ => <ThemeProvider forceThemeRerender theme={defaultTheme} children={_} />,
         _ => <CssBaseline children={_} />,
         _ => <I18nProvider children={_} />,
         _ => <MsalProvider children={_} instance={msal} />,

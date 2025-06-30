@@ -50,7 +50,7 @@ export const SidebarSubSection = ({
           cursor: 'pointer',
           '&:hover': {
             background: t.palette.action.focus,
-            borderRadius: t.shape.borderRadius * 1.5 + 'px',
+            borderRadius: (parseInt('' + t.shape.borderRadius) * 1.5) + 'px',
           },
         }),
         ...(active && {
