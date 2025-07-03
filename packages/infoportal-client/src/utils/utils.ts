@@ -8,6 +8,20 @@ export namespace Utils {
 
   export const clearParenthesis = (_: string) => _.replaceAll(/(.*)\([^(]*\)/g, '$1')
 
+  export const sortObjectKeysDeep = (obj: any): any => {
+    if (Array.isArray(obj)) {
+      return obj.map(sortObjectKeysDeep)
+    } else if (obj !== null && typeof obj === 'object') {
+      return Object.keys(obj)
+        .sort()
+        .reduce((acc, key) => {
+          acc[key] = sortObjectKeysDeep(obj[key])
+          return acc
+        }, {} as any)
+    }
+    return obj
+  }
+
   export const extractInnerText = (node: ReactNode | ReactElement): string => {
     // @ts-ignore
     if ((node as ReactElement)?.props?.value) return (node as ReactElement).props.value

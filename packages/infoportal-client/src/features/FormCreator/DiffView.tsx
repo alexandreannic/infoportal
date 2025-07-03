@@ -1,4 +1,3 @@
-// DiffView.tsx
 import React, {useMemo} from 'react'
 import {createTwoFilesPatch} from 'diff'
 import {html} from 'diff2html'
@@ -7,31 +6,31 @@ import 'diff2html/bundles/css/diff2html.min.css'
 import {Box, BoxProps, useColorScheme, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared'
-import {fnSwitch, match} from '@axanc/ts-utils'
+import {fnSwitch} from '@axanc/ts-utils'
 import {ColorSchemeType} from 'diff2html/lib/types'
 
 type Props = BoxProps & {
-  oldJson: any
-  newJson: any
+  oldStr: string
+  newStr: string
+  hasChanges?: (_: boolean) => void
 }
 
-export const DiffView = ({oldJson = {}, newJson, sx, ...props}: Props) => {
+export const DiffView = ({oldStr = '', newStr, sx, hasChanges, ...props}: Props) => {
   const {mode} = useColorScheme()
-  const oldStr = JSON.stringify(oldJson, null, 2)
-  const newStr = JSON.stringify(newJson, null, 2)
   const {m} = useI18n()
   const t = useTheme()
   const __html = useMemo(() => {
     try {
       const diffText = createTwoFilesPatch(
-        'old.json',
-        'new.json',
+        'old',
+        'new',
         oldStr,
         newStr,
         '', // old header
         '', // new header
         {context: 3},
       )
+      hasChanges?.(diffText.includes('@@'))
       return html(diffText, {
         colorScheme: fnSwitch(mode!, {
           dark: ColorSchemeType.DARK,
@@ -45,7 +44,7 @@ export const DiffView = ({oldJson = {}, newJson, sx, ...props}: Props) => {
     } catch (e) {
       return 'BUG'
     }
-  }, [oldJson, newJson])
+  }, [oldStr, newStr])
 
   return (
     <Box
@@ -58,7 +57,7 @@ export const DiffView = ({oldJson = {}, newJson, sx, ...props}: Props) => {
           border: 'none',
           margin: 0,
         },
-        '& .d2h-code-linenumber': {width: '4em', borderLeft: 'none'},
+        '& .d2h-code-linenumber': {borderLeft: 'none'},
         '& .d2h-code-linenumber:first-of-type': {background: 'none'},
         '& .d2h-file-header': {
           display: 'none',

@@ -16,10 +16,18 @@ import {Ip} from 'infoportal-api-sdk'
 import {Stepper, StepperHandle} from '@/shared/Stepper/Stepper'
 import {StepperActions} from '@/shared/Stepper/StepperActions'
 import {useQuery} from '@tanstack/react-query'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {map, Obj} from '@axanc/ts-utils'
+import {Utils} from '@/utils/utils'
 
 type Form = {
   message?: string
   xlsFile: File
+}
+
+const schemaToString = (schema?: Ip.Form.Schema): string => {
+  if (!schema) return '{}'
+  return JSON.stringify(Utils.sortObjectKeysDeep(schema), null, 2)
 }
 
 export const XlsFileUploadForm = ({
@@ -28,7 +36,7 @@ export const XlsFileUploadForm = ({
   workspaceId,
   formId,
 }: {
-  lastSchema?: object
+  lastSchema?: Ip.Form.Version
   onSubmit?: (f: Form) => Promise<any>
   workspaceId: UUID
   formId: Kobo.FormId
@@ -41,13 +49,16 @@ export const XlsFileUploadForm = ({
   const queryVersion = useQueryVersion({workspaceId, formId})
   const [validation, setValidation] = useState<Ip.Form.Schema.Validation>()
   const stepperRef = useRef<StepperHandle>(null)
+  const [schemaHasChanges, setSchemaHasChanges] = useState<boolean>(false)
+
+  const querySchema = useQuerySchema({formId, workspaceId, versionId: lastSchema?.id}).get
 
   const watched = {
     xlsFile: form.watch('xlsFile'),
   }
 
   const schemaJsonQuery = useQuery({
-    queryKey: ['schemaJson'],
+    queryKey: ['schemaJson', map(watched.xlsFile, _ => _.name + _.size + _.lastModified)],
     queryFn: async () => {
       const data = await watched.xlsFile.arrayBuffer()
       return SchemaParser.xlsToJson(xlsx.read(data, {type: 'array'}))
@@ -59,7 +70,7 @@ export const XlsFileUploadForm = ({
     <IpBtn
       icon="send"
       sx={{mr: 1, marginLeft: 'auto'}}
-      disabled={!isValid || !validation || validation.status === 'error'}
+      disabled={!isValid || !validation || validation.status === 'error' || !schemaHasChanges}
       variant="contained"
       type="submit"
       loading={queryVersion.upload.isPending}
@@ -127,7 +138,7 @@ export const XlsFileUploadForm = ({
                   watched.xlsFile &&
                   (queryVersion.validateXls.isPending ? (
                     <Alert severity="info" icon={<CircularProgress size={20} color="inherit" />}>
-                      Validation...
+                      {m.validation}...
                     </Alert>
                   ) : (
                     validation && (
@@ -147,7 +158,7 @@ export const XlsFileUploadForm = ({
                             </ul>
                           )}
                         </Alert>
-                        <StepperActions disableNext={validation.status === 'error'}>{importButton()}</StepperActions>
+                        <StepperActions disableNext={validation.status === 'error'} />
                       </>
                     )
                   )),
@@ -155,16 +166,34 @@ export const XlsFileUploadForm = ({
               {
                 name: 'check',
                 label: m.checkDiff,
-                component: () => (
-                  <>
-                    <StepperActions>{importButton(m.import)}</StepperActions>
-                    {schemaJsonQuery.isPending && <Skeleton />}
-                    {schemaJsonQuery.data && (
-                      <DiffView oldJson={lastSchema} newJson={schemaJsonQuery.data} sx={{mt: 1}} />
-                    )}
-                    <StepperActions>{importButton(m.import)}</StepperActions>
-                  </>
-                ),
+                component: () => {
+                  const action = <StepperActions>{importButton(m.skipAndSubmit)}</StepperActions>
+                  if (querySchema.isPending || schemaJsonQuery.isPending) {
+                    return (
+                      <>
+                        {action}
+                        <Skeleton height={200} />
+                      </>
+                    )
+                  }
+                  return (
+                    <>
+                      {!schemaHasChanges && (
+                        <Alert color="error">
+                          <AlertTitle>{m.xlsFormNoChangeTitle}</AlertTitle>
+                          {m.xlsFormNoChangeDesc}
+                        </Alert>
+                      )}
+                      <DiffView
+                        oldStr={schemaToString(querySchema.data)}
+                        newStr={schemaToString(schemaJsonQuery.data)}
+                        hasChanges={setSchemaHasChanges}
+                        sx={{mt: 1}}
+                      />
+                      <StepperActions disableNext={!schemaHasChanges}>{importButton(m.skipAndSubmit)}</StepperActions>
+                    </>
+                  )
+                },
               },
               {
                 name: 'submit',

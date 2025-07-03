@@ -12,12 +12,13 @@ export const useQuerySchema = ({
 }: {
   workspaceId: UUID
   formId: Kobo.FormId
-  versionId: UUID
+  versionId?: UUID
 }) => {
   const {apiv2} = useAppSettings()
   const get = useQuery({
     queryKey: queryKeys.schema(workspaceId, formId, versionId),
-    queryFn: () => apiv2.form.version.getSchema({workspaceId, formId, versionId}),
+    queryFn: () => apiv2.form.version.getSchema({workspaceId, formId, versionId: versionId!}),
+    enabled: !!versionId,
     staleTime: duration(10, 'minute'),
   })
   return {get}

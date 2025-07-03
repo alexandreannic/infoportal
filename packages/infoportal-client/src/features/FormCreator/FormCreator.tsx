@@ -12,6 +12,7 @@ import {map, seq} from '@axanc/ts-utils'
 import {capitalize} from 'infoportal-common'
 import {FormCreatorPreview} from '@/features/FormCreator/FormCreatorPreview'
 import {Ip} from 'infoportal-api-sdk'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 
 export const FormCreator = () => {
   const {m} = useI18n()

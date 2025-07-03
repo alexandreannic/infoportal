@@ -177,8 +177,8 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             })
           }),
         },
-        getSchema: controller({ensureFile: true}, async ({req, params}) => {
-          return formVersion.getSchema({formId: params.formId, versionId: params.versionId})
+        getSchema: controller({}, async ({req, params}) => {
+          return formVersion.getSchema({formId: params.formId, versionId: params.versionId}) as any
         }),
         getByFormId: controller({}, ({params}) => {
           return formVersion.getVersions({formId: params.formId})

@@ -4,10 +4,7 @@ import {appConf} from '../../core/conf/AppConf.js'
 import {Kobo} from 'kobo-sdk'
 import {yup} from '../../helper/Utils.js'
 import {XlsFormParser} from './XlsFormParser.js'
-import UUID = Kobo.Submission.UUID
 import {Ip} from 'infoportal-api-sdk'
-import {ServerInferRequest} from '@ts-rest/core'
-import {ipContract} from 'infoportal-api-sdk/lib'
 
 export class FormVersionService {
   constructor(
@@ -84,12 +81,15 @@ export class FormVersionService {
     })
   }
 
-  readonly getSchema = ({formId, versionId}: {versionId: UUID; formId: Kobo.FormId}) => {
-    return this.prisma.formVersion.findFirstOrThrow({
-      where: {
-        formId,
-        id: versionId,
-      },
-    })
+  readonly getSchema = ({formId, versionId}: {versionId: Ip.Uuid; formId: Kobo.FormId}) => {
+    return this.prisma.formVersion
+      .findFirstOrThrow({
+        select: {schema: true},
+        where: {
+          formId,
+          id: versionId,
+        },
+      })
+      .then(_ => _.schema)
   }
 }

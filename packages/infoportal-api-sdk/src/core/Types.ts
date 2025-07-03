@@ -1,4 +1,5 @@
 import {FormVersion} from '@prisma/client'
+import {Kobo} from 'kobo-sdk'
 
 export namespace Ip {
   export type Uuid = string
@@ -6,7 +7,7 @@ export namespace Ip {
   export namespace Form {
     export type Id = string
 
-    export type Schema = any
+    export type Schema = Kobo.Form['content']
 
     export type Version = Omit<FormVersion, 'schema'>
 

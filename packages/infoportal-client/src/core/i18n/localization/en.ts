@@ -208,6 +208,8 @@ export const en = Object.freeze({
     version: 'Version',
     validate: 'Validate',
     skipAndSubmit: 'Skip & Import now',
+    xlsFormNoChangeTitle: 'No changes detected',
+    xlsFormNoChangeDesc: 'You cannot upload this version because it is identical to the current one.',
     checkDiff: 'Check changes',
     success: 'Success',
     warning: 'Warning',

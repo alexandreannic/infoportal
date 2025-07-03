@@ -43,6 +43,10 @@ export const formVersionContract = c.router({
   getByFormId: {
     method: 'GET',
     path: '/:workspaceId/form/:formId/versions',
+    // pathParams: c.type<{
+    //   workspaceId: Ip.Uuid
+    //   formId: Ip.FormId
+    // }>(),
     pathParams: z.object({
       workspaceId: schema.uuid,
       formId: schema.formId,
@@ -61,7 +65,7 @@ export const formVersionContract = c.router({
       versionId: schema.uuid,
     }),
     responses: {
-      200: z.custom<Ip.Form.Schema>(),
+      200: z.any() as z.ZodType<Ip.Form.Schema>,
     },
   },
 })
@@ -84,17 +88,20 @@ export const formVersionClient = (client: TsRestClient) => {
       workspaceId,
       formId,
       xlsFile,
-      ...rest
+      message,
     }: {
       workspaceId: Ip.Uuid
       formId: Ip.FormId
       xlsFile: File
       message?: string
     }) => {
+      const formData = new FormData()
+      formData.append('file', xlsFile)
+      if (message) formData.append('message', message)
       return client.form.version
         .uploadXlsForm({
           params: {formId, workspaceId},
-          body: {file: xlsFile, ...rest},
+          body: formData,
         })
         .then(mapClientResponse)
     },
