@@ -1,25 +1,23 @@
-import {AppAvatar, Fender, IpBtn, Page, Txt} from '@/shared'
-import {Box, Grid, Icon, Tooltip, useTheme} from '@mui/material'
+import {Fender, IpBtn, Page} from '@/shared'
+import {Grid} from '@mui/material'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
-import React, {useMemo} from 'react'
+import React, {useMemo, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useParams} from 'react-router'
 import {databaseUrlParamsValidation} from '@/features/Database/Database'
 import {XlsFileUploadForm} from '@/features/FormCreator/XlsFileUploadForm'
 import {map, seq} from '@axanc/ts-utils'
-import {capitalize} from 'infoportal-common'
-import {FormCreatorPreview} from '@/features/FormCreator/FormCreatorPreview'
-import {Ip} from 'infoportal-api-sdk'
-import {VersionRow} from '@/features/FormCreator/VersionRow'
-import {useMutation} from '@tanstack/react-query'
+import {VersionRow, VersionRowRoot, VersionRowShowMore} from '@/features/FormCreator/VersionRow'
+import {useQueryFormById} from '@/core/query/useQueryForm'
 
 export const FormCreator = () => {
   const {m} = useI18n()
   const {workspaceId} = useWorkspaceRouter()
   const {formId} = databaseUrlParamsValidation.validateSync(useParams())
-
+  const [versionVisible, setVersionVisible] = useState(5)
+  const queryForm = useQueryFormById({workspaceId, formId})
   const queryVersion = useQueryVersion({workspaceId, formId})
 
   const activeVersion = useMemo(() => {
@@ -57,9 +55,18 @@ export const FormCreator = () => {
                 versions.length === 0 ? (
                   <Fender type="empty">{m.noSurveyCreatedYet}</Fender>
                 ) : (
-                  seq(versions ?? [])
-                    .sortByNumber(_ => _.version, '9-0')
-                    .map(_ => <VersionRow key={_.id} version={_} active={_.id === activeVersion?.id} />)
+                  <>
+                    {seq(versions ?? [])
+                      .sortByNumber(_ => _.version, '9-0')
+                      .slice(0, versionVisible)
+                      .map(_ => (
+                        <VersionRow key={_.id} version={_} />
+                      ))}
+                    {versionVisible < versions.length && (
+                      <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />
+                    )}
+                    {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
+                  </>
                 ),
               )}
             </PanelBody>

@@ -9,7 +9,7 @@ import {useEffect, useMemo} from 'react'
 import {useLocation, useParams} from 'react-router'
 import {NavLink, Outlet} from 'react-router-dom'
 import * as yup from 'yup'
-import {useQueryForm} from '@/core/query/useQueryForm'
+import {useQueryForm, useQueryFormById} from '@/core/query/useQueryForm'
 import {Page} from '@/shared'
 
 export const databaseUrlParamsValidation = yup.object({
@@ -27,10 +27,10 @@ export const Database = () => {
   const querySchema = useQueryKoboSchema(formId)
   const queryForm = useQueryForm(workspaceId)
 
-  const currentForm = queryForm.getForm(formId)
+  const currentForm = useQueryFormById({workspaceId, formId})
 
   useEffect(() => {
-    if (currentForm) setTitle(m._koboDatabase.title(currentForm.name))
+    if (currentForm.data) setTitle(m._koboDatabase.title(currentForm.data.name))
     return () => setTitle(m._koboDatabase.title())
   }, [queryForm.accessibleForms.data, formId])
 
@@ -105,7 +105,7 @@ export const Database = () => {
         width="full"
         sx={{p: 0, pb: 0, mb: 0, display: pathname === router.database.form(formId).answers ? 'block' : 'none'}}
       >
-        <DatabaseTable workspaceId={workspaceId} form={currentForm} formId={formId} />
+        <DatabaseTable workspaceId={workspaceId} form={currentForm.data} formId={formId} />
       </Page>
       <Outlet />
     </>

@@ -20,11 +20,16 @@ export const useQueryForm = (workspaceId: UUID) => {
   const accessibleForms = useQuery({
     queryKey: queryKeys.form(workspaceId),
     queryFn: async () => {
-      return api.kobo.form
-        .getAll({workspaceId})
-        .then(_ => seq(_).sortByString(_ => _.name))
-        .catch(toastAndThrowHttpError)
-      // return _forms.get?.filter(_ => session.user.admin || koboAccesses.includes(_.id))
+      const forms = await api.kobo.form.getAll({workspaceId}).catch(toastAndThrowHttpError)
+      forms.forEach(form => {
+        queryClient.setQueryData(queryKeys.form(workspaceId, form.id), form)
+      })
+      return seq(forms).sortByString(_ => _.name)
+      // return api.kobo.form
+      //   .getAll({workspaceId})
+      //   .then(_ => seq(_).sortByString(_ => _.name))
+      //   .catch(toastAndThrowHttpError)
+      // // return _forms.get?.filter(_ => session.user.admin || koboAccesses.includes(_.id))
     },
     staleTime: duration(10, 'minute'),
   })
@@ -37,13 +42,23 @@ export const useQueryForm = (workspaceId: UUID) => {
     onError: toastHttpError,
   })
 
-  const indexedForms = useMemo(() => {
-    return seq(accessibleForms.data).groupByFirst(_ => _.id)
-  }, [accessibleForms.data])
+  // const indexedForms = useMemo(() => {
+  //   return seq(accessibleForms.data).groupByFirst(_ => _.id)
+  // }, [accessibleForms.data])
 
   return {
     create,
-    getForm: (formId: Kobo.FormId): KoboForm | undefined => indexedForms[formId],
     accessibleForms,
   }
+}
+
+export const useQueryFormById = ({workspaceId, formId}: {workspaceId: UUID; formId: Kobo.FormId}) => {
+  const {api} = useAppSettings()
+  const {toastAndThrowHttpError} = useIpToast()
+
+  return useQuery({
+    queryKey: queryKeys.form(workspaceId, formId),
+    queryFn: () => api.kobo.form.get({workspaceId, formId}).catch(toastAndThrowHttpError),
+    staleTime: duration(10, 'minute'),
+  })
 }

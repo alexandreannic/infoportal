@@ -1,7 +1,7 @@
 import {Ip} from 'infoportal-api-sdk'
 import {useI18n} from '@/core/i18n'
-import {alpha, Box, Tooltip, useTheme} from '@mui/material'
-import {AppAvatar, Txt} from '@/shared'
+import {alpha, Box, BoxProps, Chip, Icon, styled, Tooltip, useTheme} from '@mui/material'
+import {AppAvatar, IpIconBtn, Txt} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 import {capitalize} from 'infoportal-common'
 import React from 'react'
@@ -27,7 +27,7 @@ const Logo = ({version}: {version: Ip.Form.Version}) => {
           height: 5,
           width: borderWidth,
           marginBottom: borderWidth + 'px',
-          background: t.palette.divider,
+          background: version.status === 'draft' ? undefined : t.palette.divider,
         },
         '&:after': {
           content: '" "',
@@ -52,35 +52,108 @@ const Logo = ({version}: {version: Ip.Form.Version}) => {
   )
 }
 
-export const VersionRow = ({version}: {version: Ip.Form.Version}) => {
+export const VersionRowRoot = ({createdAt}: {createdAt: Date}) => {
+  const dotSize = 10
   const {m, formatDateTime, dateFromNow} = useI18n()
   const t = useTheme()
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        borderRadius: t.shape.borderRadius + 'px',
-        px: 1,
-        '&:hover': {
-          background: alpha(t.palette.primary.light, 0.15),
-        },
-      }}
-    >
+    <VersionRowContainer>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: avatarSize,
+          '&:before': {
+            content: '" "',
+            marginLeft: avatarSize / 2 - 1 + 'px',
+            height: 10,
+            width: borderWidth,
+            marginBottom: 0,
+            background: t.palette.divider,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            marginLeft: avatarSize / 2 - dotSize / 2 + 'px',
+            borderRadius: '100px',
+            background: t.palette.divider,
+            height: dotSize,
+            width: dotSize,
+            mb: 1,
+          }}
+        />
+      </Box>
+      <Box sx={{width: '100%', ml: 1, display: 'flex', justifyContent: 'flex-end'}}>
+        <Txt color="hint">
+          {m.created} {dateFromNow(createdAt)}
+        </Txt>
+      </Box>
+    </VersionRowContainer>
+  )
+}
+
+const VersionRowContainer = styled('div')(({theme: t}) => ({
+  display: 'flex',
+  alignItems: 'center',
+  borderRadius: t.shape.borderRadius + 'px',
+  paddingRight: t.spacing(1),
+  paddingLeft: t.spacing(1),
+  '&:hover': {
+    background: alpha(t.palette.primary.light, 0.15),
+  },
+}))
+
+export const VersionRowShowMore = (props: BoxProps) => {
+  const t = useTheme()
+  const {m} = useI18n()
+  return (
+    <VersionRowContainer style={{cursor: 'pointer'}} onClick={props.onClick}>
+      <Box
+        sx={{
+          height: 32,
+          marginLeft: avatarSize / 2 - 1 + 'px',
+          borderLeft: borderWidth + 'px dashed',
+          borderColor: t.palette.divider,
+          width: avatarSize,
+        }}
+      />
+      <Box sx={{ml: 1, display: 'flex', alignItems: 'center'}}>
+        <Icon sx={{color: t.palette.text.disabled, mr: 1}}>expand</Icon>
+        {m.showMore}...
+      </Box>
+    </VersionRowContainer>
+  )
+}
+
+export const VersionRow = ({version}: {version: Ip.Form.Version}) => {
+  const {m, formatDateTime, dateFromNow} = useI18n()
+  return (
+    <VersionRowContainer>
       <Logo version={version} />
-      <Box sx={{display: 'flex'}}>
-        <Txt bold sx={{ml: 1, mr: 1, width: 26, textAlign: 'right'}}>
+      <Box sx={{display: 'flex', width: '100%', justifyContent: 'flex-start', minWidth: 0}}>
+        <Txt bold sx={{flexShrink: 0, ml: 1, mr: 1, width: 26, textAlign: 'right'}}>
           v{version.version}
         </Txt>
-        <Txt color="hint" truncate sx={{width: 200}}>
+        <Txt color="hint" truncate sx={{minWidth: 0}}>
           {version.message}
         </Txt>
-        <Tooltip title={formatDateTime(version.createdAt)}>
-          <Txt color="hint" style={{marginLeft: 'auto'}}>
-            {capitalize(dateFromNow(version.createdAt))}
-          </Txt>
-        </Tooltip>
+        <div style={{marginLeft: 'auto', whiteSpace: 'nowrap', flexShrink: 0, paddingLeft: 1}}>
+          {fnSwitch(
+            version.status,
+            {
+              draft: <Chip icon={<Icon>architecture</Icon>} variant="filled" size="small" label={m.draft} />,
+              active: <Chip icon={<Icon>adjust</Icon>} variant="filled" color="primary" size="small" label={m.live} />,
+            },
+            () => undefined,
+          )}
+          <Tooltip title={formatDateTime(version.createdAt)}>
+            <Txt color="hint" sx={{ml: 1}}>
+              {capitalize(dateFromNow(version.createdAt))}
+            </Txt>
+          </Tooltip>
+        </div>
       </Box>
-    </Box>
+    </VersionRowContainer>
   )
 }

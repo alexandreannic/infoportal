@@ -17,7 +17,7 @@ import {useIsFetching} from '@tanstack/react-query'
 import {Kobo} from 'kobo-sdk'
 import {useCallback, useMemo} from 'react'
 import {useQueryAccess} from '@/core/query/useQueryAccess'
-import {useQueryForm} from '@/core/query/useQueryForm'
+import {useQueryForm, useQueryFormById} from '@/core/query/useQueryForm'
 import {UUID} from 'infoportal-common'
 
 export interface DatabaseTableProps {
@@ -45,7 +45,7 @@ export const DatabaseTable = ({
 }: DatabaseTableProps) => {
   const session = useSession()
 
-  const queryForm = useQueryForm(workspaceId)
+  const queryForm = useQueryFormById({workspaceId, formId})
   const querySchema = useQueryKoboSchema(formId)
   const queryAnswers = useQueryAnswer(formId)
   const queryAccess = useQueryAccess(workspaceId)
@@ -83,7 +83,7 @@ export const DatabaseTable = ({
       {/*  <>*/}
       {/*  </>*/}
       {/*)}*/}
-      {map(queryForm.getForm(formId), querySchema.data, (form, schema) => (
+      {map(queryForm.data, querySchema.data, (form, schema) => (
         <DatabaseKoboTableProvider
           form={form}
           schema={schema}

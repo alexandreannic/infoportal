@@ -20,7 +20,7 @@ export const queryKeys = {
   version: (workspaceId?: UUID, formId?: Kobo.FormId) => concat('version', workspaceId, formId),
   schema: (workspaceId?: UUID, formId?: Kobo.FormId, versionId?: Ip.Uuid) =>
     concat('schema', workspaceId, formId, versionId),
-  form: (formId?: Kobo.FormId) => concat('form', formId),
+  form: (workspaceId: UUID, formId?: Kobo.FormId) => concat('form', workspaceId, formId),
   group: (workspaceId?: UUID, args?: Omit<ApiSdk['group']['search'], 'workspaceId'>) =>
     concat('group', workspaceId, args ? Utils.stableStringify(args) : undefined),
   answers: (formId?: Kobo.FormId) => concat('answers', formId),
