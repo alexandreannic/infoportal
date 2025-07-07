@@ -1,9 +1,16 @@
-import {FormVersion} from '@prisma/client'
+import {FormVersion, KoboForm, KoboServer} from '@prisma/client'
 import {Kobo} from 'kobo-sdk'
 
 export namespace Ip {
+
   export type Uuid = string
+
   export type FormId = Form.Id
+
+  export type Form = KoboForm
+
+  export type Server = KoboServer
+
   export namespace Form {
     export type Id = string
 

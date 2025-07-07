@@ -1,18 +1,12 @@
 import {seq} from '@axanc/ts-utils'
-import {KoboForm, Prisma, PrismaClient} from '@prisma/client'
+import {Prisma, PrismaClient} from '@prisma/client'
 import {PromisePool} from '@supercharge/promise-pool'
 import {UUID} from 'infoportal-common'
 import {Kobo, KoboClient} from 'kobo-sdk'
 import {appConf} from '../../core/conf/AppConf.js'
 import {app, AppCacheKey} from '../../index.js'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
-
-export interface KoboFormCreate {
-  uid: string
-  serverId: UUID
-  uploadedBy: string
-  workspaceId: UUID
-}
+import {Ip} from 'infoportal-api-sdk'
 
 export class KoboFormService {
   constructor(
@@ -43,7 +37,7 @@ export class KoboFormService {
     }
   }
 
-  readonly add = async (payload: KoboFormCreate) => {
+  readonly add = async (payload: {uid: string; serverId: UUID; uploadedBy: string; workspaceId: UUID}) => {
     const sdk = await this.koboSdk.getBy.serverId(payload.serverId)
     const schema = await sdk.v2.form.get({formId: payload.uid, use$autonameAsName: true})
     const [newFrom] = await Promise.all([
@@ -94,11 +88,11 @@ export class KoboFormService {
     )
   }
 
-  readonly get = async (id: Kobo.FormId): Promise<KoboForm | undefined> => {
+  readonly get = async (id: Kobo.FormId): Promise<Ip.Form | undefined> => {
     return (await this.prisma.koboForm.findFirst({where: {id}})) ?? undefined
   }
 
-  readonly getAll = async ({wsId}: {wsId: UUID}): Promise<KoboForm[]> => {
+  readonly getAll = async ({wsId}: {wsId: UUID}): Promise<Ip.Form[]> => {
     return this.prisma.koboForm.findMany({
       include: {
         server: true,

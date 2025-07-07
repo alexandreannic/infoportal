@@ -412,6 +412,8 @@ export const en = Object.freeze({
     _admin: {
       createGroup: 'Create groupDisplay',
     },
+    fillForm: 'Fill form',
+    viewInKobo: 'View in Kobo',
     note: 'Note',
     projectCode: 'Project Code',
     form: 'Form',
@@ -424,6 +426,7 @@ export const en = Object.freeze({
     timeConsumingOperation: 'Time consuming operation.',
     sector: 'Sector',
     showMore: 'Show more',
+    thisFormIsManagedByKobo: 'This form is managed by KoboToolbox',
     filterBlanks: 'Filter blanks',
     total: 'Total',
     shouldDelete: 'Delete?',

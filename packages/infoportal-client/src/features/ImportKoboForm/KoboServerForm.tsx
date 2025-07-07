@@ -12,7 +12,7 @@ import {Box, CardActions, CircularProgress, Dialog, DialogContent, DialogTitle, 
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {KoboServer, KoboServerCreate} from '@/core/sdk/server/kobo/KoboMapper'
 import {DialogProps} from '@toolpad/core'
-import {useQueryServer} from '@/core/query/useQueryServer'
+import {useQueryServers} from '@/core/query/useQueryServers'
 
 const servers = {
   EU: {v1: 'https://kc-eu.kobotoolbox.org', v2: 'https://eu.kobotoolbox.org'},
@@ -190,7 +190,7 @@ export const KoboServerFormDialog = ({
   workspaceId: UUID
 }>) => {
   const {m} = useI18n()
-  const queryCreate = useQueryServer(payload.workspaceId).create
+  const queryCreate = useQueryServers(payload.workspaceId).create
   return (
     <Dialog open={open} onClose={() => onClose()}>
       <DialogTitle>{m.addNewKoboAccount}</DialogTitle>

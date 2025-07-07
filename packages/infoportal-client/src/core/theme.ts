@@ -1,4 +1,4 @@
-import {green, orange, red} from '@mui/material/colors'
+import {green, purple, orange, red} from '@mui/material/colors'
 import {alpha, createTheme, darken, SxProps, Theme} from '@mui/material'
 import {lighten} from '@mui/system/colorManipulator'
 
@@ -146,11 +146,12 @@ export const muiTheme = ({
   const defaultRadius = 12
   const fontFamily = '"Open Sans", sans-serif'
   // const mainColor = '#af161e'
-  const colorPrimary = {
-    main: mainColor,
-    light: alpha(mainColor, 0.4),
-    dark: darken(mainColor, 0.4),
-  }
+  const colorPrimary = purple
+  // {
+  //   main: mainColor,
+  //   light: alpha(mainColor, 0.4),
+  //   dark: darken(mainColor, 0.4),
+  // }
   const colorSecondary = {
     main: '#1a73e8',
     light: lighten('#1a73e8', 0.3),

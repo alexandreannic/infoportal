@@ -1,6 +1,8 @@
 import {initClient} from '@ts-rest/core'
 import {ipContract} from '../contract/Contract'
 import {formVersionClient} from '../contract/form/version/ContractFormVersion'
+import {formClient} from '../contract/form/ContractForm'
+import {serverClient} from '../contract/ContractServer'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -14,7 +16,9 @@ const buildClient = (baseUrl: string) =>
 export const buildIpClient = (baseUrl: string) => {
   const client = buildClient(baseUrl)
   return {
+    server: serverClient(client),
     form: {
+      ...formClient(client),
       version: formVersionClient(client),
     },
   }

@@ -1,5 +1,4 @@
 import {Kobo} from 'kobo-sdk'
-import {UUID} from 'infoportal-common'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {Utils} from '@/utils/utils'
 import {Ip} from 'infoportal-api-sdk'
@@ -12,16 +11,16 @@ export const queryKeys = {
   session: () => ['session'],
   workspaces: () => ['workspaces'],
   originalEmail: () => ['originalEmail'],
-  koboForm: (workspaceId?: UUID) => concat('koboForm', workspaceId),
-  server: (workspaceId?: UUID) => concat('server', workspaceId),
-  access: (workspaceId?: UUID) => concat('access', workspaceId),
-  user: (workspaceId?: UUID) => concat('user', workspaceId),
+  koboForm: (workspaceId?: Ip.Uuid) => concat('koboForm', workspaceId),
+  server: (workspaceId?: Ip.Uuid, serverId?: Ip.Uuid) => concat('server', workspaceId, serverId),
+  access: (workspaceId?: Ip.Uuid) => concat('access', workspaceId),
+  user: (workspaceId?: Ip.Uuid) => concat('user', workspaceId),
   koboSchema: (formId: Kobo.FormId) => ['koboSchema', formId],
-  version: (workspaceId?: UUID, formId?: Kobo.FormId) => concat('version', workspaceId, formId),
-  schema: (workspaceId?: UUID, formId?: Kobo.FormId, versionId?: Ip.Uuid) =>
+  version: (workspaceId?: Ip.Uuid, formId?: Kobo.FormId) => concat('version', workspaceId, formId),
+  schema: (workspaceId?: Ip.Uuid, formId?: Kobo.FormId, versionId?: Ip.Uuid) =>
     concat('schema', workspaceId, formId, versionId),
-  form: (workspaceId: UUID, formId?: Kobo.FormId) => concat('form', workspaceId, formId),
-  group: (workspaceId?: UUID, args?: Omit<ApiSdk['group']['search'], 'workspaceId'>) =>
+  form: (workspaceId: Ip.Uuid, formId?: Kobo.FormId) => concat('form', workspaceId, formId),
+  group: (workspaceId?: Ip.Uuid, args?: Omit<ApiSdk['group']['search'], 'workspaceId'>) =>
     concat('group', workspaceId, args ? Utils.stableStringify(args) : undefined),
   answers: (formId?: Kobo.FormId) => concat('answers', formId),
 }

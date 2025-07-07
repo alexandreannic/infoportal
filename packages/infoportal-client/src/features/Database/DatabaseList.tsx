@@ -1,6 +1,5 @@
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
-import {KoboFormSdk} from '@/core/sdk/server/kobo/KoboFormSdk'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {Page, PageTitle} from '@/shared/Page'
 import {Panel} from '@/shared/Panel'
@@ -10,7 +9,7 @@ import {seq} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
 import {useMemo} from 'react'
 import {NavLink} from 'react-router-dom'
-import {useQueryServer} from '@/core/query/useQueryServer'
+import {useQueryServers} from '@/core/query/useQueryServers'
 
 import {useQueryForm} from '@/core/query/useQueryForm'
 
@@ -19,7 +18,7 @@ export const DatabaseList = () => {
   const {formatDate, m} = useI18n()
   const t = useTheme()
 
-  const queryServer = useQueryServer(workspaceId)
+  const queryServer = useQueryServers(workspaceId)
   const queryForm = useQueryForm(workspaceId)
 
   const formsAccessible = queryForm.accessibleForms.data
@@ -102,17 +101,17 @@ export const DatabaseList = () => {
                   head: m.name,
                   render: _ => {
                     return {
-                      label: <Txt bold>{KoboFormSdk.parseFormName(_.name)?.name}</Txt>,
-                      value: KoboFormSdk.parseFormName(_.name)?.name,
+                      label: <Txt bold>{_.name}</Txt>,
+                      value: _.name,
                     }
                   },
                 },
-                {
-                  id: 'program',
-                  type: 'select_one',
-                  head: m.program,
-                  renderQuick: _ => KoboFormSdk.parseFormName(_.name)?.program,
-                },
+                // {
+                //   id: 'program',
+                //   type: 'select_one',
+                //   head: m.program,
+                //   renderQuick: _ => _.name,
+                // },
                 {
                   id: 'length',
                   head: m.submissions,

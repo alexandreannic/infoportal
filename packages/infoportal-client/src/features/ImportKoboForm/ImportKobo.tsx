@@ -9,7 +9,7 @@ import {KoboServerFormDialog} from '@/features/ImportKoboForm/KoboServerForm'
 import {UUID} from 'infoportal-common'
 import {SelectKoboForm} from '@/features/ImportKoboForm/SelectKoboForm'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
-import {useQueryServer} from '@/core/query/useQueryServer'
+import {useQueryServers} from '@/core/query/useQueryServers'
 
 export const ImportKobo = () => {
   const {m} = useI18n()
@@ -17,7 +17,7 @@ export const ImportKobo = () => {
   const dialog = useDialogs()
   const [selectedServerId, setSelectedServerId] = useState<UUID>()
 
-  const queryServer = useQueryServer(workspaceId)
+  const queryServer = useQueryServers(workspaceId)
 
   const handleOpen = () => {
     dialog.open(KoboServerFormDialog, {workspaceId})

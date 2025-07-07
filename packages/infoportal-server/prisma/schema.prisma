@@ -54,8 +54,8 @@ model KoboServer {
   urlV1       String?
   token       String
   koboForm    KoboForm[]
-  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
-  workspaceId String?    @db.Uuid
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id])
+  workspaceId String     @db.Uuid
 }
 
 enum DeploymentStatus {

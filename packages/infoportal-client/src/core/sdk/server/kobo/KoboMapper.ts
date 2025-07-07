@@ -5,6 +5,7 @@ import {Kobo} from 'kobo-sdk'
 
 export type KoboServerCreate = Omit<KoboServer, 'id'>
 
+/** @deprecated use from sdk*/
 export type KoboServer = {
   id: string
   name: string
@@ -14,6 +15,7 @@ export type KoboServer = {
   workspaceId: UUID
 }
 
+/** @deprecated use from sdk*/
 export interface KoboForm {
   server: KoboServer
   createdAt: Date
