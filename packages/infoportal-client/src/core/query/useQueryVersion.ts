@@ -6,6 +6,7 @@ import {useIpToast} from '../useToast'
 import {queryKeys} from './query.index'
 import {duration} from '@axanc/ts-utils'
 import {IpClient} from 'infoportal-api-sdk/lib'
+import {Ip} from 'infoportal-api-sdk'
 
 type Params<T extends keyof IpClient['form']['version']> = Parameters<IpClient['form']['version'][T]>[0]
 type Return<T extends keyof IpClient['form']['version']> = Awaited<ReturnType<IpClient['form']['version'][T]>>
@@ -25,19 +26,30 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: UUID; formI
     mutationFn: (xlsFile: File) => apiv2.form.version.validateXlsForm({workspaceId, formId, xlsFile}),
   })
 
+  const deployLast = useMutation({
+    mutationFn: (params: {workspaceId: Ip.Uuid; formId: Ip.FormId}) => apiv2.form.version.deployLast(params),
+    onSuccess: newVersion => {
+      queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
+      // queryClient.setQueryData<Return<'getByFormId'>>(queryKeys.version(workspaceId, formId), old =>
+      //   (old ?? []).map(_ => (_.id === newVersion.id ? newVersion : _)),
+      // )
+    },
+  })
+
   const upload = useMutation({
     mutationFn: async (params: Omit<Params<'uploadXlsForm'>, 'formId' | 'workspaceId'>) => {
       return apiv2.form.version.uploadXlsForm({formId, workspaceId, ...params}).catch(toastAndThrowHttpError)
     },
-    onSuccess: newSchema => {
+    onSuccess: newVersion => {
       queryClient.setQueryData<Return<'getByFormId'>>(queryKeys.version(workspaceId, formId), old => [
         ...(old ?? []),
-        newSchema,
+        newVersion,
       ])
     },
     onError: toastHttpError,
   })
   return {
+    deployLast,
     validateXls,
     get,
     upload,

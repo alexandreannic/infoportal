@@ -207,6 +207,8 @@ export const en = Object.freeze({
     typeOfSite: 'Type of site',
     version: 'Version',
     validate: 'Validate',
+    deploy: 'Deploy',
+    deployLastVersion: 'Deploy last version',
     skipAndSubmit: 'Skip & Import now',
     xlsFormNoChangeTitle: 'No changes detected',
     xlsFormNoChangeDesc: 'You cannot upload this version because it is identical to the current one.',

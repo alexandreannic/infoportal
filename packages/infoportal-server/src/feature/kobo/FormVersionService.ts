@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {FormVersionStatus, PrismaClient} from '@prisma/client'
 import {app} from '../../index.js'
 import {appConf} from '../../core/conf/AppConf.js'
 import {Kobo} from 'kobo-sdk'
@@ -41,6 +41,26 @@ export class FormVersionService {
     return this.createNewVersion({fileName: file.filename, schemaJson: validation.schema, ...rest})
   }
 
+  readonly deployLastDraft = async ({formId}: {formId: Ip.FormId}) => {
+    await this.prisma.formVersion.updateMany({
+      where: {formId, status: {in: ['draft', 'active']}},
+      data: {
+        status: 'inactive',
+      },
+    })
+    const last = await this.prisma.formVersion.findFirst({
+      orderBy: {createdAt: 'desc'},
+    })
+    return this.prisma.formVersion.update({
+      where: {
+        id: last?.id,
+      },
+      data: {
+        status: 'active',
+      },
+    })
+  }
+
   private readonly createNewVersion = async ({
     schemaJson,
     formId,
@@ -60,9 +80,17 @@ export class FormVersionService {
       const nextVersion = (latest?.version ?? 0) + 1
       if (latest && JSON.stringify(latest?.schema) === JSON.stringify(schemaJson))
         throw new Error('No change in schema.')
+      await tx.formVersion.updateMany({
+        where: {
+          formId,
+          status: 'draft',
+        },
+        data: {status: 'inactive'},
+      })
       const schema = await tx.formVersion.create({
         data: {
           formId,
+          status: 'draft',
           source: 'internal',
           version: nextVersion,
           schema: schemaJson,

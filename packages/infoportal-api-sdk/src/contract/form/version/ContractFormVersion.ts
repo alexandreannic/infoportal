@@ -68,6 +68,19 @@ export const formVersionContract = c.router({
       200: z.any() as z.ZodType<Ip.Form.Schema>,
     },
   },
+
+  deployLast: {
+    method: 'POST',
+    path: '/:workspaceId/form/:formId/version',
+    pathParams: z.object({
+      workspaceId: schema.uuid,
+      formId: schema.formId,
+    }),
+    body: z.object({}),
+    responses: {
+      200: z.custom<Ip.Form.Version>(),
+    },
+  },
 })
 
 export const formVersionClient = (client: TsRestClient) => {
@@ -110,6 +123,14 @@ export const formVersionClient = (client: TsRestClient) => {
       return client.form.version
         .getByFormId({
           params: {formId, workspaceId},
+        })
+        .then(mapClientResponse)
+    },
+
+    deployLast: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.Uuid}) => {
+      return client.form.version
+        .deployLast({
+          params: {workspaceId, formId},
         })
         .then(mapClientResponse)
     },

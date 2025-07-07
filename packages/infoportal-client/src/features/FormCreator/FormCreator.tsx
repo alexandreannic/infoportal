@@ -1,5 +1,5 @@
-import {AppAvatar, Fender, Page, Txt} from '@/shared'
-import {Box, Grid, Icon, useTheme} from '@mui/material'
+import {AppAvatar, Fender, IpBtn, Page, Txt} from '@/shared'
+import {Box, Grid, Icon, Tooltip, useTheme} from '@mui/material'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
 import React, {useMemo} from 'react'
@@ -12,7 +12,8 @@ import {map, seq} from '@axanc/ts-utils'
 import {capitalize} from 'infoportal-common'
 import {FormCreatorPreview} from '@/features/FormCreator/FormCreatorPreview'
 import {Ip} from 'infoportal-api-sdk'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {VersionRow} from '@/features/FormCreator/VersionRow'
+import {useMutation} from '@tanstack/react-query'
 
 export const FormCreator = () => {
   const {m} = useI18n()
@@ -37,7 +38,20 @@ export const FormCreator = () => {
         </Grid>
         <Grid size={{xs: 12, md: 7}}>
           <Panel>
-            <PanelHead>{m.versions}</PanelHead>
+            <PanelHead
+              action={
+                <IpBtn
+                  icon="send"
+                  variant="contained"
+                  loading={queryVersion.deployLast.isPending}
+                  onClick={() => queryVersion.deployLast.mutate({workspaceId, formId})}
+                >
+                  {m.deployLastVersion}
+                </IpBtn>
+              }
+            >
+              {m.versions}
+            </PanelHead>
             <PanelBody>
               {map(queryVersion.get.data, versions =>
                 versions.length === 0 ? (
@@ -50,32 +64,11 @@ export const FormCreator = () => {
               )}
             </PanelBody>
           </Panel>
-          {activeVersion && (
-            <FormCreatorPreview workspaceId={workspaceId} formId={formId} versionId={activeVersion.id} />
-          )}
+          {/*{activeVersion && (*/}
+          {/*  <FormCreatorPreview workspaceId={workspaceId} formId={formId} versionId={activeVersion.id} />*/}
+          {/*)}*/}
         </Grid>
       </Grid>
     </Page>
-  )
-}
-
-const VersionRow = ({version, active}: {active: boolean; version: Ip.Form.Version}) => {
-  const {m, formatDateTime, dateFromNow} = useI18n()
-  const t = useTheme()
-  return (
-    <Box sx={{display: 'flex', py: 1, alignItems: 'center', borderBottom: '1px solid', borderColor: t.palette.divider}}>
-      <Txt bold size="title" color="hint" sx={{width: 40, mr: 2, textAlign: 'right', fontFamily: 'monospace'}}>
-        v{('' + version.version).padStart(3, '0')}
-      </Txt>
-      <Box flex="1">
-        <Txt block>{version.message ?? <i>{m.noMessage}</i>}</Txt>
-        <Txt color="hint" block sx={{flex: 1, display: 'flex', alignItems: 'center'}}>
-          <AppAvatar size={24} sx={{verticalAlign: 'middle', mr: 0.5}} email={version.uploadedBy} />
-          {version.uploadedBy}
-          <div style={{marginLeft: 'auto'}}>{capitalize(dateFromNow(version.createdAt))}</div>
-        </Txt>
-        {active && <Icon color="success">check_circle</Icon>}
-      </Box>
-    </Box>
   )
 }

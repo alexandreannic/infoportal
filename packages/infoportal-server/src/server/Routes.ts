@@ -183,6 +183,9 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         getByFormId: controller({}, ({params}) => {
           return formVersion.getVersions({formId: params.formId})
         }),
+        deployLast: controller({}, async ({req, params}) => {
+          return formVersion.deployLastDraft({formId: params.formId})
+        })
       },
     },
   })

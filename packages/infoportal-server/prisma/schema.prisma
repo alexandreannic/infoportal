@@ -91,6 +91,7 @@ model KoboForm {
 enum FormVersionStatus {
   active
   inactive
+  draft
 }
 
 model FormVersion {
