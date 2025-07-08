@@ -126,8 +126,8 @@ export namespace DatatableColumn {
   }
 
   export namespace SelectOne {
-    export type RenderQuick<T extends DatatableRow> = (_: T) => string | undefined
-    export type Render<T extends DatatableRow> = (_: T) => RenderT<string | undefined, ReactNode>
+    export type RenderQuick<T extends DatatableRow> = (_: T) => string | undefined | null
+    export type Render<T extends DatatableRow> = (_: T) => RenderT<string | undefined | null, ReactNode>
     export type BaseType = {
       options?: () => DatatableOptions[]
       type: 'select_one'
@@ -175,8 +175,8 @@ export namespace DatatableColumn {
   }
 
   export namespace Text {
-    export type RenderQuick<T extends DatatableRow> = (_: T) => string | undefined
-    export type Render<T extends DatatableRow> = (_: T) => RenderT<string | undefined>
+    export type RenderQuick<T extends DatatableRow> = (_: T) => string | undefined | null
+    export type Render<T extends DatatableRow> = (_: T) => RenderT<string | undefined | null>
     export type BaseType = {
       type: 'string' | 'id'
     }
@@ -190,8 +190,8 @@ export namespace DatatableColumn {
   }
 
   export namespace Date {
-    export type RenderQuick<T extends DatatableRow> = (_: T) => string | undefined
-    export type Render<T extends DatatableRow> = (_: T) => RenderT<Date | undefined>
+    export type RenderQuick<T extends DatatableRow> = (_: T) => string | undefined | null
+    export type Render<T extends DatatableRow> = (_: T) => RenderT<Date | undefined | null>
     export type BaseType = {
       type: 'date'
     }
@@ -205,8 +205,8 @@ export namespace DatatableColumn {
   }
 
   export namespace Number {
-    export type RenderQuick<T extends DatatableRow> = (_: T) => number | undefined
-    export type Render<T extends DatatableRow> = (_: T) => RenderT<number | undefined>
+    export type RenderQuick<T extends DatatableRow> = (_: T) => number | null | undefined
+    export type Render<T extends DatatableRow> = (_: T) => RenderT<number | null | undefined>
     export type BaseType = {
       type: 'number'
     }

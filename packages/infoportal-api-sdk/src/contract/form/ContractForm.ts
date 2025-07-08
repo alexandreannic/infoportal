@@ -20,16 +20,25 @@ export const formContract = c.router({
     },
   },
 
-  add: {
+  importFromKobo: {
+    method: 'POST',
+    path: '/:workspaceId/form/kobo',
+    pathParams: z.object({
+      workspaceId: schema.uuid,
+    }),
+    body: c.type<Ip.Form.Payload.Import>(),
+    responses: {
+      200: z.any() as z.ZodType<Ip.Form>,
+    },
+  },
+
+  create: {
     method: 'PUT',
     path: '/:workspaceId/form',
     pathParams: z.object({
       workspaceId: schema.uuid,
     }),
-    body: c.type<{
-      serverId: Ip.Uuid
-      uid: Kobo.FormId
-    }>(),
+    body: c.type<Ip.Form.Payload.Create>(),
     responses: {
       200: z.any() as z.ZodType<Ip.Form>,
     },
@@ -60,15 +69,14 @@ export const formContract = c.router({
 })
 
 export const formClient = (client: TsRestClient) => {
-  const mapForm: {
-    (_: Ip.Form): Ip.Form
-    (_?: Ip.Form): Ip.Form | undefined
-  } = _ => {
-    if (_) {
-      if (_.updatedAt) _.updatedAt = new Date(_.updatedAt)
-      _.createdAt = new Date(_.createdAt)
-    }
+  const mapForm = (_: Ip.Form): Ip.Form => {
+    if (_.updatedAt) _.updatedAt = new Date(_.updatedAt)
+    _.createdAt = new Date(_.createdAt)
     return _ as any
+  }
+
+  const mapFormNullable = (_?: Ip.Form): undefined | Ip.Form => {
+    if (_) return mapForm(_)
   }
 
   return {
@@ -76,25 +84,23 @@ export const formClient = (client: TsRestClient) => {
       return client.form.refreshAll({params: {workspaceId}, body: undefined}).then(mapClientResponse)
     },
 
-    add: ({workspaceId, ...body}: {workspaceId: Ip.Uuid; serverId: Ip.Uuid; uid: Kobo.FormId}) => {
-      return client.form
-        .add({params: {workspaceId}, body})
-        .then(mapClientResponse)
-        .then(_ => mapForm(_))
+    create: ({workspaceId, ...body}: {workspaceId: Ip.Uuid; name: string; category?: string}) => {
+      return client.form.create({params: {workspaceId}, body}).then(mapClientResponse).then(mapForm)
+    },
+
+    importFromKobo: ({workspaceId, ...body}: {workspaceId: Ip.Uuid; serverId: Ip.Uuid; uid: Kobo.FormId}) => {
+      return client.form.importFromKobo({params: {workspaceId}, body}).then(mapClientResponse).then(mapForm)
     },
 
     get: ({formId, workspaceId}: {workspaceId: Ip.Uuid; formId: string}) => {
-      return client.form
-        .get({params: {workspaceId, formId}})
-        .then(mapClientResponse)
-        .then(_ => mapForm(_))
+      return client.form.get({params: {workspaceId, formId}}).then(mapClientResponse).then(mapFormNullable)
     },
 
     getAll: ({workspaceId}: {workspaceId: Ip.Uuid}) => {
       return client.form
         .getAll({params: {workspaceId}})
         .then(mapClientResponse)
-        .then(_ => _.map(mapForm) as Ip.Form[])
+        .then(_ => _.map(mapForm))
     },
   }
 }

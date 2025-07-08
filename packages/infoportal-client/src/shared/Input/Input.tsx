@@ -7,12 +7,14 @@ export interface IpInputProps extends OutlinedInputProps, Pick<TextFieldProps, '
 }
 
 export const IpInput = React.forwardRef(
-  ({size = 'small', label, sx, error, InputLabelProps, id, helperText = '', ...props}: IpInputProps, ref) => {
+  ({size = 'small', label, sx, error, required, InputLabelProps, id, helperText = '', ...props}: IpInputProps, ref) => {
     // const id = useMemo(() => Math.random() + '', [])
     const inputElement = useRef<HTMLInputElement | null>(null)
     useEffect(() => {
       if (props.autoFocus) inputElement?.current?.focus()
     }, [])
+
+    if (label) label = label + (label && required ? ' *' : '')
 
     return (
       <FormControl size={size} sx={{width: '100%', ...sx}} error={error}>
@@ -24,14 +26,14 @@ export const IpInput = React.forwardRef(
           label={label}
           inputRef={inputElement}
           id={id}
-          {...props}
+          required={required}
           ref={ref}
           size={size}
           margin="dense"
+          {...props}
         />
         {helperText !== null && <FormHelperText>{helperText}&nbsp;</FormHelperText>}
       </FormControl>
     )
-    // return <TextField {...props} size="small" variant="outlined" margin="dense" inputRef={ref} />
   },
 )

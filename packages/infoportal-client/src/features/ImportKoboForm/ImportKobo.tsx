@@ -10,11 +10,16 @@ import {UUID} from 'infoportal-common'
 import {SelectKoboForm} from '@/features/ImportKoboForm/SelectKoboForm'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useQueryServers} from '@/core/query/useQueryServers'
+import {Stepper} from '@/shared/Stepper/Stepper'
+import {FormSource} from '@prisma/client'
+import {fnSwitch, Obj} from '@axanc/ts-utils'
+import {CreateNewForm} from '@/features/ImportKoboForm/CreateNewForm'
 
 export const ImportKobo = () => {
   const {m} = useI18n()
   const {workspaceId} = useWorkspaceRouter()
   const dialog = useDialogs()
+  const [source, setSource] = useState<FormSource>('internal')
   const [selectedServerId, setSelectedServerId] = useState<UUID>()
 
   const queryServer = useQueryServers(workspaceId)
@@ -27,39 +32,66 @@ export const ImportKobo = () => {
     queryServer.remove.mutate({id})
   }
 
+  const icons = {
+    [FormSource.kobo]: 'cloud_download',
+    [FormSource.internal]: 'add',
+  }
+
   return (
     <Page width="xs">
-      <PageTitle>{m.importFromKobo}</PageTitle>
+      <PageTitle>{m.newForm}</PageTitle>
       <Panel>
-        <PanelHead>{m.selectServer}</PanelHead>
+        <PanelHead>{m.source}</PanelHead>
         <PanelBody>
-          <ScRadioGroup sx={{flex: 1, minWidth: 200}} dense onChange={setSelectedServerId}>
-            {queryServer.getAll.data?.map(_ => (
-              <ScRadioGroupItem
-                value={_.id}
-                title={_.name}
-                description={_.url}
-                endContent={
-                  <IpIconBtn
-                    size="small"
-                    loading={queryServer.remove.isPending}
-                    onClick={e => {
-                      e.stopPropagation()
-                      handleDelete(_.id)
-                    }}
-                  >
-                    delete
-                  </IpIconBtn>
-                }
-              />
-            ))}
-            <ScRadioGroupItem value={null} title={m.addNewKoboAccount} onClick={handleOpen} icon="add" />
+          <ScRadioGroup value={source} sx={{flex: 1, minWidth: 200}} dense onChange={setSource}>
+            {new Obj(FormSource)
+              .sortManual(['internal', 'kobo'])
+              .keys()
+              .map(_ => (
+                <ScRadioGroupItem icon={icons[_]} value={_} title={m.formSource[_]} key={_} />
+              ))}
           </ScRadioGroup>
         </PanelBody>
       </Panel>
-      <Collapse in={!!selectedServerId} mountOnEnter unmountOnExit>
-        <SelectKoboForm serverId={selectedServerId!} onAdded={() => queryServer.getAll.refetch()} />
-      </Collapse>
+      {source &&
+        fnSwitch(source, {
+          kobo: (
+            <>
+              <Panel>
+                <PanelHead>{m.selectAccount}</PanelHead>
+                <PanelBody>
+                  <ScRadioGroup sx={{flex: 1, minWidth: 200}} dense onChange={setSelectedServerId}>
+                    {queryServer.getAll.data?.map(_ => (
+                      <ScRadioGroupItem
+                        key={_.id}
+                        value={_.id}
+                        title={_.name}
+                        description={_.url}
+                        endContent={
+                          <IpIconBtn
+                            size="small"
+                            loading={queryServer.remove.isPending}
+                            onClick={e => {
+                              e.stopPropagation()
+                              handleDelete(_.id)
+                            }}
+                          >
+                            delete
+                          </IpIconBtn>
+                        }
+                      />
+                    ))}
+                    <ScRadioGroupItem value={null} title={m.addNewKoboAccount} onClick={handleOpen} icon="add" />
+                  </ScRadioGroup>
+                </PanelBody>
+              </Panel>
+              <Collapse in={!!selectedServerId} mountOnEnter unmountOnExit>
+                <SelectKoboForm serverId={selectedServerId!} onAdded={() => queryServer.getAll.refetch()} />
+              </Collapse>
+            </>
+          ),
+          internal: <CreateNewForm workspaceId={workspaceId} />,
+        })}
     </Page>
   )
 }

@@ -112,7 +112,6 @@ export const styleUtils = (t: Theme) => ({
     // inputBorder: 'rgba(0,0,0,0)',// 'rgba(0, 0, 0, 0.12)',
     // inputBorder: 'rgba(0, 0, 0, 0.11)',
     toolbar: t.palette.mode === 'dark' ? t.palette.background.paper : 'rgb(237, 242, 250)', //'#e9eef6',
-    // toolbar: t.palette.mode === 'dark' ? t.palette.background.paper :'#ebf1f9',//'#e9eef6',
     success: '#00b79f',
     error: '#cf0040',
     warning: '#ff9800',

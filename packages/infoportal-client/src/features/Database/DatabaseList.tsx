@@ -139,7 +139,7 @@ export const DatabaseList = () => {
                   head: m.updatedAt,
                   render: _ => {
                     return {
-                      label: <Txt color="hint">{formatDate(_.updatedAt)}</Txt>,
+                      label: _.updatedAt && <Txt color="hint">{formatDate(_.updatedAt)}</Txt>,
                       value: _.updatedAt,
                     }
                   },

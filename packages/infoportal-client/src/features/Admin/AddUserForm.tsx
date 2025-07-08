@@ -44,6 +44,7 @@ export const AddUserForm = ({
         }}
         render={({field, fieldState}) => (
           <IpInput
+            required
             sx={{minWidth: 260, mb: 1, mt: 1}}
             {...field}
             label={m.email}

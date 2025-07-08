@@ -101,7 +101,7 @@ export const AppSidebar = () => {
       <NavLink to={router.importKoboForm}>
         {({isActive, isPending}) => (
           <SidebarItem icon="add" active={isActive}>
-            {m.importFromKobo}
+            {m.newForm}
           </SidebarItem>
         )}
       </NavLink>

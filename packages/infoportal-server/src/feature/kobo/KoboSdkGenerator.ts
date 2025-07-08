@@ -58,7 +58,7 @@ export class KoboSdkGenerator {
         })
         .then(_ => {
           this.log.info(`Recalculate server index`)
-          return seq(_).groupByAndApply(
+          return seq(_).compactBy('serverId').groupByAndApply(
             _ => _.id,
             _ => _[0].serverId,
           )

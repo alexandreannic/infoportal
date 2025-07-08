@@ -98,7 +98,7 @@ export const KoboServerForm = ({
         rules={{
           required: true,
         }}
-        render={({field, fieldState}) => <IpInput {...field} label={m.name} error={fieldState.invalid} />}
+        render={({field, fieldState}) => <IpInput required {...field} label={m.name} error={fieldState.invalid} />}
       />
       <Controller
         control={form.control}
@@ -110,6 +110,7 @@ export const KoboServerForm = ({
         }}
         render={({field, fieldState}) => (
           <IpInput
+            required
             InputLabelProps={{
               shrink: !!field.value,
             }}
@@ -130,6 +131,7 @@ export const KoboServerForm = ({
         }}
         render={({field, fieldState}) => (
           <IpInput
+            required
             InputLabelProps={{
               shrink: !!field.value,
             }}
@@ -147,7 +149,7 @@ export const KoboServerForm = ({
           required: true,
           pattern: new RegExp(/^[0-9a-z]+$/),
         }}
-        render={({field, fieldState}) => <IpInput label={m.apiToken} error={fieldState.invalid} {...field} />}
+        render={({field, fieldState}) => <IpInput required label={m.apiToken} error={fieldState.invalid} {...field} />}
       />
       <Box sx={{display: 'flex'}}>
         <IpBtn

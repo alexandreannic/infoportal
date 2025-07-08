@@ -7,6 +7,7 @@ import {duration, seq} from '@axanc/ts-utils'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {Kobo} from 'kobo-sdk'
 import {Ip, IpClient} from 'infoportal-api-sdk'
+import {useMemo} from 'react'
 
 export const useQueryForm = (workspaceId: UUID) => {
   const {apiv2} = useAppSettings()
@@ -30,18 +31,33 @@ export const useQueryForm = (workspaceId: UUID) => {
     staleTime: duration(10, 'minute'),
   })
 
-  const create = useMutation<Ip.Form, ApiError, Omit<Parameters<IpClient['form']['add']>[0], 'workspaceId'>>({
-    mutationFn: args => apiv2.form.add({workspaceId, ...args}),
+  const importFromKobo = useMutation<Ip.Form, ApiError, Ip.Form.Payload.Import>({
+    mutationFn: args => apiv2.form.importFromKobo({workspaceId, ...args}),
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)}),
     onError: toastHttpError,
   })
+
+  const create = useMutation<Ip.Form, ApiError, Ip.Form.Payload.Create>({
+    mutationFn: args => apiv2.form.create({workspaceId, ...args}),
+    onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)}),
+    onError: toastHttpError,
+  })
+
+  const categories = useMemo(() => {
+    return accessibleForms.data
+      ?.map(_ => _.category)
+      .compact()
+      .distinct(_ => _)
+  }, [accessibleForms.data])
 
   // const indexedForms = useMemo(() => {
   //   return seq(accessibleForms.data).groupByFirst(_ => _.id)
   // }, [accessibleForms.data])
 
   return {
+    categories,
     create,
+    importFromKobo,
     accessibleForms,
   }
 }

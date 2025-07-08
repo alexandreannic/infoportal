@@ -84,6 +84,7 @@ export const AdminProxy = () => {
                       render={({field, fieldState}) => (
                         <IpInput
                           {...field}
+                          required
                           label={m.name}
                           error={!!fieldState.error}
                           helperText={fieldState.error?.message}

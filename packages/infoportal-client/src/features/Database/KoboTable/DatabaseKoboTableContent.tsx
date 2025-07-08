@@ -212,7 +212,7 @@ export const DatabaseKoboTableContent = ({
               />
               <DatabaseKoboSyncBtn
                 loading={ctx.asyncRefresh.loading}
-                tooltip={<div dangerouslySetInnerHTML={{__html: m._koboDatabase.pullDataAt(ctx.form.updatedAt)}} />}
+                tooltip={ctx.form.updatedAt && <div dangerouslySetInnerHTML={{__html: m._koboDatabase.pullDataAt(ctx.form.updatedAt)}} />}
                 onClick={ctx.asyncRefresh.call}
               />
               {session.user.admin && (

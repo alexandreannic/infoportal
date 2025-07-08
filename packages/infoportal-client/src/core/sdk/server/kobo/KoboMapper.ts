@@ -15,28 +15,6 @@ export type KoboServer = {
   workspaceId: UUID
 }
 
-/** @deprecated use from sdk*/
-export interface KoboForm {
-  server: KoboServer
-  createdAt: Date
-  updatedAt: Date
-  id: Kobo.FormId
-  name: string
-  serverId: string
-  uploadedBy?: string
-  enketoUrl?: string
-  submissionsCount?: number
-  deploymentStatus?: Kobo.Form.DeploymentStatus
-}
-
-export class KoboFormHelper {
-  static readonly map = (_: Record<keyof KoboForm, any>): KoboForm => {
-    _.updatedAt = new Date(_.updatedAt)
-    _.createdAt = new Date(_.createdAt)
-    return _
-  }
-}
-
 export type KoboMappedAnswerType = string | string[] | Date | number | undefined | KoboSubmissionFlat[]
 
 export type KoboMappedAnswer = KoboSubmissionMetaData & Record<string, KoboMappedAnswerType>

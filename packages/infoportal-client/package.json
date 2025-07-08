@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@axanc/react-hooks": "^1.13.4",
-    "@axanc/ts-utils": "2.3.5",
+    "@axanc/ts-utils": "2.3.6",
     "@azure/msal-browser": "^4.9.0",
     "@azure/msal-react": "^3.0.8",
     "@emotion/react": "^11.11.1",

@@ -17,17 +17,19 @@ export const FormCreatorPreview = ({
   const {m} = useI18n()
   const querySchema = useQuerySchema({workspaceId, formId, versionId}).get
   return (
-    <Panel>
+    <Panel loading={querySchema.isLoading}>
       <PanelHead>{m.preview}</PanelHead>
       <PanelBody>
-        <XlsFormFiller
-          survey={querySchema.data}
-          hideActions
-          onSubmit={_ => {
-            console.log('HERE')
-            console.log(_)
-          }}
-        />
+        {querySchema.data && (
+          <XlsFormFiller
+            survey={querySchema.data}
+            hideActions
+            onSubmit={_ => {
+              console.log('HERE')
+              console.log(_)
+            }}
+          />
+        )}
       </PanelBody>
     </Panel>
   )

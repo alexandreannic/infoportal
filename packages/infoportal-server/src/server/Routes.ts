@@ -169,8 +169,15 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     form: {
       get: ctrl({}, ({params}) => form.get(params.formId)),
       getAll: ctrl({}, ({params}) => form.getAll({wsId: params.workspaceId})),
-      add: ctrl({}, ({req, body, params}) =>
-        form.add({
+      create: ctrl({}, ({req, body, params}) =>
+        form.create({
+          uploadedBy: req.session.app?.user.email!,
+          workspaceId: params.workspaceId,
+          ...body,
+        }),
+      ),
+      importFromKobo: ctrl({}, ({req, body, params}) =>
+        form.importFromKobo({
           ...body,
           uploadedBy: req.session.app?.user.email!,
           workspaceId: params.workspaceId,

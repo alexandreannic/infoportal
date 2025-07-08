@@ -70,10 +70,10 @@ enum FormSource {
 }
 
 model KoboForm {
-  id                 String               @id @default(dbgenerated()) @db.VarChar(32)
+  id                 String               @id @default(cuid()) @db.VarChar(32)
   name               String
-  server             KoboServer           @relation(fields: [serverId], references: [id])
-  serverId           String               @db.Uuid
+  server             KoboServer?          @relation(fields: [serverId], references: [id])
+  serverId           String?              @db.Uuid
   source             FormSource           @default(kobo)
   createdAt          DateTime             @default(now())
   updatedAt          DateTime?
@@ -81,6 +81,7 @@ model KoboForm {
   updatedBy          String?
   uploadedBy         String?
   enketoUrl          String?
+  category           String?
   submissionsCount   Int?
   koboAnswers        KoboAnswers[]
   koboAnswersHistory KoboAnswersHistory[]

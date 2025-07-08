@@ -3,7 +3,7 @@ import {useQueryAnswer} from '@/core/query/useQueryAnswer'
 import {useQueryKoboSchema} from '@/core/query/useQueryKoboSchema'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {AccessLevel} from '@/core/sdk/server/access/Access'
-import {KoboForm, KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
+import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useSession} from '@/core/Session/SessionContext'
 import {DatabaseKoboTableProvider} from '@/features/Database/KoboTable/DatabaseKoboContext'
 import {DatabaseKoboTableContent} from '@/features/Database/KoboTable/DatabaseKoboTableContent'
@@ -17,12 +17,13 @@ import {useIsFetching} from '@tanstack/react-query'
 import {Kobo} from 'kobo-sdk'
 import {useCallback, useMemo} from 'react'
 import {useQueryAccess} from '@/core/query/useQueryAccess'
-import {useQueryForm, useQueryFormById} from '@/core/query/useQueryForm'
+import {useQueryFormById} from '@/core/query/useQueryForm'
 import {UUID} from 'infoportal-common'
+import {Ip} from 'infoportal-api-sdk'
 
 export interface DatabaseTableProps {
   workspaceId: UUID
-  form?: KoboForm
+  form?: Ip.Form
   formId: Kobo.FormId
   dataFilter?: (_: KoboMappedAnswer) => boolean
   onFiltersChange?: (_: Record<string, DatatableFilterValue>) => void

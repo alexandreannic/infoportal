@@ -1,4 +1,5 @@
 import {formatDistance, formatDuration as formatDurationFns} from 'date-fns'
+import {FormSource} from '@prisma/client'
 
 const invalidDate = ''
 
@@ -273,12 +274,16 @@ export const en = Object.freeze({
     age: 'Age',
     submitAll: 'Submit all',
     submit: 'Submit',
-    importFromKobo: 'Import from Kobo',
+    newForm: 'New form',
+    formSource: {
+      [FormSource.kobo]: 'Import from KoboToolbox',
+      [FormSource.internal]: 'Create new form',
+    },
     changeAccount: 'Change account',
     addNewKoboAccount: 'Add new Kobo account',
     serverUrlV1: 'Server URL KC (API v1)',
     serverUrlV2: 'Server URL KF (API v2)',
-    selectServer: 'Select server',
+    selectAccount: 'Select account',
     testConnection: 'Test connection',
     connectionSuccessful: 'Connection successful',
     apiToken: 'API Token',
@@ -423,6 +428,7 @@ export const en = Object.freeze({
     viewNLess: (n: number) => `View ${n} less`,
     viewMore: 'More',
     viewLess: 'Less',
+    source: 'Source',
     timeConsumingOperation: 'Time consuming operation.',
     sector: 'Sector',
     showMore: 'Show more',

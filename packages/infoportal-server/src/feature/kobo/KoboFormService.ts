@@ -37,7 +37,19 @@ export class KoboFormService {
     }
   }
 
-  readonly add = async (payload: {uid: string; serverId: UUID; uploadedBy: string; workspaceId: UUID}) => {
+  readonly create = async (payload: Ip.Form.Payload.Create & {uploadedBy: string; workspaceId: Ip.Uuid}) => {
+    return this.prisma.koboForm.create({
+      data: {
+        name: payload.name,
+        category: payload.category,
+        uploadedBy: payload.workspaceId,
+        source: 'internal',
+        workspaces: {connect: {id: payload.workspaceId}},
+      },
+    })
+  }
+
+  readonly importFromKobo = async (payload: Ip.Form.Payload.Import & {uploadedBy: string; workspaceId: UUID}) => {
     const sdk = await this.koboSdk.getBy.serverId(payload.serverId)
     const schema = await sdk.v2.form.get({formId: payload.uid, use$autonameAsName: true})
     const [newFrom] = await Promise.all([
@@ -69,7 +81,7 @@ export class KoboFormService {
   }
 
   readonly registerHooksForAll = async () => {
-    const forms = await this.prisma.koboForm.findMany()
+    const forms = await this.prisma.koboForm.findMany().then(_ => seq(_).compactBy('serverId'))
     const sdks = await Promise.all(
       seq(forms)
         .distinct(_ => _.serverId)
@@ -108,7 +120,7 @@ export class KoboFormService {
   }
 
   readonly refreshAll = async ({byEmail, wsId}: {byEmail: string; wsId: UUID}) => {
-    const forms = await this.getAll({wsId}).then(seq)
+    const forms = await this.getAll({wsId}).then(_ => seq(_).compactBy('serverId'))
     const sdks = await Promise.all(
       forms
         .map(_ => _.serverId)

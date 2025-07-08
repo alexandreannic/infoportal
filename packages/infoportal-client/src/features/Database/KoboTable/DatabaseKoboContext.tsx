@@ -1,6 +1,6 @@
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState} from 'react'
 import {useAsync, UseAsyncSimple} from '@/shared/hook/useAsync'
-import {KoboForm, KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
+import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {Kobo} from 'kobo-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {useAppSettings} from '@/core/context/ConfigContext'
@@ -12,6 +12,7 @@ import {UseDatabaseView, useDatabaseView} from '@/features/Database/KoboTable/vi
 import {AccessSum} from '@/core/sdk/server/access/Access'
 import {useObjectState, UseObjectStateReturn} from '@/shared/hook/useObjectState'
 import {DatabaseDisplay} from '@/features/Database/KoboTable/groupDisplay/DatabaseKoboDisplay'
+import {Ip} from 'infoportal-api-sdk'
 
 export type ExternalFilesChoices = {list_name: string; name: string; label: string}
 export type KoboExternalFilesIndex = Record<string, Record<string, ExternalFilesChoices>>
@@ -21,7 +22,7 @@ export interface DatabaseKoboContext {
   schema: KoboSchemaHelper.Bundle
   canEdit?: AccessSum
   access: AccessSum
-  form: KoboForm
+  form: Ip.Form
   asyncRefresh: UseAsyncSimple<() => Promise<void>>
   asyncEdit: (answerId: Kobo.SubmissionId) => string
   data?: KoboMappedAnswer[]
@@ -43,7 +44,7 @@ export const DatabaseKoboTableProvider = (props: {
   loading?: boolean
   refetch: (p?: FetchParams) => Promise<void>
   access: DatabaseKoboContext['access']
-  form: KoboForm
+  form: Ip.Form
   data?: KoboMappedAnswer[]
 }) => {
   const {form, data, children, refetch} = props

@@ -2,7 +2,6 @@ import {FormVersion, KoboForm, KoboServer} from '@prisma/client'
 import {Kobo} from 'kobo-sdk'
 
 export namespace Ip {
-
   export type Uuid = string
 
   export type FormId = Form.Id
@@ -12,6 +11,18 @@ export namespace Ip {
   export type Server = KoboServer
 
   export namespace Form {
+    export namespace Payload {
+      export type Import = {
+        serverId: Ip.Uuid
+        uid: Kobo.FormId
+      }
+
+      export type Create = {
+        name: string
+        category?: string
+      }
+    }
+
     export type Id = string
 
     export type Schema = Kobo.Form['content']

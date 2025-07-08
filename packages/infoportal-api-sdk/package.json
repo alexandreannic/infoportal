@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@axanc/ts-utils": "2.3.5",
+    "@axanc/ts-utils": "2.3.6",
     "@supercharge/promise-pool": "^3.2.0",
     "@ts-rest/core": "^3.52.1",
     "date-fns": "4.1.0",
