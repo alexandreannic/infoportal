@@ -27,6 +27,7 @@ import {ipContract} from 'infoportal-api-sdk'
 import {FormVersionService} from '../feature/kobo/FormVersionService.js'
 import {KoboFormService} from '../feature/kobo/KoboFormService.js'
 import {ServerService} from '../feature/ServerService.js'
+import {FormService} from '../feature/form/FormService'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -154,8 +155,9 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     }
   }
 
+  const koboForm = new KoboFormService(prisma)
   const formVersion = new FormVersionService(prisma)
-  const form = new KoboFormService(prisma)
+  const form = new FormService(prisma)
   const server = new ServerService(prisma)
 
   const s = initServer()
@@ -165,6 +167,15 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       create: ctrl({}, ({params, body}) => server.create({workspaceId: params.workspaceId, ...body})),
       getAll: ctrl({}, ({params}) => server.getAll(params)),
       get: ctrl({}, ({params}) => server.get(params)),
+    },
+    kobo: {
+      importFromKobo: ctrl({}, ({req, body, params}) =>
+        koboForm.importFromKobo({
+          ...body,
+          uploadedBy: req.session.app?.user.email!,
+          workspaceId: params.workspaceId,
+        }),
+      ),
     },
     form: {
       get: ctrl({}, ({params}) => form.get(params.formId)),
@@ -176,18 +187,15 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           ...body,
         }),
       ),
-      importFromKobo: ctrl({}, ({req, body, params}) =>
-        form.importFromKobo({
-          ...body,
-          uploadedBy: req.session.app?.user.email!,
-          workspaceId: params.workspaceId,
-        }),
-      ),
       refreshAll: ctrl({}, ({req, params}) =>
-        form.refreshAll({
+        koboForm.refreshAll({
           byEmail: req.session.app?.user.email!,
           wsId: params.workspaceId,
         }),
+      ),
+      getSchema: ctrl({}, ({params}) => form.getSchema({formId: params.formId})),
+      getSchemaByVersion: ctrl({}, ({params}) =>
+        form.getSchemaByVersion({formId: params.formId, versionId: params.versionId}),
       ),
       version: {
         validateXlsForm: {
@@ -205,11 +213,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             }),
           ),
         },
-        getSchema: ctrl(
-          {},
-          ({req, params}) =>
-            formVersion.getSchema({formId: params.formId, versionId: params.versionId}) as Promise<any>,
-        ),
         getByFormId: ctrl({}, ({params}) => formVersion.getVersions({formId: params.formId})),
         deployLast: ctrl({}, ({req, params}) => formVersion.deployLastDraft({formId: params.formId})),
       },

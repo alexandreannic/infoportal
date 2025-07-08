@@ -17,8 +17,9 @@ export const queryKeys = {
   user: (workspaceId?: Ip.Uuid) => concat('user', workspaceId),
   koboSchema: (formId: Kobo.FormId) => ['koboSchema', formId],
   version: (workspaceId?: Ip.Uuid, formId?: Kobo.FormId) => concat('version', workspaceId, formId),
-  schema: (workspaceId?: Ip.Uuid, formId?: Kobo.FormId, versionId?: Ip.Uuid) =>
+  schemaByVersion: (workspaceId?: Ip.Uuid, formId?: Kobo.FormId, versionId?: Ip.Uuid) =>
     concat('schema', workspaceId, formId, versionId),
+  schema: (workspaceId?: Ip.Uuid, formId?: Kobo.FormId) => concat('schema', workspaceId, formId),
   form: (workspaceId: Ip.Uuid, formId?: Kobo.FormId) => concat('form', workspaceId, formId),
   group: (workspaceId?: Ip.Uuid, args?: Omit<ApiSdk['group']['search'], 'workspaceId'>) =>
     concat('group', workspaceId, args ? Utils.stableStringify(args) : undefined),

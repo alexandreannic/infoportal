@@ -1,8 +1,8 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {Ip} from '../../../core/Types'
-import {schema} from '../../../core/Schema'
-import {mapClientResponse, TsRestClient} from '../../../core/IpClient'
+import {Ip} from '../../core/Types'
+import {schema} from '../../core/Schema'
+import {mapClientResponse, TsRestClient} from '../../core/IpClient'
 
 const c = initContract()
 
@@ -53,19 +53,6 @@ export const formVersionContract = c.router({
     }),
     responses: {
       200: z.array(z.custom<Ip.Form.Version>()),
-    },
-  },
-
-  getSchema: {
-    method: 'GET',
-    path: '/:workspaceId/form/:formId/version/:versionId',
-    pathParams: z.object({
-      workspaceId: schema.uuid,
-      formId: schema.formId,
-      versionId: schema.uuid,
-    }),
-    responses: {
-      200: z.any() as z.ZodType<Ip.Form.Schema>,
     },
   },
 
@@ -131,14 +118,6 @@ export const formVersionClient = (client: TsRestClient) => {
       return client.form.version
         .deployLast({
           params: {workspaceId, formId},
-        })
-        .then(mapClientResponse)
-    },
-
-    getSchema: ({workspaceId, formId, versionId}: {versionId: Ip.Uuid; workspaceId: Ip.Uuid; formId: Ip.FormId}) => {
-      return client.form.version
-        .getSchema({
-          params: {formId, workspaceId, versionId},
         })
         .then(mapClientResponse)
     },

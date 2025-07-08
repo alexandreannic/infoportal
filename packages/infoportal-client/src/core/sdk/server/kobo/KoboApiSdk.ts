@@ -37,6 +37,7 @@ export class KoboApiSdk {
     return this.client.post(`/kobo-api/${formId}/sync`)
   }
 
+  /** @deprecated*/
   readonly getSchema = ({id}: {id: Kobo.FormId}): Promise<Kobo.Form> => {
     return this.client.get(`/kobo-api/${id}/schema`)
   }

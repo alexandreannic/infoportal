@@ -16,7 +16,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {Stepper, StepperHandle} from '@/shared/Stepper/Stepper'
 import {StepperActions} from '@/shared/Stepper/StepperActions'
 import {useQuery} from '@tanstack/react-query'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 import {map, Obj} from '@axanc/ts-utils'
 import {Utils} from '@/utils/utils'
 
@@ -51,7 +51,7 @@ export const XlsFileUploadForm = ({
   const stepperRef = useRef<StepperHandle>(null)
   const [schemaHasChanges, setSchemaHasChanges] = useState<boolean>(false)
 
-  const querySchema = useQuerySchema({formId, workspaceId, versionId: lastSchema?.id}).get
+  const querySchema = useQuerySchemaByVersion({formId, workspaceId, versionId: lastSchema?.id})
 
   const watched = {
     xlsFile: form.watch('xlsFile'),

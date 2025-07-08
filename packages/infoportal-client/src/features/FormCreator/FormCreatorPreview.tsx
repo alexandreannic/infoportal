@@ -3,7 +3,7 @@ import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {XlsFormFiller} from 'xls-form-filler'
 import React from 'react'
 import {useI18n} from '@/core/i18n'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 
 export const FormCreatorPreview = ({
   workspaceId,
@@ -15,7 +15,7 @@ export const FormCreatorPreview = ({
   versionId: Ip.Uuid
 }) => {
   const {m} = useI18n()
-  const querySchema = useQuerySchema({workspaceId, formId, versionId}).get
+  const querySchema = useQuerySchemaByVersion({workspaceId, formId, versionId})
   return (
     <Panel loading={querySchema.isLoading}>
       <PanelHead>{m.preview}</PanelHead>

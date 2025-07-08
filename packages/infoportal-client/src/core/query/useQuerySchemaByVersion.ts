@@ -5,7 +5,7 @@ import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {duration} from '@axanc/ts-utils'
 
-export const useQuerySchema = ({
+export const useQuerySchemaByVersion = ({
   workspaceId,
   formId,
   versionId,
@@ -15,11 +15,10 @@ export const useQuerySchema = ({
   versionId?: UUID
 }) => {
   const {apiv2} = useAppSettings()
-  const get = useQuery({
-    queryKey: queryKeys.schema(workspaceId, formId, versionId),
-    queryFn: () => apiv2.form.version.getSchema({workspaceId, formId, versionId: versionId!}),
+  return useQuery({
+    queryKey: queryKeys.schemaByVersion(workspaceId, formId, versionId),
+    queryFn: () => apiv2.form.getSchemaByVersion({workspaceId, formId, versionId: versionId!}),
     enabled: !!versionId,
     staleTime: duration(10, 'minute'),
   })
-  return {get}
 }

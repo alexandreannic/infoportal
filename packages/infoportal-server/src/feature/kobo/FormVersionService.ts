@@ -108,16 +108,4 @@ export class FormVersionService {
       where: {formId},
     })
   }
-
-  readonly getSchema = ({formId, versionId}: {versionId: Ip.Uuid; formId: Kobo.FormId}) => {
-    return this.prisma.formVersion
-      .findFirstOrThrow({
-        select: {schema: true},
-        where: {
-          formId,
-          id: versionId,
-        },
-      })
-      .then(_ => _.schema)
-  }
 }

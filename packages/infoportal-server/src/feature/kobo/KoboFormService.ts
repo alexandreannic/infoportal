@@ -9,6 +9,7 @@ import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {Ip} from 'infoportal-api-sdk'
 
 export class KoboFormService {
+
   constructor(
     private prisma: PrismaClient,
     private koboSdk = KoboSdkGenerator.getSingleton(prisma),
@@ -37,17 +38,7 @@ export class KoboFormService {
     }
   }
 
-  readonly create = async (payload: Ip.Form.Payload.Create & {uploadedBy: string; workspaceId: Ip.Uuid}) => {
-    return this.prisma.koboForm.create({
-      data: {
-        name: payload.name,
-        category: payload.category,
-        uploadedBy: payload.workspaceId,
-        source: 'internal',
-        workspaces: {connect: {id: payload.workspaceId}},
-      },
-    })
-  }
+  static readonly HOOK_NAME = 'InfoPortal'
 
   readonly importFromKobo = async (payload: Ip.Form.Payload.Import & {uploadedBy: string; workspaceId: UUID}) => {
     const sdk = await this.koboSdk.getBy.serverId(payload.serverId)
@@ -67,8 +58,6 @@ export class KoboFormService {
     this.cache.clear(AppCacheKey.KoboClient)
     return newFrom
   }
-
-  static readonly HOOK_NAME = 'InfoPortal'
 
   private createHookIfNotExists = async (sdk: KoboClient, formId: Kobo.FormId) => {
     const hooks = await sdk.v2.hook.get({formId})
@@ -100,16 +89,10 @@ export class KoboFormService {
     )
   }
 
-  readonly get = async (id: Kobo.FormId): Promise<Ip.Form | undefined> => {
-    return (await this.prisma.koboForm.findFirst({where: {id}})) ?? undefined
-  }
-
   readonly getAll = async ({wsId}: {wsId: UUID}): Promise<Ip.Form[]> => {
     return this.prisma.koboForm.findMany({
-      include: {
-        server: true,
-      },
       where: {
+        serverId: {not: null},
         workspaces: {
           some: {
             id: wsId,
