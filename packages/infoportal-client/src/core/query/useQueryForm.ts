@@ -6,8 +6,7 @@ import {queryKeys} from '@/core/query/query.index'
 import {duration, seq} from '@axanc/ts-utils'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {Kobo} from 'kobo-sdk'
-import {IpClient} from 'infoportal-api-sdk/lib'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip, IpClient} from 'infoportal-api-sdk'
 
 export const useQueryForm = (workspaceId: UUID) => {
   const {apiv2} = useAppSettings()

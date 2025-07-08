@@ -62,7 +62,6 @@ export const formContract = c.router({
 export const formClient = (client: TsRestClient) => {
   const mapForm: {
     (_: Ip.Form): Ip.Form
-    (_: undefined): undefined
     (_?: Ip.Form): Ip.Form | undefined
   } = _ => {
     if (_) {
@@ -78,18 +77,24 @@ export const formClient = (client: TsRestClient) => {
     },
 
     add: ({workspaceId, ...body}: {workspaceId: Ip.Uuid; serverId: Ip.Uuid; uid: Kobo.FormId}) => {
-      return client.form.add({params: {workspaceId}, body}).then(mapClientResponse).then(mapForm)
+      return client.form
+        .add({params: {workspaceId}, body})
+        .then(mapClientResponse)
+        .then(_ => mapForm(_))
     },
 
     get: ({formId, workspaceId}: {workspaceId: Ip.Uuid; formId: string}) => {
-      return client.form.get({params: {workspaceId, formId}}).then(mapClientResponse).then(mapForm)
+      return client.form
+        .get({params: {workspaceId, formId}})
+        .then(mapClientResponse)
+        .then(_ => mapForm(_))
     },
 
     getAll: ({workspaceId}: {workspaceId: Ip.Uuid}) => {
       return client.form
         .getAll({params: {workspaceId}})
         .then(mapClientResponse)
-        .then(_ => _.map(mapForm))
+        .then(_ => _.map(mapForm) as Ip.Form[])
     },
   }
 }

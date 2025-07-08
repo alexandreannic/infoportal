@@ -21,8 +21,7 @@ import {useEffect, useMemo} from 'react'
 import {HashRouter, useLocation} from 'react-router-dom'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {defaultTheme} from '@/core/theme'
-import {buildIpClient} from 'infoportal-api-sdk'
-import {IpClient} from 'infoportal-api-sdk/lib'
+import {buildIpClient, IpClient} from 'infoportal-api-sdk'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -53,7 +52,7 @@ const AppWithConfig = () => {
       providers={[
         _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns} />,
         _ => <ToastProvider children={_} />,
-        _ => <ThemeProvider forceThemeRerender theme={defaultTheme} children={_} />,
+        _ => <ThemeProvider theme={defaultTheme} children={_} />,
         _ => <CssBaseline children={_} />,
         _ => <I18nProvider children={_} />,
         _ => <MsalProvider children={_} instance={msal} />,
