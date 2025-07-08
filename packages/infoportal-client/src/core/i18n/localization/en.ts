@@ -426,7 +426,7 @@ export const en = Object.freeze({
     timeConsumingOperation: 'Time consuming operation.',
     sector: 'Sector',
     showMore: 'Show more',
-    thisFormIsManagedByKobo: 'This form is managed by KoboToolbox',
+    thisFormIsManagedByKobo: 'This form is managed by KoboToolbox.',
     filterBlanks: 'Filter blanks',
     total: 'Total',
     shouldDelete: 'Delete?',
