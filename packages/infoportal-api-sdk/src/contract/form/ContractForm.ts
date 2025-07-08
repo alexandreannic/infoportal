@@ -2,7 +2,6 @@ import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {schema} from '../../core/Schema'
 import {Ip} from '../../core/Types'
-import {Kobo} from 'kobo-sdk'
 import {mapClientResponse, TsRestClient} from '../../core/IpClient'
 
 const c = initContract()
@@ -28,7 +27,7 @@ export const formContract = c.router({
       formId: schema.formId,
     }),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form.Schema>,
+      200: z.any() as z.ZodType<Ip.Form.Schema | undefined>,
     },
   },
 
@@ -41,7 +40,7 @@ export const formContract = c.router({
       versionId: schema.uuid,
     }),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form.Schema>,
+      200: z.any() as z.ZodType<Ip.Form.Schema | undefined>,
     },
   },
 

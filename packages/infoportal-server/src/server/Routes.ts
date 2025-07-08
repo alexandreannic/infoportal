@@ -27,7 +27,8 @@ import {ipContract} from 'infoportal-api-sdk'
 import {FormVersionService} from '../feature/kobo/FormVersionService.js'
 import {KoboFormService} from '../feature/kobo/KoboFormService.js'
 import {ServerService} from '../feature/ServerService.js'
-import {FormService} from '../feature/form/FormService'
+import {FormService} from '../feature/form/FormService.js'
+import {ErrorHttpStatusCode, SuccessfulHttpStatusCode} from '@ts-rest/core'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -97,8 +98,12 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     return args as any
   }
 
-  const ok = <T>(body: T): {status: 200; body: T} => {
+  const ok = <T>(body: T): {status: SuccessfulHttpStatusCode; body: T} => {
     return {status: 200, body}
+  }
+
+  const notFound = (): {status: ErrorHttpStatusCode; body: string} => {
+    return {status: 404, body: 'Resource not found'}
   }
 
   const auth = (options: {adminOnly?: true} = {}) => {
@@ -143,15 +148,17 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   function ctrl<Opts extends WithAuthOptions, TArgs extends HandlerArgs, TResult>(
     options: Opts,
     handler: (args: Omit<TArgs, 'req'> & {req: EnrichedRequest<TArgs, Opts>}) => Promise<TResult>,
-  ): (args: TArgs) => Promise<{status: 200; body: TResult}> {
+  ): (
+    args: TArgs,
+  ) => Promise<{status: SuccessfulHttpStatusCode; body: TResult} | {status: ErrorHttpStatusCode; body: string}> {
     return async (args: TArgs) => {
       await checkAccess(options.access, args as any)
 
       if (options.ensureFile && !args.req.file) {
         throw new AppError.BadRequest('Missing file.')
       }
-
-      return ok(await handler(args as any)) // still needs `as any`, but contained
+      const data = await handler(args as any)
+      return data ? ok(data) : notFound()
     }
   }
 
@@ -193,7 +200,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           wsId: params.workspaceId,
         }),
       ),
-      getSchema: ctrl({}, ({params}) => form.getSchema({formId: params.formId})),
+      getSchema: ctrl({}, async ({params}) => form.getSchema({formId: params.formId})),
       getSchemaByVersion: ctrl({}, ({params}) =>
         form.getSchemaByVersion({formId: params.formId, versionId: params.versionId}),
       ),

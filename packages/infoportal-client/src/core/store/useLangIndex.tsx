@@ -5,7 +5,7 @@ import {useDialogs} from '@toolpad/core'
 import {KoboSubmissionFlat, UUID} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {create} from 'zustand'
-import {getKoboSchema} from '../query/useQueryKoboSchema'
+import {getKoboSchema} from '../query/useQuerySchema'
 import {KoboUpdateModal} from '@/shared/koboEdit/KoboUpdateModal'
 
 type LangIndex = {

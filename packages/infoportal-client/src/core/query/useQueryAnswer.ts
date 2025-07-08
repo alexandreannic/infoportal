@@ -2,23 +2,22 @@ import {useQuery, useQueryClient} from '@tanstack/react-query'
 import {ApiPaginate} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useAppSettings} from '../context/ConfigContext'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {KoboMappedAnswer, KoboMapper} from '../sdk/server/kobo/KoboMapper'
 import {queryKeys} from './query.index'
-import {useQueryKoboSchema} from './useQueryKoboSchema'
+import {useQuerySchema} from './useQuerySchema'
 import {duration} from '@axanc/ts-utils'
+import {Ip} from 'infoportal-api-sdk'
 
-export const useQueryAnswer = (formId: Kobo.FormId) => {
+export const useQueryAnswer = ({formId, workspaceId}: {formId: Kobo.FormId; workspaceId: Ip.Uuid}) => {
   const {api} = useAppSettings()
-  const {workspaceId} = useWorkspaceRouter()
   const queryClient = useQueryClient()
-  const querySchema = useQueryKoboSchema(formId)
+  const querySchema = useQuerySchema({workspaceId, formId})
 
   const query = useQuery<ApiPaginate<KoboMappedAnswer>>({
     queryKey: queryKeys.answers(formId),
     queryFn: async () => {
       const answersPromise = api.kobo.answer.searchByAccess({workspaceId, formId})
-      const schema = querySchema.data// ?? (await querySchema.refetch().then(r => r.data!))
+      const schema = querySchema.data // ?? (await querySchema.refetch().then(r => r.data!))
       const answers = await answersPromise
       return {
         ...answers,

@@ -15,6 +15,7 @@ import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectSt
 import {Obj} from '@axanc/ts-utils'
 import {DialogProps} from '@toolpad/core'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
+import {useQueryFormById} from '@/core/query/useQueryForm'
 
 export type KoboEditModalOption = {
   value: string | null
@@ -163,7 +164,8 @@ export namespace KoboUpdateModal {
   }>) => {
     const {workspaceId, formId, columnName, answerIds, onUpdated} = payload
     const {m} = useI18n()
-    const {columnDef, schema, loading: loadingSchema} = useKoboColumnDef({formId, columnName})
+    const queryForm = useQueryFormById({workspaceId, formId})
+    const {columnDef, schema, loading: loadingSchema} = useKoboColumnDef({workspaceId, formId, columnName})
     const queryUpdate = useQueryAnswerUpdate().update
 
     return (
@@ -175,7 +177,7 @@ export namespace KoboUpdateModal {
           onConfirm: value => {
             queryUpdate.mutate({workspaceId, formId, answerIds, question: columnName, answer: value})
           },
-          title: `${m.edit} (${answerIds.length}) - ${schema?.schema.name}`,
+          title: `${m.edit} (${answerIds.length}) - ${queryForm.data?.name}`,
           subTitle: schema?.translate.question(columnName),
           type: columnDef?.type as any,
           options: columnDef

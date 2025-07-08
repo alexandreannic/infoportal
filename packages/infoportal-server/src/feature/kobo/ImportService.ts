@@ -17,7 +17,7 @@ export class ImportService {
   readonly processData = async (formId: Kobo.FormId, filePath: string, action: 'create' | 'update') => {
     const sdk = await this.koboSdkGenerator.getBy.formId(formId)
     const schema = await sdk.v2.form.get({formId, use$autonameAsName: true})
-    const schemaHelper = KoboSchemaHelper.buildBundle({schema})
+    const schemaHelper = KoboSchemaHelper.buildBundle({schema: schema.content})
 
     const sheetData = Obj.mapValues(this.getSheets(xlsx.readFile(filePath)), sheet =>
       ImportService.fixStupidMicrosoftDate(sheet, schemaHelper),

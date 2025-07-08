@@ -2,6 +2,7 @@ import {seq} from '@axanc/ts-utils'
 import {removeHtml} from './../../index.js'
 import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper.js'
 import {Kobo} from 'kobo-sdk'
+import {Ip} from 'infoportal-api-sdk'
 
 export type KoboTranslateQuestion = (key: string) => string
 export type KoboTranslateChoice = (key: string, choice?: string) => string
@@ -25,9 +26,9 @@ export namespace KoboSchemaHelper {
 
   export interface Bundle {
     helper: Helper
-    schema: Kobo.Form
+    schema: Ip.Form.Schema
     schemaFlatAndSanitized: Kobo.Form.Question[]
-    schemaSanitized: Kobo.Form
+    schemaSanitized: Ip.Form.Schema
     translate: Translation
   }
 
@@ -44,10 +45,10 @@ export namespace KoboSchemaHelper {
       }))
   }
 
-  export const buildHelper = ({schema}: {schema: Kobo.Form}) => {
-    const groupHelper = new KoboSchemaRepeatHelper(schema.content.survey)
-    const choicesIndex = seq(schema.content.choices).groupBy(_ => _.list_name)
-    const questionIndex = seq([...schema.content.survey])
+  export const buildHelper = ({schema}: {schema: Ip.Form.Schema}) => {
+    const groupHelper = new KoboSchemaRepeatHelper(schema.survey)
+    const choicesIndex = seq(schema.choices).groupBy(_ => _.list_name)
+    const questionIndex = seq([...schema.survey])
       .compactBy('name')
       .reduceObject<Record<string, Kobo.Form.Question>>(_ => [_.name, _])
 
@@ -69,7 +70,7 @@ export namespace KoboSchemaHelper {
     langIndex,
     questionIndex,
   }: {
-    schema: Kobo.Form
+    schema: Ip.Form.Schema
     langIndex: number
     questionIndex: Helper['questionIndex']
   }): {
@@ -78,12 +79,12 @@ export namespace KoboSchemaHelper {
   } => {
     const questionsTranslation: Record<string, string> = {}
     const choicesTranslation: Record<string, Record<string, string>> = {}
-    seq(schema.content.survey)
+    seq(schema.survey)
       .compactBy('name')
       .forEach(_ => {
         questionsTranslation[_.name] = _.label?.[langIndex] ?? _.name
       })
-    ;(schema.content.choices ?? []).forEach(choice => {
+    ;(schema.choices ?? []).forEach(choice => {
       if (!choicesTranslation[choice.list_name]) choicesTranslation[choice.list_name] = {}
       choicesTranslation[choice.list_name][choice.name] = choice.label?.[langIndex] ?? choice.name
     })
@@ -98,7 +99,7 @@ export namespace KoboSchemaHelper {
     }
   }
 
-  export const buildBundle = ({schema, langIndex = 0}: {schema: Kobo.Form; langIndex?: number}): Bundle => {
+  export const buildBundle = ({schema, langIndex = 0}: {schema: Ip.Form.Schema; langIndex?: number}): Bundle => {
     const helper = buildHelper({schema: schema})
     const translate = buildTranslation({
       schema: schema,
@@ -110,10 +111,7 @@ export namespace KoboSchemaHelper {
       schemaFlatAndSanitized: sanitizeQuestions(helper.group.questionsFlat),
       schemaSanitized: {
         ...schema,
-        content: {
-          ...schema.content,
-          survey: sanitizeQuestions(schema.content.survey),
-        },
+        survey: sanitizeQuestions(schema.survey),
       },
       helper,
       translate,

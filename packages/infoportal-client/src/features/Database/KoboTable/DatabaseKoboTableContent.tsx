@@ -30,6 +30,7 @@ import {useMemo, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
+import {useQueryFormById} from '@/core/query/useQueryForm'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -59,6 +60,7 @@ export const DatabaseKoboTableContent = ({
   const session = useSession()
   const ctx = useDatabaseKoboTableContext()
   const dialogs = useKoboDialogs()
+
   const queryUpdate = useQueryAnswerUpdate()
 
   const [selectedIds, setSelectedIds] = useState<Kobo.SubmissionId[]>([])
@@ -188,7 +190,7 @@ export const DatabaseKoboTableContent = ({
               onChange={setLangIndex}
               options={[
                 {children: 'XML', value: -1},
-                ...ctx.schema.schemaSanitized.content.translations.map((_, i) => ({children: _, value: i})),
+                ...ctx.schema.schemaSanitized.translations.map((_, i) => ({children: _, value: i})),
               ]}
             />
             {ctx.schema.helper.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
@@ -204,15 +206,19 @@ export const DatabaseKoboTableContent = ({
                 />
               )}
               <IpIconBtn
-                disabled={ctx.form.deploymentStatus === 'archived'}
-                href={ctx.schema.schema.deployment__links.offline_url}
+                disabled={!ctx.form.enketoUrl || ctx.form.deploymentStatus === 'archived'}
+                href={ctx.form.enketoUrl ?? ''}
                 target="_blank"
                 children="file_open"
                 tooltip={m._koboDatabase.openKoboForm}
               />
               <DatabaseKoboSyncBtn
                 loading={ctx.asyncRefresh.loading}
-                tooltip={ctx.form.updatedAt && <div dangerouslySetInnerHTML={{__html: m._koboDatabase.pullDataAt(ctx.form.updatedAt)}} />}
+                tooltip={
+                  ctx.form.updatedAt && (
+                    <div dangerouslySetInnerHTML={{__html: m._koboDatabase.pullDataAt(ctx.form.updatedAt)}} />
+                  )
+                }
                 onClick={ctx.asyncRefresh.call}
               />
               {session.user.admin && (

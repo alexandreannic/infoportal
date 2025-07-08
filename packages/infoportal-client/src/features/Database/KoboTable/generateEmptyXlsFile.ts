@@ -14,7 +14,7 @@ export const generateEmptyXlsTemplate = async (
   const optionsSheet = workbook.addWorksheet('Options')
 
   const excludedQuestions = new Set(['begin_group', 'end_group', 'begin_repeat', 'end_repeat'])
-  const questions = schemaBundle.schema.content.survey.filter((q: Question) => !excludedQuestions.has(q.type))
+  const questions = schemaBundle.schema.survey.filter((q: Question) => !excludedQuestions.has(q.type))
 
   const dropdownRanges: Record<string, string> = {}
 

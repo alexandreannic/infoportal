@@ -25,7 +25,7 @@ export namespace Ip {
 
     export type Id = string
 
-    export type Schema = Kobo.Form['content']
+    export type Schema = Kobo.Form['content'] & {files?: Kobo.Form.File[]}
 
     export type Version = Omit<FormVersion, 'schema'>
 

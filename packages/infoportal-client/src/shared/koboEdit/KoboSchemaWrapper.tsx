@@ -1,16 +1,18 @@
-import {useQueryKoboSchema} from '@/core/query/useQueryKoboSchema'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {KeyOf} from '@axanc/ts-utils'
-import {Kobo} from 'kobo-sdk'
 import {useMemo} from 'react'
+import {Ip} from 'infoportal-api-sdk'
 
 export const useKoboColumnDef = <T extends Record<string, any>>({
+  workspaceId,
   formId,
   columnName,
 }: {
-  formId: Kobo.FormId
+  workspaceId: Ip.Uuid
+  formId: Ip.FormId
   columnName: KeyOf<T>
 }) => {
-  const querySchema = useQueryKoboSchema(formId)
+  const querySchema = useQuerySchema({workspaceId, formId})
 
   return useMemo(() => {
     const schema = querySchema.data

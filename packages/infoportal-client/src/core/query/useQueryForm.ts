@@ -6,7 +6,7 @@ import {queryKeys} from '@/core/query/query.index'
 import {duration, seq} from '@axanc/ts-utils'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {Kobo} from 'kobo-sdk'
-import {Ip, IpClient} from 'infoportal-api-sdk'
+import {Ip} from 'infoportal-api-sdk'
 import {useMemo} from 'react'
 
 export const useQueryForm = (workspaceId: UUID) => {
@@ -32,7 +32,7 @@ export const useQueryForm = (workspaceId: UUID) => {
   })
 
   const importFromKobo = useMutation<Ip.Form, ApiError, Ip.Form.Payload.Import>({
-    mutationFn: args => apiv2.form.importFromKobo({workspaceId, ...args}),
+    mutationFn: args => apiv2.kobo.importFromKobo({workspaceId, ...args}),
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)}),
     onError: toastHttpError,
   })

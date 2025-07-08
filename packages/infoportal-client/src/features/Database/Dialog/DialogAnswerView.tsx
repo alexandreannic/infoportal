@@ -1,7 +1,7 @@
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQueryAnswer} from '@/core/query/useQueryAnswer'
-import {useQueryKoboSchema} from '@/core/query/useQueryKoboSchema'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useLangIndex} from '@/core/store/useLangIndex'
 import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/columnBySchema'
@@ -32,6 +32,7 @@ import {useMemo, useState} from 'react'
 import {useParams} from 'react-router'
 import {NavLink} from 'react-router-dom'
 import * as yup from 'yup'
+import {useQueryForm, useQueryFormById} from '@/core/query/useQueryForm'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -39,11 +40,13 @@ const databaseUrlParamsValidation = yup.object({
 })
 
 export const DatabaseKoboAnswerViewPage = () => {
+  const {workspaceId} = useWorkspaceRouter()
   const {m} = useI18n()
   const {formId, answerId} = databaseUrlParamsValidation.validateSync(useParams())
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
-  const queryAnswers = useQueryAnswer(formId)
-  const querySchema = useQueryKoboSchema(formId)
+  const queryForm = useQueryFormById({formId, workspaceId})
+  const queryAnswers = useQueryAnswer({formId, workspaceId})
+  const querySchema = useQuerySchema({workspaceId, formId})
 
   const answer = useMemo(() => {
     return queryAnswers.find(answerId)
@@ -51,7 +54,7 @@ export const DatabaseKoboAnswerViewPage = () => {
 
   return (
     <Page>
-      {queryAnswers.isLoading || querySchema.isLoading ? (
+      {queryForm.isLoading || queryAnswers.isLoading || querySchema.isLoading ? (
         <>
           <Skeleton />
           <Skeleton />
@@ -74,7 +77,7 @@ export const DatabaseKoboAnswerViewPage = () => {
                 </Box>
               }
             >
-              {schema.schema.name}
+              {queryForm.data?.name}
               <br />
               <Txt sx={{color: t => t.palette.info.main}}>{answerId}</Txt>
             </PanelHead>
@@ -149,7 +152,7 @@ const KoboAnswerFormView = ({
 }) => {
   return (
     <Box>
-      {seq(schema.schemaSanitized.content.survey)
+      {seq(schema.schemaSanitized.survey)
         .compactBy('name')
         .filter(q => showQuestionWithoutAnswer || q.type === 'begin_group' || (answer[q.name] !== '' && answer[q.name]))
         .map(q => (

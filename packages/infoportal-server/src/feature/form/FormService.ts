@@ -2,7 +2,7 @@ import {PrismaClient} from '@prisma/client'
 import {UUID} from 'infoportal-common/index'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
-import {KoboService} from '../kobo/KoboService'
+import {KoboService} from '../kobo/KoboService.js'
 
 export class FormService {
   constructor(
@@ -10,37 +10,37 @@ export class FormService {
     private kobo = new KoboService(prisma),
   ) {}
 
-  readonly getSchema = async ({formId}: {formId: Kobo.FormId}): Promise<Ip.Form.Schema> => {
-    const form = await this.prisma.koboForm.findFirstOrThrow({where: {id: formId}})
+  readonly getSchema = async ({formId}: {formId: Kobo.FormId}): Promise<undefined | Ip.Form.Schema> => {
+    const form = await this.prisma.koboForm.findFirst({where: {id: formId}})
+    if (!form) return
     if (form.source === 'internal')
       return this.prisma.formVersion
-        .findFirstOrThrow({
+        .findFirst({
           select: {schema: true},
           where: {
             formId,
             status: 'active',
           },
         })
-        .then(_ => _.schema as any)
+        .then(_ => _?.schema as any)
     return this.kobo.getSchema({formId}).then(_ => _.content)
   }
 
-  readonly getSchemaByVersion = ({
+  readonly getSchemaByVersion = async ({
     formId,
     versionId,
   }: {
     versionId: Ip.Uuid
     formId: Kobo.FormId
-  }): Promise<Ip.Form.Schema> => {
-    return this.prisma.formVersion
-      .findFirstOrThrow({
-        select: {schema: true},
-        where: {
-          formId,
-          id: versionId,
-        },
-      })
-      .then(_ => _.schema as any)
+  }): Promise<undefined | Ip.Form.Schema> => {
+    const _ = await this.prisma.formVersion.findFirst({
+      select: {schema: true},
+      where: {
+        formId,
+        id: versionId,
+      },
+    })
+    return _?.schema as any
   }
 
   readonly create = async (payload: Ip.Form.Payload.Create & {uploadedBy: string; workspaceId: Ip.Uuid}) => {

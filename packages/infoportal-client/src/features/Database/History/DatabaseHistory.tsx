@@ -1,7 +1,7 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {KoboAnswerHistory} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistory'
-import {useQueryKoboSchema} from '@/core/query/useQueryKoboSchema'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {databaseUrlParamsValidation} from '@/features/Database/Database'
 import {Txt} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
@@ -15,14 +15,16 @@ import {fnSwitch, map} from '@axanc/ts-utils'
 import {alpha, Icon, useTheme} from '@mui/material'
 import {useEffect} from 'react'
 import {useParams} from 'react-router'
+import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 
 export const DatabaseHistory = () => {
+  const {workspaceId} = useWorkspaceRouter()
   const {formId} = databaseUrlParamsValidation.validateSync(useParams())
   const t = useTheme()
   const {m, formatDateTime, formatDate} = useI18n()
   const {api} = useAppSettings()
   const fetcher = useFetcher(() => api.kobo.answerHistory.search({formId}))
-  const querySchema = useQueryKoboSchema(formId)
+  const querySchema = useQuerySchema({workspaceId, formId})
   const schema = querySchema.data
 
   useEffect(() => {

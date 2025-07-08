@@ -1,4 +1,3 @@
-import {useAppSettings} from '@/core/context/ConfigContext'
 import {Kobo} from 'kobo-sdk'
 import {KoboCustomDirective, KoboSchemaHelper, nullValuesToUndefined, UUID} from 'infoportal-common'
 import {AppFeatureId} from '@/features/appFeatureId'
@@ -10,14 +9,11 @@ import {Controller, useForm} from 'react-hook-form'
 import {KoboDatabaseAccessParams} from '@/core/sdk/server/access/Access'
 import {map, seq} from '@axanc/ts-utils'
 import {useI18n} from '@/core/i18n'
-import {useAsync} from '@/shared/hook/useAsync'
-import {useIpToast} from '@/core/useToast'
-import {useEffectFn} from '@axanc/react-hooks'
 import {AccessForm, IAccessForm} from '@/features/Access/AccessForm'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
-import {useFetcher} from '@/shared/hook/useFetcher'
 import {DirectiveTemplate, koboIconMap} from '@/features/Database/KoboTable/columns/columnBySchema'
 import {useQueryAccess} from '@/core/query/useQueryAccess'
+import {Ip} from 'infoportal-api-sdk'
 
 interface Form extends IAccessForm {
   question?: string
@@ -34,11 +30,11 @@ export const DatabaseAccessForm = ({
   onAdded?: () => void
   children: ReactElement
   workspaceId: UUID
-  formId: Kobo.FormId
-  form: Kobo.Form
+  formId: Ip.FormId
+  form: Ip.Form.Schema
 }) => {
   const langIndex = 0
-  const survey = form.content.survey
+  const survey = form.survey
 
   const {m} = useI18n()
   const queryAccess = useQueryAccess(workspaceId)
@@ -50,8 +46,8 @@ export const DatabaseAccessForm = ({
       indexQuestion: seq(survey)
         .compactBy('name')
         .groupByFirst(_ => _.name),
-      indexOptionsByListName: seq(form.content.choices).groupBy(_ => _.list_name),
-      indexOptionsByName: seq(form.content.choices).groupByFirst(_ => _.name),
+      indexOptionsByListName: seq(form.choices).groupBy(_ => _.list_name),
+      indexOptionsByName: seq(form.choices).groupByFirst(_ => _.name),
     }
   }, [form])
 

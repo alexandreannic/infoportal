@@ -9,7 +9,7 @@ import {Panel} from '@/shared/Panel'
 import {AccessTable} from '@/features/Access/AccessTable'
 import {useQueryAccess} from '@/core/query/useQueryAccess'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
-import {useQueryKoboSchema} from '@/core/query/useQueryKoboSchema'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {useSession} from '@/core/Session/SessionContext'
 import {Page} from '@/shared'
 
@@ -20,7 +20,7 @@ export const DatabaseAccess = () => {
   const {user} = useSession()
 
   const queryAccess = useQueryAccess(workspaceId)
-  const querySchema = useQueryKoboSchema(formId)
+  const querySchema = useQuerySchema({formId, workspaceId})
 
   const accessSum = useMemo(() => {
     return Access.toSum(queryAccess.accessesByFormIdMap[formId] ?? [], user.admin)

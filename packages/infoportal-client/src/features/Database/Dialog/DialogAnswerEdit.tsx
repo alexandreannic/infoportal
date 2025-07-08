@@ -36,7 +36,7 @@ export const DialogAnswerEdit = ({
         <XlsFormFiller
           ref={formRef}
           answers={KoboMapper.unmapAnswerBySchema(schema.helper.questionIndex, answer)}
-          survey={schema.schema.content}
+          survey={schema.schema}
           hideActions
           onSubmit={_ => {
             console.log('HERE')

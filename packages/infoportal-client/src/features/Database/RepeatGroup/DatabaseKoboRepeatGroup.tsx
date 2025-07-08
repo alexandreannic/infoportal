@@ -1,7 +1,7 @@
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQueryAnswer} from '@/core/query/useQueryAnswer'
-import {useQueryKoboSchema} from '@/core/query/useQueryKoboSchema'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {
   columnBySchemaGenerator,
   ColumnBySchemaGeneratorProps,
@@ -17,6 +17,7 @@ import {Kobo} from 'kobo-sdk'
 import {useMemo} from 'react'
 import {NavLink, useNavigate, useParams, useSearchParams} from 'react-router-dom'
 import * as yup from 'yup'
+import {Ip} from 'infoportal-api-sdk'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -24,8 +25,9 @@ const databaseUrlParamsValidation = yup.object({
 })
 
 export const DatabaseKoboRepeatRoute = () => {
+  const {workspaceId} = useWorkspaceRouter()
   const {formId, group} = databaseUrlParamsValidation.validateSync(useParams())
-  const querySchema = useQueryKoboSchema(formId)
+  const querySchema = useQuerySchema({workspaceId, formId})
 
   return (
     <Page
@@ -37,7 +39,7 @@ export const DatabaseKoboRepeatRoute = () => {
     >
       {map(querySchema.data, schema => (
         <Panel sx={{mb: 0}}>
-          <DatabaseKoboRepeat schema={schema} group={group} formId={formId} />
+          <DatabaseKoboRepeat schema={schema} group={group} formId={formId} workspaceId={workspaceId} />
         </Panel>
       ))}
     </Page>
@@ -100,10 +102,12 @@ export const getColumnsForRepeatGroup = ({
 
 const DatabaseKoboRepeat = ({
   schema,
+  workspaceId,
   group,
   formId,
 }: {
-  formId: Kobo.FormId
+  workspaceId: Ip.Uuid
+  formId: Ip.FormId
   group: string
   schema: KoboSchemaHelper.Bundle
 }) => {
@@ -118,7 +122,7 @@ const DatabaseKoboRepeat = ({
     index: searchParams.get('index') ?? undefined,
   }
 
-  const queryAnswers = useQueryAnswer(formId)
+  const queryAnswers = useQueryAnswer({workspaceId, formId})
   const data = queryAnswers.data?.data
   const groupInfo = schema.helper.group.getByName(group)!
   const paths = groupInfo.pathArr

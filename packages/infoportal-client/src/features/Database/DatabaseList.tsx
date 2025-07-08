@@ -81,7 +81,7 @@ export const DatabaseList = () => {
                   type: 'select_one',
                   head: m.server,
                   render: _ => {
-                    const url = indexServers[_.serverId]?.url
+                    const url = _.serverId ? indexServers[_.serverId]?.url : undefined
                     if (url) {
                       return {
                         value: url,
