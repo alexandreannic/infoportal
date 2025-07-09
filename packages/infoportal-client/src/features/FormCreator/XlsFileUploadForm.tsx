@@ -155,7 +155,7 @@ export const XlsFileUploadForm = ({
                       name: 'check',
                       label: m.checkDiff,
                       component: () => {
-                        const action = <StepperActions>{importButton()}</StepperActions>
+                        const action = <StepperActions disableNext={!schemaHasChanges}>{importButton()}</StepperActions>
                         if (querySchema.isLoading) {
                           return (
                             <>
@@ -169,9 +169,9 @@ export const XlsFileUploadForm = ({
                         }
                         return (
                           <>
-                            <StepperActions disableNext={!schemaHasChanges}>{importButton()}</StepperActions>
+                            {action}
                             {!schemaHasChanges && (
-                              <Alert color="error">
+                              <Alert color="error" sx={{mt: 1}}>
                                 <AlertTitle>{m.xlsFormNoChangeTitle}</AlertTitle>
                                 {m.xlsFormNoChangeDesc}
                               </Alert>
@@ -182,7 +182,7 @@ export const XlsFileUploadForm = ({
                               hasChanges={setSchemaHasChanges}
                               sx={{mt: 1}}
                             />
-                            <StepperActions disableNext={!schemaHasChanges}>{importButton()}</StepperActions>
+                            {action}
                           </>
                         )
                       },

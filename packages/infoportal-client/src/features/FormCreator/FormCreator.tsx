@@ -1,4 +1,4 @@
-import {Fender, IpBtn, Page} from '@/shared'
+import {Fender, IpBtn, Modal, Page} from '@/shared'
 import {Alert, AlertTitle, Grid} from '@mui/material'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
@@ -46,15 +46,20 @@ export const FormCreator = () => {
               <Panel>
                 <PanelHead
                   action={
-                    <IpBtn
-                      icon="send"
-                      variant="contained"
-                      disabled={!draft}
+                    <Modal
                       loading={queryVersion.deployLast.isPending}
-                      onClick={() => queryVersion.deployLast.mutate({workspaceId, formId})}
+                      title={m.confirm}
+                      onConfirm={() => queryVersion.deployLast.mutate({workspaceId, formId})}
                     >
-                      {m.deployLastVersion}
-                    </IpBtn>
+                      <IpBtn
+                        icon="send"
+                        variant="contained"
+                        disabled={!draft}
+                        loading={queryVersion.deployLast.isPending}
+                      >
+                        {m.deployLastVersion}
+                      </IpBtn>
+                    </Modal>
                   }
                 >
                   {m.versions}

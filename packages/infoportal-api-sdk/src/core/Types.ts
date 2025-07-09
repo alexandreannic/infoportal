@@ -10,6 +10,12 @@ export namespace Ip {
 
   export type Server = KoboServer
 
+  export namespace Server {
+    export namespace Payload {
+      export type Create = Omit<Server, 'id'>
+    }
+  }
+
   export namespace Form {
     export namespace Payload {
       export type Import = {

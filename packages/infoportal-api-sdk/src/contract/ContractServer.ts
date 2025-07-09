@@ -36,7 +36,7 @@ export const serverContract = c.router({
     pathParams: z.object({
       workspaceId: schema.uuid,
     }),
-    body: c.type<Omit<Ip.Server, 'id' | 'workspaceId'>>(),
+    body: c.type<Omit<Ip.Server.Payload.Create, 'workspaceId'>>(),
     responses: {
       200: c.type<Ip.Server>(),
     },
@@ -69,7 +69,7 @@ export const serverClient = (client: TsRestClient) => {
         .then(mapClientResponse)
     },
 
-    create: ({workspaceId, ...body}: Omit<Ip.Server, 'id'>) => {
+    create: ({workspaceId, ...body}: Ip.Server.Payload.Create) => {
       return client.server
         .create({
           params: {workspaceId},

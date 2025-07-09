@@ -3,16 +3,17 @@ import {useI18n} from '@/core/i18n'
 import {Controller, useForm} from 'react-hook-form'
 import {Regexp, UUID} from 'infoportal-common'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
-import {Obj} from '@axanc/ts-utils'
+import {map, Obj} from '@axanc/ts-utils'
 import {useEffect, useState} from 'react'
 import {useFetcher} from '@axanc/react-hooks'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {IpAlert, IpBtn} from '@/shared'
+import {IpAlert, IpBtn, Txt} from '@/shared'
 import {Box, CardActions, CircularProgress, Dialog, DialogContent, DialogTitle, Icon, useTheme} from '@mui/material'
 import {ApiError} from '@/core/sdk/server/ApiClient'
-import {KoboServer, KoboServerCreate} from '@/core/sdk/server/kobo/KoboMapper'
 import {DialogProps} from '@toolpad/core'
 import {useQueryServers} from '@/core/query/useQueryServers'
+import {AccessFormSection} from '@/features/Access/AccessFormSection'
+import {Ip} from 'infoportal-api-sdk'
 
 const servers = {
   EU: {v1: 'https://kc-eu.kobotoolbox.org', v2: 'https://eu.kobotoolbox.org'},
@@ -55,12 +56,12 @@ export const KoboServerForm = ({
 }: {
   loading?: boolean
   onCancel: () => void
-  onSubmit: (f: KoboServerCreate) => void
+  onSubmit: (f: Ip.Server.Payload.Create) => void
 }) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
-  const form = useForm<Omit<KoboServer, 'id'>>()
-  const [server, setServer] = useState<undefined | 'custom' | keyof typeof servers>()
+  const form = useForm<Omit<Ip.Server, 'id'>>()
+  const [server, setServer] = useState<undefined | 'custom' | keyof typeof servers>('custom')
 
   const fetcherTest = useFetcher(() => {
     const {token, url} = form.getValues()
@@ -86,71 +87,99 @@ export const KoboServerForm = ({
 
   return (
     <>
-      <ScRadioGroup dense value={server} onChange={setServer} sx={{mb: 3}}>
-        {Obj.keys(servers).map(name => (
-          <ScRadioGroupItem key={name} value={name} title={name} />
-        ))}
-        <ScRadioGroupItem icon="edit" value="custom" title={m.custom} />
-      </ScRadioGroup>
-      <Controller
-        control={form.control}
-        name="name"
-        rules={{
-          required: true,
-        }}
-        render={({field, fieldState}) => <IpInput required {...field} label={m.name} error={fieldState.invalid} />}
-      />
-      <Controller
-        control={form.control}
-        name="urlV1"
-        disabled={server !== 'custom'}
-        rules={{
-          required: true,
-          pattern: Regexp.get.url,
-        }}
-        render={({field, fieldState}) => (
-          <IpInput
-            required
-            InputLabelProps={{
-              shrink: !!field.value,
-            }}
-            {...field}
-            notched={!!field.value}
-            label={m.serverUrlV1}
-            error={fieldState.invalid}
-          />
-        )}
-      />
-      <Controller
-        control={form.control}
-        name="url"
-        disabled={server !== 'custom'}
-        rules={{
-          required: true,
-          pattern: Regexp.get.url,
-        }}
-        render={({field, fieldState}) => (
-          <IpInput
-            required
-            InputLabelProps={{
-              shrink: !!field.value,
-            }}
-            {...field}
-            notched={!!field.value}
-            label={m.serverUrlV2}
-            error={fieldState.invalid}
-          />
-        )}
-      />
-      <Controller
-        control={form.control}
-        name="token"
-        rules={{
-          required: true,
-          pattern: new RegExp(/^[0-9a-z]+$/),
-        }}
-        render={({field, fieldState}) => <IpInput required label={m.apiToken} error={fieldState.invalid} {...field} />}
-      />
+      <AccessFormSection icon="language" label={m.server} sxContent={{pb: 0}}>
+        <ScRadioGroup dense value={server} onChange={setServer} sx={{mb: 3}}>
+          {Obj.keys(servers).map(name => (
+            <ScRadioGroupItem key={name} value={name} title={name} />
+          ))}
+          <ScRadioGroupItem icon="edit" value="custom" title={m.custom} />
+        </ScRadioGroup>
+        <Controller
+          control={form.control}
+          name="urlV1"
+          disabled={server !== 'custom'}
+          rules={{
+            required: true,
+            pattern: Regexp.get.url,
+          }}
+          render={({field, fieldState}) => (
+            <IpInput
+              required
+              InputLabelProps={{
+                shrink: !!field.value,
+              }}
+              {...field}
+              notched={!!field.value}
+              label={m.serverUrlV1}
+              error={fieldState.invalid}
+            />
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="url"
+          disabled={server !== 'custom'}
+          rules={{
+            required: true,
+            pattern: Regexp.get.url,
+          }}
+          render={({field, fieldState}) => (
+            <IpInput
+              required
+              InputLabelProps={{
+                shrink: !!field.value,
+              }}
+              {...field}
+              notched={!!field.value}
+              label={m.serverUrlV2}
+              error={fieldState.invalid}
+            />
+          )}
+        />
+      </AccessFormSection>
+      <AccessFormSection icon="key" label={m.access} sxContent={{pb: 0}}>
+        <Txt block color="hint" size="small" gutterBottom>
+          <div>Can be found in your account settings.</div>
+          {map(form.watch('url'), url => {
+            if (url === '') return
+            const link = url.replace(/\/+$/, '') + '/#/account/security'
+            return (
+              <a target="_blank" href={link} className="link">
+                {link}
+              </a>
+            )
+          })}
+        </Txt>
+        <Controller
+          control={form.control}
+          name="token"
+          rules={{
+            required: true,
+            pattern: new RegExp(/^[0-9a-z]+$/),
+          }}
+          render={({field, fieldState}) => (
+            <IpInput
+              // endAdornment={<Icon>key</Icon>}
+              required
+              label={m.apiToken}
+              error={fieldState.invalid}
+              {...field}
+            />
+          )}
+        />
+      </AccessFormSection>
+      <AccessFormSection icon="info" label={m.name} sxContent={{pb: 0}}>
+        <Controller
+          control={form.control}
+          name="name"
+          rules={{
+            required: true,
+          }}
+          render={({field, fieldState}) => (
+            <IpInput required {...field} label={m.accountName} error={fieldState.invalid} />
+          )}
+        />
+      </AccessFormSection>
       <Box sx={{display: 'flex'}}>
         <IpBtn
           variant="outlined"

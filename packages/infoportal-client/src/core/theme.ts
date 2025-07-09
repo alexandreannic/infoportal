@@ -458,7 +458,7 @@ export const muiTheme = ({
       MuiFormHelperText: {
         styleOverrides: {
           sizeSmall: {
-            marginBottom: -4,
+            marginBottom: 4,
           },
         },
       },

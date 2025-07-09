@@ -303,6 +303,8 @@ export const en = Object.freeze({
     itCannotBeChanged: (admin: string) =>
       `For privacy reasons, you will not be able to change it later without contacting ${admin}.`,
     select: 'Select',
+    creation: 'Creation',
+    accountName: 'Account name',
     firstName: 'First name',
     patronyme: 'Patronyme',
     data: 'Data',

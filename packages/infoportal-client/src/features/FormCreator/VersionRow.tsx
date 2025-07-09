@@ -84,10 +84,9 @@ export const VersionRowRoot = ({createdAt}: {createdAt: Date}) => {
           }}
         />
       </Box>
+      <Box sx={{ml: 1.5}}>{m.creation}</Box>
       <Box sx={{width: '100%', ml: 1, display: 'flex', justifyContent: 'flex-end'}}>
-        <Txt color="hint">
-          {m.created} {dateFromNow(createdAt)}
-        </Txt>
+        <Txt color="hint">{dateFromNow(createdAt)}</Txt>
       </Box>
     </VersionRowContainer>
   )
@@ -132,7 +131,7 @@ export const VersionRow = ({version}: {version: Ip.Form.Version}) => {
     <VersionRowContainer>
       <Logo version={version} />
       <Box sx={{display: 'flex', width: '100%', justifyContent: 'flex-start', minWidth: 0}}>
-        <Txt bold sx={{flexShrink: 0, ml: 1, mr: 1, width: 26, textAlign: 'right'}}>
+        <Txt bold sx={{flexShrink: 0, ml: 1, mr: 1, width: 26, textAlign: 'left'}}>
           v{version.version}
         </Txt>
         <Txt color="hint" truncate sx={{minWidth: 0}}>

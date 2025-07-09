@@ -35,7 +35,7 @@ export const useQueryServers = (workspaceId: UUID) => {
     onError: toastHttpError,
   })
 
-  const create = useMutation<Ip.Server, ApiError, Omit<Params<'create'>, 'workspaceId'>>({
+  const create = useMutation<Ip.Server, ApiError, Ip.Server.Payload.Create>({
     mutationFn: async args => {
       return apiv2.server.create({...args, workspaceId})
     },

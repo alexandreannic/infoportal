@@ -3,8 +3,6 @@ import {Obj} from '@axanc/ts-utils'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Kobo} from 'kobo-sdk'
 
-export type KoboServerCreate = Omit<KoboServer, 'id'>
-
 /** @deprecated use from sdk*/
 export type KoboServer = {
   id: string
