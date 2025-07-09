@@ -24,7 +24,7 @@ export const SelectKoboForm = ({serverId, onAdded}: {serverId: UUID; onAdded?: (
 
   return (
     <Panel loading={queryKoboForms.isLoading || queryForms.importFromKobo.isPending}>
-      <PanelHead>{m._koboDatabase.registerNewForm}</PanelHead>
+      <PanelHead>{m.selectKoboForm}</PanelHead>
       <PanelBody>
         <Datatable
           id="select-kobo-form"

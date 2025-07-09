@@ -7,7 +7,7 @@ import {useI18n} from '@/core/i18n'
 import {Kobo} from 'kobo-sdk'
 import {UUID} from 'infoportal-common'
 import {IpInput} from '@/shared/Input/Input'
-import {Alert, AlertTitle, CircularProgress, Skeleton} from '@mui/material'
+import {Alert, AlertTitle, CircularProgress, Icon, Skeleton} from '@mui/material'
 import {DiffView} from '@/features/FormCreator/DiffView'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {Ip} from 'infoportal-api-sdk'
@@ -53,12 +53,12 @@ export const XlsFileUploadForm = ({
     xlsFile: form.watch('xlsFile'),
   }
 
-  const importButton = (label = m.skipAndSubmit) => (
+  const importButton = (label = m.submit) => (
     <IpBtn
-      icon="send"
+      endIcon={<Icon>keyboard_double_arrow_right</Icon>}
       sx={{mr: 1, marginLeft: 'auto'}}
-      disabled={!isValid || !validation || validation.status === 'error' || !schemaHasChanges}
-      variant="contained"
+      disabled={!isValid || !validation || validation.status === 'error' || (lastSchema && !schemaHasChanges)}
+      variant="outlined"
       type="submit"
       loading={queryVersion.upload.isPending}
     >
@@ -149,42 +149,46 @@ export const XlsFileUploadForm = ({
                     )
                   )),
               },
-              {
-                name: 'check',
-                label: m.checkDiff,
-                component: () => {
-                  const action = <StepperActions>{importButton(m.skipAndSubmit)}</StepperActions>
-                  if (querySchema.isLoading) {
-                    return (
-                      <>
-                        {action}
-                        <Skeleton height={200} />
-                      </>
-                    )
-                  }
-                  if (!validation) {
-                    return <Fender type="error" title={m.error} />
-                  }
-                  return (
-                    <>
-                      <StepperActions disableNext={!schemaHasChanges}>{importButton(m.skipAndSubmit)}</StepperActions>
-                      {!schemaHasChanges && (
-                        <Alert color="error">
-                          <AlertTitle>{m.xlsFormNoChangeTitle}</AlertTitle>
-                          {m.xlsFormNoChangeDesc}
-                        </Alert>
-                      )}
-                      <DiffView
-                        oldStr={schemaToString(querySchema.data)}
-                        newStr={schemaToString(validation.schema)}
-                        hasChanges={setSchemaHasChanges}
-                        sx={{mt: 1}}
-                      />
-                      <StepperActions disableNext={!schemaHasChanges}>{importButton(m.skipAndSubmit)}</StepperActions>
-                    </>
-                  )
-                },
-              },
+              ...(lastSchema
+                ? [
+                    {
+                      name: 'check',
+                      label: m.checkDiff,
+                      component: () => {
+                        const action = <StepperActions>{importButton()}</StepperActions>
+                        if (querySchema.isLoading) {
+                          return (
+                            <>
+                              {action}
+                              <Skeleton height={200} />
+                            </>
+                          )
+                        }
+                        if (!validation) {
+                          return <Fender type="error" title={m.error} />
+                        }
+                        return (
+                          <>
+                            <StepperActions disableNext={!schemaHasChanges}>{importButton()}</StepperActions>
+                            {!schemaHasChanges && (
+                              <Alert color="error">
+                                <AlertTitle>{m.xlsFormNoChangeTitle}</AlertTitle>
+                                {m.xlsFormNoChangeDesc}
+                              </Alert>
+                            )}
+                            <DiffView
+                              oldStr={schemaToString(querySchema.data)}
+                              newStr={schemaToString(validation.schema)}
+                              hasChanges={setSchemaHasChanges}
+                              sx={{mt: 1}}
+                            />
+                            <StepperActions disableNext={!schemaHasChanges}>{importButton()}</StepperActions>
+                          </>
+                        )
+                      },
+                    },
+                  ]
+                : []),
               {
                 name: 'submit',
                 label: m.submit,
@@ -203,7 +207,7 @@ export const XlsFileUploadForm = ({
                         />
                       )}
                     />
-                    <StepperActions hideNext>{importButton(m.import)}</StepperActions>
+                    <StepperActions hideNext>{importButton()}</StepperActions>
                   </>
                 ),
               },

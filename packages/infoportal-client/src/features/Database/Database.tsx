@@ -6,16 +6,29 @@ import {DatabaseTable} from '@/features/Database/KoboTable/DatabaseKoboTable'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {useEffect, useMemo} from 'react'
-import {Route, useLocation, useParams, useRoutes} from 'react-router'
-import {Navigate, NavLink, Outlet, useNavigate} from 'react-router-dom'
+import {useLocation, useParams} from 'react-router'
+import {NavLink, Outlet, useNavigate} from 'react-router-dom'
 import * as yup from 'yup'
 import {useQueryForm, useQueryFormById} from '@/core/query/useQueryForm'
 import {Page} from '@/shared'
 import {appRouter} from '@/Router'
+import {Ip} from 'infoportal-api-sdk'
 
 export const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
 })
+
+const useDefaultTabRedirect = ({workspaceId, formId}: {workspaceId: Ip.Uuid; formId: Ip.FormId}) => {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const querySchema = useQuerySchema({formId, workspaceId})
+  useEffect(() => {
+    if (querySchema.isLoading) return
+    if (location.pathname !== appRouter.ws(workspaceId).database.form(formId).root) return
+    if (querySchema.data) navigate(appRouter.ws(workspaceId).database.form(formId).answers)
+    else navigate(appRouter.ws(workspaceId).database.form(formId).formCreator)
+  }, [formId, querySchema.isLoading])
+}
 
 export const Database = () => {
   const {workspaceId} = useWorkspaceRouter()
@@ -23,7 +36,6 @@ export const Database = () => {
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
   const {pathname} = useLocation()
-  const navigate = useNavigate()
   const {router} = useWorkspaceRouter()
 
   const querySchema = useQuerySchema({formId, workspaceId})
@@ -41,10 +53,7 @@ export const Database = () => {
     return schema?.helper.group.search().map(_ => _.name)
   }, [schema])
 
-  useEffect(() => {
-    if (querySchema.status === 'success') navigate(appRouter.ws(workspaceId).database.form(formId).answers)
-    else navigate(appRouter.ws(workspaceId).database.form(formId).formCreator)
-  }, [querySchema.status])
+  useDefaultTabRedirect({workspaceId, formId})
 
   return (
     <>

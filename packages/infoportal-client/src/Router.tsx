@@ -19,6 +19,7 @@ import {AppHeader} from './core/layout/AppHeader'
 import {Settings} from './features/Settings/Settings'
 import {FormCreator} from './features/FormCreator/FormCreator'
 import {useWorkspaceRouterMaybe} from '@/core/query/useQueryWorkspace'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 
 export const appRouter = {
   root: '/',
@@ -64,6 +65,8 @@ const path = (route: string, tokensToKeep = 1) => {
 
 export const Router = () => {
   const {workspaceId} = useWorkspaceRouterMaybe()
+  // const querySchema = useQuerySchema({formId, workspaceId})
+
   return (
     <Layout header={<AppHeader />} sidebar={workspaceId ? <AppSidebar /> : undefined}>
       <Routes>
@@ -85,7 +88,7 @@ export const Router = () => {
               <Route path={path(appRouter.ws().database.form().access)} element={<DatabaseAccess />} />
               <Route path={path(appRouter.ws().database.form().history)} element={<DatabaseHistory />} />
               <Route path={path(appRouter.ws().database.form().group(), 2)} element={<DatabaseKoboRepeatRoute />} />
-              {/*<Route index element={<Navigate to={path(router.ws().database.form().answers)} />} />*/}
+              {/*    <Route index element={<Navigate to={path(appRouter.ws().database.form().answers)} />} />*/}
               {/*Persisted components across routes. */}
               <Route path={path(appRouter.ws().database.form().answers)} element={<></>} />
             </Route>

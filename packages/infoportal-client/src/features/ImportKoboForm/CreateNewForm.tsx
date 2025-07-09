@@ -7,6 +7,8 @@ import {Ip} from 'infoportal-api-sdk'
 import {PanelFoot} from '@/shared/Panel/PanelFoot'
 import {IpBtn} from '@/shared'
 import {Autocomplete, Grid} from '@mui/material'
+import {useNavigate} from 'react-router-dom'
+import {appRouter} from '@/Router'
 
 type Form = {
   name: string
@@ -15,14 +17,17 @@ type Form = {
 
 export const CreateNewForm = ({workspaceId}: {workspaceId: Ip.Uuid}) => {
   const {m} = useI18n()
+  const navigate = useNavigate()
   const form = useForm<Form>({
     defaultValues: {name: '', category: ''},
   })
   const queryForm = useQueryForm(workspaceId)
   return (
     <form
-      onSubmit={form.handleSubmit(_ => {
-        queryForm.create.mutateAsync(_).then(() => form.reset())
+      onSubmit={form.handleSubmit(async _ => {
+        const newForm = await queryForm.create.mutateAsync(_)
+        form.reset()
+        navigate(appRouter.ws(workspaceId).database.form(newForm.id).root)
       })}
     >
       <Panel>
@@ -54,7 +59,8 @@ export const CreateNewForm = ({workspaceId}: {workspaceId: Ip.Uuid}) => {
                     freeSolo
                     disableClearable
                     options={queryForm.categories ?? []}
-                    value={field.value ?? ''}
+                    value={field.value}
+                    onChange={(e, value) => field.onChange(value)}
                     onInputChange={(_, value) => field.onChange(value)}
                     renderInput={params => (
                       <IpInput

@@ -29,6 +29,8 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: UUID; formI
     mutationFn: (params: {workspaceId: Ip.Uuid; formId: Ip.FormId}) => apiv2.form.version.deployLast(params),
     onSuccess: newVersion => {
       queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
+      queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, formId)})
+      queryClient.invalidateQueries({queryKey: queryKeys.schema(workspaceId, formId)})
       // queryClient.setQueryData<Return<'getByFormId'>>(queryKeys.version(workspaceId, formId), old =>
       //   (old ?? []).map(_ => (_.id === newVersion.id ? newVersion : _)),
       // )
@@ -40,10 +42,11 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: UUID; formI
       return apiv2.form.version.uploadXlsForm({formId, workspaceId, ...params}).catch(toastAndThrowHttpError)
     },
     onSuccess: newVersion => {
-      queryClient.setQueryData<Return<'getByFormId'>>(queryKeys.version(workspaceId, formId), old => [
-        ...(old ?? []),
-        newVersion,
-      ])
+      queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
+      // queryClient.setQueryData<Return<'getByFormId'>>(queryKeys.version(workspaceId, formId), old => [
+      //   ...(old ?? []),
+      //   newVersion,
+      // ])
     },
     onError: toastHttpError,
   })

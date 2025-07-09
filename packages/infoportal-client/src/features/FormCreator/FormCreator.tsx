@@ -21,8 +21,11 @@ export const FormCreator = () => {
   const queryForm = useQueryFormById({workspaceId, formId})
   const queryVersion = useQueryVersion({workspaceId, formId})
 
-  const activeVersion = useMemo(() => {
-    return queryVersion.get.data?.find(_ => _.status === 'active')
+  const {active, draft} = useMemo(() => {
+    return {
+      active: queryVersion.get.data?.find(_ => _.status === 'active'),
+      draft: queryVersion.get.data?.find(_ => _.status === 'draft'),
+    }
   }, [queryVersion.get.data])
 
   return (
@@ -46,6 +49,7 @@ export const FormCreator = () => {
                     <IpBtn
                       icon="send"
                       variant="contained"
+                      disabled={!draft}
                       loading={queryVersion.deployLast.isPending}
                       onClick={() => queryVersion.deployLast.mutate({workspaceId, formId})}
                     >

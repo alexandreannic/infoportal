@@ -18,6 +18,7 @@ const useStyles = makeStyles<{loading?: boolean; variant?: IpBtnVariant}>()((t, 
       variant!,
       {
         light: {
+          border: 'none',
           fontWeight: 500,
           background: alpha(t.palette.primary.main, 0.12),
           textTransform: 'inherit',
@@ -26,6 +27,7 @@ const useStyles = makeStyles<{loading?: boolean; variant?: IpBtnVariant}>()((t, 
           },
         },
         input: {
+          border: 'none',
           borderRadius: t.shape.borderRadius + 'px',
           fontWeight: 500,
           ...styleUtils(t).color.inputBack,
@@ -94,7 +96,7 @@ export const IpBtn = forwardRef(
     const btn = (
       <Button
         {...props}
-        variant={variant === 'light' || variant === 'input' ? undefined : variant}
+        variant={variant === 'light' || variant === 'input' ? 'outlined' : variant}
         color={color}
         disabled={disabled || loading}
         ref={ref}

@@ -21,6 +21,7 @@ export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.Uuid; for
         return KoboSchemaHelper.buildBundle({schema, langIndex})
       }
     },
+    retry: false,
     staleTime: duration(10, 'minute'),
   })
 }
