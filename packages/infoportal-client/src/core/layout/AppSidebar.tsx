@@ -9,6 +9,7 @@ import {Controller, useForm} from 'react-hook-form'
 import {NavLink} from 'react-router-dom'
 import {styleUtils} from '../theme'
 import {useQueryForm} from '@/core/query/useQueryForm'
+import {IpInput, IpInputProps} from '@/shared/Input/Input'
 
 type Form = {
   id: string
@@ -18,29 +19,43 @@ type Form = {
   archived?: boolean
 }
 
-const SearchInput = forwardRef(
-  ({sx, ...props}: React.InputHTMLAttributes<HTMLInputElement> & Pick<BoxProps, 'sx'>, ref) => {
-    const t = useTheme()
-    return (
-      <Box
-        display="flex"
-        alignItems="center"
-        ref={ref}
-        sx={{
-          m: 1,
-          mb: 0.5,
-          borderRadius: t.shape.borderRadius + 'px',
-          ...styleUtils(t).color.inputBack,
-          pl: 1,
-          ...sx,
-        }}
-      >
-        <Icon color="disabled">search</Icon>
-        <Box component="input" {...props} sx={{ml: 1, height: 36, border: 'none', background: 'none', width: '100%'}} />
-      </Box>
-    )
-  },
-)
+const SearchInput = forwardRef(({sx, ...props}: IpInputProps, ref) => {
+  const t = useTheme()
+  // return (
+  // <IpInput
+  //   ref={ref}
+  //   InputProps={{
+  //     sx: {...styleUtils(t).color.toolbar.default, border: 'none', borderRadius: t.shape.borderRadius + 'px'},
+  //   }}
+  //   helperText={null}
+  //   startAdornment={
+  //     <Icon color="disabled" sx={{mr: 1}}>
+  //       search
+  //     </Icon>
+  //   }
+  //   {...props}
+  // />
+  // )
+  return (
+    <Box
+      display="flex"
+      alignItems="center"
+      ref={ref}
+      sx={{
+        // m: 1,
+        mb: 0.5,
+        ...styleUtils(t).color.toolbar.default,
+        // borderBottom: '1px solid ' + t.palette.divider,
+        borderRadius: t.shape.borderRadius + 'px',
+        // pl: 1,
+        ...sx,
+      }}
+    >
+      <Icon sx={{ml: 1}}>search</Icon>
+      <Box component="input" {...props} sx={{ml: 1, height: 36, border: 'none', background: 'none', width: '100%'}} />
+    </Box>
+  )
+})
 
 export const AppSidebar = () => {
   const {workspaceId} = useWorkspaceRouter()
@@ -133,11 +148,13 @@ export const AppSidebar = () => {
         />
       ) : (
         <>
+          <Box sx={{mx: 0.5, mb: 1, mt: 1}}>
           <Controller
             name="name"
             control={searchForm.control}
             render={({field}) => <SearchInput placeholder={m.searchInForms(forms.length) + '...'} {...field} />}
           />
+          </Box>
 
           {filteredForms.map((_: Form) => (
             <Tooltip key={_.id} title={_.name} placement="right-end">

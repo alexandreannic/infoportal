@@ -45,79 +45,80 @@ export const ScRadioGroupItem = <T,>({
   ...rest
 }: ScRadioGroupItemProps<T>) => {
   const t = useTheme()
-  const borderColorActive = 'transparent'
+  const borderColorActive = t.palette.primary.main
   const minHeight = dense ? 34 : 50
   return (
     <Box
       role={multiple ? 'checkbox' : 'radio'}
       sx={{
         ...sx,
+        ...styleUtils(t).color.input.default,
         minHeight,
         // paddingRight: '2px',
         px: dense ? 1.5 : 2,
         display: 'flex',
         alignItems: 'flex-start',
-        border: '2px solid ' + 'transparent',
-        ...styleUtils(t).color.inputBack,
+        // border: '2px solid ' + 'transparent',
         paddingBottom: '2px',
         transition: 'all .2s ease-in-out',
         cursor: 'pointer',
-        borderRadius: '4px',
+        borderRadius: 0,
         ...(inline
           ? {
               borderRightColor: 'transparent',
               '&:last-of-type': {
                 borderRight: '2px solid ' + 'transparent',
-                borderBottomRightRadius: t.shape.borderRadius,
-                borderTopRightRadius: t.shape.borderRadius,
+                borderBottomRightRadius: styleUtils(t).color.input.default.borderRadius,
+                borderTopRightRadius: styleUtils(t).color.input.default.borderRadius,
               },
               '&:first-of-type': {
-                borderBottomLeftRadius: t.shape.borderRadius,
-                borderTopLeftRadius: t.shape.borderRadius,
+                borderBottomLeftRadius: styleUtils(t).color.input.default.borderRadius,
+                borderTopLeftRadius: styleUtils(t).color.input.default.borderRadius,
               },
               '&:not(:first-of-type)': {
                 marginLeft: '-1px',
               },
             }
           : {
-              borderBottomColor: 'transparent',
+              // borderBottomColor: 'transparent',
               '&:last-of-type': {
-                borderBottom: '2px solid ' + 'transparent',
-                borderBottomRightRadius: t.shape.borderRadius,
-                borderBottomLeftRadius: t.shape.borderRadius,
+                // borderBottom: '2px solid ' + 'transparent',
+                borderBottomRightRadius: styleUtils(t).color.input.default.borderRadius,
+                borderBottomLeftRadius: styleUtils(t).color.input.default.borderRadius,
               },
               '&:first-of-type': {
-                borderTopRightRadius: t.shape.borderRadius,
-                borderTopLeftRadius: t.shape.borderRadius,
+                borderTopRightRadius: styleUtils(t).color.input.default.borderRadius,
+                borderTopLeftRadius: styleUtils(t).color.input.default.borderRadius,
               },
               '&:not(:first-of-type)': {
-                marginTop: '2px',
+                borderTop: 'none',
+                marginTop: '-1px',
               },
             }),
         '&:hover':
           disabled || selected
             ? {}
             : {
+                ...styleUtils(t).color.toolbar.hover,
                 zIndex: 1,
-                border: `2px solid ${borderColorActive}`,
-                ...styleUtils(t).color.inputBackHover,
+                // border: `2px solid ${borderColorActive}`,
               },
         ...(disabled && {
           opacity: 0.8,
         }),
         ...(selected && {
+          ...styleUtils(t).color.toolbar.active,
           zIndex: 1,
-          border: `2px solid ${borderColorActive} !important`,
+          border: `1px solid ${borderColorActive} !important`,
           // background: alpha(t.palette.primary.main, 0.5),
-          ...styleUtils(t).color.inputBackActive,
-          // color: t.palette.primary.main,
-          // boxShadow:`inset 0 0 0 1px ${t.palette.primary.main}`,
+          color: t.palette.primary.main,
+          boxShadow: `inset 0 0 0 1px ${borderColorActive}`,
         }),
         ...(error && {
           '&$rootSelected': {
             borderColor: t.palette.error.main + ' !important',
           },
-          // boxShadow:`inset 0 0 0 1px ${t.palette.error.main}`,
+          boxShadow: `inset 0 0 0 1px ${t.palette.error.main}`,
         }),
       }}
       // className={classes(css.root, selected && css.rootSelected, error && css.rootError, className)}

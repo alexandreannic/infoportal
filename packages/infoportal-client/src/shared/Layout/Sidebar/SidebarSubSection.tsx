@@ -43,7 +43,7 @@ export const SidebarSubSection = ({
         py: margin,
         transition: t.transitions.create('all'),
         borderRadius: t.shape.borderRadius + 'px',
-        background: styleUtils(t).color.toolbar,
+        background: styleUtils(t).color.toolbar.default,
         color: t.palette.text.secondary,
         overflow: 'hidden',
         ...(hoverable && {

@@ -97,21 +97,31 @@ export const styleUtils = (t: Theme) => ({
     return `${t.spacing(top)} ${t.spacing(right)} ${t.spacing(bottom)} ${t.spacing(left)}`
   },
   color: {
-    inputBackActive: {
-      background: alpha(t.palette.primary.main, 0.18),
-      // background: alpha('#c7eaff', 0.8),
+    toolbar: {
+      default: {
+        background: t.palette.mode === 'dark' ? t.palette.background.paper : 'rgb(237, 242, 250)',
+      }, //'#e9eef6'
+      active: {
+        background: alpha(t.palette.primary.main, 0.2),
+      },
+      hover: {
+        background: alpha(t.palette.primary.main, 0.1),
+      },
     },
-    inputBackHover: {
-      background: t.palette.mode === 'light' ? alpha('#c7eaff', 0.55) : alpha('#0fa1f9', 0.55),
+    input: {
+      active: {},
+      hover: {
+        background: 'none',
+        borderColor: t.palette.primary.main,
+      },
+      default: {
+        minHeight: 37,
+        borderRadius: parseInt('' + t.shape.borderRadius) / 2 + 'px',
+        border: '1px solid',
+        borderColor: t.palette.divider,
+        background: 'none',
+      },
     },
-    inputBack: {
-      background: t.palette.mode === 'light' ? alpha('#c7eaff', 0.38) : alpha('#0fa1f9', 0.3),
-      backdropFilter: 'blur(20px)',
-    },
-    // input: 'rgba(100,100,220,.04)',
-    // inputBorder: 'rgba(0,0,0,0)',// 'rgba(0, 0, 0, 0.12)',
-    // inputBorder: 'rgba(0, 0, 0, 0.11)',
-    toolbar: t.palette.mode === 'dark' ? t.palette.background.paper : 'rgb(237, 242, 250)', //'#e9eef6',
     success: '#00b79f',
     error: '#cf0040',
     warning: '#ff9800',
@@ -496,11 +506,9 @@ export const muiTheme = ({
       },
       MuiOutlinedInput: {
         styleOverrides: {
-          root: ({theme}) => ({
-            ...styleUtils(theme).color.inputBack,
-          }),
+          root: ({theme}) => ({}),
           notchedOutline: ({theme}) => ({
-            border: 'none',
+            ...styleUtils(theme).color.input.default,
           }),
           //   theme.palette.mode === 'light'
           //     ? {
@@ -640,7 +648,7 @@ const tableTheme = (t: Theme) => ({
     borderTop: `1px solid ${t.palette.divider}`,
   },
   '.table thead .td, .table thead .th': {
-    background: styleUtils(t).color.toolbar,
+    background: styleUtils(t).color.toolbar.default,
   },
   '.td-center': {
     textAlign: 'center !important',
