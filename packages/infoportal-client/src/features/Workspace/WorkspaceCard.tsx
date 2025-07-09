@@ -4,7 +4,7 @@ import {Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Panel} from '@/shared/Panel'
 import {Link} from 'react-router-dom'
-import {router} from '@/Router'
+import {appRouter} from '@/Router'
 
 export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
   const t = useTheme()
@@ -40,7 +40,7 @@ export const WorkspaceCard = ({workspace}: {workspace: Workspace}) => {
   const t = useTheme()
 
   return (
-    <Link to={router.ws(workspace.id).root}>
+    <Link to={appRouter.ws(workspace.id).root}>
       <Panel
         sx={{
           mb: 0,

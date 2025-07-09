@@ -1,4 +1,4 @@
-import {router} from '@/Router'
+import {appRouter} from '@/Router'
 import {useQueryWorkspace, useWorkspaceRouterMaybe} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
@@ -125,7 +125,7 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
         >
           <IpIconBtn children={lightThemeIcons[mode ?? 'system']} />
         </PopoverWrapper>
-        <Link to={router.root}>
+        <Link to={appRouter.root}>
           <IpIconBtn children="home" />
         </Link>
         <AppHeaderMenu />

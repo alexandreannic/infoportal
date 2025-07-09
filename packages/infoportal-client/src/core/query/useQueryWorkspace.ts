@@ -4,7 +4,7 @@ import {queryKeys} from '@/core/query/query.index'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {useMemo} from 'react'
-import {router} from '@/Router'
+import {appRouter} from '@/Router'
 import {duration} from '@axanc/ts-utils'
 
 export const useQueryWorkspace = () => {
@@ -55,8 +55,8 @@ export const useWorkspaceRouterMaybe = () => {
     const workspaceId = location.pathname.match(/^\/([^/]+)/)?.[1]
     // if (!workspaceId) throw new Error(`Missing workspaceId in URI '${location.pathname}'`)
     return {
-      router: router.ws(workspaceId),
-      changeWorkspace: (wsId: string) => navigate(router.ws(wsId).root),
+      router: appRouter.ws(workspaceId),
+      changeWorkspace: (wsId: string) => navigate(appRouter.ws(wsId).root),
       workspaceId,
     }
   }, [navigate, location])
@@ -69,8 +69,8 @@ export const useWorkspaceRouter = () => {
     const workspaceId = location.pathname.match(/^\/([^/]+)/)?.[1]
     if (!workspaceId) throw new Error(`Missing workspaceId in URI '${location.pathname}'`)
     return {
-      router: router.ws(workspaceId),
-      changeWorkspace: (wsId: string) => navigate(router.ws(wsId).root),
+      router: appRouter.ws(workspaceId),
+      changeWorkspace: (wsId: string) => navigate(appRouter.ws(wsId).root),
       workspaceId,
     }
   }, [navigate, location])

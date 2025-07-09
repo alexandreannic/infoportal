@@ -6,11 +6,12 @@ import {DatabaseTable} from '@/features/Database/KoboTable/DatabaseKoboTable'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {useEffect, useMemo} from 'react'
-import {useLocation, useParams} from 'react-router'
-import {NavLink, Outlet} from 'react-router-dom'
+import {Route, useLocation, useParams, useRoutes} from 'react-router'
+import {Navigate, NavLink, Outlet, useNavigate} from 'react-router-dom'
 import * as yup from 'yup'
 import {useQueryForm, useQueryFormById} from '@/core/query/useQueryForm'
 import {Page} from '@/shared'
+import {appRouter} from '@/Router'
 
 export const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -22,9 +23,10 @@ export const Database = () => {
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
   const {pathname} = useLocation()
+  const navigate = useNavigate()
   const {router} = useWorkspaceRouter()
 
-  const querySchema = useQuerySchema(formId)
+  const querySchema = useQuerySchema({formId, workspaceId})
   const queryForm = useQueryForm(workspaceId)
 
   const currentForm = useQueryFormById({workspaceId, formId})
@@ -39,6 +41,11 @@ export const Database = () => {
     return schema?.helper.group.search().map(_ => _.name)
   }, [schema])
 
+  useEffect(() => {
+    if (querySchema.status === 'success') navigate(appRouter.ws(workspaceId).database.form(formId).answers)
+    else navigate(appRouter.ws(workspaceId).database.form(formId).formCreator)
+  }, [querySchema.status])
+
   return (
     <>
       <Tabs variant="scrollable" scrollButtons="auto" value={pathname}>
@@ -50,6 +57,7 @@ export const Database = () => {
           value={router.database.form(formId).answers}
           to={router.database.form(formId).answers}
           label={m.data}
+          disabled={!schema}
         />
         <Tab
           icon={<Icon>edit</Icon>}

@@ -168,7 +168,7 @@ export const XlsFileUploadForm = ({
                 label: m.checkDiff,
                 component: () => {
                   const action = <StepperActions>{importButton(m.skipAndSubmit)}</StepperActions>
-                  if (querySchema.isPending || schemaJsonQuery.isPending) {
+                  if (querySchema.isLoading || schemaJsonQuery.isLoading) {
                     return (
                       <>
                         {action}
@@ -178,6 +178,7 @@ export const XlsFileUploadForm = ({
                   }
                   return (
                     <>
+                      <StepperActions disableNext={!schemaHasChanges}>{importButton(m.skipAndSubmit)}</StepperActions>
                       {!schemaHasChanges && (
                         <Alert color="error">
                           <AlertTitle>{m.xlsFormNoChangeTitle}</AlertTitle>
