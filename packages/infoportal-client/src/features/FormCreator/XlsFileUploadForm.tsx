@@ -1,7 +1,7 @@
 import {Controller, useForm} from 'react-hook-form'
 import {DragDropFileInput} from '@/shared/DragDropFileInput'
-import React, {useEffect, useMemo, useRef, useState} from 'react'
-import {IpBtn} from '@/shared'
+import React, {useRef, useState} from 'react'
+import {Fender, IpBtn} from '@/shared'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useI18n} from '@/core/i18n'
 import {Kobo} from 'kobo-sdk'
@@ -9,15 +9,11 @@ import {UUID} from 'infoportal-common'
 import {IpInput} from '@/shared/Input/Input'
 import {Alert, AlertTitle, CircularProgress, Skeleton} from '@mui/material'
 import {DiffView} from '@/features/FormCreator/DiffView'
-import * as xlsx from 'xlsx'
-import {SchemaParser} from '@/features/FormCreator/SchemaParser'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {Ip} from 'infoportal-api-sdk'
 import {Stepper, StepperHandle} from '@/shared/Stepper/Stepper'
 import {StepperActions} from '@/shared/Stepper/StepperActions'
-import {useQuery} from '@tanstack/react-query'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
-import {map, Obj} from '@axanc/ts-utils'
 import {Utils} from '@/utils/utils'
 
 type Form = {
@@ -56,15 +52,6 @@ export const XlsFileUploadForm = ({
   const watched = {
     xlsFile: form.watch('xlsFile'),
   }
-
-  const schemaJsonQuery = useQuery({
-    queryKey: ['schemaJson', map(watched.xlsFile, _ => _.name + _.size + _.lastModified)],
-    queryFn: async () => {
-      const data = await watched.xlsFile.arrayBuffer()
-      return SchemaParser.xlsToJson(xlsx.read(data, {type: 'array'}))
-    },
-    enabled: !!watched.xlsFile && (!validation?.code || validation.code < 200),
-  })
 
   const importButton = (label = m.skipAndSubmit) => (
     <IpBtn
@@ -120,7 +107,6 @@ export const XlsFileUploadForm = ({
                             if (!file) return
                             field.onChange({target: {value: file}})
                             stepperRef.current?.next()
-                            // form.setValue('xlsFile', file)
                             queryVersion.validateXls.mutateAsync(file).then(setValidation)
                           }}
                           sx={{mb: 1}}
@@ -168,13 +154,16 @@ export const XlsFileUploadForm = ({
                 label: m.checkDiff,
                 component: () => {
                   const action = <StepperActions>{importButton(m.skipAndSubmit)}</StepperActions>
-                  if (querySchema.isLoading || schemaJsonQuery.isLoading) {
+                  if (querySchema.isLoading) {
                     return (
                       <>
                         {action}
                         <Skeleton height={200} />
                       </>
                     )
+                  }
+                  if (!validation) {
+                    return <Fender type="error" title={m.error} />
                   }
                   return (
                     <>
@@ -187,7 +176,7 @@ export const XlsFileUploadForm = ({
                       )}
                       <DiffView
                         oldStr={schemaToString(querySchema.data)}
-                        newStr={schemaToString(schemaJsonQuery.data)}
+                        newStr={schemaToString(validation.schema)}
                         hasChanges={setSchemaHasChanges}
                         sx={{mt: 1}}
                       />

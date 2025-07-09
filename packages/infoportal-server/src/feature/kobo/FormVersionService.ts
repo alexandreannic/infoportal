@@ -9,7 +9,7 @@ import {Ip} from 'infoportal-api-sdk'
 export class FormVersionService {
   constructor(
     private prisma: PrismaClient,
-    private log = app.logger('SchemaService'),
+    private log = app.logger('FormVersionService'),
     private conf = appConf,
   ) {}
 
