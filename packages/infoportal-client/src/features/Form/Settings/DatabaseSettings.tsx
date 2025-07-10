@@ -41,7 +41,7 @@ export const DatabaseSettings = () => {
               onConfirm={async (e, close) => {
                 await queryRemove.mutateAsync({formId: form.id})
                 close()
-                navigate(appRouter.ws(workspaceId).database.list)
+                navigate(appRouter.ws(workspaceId).form.list)
               }}
             >
               <IpBtn color="error" variant="contained" icon="delete">

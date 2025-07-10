@@ -35,22 +35,22 @@ export const appRouter = {
         group: `/${wsId}/settings/group`,
         cache: `/${wsId}/settings/cache`,
       },
-      database: {
-        root: `/${wsId}/database`,
-        list: `/${wsId}/database/list`,
-        custom: (id = ':id') => `/${wsId}/database/custom/${id}`,
-        form: (formId = ':formId') => {
+      form: {
+        root: `/${wsId}/form`,
+        list: `/${wsId}/form/list`,
+        custom: (id = ':id') => `/${wsId}/form/custom/${id}`,
+        byId: (formId = ':formId') => {
           return {
-            root: `/${wsId}/database/${formId}`,
-            answers: `/${wsId}/database/${formId}/data`,
-            access: `/${wsId}/database/${formId}/access`,
-            settings: `/${wsId}/database/${formId}/settings`,
-            history: `/${wsId}/database/${formId}/history`,
-            formCreator: `/${wsId}/database/${formId}/form-creator`,
-            answer: (answerId = ':answerId') => `/${wsId}/database/${formId}/data/${answerId}`,
+            root: `/${wsId}/form/${formId}`,
+            answers: `/${wsId}/form/${formId}/data`,
+            access: `/${wsId}/form/${formId}/access`,
+            settings: `/${wsId}/form/${formId}/settings`,
+            history: `/${wsId}/form/${formId}/history`,
+            formCreator: `/${wsId}/form/${formId}/form-creator`,
+            answer: (answerId = ':answerId') => `/${wsId}/form/${formId}/data/${answerId}`,
             group: (group = ':group', id?: string, index?: number) => {
               const qs = (id?: string, index?: number) => (id ? '?' + objectToQueryString({id, index}) : '')
-              return `/${wsId}/database/${formId}/group/${group}${qs(id, index)}`
+              return `/${wsId}/form/${formId}/group/${group}${qs(id, index)}`
             },
           }
         },
@@ -82,16 +82,16 @@ export const Router = () => {
             <Route path={path(appRouter.ws().settings.cache)} element={<AdminCache />} />
             <Route index element={<Navigate to={path(appRouter.ws().settings.users)} />} />
           </Route>
-          <Route path={path(appRouter.ws().database.root)}>
-            <Route index path={path(appRouter.ws().database.list)} element={<Forms />} />
-            <Route path={path(appRouter.ws().database.form().root)} element={<Form />}>
-              <Route path={path(appRouter.ws().database.form().answer())} element={<DatabaseKoboAnswerViewPage />} />
-              <Route path={path(appRouter.ws().database.form().formCreator)} element={<FormBuilder />} />
-              <Route path={path(appRouter.ws().database.form().access)} element={<DatabaseAccess />} />
-              <Route path={path(appRouter.ws().database.form().history)} element={<DatabaseHistory />} />
-              <Route path={path(appRouter.ws().database.form().group(), 2)} element={<DatabaseKoboRepeatRoute />} />
-              <Route path={path(appRouter.ws().database.form().settings)} element={<DatabaseSettings />} />
-              <Route path={path(appRouter.ws().database.form().answers)} element={<DatabaseTableRoute />} />
+          <Route path={path(appRouter.ws().form.root)}>
+            <Route index path={path(appRouter.ws().form.list)} element={<Forms />} />
+            <Route path={path(appRouter.ws().form.byId().root)} element={<Form />}>
+              <Route path={path(appRouter.ws().form.byId().answer())} element={<DatabaseKoboAnswerViewPage />} />
+              <Route path={path(appRouter.ws().form.byId().formCreator)} element={<FormBuilder />} />
+              <Route path={path(appRouter.ws().form.byId().access)} element={<DatabaseAccess />} />
+              <Route path={path(appRouter.ws().form.byId().history)} element={<DatabaseHistory />} />
+              <Route path={path(appRouter.ws().form.byId().group(), 2)} element={<DatabaseKoboRepeatRoute />} />
+              <Route path={path(appRouter.ws().form.byId().settings)} element={<DatabaseSettings />} />
+              <Route path={path(appRouter.ws().form.byId().answers)} element={<DatabaseTableRoute />} />
               {/*<Route index element={<Navigate to={path(appRouter.ws().database.form().answers)} />} />*/}
               {/*Persisted components across routes. */}
               {/*<Route path={path(appRouter.ws().database.form().answers)} element={<></>} />*/}

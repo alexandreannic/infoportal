@@ -27,7 +27,7 @@ export const CreateNewForm = ({workspaceId}: {workspaceId: Ip.Uuid}) => {
       onSubmit={form.handleSubmit(async _ => {
         const newForm = await queryForm.create.mutateAsync(_)
         form.reset()
-        navigate(appRouter.ws(workspaceId).database.form(newForm.id).root)
+        navigate(appRouter.ws(workspaceId).form.byId(newForm.id).root)
       })}
     >
       <Panel>

@@ -27,7 +27,7 @@ export const DialogAnswerEdit = ({
     <Dialog open={true}>
       <DialogTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
-          <NavLink to={router.database.form(formId).answer(answer.id)} onClick={() => onClose()}>
+          <NavLink to={router.form.byId(formId).answer(answer.id)} onClick={() => onClose()}>
             <IpIconBtn color="primary">open_in_new</IpIconBtn>
           </NavLink>
           {answer.id}

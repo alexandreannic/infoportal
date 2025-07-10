@@ -79,7 +79,7 @@ export const DatabaseTableContent = ({
       schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,
       onRepeatGroupClick: _ =>
-        navigate(appRouter.ws(workspaceId).database.form(ctx.form.id).group(_.name, _.row.id, _.row._index)),
+        navigate(appRouter.ws(workspaceId).form.byId(ctx.form.id).group(_.name, _.row.id, _.row._index)),
       onEdit:
         selectedIds.length > 0
           ? questionName =>
@@ -98,7 +98,7 @@ export const DatabaseTableContent = ({
       formId: ctx.form.id,
       schema: ctx.schema,
       onRepeatGroupClick: _ =>
-        navigate(appRouter.ws(workspaceId).database.form(ctx.form.id).group(_.name, _.row.id, _.row._index)),
+        navigate(appRouter.ws(workspaceId).form.byId(ctx.form.id).group(_.name, _.row.id, _.row._index)),
       display: ctx.groupDisplay.get,
       m,
       t,

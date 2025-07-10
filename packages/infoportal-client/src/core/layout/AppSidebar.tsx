@@ -73,7 +73,7 @@ export const AppSidebar = () => {
       queryForm.accessibleForms.data?.map(_ => ({
         ..._,
         id: _.id,
-        url: router.database.form(_.id).root,
+        url: router.form.byId(_.id).root,
         archived: _.deploymentStatus === 'archived',
         name: _.name,
       })) ?? []
@@ -122,7 +122,7 @@ export const AppSidebar = () => {
           </SidebarItem>
         )}
       </NavLink>
-      <NavLink to={router.database.list}>
+      <NavLink to={router.form.list}>
         {({isActive, isPending}) => <SidebarItem icon="home">{m.forms}</SidebarItem>}
       </NavLink>
       <SidebarHr />

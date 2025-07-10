@@ -134,7 +134,7 @@ const DatabaseKoboRepeat = ({
       schema,
       t,
       m,
-      onRepeatGroupClick: _ => navigate(router.database.form(formId).group(_.name, _.row.id, _.row._index)),
+      onRepeatGroupClick: _ => navigate(router.form.byId(formId).group(_.name, _.row.id, _.row._index)),
       groupName: groupInfo.name,
     })
     return {
@@ -157,8 +157,8 @@ const DatabaseKoboRepeat = ({
         <NavLink
           to={
             groupInfo.depth > 1
-              ? router.database.form(formId).group(paths[paths.length - 2], qs.id)
-              : router.database.form(formId).answers
+              ? router.form.byId(formId).group(paths[paths.length - 2], qs.id)
+              : router.form.byId(formId).answers
           }
         >
           <IpBtn variant="contained" icon="arrow_back">

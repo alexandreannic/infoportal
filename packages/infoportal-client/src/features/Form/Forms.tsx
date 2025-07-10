@@ -171,7 +171,7 @@ export const Forms = () => {
                   align: 'right',
                   head: '',
                   renderQuick: _ => (
-                    <NavLink to={router.database.form(_.id).root}>
+                    <NavLink to={router.form.byId(_.id).root}>
                       <TableIconBtn color="primary" children="chevron_right" />
                     </NavLink>
                   ),

@@ -24,9 +24,9 @@ const useDefaultTabRedirect = ({workspaceId, formId}: {workspaceId: Ip.Uuid; for
   const querySchema = useQuerySchema({formId, workspaceId})
   useEffect(() => {
     if (querySchema.isLoading) return
-    if (location.pathname !== appRouter.ws(workspaceId).database.form(formId).root) return
-    if (querySchema.data) navigate(appRouter.ws(workspaceId).database.form(formId).answers)
-    else navigate(appRouter.ws(workspaceId).database.form(formId).formCreator)
+    if (location.pathname !== appRouter.ws(workspaceId).form.byId(formId).root) return
+    if (querySchema.data) navigate(appRouter.ws(workspaceId).form.byId(formId).answers)
+    else navigate(appRouter.ws(workspaceId).form.byId(formId).formCreator)
   }, [formId, querySchema.isLoading])
 }
 
@@ -84,8 +84,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={NavLink}
-          value={router.database.form(formId).answers}
-          to={router.database.form(formId).answers}
+          value={router.form.byId(formId).answers}
+          to={router.form.byId(formId).answers}
           label={m.data}
           disabled={!schema}
         />
@@ -94,8 +94,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={NavLink}
-          value={router.database.form(formId).formCreator}
-          to={router.database.form(formId).formCreator}
+          value={router.form.byId(formId).formCreator}
+          to={router.form.byId(formId).formCreator}
           label={m.form}
         />
         <Tab
@@ -103,8 +103,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={NavLink}
-          value={router.database.form(formId).access}
-          to={router.database.form(formId).access}
+          value={router.form.byId(formId).access}
+          to={router.form.byId(formId).access}
           disabled={!schema}
           label={m.access}
         />
@@ -113,8 +113,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={NavLink}
-          value={router.database.form(formId).history}
-          to={router.database.form(formId).history}
+          value={router.form.byId(formId).history}
+          to={router.form.byId(formId).history}
           label={m.history}
         />
         <Tab
@@ -122,8 +122,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={NavLink}
-          value={router.database.form(formId).settings}
-          to={router.database.form(formId).settings}
+          value={router.form.byId(formId).settings}
+          to={router.form.byId(formId).settings}
           label={m.settings}
         />
         {schema &&
@@ -134,8 +134,8 @@ export const Form = () => {
               key={_}
               sx={{minHeight: 34, py: 1}}
               component={NavLink}
-              value={router.database.form(formId).group(_)}
-              to={router.database.form(formId).group(_)}
+              value={router.form.byId(formId).group(_)}
+              to={router.form.byId(formId).group(_)}
               label={schema.translate.question(_)}
             />
           ))}
