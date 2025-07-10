@@ -1,4 +1,4 @@
-import {green, purple, orange, red} from '@mui/material/colors'
+import {green, orange, purple, red} from '@mui/material/colors'
 import {alpha, createTheme, darken, SxProps, Theme} from '@mui/material'
 import {lighten} from '@mui/system/colorManipulator'
 
@@ -99,7 +99,7 @@ export const styleUtils = (t: Theme) => ({
   color: {
     toolbar: {
       default: {
-        background: t.palette.mode === 'dark' ? t.palette.background.paper : 'rgb(237, 242, 250)',
+        background: t.palette.mode === 'dark' ? t.palette.background.paper : t.palette.background.default, //'rgb(237, 242, 250)',
       }, //'#e9eef6'
       active: {
         background: alpha(t.palette.primary.main, 0.2),
@@ -187,7 +187,8 @@ export const muiTheme = ({
             focusOpacity: 0.1,
           },
           background: {
-            default: 'rgba(255, 255, 255, 0.6)',
+            default: 'rgba(221, 231, 248, 0.6)',
+            // default: 'rgba(255, 255, 255, 0.6)',
             paper: 'rgba(255, 255, 255, 0.7)',
           },
         },
@@ -415,7 +416,7 @@ export const muiTheme = ({
           },
           root: {
             backdropFilter: 'blur(4px)',
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            backgroundColor: 'rgba(0, 0, 0, 0.08)',
             // backgroundColor: 'rgba(255, 255, 255, 0.5)',
           },
         },
@@ -645,10 +646,10 @@ const tableTheme = (t: Theme) => ({
     maxWidth: 102,
   },
   '.table thead': {
-    borderTop: `1px solid ${t.palette.divider}`,
+    // borderTop: `1px solid ${t.palette.divider}`,
   },
   '.table thead .td, .table thead .th': {
-    background: styleUtils(t).color.toolbar.default,
+    background: styleUtils(t).color.toolbar.default.background,
   },
   '.td-center': {
     textAlign: 'center !important',

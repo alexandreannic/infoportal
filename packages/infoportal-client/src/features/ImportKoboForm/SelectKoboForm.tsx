@@ -23,10 +23,11 @@ export const SelectKoboForm = ({serverId, onAdded}: {serverId: UUID; onAdded?: (
   })
 
   return (
-    <Panel loading={queryKoboForms.isLoading || queryForms.importFromKobo.isPending}>
+    <Panel>
       <PanelHead>{m.selectKoboForm}</PanelHead>
       <PanelBody>
         <Datatable
+          loading={queryKoboForms.isLoading || queryForms.importFromKobo.isPending}
           id="select-kobo-form"
           sx={{overflow: 'hidden', border: `1px solid ${t.palette.divider}`, borderRadius: t.shape.borderRadius + 'px'}}
           header={null}

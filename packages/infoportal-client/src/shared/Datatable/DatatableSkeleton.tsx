@@ -2,13 +2,13 @@ import {Skeleton} from '@mui/material'
 import {mapFor} from '@axanc/ts-utils'
 import React, {memo} from 'react'
 
-export const DatatableSkeleton = memo(() => {
+export const DatatableSkeleton = memo(({rows = 20, columns = 10}: {rows?: number; columns?: number}) => {
   return (
     <table className="table borderY">
       <tbody>
-        {mapFor(20, i => (
+        {mapFor(rows, i => (
           <tr className="tr" key={i}>
-            {mapFor(14, i => (
+            {mapFor(Math.min(columns, 14), i => (
               <td className="td" key={i}>
                 <Skeleton sx={{mx: 1}} />
               </td>

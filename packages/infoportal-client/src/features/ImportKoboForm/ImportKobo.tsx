@@ -10,7 +10,6 @@ import {UUID} from 'infoportal-common'
 import {SelectKoboForm} from '@/features/ImportKoboForm/SelectKoboForm'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useQueryServers} from '@/core/query/useQueryServers'
-import {Stepper} from '@/shared/Stepper/Stepper'
 import {FormSource} from '@prisma/client'
 import {fnSwitch, Obj} from '@axanc/ts-utils'
 import {CreateNewForm} from '@/features/ImportKoboForm/CreateNewForm'
@@ -67,18 +66,18 @@ export const ImportKobo = () => {
                         value={_.id}
                         title={_.name}
                         description={_.url}
-                        endContent={
-                          <IpIconBtn
-                            size="small"
-                            loading={queryServer.remove.isPending}
-                            onClick={e => {
-                              e.stopPropagation()
-                              handleDelete(_.id)
-                            }}
-                          >
-                            delete
-                          </IpIconBtn>
-                        }
+                        // endContent={
+                        //   <IpIconBtn
+                        //     size="small"
+                        //     loading={queryServer.remove.isPending}
+                        //     onClick={e => {
+                        //       e.stopPropagation()
+                        //       handleDelete(_.id)
+                        //     }}
+                        //   >
+                        //     delete
+                        //   </IpIconBtn>
+                        // }
                       />
                     ))}
                     <ScRadioGroupItem value={null} title={m.addNewKoboAccount} onClick={handleOpen} icon="add" />

@@ -146,7 +146,7 @@ export const DatabaseTableContent = ({
           hidden: ctx.view.hiddenColumns,
           onHide: ctx.view.setHiddenColumns,
         }}
-        contentProps={{sx: {maxHeight: 'calc(100vh - 211px)'}}}
+        contentProps={{sx: {maxHeight: 'calc(100vh - 216px)'}}}
         showExportBtn
         rowsPerPageOptions={[20, 50, 100, 200]}
         onFiltersChange={onFiltersChange}

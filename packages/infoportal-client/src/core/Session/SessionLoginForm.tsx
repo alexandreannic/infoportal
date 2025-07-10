@@ -1,7 +1,7 @@
 import {Box, ButtonBase, Icon, useTheme} from '@mui/material'
 import {DRCLogo} from '@/shared/logo/logo'
 import {Txt} from '@/shared/Txt'
-import React from 'react'
+import React, {ReactNode} from 'react'
 import {useMsal} from '@azure/msal-react'
 import {useEffectFn} from '@axanc/react-hooks'
 import {useI18n} from '@/core/i18n'
@@ -13,6 +13,7 @@ import {useAsync} from '@/shared/hook/useAsync'
 import {useGoogleLogin} from '@react-oauth/google'
 import {ButtonProps} from '@mui/material/Button'
 import {User} from '@/core/sdk/server/user/User'
+import {Panel} from '@/shared/Panel'
 
 const BtnLogin = ({
   title,
@@ -21,7 +22,7 @@ const BtnLogin = ({
   icon,
   ...props
 }: ButtonProps & {
-  icon: string
+  icon: ReactNode
   title: string
   desc?: string
 }) => {
@@ -30,29 +31,34 @@ const BtnLogin = ({
     <ButtonBase
       sx={{
         ...sx,
-        background: t.palette.background.paper,
-        boxShadow: t.shadows[2],
+        background: t.palette.background.default,
+        // border: '1px solid',
+        borderColor: t.palette.divider,
+        // boxShadow: t.shadows[2],
         display: 'flex',
         alignItems: 'center',
         // margin: 'auto',
         textAlign: 'left',
         // height: 80,
         minWidth: 300,
-        borderRadius: '8px',
+        height: 50,
+        borderRadius: parseInt('' + t.shape.borderRadius) - 2 + 'px',
         justifyContent: 'flex-start',
         py: 1,
         px: 2,
       }}
       {...props}
     >
-      <Icon sx={{mr: 2}}>{icon}</Icon>
+      <Box sx={{ml: -0.5, mr: 1, width: 50, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        {icon}
+      </Box>
       <Box>
         <Txt block size="big" bold>
           {title}
         </Txt>
-        <Txt block color="hint">
-          {desc}
-        </Txt>
+        {/*<Txt block color="hint">*/}
+        {/*  {desc}*/}
+        {/*</Txt>*/}
       </Box>
     </ButtonBase>
   )
@@ -112,30 +118,33 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: User) => void}) 
 
   return (
     <CenteredContent>
-      <Box
+      <Panel
         sx={{
-          border: t => `1px solid ${t.palette.divider}`,
           padding: 4,
-          borderRadius: '8px',
         }}
       >
         <DRCLogo sx={{margin: 'auto', display: 'block', mb: 2}} />
-        <Txt sx={{textAlign: 'center'}} size="title" block>
-          {m.title}
-        </Txt>
-        <Txt sx={{textAlign: 'center', mb: 4}} size="big" color="hint" block>
+        <Txt sx={{textAlign: 'center'}} size="big" color="hint" block>
           {m.subTitle}
         </Txt>
+        <Txt sx={{textAlign: 'center', mb: 4, fontSize: 40}} block>
+          {m.title}
+        </Txt>
 
-        <BtnLogin title={m.signInMicrosoft} desc={m.signInMicrosoftDesc} icon="login" onClick={loginWithMicrosoft} />
         <BtnLogin
+          title={m.signInMicrosoft}
+          desc={m.signInMicrosoftDesc}
+          icon={<img src="/microsoft.svg" alt="Logo" style={{width: '40px', height: 'auto'}} />}
+          onClick={loginWithMicrosoft}
+        />
+        <BtnLogin
+          icon={<img src="/google.svg" alt="Logo" style={{width: '30px', height: 'auto'}} />}
           title={m.signInGoogle}
           desc={m.signInGoogleDesc}
-          icon="android"
           onClick={() => googleLogin()}
           sx={{mt: 1}}
         />
-      </Box>
+      </Panel>
     </CenteredContent>
   )
 }

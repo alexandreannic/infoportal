@@ -42,10 +42,13 @@ export const FormBuilder = () => {
                 workspaceId={workspaceId}
                 formId={formId}
               />
-              {map(queryVersion.get.data, versions => versions.length > 0 && (
-                <Panel>
-                  <PanelHead
-                    action={
+              {map(
+                queryVersion.get.data,
+                versions =>
+                  versions.length > 0 && (
+                    <Panel>
+                      <PanelHead
+                        action={
                           <Modal
                             loading={queryVersion.deployLast.isPending}
                             title={m.confirm}
@@ -74,10 +77,11 @@ export const FormBuilder = () => {
                         {versionVisible < versions.length && (
                           <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />
                         )}
-                    {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
-                  </PanelBody>
-                </Panel>
-              ))}
+                        {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
+                      </PanelBody>
+                    </Panel>
+                  ),
+              )}
             </Grid>
             <Grid size={{xs: 12, md: 7}}>
               {active && <FormBuilderPreview workspaceId={workspaceId} formId={formId} versionId={active.id} />}

@@ -155,7 +155,7 @@ export const en = Object.freeze({
     refresh: 'Refresh',
     refreshTable: 'Refresh current data',
     grantAccess: 'Grant access',
-    title: 'InfoPortal (IP)',
+    title: 'Welcome',
     subTitle: 'InfoPortal (IP)',
     noDataAtm: 'No data at the moment',
     fileName: 'File name',
