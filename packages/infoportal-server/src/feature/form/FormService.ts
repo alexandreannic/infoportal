@@ -59,6 +59,17 @@ export class FormService {
     return (await this.prisma.koboForm.findFirst({where: {id}})) ?? undefined
   }
 
+  readonly remove = async (id: Kobo.FormId): Promise<number> => {
+    await Promise.any([
+      this.prisma.databaseView.deleteMany({where: {databaseId: id}}),
+      this.prisma.koboAnswers.deleteMany({where: {formId: id}}),
+      this.prisma.formVersion.deleteMany({where: {formId: id}}),
+      // this.prisma.featureAccess.deleteMany({where: {formId: id}}),
+    ])
+    await this.prisma.koboForm.delete({where: {id}})
+    return 1
+  }
+
   readonly getAll = async ({wsId}: {wsId: UUID}): Promise<Ip.Form[]> => {
     return this.prisma.koboForm.findMany({
       include: {

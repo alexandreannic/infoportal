@@ -6,17 +6,18 @@ import {IpIconBtn} from '@/shared/IconBtn'
 import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from '@mui/material'
 import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper} from 'infoportal-common'
-import {Kobo} from 'kobo-sdk'
 import {useRef} from 'react'
 import {NavLink} from 'react-router-dom'
 import {XlsFormFiller, XlsFormFillerHandle} from 'xls-form-filler'
+import {Ip} from 'infoportal-api-sdk'
 
 export const DialogAnswerEdit = ({
   onClose,
   payload: {schema, formId, answer},
 }: DialogProps<{
   schema: KoboSchemaHelper.Bundle
-  formId: Kobo.FormId
+  workspaceId: Ip.Uuid
+  formId: Ip.FormId
   answer: KoboMappedAnswer
 }>) => {
   const formRef = useRef<XlsFormFillerHandle>(null)

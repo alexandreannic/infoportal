@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {ReactNode, useEffect, useState} from 'react'
-import {Box, BoxProps, LinearProgress, Skeleton} from '@mui/material'
-import {Txt} from '@/shared'
+import {Box, BoxProps, CircularProgress, LinearProgress, Skeleton} from '@mui/material'
+import {CenteredContent, Txt} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 
 export interface PageProps extends BoxProps {
@@ -10,7 +10,7 @@ export interface PageProps extends BoxProps {
   className?: any
   style?: object
   loading?: boolean
-  children: ReactNode
+  children?: ReactNode
   animationDeps?: any[]
 }
 
@@ -83,10 +83,11 @@ export const Page = ({children, sx, loading, animation = 'default', animationDep
 
   return (
     <>
-      {loading && <LinearProgress />}
       <Box
+        className={'IpPage ' + (props.className ?? '')}
         {...props}
         sx={{
+          position: 'relative',
           transition: t => t.transitions.create('all', {easing: 'ease', duration: 160}),
           margin: 'auto',
           opacity: 0,
@@ -106,7 +107,13 @@ export const Page = ({children, sx, loading, animation = 'default', animationDep
           ...sx,
         }}
       >
-        {children}
+        {loading ? (
+          <CenteredContent>
+            <CircularProgress size={100} thickness={2} />
+          </CenteredContent>
+        ) : (
+          children
+        )}
       </Box>
     </>
   )

@@ -20,6 +20,8 @@ import {Settings} from './features/Settings/Settings'
 import {FormCreator} from './features/FormCreator/FormCreator'
 import {useWorkspaceRouterMaybe} from '@/core/query/useQueryWorkspace'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {DatabaseSettings} from '@/features/Database/Settings/DatabaseSettings'
+import {DatabaseTable, DatabaseTableRoute} from '@/features/Database/KoboTable/DatabaseKoboTable'
 
 export const appRouter = {
   root: '/',
@@ -43,6 +45,7 @@ export const appRouter = {
             root: `/${wsId}/database/${formId}`,
             answers: `/${wsId}/database/${formId}/data`,
             access: `/${wsId}/database/${formId}/access`,
+            settings: `/${wsId}/database/${formId}/settings`,
             history: `/${wsId}/database/${formId}/history`,
             formCreator: `/${wsId}/database/${formId}/form-creator`,
             answer: (answerId = ':answerId') => `/${wsId}/database/${formId}/data/${answerId}`,
@@ -88,9 +91,11 @@ export const Router = () => {
               <Route path={path(appRouter.ws().database.form().access)} element={<DatabaseAccess />} />
               <Route path={path(appRouter.ws().database.form().history)} element={<DatabaseHistory />} />
               <Route path={path(appRouter.ws().database.form().group(), 2)} element={<DatabaseKoboRepeatRoute />} />
-              {/*    <Route index element={<Navigate to={path(appRouter.ws().database.form().answers)} />} />*/}
+              <Route path={path(appRouter.ws().database.form().settings)} element={<DatabaseSettings />} />
+              <Route path={path(appRouter.ws().database.form().answers)} element={<DatabaseTableRoute />} />
+              {/*<Route index element={<Navigate to={path(appRouter.ws().database.form().answers)} />} />*/}
               {/*Persisted components across routes. */}
-              <Route path={path(appRouter.ws().database.form().answers)} element={<></>} />
+              {/*<Route path={path(appRouter.ws().database.form().answers)} element={<></>} />*/}
             </Route>
           </Route>
         </Route>

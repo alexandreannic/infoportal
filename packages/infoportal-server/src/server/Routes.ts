@@ -185,6 +185,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       ),
     },
     form: {
+      remove: ctrl({}, ({params}) => form.remove(params.formId)),
       get: ctrl({}, ({params}) => form.get(params.formId)),
       getAll: ctrl({}, ({params}) => form.getAll({wsId: params.workspaceId})),
       create: ctrl({}, ({req, body, params}) =>

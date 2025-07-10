@@ -44,12 +44,12 @@ export const getColumnsBase = ({
                 disabled={!canEdit}
                 tooltip={m.editKobo}
                 children="edit"
-                onClick={() => dialogs.openEdit({answer: _, formId: formId})}
+                onClick={() => dialogs.openEdit({answer: _, workspaceId, formId: formId})}
               />
               <TableIconBtn
                 tooltip={m.view}
                 children="visibility"
-                onClick={() => dialogs.openView({answer: _, formId: formId})}
+                onClick={() => dialogs.openView({answer: _, workspaceId, formId: formId})}
               />
               {/*<TableIconBtn*/}
               {/*  disabled={!canEdit}*/}

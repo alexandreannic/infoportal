@@ -106,6 +106,11 @@ export class Server {
     )
     app.use(bodyParser.json({limit: '512mb'}))
     app.use(bodyParser.urlencoded({extended: false}))
+    if (!appConf.production)
+      app.use((req, res, next) => {
+        const delay = 400 + Math.random() * 200 // 500–1500ms delay
+        setTimeout(next, delay)
+      })
     const {tsRestRoutes, rawRoutes} = getRoutes(this.pgClient)
     app.use(rawRoutes)
     createExpressEndpoints(ipContract, tsRestRoutes, app)

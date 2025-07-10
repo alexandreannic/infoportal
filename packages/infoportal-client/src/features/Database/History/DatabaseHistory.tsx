@@ -2,7 +2,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {KoboAnswerHistory} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistory'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {databaseUrlParamsValidation} from '@/features/Database/Database'
+import {databaseUrlParamsValidation, useFormContext} from '@/features/Database/Database'
 import {Txt} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Datatable} from '@/shared/Datatable/Datatable'
@@ -18,14 +18,11 @@ import {useParams} from 'react-router'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 
 export const DatabaseHistory = () => {
-  const {workspaceId} = useWorkspaceRouter()
-  const {formId} = databaseUrlParamsValidation.validateSync(useParams())
+  const {schema, workspaceId, form} = useFormContext()
   const t = useTheme()
   const {m, formatDateTime, formatDate} = useI18n()
   const {api} = useAppSettings()
-  const fetcher = useFetcher(() => api.kobo.answerHistory.search({formId}))
-  const querySchema = useQuerySchema({workspaceId, formId})
-  const schema = querySchema.data
+  const fetcher = useFetcher(() => api.kobo.answerHistory.search({formId: form.id}))
 
   useEffect(() => {
     fetcher.fetch()
@@ -74,7 +71,7 @@ export const DatabaseHistory = () => {
           showExportBtn
           loading={fetcher.loading}
           data={fetcher.get?.data}
-          id={`kobo-answer-history${formId}`}
+          id={`kobo-answer-history${form.id}`}
           columns={[
             // {
             //   type: 'string',

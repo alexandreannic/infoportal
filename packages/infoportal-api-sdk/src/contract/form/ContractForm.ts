@@ -68,6 +68,18 @@ export const formContract = c.router({
     },
   },
 
+  remove: {
+    method: 'DELETE',
+    path: '/:workspaceId/form/:formId',
+    pathParams: z.object({
+      workspaceId: schema.uuid,
+      formId: z.string(),
+    }),
+    responses: {
+      200: z.number(),
+    },
+  },
+
   getAll: {
     method: 'GET',
     path: '/:workspaceId/form',
@@ -98,6 +110,10 @@ export const formClient = (client: TsRestClient) => {
 
     create: ({workspaceId, ...body}: {workspaceId: Ip.Uuid; name: string; category?: string}) => {
       return client.form.create({params: {workspaceId}, body}).then(mapClientResponse).then(mapForm)
+    },
+
+    remove: ({formId, workspaceId}: {workspaceId: Ip.Uuid; formId: string}) => {
+      return client.form.remove({params: {workspaceId, formId}}).then(mapClientResponse)
     },
 
     get: ({formId, workspaceId}: {workspaceId: Ip.Uuid; formId: string}) => {

@@ -37,6 +37,18 @@ export const useQueryForm = (workspaceId: UUID) => {
     onError: toastHttpError,
   })
 
+  const remove = useMutation<number, ApiError, {formId: Ip.FormId}>({
+    mutationFn: args => apiv2.form.remove({workspaceId, ...args}),
+    onSuccess: (_, {formId}) => {
+      queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
+      queryClient.removeQueries({queryKey: queryKeys.form(workspaceId, formId)})
+      queryClient.removeQueries({queryKey: queryKeys.schema(workspaceId, formId)})
+      queryClient.removeQueries({queryKey: queryKeys.answers(formId)})
+      queryClient.removeQueries({queryKey: queryKeys.schemaByVersion(workspaceId, formId)})
+    },
+    onError: toastHttpError,
+  })
+
   const create = useMutation<Ip.Form, ApiError, Ip.Form.Payload.Create>({
     mutationFn: args => apiv2.form.create({workspaceId, ...args}),
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)}),
@@ -55,6 +67,7 @@ export const useQueryForm = (workspaceId: UUID) => {
   // }, [accessibleForms.data])
 
   return {
+    remove,
     categories,
     create,
     importFromKobo,

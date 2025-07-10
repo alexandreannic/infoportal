@@ -31,6 +31,7 @@ import {useNavigate} from 'react-router-dom'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useQueryFormById} from '@/core/query/useQueryForm'
+import {appRouter} from '@/Router'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -48,10 +49,10 @@ export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
 }
 
 export const DatabaseKoboTableContent = ({
+  workspaceId,
   onFiltersChange,
   onDataChange,
-}: Pick<DatabaseTableProps, 'onFiltersChange' | 'onDataChange'>) => {
-  const {router, workspaceId} = useWorkspaceRouter()
+}: Pick<DatabaseTableProps, 'workspaceId' | 'onFiltersChange' | 'onDataChange'>) => {
   const {m} = useI18n()
   const t = useTheme()
   const langIndex = useLangIndex(_ => _.langIndex)
@@ -79,7 +80,8 @@ export const DatabaseKoboTableContent = ({
       formId: ctx.form.id,
       schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,
-      onRepeatGroupClick: _ => navigate(router.database.form(ctx.form.id).group(_.name, _.row.id, _.row._index)),
+      onRepeatGroupClick: _ =>
+        navigate(appRouter.ws(workspaceId).database.form(ctx.form.id).group(_.name, _.row.id, _.row._index)),
       onEdit:
         selectedIds.length > 0
           ? questionName =>
@@ -97,7 +99,8 @@ export const DatabaseKoboTableContent = ({
       data: ctx.data ?? [],
       formId: ctx.form.id,
       schema: ctx.schema,
-      onRepeatGroupClick: _ => navigate(router.database.form(ctx.form.id).group(_.name, _.row.id, _.row._index)),
+      onRepeatGroupClick: _ =>
+        navigate(appRouter.ws(workspaceId).database.form(ctx.form.id).group(_.name, _.row.id, _.row._index)),
       display: ctx.groupDisplay.get,
       m,
       t,

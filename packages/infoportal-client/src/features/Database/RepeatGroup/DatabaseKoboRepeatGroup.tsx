@@ -18,6 +18,7 @@ import {useMemo} from 'react'
 import {NavLink, useNavigate, useParams, useSearchParams} from 'react-router-dom'
 import * as yup from 'yup'
 import {Ip} from 'infoportal-api-sdk'
+import {useFormContext} from '@/features/Database/Database'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -25,7 +26,7 @@ const databaseUrlParamsValidation = yup.object({
 })
 
 export const DatabaseKoboRepeatRoute = () => {
-  const {workspaceId} = useWorkspaceRouter()
+  const {workspaceId} = useFormContext()
   const {formId, group} = databaseUrlParamsValidation.validateSync(useParams())
   const querySchema = useQuerySchema({workspaceId, formId})
 

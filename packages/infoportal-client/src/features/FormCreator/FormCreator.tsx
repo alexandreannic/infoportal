@@ -12,6 +12,7 @@ import {map, seq} from '@axanc/ts-utils'
 import {VersionRow, VersionRowRoot, VersionRowShowMore} from '@/features/FormCreator/VersionRow'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {FormCreatorKoboFender} from '@/features/FormCreator/FormCreatorKoboFender'
+import {FormCreatorPreview} from '@/features/FormCreator/FormCreatorPreview'
 
 export const FormCreator = () => {
   const {m} = useI18n()
@@ -41,52 +42,46 @@ export const FormCreator = () => {
                 workspaceId={workspaceId}
                 formId={formId}
               />
+              {map(queryVersion.get.data, versions => versions.length > 0 && (
+                <Panel>
+                  <PanelHead
+                    action={
+                      <Modal
+                        loading={queryVersion.deployLast.isPending}
+                        title={m.confirm}
+                        onConfirm={() => queryVersion.deployLast.mutate({workspaceId, formId})}
+                      >
+                        <IpBtn
+                          icon="send"
+                          variant="contained"
+                          disabled={!draft}
+                          loading={queryVersion.deployLast.isPending}
+                        >
+                          {m.deployLastVersion}
+                        </IpBtn>
+                      </Modal>
+                    }
+                  >
+                    {m.versions}
+                  </PanelHead>
+                  <PanelBody>
+                    {seq(versions ?? [])
+                      .sortByNumber(_ => _.version, '9-0')
+                      .slice(0, versionVisible)
+                      .map(_ => (
+                        <VersionRow key={_.id} version={_} />
+                      ))}
+                    {versionVisible < versions.length && (
+                      <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />
+                    )}
+                    {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
+                  </PanelBody>
+                </Panel>
+              ))}
             </Grid>
             <Grid size={{xs: 12, md: 7}}>
-              <Panel>
-                <PanelHead
-                  action={
-                    <Modal
-                      loading={queryVersion.deployLast.isPending}
-                      title={m.confirm}
-                      onConfirm={() => queryVersion.deployLast.mutate({workspaceId, formId})}
-                    >
-                      <IpBtn
-                        icon="send"
-                        variant="contained"
-                        disabled={!draft}
-                        loading={queryVersion.deployLast.isPending}
-                      >
-                        {m.deployLastVersion}
-                      </IpBtn>
-                    </Modal>
-                  }
-                >
-                  {m.versions}
-                </PanelHead>
-                <PanelBody>
-                  {map(queryVersion.get.data, versions =>
-                    versions.length === 0 ? (
-                      <Fender type="empty">{m.noSurveyCreatedYet}</Fender>
-                    ) : (
-                      <>
-                        {seq(versions ?? [])
-                          .sortByNumber(_ => _.version, '9-0')
-                          .slice(0, versionVisible)
-                          .map(_ => (
-                            <VersionRow key={_.id} version={_} />
-                          ))}
-                        {versionVisible < versions.length && (
-                          <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />
-                        )}
-                        {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
-                      </>
-                    ),
-                  )}
-                </PanelBody>
-              </Panel>
+              {active && <FormCreatorPreview workspaceId={workspaceId} formId={formId} versionId={active.id} />}
               {/*{activeVersion && (*/}
-              {/*  <FormCreatorPreview workspaceId={workspaceId} formId={formId} versionId={activeVersion.id} />*/}
               {/*)}*/}
             </Grid>
           </Grid>

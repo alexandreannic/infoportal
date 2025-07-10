@@ -20,6 +20,8 @@ import {useQueryAccess} from '@/core/query/useQueryAccess'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {UUID} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
+import {useFormContext} from '@/features/Database/Database'
+import {Page} from '@/shared'
 
 export interface DatabaseTableProps {
   workspaceId: UUID
@@ -34,6 +36,15 @@ export interface DatabaseTableProps {
     filteredSortedAndPaginatedData?: ApiPaginate<KoboMappedAnswer>
   }) => void
   overrideEditAccess?: boolean
+}
+
+export const DatabaseTableRoute = () => {
+  const props = useFormContext()
+  return (
+    <Page width="full">
+      <DatabaseTable formId={props.form.id} workspaceId={props.workspaceId} form={props.form} />
+    </Page>
+  )
 }
 
 export const DatabaseTable = ({
@@ -94,7 +105,11 @@ export const DatabaseTable = ({
           loading={loading}
           data={queryAnswers.data?.data}
         >
-          <DatabaseKoboTableContent onFiltersChange={onFiltersChange} onDataChange={onDataChange} />
+          <DatabaseKoboTableContent
+            workspaceId={workspaceId}
+            onFiltersChange={onFiltersChange}
+            onDataChange={onDataChange}
+          />
         </DatabaseKoboTableProvider>
       ))}
     </Panel>

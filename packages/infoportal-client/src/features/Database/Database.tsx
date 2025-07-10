@@ -2,17 +2,17 @@ import {appConfig} from '@/conf/AppConfig'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {DatabaseTable} from '@/features/Database/KoboTable/DatabaseKoboTable'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
-import {Icon, Tab, Tabs} from '@mui/material'
+import {CircularProgress, Icon, Skeleton, Tab, Tabs} from '@mui/material'
 import {useEffect, useMemo} from 'react'
-import {useLocation, useParams} from 'react-router'
+import {useLocation, useOutletContext, useParams} from 'react-router'
 import {NavLink, Outlet, useNavigate} from 'react-router-dom'
 import * as yup from 'yup'
-import {useQueryForm, useQueryFormById} from '@/core/query/useQueryForm'
-import {Page} from '@/shared'
+import {useQueryFormById} from '@/core/query/useQueryForm'
 import {appRouter} from '@/Router'
 import {Ip} from 'infoportal-api-sdk'
+import {KoboSchemaHelper} from 'infoportal-common'
+import {CenteredContent, Page} from '@/shared'
 
 export const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
@@ -30,6 +30,14 @@ const useDefaultTabRedirect = ({workspaceId, formId}: {workspaceId: Ip.Uuid; for
   }, [formId, querySchema.isLoading])
 }
 
+export type FormContext = {
+  workspaceId: Ip.Uuid
+  form: Ip.Form
+  schema?: KoboSchemaHelper.Bundle
+}
+
+export const useFormContext = (): FormContext => useOutletContext<FormContext>()
+
 export const Database = () => {
   const {workspaceId} = useWorkspaceRouter()
   const {formId} = databaseUrlParamsValidation.validateSync(useParams())
@@ -39,14 +47,12 @@ export const Database = () => {
   const {router} = useWorkspaceRouter()
 
   const querySchema = useQuerySchema({formId, workspaceId})
-  const queryForm = useQueryForm(workspaceId)
-
-  const currentForm = useQueryFormById({workspaceId, formId})
+  const queryForm = useQueryFormById({workspaceId, formId})
 
   useEffect(() => {
-    if (currentForm.data) setTitle(m._koboDatabase.title(currentForm.data.name))
+    if (queryForm.data) setTitle(m._koboDatabase.title(queryForm.data.name))
     return () => setTitle(m._koboDatabase.title())
-  }, [queryForm.accessibleForms.data, formId])
+  }, [queryForm.data, formId])
 
   const schema = querySchema.data
   const repeatGroups = useMemo(() => {
@@ -54,6 +60,21 @@ export const Database = () => {
   }, [schema])
 
   useDefaultTabRedirect({workspaceId, formId})
+
+  const outlet = useMemo(() => {
+    if (queryForm.isPending || querySchema.isPending) {
+      return <Page width="full" loading={true} />
+    }
+    if (!queryForm.data) {
+      return <>ERROR</>
+    }
+    const context: FormContext = {
+      workspaceId,
+      form: queryForm.data,
+      schema: querySchema.data!,
+    }
+    return <Outlet context={context} />
+  }, [queryForm.status, queryForm.data, querySchema.status, querySchema.data, workspaceId])
 
   return (
     <>
@@ -84,6 +105,7 @@ export const Database = () => {
           component={NavLink}
           value={router.database.form(formId).access}
           to={router.database.form(formId).access}
+          disabled={!schema}
           label={m.access}
         />
         <Tab
@@ -100,8 +122,8 @@ export const Database = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={NavLink}
-          value={router.database.form(formId).history}
-          to={router.database.form(formId).history}
+          value={router.database.form(formId).settings}
+          to={router.database.form(formId).settings}
           label={m.settings}
         />
         {schema &&
@@ -118,13 +140,7 @@ export const Database = () => {
             />
           ))}
       </Tabs>
-      <Page
-        width="full"
-        sx={{p: 0, pb: 0, mb: 0, display: pathname === router.database.form(formId).answers ? 'block' : 'none'}}
-      >
-        <DatabaseTable workspaceId={workspaceId} form={currentForm.data} formId={formId} />
-      </Page>
-      <Outlet />
+      {outlet}
     </>
   )
 }

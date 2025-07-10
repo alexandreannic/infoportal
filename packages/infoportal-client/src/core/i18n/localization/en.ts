@@ -304,6 +304,8 @@ export const en = Object.freeze({
       `For privacy reasons, you will not be able to change it later without contacting ${admin}.`,
     select: 'Select',
     creation: 'Creation',
+    deleteThisProject: 'Delete this form',
+    deleteThisProjectDesc: 'Once you delete a form, there is no going back. Please be certain.',
     accountName: 'Account name',
     firstName: 'First name',
     patronyme: 'Patronyme',

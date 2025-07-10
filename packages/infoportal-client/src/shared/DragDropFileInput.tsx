@@ -53,7 +53,7 @@ export function DragDropFileInput({
         borderRadius: t.shape.borderRadius + 'px',
         p: 3,
         border: '2px dashed',
-        backgroundColor: isDragActive ? t.palette.primary.light : styleUtils(t).color.inputBack,
+        backgroundColor: isDragActive ? t.palette.primary.light : styleUtils(t).color.toolbar.default.background,
         borderColor: error ? 'primary.error.main' : isDragActive ? 'primary.main' : t.palette.divider,
         textAlign: 'center',
         cursor: 'pointer',
