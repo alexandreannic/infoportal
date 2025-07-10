@@ -63,7 +63,11 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
             <Row icon="email">{me.email}</Row>
             <Row icon="badge">{me.drcJob}</Row>
             {me.admin && (
-              <Row icon="offline_pin" sxText={{color: t.palette.success.main, fontWeight: t.typography.fontWeightBold}} sxIcon={{color: t.palette.success.main}}>
+              <Row
+                icon="offline_pin"
+                sxText={{color: t.palette.success.main, fontWeight: t.typography.fontWeightBold}}
+                sxIcon={{color: t.palette.success.main}}
+              >
                 {m.admin}
               </Row>
             )}

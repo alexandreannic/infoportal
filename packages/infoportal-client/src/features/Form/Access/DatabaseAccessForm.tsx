@@ -1,4 +1,3 @@
-import {Kobo} from 'kobo-sdk'
 import {KoboCustomDirective, KoboSchemaHelper, nullValuesToUndefined, UUID} from 'infoportal-common'
 import {AppFeatureId} from '@/features/appFeatureId'
 import React, {ReactElement, useCallback, useMemo} from 'react'

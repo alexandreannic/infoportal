@@ -1,6 +1,5 @@
-import {FeatureAccessLevel, Prisma, PrismaClient} from '@prisma/client'
-import {appConf, AppConf} from './conf/AppConf.js'
-import {AppFeatureId, KoboDatabaseFeatureParams} from '../feature/access/AccessType.js'
+import {Prisma, PrismaClient} from '@prisma/client'
+import {AppConf} from './conf/AppConf.js'
 
 export const createdBySystem = 'SYSTEM'
 

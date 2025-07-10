@@ -1,10 +1,9 @@
-import {convertNumberIndexToLetter} from 'infoportal-common'
+import {convertNumberIndexToLetter, KoboSubmissionMetaData} from 'infoportal-common'
 import XlsxPopulate from 'xlsx-populate'
 import {PrismaClient} from '@prisma/client'
 import {DbKoboAnswer, KoboService} from './KoboService.js'
 import {appConf} from '../../core/conf/AppConf.js'
 import {Kobo} from 'kobo-sdk'
-import {KoboSubmissionMetaData} from 'infoportal-common'
 
 /** @deprecated??*/
 export class KoboToXLS {

@@ -4,7 +4,6 @@ import {InferType} from 'yup'
 import {UUID} from 'infoportal-common'
 import {format} from 'date-fns'
 import {AppFeatureId} from '../access/AccessType.js'
-import {AppSession} from '../session/AppSession.js'
 
 export type GroupCreateParams = InferType<typeof GroupService.schema.create>
 export type GroupUpdateParams = InferType<typeof GroupService.schema.update>

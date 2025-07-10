@@ -67,7 +67,6 @@ const path = (route: string, tokensToKeep = 1) => {
 
 export const Router = () => {
   const {workspaceId} = useWorkspaceRouterMaybe()
-  // const querySchema = useQuerySchema({formId, workspaceId})
 
   return (
     <Layout header={<AppHeader />} sidebar={workspaceId ? <AppSidebar /> : undefined}>

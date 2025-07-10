@@ -32,7 +32,7 @@ import {useMemo, useState} from 'react'
 import {useParams} from 'react-router'
 import {NavLink} from 'react-router-dom'
 import * as yup from 'yup'
-import {useQueryForm, useQueryFormById} from '@/core/query/useQueryForm'
+import {useQueryFormById} from '@/core/query/useQueryForm'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),

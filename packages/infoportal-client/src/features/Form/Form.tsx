@@ -3,7 +3,7 @@ import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
-import {CircularProgress, Icon, Skeleton, Tab, Tabs} from '@mui/material'
+import {Icon, Tab, Tabs} from '@mui/material'
 import {useEffect, useMemo} from 'react'
 import {useLocation, useOutletContext, useParams} from 'react-router'
 import {NavLink, Outlet, useNavigate} from 'react-router-dom'
@@ -12,7 +12,7 @@ import {useQueryFormById} from '@/core/query/useQueryForm'
 import {appRouter} from '@/Router'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
-import {CenteredContent, Page} from '@/shared'
+import {Page} from '@/shared'
 
 export const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),

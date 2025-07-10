@@ -1,5 +1,4 @@
 import {duration} from '@axanc/ts-utils'
-import {WorkspaceAccessLevel} from '@prisma/client'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'

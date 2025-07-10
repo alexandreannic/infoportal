@@ -4,7 +4,6 @@ import {InferType} from 'yup'
 import {UUID} from 'infoportal-common'
 import {app, AppCacheKey} from '../../index.js'
 import {duration} from '@axanc/ts-utils'
-import {Request} from 'express'
 
 const clearCache = <T>(t: T): T => {
   app.cache.clear(AppCacheKey.Proxy)

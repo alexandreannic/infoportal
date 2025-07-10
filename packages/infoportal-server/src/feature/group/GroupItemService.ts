@@ -24,7 +24,7 @@ export class GroupItemService {
       drcJob: AccessService.drcJobSchema.optional().nullable(),
       drcOffice: AccessService.drcOfficeSchema.optional().nullable(),
       email: yup.string().optional().nullable(),
-    })
+    }),
   }
   static readonly createSchema = yup.object({
     level: AccessService.levelSchema,

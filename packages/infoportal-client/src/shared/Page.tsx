@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {ReactNode, useEffect, useState} from 'react'
-import {Box, BoxProps, CircularProgress, LinearProgress, Skeleton} from '@mui/material'
+import {Box, BoxProps, CircularProgress, Skeleton} from '@mui/material'
 import {CenteredContent, Txt} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 

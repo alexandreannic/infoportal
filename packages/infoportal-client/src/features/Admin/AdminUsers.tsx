@@ -13,7 +13,6 @@ import {seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {AddUserForm} from './AddUserForm'
-import {useQuerySession} from '@/core/query/useQuerySession'
 import {useQueryUser} from '@/core/query/useQueryUser'
 import {useSession} from '@/core/Session/SessionContext'
 

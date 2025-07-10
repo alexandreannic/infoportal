@@ -18,7 +18,7 @@ export class ControllerKoboServer {
     }),
     id: idParamsSchema,
   }
-  
+
   readonly getAll = async (req: Request, res: Response, next: NextFunction) => {
     const servers = await this.pgClient.koboServer.findMany({where: {workspaceId: req.params.workspaceId}})
     res.send(servers)

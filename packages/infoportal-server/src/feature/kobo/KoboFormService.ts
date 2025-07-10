@@ -9,7 +9,6 @@ import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {Ip} from 'infoportal-api-sdk'
 
 export class KoboFormService {
-
   constructor(
     private prisma: PrismaClient,
     private koboSdk = KoboSdkGenerator.getSingleton(prisma),

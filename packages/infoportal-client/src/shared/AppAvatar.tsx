@@ -1,7 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Box, BoxProps, Icon} from '@mui/material'
 import {makeStyles} from 'tss-react/mui'
-import {useWorkspaceRouter, useWorkspaceRouterMaybe} from '@/core/query/useQueryWorkspace'
 
 const useStyles = makeStyles<{url?: string; size: number; tooltipSize?: number}>()((t, {url, size, tooltipSize}) => ({
   root: {

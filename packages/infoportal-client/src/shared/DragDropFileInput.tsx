@@ -1,5 +1,4 @@
-import {Box, Typography, Paper, Icon, useTheme, Chip, BoxProps, Alert} from '@mui/material'
-import UploadFileIcon from '@mui/icons-material/UploadFile'
+import {Alert, Box, BoxProps, Chip, Icon, useTheme} from '@mui/material'
 import {useCallback, useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'

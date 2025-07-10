@@ -2,7 +2,6 @@ import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
 import {AccessService} from '../../feature/access/AccessService.js'
 import {GroupItemService} from '../../feature/group/GroupItemService.js'
-import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {GroupService} from '../../feature/group/GroupService.js'
 
 export class ControllerGroup {

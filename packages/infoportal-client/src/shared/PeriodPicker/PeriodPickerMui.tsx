@@ -120,7 +120,7 @@ const BrowserMultiInputDateRangeField = React.forwardRef<HTMLDivElement, any>((p
     rootProps: {
       startInputRef,
       endInputRef,
-    } ,
+    },
     manager,
     startTextFieldProps,
     endTextFieldProps,

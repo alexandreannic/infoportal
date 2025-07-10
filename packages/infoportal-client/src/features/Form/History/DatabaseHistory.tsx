@@ -1,8 +1,7 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {KoboAnswerHistory} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistory'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {databaseUrlParamsValidation, useFormContext} from '@/features/Form/Form'
+import {useFormContext} from '@/features/Form/Form'
 import {Txt} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Datatable} from '@/shared/Datatable/Datatable'
@@ -14,8 +13,6 @@ import {TableIcon} from '@/shared/TableIcon'
 import {fnSwitch, map} from '@axanc/ts-utils'
 import {alpha, Icon, useTheme} from '@mui/material'
 import {useEffect} from 'react'
-import {useParams} from 'react-router'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 
 export const DatabaseHistory = () => {
   const {schema, workspaceId, form} = useFormContext()

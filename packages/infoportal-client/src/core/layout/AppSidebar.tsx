@@ -9,7 +9,6 @@ import {Controller, useForm} from 'react-hook-form'
 import {NavLink} from 'react-router-dom'
 import {styleUtils} from '../theme'
 import {useQueryForm} from '@/core/query/useQueryForm'
-import {IpInput, IpInputProps} from '@/shared/Input/Input'
 
 type Form = {
   id: string

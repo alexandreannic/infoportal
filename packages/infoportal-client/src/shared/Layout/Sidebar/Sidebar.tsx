@@ -8,7 +8,6 @@ import {SidebarHeader} from './SidebarHeader'
 import {useI18n} from '@/core/i18n'
 import {Utils} from '@/utils/utils'
 import stopPropagation = Utils.stopPropagation
-import {spacing} from '@mui/system'
 
 const sidebarWidth = 270
 

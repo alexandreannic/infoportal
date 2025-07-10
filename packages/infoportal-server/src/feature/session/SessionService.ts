@@ -5,10 +5,8 @@ import {AuthenticationProviderOptions} from '@microsoft/microsoft-graph-client/s
 import {Client} from '@microsoft/microsoft-graph-client'
 import {SessionError} from './SessionErrors.js'
 import {google} from 'googleapis'
-import {GroupService} from '../group/GroupService.js'
 import {WorkspaceService} from '../workspace/WorkspaceService.js'
-import {AccessService} from '../access/AccessService.js'
-import {AppSession, UserProfile} from './AppSession.js'
+import {UserProfile} from './AppSession.js'
 
 // import {User} from '@microsoft/msgraph-sdk-javascript/lib/src/models/user'
 

@@ -2,10 +2,7 @@ import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQueryAnswer} from '@/core/query/useQueryAnswer'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {
-  columnBySchemaGenerator,
-  ColumnBySchemaGeneratorProps,
-} from '@/features/Form/Database/columns/columnBySchema'
+import {columnBySchemaGenerator, ColumnBySchemaGeneratorProps} from '@/features/Form/Database/columns/columnBySchema'
 import {IpBtn, Page} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'

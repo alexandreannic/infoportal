@@ -1,5 +1,5 @@
-import {Fender, IpBtn, Modal, Page} from '@/shared'
-import {Alert, AlertTitle, Grid} from '@mui/material'
+import {IpBtn, Modal, Page} from '@/shared'
+import {Grid} from '@mui/material'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
 import React, {useMemo, useState} from 'react'
@@ -46,34 +46,34 @@ export const FormBuilder = () => {
                 <Panel>
                   <PanelHead
                     action={
-                      <Modal
-                        loading={queryVersion.deployLast.isPending}
-                        title={m.confirm}
-                        onConfirm={() => queryVersion.deployLast.mutate({workspaceId, formId})}
+                          <Modal
+                            loading={queryVersion.deployLast.isPending}
+                            title={m.confirm}
+                            onConfirm={() => queryVersion.deployLast.mutate({workspaceId, formId})}
+                          >
+                            <IpBtn
+                              icon="send"
+                              variant="contained"
+                              disabled={!draft}
+                              loading={queryVersion.deployLast.isPending}
+                            >
+                              {m.deployLastVersion}
+                            </IpBtn>
+                          </Modal>
+                        }
                       >
-                        <IpBtn
-                          icon="send"
-                          variant="contained"
-                          disabled={!draft}
-                          loading={queryVersion.deployLast.isPending}
-                        >
-                          {m.deployLastVersion}
-                        </IpBtn>
-                      </Modal>
-                    }
-                  >
-                    {m.versions}
-                  </PanelHead>
-                  <PanelBody>
-                    {seq(versions ?? [])
-                      .sortByNumber(_ => _.version, '9-0')
-                      .slice(0, versionVisible)
-                      .map(_ => (
-                        <VersionRow key={_.id} version={_} />
-                      ))}
-                    {versionVisible < versions.length && (
-                      <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />
-                    )}
+                        {m.versions}
+                      </PanelHead>
+                      <PanelBody>
+                        {seq(versions ?? [])
+                          .sortByNumber(_ => _.version, '9-0')
+                          .slice(0, versionVisible)
+                          .map(_ => (
+                            <VersionRow key={_.id} version={_} />
+                          ))}
+                        {versionVisible < versions.length && (
+                          <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />
+                        )}
                     {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
                   </PanelBody>
                 </Panel>
