@@ -11,7 +11,7 @@ import {map, seq} from '@axanc/ts-utils'
 import {useI18n} from '@/core/i18n'
 import {AccessForm, IAccessForm} from '@/features/Access/AccessForm'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
-import {DirectiveTemplate, koboIconMap} from '@/features/Database/KoboTable/columns/columnBySchema'
+import {DirectiveTemplate, koboIconMap} from '@/features/Form/Database/columns/columnBySchema'
 import {useQueryAccess} from '@/core/query/useQueryAccess'
 import {Ip} from 'infoportal-api-sdk'
 

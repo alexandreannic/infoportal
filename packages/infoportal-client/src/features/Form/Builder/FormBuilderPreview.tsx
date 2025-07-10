@@ -5,7 +5,7 @@ import React from 'react'
 import {useI18n} from '@/core/i18n'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 
-export const FormCreatorPreview = ({
+export const FormBuilderPreview = ({
   workspaceId,
   formId,
   versionId,

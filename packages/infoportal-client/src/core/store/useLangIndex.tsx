@@ -1,5 +1,5 @@
-import {DialogAnswerEdit} from '@/features/Database/Dialog/DialogAnswerEdit'
-import {DialogAnswerView} from '@/features/Database/Dialog/DialogAnswerView'
+import {DialogAnswerEdit} from '@/features/Form/dialogs/DialogAnswerEdit'
+import {DialogAnswerView} from '@/features/Form/dialogs/DialogAnswerView'
 import {useQueryClient} from '@tanstack/react-query'
 import {useDialogs} from '@toolpad/core'
 import {KoboSubmissionFlat} from 'infoportal-common'

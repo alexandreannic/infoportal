@@ -16,7 +16,7 @@ import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {formatDate, formatDateTime, Messages} from '@/core/i18n/localization/en'
-import {KoboExternalFilesIndex} from '@/features/Database/KoboTable/DatabaseKoboContext'
+import {KoboExternalFilesIndex} from '@/features/Form/Database/DatabaseContext'
 import DOMPurify from 'dompurify'
 import {Kobo} from 'kobo-sdk'
 

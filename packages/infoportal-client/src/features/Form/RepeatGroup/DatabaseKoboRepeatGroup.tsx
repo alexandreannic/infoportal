@@ -5,7 +5,7 @@ import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {
   columnBySchemaGenerator,
   ColumnBySchemaGeneratorProps,
-} from '@/features/Database/KoboTable/columns/columnBySchema'
+} from '@/features/Form/Database/columns/columnBySchema'
 import {IpBtn, Page} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
@@ -18,7 +18,7 @@ import {useMemo} from 'react'
 import {NavLink, useNavigate, useParams, useSearchParams} from 'react-router-dom'
 import * as yup from 'yup'
 import {Ip} from 'infoportal-api-sdk'
-import {useFormContext} from '@/features/Database/Database'
+import {useFormContext} from '@/features/Form/Form'
 
 const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),

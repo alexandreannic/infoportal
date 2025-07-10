@@ -188,7 +188,7 @@ export const muiTheme = ({
           },
           background: {
             default: 'rgba(255, 255, 255, 0.6)',
-            paper: 'rgba(255, 255, 255, 0.65)',
+            paper: 'rgba(255, 255, 255, 0.7)',
           },
         },
       },

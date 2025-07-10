@@ -8,8 +8,8 @@ import {useForm} from 'react-hook-form'
 import {DatabaseViewVisibility} from '@/core/sdk/server/databaseView/DatabaseView'
 import {PanelTitle} from '@/shared/Panel'
 import {IpAlert} from '@/shared'
-import {DatabaseViewInputRow} from '@/features/Database/KoboTable/view/DatabaseViewInputRow'
-import {DatabaseViewDefaultName, UseDatabaseView} from '@/features/Database/KoboTable/view/useDatabaseView'
+import {DatabaseViewInputRow} from '@/features/Form/Database/view/DatabaseViewInputRow'
+import {DatabaseViewDefaultName, UseDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
 import {useSession} from '@/core/Session/SessionContext'
 
 interface FormCreate {

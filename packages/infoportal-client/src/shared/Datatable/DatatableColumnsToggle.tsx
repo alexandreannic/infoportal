@@ -7,7 +7,7 @@ import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {IpBtn} from '@/shared/Btn'
 import {useSetState} from '@axanc/react-hooks'
 import {IpAlert} from '@/shared/Alert'
-import {DatatableHeadTypeIconByKoboType} from '@/features/Database/KoboTable/columns/columnBySchema'
+import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/columnBySchema'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 
 interface DatatableColumnToggleProps

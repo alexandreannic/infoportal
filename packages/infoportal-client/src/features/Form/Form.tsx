@@ -38,7 +38,7 @@ export type FormContext = {
 
 export const useFormContext = (): FormContext => useOutletContext<FormContext>()
 
-export const Database = () => {
+export const Form = () => {
   const {workspaceId} = useWorkspaceRouter()
   const {formId} = databaseUrlParamsValidation.validateSync(useParams())
   const {m} = useI18n()

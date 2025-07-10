@@ -1,21 +1,20 @@
 import {appConfig} from '@/conf/AppConfig'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useSession} from '@/core/Session/SessionContext'
 import {useIpToast} from '@/core/useToast'
-import {columnBySchemaGenerator} from '@/features/Database/KoboTable/columns/columnBySchema'
-import {getColumnsBase} from '@/features/Database/KoboTable/columns/columnsBase'
-import {useCustomSelectedHeader} from '@/features/Database/KoboTable/customization/useCustomSelectedHeader'
-import {DatabaseImportBtn} from '@/features/Database/KoboTable/DatabaseImportBtn'
-import {useDatabaseKoboTableContext} from '@/features/Database/KoboTable/DatabaseKoboContext'
-import {DatabaseKoboSyncBtn} from '@/features/Database/KoboTable/DatabaseKoboSyncBtn'
-import {DatabaseTableProps} from '@/features/Database/KoboTable/DatabaseKoboTable'
-import {generateEmptyXlsTemplate} from '@/features/Database/KoboTable/generateEmptyXlsFile'
-import {databaseKoboDisplayBuilder} from '@/features/Database/KoboTable/groupDisplay/DatabaseKoboDisplay'
-import {DatabaseViewInput} from '@/features/Database/KoboTable/view/DatabaseViewInput'
-import {getColumnsForRepeatGroup} from '@/features/Database/RepeatGroup/DatabaseKoboRepeatGroup'
+import {columnBySchemaGenerator} from '@/features/Form/Database/columns/columnBySchema'
+import {getColumnsBase} from '@/features/Form/Database/columns/columnsBase'
+import {useCustomSelectedHeader} from '@/features/Form/Database/customization/useCustomSelectedHeader'
+import {DatabaseImportBtn} from '@/features/Form/Database/DatabaseImportBtn'
+import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
+import {DatabaseKoboSyncBtn} from '@/features/Form/Database/DatabaseKoboSyncBtn'
+import {DatabaseTableProps} from '@/features/Form/Database/DatabaseTable'
+import {generateEmptyXlsTemplate} from '@/features/Form/Database/generateEmptyXlsFile'
+import {databaseKoboDisplayBuilder} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
+import {DatabaseViewInput} from '@/features/Form/Database/view/DatabaseViewInput'
+import {getColumnsForRepeatGroup} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {useKoboDialogs, useLangIndex} from '@/core/store/useLangIndex'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
@@ -30,7 +29,6 @@ import {useMemo, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
-import {useQueryFormById} from '@/core/query/useQueryForm'
 import {appRouter} from '@/Router'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
@@ -48,7 +46,7 @@ export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   )
 }
 
-export const DatabaseKoboTableContent = ({
+export const DatabaseTableContent = ({
   workspaceId,
   onFiltersChange,
   onDataChange,

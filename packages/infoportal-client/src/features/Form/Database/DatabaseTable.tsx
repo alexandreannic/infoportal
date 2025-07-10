@@ -5,8 +5,8 @@ import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {AccessLevel} from '@/core/sdk/server/access/Access'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useSession} from '@/core/Session/SessionContext'
-import {DatabaseKoboTableProvider} from '@/features/Database/KoboTable/DatabaseKoboContext'
-import {DatabaseKoboTableContent} from '@/features/Database/KoboTable/DatabaseKoboTableContent'
+import {DatabaseKoboTableProvider} from '@/features/Form/Database/DatabaseContext'
+import {DatabaseTableContent} from '@/features/Form/Database/DatabaseTableContent'
 import {DatatableSkeleton} from '@/shared/Datatable/DatatableSkeleton'
 import {DatatableFilterValue} from '@/shared/Datatable/util/datatableType'
 import {FetchParams} from '@/shared/hook/useFetchers'
@@ -20,7 +20,7 @@ import {useQueryAccess} from '@/core/query/useQueryAccess'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {UUID} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
-import {useFormContext} from '@/features/Database/Database'
+import {useFormContext} from '@/features/Form/Form'
 import {Page} from '@/shared'
 
 export interface DatabaseTableProps {
@@ -105,7 +105,7 @@ export const DatabaseTable = ({
           loading={loading}
           data={queryAnswers.data?.data}
         >
-          <DatabaseKoboTableContent
+          <DatabaseTableContent
             workspaceId={workspaceId}
             onFiltersChange={onFiltersChange}
             onDataChange={onDataChange}

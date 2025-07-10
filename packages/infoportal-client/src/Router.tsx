@@ -1,11 +1,11 @@
-import {Navigate, Outlet, Route, Routes} from 'react-router-dom'
+import {Navigate, Route, Routes} from 'react-router-dom'
 import {objectToQueryString} from 'infoportal-common'
-import {Database} from '@/features/Database/Database'
-import {DatabaseList} from './features/Database/DatabaseList'
-import {DatabaseAccess} from './features/Database/Access/DatabaseAccess'
-import {DatabaseKoboAnswerViewPage} from '@/features/Database/Dialog/DialogAnswerView'
-import {DatabaseKoboRepeatRoute} from './features/Database/RepeatGroup/DatabaseKoboRepeatGroup'
-import {DatabaseHistory} from '@/features/Database/History/DatabaseHistory'
+import {Form} from '@/features/Form/Form'
+import {Forms} from '@/features/Form/Forms'
+import {DatabaseAccess} from '@/features/Form/Access/DatabaseAccess'
+import {DatabaseKoboAnswerViewPage} from '@/features/Form/dialogs/DialogAnswerView'
+import {DatabaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
+import {DatabaseHistory} from '@/features/Form/History/DatabaseHistory'
 import {ImportKobo} from '@/features/ImportKoboForm/ImportKobo'
 import {AdminUsers} from '@/features/Admin/AdminUsers'
 import {AdminProxy} from '@/features/Admin/AdminProxy'
@@ -17,11 +17,10 @@ import {Layout} from './shared/Layout/Layout'
 import {AppSidebar} from './core/layout/AppSidebar'
 import {AppHeader} from './core/layout/AppHeader'
 import {Settings} from './features/Settings/Settings'
-import {FormCreator} from './features/FormCreator/FormCreator'
+import {FormBuilder} from '@/features/Form/Builder/FormBuilder'
 import {useWorkspaceRouterMaybe} from '@/core/query/useQueryWorkspace'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {DatabaseSettings} from '@/features/Database/Settings/DatabaseSettings'
-import {DatabaseTable, DatabaseTableRoute} from '@/features/Database/KoboTable/DatabaseKoboTable'
+import {DatabaseSettings} from '@/features/Form/Settings/DatabaseSettings'
+import {DatabaseTableRoute} from '@/features/Form/Database/DatabaseTable'
 
 export const appRouter = {
   root: '/',
@@ -84,10 +83,10 @@ export const Router = () => {
             <Route index element={<Navigate to={path(appRouter.ws().settings.users)} />} />
           </Route>
           <Route path={path(appRouter.ws().database.root)}>
-            <Route index path={path(appRouter.ws().database.list)} element={<DatabaseList />} />
-            <Route path={path(appRouter.ws().database.form().root)} element={<Database />}>
+            <Route index path={path(appRouter.ws().database.list)} element={<Forms />} />
+            <Route path={path(appRouter.ws().database.form().root)} element={<Form />}>
               <Route path={path(appRouter.ws().database.form().answer())} element={<DatabaseKoboAnswerViewPage />} />
-              <Route path={path(appRouter.ws().database.form().formCreator)} element={<FormCreator />} />
+              <Route path={path(appRouter.ws().database.form().formCreator)} element={<FormBuilder />} />
               <Route path={path(appRouter.ws().database.form().access)} element={<DatabaseAccess />} />
               <Route path={path(appRouter.ws().database.form().history)} element={<DatabaseHistory />} />
               <Route path={path(appRouter.ws().database.form().group(), 2)} element={<DatabaseKoboRepeatRoute />} />

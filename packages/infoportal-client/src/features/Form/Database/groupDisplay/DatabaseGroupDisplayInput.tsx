@@ -2,7 +2,7 @@ import {IpBtn, IpBtnProps, PopoverWrapper, Txt} from '@/shared'
 import React from 'react'
 import {Box, Icon, useTheme} from '@mui/material'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
-import {useDatabaseKoboTableContext} from '@/features/Database/KoboTable/DatabaseKoboContext'
+import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
 import {ipSelectItem, IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {useI18n} from '@/core/i18n'
 

@@ -6,15 +6,15 @@ import React, {useMemo, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useParams} from 'react-router'
-import {databaseUrlParamsValidation} from '@/features/Database/Database'
-import {XlsFileUploadForm} from '@/features/FormCreator/XlsFileUploadForm'
+import {databaseUrlParamsValidation} from '@/features/Form/Form'
+import {XlsFileUploadForm} from '@/features/Form/Builder/XlsFileUploadForm'
 import {map, seq} from '@axanc/ts-utils'
-import {VersionRow, VersionRowRoot, VersionRowShowMore} from '@/features/FormCreator/VersionRow'
+import {VersionRow, VersionRowRoot, VersionRowShowMore} from '@/features/Form/Builder/VersionRow'
 import {useQueryFormById} from '@/core/query/useQueryForm'
-import {FormCreatorKoboFender} from '@/features/FormCreator/FormCreatorKoboFender'
-import {FormCreatorPreview} from '@/features/FormCreator/FormCreatorPreview'
+import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFender'
+import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
 
-export const FormCreator = () => {
+export const FormBuilder = () => {
   const {m} = useI18n()
   const {workspaceId} = useWorkspaceRouter()
   const {formId} = databaseUrlParamsValidation.validateSync(useParams())
@@ -33,7 +33,7 @@ export const FormCreator = () => {
     <Page width="full" loading={queryForm.isPending || queryVersion.get.isLoading}>
       {queryForm.data &&
         (queryForm.data.source === 'kobo' ? (
-          <FormCreatorKoboFender workspaceId={workspaceId} form={queryForm.data} />
+          <FormBuilderKoboFender workspaceId={workspaceId} form={queryForm.data} />
         ) : (
           <Grid container>
             <Grid size={{xs: 12, md: 5}}>
@@ -80,7 +80,7 @@ export const FormCreator = () => {
               ))}
             </Grid>
             <Grid size={{xs: 12, md: 7}}>
-              {active && <FormCreatorPreview workspaceId={workspaceId} formId={formId} versionId={active.id} />}
+              {active && <FormBuilderPreview workspaceId={workspaceId} formId={formId} versionId={active.id} />}
               {/*{activeVersion && (*/}
               {/*)}*/}
             </Grid>

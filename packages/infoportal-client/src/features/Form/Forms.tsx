@@ -13,7 +13,7 @@ import {useQueryServers} from '@/core/query/useQueryServers'
 
 import {useQueryForm} from '@/core/query/useQueryForm'
 
-export const DatabaseList = () => {
+export const Forms = () => {
   const {workspaceId, router} = useWorkspaceRouter()
   const {formatDate, m} = useI18n()
   const t = useTheme()

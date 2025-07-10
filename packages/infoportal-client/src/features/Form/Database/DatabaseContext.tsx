@@ -8,16 +8,16 @@ import {useFetcher} from '@/shared/hook/useFetcher'
 import * as csvToJson from 'csvtojson'
 import {Obj, seq} from '@axanc/ts-utils'
 import {FetchParams} from '@/shared/hook/useFetchers'
-import {UseDatabaseView, useDatabaseView} from '@/features/Database/KoboTable/view/useDatabaseView'
+import {UseDatabaseView, useDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
 import {AccessSum} from '@/core/sdk/server/access/Access'
 import {useObjectState, UseObjectStateReturn} from '@/shared/hook/useObjectState'
-import {DatabaseDisplay} from '@/features/Database/KoboTable/groupDisplay/DatabaseKoboDisplay'
+import {DatabaseDisplay} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {Ip} from 'infoportal-api-sdk'
 
 export type ExternalFilesChoices = {list_name: string; name: string; label: string}
 export type KoboExternalFilesIndex = Record<string, Record<string, ExternalFilesChoices>>
 
-export interface DatabaseKoboContext {
+export interface DatabaseContext {
   refetch: (p?: FetchParams) => Promise<void>
   schema: KoboSchemaHelper.Bundle
   canEdit?: AccessSum
@@ -33,9 +33,9 @@ export interface DatabaseKoboContext {
   groupDisplay: UseObjectStateReturn<DatabaseDisplay>
 }
 
-const Context = React.createContext({} as DatabaseKoboContext)
+const Context = React.createContext({} as DatabaseContext)
 
-export const useDatabaseKoboTableContext = () => useContext<DatabaseKoboContext>(Context)
+export const useDatabaseKoboTableContext = () => useContext<DatabaseContext>(Context)
 
 export const DatabaseKoboTableProvider = (props: {
   schema: KoboSchemaHelper.Bundle
@@ -43,7 +43,7 @@ export const DatabaseKoboTableProvider = (props: {
   children: ReactNode
   loading?: boolean
   refetch: (p?: FetchParams) => Promise<void>
-  access: DatabaseKoboContext['access']
+  access: DatabaseContext['access']
   form: Ip.Form
   data?: KoboMappedAnswer[]
 }) => {
