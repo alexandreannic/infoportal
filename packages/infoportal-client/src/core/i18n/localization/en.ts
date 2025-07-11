@@ -355,7 +355,7 @@ export const en = Object.freeze({
     documentation: 'Documentation',
     general: 'General',
     email: 'Email',
-    drcJob: 'DRC Job',
+    job: 'Job',
     Access: {
       giveAccessBy: 'Grant access by',
       jobAndOffice: 'Job and Office',

@@ -1,11 +1,9 @@
 import {KoboCustomDirective, KoboSchemaHelper, nullValuesToUndefined, UUID} from 'infoportal-common'
-import {AppFeatureId} from '@/features/appFeatureId'
 import React, {ReactElement, useCallback, useMemo} from 'react'
 import {Modal, Txt} from '@/shared'
 import {Autocomplete, Box, Chip, createFilterOptions, Icon} from '@mui/material'
 import {IpInput} from '@/shared/Input/Input'
 import {Controller, useForm} from 'react-hook-form'
-import {KoboDatabaseAccessParams} from '@/core/sdk/server/access/Access'
 import {map, seq} from '@axanc/ts-utils'
 import {useI18n} from '@/core/i18n'
 import {AccessForm, IAccessForm} from '@/features/Access/AccessForm'
@@ -78,11 +76,9 @@ export const DatabaseAccessForm = ({
     queryAccess.create
       .mutateAsync({
         ...nullValuesToUndefined(f),
-        featureId: AppFeatureId.kobo_database,
-        params: KoboDatabaseAccessParams.create({
-          koboFormId: formId,
-          filters: question && questionAnswer ? {[question]: questionAnswer} : undefined,
-        }),
+        workspaceId,
+        formId,
+        filters: question && questionAnswer ? {[question]: questionAnswer} : undefined,
       })
       .then(onAdded)
   }

@@ -1,6 +1,5 @@
 import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
-import {AccessService} from '../../feature/access/AccessService.js'
 import {GroupItemService} from '../../feature/group/GroupItemService.js'
 import {GroupService} from '../../feature/group/GroupService.js'
 
@@ -64,7 +63,6 @@ export class ControllerGroup {
 
   readonly getItems = async (req: Request, res: Response, next: NextFunction) => {
     const {id} = await GroupService.schema.id.validate(req.params)
-    const qs = await AccessService.searchSchema.validate(req.query)
     const data = await this.itemService.getAll({groupId: id})
     res.send(data)
   }

@@ -3,7 +3,6 @@ import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {InferType} from 'yup'
 import {UUID} from 'infoportal-common'
 import {format} from 'date-fns'
-import {AppFeatureId} from '../access/AccessType.js'
 
 export type GroupCreateParams = InferType<typeof GroupService.schema.create>
 export type GroupUpdateParams = InferType<typeof GroupService.schema.update>
@@ -55,19 +54,6 @@ export class GroupService {
     })
   }
 
-  readonly getByFeature = (featureId: AppFeatureId) => {
-    return this.prisma.group.findMany({
-      select: {
-        accesses: true,
-      },
-      where: {
-        accesses: {
-          some: {featureId},
-        },
-      },
-    })
-  }
-
   readonly search = ({
     featureId,
     workspaceId,
@@ -86,9 +72,6 @@ export class GroupService {
       where: {
         name,
         workspaceId,
-        accesses: {
-          every: {featureId},
-        },
         ...(user
           ? {
               items: {

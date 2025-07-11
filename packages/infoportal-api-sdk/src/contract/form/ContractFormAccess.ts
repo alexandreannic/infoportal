@@ -1,0 +1,96 @@
+import {initContract} from '@ts-rest/core'
+import {z} from 'zod'
+import {schema} from '../../core/Schema'
+import {Ip} from '../../core/Types'
+import {mapClientResponse, TsRestClient} from '../../core/IpClient'
+
+const c = initContract()
+
+export const formAccessContract = c.router({
+  create: {
+    method: 'PUT',
+    path: `/:workspaceId/access`,
+    pathParams: c.type<{workspaceId: Ip.Uuid}>(),
+    body: c.type<Omit<Ip.Form.Access.Payload.Create, 'workspaceId'>>(),
+    responses: {
+      200: z.any() as z.ZodType<Ip.Form.Access[]>,
+    },
+  },
+
+  update: {
+    method: 'PATCH',
+    path: `/:workspaceId/access/:id`,
+    pathParams: c.type<Pick<Ip.Form.Access.Payload.Update, 'id' | 'workspaceId'>>(),
+    body: c.type<Omit<Ip.Form.Access.Payload.Update, 'id' | 'workspaceId'>>(),
+    responses: {
+      200: z.any() as z.ZodType<Ip.Form.Access>,
+    },
+  },
+
+  remove: {
+    method: 'DELETE',
+    path: `/:workspaceId/access/:id`,
+    pathParams: c.type<{workspaceId: Ip.Uuid; id: Ip.Uuid}>(),
+    responses: {
+      200: schema.uuid,
+    },
+  },
+
+  search: {
+    method: 'POST',
+    body: z.object({}),
+    pathParams: c.type<{workspaceId: Ip.Uuid}>(),
+    path: `/:workspaceId/access`,
+    responses: {
+      200: z.any() as z.ZodType<Ip.Form.Access[]>,
+    },
+  },
+
+  searchMine: {
+    method: 'POST',
+    body: z.object({}),
+    pathParams: c.type<{workspaceId: Ip.Uuid}>(),
+    path: `/:workspaceId/access/me`,
+    responses: {
+      200: z.any() as z.ZodType<Ip.Form.Access[]>,
+    },
+  },
+})
+
+const mapFormAccess = (_: Ip.Form.Access): Ip.Form.Access => {
+  _.createdAt = new Date(_.createdAt)
+  if (_.updatedAt) _.updatedAt = new Date(_.updatedAt)
+  return _
+}
+
+export const mapFormAccessNullable = (_?: Ip.Form.Access): undefined | Ip.Form.Access => {
+  if (_) return mapFormAccess(_)
+}
+
+export const formAccessClient = (client: TsRestClient) => {
+  return {
+    create: ({workspaceId, ...body}: Ip.Form.Access.Payload.Create) =>
+      client.form.access
+        .create({params: {workspaceId}, body})
+        .then(mapClientResponse)
+        .then(_ => _.map(mapFormAccess)),
+
+    update: ({workspaceId, id, ...body}: Ip.Form.Access.Payload.Update) =>
+      client.form.access.update({params: {workspaceId, id}, body}).then(mapClientResponse).then(mapFormAccess),
+
+    remove: (params: {workspaceId: Ip.Uuid; id: Ip.Uuid}) =>
+      client.form.access.remove({params}).then(mapClientResponse),
+
+    search: ({workspaceId}: {workspaceId: Ip.Uuid}) =>
+      client.form.access
+        .search({body: {}, params: {workspaceId}})
+        .then(mapClientResponse)
+        .then(_ => _.map(mapFormAccess)),
+
+    searchMine: ({workspaceId}: {workspaceId: Ip.Uuid}) =>
+      client.form.access
+        .searchMine({body: {}, params: {workspaceId}})
+        .then(mapClientResponse)
+        .then(_ => _.map(mapFormAccess)),
+  }
+}

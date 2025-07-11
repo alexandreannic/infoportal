@@ -11,7 +11,7 @@ export class DbInit {
 
   readonly initializeDatabase = async () => {
     if ((await this.prisma.user.count()) > 0) return
-    await Promise.all([this.createAccOwner(), this.createAccAdmins(), this.createAccTest(), this.createAccess()])
+    await Promise.all([this.createAccOwner(), this.createAccAdmins(), this.createAccTest()])
   }
 
   private readonly createAccTest = async () => {
@@ -78,33 +78,6 @@ export class DbInit {
           update: _,
           create: _,
           where: {email: _.email},
-        }),
-      ),
-    )
-  }
-
-  private readonly createAccess = async () => {
-    await this.prisma.featureAccess.deleteMany({where: {createdBy: createdBySystem}})
-    const access: Prisma.FeatureAccessCreateInput[] = [
-      // {
-      //   createdBy: createdBySystem,
-      //   email: 'romane.breton@drc.ngo',
-      //   featureId: AppFeature.kobo_database,
-      //   level: FeatureAccessLevel.Admin,
-      //   params: KoboDatabaseFeatureParams.create({
-      //     koboFormId: KoboIndex.byName('protectionHh_2_1').id,
-      //   }),
-      // },
-      // {
-      //   createdBy: createdBySystem,
-      //   email: appConf.ownerEmail,
-      //   level: FeatureAccessLevel.Admin,
-      // },
-    ]
-    await Promise.all(
-      access.map(_ =>
-        this.prisma.featureAccess.create({
-          data: _,
         }),
       ),
     )

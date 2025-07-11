@@ -4,7 +4,6 @@ import {Method} from 'axios'
 import {SessionSdk} from '@/core/sdk/server/session/SessionSdk'
 import {KoboAnswerSdk} from '@/core/sdk/server/kobo/KoboAnswerSdk'
 import {KoboServerSdk} from '@/core/sdk/server/kobo/KoboServerSdk'
-import {AccessSdk} from '@/core/sdk/server/access/AccessSdk'
 import {UserSdk} from '@/core/sdk/server/user/UserSdk'
 import {ProxySdk} from '@/core/sdk/server/proxy/ProxySdk'
 import {GroupSdk} from '@/core/sdk/server/group/GroupSdk'
@@ -28,7 +27,6 @@ export class ApiSdk {
     }
     this.koboApi = new KoboApiSdk(client)
     this.user = new UserSdk(client)
-    this.access = new AccessSdk(this.client, this.user)
     this.group = new GroupSdk(client)
     this.databaseView = new DatabaseViewSdk(client)
     this.proxy = new ProxySdk(client)
@@ -59,7 +57,6 @@ export class ApiSdk {
   }
   readonly koboApi: KoboApiSdk
   readonly user: UserSdk
-  readonly access: AccessSdk
   readonly group: GroupSdk
   readonly databaseView: DatabaseViewSdk
   readonly proxy: ProxySdk

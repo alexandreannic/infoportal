@@ -2,7 +2,6 @@ import {queryKeys} from '@/core/query/query.index'
 import {useQueryAnswer} from '@/core/query/useQueryAnswer'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
-import {AccessLevel} from '@/core/sdk/server/access/Access'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useSession} from '@/core/Session/SessionContext'
 import {DatabaseKoboTableProvider} from '@/features/Form/Database/DatabaseContext'
@@ -64,8 +63,8 @@ export const DatabaseTable = ({
 
   const access = useMemo(() => {
     const list = queryAccess.accessesByFormIdMap[formId] ?? []
-    const admin = session.user.admin || !!list.find(_ => _.level === AccessLevel.Admin)
-    const write = admin || !!list.find(_ => _.level === AccessLevel.Write)
+    const admin = session.user.admin || !!list.find(_ => _.level === Ip.Form.Access.Level.Admin)
+    const write = admin || !!list.find(_ => _.level === Ip.Form.Access.Level.Write)
     const read = write || list.length > 0
     return {admin, write, read}
   }, [queryAccess.accessesByFormIdMap])

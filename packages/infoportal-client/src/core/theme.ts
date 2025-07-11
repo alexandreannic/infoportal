@@ -649,6 +649,7 @@ const tableTheme = (t: Theme) => ({
     // borderTop: `1px solid ${t.palette.divider}`,
   },
   '.table thead .td, .table thead .th': {
+    backdropFilter: 'blur(20px)',
     background: styleUtils(t).color.toolbar.default.background,
   },
   '.td-center': {
