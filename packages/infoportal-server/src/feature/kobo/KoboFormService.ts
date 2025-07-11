@@ -58,9 +58,28 @@ export class KoboFormService {
     return newFrom
   }
 
-  readonly deleteHook = async ({formId}: {formId: Kobo.FormId}) => {
+  readonly deleteHookIfExists = async ({formId, sdk}: {formId: Kobo.FormId; sdk?: KoboClient}) => {
+    if (!sdk) sdk = await this.koboSdk.getBy.formId(formId)
+    await sdk.v2.hook.deleteByName({formId, name: KoboFormService.HOOK_NAME}).catch(() => {})
+  }
+
+  readonly update = async ({formId, source, archive}: Ip.Form.Payload.Update) => {
+    const current = await this.prisma.koboForm.findFirst({where: {id: formId}, select: {source: true}})
+    if (!current || current.source === 'internal') return
+
     const sdk = await this.koboSdk.getBy.formId(formId)
-    await sdk.v2.hook.deleteByName({formId, name: KoboFormService.HOOK_NAME})
+
+    const queries: Promise<any>[] = []
+
+    if (archive || source === 'disconnected') {
+      queries.push(this.deleteHookIfExists({formId, sdk}))
+    } else if (archive === false || source === 'kobo') {
+      queries.push(this.createHookIfNotExists({formId, sdk}))
+    }
+    if (archive !== undefined) {
+      queries.push(sdk.v2.form.updateDeployment({formId, active: !archive}))
+    }
+    await Promise.all(queries)
   }
 
   readonly createHookIfNotExists = async ({sdk, formId}: {formId: Kobo.FormId; sdk?: KoboClient}) => {

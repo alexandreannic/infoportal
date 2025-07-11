@@ -186,7 +186,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       ),
     },
     form: {
-      updateSource: ctrl({}, ({params, body}) => form.updateSource({...params, ...body})),
+      update: ctrl({}, ({params, body}) => form.update({...params, ...body})),
       remove: ctrl({}, ({params}) => form.remove(params.formId)),
       get: ctrl({}, ({params}) => form.get(params.formId)),
       getAll: ctrl({}, ({params}) => form.getAll({wsId: params.workspaceId})),
@@ -270,7 +270,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.put('/:workspaceId/group', auth({adminOnly: true}), safe(accessGroup.create))
     r.post('/:workspaceId/group/:id', auth({adminOnly: true}), safe(accessGroup.update))
     r.delete('/:workspaceId/group/:id', auth({adminOnly: true}), safe(accessGroup.remove))
-    
+
     r.get('/user/avatar/:email', auth(), safe(user.avatar))
     r.post('/:workspaceId/user/me', auth(), safe(user.updateMe))
     r.get('/:workspaceId/user', auth(), safe(user.search))

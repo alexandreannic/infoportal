@@ -79,7 +79,7 @@
     "googleapis": "^148.0.0",
     "infoportal-common": "1.0.0",
     "infoportal-api-sdk": "1.0.0",
-    "kobo-sdk": "^2.3.0",
+    "kobo-sdk": "^2.4.0",
     "lodash.merge": "^4.6.2",
     "mssql": "^11.0.1",
     "multer": "^1.4.5-lts.1",

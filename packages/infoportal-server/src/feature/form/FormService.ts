@@ -1,15 +1,17 @@
-import {PrismaClient} from '@prisma/client'
+import {KoboForm, PrismaClient} from '@prisma/client'
 import {UUID} from 'infoportal-common/index'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboService} from '../kobo/KoboService.js'
 import {FormAccessService} from '../access/FormAccessService.js'
 import {KoboFormService} from '../kobo/KoboFormService.js'
+import {FormVersionService} from '../kobo/FormVersionService.js'
 
 export class FormService {
   constructor(
     private prisma: PrismaClient,
     private kobo = new KoboService(prisma),
     private koboForm = new KoboFormService(prisma),
+    private formVersion = new FormVersionService(prisma),
     private access = new FormAccessService(prisma),
   ) {}
 
@@ -63,12 +65,26 @@ export class FormService {
     return (await this.prisma.koboForm.findFirst({where: {id}})) ?? undefined
   }
 
-  readonly updateSource = async ({formId, source}: Ip.Form.Payload.UpdateSource) => {
+  readonly update = async (params: Ip.Form.Payload.Update) => {
+    const {formId, archive, source} = params
+
+    const koboUpdate$ = this.koboForm.update(params)
+
+    const newData: Partial<KoboForm> = {}
+    if (archive) {
+      newData.deploymentStatus = 'archived'
+    } else if (archive === false) {
+      const hasActiveVersion = await this.formVersion.hasActiveVersion({formId})
+      newData.deploymentStatus = hasActiveVersion ? 'deployed' : 'draft'
+    }
+    if (source) {
+      newData.source = source
+    }
     const [_, update] = await Promise.all([
-      source === 'disconnected' ? this.koboForm.deleteHook({formId}) : this.koboForm.createHookIfNotExists({formId}),
+      koboUpdate$,
       this.prisma.koboForm.update({
         where: {id: formId},
-        data: {source},
+        data: newData,
       }),
     ])
     return update

@@ -114,4 +114,12 @@ export class FormVersionService {
       where: {formId},
     })
   }
+
+  readonly hasActiveVersion = ({formId}: {formId: Kobo.FormId}): Promise<boolean> => {
+    return this.prisma.formVersion
+      .findFirst({
+        where: {formId, status: 'active'},
+      })
+      .then(_ => _ !== null)
+  }
 }

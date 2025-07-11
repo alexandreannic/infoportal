@@ -79,9 +79,12 @@ export const useQueryFormById = ({workspaceId, formId}: {workspaceId: UUID; form
     onError: toastHttpError,
   })
 
-  const updateSource = useMutation<Ip.Form, ApiError, {source: 'kobo' | 'disconnected'}>({
-    mutationFn: args => apiv2.form.updateSource({workspaceId, formId, source: args.source}),
-    onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, formId)}),
+  const update = useMutation<Ip.Form, ApiError, Omit<Ip.Form.Payload.Update, 'workspaceId' | 'formId'>>({
+    mutationFn: args => apiv2.form.update({workspaceId, formId, ...args}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, formId)})
+      queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
+    },
     onError: toastHttpError,
   })
 
@@ -90,5 +93,5 @@ export const useQueryFormById = ({workspaceId, formId}: {workspaceId: UUID; form
     queryFn: () => apiv2.form.get({workspaceId, formId}).catch(toastAndThrowHttpError),
     staleTime: duration(10, 'minute'),
   })
-  return {get, updateSource, remove}
+  return {get, update, remove}
 }

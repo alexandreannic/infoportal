@@ -24,10 +24,11 @@ export namespace Ip {
     export type Version = Omit<FormVersion, 'schema'>
 
     export namespace Payload {
-      export type UpdateSource = {
+      export type Update = {
         workspaceId: Ip.Uuid
         formId: Ip.FormId
-        source: 'disconnected' | 'kobo'
+        source?: 'disconnected' | 'kobo'
+        archive?: boolean
       }
 
       export type Import = {

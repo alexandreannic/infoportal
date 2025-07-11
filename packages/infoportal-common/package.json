@@ -17,7 +17,7 @@
     "@types/qs": "^6.9.15",
     "axios": "1.7.9",
     "date-fns": "4.1.0",
-    "kobo-sdk": "^2.3.0",
+    "kobo-sdk": "^2.4.0",
     "promise-retry": "^2.0.1",
     "qs": "^6.12.1",
     "winston": "^3.13.1"
