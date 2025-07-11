@@ -7,17 +7,18 @@ import {TableIconBtn} from '@/shared/TableIcon'
 import {Txt} from '@/shared/Txt'
 import {seq} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
-import {useMemo} from 'react'
+import {useEffect, useMemo} from 'react'
 import {NavLink} from 'react-router-dom'
 import {useQueryServers} from '@/core/query/useQueryServers'
 
 import {useQueryForm} from '@/core/query/useQueryForm'
+import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 
 export const Forms = () => {
   const {workspaceId, router} = useWorkspaceRouter()
   const {formatDate, m} = useI18n()
   const t = useTheme()
-
+  const {setTitle} = useLayoutContext()
   const queryServer = useQueryServers(workspaceId)
   const queryForm = useQueryForm(workspaceId)
 
@@ -27,11 +28,15 @@ export const Forms = () => {
     return seq(queryServer.getAll.data).groupByFirst(_ => _.id)
   }, [queryServer.getAll.data])
 
+  useEffect(() => {
+    setTitle(m.selectADatabase)
+    return () => setTitle('')
+  }, [])
+
   return (
     <Page width="full">
       {formsAccessible && formsAccessible.length > 0 && (
         <>
-          <PageTitle>{m.selectADatabase}</PageTitle>
           <Panel>
             <Datatable
               showExportBtn

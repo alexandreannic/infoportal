@@ -6,7 +6,7 @@ import {DatabaseAccess} from '@/features/Form/Access/DatabaseAccess'
 import {DatabaseKoboAnswerViewPage} from '@/features/Form/dialogs/DialogAnswerView'
 import {DatabaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {DatabaseHistory} from '@/features/Form/History/DatabaseHistory'
-import {ImportKobo} from '@/features/ImportKoboForm/ImportKobo'
+import {NewForm} from '@/features/NewForm/NewForm'
 import {AdminUsers} from '@/features/Admin/AdminUsers'
 import {AdminProxy} from '@/features/Admin/AdminProxy'
 import {AdminGroups} from '@/features/Admin/AdminGroups'
@@ -19,7 +19,7 @@ import {AppHeader} from './core/layout/AppHeader'
 import {Settings} from './features/Settings/Settings'
 import {FormBuilder} from '@/features/Form/Builder/FormBuilder'
 import {useWorkspaceRouterMaybe} from '@/core/query/useQueryWorkspace'
-import {DatabaseSettings} from '@/features/Form/Settings/DatabaseSettings'
+import {FormSettings} from '@/features/Form/Settings/FormSettings'
 import {DatabaseTableRoute} from '@/features/Form/Database/DatabaseTable'
 
 export const appRouter = {
@@ -73,7 +73,7 @@ export const Router = () => {
       <Routes>
         <Route path={appRouter.root} element={<Workspaces />} />
         <Route path={appRouter.ws().root}>
-          <Route path={path(appRouter.ws().importKoboForm)} element={<ImportKobo />} />
+          <Route path={path(appRouter.ws().importKoboForm)} element={<NewForm />} />
           <Route path={path(appRouter.ws().settings.root)} element={<Settings />}>
             <Route path={path(appRouter.ws().settings.users)} element={<AdminUsers />} />
             <Route path={path(appRouter.ws().settings.proxy)} element={<AdminProxy />} />
@@ -89,7 +89,7 @@ export const Router = () => {
               <Route path={path(appRouter.ws().form.byId().access)} element={<DatabaseAccess />} />
               <Route path={path(appRouter.ws().form.byId().history)} element={<DatabaseHistory />} />
               <Route path={path(appRouter.ws().form.byId().group(), 2)} element={<DatabaseKoboRepeatRoute />} />
-              <Route path={path(appRouter.ws().form.byId().settings)} element={<DatabaseSettings />} />
+              <Route path={path(appRouter.ws().form.byId().settings)} element={<FormSettings />} />
               <Route path={path(appRouter.ws().form.byId().answers)} element={<DatabaseTableRoute />} />
               {/*<Route index element={<Navigate to={path(appRouter.ws().database.form().answers)} />} />*/}
               {/*Persisted components across routes. */}

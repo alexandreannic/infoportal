@@ -15,7 +15,7 @@ type Form = {
   category?: string
 }
 
-export const CreateNewForm = ({workspaceId}: {workspaceId: Ip.Uuid}) => {
+export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.Uuid}) => {
   const {m} = useI18n()
   const navigate = useNavigate()
   const form = useForm<Form>({

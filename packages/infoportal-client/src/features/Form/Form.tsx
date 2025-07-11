@@ -77,7 +77,7 @@ export const Form = () => {
   }, [queryForm.status, queryForm.data, querySchema.status, querySchema.data, workspaceId])
 
   return (
-    <>
+    <Page width="full">
       <Tabs variant="scrollable" scrollButtons="auto" value={pathname}>
         <Tab
           icon={<Icon>{appConfig.icons.dataTable}</Icon>}
@@ -141,6 +141,6 @@ export const Form = () => {
           ))}
       </Tabs>
       {outlet}
-    </>
+    </Page>
   )
 }

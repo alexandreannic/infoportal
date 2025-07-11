@@ -29,7 +29,7 @@ const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; childr
   )
 }
 
-export const DatabaseSettings = () => {
+export const FormSettings = () => {
   const {m} = useI18n()
   const {workspaceId, form, schema} = useFormContext()
   const queryForm = useQueryFormById({workspaceId, formId: form.id})

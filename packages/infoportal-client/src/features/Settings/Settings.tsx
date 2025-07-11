@@ -5,6 +5,7 @@ import {Icon, Tab, Tabs} from '@mui/material'
 import {useEffect} from 'react'
 import {Outlet, useLocation} from 'react-router'
 import {NavLink} from 'react-router-dom'
+import {Page} from '@/shared'
 
 export const Settings = () => {
   const {m} = useI18n()
@@ -16,7 +17,7 @@ export const Settings = () => {
     setTitle(m.settings)
   }, [])
   return (
-    <>
+    <Page width="full">
       {/* <PageTitle>{m.settings}</PageTitle> */}
       <Tabs
         variant="scrollable"
@@ -64,6 +65,6 @@ export const Settings = () => {
         />
       </Tabs>
       <Outlet />
-    </>
+    </Page>
   )
 }

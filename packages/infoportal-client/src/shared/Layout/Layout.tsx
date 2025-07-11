@@ -53,7 +53,7 @@ const LayoutUsingContext = ({sidebar, header, children}: Pick<LayoutProps, 'side
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
-            marginTop: -5,
+            marginTop: -6,
             paddingTop: 6,
           }}
         >
