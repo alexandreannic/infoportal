@@ -35,7 +35,7 @@ const Button = ({href, label, icon, sx, ...props}: {href: string; label: string;
 }
 export const FormBuilderKoboFender = ({workspaceId, form}: {workspaceId: Ip.Uuid; form: Ip.Form}) => {
   const {m} = useI18n()
-  const queryServer = useQueryServer({workspaceId, serverId: form.serverId!})
+  const queryServer = useQueryServer({workspaceId, serverId: form.serverId!}).get
 
   return (
     <Panel loading={queryServer.isLoading}>

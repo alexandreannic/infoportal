@@ -1,4 +1,4 @@
-import {Page, PageTitle} from '@/shared'
+import {Page} from '@/shared'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {useI18n} from '@/core/i18n'
 import {Collapse} from '@mui/material'
@@ -27,10 +27,6 @@ export const NewForm = () => {
 
   const handleOpen = () => {
     dialog.open(KoboServerFormDialog, {workspaceId})
-  }
-
-  const handleDelete = async (id: UUID) => {
-    queryServer.remove.mutate({id})
   }
 
   const icons = {
