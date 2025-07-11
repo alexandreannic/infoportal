@@ -198,30 +198,27 @@ export const DatabaseTableContent = ({
             {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 
             <div style={{marginLeft: 'auto'}}>
-              {ctx.access.admin && (
+              {ctx.form.source === 'kobo' && (
                 <IpIconBtn
-                  children="admin_panel_settings"
+                  disabled={!ctx.form.enketoUrl || ctx.form.deploymentStatus === 'archived'}
+                  href={ctx.form.enketoUrl ?? ''}
                   target="_blank"
-                  href={appConfig.koboServerUrl + `/#/forms/${ctx.form.id}/landing`}
-                  tooltip="Open Kobo admin"
+                  children="file_open"
+                  tooltip={m._koboDatabase.openKoboForm}
                 />
               )}
-              <IpIconBtn
-                disabled={!ctx.form.enketoUrl || ctx.form.deploymentStatus === 'archived'}
-                href={ctx.form.enketoUrl ?? ''}
-                target="_blank"
-                children="file_open"
-                tooltip={m._koboDatabase.openKoboForm}
-              />
-              <DatabaseKoboSyncBtn
-                loading={ctx.asyncRefresh.loading}
-                tooltip={
-                  ctx.form.updatedAt && (
-                    <div dangerouslySetInnerHTML={{__html: m._koboDatabase.pullDataAt(ctx.form.updatedAt)}} />
-                  )
-                }
-                onClick={ctx.asyncRefresh.call}
-              />
+              {ctx.form.source === 'kobo' && (
+                <DatabaseKoboSyncBtn
+                  loading={ctx.asyncRefresh.loading}
+                  tooltip={
+                    ctx.form.updatedAt && (
+                      <div dangerouslySetInnerHTML={{__html: m._koboDatabase.pullDataAt(ctx.form.updatedAt)}} />
+                    )
+                  }
+                  onClick={ctx.asyncRefresh.call}
+                />
+              )}
+
               {session.user.admin && (
                 <DatabaseImportBtn
                   onUploadNewData={file => handleImportData(file, 'create')}

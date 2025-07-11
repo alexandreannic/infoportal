@@ -3,7 +3,7 @@ import {genShortid, idParamsSchema, yup} from '../../helper/Utils.js'
 import {InferType} from 'yup'
 import {slugify, UUID} from 'infoportal-common'
 import {GroupService} from '../group/GroupService.js'
-import {AccessService} from '../access/AccessService.js'
+import {FormAccessService} from '../access/FormAccessService.js'
 
 export type WorkspaceCreate = InferType<typeof WorkspaceService.schema.create>
 
@@ -11,7 +11,7 @@ export class WorkspaceService {
   constructor(
     private prisma: PrismaClient,
     private group = new GroupService(prisma),
-    private access = new AccessService(prisma),
+    private access = new FormAccessService(prisma),
   ) {}
 
   static readonly schema = {

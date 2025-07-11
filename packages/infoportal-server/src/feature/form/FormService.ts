@@ -3,11 +3,13 @@ import {UUID} from 'infoportal-common/index'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboService} from '../kobo/KoboService.js'
+import {FormAccessService} from '../access/FormAccessService.js'
 
 export class FormService {
   constructor(
     private prisma: PrismaClient,
     private kobo = new KoboService(prisma),
+    private access = new FormAccessService(prisma),
   ) {}
 
   readonly getSchema = async ({formId}: {formId: Kobo.FormId}): Promise<undefined | Ip.Form.Schema> => {
@@ -64,7 +66,7 @@ export class FormService {
       this.prisma.databaseView.deleteMany({where: {databaseId: id}}),
       this.prisma.koboAnswers.deleteMany({where: {formId: id}}),
       this.prisma.formVersion.deleteMany({where: {formId: id}}),
-      // this.prisma.featureAccess.deleteMany({where: {formId: id}}),
+      this.prisma.formAccess.deleteMany({where: {formId: id}}),
     ])
     await this.prisma.koboForm.delete({where: {id}})
     return 1

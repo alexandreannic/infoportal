@@ -1,6 +1,5 @@
 import {Controller, UseFormReturn} from 'react-hook-form'
 import {UUID} from 'infoportal-common'
-import {AccessLevel, accessLevelIcon} from '@/core/sdk/server/access/Access'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {Autocomplete, autocompleteClasses, Box, SxProps, Theme} from '@mui/material'
 import {fnSwitch, map, Obj, seq} from '@axanc/ts-utils'
@@ -12,14 +11,21 @@ import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {DrcJobInputMultiple} from '@/shared/customInput/DrcJobInput'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
+import {Ip} from 'infoportal-api-sdk'
 
 export interface IAccessForm {
   selectBy?: 'email' | 'job' | 'group' | null
   email?: string | null
-  groupId?: UUID | null
+  groupId?: Ip.Uuid | null
   drcOffice?: string | null
   drcJob?: string[] | null
-  level: AccessLevel
+  level: Ip.Form.Access.Level
+}
+
+export const accessLevelIcon: Record<Ip.Form.Access.Level, string> = {
+  Read: 'visibility',
+  Write: 'edit',
+  Admin: 'gavel',
 }
 
 export const AccessForm = ({workspaceId, form}: {workspaceId: UUID; form: UseFormReturn<IAccessForm>}) => {
@@ -130,16 +136,16 @@ export const AccessFormInputAccessLevel = ({form}: {form: UseFormReturn<IAccessF
   return (
     <Controller
       name="level"
-      defaultValue={AccessLevel.Read}
+      defaultValue={Ip.Form.Access.Level.Read}
       control={form.control}
       render={({field}) => (
-        <ScRadioGroup<AccessLevel>
+        <ScRadioGroup<Ip.Form.Access.Level>
           error={!!form.formState.errors.level}
           dense
           {...field}
           // onChange={_ => field.onChange({target: {value: _}} as any)}
         >
-          {Obj.values(AccessLevel).map(level => (
+          {Obj.values(Ip.Form.Access.Level).map(level => (
             <ScRadioGroupItem icon={accessLevelIcon[level]} value={level} key={level} title={level} />
           ))}
         </ScRadioGroup>
@@ -228,7 +234,7 @@ export const AccessFormInputGroup = ({workspaceId, form}: {workspaceId: UUID; fo
               },
               {
                 id: 'drcJob',
-                head: m.drcJob,
+                head: m.job,
                 type: 'select_one',
                 renderQuick: _ => _.drcJob,
               },

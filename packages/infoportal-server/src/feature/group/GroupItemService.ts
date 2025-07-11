@@ -1,9 +1,9 @@
-import {FeatureAccessLevel, PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@prisma/client'
 import {yup} from '../../helper/Utils.js'
 import {Obj} from '@axanc/ts-utils'
 import {UUID} from 'infoportal-common'
 import {InferType} from 'yup'
-import {AccessService} from '../access/AccessService.js'
+import {Ip} from 'infoportal-api-sdk'
 
 export type GroupItemCreateParams = InferType<typeof GroupItemService.schema.create>
 export type GroupItemUpdateParams = InferType<typeof GroupItemService.schema.update>
@@ -13,41 +13,28 @@ export class GroupItemService {
 
   static readonly schema = {
     create: yup.object({
-      level: AccessService.levelSchema,
-      drcJob: yup.array().of(AccessService.drcJobSchema).nullable(),
-      drcOffice: AccessService.drcOfficeSchema.nullable(),
+      level: yup.mixed<Ip.Form.Access.Level>().oneOf(Obj.values(Ip.Form.Access.Level)).required(),
+      job: yup.array().of(yup.string()).nullable(),
+      location: yup.string().nullable(),
       email: yup.string().nullable(),
     }),
 
     update: yup.object({
-      level: yup.mixed<FeatureAccessLevel>().oneOf(Obj.values(FeatureAccessLevel)).optional(),
-      drcJob: AccessService.drcJobSchema.optional().nullable(),
-      drcOffice: AccessService.drcOfficeSchema.optional().nullable(),
+      level: yup.mixed<Ip.Form.Access.Level>().oneOf(Obj.values(Ip.Form.Access.Level)),
+      job: yup.string().optional().nullable(),
+      location: yup.string().optional().nullable(),
       email: yup.string().optional().nullable(),
     }),
   }
-  static readonly createSchema = yup.object({
-    level: AccessService.levelSchema,
-    drcJob: yup.array().of(AccessService.drcJobSchema).nullable(),
-    drcOffice: AccessService.drcOfficeSchema.nullable(),
-    email: yup.string().nullable(),
-  })
-
-  static readonly updateSchema = yup.object({
-    level: yup.mixed<FeatureAccessLevel>().oneOf(Obj.values(FeatureAccessLevel)).optional(),
-    drcJob: AccessService.drcJobSchema.optional().nullable(),
-    drcOffice: AccessService.drcOfficeSchema.optional().nullable(),
-    email: yup.string().optional().nullable(),
-  })
 
   readonly create = (groupId: UUID, body: GroupItemCreateParams) => {
     return Promise.all(
-      (body.drcJob ?? [undefined]).map(drcJob =>
+      (body.job ?? [undefined]).map(drcJob =>
         this.prisma.groupItem.create({
           data: {
             level: body.level,
             drcJob,
-            drcOffice: body.drcOffice,
+            drcOffice: body.location,
             email: body.email,
             groupId,
           },
@@ -61,8 +48,8 @@ export class GroupItemService {
       where: {id},
       data: {
         level: body.level,
-        drcOffice: body.drcOffice,
-        drcJob: body.drcJob,
+        drcOffice: body.location,
+        drcJob: body.job,
         email: body.email,
       },
     })

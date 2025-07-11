@@ -1,5 +1,5 @@
 import {UUID} from 'infoportal-common'
-import {AccessLevel} from '@/core/sdk/server/access/Access'
+import {Ip} from 'infoportal-api-sdk'
 
 export interface Group {
   workspaceId: UUID
@@ -19,7 +19,7 @@ export class GroupHelper {
 
 export interface GroupItem {
   id: UUID
-  level: AccessLevel
+  level: Ip.Form.Access.Level
   email?: string
   drcJob?: string
   drcOffice?: string

@@ -1,8 +1,7 @@
 import {ApiClient} from '../ApiClient'
-import {AccessLevel} from '@/core/sdk/server/access/Access'
 import {UUID} from 'infoportal-common'
 import {Group, GroupHelper} from '@/core/sdk/server/group/GroupItem'
-import {AppFeatureId} from '@/features/appFeatureId'
+import {Ip} from 'infoportal-api-sdk'
 
 type GroupCreate = Pick<Group, 'workspaceId' | 'name' | 'desc'>
 
@@ -12,7 +11,7 @@ type GroupItemCreate = {
   workspaceId: UUID
   groupId: UUID
   email?: string | null
-  level: AccessLevel
+  level: Ip.Form.Access.Level
   drcOffice?: string | null
   drcJob?: string[] | null
 }
@@ -21,7 +20,7 @@ export type GroupItemUpdate = {
   workspaceId: UUID
   itemId: UUID
   email?: string | null
-  level: AccessLevel
+  level: Ip.Form.Access.Level
   drcOffice?: string | null
   drcJob?: string | null
 }
@@ -41,16 +40,8 @@ export class GroupSdk {
     await this.client.delete(`/${workspaceId}/group/${id}`)
   }
 
-  readonly search = async ({
-    workspaceId,
-    name,
-    featureId,
-  }: {
-    workspaceId: UUID
-    name?: string
-    featureId?: AppFeatureId
-  }): Promise<Group[]> => {
-    return this.client.post(`/${workspaceId}/group`, {body: {name, featureId}}).then(_ => _.map(GroupHelper.map))
+  readonly search = async ({workspaceId, name}: {workspaceId: UUID; name?: string}): Promise<Group[]> => {
+    return this.client.post(`/${workspaceId}/group`, {body: {name}}).then(_ => _.map(GroupHelper.map))
   }
 
   readonly updateItem = ({workspaceId, itemId, ...body}: GroupItemUpdate) => {

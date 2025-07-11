@@ -17,7 +17,7 @@ export class UserSdk {
     return this.client.get<any[]>(`${workspaceId}/user`).then(res => res.map(User.map))
   }
 
-  readonly fetchDrcJobs = ({workspaceId}: {workspaceId: UUID}) => {
+  readonly fetchJobs = ({workspaceId}: {workspaceId: UUID}) => {
     return this.client.get<string[]>(`${workspaceId}/user/drc-job`)
   }
 }

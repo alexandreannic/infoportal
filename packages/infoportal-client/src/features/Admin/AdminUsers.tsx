@@ -107,8 +107,8 @@ export const AdminUsers = () => {
               },
             },
             {
-              id: 'drcJob',
-              head: m.drcJob,
+              id: 'job',
+              head: m.job,
               renderQuick: _ => _.drcJob,
               type: 'select_one',
               options: () =>

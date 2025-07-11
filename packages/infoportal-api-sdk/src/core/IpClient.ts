@@ -4,6 +4,7 @@ import {formVersionClient} from '../contract/form/ContractFormVersion'
 import {formClient} from '../contract/form/ContractForm'
 import {serverClient} from '../contract/ContractServer'
 import {koboClient} from '../contract/kobo/ContractKobo'
+import {formAccessClient} from '../contract/form/ContractFormAccess'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -21,6 +22,7 @@ export const buildIpClient = (baseUrl: string) => {
     kobo: koboClient(client),
     form: {
       ...formClient(client),
+      access: formAccessClient(client),
       version: formVersionClient(client),
     },
   }

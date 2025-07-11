@@ -15,8 +15,7 @@ import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {duration, fnSwitch, Obj, seq} from '@axanc/ts-utils'
 import {format} from 'date-fns'
 import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAnswer.js'
-import {AccessService} from '../access/AccessService.js'
-import {AppFeatureId} from '../access/AccessType.js'
+import {FormAccessService} from '../access/FormAccessService.js'
 import {GlobalEvent} from '../../core/GlobalEvent.js'
 import {defaultPagination} from '../../core/Type.js'
 import {app, AppCacheKey} from '../../index.js'
@@ -39,7 +38,7 @@ export interface KoboAnswerFilter {
 export class KoboService {
   constructor(
     private prisma: PrismaClient,
-    private access = new AccessService(prisma),
+    private access = new FormAccessService(prisma),
     private sdkGenerator: KoboSdkGenerator = KoboSdkGenerator.getSingleton(prisma),
     private history = new KoboAnswerHistoryService(prisma),
     private event: GlobalEvent.Class = GlobalEvent.Class.getInstance(),
@@ -65,13 +64,13 @@ export class KoboService {
     if (!user) return ApiPaginateHelper.make()([])
     if (!user.admin) {
       const access = await this.access
-        .searchForUser({workspaceId, featureId: AppFeatureId.kobo_database, user})
-        .then(_ => seq(_).filter(_ => _.params?.koboFormId === params.formId))
+        .searchForUser({workspaceId, user})
+        .then(_ => seq(_).filter(_ => _.formId === params.formId))
       if (access.length === 0) return ApiPaginateHelper.make()([])
-      const hasEmptyFilter = access.some(_ => !_.params?.filters || Object.keys(_.params.filters).length === 0)
+      const hasEmptyFilter = access.some(_ => !_?.filters || Object.keys(_.filters).length === 0)
       if (!hasEmptyFilter) {
         const accessFilters = access
-          .map(_ => _.params?.filters)
+          .map(_ => _.filters)
           .compact()
           .reduce<Record<string, string[]>>((acc, x) => {
             Obj.entries(x).forEach(([k, v]) => {

@@ -1,4 +1,4 @@
-import {FormVersion, KoboForm, KoboServer} from '@prisma/client'
+import type {FormAccess, FormVersion, KoboForm, KoboServer} from '@prisma/client'
 import {Kobo} from 'kobo-sdk'
 
 export namespace Ip {
@@ -17,6 +17,41 @@ export namespace Ip {
   }
 
   export namespace Form {
+    export type Filters = Record<string, string[]>
+
+    export type Access = FormAccess & {
+      groupName?: string
+      filters?: Filters
+    }
+
+    export namespace Access {
+      export enum Level {
+        Read = 'Read',
+        Write = 'Write',
+        Admin = 'Admin',
+      }
+
+      export namespace Payload {
+        export type Create = {
+          workspaceId: FormAccess['workspaceId']
+          formId: FormAccess['formId']
+          level: FormAccess['level']
+          email?: FormAccess['email']
+          job?: FormAccess['job'][]
+          groupId?: FormAccess['groupId']
+          filters?: Filters
+        }
+        export type Update = {
+          id: FormAccess['id']
+          workspaceId: FormAccess['workspaceId']
+          email?: FormAccess['email']
+          job?: FormAccess['job']
+          level?: FormAccess['level']
+          groupId?: FormAccess['groupId']
+        }
+      }
+    }
+
     export namespace Payload {
       export type Import = {
         serverId: Ip.Uuid

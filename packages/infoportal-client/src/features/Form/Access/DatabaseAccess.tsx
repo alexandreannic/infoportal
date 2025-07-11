@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react'
-import {Access, KoboDatabaseAccessParams} from '@/core/sdk/server/access/Access'
+import {Access} from '@/core/sdk/server/access/Access'
 import {useI18n} from '@/core/i18n'
 import {useFormContext} from '@/features/Form/Form'
 import {IpBtn} from '@/shared/Btn'
@@ -19,7 +19,7 @@ export const DatabaseAccess = () => {
 
   const accessSum = useMemo(() => {
     return Access.toSum(queryAccess.accessesByFormIdMap[form.id] ?? [], user.admin)
-  }, [user, queryAccess.getKoboAccess])
+  }, [user, queryAccess.accessesByFormIdMap])
 
   const refresh = () => {
     queryAccess.getAll.refetch()
@@ -31,7 +31,6 @@ export const DatabaseAccess = () => {
         <Panel>
           <AccessTable
             isAdmin={accessSum.admin}
-            renderParams={(_: KoboDatabaseAccessParams) => JSON.stringify(_.filters)}
             onRemoved={refresh}
             header={
               accessSum.admin && (

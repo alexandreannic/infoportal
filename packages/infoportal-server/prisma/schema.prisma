@@ -23,7 +23,7 @@ model Workspace {
   accessTokens    AccessToken[]
   proxys          Proxy[]
   emailOutBoxs    EmailOutBox[]
-  featureAccesses FeatureAccess[]
+  featureAccesses FormAccess[]
   workspaceAccess WorkspaceAccess[]
 
   @@index([slug])
@@ -87,6 +87,7 @@ model KoboForm {
   koboAnswersHistory KoboAnswersHistory[]
   workspaces         Workspace[]
   koboVersion        FormVersion[]
+  FormAccess         FormAccess[]
 }
 
 enum FormVersionStatus {
@@ -189,54 +190,51 @@ model UserActivity {
   userId String?  @db.Uuid
 }
 
-enum FeatureAccessLevel {
+enum FormAccessLevel {
   Read
   Write
   Admin
 }
 
-enum FeatureAccessType {
-  KoboForm
-}
-
-model FeatureAccess {
-  id          String             @id @default(uuid()) @db.Uuid
+model FormAccess {
+  id          String          @id @default(uuid()) @db.Uuid
   createdBy   String?
-  createdAt   DateTime           @default(now())
+  createdAt   DateTime        @default(now())
   updatedAt   DateTime?
-  featureType FeatureAccessType?
-  drcJob      String?
-  featureId   String?
+  form        KoboForm        @relation(fields: [formId], references: [id])
+  formId      String          @db.VarChar(32)
+  job         String?
+  location    String?
   email       String?
-  level       FeatureAccessLevel
-  params      Json?
-  groupId     String?            @db.Uuid
-  group       Group?             @relation(fields: [groupId], references: [id])
-  workspace   Workspace          @relation(fields: [workspaceId], references: [id])
-  workspaceId String             @db.Uuid
+  level       FormAccessLevel
+  groupId     String?         @db.Uuid
+  group       Group?          @relation(fields: [groupId], references: [id])
+  workspace   Workspace       @relation(fields: [workspaceId], references: [id])
+  workspaceId String          @db.Uuid
+  filters     Json?
 }
 
 model Group {
-  id          String          @id @default(uuid()) @db.Uuid
-  createdAt   DateTime        @default(now())
+  id          String       @id @default(uuid()) @db.Uuid
+  createdAt   DateTime     @default(now())
   createdBy   String?
-  name        String          @unique
+  name        String       @unique
   desc        String?
-  accesses    FeatureAccess[]
+  accesses    FormAccess[]
   items       GroupItem[]
-  workspace   Workspace       @relation(fields: [workspaceId], references: [id])
-  workspaceId String          @db.Uuid
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id])
+  workspaceId String       @db.Uuid
 }
 
 model GroupItem {
-  id        String             @id @default(uuid()) @db.Uuid
-  createdAt DateTime           @default(now())
+  id        String          @id @default(uuid()) @db.Uuid
+  createdAt DateTime        @default(now())
   drcJob    String?
   drcOffice String?
   email     String?
-  level     FeatureAccessLevel
-  group     Group?             @relation(fields: [groupId], references: [id])
-  groupId   String?            @db.Uuid
+  level     FormAccessLevel
+  group     Group?          @relation(fields: [groupId], references: [id])
+  groupId   String?         @db.Uuid
 }
 
 model AccessToken {

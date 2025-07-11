@@ -12,7 +12,7 @@ export const DrcJobInputMultiple = (
   const {workspaceId} = useWorkspaceRouter()
   const {m} = useI18n()
   const {api} = useAppSettings()
-  const drcJobsFetcher = useFetcher(api.user.fetchDrcJobs)
+  const drcJobsFetcher = useFetcher(api.user.fetchJobs)
 
   useEffect(() => {
     drcJobsFetcher.fetch({}, {workspaceId})
@@ -31,7 +31,7 @@ export const DrcJobInputMultiple = (
       value={props.value ?? []}
       // renderOption={(props, _) => <Txt truncate>{_.label?.[0]?.replace(/<[^>]+>/g, '') ?? _.name}</Txt>}
       renderInput={({InputProps, ...inputProps}) => (
-        <IpInput {...inputProps} {...InputProps} helperText={null} label={m.drcJob} />
+        <IpInput {...inputProps} {...InputProps} helperText={null} label={m.job} />
       )}
       {...props}
     />
@@ -42,7 +42,7 @@ export const DrcJobInputSingle = (props: Omit<AutocompleteProps<string, any, any
   const {m} = useI18n()
   const {api} = useAppSettings()
   const {workspaceId} = useWorkspaceRouter()
-  const drcJobsFetcher = useFetcher(api.user.fetchDrcJobs)
+  const drcJobsFetcher = useFetcher(api.user.fetchJobs)
 
   useEffect(() => {
     drcJobsFetcher.fetch({}, {workspaceId})
@@ -55,7 +55,7 @@ export const DrcJobInputSingle = (props: Omit<AutocompleteProps<string, any, any
       value={props.value ?? null}
       // renderOption={(props, _) => <Txt truncate>{_.label?.[0]?.replace(/<[^>]+>/g, '') ?? _.name}</Txt>}
       renderInput={({InputProps, ...inputProps}) => (
-        <IpInput {...inputProps} {...InputProps} helperText={null} label={m.drcJob} />
+        <IpInput {...inputProps} {...InputProps} helperText={null} label={m.job} />
       )}
       {...props}
     />

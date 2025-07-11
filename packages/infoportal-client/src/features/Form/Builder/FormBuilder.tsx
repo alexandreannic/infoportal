@@ -36,7 +36,7 @@ export const FormBuilder = () => {
           <FormBuilderKoboFender workspaceId={workspaceId} form={queryForm.data} />
         ) : (
           <Grid container>
-            <Grid size={{xs: 12, md: 5}}>
+            <Grid size={{xs: 12, md: 6}}>
               <XlsFileUploadForm
                 lastSchema={seq(queryVersion.get.data ?? []).last()}
                 workspaceId={workspaceId}
@@ -52,7 +52,9 @@ export const FormBuilder = () => {
                           <Modal
                             loading={queryVersion.deployLast.isPending}
                             title={m.confirm}
-                            onConfirm={() => queryVersion.deployLast.mutate({workspaceId, formId})}
+                            onConfirm={(event, close) =>
+                              queryVersion.deployLast.mutateAsync({workspaceId, formId}).then(close)
+                            }
                           >
                             <IpBtn
                               icon="send"
@@ -83,7 +85,7 @@ export const FormBuilder = () => {
                   ),
               )}
             </Grid>
-            <Grid size={{xs: 12, md: 7}}>
+            <Grid size={{xs: 12, md: 6}}>
               {active && <FormBuilderPreview workspaceId={workspaceId} formId={formId} versionId={active.id} />}
               {/*{activeVersion && (*/}
               {/*)}*/}

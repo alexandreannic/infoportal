@@ -6,7 +6,6 @@ import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi.js'
 import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerKoboServer} from './controller/kobo/ControllerKoboServer.js'
 import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer.js'
-import {ControllerAccess} from './controller/ControllerAccess.js'
 import {ControllerUser} from './controller/ControllerUser.js'
 import {AppError} from '../helper/Errors.js'
 import {ControllerProxy} from './controller/ControllerProxy.js'
@@ -29,6 +28,7 @@ import {KoboFormService} from '../feature/kobo/KoboFormService.js'
 import {ServerService} from '../feature/ServerService.js'
 import {FormService} from '../feature/form/FormService.js'
 import {ErrorHttpStatusCode, SuccessfulHttpStatusCode} from '@ts-rest/core'
+import {FormAccessService} from '../feature/access/FormAccessService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -60,7 +60,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const koboAnswer = new ControllerKoboAnswer(prisma)
   const koboApi = new ControllerKoboApi(prisma)
   const session = new ControllerSession(prisma)
-  const access = new ControllerAccess(prisma)
   const accessGroup = new ControllerGroup(prisma)
   const user = new ControllerUser(prisma)
   const proxy = new ControllerProxy(prisma)
@@ -163,11 +162,13 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   }
 
   const koboForm = new KoboFormService(prisma)
-  const formVersion = new FormVersionService(prisma)
   const form = new FormService(prisma)
+  const formVersion = new FormVersionService(prisma)
+  const formAccess = new FormAccessService(prisma)
   const server = new ServerService(prisma)
 
   const s = initServer()
+
   const tsRestRouter = s.router(ipContract, {
     server: {
       delete: ctrl({}, ({params}) => server.delete({id: params.id})),
@@ -205,6 +206,15 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       getSchemaByVersion: ctrl({}, ({params}) =>
         form.getSchemaByVersion({formId: params.formId, versionId: params.versionId}),
       ),
+      access: {
+        create: ctrl({}, ({params, body}) => formAccess.create({workspaceId: params.workspaceId, ...body})),
+        update: ctrl({}, ({params, body}) => formAccess.update({...params, ...body})),
+        remove: ctrl({}, ({params}) => formAccess.remove({id: params.id})),
+        search: ctrl({}, ({params, req}) => formAccess.searchForUser({workspaceId: params.workspaceId})),
+        searchMine: ctrl({}, ({params, req}) =>
+          formAccess.searchForUser({workspaceId: params.workspaceId, user: req.session.app.user}),
+        ),
+      },
       version: {
         validateXlsForm: {
           middleware: [uploader.single('file')],
@@ -259,13 +269,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.put('/:workspaceId/group', auth({adminOnly: true}), safe(accessGroup.create))
     r.post('/:workspaceId/group/:id', auth({adminOnly: true}), safe(accessGroup.update))
     r.delete('/:workspaceId/group/:id', auth({adminOnly: true}), safe(accessGroup.remove))
-
-    r.get('/:workspaceId/access/me', auth(), safe(access.searchMine))
-    r.get('/:workspaceId/access', auth(), safe(access.search))
-    r.put('/:workspaceId/access', auth(), safe(access.create))
-    r.post('/:workspaceId/access/:id', auth(), safe(access.update))
-    r.delete('/:workspaceId/access/:id', auth(), safe(access.remove))
-
+    
     r.get('/user/avatar/:email', auth(), safe(user.avatar))
     r.post('/:workspaceId/user/me', auth(), safe(user.updateMe))
     r.get('/:workspaceId/user', auth(), safe(user.search))
