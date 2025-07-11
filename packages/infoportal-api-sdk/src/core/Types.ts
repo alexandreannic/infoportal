@@ -17,14 +17,38 @@ export namespace Ip {
   }
 
   export namespace Form {
-    export type Filters = Record<string, string[]>
+    export type Id = string
+
+    export type Schema = Kobo.Form['content'] & {files?: Kobo.Form.File[]}
+
+    export type Version = Omit<FormVersion, 'schema'>
+
+    export namespace Payload {
+      export type UpdateSource = {
+        workspaceId: Ip.Uuid
+        formId: Ip.FormId
+        source: 'disconnected' | 'kobo'
+      }
+
+      export type Import = {
+        serverId: Ip.Uuid
+        uid: Kobo.FormId
+      }
+
+      export type Create = {
+        name: string
+        category?: string
+      }
+    }
 
     export type Access = FormAccess & {
       groupName?: string
-      filters?: Filters
+      filters?: Access.Filters
     }
 
     export namespace Access {
+      export type Filters = Record<string, string[]>
+
       export enum Level {
         Read = 'Read',
         Write = 'Write',
@@ -51,24 +75,6 @@ export namespace Ip {
         }
       }
     }
-
-    export namespace Payload {
-      export type Import = {
-        serverId: Ip.Uuid
-        uid: Kobo.FormId
-      }
-
-      export type Create = {
-        name: string
-        category?: string
-      }
-    }
-
-    export type Id = string
-
-    export type Schema = Kobo.Form['content'] & {files?: Kobo.Form.File[]}
-
-    export type Version = Omit<FormVersion, 'schema'>
 
     export namespace Schema {
       export type Validation = {

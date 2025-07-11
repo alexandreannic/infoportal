@@ -42,22 +42,28 @@ export class FormVersionService {
   }
 
   readonly deployLastDraft = async ({formId}: {formId: Ip.FormId}) => {
-    await this.prisma.formVersion.updateMany({
-      where: {formId, status: {in: ['draft', 'active']}},
-      data: {
-        status: 'inactive',
-      },
-    })
-    const last = await this.prisma.formVersion.findFirst({
-      orderBy: {createdAt: 'desc'},
-    })
-    return this.prisma.formVersion.update({
-      where: {
-        id: last?.id,
-      },
-      data: {
-        status: 'active',
-      },
+    return this.prisma.$transaction(async tx => {
+      await tx.formVersion.updateMany({
+        where: {formId, status: {in: ['draft', 'active']}},
+        data: {status: 'inactive'},
+      })
+
+      const last = await tx.formVersion.findFirst({
+        where: {formId},
+        orderBy: {createdAt: 'desc'},
+      })
+
+      if (!last) throw new Error('No form version found')
+
+      await tx.koboForm.update({
+        where: {id: formId},
+        data: {deploymentStatus: 'deployed'},
+      })
+
+      return tx.formVersion.update({
+        where: {id: last.id},
+        data: {status: 'active'},
+      })
     })
   }
 

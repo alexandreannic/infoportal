@@ -51,14 +51,20 @@ export class KoboFormService {
           workspaceId: payload.workspaceId,
         }),
       }),
-      this.createHookIfNotExists(sdk, payload.uid),
+      this.createHookIfNotExists({sdk, formId: payload.uid}),
     ])
     this.cache.clear(AppCacheKey.KoboServerIndex)
     this.cache.clear(AppCacheKey.KoboClient)
     return newFrom
   }
 
-  private createHookIfNotExists = async (sdk: KoboClient, formId: Kobo.FormId) => {
+  readonly deleteHook = async ({formId}: {formId: Kobo.FormId}) => {
+    const sdk = await this.koboSdk.getBy.formId(formId)
+    await sdk.v2.hook.deleteByName({formId, name: KoboFormService.HOOK_NAME})
+  }
+
+  readonly createHookIfNotExists = async ({sdk, formId}: {formId: Kobo.FormId; sdk?: KoboClient}) => {
+    if (!sdk) sdk = await this.koboSdk.getBy.formId(formId)
     const hooks = await sdk.v2.hook.get({formId})
     if (hooks.results.find(_ => _.name === KoboFormService.HOOK_NAME)) return
     return sdk.v2.hook.create({
@@ -83,7 +89,9 @@ export class KoboFormService {
     ).then(_ => seq(_).reduceObject<Record<string, KoboClient>>(_ => [_.serverId!, _.sdk]))
     await Promise.all(
       forms.map(async form =>
-        this.createHookIfNotExists(sdks[form.serverId], form.id).catch(() => console.log(`Not created ${form.id}`)),
+        this.createHookIfNotExists({sdk: sdks[form.serverId], formId: form.id}).catch(() =>
+          console.log(`Not created ${form.id}`),
+        ),
       ),
     )
   }

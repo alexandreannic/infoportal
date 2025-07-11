@@ -44,6 +44,16 @@ export const formContract = c.router({
     },
   },
 
+  updateSource: {
+    method: 'PATCH',
+    path: '/:workspaceId/form/:formId/source',
+    pathParams: c.type<Pick<Ip.Form.Payload.UpdateSource, 'workspaceId' | 'formId'>>(),
+    body: c.type<Pick<Ip.Form.Payload.UpdateSource, 'source'>>(),
+    responses: {
+      200: z.any() as z.ZodType<Ip.Form>,
+    },
+  },
+
   create: {
     method: 'PUT',
     path: '/:workspaceId/form',
@@ -133,6 +143,10 @@ export const formClient = (client: TsRestClient) => {
 
     getSchema: (params: {workspaceId: Ip.Uuid; formId: Ip.FormId}) => {
       return client.form.getSchema({params}).then(mapClientResponse)
+    },
+
+    updateSource: ({source, ...params}: Ip.Form.Payload.UpdateSource): Promise<Ip.Form> => {
+      return client.form.updateSource({params, body: {source}}).then(mapClientResponse).then(mapForm)
     },
   }
 }

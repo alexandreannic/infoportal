@@ -56,7 +56,7 @@ export const DatabaseTable = ({
 }: DatabaseTableProps) => {
   const session = useSession()
 
-  const queryForm = useQueryFormById({workspaceId, formId})
+  const queryForm = useQueryFormById({workspaceId, formId}).get
   const querySchema = useQuerySchema({formId, workspaceId})
   const queryAnswers = useQueryAnswer({workspaceId, formId})
   const queryAccess = useQueryAccess(workspaceId)

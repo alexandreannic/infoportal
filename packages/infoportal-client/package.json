@@ -53,7 +53,7 @@
     "immer": "^10.1.1",
     "infoportal-common": "1.0.0",
     "infoportal-api-sdk": "1.0.0",
-    "kobo-sdk": "^2.2.7",
+    "kobo-sdk": "^2.3.0",
     "lodash.debounce": "^4.0.8",
     "qs": "^6.11.2",
     "react": "18.3.1",

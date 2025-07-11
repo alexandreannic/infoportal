@@ -47,7 +47,7 @@ export const Form = () => {
   const {router} = useWorkspaceRouter()
 
   const querySchema = useQuerySchema({formId, workspaceId})
-  const queryForm = useQueryFormById({workspaceId, formId})
+  const queryForm = useQueryFormById({workspaceId, formId}).get
 
   useEffect(() => {
     if (queryForm.data) setTitle(m._koboDatabase.title(queryForm.data.name))

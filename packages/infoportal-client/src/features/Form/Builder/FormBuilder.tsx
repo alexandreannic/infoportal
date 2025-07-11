@@ -19,7 +19,7 @@ export const FormBuilder = () => {
   const {workspaceId} = useWorkspaceRouter()
   const {formId} = databaseUrlParamsValidation.validateSync(useParams())
   const [versionVisible, setVersionVisible] = useState(5)
-  const queryForm = useQueryFormById({workspaceId, formId})
+  const queryForm = useQueryFormById({workspaceId, formId}).get
   const queryVersion = useQueryVersion({workspaceId, formId})
 
   const {active, draft} = useMemo(() => {

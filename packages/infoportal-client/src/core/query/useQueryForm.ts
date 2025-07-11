@@ -37,18 +37,6 @@ export const useQueryForm = (workspaceId: UUID) => {
     onError: toastHttpError,
   })
 
-  const remove = useMutation<number, ApiError, {formId: Ip.FormId}>({
-    mutationFn: args => apiv2.form.remove({workspaceId, ...args}),
-    onSuccess: (_, {formId}) => {
-      queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
-      queryClient.removeQueries({queryKey: queryKeys.form(workspaceId, formId)})
-      queryClient.removeQueries({queryKey: queryKeys.schema(workspaceId, formId)})
-      queryClient.removeQueries({queryKey: queryKeys.answers(formId)})
-      queryClient.removeQueries({queryKey: queryKeys.schemaByVersion(workspaceId, formId)})
-    },
-    onError: toastHttpError,
-  })
-
   const create = useMutation<Ip.Form, ApiError, Ip.Form.Payload.Create>({
     mutationFn: args => apiv2.form.create({workspaceId, ...args}),
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)}),
@@ -67,7 +55,6 @@ export const useQueryForm = (workspaceId: UUID) => {
   // }, [accessibleForms.data])
 
   return {
-    remove,
     categories,
     create,
     importFromKobo,
@@ -77,11 +64,31 @@ export const useQueryForm = (workspaceId: UUID) => {
 
 export const useQueryFormById = ({workspaceId, formId}: {workspaceId: UUID; formId: Kobo.FormId}) => {
   const {apiv2} = useAppSettings()
-  const {toastAndThrowHttpError} = useIpToast()
+  const {toastHttpError, toastAndThrowHttpError} = useIpToast()
+  const queryClient = useQueryClient()
 
-  return useQuery({
+  const remove = useMutation<number, ApiError, void>({
+    mutationFn: () => apiv2.form.remove({workspaceId, formId}),
+    onSuccess: _ => {
+      queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
+      queryClient.removeQueries({queryKey: queryKeys.form(workspaceId, formId)})
+      queryClient.removeQueries({queryKey: queryKeys.schema(workspaceId, formId)})
+      queryClient.removeQueries({queryKey: queryKeys.answers(formId)})
+      queryClient.removeQueries({queryKey: queryKeys.schemaByVersion(workspaceId, formId)})
+    },
+    onError: toastHttpError,
+  })
+
+  const updateSource = useMutation<Ip.Form, ApiError, {source: 'kobo' | 'disconnected'}>({
+    mutationFn: args => apiv2.form.updateSource({workspaceId, formId, source: args.source}),
+    onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, formId)}),
+    onError: toastHttpError,
+  })
+
+  const get = useQuery({
     queryKey: queryKeys.form(workspaceId, formId),
     queryFn: () => apiv2.form.get({workspaceId, formId}).catch(toastAndThrowHttpError),
     staleTime: duration(10, 'minute'),
   })
+  return {get, updateSource, remove}
 }

@@ -164,7 +164,7 @@ export namespace KoboUpdateModal {
   }>) => {
     const {workspaceId, formId, columnName, answerIds, onUpdated} = payload
     const {m} = useI18n()
-    const queryForm = useQueryFormById({workspaceId, formId})
+    const queryForm = useQueryFormById({workspaceId, formId}).get
     const {columnDef, schema, loading: loadingSchema} = useKoboColumnDef({workspaceId, formId, columnName})
     const queryUpdate = useQueryAnswerUpdate().update
 
