@@ -1,5 +1,5 @@
 import {alpha, Box, BoxProps, Typography, useTheme} from '@mui/material'
-import {DRCLogo, EULogo} from '@/shared/logo/logo'
+import {IpLogo, EULogo} from '@/shared/logo/logo'
 import React, {ReactNode} from 'react'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
@@ -62,7 +62,7 @@ export const DashboardHeader = ({
                 </Typography>
                 <Box sx={{ml: 'auto', mr: 2}}>{action}</Box>
                 {!hideEuLogo && <EULogo height={26} sx={{mr: 1}} />}
-                <DRCLogo height={24} />
+                <IpLogo height={24} />
               </Box>
               <Typography className="header_title_sub" variant="subtitle1" sx={{color: t.palette.text.secondary}}>
                 {subTitle}
