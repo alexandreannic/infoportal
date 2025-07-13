@@ -52,7 +52,7 @@ export class KoboSdkGenerator {
     key: AppCacheKey.KoboServerIndex,
     ttlMs: duration(7, 'day'),
     fn: async (): Promise<Record<Kobo.FormId, UUID>> => {
-      return this.prisma.koboForm
+      return this.prisma.form
         .findMany({
           select: {id: true, serverId: true},
         })

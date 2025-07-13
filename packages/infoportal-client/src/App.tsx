@@ -7,7 +7,7 @@ import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {ProtectRoute, SessionProvider} from '@/core/Session/SessionContext'
 import {Router} from '@/Router'
 import {CenteredContent, Txt} from '@/shared'
-import {IpLogo} from '@/shared/logo/logo'
+import {DRCLogo} from '@/shared/logo/logo'
 import {Provide} from '@/shared/Provide'
 import {ToastProvider} from '@/shared/Toast'
 import {MsalProvider} from '@azure/msal-react'
@@ -90,7 +90,7 @@ const AppWithBaseContext = () => {
             alignItems: 'center',
           }}
         >
-          <IpLogo sx={{display: 'block', mb: 2}} />
+          <DRCLogo sx={{display: 'block', mb: 2}} />
           <Txt size="title" block>
             {m.title}
           </Txt>

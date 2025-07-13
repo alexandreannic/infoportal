@@ -1,7 +1,7 @@
 import {Box, BoxProps} from '@mui/material'
 import React from 'react'
 
-export const IpLogo = ({
+export const DRCLogo = ({
   height = 24,
   ...props
 }: {

@@ -26,7 +26,7 @@ export class KoboFormService {
     serverId: UUID
     workspaceId: UUID
     uploadedBy: string
-  }): Prisma.KoboFormUncheckedCreateInput => {
+  }): Prisma.FormUncheckedCreateInput => {
     return {
       name: schema.name,
       id: schema.uid,
@@ -43,7 +43,7 @@ export class KoboFormService {
     const sdk = await this.koboSdk.getBy.serverId(payload.serverId)
     const schema = await sdk.v2.form.get({formId: payload.uid, use$autonameAsName: true})
     const [newFrom] = await Promise.all([
-      this.prisma.koboForm.create({
+      this.prisma.form.create({
         data: KoboFormService.apiToDb({
           schema,
           serverId: payload.serverId,
@@ -64,7 +64,7 @@ export class KoboFormService {
   }
 
   readonly update = async ({formId, source, archive}: Ip.Form.Payload.Update) => {
-    const current = await this.prisma.koboForm.findFirst({where: {id: formId}, select: {source: true}})
+    const current = await this.prisma.form.findFirst({where: {id: formId}, select: {source: true}})
     if (!current || current.source === 'internal') return
 
     const sdk = await this.koboSdk.getBy.formId(formId)
@@ -94,7 +94,7 @@ export class KoboFormService {
   }
 
   readonly registerHooksForAll = async () => {
-    const forms = await this.prisma.koboForm.findMany().then(_ => seq(_).compactBy('serverId'))
+    const forms = await this.prisma.form.findMany().then(_ => seq(_).compactBy('serverId'))
     const sdks = await Promise.all(
       seq(forms)
         .distinct(_ => _.serverId)
@@ -116,7 +116,7 @@ export class KoboFormService {
   }
 
   readonly getAll = async ({wsId}: {wsId: UUID}): Promise<Ip.Form[]> => {
-    return this.prisma.koboForm.findMany({
+    return this.prisma.form.findMany({
       where: {
         serverId: {not: null},
         workspaces: {
@@ -153,7 +153,7 @@ export class KoboFormService {
           uploadedBy: byEmail,
           workspaceId: wsId,
         })
-        return this.prisma.koboForm.update({
+        return this.prisma.form.update({
           data: db,
           where: {
             id: form.id,

@@ -55,7 +55,7 @@ export class FormVersionService {
 
       if (!last) throw new Error('No form version found')
 
-      await tx.koboForm.update({
+      await tx.form.update({
         where: {id: formId},
         data: {deploymentStatus: 'deployed'},
       })

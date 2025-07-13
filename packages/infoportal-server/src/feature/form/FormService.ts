@@ -1,4 +1,4 @@
-import {KoboForm, PrismaClient} from '@prisma/client'
+import {Form, PrismaClient} from '@prisma/client'
 import {UUID} from 'infoportal-common/index'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboService} from '../kobo/KoboService.js'
@@ -16,7 +16,7 @@ export class FormService {
   ) {}
 
   readonly getSchema = async ({formId}: {formId: Ip.FormId}): Promise<undefined | Ip.Form.Schema> => {
-    const form = await this.prisma.koboForm.findFirst({where: {id: formId}})
+    const form = await this.prisma.form.findFirst({where: {id: formId}})
     if (!form) return
     if (form.source === 'internal')
       return this.prisma.formVersion
@@ -49,7 +49,7 @@ export class FormService {
   }
 
   readonly create = async (payload: Ip.Form.Payload.Create & {uploadedBy: string; workspaceId: Ip.Uuid}) => {
-    return this.prisma.koboForm.create({
+    return this.prisma.form.create({
       data: {
         name: payload.name,
         category: payload.category,
@@ -62,7 +62,7 @@ export class FormService {
   }
 
   readonly get = async (id: Ip.FormId): Promise<Ip.Form | undefined> => {
-    return (await this.prisma.koboForm.findFirst({where: {id}})) ?? undefined
+    return (await this.prisma.form.findFirst({where: {id}})) ?? undefined
   }
 
   readonly update = async (params: Ip.Form.Payload.Update) => {
@@ -70,7 +70,7 @@ export class FormService {
 
     const koboUpdate$ = this.koboForm.update(params)
 
-    const newData: Partial<KoboForm> = {}
+    const newData: Partial<Form> = {}
     if (archive) {
       newData.deploymentStatus = 'archived'
     } else if (archive === false) {
@@ -82,7 +82,7 @@ export class FormService {
     }
     const [_, update] = await Promise.all([
       koboUpdate$,
-      this.prisma.koboForm.update({
+      this.prisma.form.update({
         where: {id: formId},
         data: newData,
       }),
@@ -93,16 +93,16 @@ export class FormService {
   readonly remove = async (id: Ip.FormId): Promise<number> => {
     await Promise.any([
       this.prisma.databaseView.deleteMany({where: {databaseId: id}}),
-      this.prisma.koboAnswers.deleteMany({where: {formId: id}}),
+      this.prisma.formAnswers.deleteMany({where: {formId: id}}),
       this.prisma.formVersion.deleteMany({where: {formId: id}}),
       this.prisma.formAccess.deleteMany({where: {formId: id}}),
     ])
-    await this.prisma.koboForm.delete({where: {id}})
+    await this.prisma.form.delete({where: {id}})
     return 1
   }
 
   readonly getAll = async ({wsId}: {wsId: UUID}): Promise<Ip.Form[]> => {
-    return this.prisma.koboForm.findMany({
+    return this.prisma.form.findMany({
       include: {
         server: true,
       },

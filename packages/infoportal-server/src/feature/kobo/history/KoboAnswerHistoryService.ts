@@ -29,7 +29,7 @@ export class KoboAnswerHistoryService {
   ) {}
 
   readonly search = (params: KoboAnswerHistoryHelper.Search) => {
-    return this.prisma.koboAnswersHistory
+    return this.prisma.formAnswersHistory
       .findMany({
         include: {
           answers: {
@@ -54,7 +54,7 @@ export class KoboAnswerHistoryService {
 
   readonly create = async ({authorEmail, formId, answerIds, property, newValue, type}: Create) => {
     if (type === 'delete') {
-      return this.prisma.koboAnswersHistory.create({
+      return this.prisma.formAnswersHistory.create({
         data: {
           answers: {
             connect: answerIds.map(id => ({id})),
@@ -65,7 +65,7 @@ export class KoboAnswerHistoryService {
         },
       })
     }
-    const currentByPrevValue = await this.prisma.koboAnswers
+    const currentByPrevValue = await this.prisma.formAnswers
       .findMany({
         where: {
           id: {in: answerIds},
@@ -79,7 +79,7 @@ export class KoboAnswerHistoryService {
       )
     return Promise.all(
       Obj.entries(currentByPrevValue).map(([oldValue, v]) => {
-        return this.prisma.koboAnswersHistory.create({
+        return this.prisma.formAnswersHistory.create({
           data: {
             answers: {
               connect: v.map(_ => ({id: _.id})),

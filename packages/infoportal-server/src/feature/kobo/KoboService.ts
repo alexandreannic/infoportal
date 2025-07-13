@@ -1,4 +1,4 @@
-import {KoboForm, Prisma, PrismaClient, User} from '@prisma/client'
+import {Form, Prisma, PrismaClient, User} from '@prisma/client'
 import {
   ApiPaginate,
   ApiPaginateHelper,
@@ -46,8 +46,8 @@ export class KoboService {
     private conf = appConf,
   ) {}
 
-  readonly getForms = async (): Promise<KoboForm[]> => {
-    return this.prisma.koboForm.findMany()
+  readonly getForms = async (): Promise<Form[]> => {
+    return this.prisma.form.findMany()
   }
 
   private readonly _searchAnswersByUsersAccess = async ({
@@ -121,7 +121,7 @@ export class KoboService {
         // includeMeta,
       } = params
       return (
-        this.prisma.koboAnswers
+        this.prisma.formAnswers
           .findMany({
             take: paginate.limit,
             skip: paginate.offset,
@@ -192,7 +192,7 @@ export class KoboService {
   private static readonly mapKoboAnswer = (
     formId: Kobo.FormId,
     _: KoboSubmission,
-  ): Prisma.KoboAnswersUncheckedCreateInput => {
+  ): Prisma.FormAnswersUncheckedCreateInput => {
     return {
       formId,
       answers: _.answers,
@@ -212,12 +212,12 @@ export class KoboService {
   }
 
   readonly create = (formId: Kobo.FormId, answer: KoboSubmission) => {
-    return this.prisma.koboAnswers.create({data: KoboService.mapKoboAnswer(formId, answer)})
+    return this.prisma.formAnswers.create({data: KoboService.mapKoboAnswer(formId, answer)})
   }
 
   readonly createMany = (formId: Kobo.FormId, answers: KoboSubmission[]) => {
     const inserts = answers.map(_ => KoboService.mapKoboAnswer(formId, _))
-    return this.prisma.koboAnswers.createMany({
+    return this.prisma.formAnswers.createMany({
       data: inserts,
       skipDuplicates: true,
     })
@@ -353,7 +353,7 @@ export class KoboService {
     authorEmail?: string
   }) => {
     await Promise.all([
-      this.prisma.koboAnswers.updateMany({
+      this.prisma.formAnswers.updateMany({
         data: {
           deletedAt: new Date(),
           deletedBy: authorEmail,
@@ -424,7 +424,7 @@ export class KoboService {
     const validationKey: keyof KoboSubmissionMetaData = 'validationStatus'
     const sdk = await this.sdkGenerator.getBy.formId(formId)
     const [sqlRes] = await Promise.all([
-      this.prisma.koboAnswers.updateMany({
+      this.prisma.formAnswers.updateMany({
         where: {id: {in: answerIds}},
         data: {
           validationStatus: status,

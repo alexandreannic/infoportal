@@ -79,7 +79,7 @@ export class KoboSyncServer {
     const answer = KoboSyncServer.mapAnswer(_answer)
     this.log.info(`Handle webhook for form ${formId}, ${answer.id}`)
     if (!formId) throw new AppError.WrongFormat('missing_form_id')
-    const connectedForm = this.prisma.koboForm.findFirst({where: {id: formId}})
+    const connectedForm = this.prisma.form.findFirst({where: {id: formId}})
     if (!connectedForm) {
       throw new AppError.NotFound('form_not_found')
     }
@@ -92,7 +92,7 @@ export class KoboSyncServer {
   }
 
   readonly syncApiAnswersToDbAll = async (updatedBy: string = createdBySystem) => {
-    const allForms = await this.prisma.koboForm.findMany()
+    const allForms = await this.prisma.form.findMany()
     this.log.info(`Synchronize kobo forms:`)
     for (const form of allForms) {
       try {
@@ -113,7 +113,7 @@ export class KoboSyncServer {
       await this.syncApiFormInfo(formId)
       const res = await this.syncApiFormAnswers(formId)
       await this.prisma.$transaction([
-        this.prisma.koboForm.update({
+        this.prisma.form.update({
           where: {id: formId},
           data: {
             updatedAt: new Date(),
@@ -139,7 +139,7 @@ export class KoboSyncServer {
   private readonly syncApiFormInfo = async (formId: Kobo.FormId) => {
     const sdk = await this.koboSdkGenerator.getBy.formId(formId)
     const schema = await sdk.v2.form.get({formId, use$autonameAsName: true})
-    return this.prisma.koboForm.update({
+    return this.prisma.form.update({
       where: {id: formId},
       data: {
         name: schema.name,
@@ -161,7 +161,7 @@ export class KoboSyncServer {
     this.debug(formId, `Fetch remote answers... ${remoteAnswers.length} fetched.`)
 
     this.debug(formId, `Fetch local answers...`)
-    const localAnswersIndex = await this.prisma.koboAnswers
+    const localAnswersIndex = await this.prisma.formAnswers
       .findMany({where: {formId, deletedAt: null}, select: {id: true, lastValidatedTimestamp: true, uuid: true}})
       .then(_ => {
         return _.reduce(
@@ -187,7 +187,7 @@ export class KoboSyncServer {
         data: idsToDelete,
         size: this.conf.db.maxPreparedStatementParams,
         fn: ids => {
-          return this.prisma.koboAnswers.updateMany({
+          return this.prisma.formAnswers.updateMany({
             data: {
               deletedAt: new Date(),
               deletedBy: 'system-sync-' + tracker,
@@ -204,7 +204,7 @@ export class KoboSyncServer {
       this.debug(formId, `Handle create (${notInsertedAnswers.length})...`)
       await this.service.createMany(formId, notInsertedAnswers)
       const inserts = notInsertedAnswers.map(_ => {
-        const res: Prisma.KoboAnswersUncheckedCreateInput = {
+        const res: Prisma.FormAnswersUncheckedCreateInput = {
           formId,
           answers: _.answers,
           id: _.id,
@@ -227,7 +227,7 @@ export class KoboSyncServer {
         })
         return res
       })
-      await this.prisma.koboAnswers.createMany({
+      await this.prisma.formAnswers.createMany({
         data: inserts,
         skipDuplicates: true,
       })
@@ -250,7 +250,7 @@ export class KoboSyncServer {
             answerIds: [a.id],
             status: a.validationStatus,
           })
-          return this.prisma.koboAnswers.update({
+          return this.prisma.formAnswers.update({
             where: {id: a.id},
             data: {
               validationStatus: a.validationStatus,
@@ -271,7 +271,7 @@ export class KoboSyncServer {
         })
         .compact()
       this.debug(formId, `Handle update (${answersToUpdate.length})...`)
-      const previewsAnswersById = await this.prisma.koboAnswers
+      const previewsAnswersById = await this.prisma.formAnswers
         .findMany({
           select: {id: true, answers: true},
           where: {id: {in: answersToUpdate.map(_ => _.id)}},
@@ -293,7 +293,7 @@ export class KoboSyncServer {
               skipProperties: ['instanceID', 'rootUuid', 'deprecatedID'],
             }),
           })
-          return this.prisma.koboAnswers.update({
+          return this.prisma.formAnswers.update({
             where: {
               id: a.id,
             },
