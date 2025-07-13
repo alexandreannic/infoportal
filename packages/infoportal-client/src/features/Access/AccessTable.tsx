@@ -12,6 +12,7 @@ import {Datatable} from '@/shared/Datatable/Datatable'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useQueryAccess} from '@/core/query/useQueryAccess'
 import {Ip} from 'infoportal-api-sdk'
+import {FormAccessLevel} from '@prisma/client'
 
 export const AccessTable = ({
   isAdmin,
@@ -94,7 +95,7 @@ export const AccessTable = ({
               return {
                 value: row.level,
                 label: (
-                  <IpSelectSingle<Ip.Form.Access.Level>
+                  <IpSelectSingle<FormAccessLevel>
                     value={row.level}
                     placeholder=""
                     onChange={_ => queryAccess.update.mutate({id: row.id, level: _})}

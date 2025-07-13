@@ -1,5 +1,5 @@
 import {seq} from '@axanc/ts-utils'
-import {removeHtml} from './../../index.js'
+import {removeHtml} from '../../utils/Common.js'
 import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'

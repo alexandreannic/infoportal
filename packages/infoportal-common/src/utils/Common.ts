@@ -1,4 +1,4 @@
-import {duration, Enum} from '@axanc/ts-utils'
+import {duration, Obj} from '@axanc/ts-utils'
 import {NonNullableKeys} from '../type/Generic.js'
 import {addMonths, differenceInMonths, isAfter, isBefore, startOfMonth} from 'date-fns'
 
@@ -199,7 +199,7 @@ export const assert = (condition: any, msg?: string): asserts condition => {
 export const nullValuesToUndefined = <T extends Record<string | number, null | undefined | any>>(
   obj: T,
 ): NonNullableKeys<T> => {
-  return new Enum(obj).transform((k, v) => [k as any, v === null ? undefined : v]).get() as any
+  return new Obj(obj).map((k, v) => [k as any, v === null ? undefined : v]).get() as any
 }
 
 export const slugify: {

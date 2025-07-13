@@ -109,7 +109,7 @@ export const AdminGroups = () => {
                       onClick={() => {
                         accessForm.reset({
                           ...item,
-                          drcJob: item.drcJob ? [item.drcJob] : undefined,
+                          job: item.drcJob ? [item.drcJob] : undefined,
                         })
                         setSelectedGroupId({groupId: _.id, accessId: item.id})
                       }}
@@ -213,7 +213,7 @@ export const AdminGroups = () => {
               if (selectedGroupId?.accessId) {
                 query.updateItem.mutate({
                   ...f,
-                  drcJob: f.drcJob?.[0] ?? null,
+                  drcJob: f.job?.[0] ?? null,
                   itemId: selectedGroupId?.accessId,
                 })
               } else if (selectedGroupId?.groupId) {

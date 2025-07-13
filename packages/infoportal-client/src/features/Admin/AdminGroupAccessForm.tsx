@@ -6,8 +6,8 @@ import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {fnSwitch} from '@axanc/ts-utils'
 import {
   AccessFormInputAccessLevel,
-  AccessFormInputDrcJob,
-  AccessFormInputDrcOffice,
+  AccessFormInputJob,
+  AccessFormInputLocation,
   AccessFormInputEmail,
   IAccessForm,
 } from '@/features/Access/AccessForm'
@@ -20,7 +20,7 @@ export const AdminGroupAccessForm = ({form}: {form: UseFormReturn<IAccessForm>})
   const setSelectByAccordingToValue = () => {
     const values = form.getValues()
     if (values.selectBy) return
-    if (values.drcJob) form.setValue('selectBy', 'job')
+    if (values.job) form.setValue('selectBy', 'job')
     else if (values.email) form.setValue('selectBy', 'email')
     else if (values.groupId) form.setValue('selectBy', 'group')
   }
@@ -41,8 +41,8 @@ export const AdminGroupAccessForm = ({form}: {form: UseFormReturn<IAccessForm>})
               {...field}
               onChange={e => {
                 setTimeout(() => {
-                  form.setValue('drcJob', null)
-                  form.setValue('drcOffice', null)
+                  form.setValue('job', null)
+                  form.setValue('location', null)
                   form.setValue('email', null)
                 })
                 field.onChange(e)
@@ -58,8 +58,8 @@ export const AdminGroupAccessForm = ({form}: {form: UseFormReturn<IAccessForm>})
           {
             job: (
               <>
-                <AccessFormInputDrcJob form={form} sx={{mb: 2}} />
-                <AccessFormInputDrcOffice form={form} />
+                <AccessFormInputJob form={form} sx={{mb: 2}} />
+                <AccessFormInputLocation form={form} />
               </>
             ),
             email: <AccessFormInputEmail form={form} />,

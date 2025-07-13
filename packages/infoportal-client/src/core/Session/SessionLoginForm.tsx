@@ -1,5 +1,5 @@
 import {Box, ButtonBase, Icon, useTheme} from '@mui/material'
-import {DRCLogo} from '@/shared/logo/logo'
+import {IpLogo} from '@/shared/logo/logo'
 import {Txt} from '@/shared/Txt'
 import React, {ReactNode} from 'react'
 import {useMsal} from '@azure/msal-react'
@@ -123,7 +123,7 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: User) => void}) 
           padding: 4,
         }}
       >
-        <DRCLogo sx={{margin: 'auto', display: 'block', mb: 2}} height={60}/>
+        <IpLogo sx={{margin: 'auto', display: 'block', mb: 2}} height={60}/>
         <Txt sx={{textAlign: 'center'}} size="big" color="hint" block>
           {m.subTitle}
         </Txt>

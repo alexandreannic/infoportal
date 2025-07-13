@@ -1,4 +1,6 @@
-import type {FormAccess, FormVersion, KoboForm, KoboServer} from '@prisma/client'
+import type * as Prisma from '@prisma/client'
+import {FormAccessLevel} from '@prisma/client'
+
 import {Kobo} from 'kobo-sdk'
 
 export namespace Ip {
@@ -6,9 +8,9 @@ export namespace Ip {
 
   export type FormId = Form.Id
 
-  export type Form = KoboForm
+  export type Form = Prisma.Form
 
-  export type Server = KoboServer
+  export type Server = Prisma.KoboServer
 
   export namespace Server {
     export namespace Payload {
@@ -21,7 +23,7 @@ export namespace Ip {
 
     export type Schema = Kobo.Form['content'] & {files?: Kobo.Form.File[]}
 
-    export type Version = Omit<FormVersion, 'schema'>
+    export type Version = Omit<Prisma.FormVersion, 'schema'>
 
     export namespace Payload {
       export type Update = {
@@ -42,7 +44,7 @@ export namespace Ip {
       }
     }
 
-    export type Access = FormAccess & {
+    export type Access = Prisma.FormAccess & {
       groupName?: string
       filters?: Access.Filters
     }
@@ -50,29 +52,30 @@ export namespace Ip {
     export namespace Access {
       export type Filters = Record<string, string[]>
 
-      export enum Level {
-        Read = 'Read',
-        Write = 'Write',
-        Admin = 'Admin',
-      }
+      export const Level = FormAccessLevel
+      export type Level = FormAccessLevel // export enum Level {
+      //   Read = 'Read',
+      //   Write = 'Write',
+      //   Admin = 'Admin',
+      // }
 
       export namespace Payload {
         export type Create = {
-          workspaceId: FormAccess['workspaceId']
-          formId: FormAccess['formId']
-          level: FormAccess['level']
-          email?: FormAccess['email']
-          job?: FormAccess['job'][]
-          groupId?: FormAccess['groupId']
+          workspaceId: Prisma.FormAccess['workspaceId']
+          formId: Prisma.FormAccess['formId']
+          level: Prisma.FormAccess['level']
+          email?: Prisma.FormAccess['email']
+          job?: Prisma.FormAccess['job'][]
+          groupId?: Prisma.FormAccess['groupId']
           filters?: Filters
         }
         export type Update = {
-          id: FormAccess['id']
-          workspaceId: FormAccess['workspaceId']
-          email?: FormAccess['email']
-          job?: FormAccess['job']
-          level?: FormAccess['level']
-          groupId?: FormAccess['groupId']
+          id: Prisma.FormAccess['id']
+          workspaceId: Prisma.FormAccess['workspaceId']
+          email?: Prisma.FormAccess['email']
+          job?: Prisma.FormAccess['job']
+          level?: Prisma.FormAccess['level']
+          groupId?: Prisma.FormAccess['groupId']
         }
       }
     }

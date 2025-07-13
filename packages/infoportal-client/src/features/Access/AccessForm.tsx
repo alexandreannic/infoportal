@@ -17,8 +17,8 @@ export interface IAccessForm {
   selectBy?: 'email' | 'job' | 'group' | null
   email?: string | null
   groupId?: Ip.Uuid | null
-  drcOffice?: string | null
-  drcJob?: string[] | null
+  location?: string | null
+  job?: string[] | null
   level: Ip.Form.Access.Level
 }
 
@@ -40,7 +40,7 @@ export const AccessForm = ({workspaceId, form}: {workspaceId: UUID; form: UseFor
   useEffect(() => {
     const values = form.getValues()
     if (values.selectBy) return
-    if (values.drcJob) form.setValue('selectBy', 'job')
+    if (values.job) form.setValue('selectBy', 'job')
     else if (values.email) form.setValue('selectBy', 'email')
     else if (values.groupId) form.setValue('selectBy', 'group')
   }, [watch])
@@ -59,8 +59,8 @@ export const AccessForm = ({workspaceId, form}: {workspaceId: UUID; form: UseFor
               error={!!form.formState.errors.selectBy}
               {...field}
               onChange={e => {
-                form.setValue('drcJob', null)
-                form.setValue('drcOffice', null)
+                form.setValue('job', null)
+                form.setValue('location', null)
                 form.setValue('email', null)
                 form.trigger()
                 field.onChange(e)
@@ -82,8 +82,8 @@ export const AccessForm = ({workspaceId, form}: {workspaceId: UUID; form: UseFor
             ),
             job: (
               <>
-                <AccessFormInputDrcJob form={form} sx={{mb: 2}} />
-                <AccessFormInputDrcOffice form={form} />
+                <AccessFormInputJob form={form} sx={{mb: 2}} />
+                <AccessFormInputLocation form={form} />
               </>
             ),
             email: <AccessFormInputEmail form={form} />,
@@ -119,11 +119,11 @@ export const AccessFormInputEmail = ({form}: {form: UseFormReturn<IAccessForm>})
   )
 }
 
-export const AccessFormInputDrcOffice = ({form}: {form: UseFormReturn<IAccessForm>}) => {
+export const AccessFormInputLocation = ({form}: {form: UseFormReturn<IAccessForm>}) => {
   const {m} = useI18n()
   return (
     <Controller
-      name="drcOffice"
+      name="location"
       control={form.control}
       render={({field: {onChange, ...field}}) => (
         <IpSelectSingle<string> {...field} label={m.location} onChange={_ => onChange(_)} options={[]} />
@@ -154,13 +154,13 @@ export const AccessFormInputAccessLevel = ({form}: {form: UseFormReturn<IAccessF
   )
 }
 
-export const AccessFormInputDrcJob = ({form, sx}: {form: UseFormReturn<IAccessForm>; sx?: SxProps<Theme>}) => {
+export const AccessFormInputJob = ({form, sx}: {form: UseFormReturn<IAccessForm>; sx?: SxProps<Theme>}) => {
   const {m} = useI18n()
   const required = form.watch('selectBy') === 'job'
   return (
     <Controller
       control={form.control}
-      name="drcJob"
+      name="job"
       rules={{required: {value: required, message: m.required}}}
       render={({field: {onChange, ...field}}) => (
         <DrcJobInputMultiple {...field} sx={sx} value={field.value ?? []} onChange={(e: any, _) => _ && onChange(_)} />
