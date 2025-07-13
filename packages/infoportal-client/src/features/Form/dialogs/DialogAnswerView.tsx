@@ -44,7 +44,7 @@ export const DatabaseKoboAnswerViewPage = () => {
   const {m} = useI18n()
   const {formId, answerId} = databaseUrlParamsValidation.validateSync(useParams())
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
-  const queryForm = useQueryFormById({formId, workspaceId})
+  const queryForm = useQueryFormById({formId, workspaceId}).get
   const queryAnswers = useQueryAnswer({formId, workspaceId})
   const querySchema = useQuerySchema({workspaceId, formId})
 

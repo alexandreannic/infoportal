@@ -100,7 +100,6 @@ export const DashboardLayout = ({
       <Layout
         header={
           <DashboardHeader
-            hideEuLogo={hideEuLogo}
             action={action}
             header={header}
             title={title}

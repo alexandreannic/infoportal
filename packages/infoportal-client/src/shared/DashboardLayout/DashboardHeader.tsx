@@ -1,5 +1,5 @@
 import {alpha, Box, BoxProps, Typography, useTheme} from '@mui/material'
-import {IpLogo, EULogo} from '@/shared/logo/logo'
+import {IpLogo} from '@/shared/logo/logo'
 import React, {ReactNode} from 'react'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
@@ -9,12 +9,10 @@ export const DashboardHeader = ({
   title,
   subTitle,
   action,
-  hideEuLogo,
   header,
   id,
   ...props
 }: Omit<BoxProps, 'title'> & {
-  hideEuLogo?: boolean
   title: ReactNode
   subTitle: ReactNode
   action?: ReactNode
@@ -61,7 +59,6 @@ export const DashboardHeader = ({
                   {title}
                 </Typography>
                 <Box sx={{ml: 'auto', mr: 2}}>{action}</Box>
-                {!hideEuLogo && <EULogo height={26} sx={{mr: 1}} />}
                 <IpLogo height={24} />
               </Box>
               <Typography className="header_title_sub" variant="subtitle1" sx={{color: t.palette.text.secondary}}>
