@@ -1,12 +1,12 @@
 import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
-import {KoboAnswerHistoryHelper} from '../../../feature/kobo/history/KoboAnswerHistoryType.js'
-import {KoboAnswerHistoryService} from '../../../feature/kobo/history/KoboAnswerHistoryService.js'
+import {FormAnswerHistoryService} from '../../../feature/form/history/FormAnswerHistoryService.js'
+import {KoboAnswerHistoryHelper} from '../../../feature/form/history/FormAnswerHistoryType.js'
 
 export class ControllerKoboAnswerHistory {
   constructor(
     private prisma: PrismaClient,
-    private service = new KoboAnswerHistoryService(prisma),
+    private service = new FormAnswerHistoryService(prisma),
   ) {}
 
   readonly search = async (req: Request, res: Response, next: NextFunction) => {

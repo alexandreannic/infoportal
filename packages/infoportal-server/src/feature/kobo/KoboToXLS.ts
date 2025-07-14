@@ -1,15 +1,23 @@
 import {convertNumberIndexToLetter, KoboSubmissionMetaData} from 'infoportal-common'
 import XlsxPopulate from 'xlsx-populate'
 import {PrismaClient} from '@prisma/client'
-import {DbKoboAnswer, KoboService} from './KoboService.js'
+import {DbFormAnswer} from '../form/answers/FormAnswersService.js'
 import {appConf} from '../../core/conf/AppConf.js'
 import {Kobo} from 'kobo-sdk'
+import {KoboFormService} from './KoboFormService'
+import {fnSwitch, Obj, seq} from '@axanc/ts-utils'
+import {format} from 'date-fns'
+import {Ip} from 'infoportal-api-sdk'
+import {app} from '../../index'
+import {FormService} from '../form/FormService'
 
 /** @deprecated??*/
 export class KoboToXLS {
   constructor(
     private prisma: PrismaClient,
-    private service: KoboService = new KoboService(prisma),
+    private form = new FormService(prisma),
+    private koboForm = new KoboFormService(prisma),
+    private log = app.logger('KoboToXLS'),
   ) {}
 
   readonly generateXLSFromAnswers = async ({
@@ -21,7 +29,7 @@ export class KoboToXLS {
   }: {
     fileName: string
     formId: Kobo.FormId
-    data: DbKoboAnswer[]
+    data: DbFormAnswer[]
     langIndex?: number
     password?: string
   }) => {
@@ -34,12 +42,16 @@ export class KoboToXLS {
       'select_multiple',
       'date',
     ]
-    const koboFormDetails = await this.service.getSchema({formId})
-    const translated = langIndex !== undefined ? await this.service.translateForm({formId, langIndex, data}) : data
+    const koboFormDetails = await this.form.getSchema({formId})
+    if (!koboFormDetails) return
+
+    const translated = langIndex !== undefined ? await this.translateForm({formId, langIndex, data}) : data
+    if (!translated) return
+
     const flatTranslated = translated.map(({answers, ...meta}) => ({...meta, ...answers}))
     const columns = (() => {
       const metaColumns: (keyof KoboSubmissionMetaData)[] = ['id', 'submissionTime', 'version']
-      const schemaColumns = koboFormDetails.content.survey
+      const schemaColumns = koboFormDetails.survey
         .filter(_ => koboQuestionType.includes(_.type))
         .map(_ =>
           langIndex !== undefined && _.label ? (_.label[langIndex]?.replace(/(<([^>]+)>)/gi, '') ?? _.name) : _.name,
@@ -66,5 +78,65 @@ export class KoboToXLS {
 
   private readonly styleDateColumn = (allColumns: string[], columnName: string) => {
     const findColumnByName = (name: string) => convertNumberIndexToLetter(Object.keys(allColumns).indexOf(name))
+  }
+
+  readonly translateForm = async ({
+    formId,
+    langIndex,
+    data,
+  }: {
+    formId: Ip.FormId
+    langIndex: number
+    data: DbFormAnswer[]
+  }) => {
+    const koboQuestionType: Kobo.Form.QuestionType[] = [
+      'text',
+      'start',
+      'end',
+      'integer',
+      'select_one',
+      'select_multiple',
+      'date',
+    ]
+    const flatAnswers = data.map(({answers, ...meta}) => ({...meta, ...answers}))
+    const schema = await this.form.getSchema({formId})
+    if (!schema) {
+      this.log.warn(`[translateForm] Missing ${formId}`)
+      return
+    }
+    const indexLabel = seq(schema.survey)
+      .compactBy('name')
+      .filter(_ => koboQuestionType.includes(_.type))
+      .reduceObject<Record<string, Kobo.Form.Question>>(_ => [_.name, _])
+    const indexOptionsLabels = seq(schema.choices).reduceObject<Record<string, undefined | string>>(_ => [
+      _.name,
+      _.label?.[langIndex],
+    ])
+    return flatAnswers.map(d => {
+      const translated = {} as DbFormAnswer
+      Obj.keys(d).forEach(k => {
+        const translatedKey = indexLabel[k]?.label?.[langIndex] ?? k
+        const translatedValue = (() => {
+          if (k === 'submissionTime') {
+            return format(d[k], 'yyyy-MM-dd')
+          }
+          return fnSwitch(
+            indexLabel[k]?.type,
+            {
+              select_multiple: () =>
+                (d[k] as string)
+                  ?.split(' ')
+                  .map((_: any) => indexOptionsLabels[_])
+                  .join('|'),
+              start: () => format(d[k] as Date, 'yyyy-MM-dd'),
+              end: () => format(d[k] as Date, 'yyyy-MM-dd'),
+            },
+            _ => indexOptionsLabels[d[k] as string] ?? d[k],
+          )
+        })()
+        ;(translated as any)[translatedKey.replace(/(<([^>]+)>)/gi, '')] = translatedValue
+      })
+      return translated
+    })
   }
 }

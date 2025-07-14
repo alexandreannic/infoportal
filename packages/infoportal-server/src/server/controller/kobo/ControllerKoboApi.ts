@@ -2,14 +2,14 @@ import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from '../../../feature/kobo/KoboSdkGenerator.js'
-import {KoboSyncServer} from '../../../feature/kobo/sync/KoboSyncServer.js'
+import {KoboSyncServer} from '../../../feature/kobo/KoboSyncServer.js'
 import axios, {AxiosError} from 'axios'
-import {KoboService} from '../../../feature/kobo/KoboService.js'
+import {KoboFormService} from '../../../feature/kobo/KoboFormService.js'
 
 export class ControllerKoboApi {
   constructor(
     private pgClient: PrismaClient,
-    private koboService = new KoboService(pgClient),
+    private koboService = new KoboFormService(pgClient),
     private syncService = new KoboSyncServer(pgClient),
     private koboSdkGenerator = KoboSdkGenerator.getSingleton(pgClient),
   ) {}

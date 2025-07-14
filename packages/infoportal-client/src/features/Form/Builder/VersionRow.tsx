@@ -9,7 +9,7 @@ import React from 'react'
 const borderWidth = 2.5
 const avatarSize = 26
 
-const Logo = ({version}: {version: Ip.Form.Version}) => {
+const Logo = ({version, index}: {index?: number; version: Ip.Form.Version}) => {
   const t = useTheme()
   const border = fnSwitch(version.status, {
     draft: {style: 'dashed', color: t.palette.primary.main},
@@ -27,7 +27,7 @@ const Logo = ({version}: {version: Ip.Form.Version}) => {
           height: 5,
           width: borderWidth,
           marginBottom: borderWidth + 'px',
-          background: version.status === 'draft' ? undefined : t.palette.divider,
+          background: index === 0 ? undefined : t.palette.divider,
         },
         '&:after': {
           content: '" "',
@@ -125,11 +125,11 @@ export const VersionRowShowMore = (props: BoxProps) => {
   )
 }
 
-export const VersionRow = ({version}: {version: Ip.Form.Version}) => {
+export const VersionRow = ({version, index}: {index?: number; version: Ip.Form.Version}) => {
   const {m, formatDateTime, dateFromNow} = useI18n()
   return (
     <VersionRowContainer>
-      <Logo version={version} />
+      <Logo version={version} index={index} />
       <Box sx={{display: 'flex', width: '100%', justifyContent: 'flex-start', minWidth: 0}}>
         <Txt bold sx={{flexShrink: 0, ml: 1, mr: 1, width: 26, textAlign: 'left'}}>
           v{version.version}

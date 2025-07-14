@@ -1,14 +1,14 @@
 import {KoboHelper, KoboSubmission, logPerformance, UUID} from 'infoportal-common'
 import {Prisma, PrismaClient} from '@prisma/client'
-import {KoboSdkGenerator} from '../KoboSdkGenerator.js'
-import {app, AppCacheKey, AppLogger} from '../../../index.js'
-import {createdBySystem} from '../../../core/DbInit.js'
+import {KoboSdkGenerator} from './KoboSdkGenerator.js'
+import {app, AppCacheKey, AppLogger} from '../../index.js'
+import {createdBySystem} from '../../core/DbInit.js'
 import {chunkify, seq} from '@axanc/ts-utils'
-import {GlobalEvent} from '../../../core/GlobalEvent.js'
-import {KoboService} from '../KoboService.js'
-import {AppError} from '../../../helper/Errors.js'
-import {appConf} from '../../../core/conf/AppConf.js'
-import {genUUID, previewList, Util} from '../../../helper/Utils.js'
+import {GlobalEvent} from '../../core/GlobalEvent.js'
+import {FormAnswersService} from '../form/answers/FormAnswersService.js'
+import {AppError} from '../../helper/Errors.js'
+import {appConf} from '../../core/conf/AppConf.js'
+import {genUUID, previewList, Util} from '../../helper/Utils.js'
 import {Kobo, KoboSubmissionFormatter} from 'kobo-sdk'
 
 export type KoboSyncServerResult = {
@@ -21,7 +21,7 @@ export type KoboSyncServerResult = {
 export class KoboSyncServer {
   constructor(
     private prisma: PrismaClient,
-    private service = new KoboService(prisma),
+    private service = new FormAnswersService(prisma),
     private koboSdkGenerator: KoboSdkGenerator = KoboSdkGenerator.getSingleton(prisma),
     private event = GlobalEvent.Class.getInstance(),
     private appCache = app.cache,

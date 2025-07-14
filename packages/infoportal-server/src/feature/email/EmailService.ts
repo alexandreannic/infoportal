@@ -2,28 +2,21 @@ import {GlobalEvent} from '../../core/GlobalEvent.js'
 import {EmailClient} from './EmailClient.js'
 import {KoboCustomDirective, Regexp} from 'infoportal-common'
 import {app} from '../../index.js'
-import {UserService} from '../user/UserService.js'
 import {PrismaClient} from '@prisma/client'
-import {FrontEndSiteMap} from '../../core/FrontEndSiteMap.js'
-import {appConf} from '../../core/conf/AppConf.js'
-import {KoboService} from '../kobo/KoboService.js'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
+import {FormService} from '../form/FormService.js'
 
 export enum EmailContext {
-  Cfm = 'Cfm',
   Kobo = 'Kobo',
 }
 
 export class EmailService {
   constructor(
     private prisma = new PrismaClient(),
-    private conf = appConf,
-    private users = UserService.getInstance(prisma),
+    private form = new FormService(prisma),
     private event = GlobalEvent.Class.getInstance(),
     private emailHelper = new EmailClient(prisma),
-    private siteMap = new FrontEndSiteMap(),
-    private koboService = new KoboService(prisma),
     private log = app.logger('EmailService'),
   ) {}
 
@@ -35,9 +28,13 @@ export class EmailService {
   }
 
   readonly sendEmailIfTriggered = async (p: GlobalEvent.KoboAnswerEditedParams) => {
-    const schema = await this.koboService.getSchema({formId: p.formId})
+    const schema = await this.form.getSchema({formId: p.formId})
+    if (!schema) {
+      this.log.info(`[sendEmailIfTriggered] Missing ${p.formId}`)
+      return
+    }
     const toSend_names = Obj.keys(p.answer).filter(_ => _.startsWith(KoboCustomDirective.make('TRIGGER_EMAIL')))
-    const toSend_questions = schema.content.survey.filter(_ => toSend_names.includes(_.name))
+    const toSend_questions = schema.survey.filter(_ => toSend_names.includes(_.name))
     await Promise.all(toSend_questions.map(_ => this.sendByQuestion(_, p)))
   }
 

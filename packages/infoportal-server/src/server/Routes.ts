@@ -23,12 +23,12 @@ import {UUID} from 'infoportal-common'
 import multer from 'multer'
 import {initServer} from '@ts-rest/express'
 import {ipContract} from 'infoportal-api-sdk'
-import {FormVersionService} from '../feature/kobo/FormVersionService.js'
+import {FormVersionService} from '../feature/form/FormVersionService.js'
 import {KoboFormService} from '../feature/kobo/KoboFormService.js'
 import {ServerService} from '../feature/ServerService.js'
 import {FormService} from '../feature/form/FormService.js'
 import {ErrorHttpStatusCode, SuccessfulHttpStatusCode} from '@ts-rest/core'
-import {FormAccessService} from '../feature/access/FormAccessService.js'
+import {FormAccessService} from '../feature/form/access/FormAccessService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user

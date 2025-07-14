@@ -1,6 +1,5 @@
 import {FormAccessLevel, PrismaClient, User} from '@prisma/client'
-import {UUID} from 'infoportal-common'
-import {app, AppLogger} from '../../index.js'
+import {app, AppLogger} from '../../../index.js'
 import {Ip} from 'infoportal-api-sdk'
 
 export class FormAccessService {
@@ -9,7 +8,7 @@ export class FormAccessService {
     private log: AppLogger = app.logger('FormAccess'),
   ) {}
 
-  private readonly searchFromAccess = async ({workspaceId, user}: {workspaceId: UUID; user?: User}) => {
+  private readonly searchFromAccess = async ({workspaceId, user}: {workspaceId: Ip.Uuid; user?: User}) => {
     return this.prisma.formAccess.findMany({
       distinct: ['id'],
       where: {
@@ -32,7 +31,7 @@ export class FormAccessService {
     })
   }
 
-  private readonly searchFromGroup = async ({workspaceId, user}: {workspaceId: UUID; user?: User}) => {
+  private readonly searchFromGroup = async ({workspaceId, user}: {workspaceId: Ip.Uuid; user?: User}) => {
     return this.prisma.formAccess.findMany({
       include: {
         group: {include: {items: true}},

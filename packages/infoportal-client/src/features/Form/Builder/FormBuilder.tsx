@@ -73,8 +73,8 @@ export const FormBuilder = () => {
                         {seq(versions ?? [])
                           .sortByNumber(_ => _.version, '9-0')
                           .slice(0, versionVisible)
-                          .map(_ => (
-                            <VersionRow key={_.id} version={_} />
+                          .map((_, i) => (
+                            <VersionRow key={_.id} version={_} index={i} />
                           ))}
                         {versionVisible < versions.length && (
                           <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />
@@ -87,8 +87,6 @@ export const FormBuilder = () => {
             </Grid>
             <Grid size={{xs: 12, md: 6}}>
               {active && <FormBuilderPreview workspaceId={workspaceId} formId={formId} versionId={active.id} />}
-              {/*{activeVersion && (*/}
-              {/*)}*/}
             </Grid>
           </Grid>
         ))}

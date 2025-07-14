@@ -1,4 +1,4 @@
-import {seq} from '@axanc/ts-utils'
+import {duration, seq} from '@axanc/ts-utils'
 import {Prisma, PrismaClient} from '@prisma/client'
 import {PromisePool} from '@supercharge/promise-pool'
 import {UUID} from 'infoportal-common'
@@ -36,6 +36,16 @@ export class KoboFormService {
       workspaces: {connect: {id: workspaceId}},
     }
   }
+
+  readonly getSchema = app.cache.request({
+    key: AppCacheKey.KoboSchema,
+    genIndex: _ => _.formId,
+    ttlMs: duration(2, 'day').toMs,
+    fn: async ({formId}: {formId: Ip.FormId}): Promise<Kobo.Form> => {
+      const sdk = await this.koboSdk.getBy.formId(formId)
+      return sdk.v2.form.get({formId, use$autonameAsName: true})
+    },
+  })
 
   static readonly HOOK_NAME = 'InfoPortal'
 

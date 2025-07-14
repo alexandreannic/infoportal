@@ -3,7 +3,7 @@ import {app} from '../../index.js'
 import {appConf} from '../../core/conf/AppConf.js'
 import {Kobo} from 'kobo-sdk'
 import {yup} from '../../helper/Utils.js'
-import {XlsFormParser} from './XlsFormParser.js'
+import {XlsFormParser} from '../kobo/XlsFormParser.js'
 import {Ip} from 'infoportal-api-sdk'
 
 export class FormVersionService {

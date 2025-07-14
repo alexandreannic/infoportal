@@ -1,18 +1,14 @@
 import {Form, PrismaClient} from '@prisma/client'
-import {UUID} from 'infoportal-common/index'
+import {UUID} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
-import {KoboService} from '../kobo/KoboService.js'
-import {FormAccessService} from '../access/FormAccessService.js'
 import {KoboFormService} from '../kobo/KoboFormService.js'
-import {FormVersionService} from '../kobo/FormVersionService.js'
+import {FormVersionService} from './FormVersionService.js'
 
 export class FormService {
   constructor(
     private prisma: PrismaClient,
-    private kobo = new KoboService(prisma),
     private koboForm = new KoboFormService(prisma),
     private formVersion = new FormVersionService(prisma),
-    private access = new FormAccessService(prisma),
   ) {}
 
   readonly getSchema = async ({formId}: {formId: Ip.FormId}): Promise<undefined | Ip.Form.Schema> => {
@@ -28,7 +24,7 @@ export class FormService {
           },
         })
         .then(_ => _?.schema as any)
-    return this.kobo.getSchema({formId}).then(_ => _.content)
+    return this.koboForm.getSchema({formId}).then(_ => _.content)
   }
 
   readonly getSchemaByVersion = async ({

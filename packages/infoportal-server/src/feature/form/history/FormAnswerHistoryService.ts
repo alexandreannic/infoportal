@@ -1,9 +1,9 @@
 import {Prisma, PrismaClient} from '@prisma/client'
 import {app, AppLogger} from '../../../index.js'
-import {KoboAnswerHistoryHelper} from './KoboAnswerHistoryType.js'
 import {ApiPaginateHelper} from 'infoportal-common'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
+import {KoboAnswerHistoryHelper} from './FormAnswerHistoryType'
 
 type Create = {
   authorEmail: string
@@ -22,7 +22,7 @@ type Create = {
     }
 )
 
-export class KoboAnswerHistoryService {
+export class FormAnswerHistoryService {
   constructor(
     private prisma: PrismaClient,
     private log: AppLogger = app.logger('KoboAnswerHistoryService'),
