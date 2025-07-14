@@ -6,6 +6,7 @@ import {useLocation, useNavigate} from 'react-router-dom'
 import {useMemo} from 'react'
 import {appRouter} from '@/Router'
 import {duration} from '@axanc/ts-utils'
+import {appRoutes} from '@/TanstackRouter'
 
 export const useQueryWorkspace = () => {
   const {api} = useAppSettings()
@@ -63,15 +64,21 @@ export const useWorkspaceRouterMaybe = () => {
 }
 
 export const useWorkspaceRouter = () => {
+  const {wsId} = appRoutes.app.workspace.root.useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  return useMemo(() => {
-    const workspaceId = location.pathname.match(/^\/([^/]+)/)?.[1]
-    if (!workspaceId) throw new Error(`Missing workspaceId in URI '${location.pathname}'`)
-    return {
-      router: appRouter.ws(workspaceId),
-      changeWorkspace: (wsId: string) => navigate(appRouter.ws(wsId).root),
-      workspaceId,
-    }
-  }, [navigate, location])
+  return {
+    router: appRouter.ws(wsId),
+    changeWorkspace: (wsId: string) => navigate(appRouter.ws(wsId).root),
+    workspaceId: wsId,
+  }
+  // return useMemo(() => {
+  //   const workspaceId = location.pathname.match(/^\/([^/]+)/)?.[1]
+  //   if (!workspaceId) throw new Error(`Missing workspaceId in URI '${location.pathname}'`)
+  //   return {
+  //     router: appRouter.ws(workspaceId),
+  //     changeWorkspace: (wsId: string) => navigate(appRouter.ws(wsId).root),
+  //     workspaceId,
+  //   }
+  // }, [navigate, location])
 }

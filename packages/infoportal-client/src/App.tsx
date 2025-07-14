@@ -5,7 +5,6 @@ import {getMsalInstance} from '@/core/msal'
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {ProtectRoute, SessionProvider} from '@/core/Session/SessionContext'
-import {Router} from '@/Router'
 import {CenteredContent, Txt} from '@/shared'
 import {IpLogo} from '@/shared/logo/logo'
 import {Provide} from '@/shared/Provide'
@@ -17,11 +16,16 @@ import {LocalizationProvider} from '@mui/x-date-pickers-pro'
 import {AdapterDateFns} from '@mui/x-date-pickers-pro/AdapterDateFns'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {DialogsProvider} from '@toolpad/core'
-import {useEffect, useMemo} from 'react'
+import React, {useEffect, useMemo} from 'react'
 import {HashRouter, useLocation} from 'react-router-dom'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {defaultTheme} from '@/core/theme'
 import {buildIpClient, IpClient} from 'infoportal-api-sdk'
+import {Outlet, useMatchRoute} from '@tanstack/react-router'
+import {AppHeader} from '@/core/layout/AppHeader'
+import {AppSidebar} from '@/core/layout/AppSidebar'
+import {Layout} from '@/shared/Layout/Layout'
+import {appRoutes} from '@/TanstackRouter'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -35,7 +39,7 @@ const apiv2: IpClient = buildIpClient(appConfig.apiURL)
 
 export const queryClient = new QueryClient()
 
-const App = () => {
+export const App = () => {
   return (
     <AppSettingsProvider api={api} apiv2={apiv2}>
       <AppWithConfig />
@@ -102,11 +106,15 @@ const AppWithBaseContext = () => {
       </CenteredContent>
     )
   }
+  const matchRoute = useMatchRoute()
+  const match = matchRoute({from: appRoutes.app.workspace.root.fullPath})
+  const workspaceId = match ? match.wsId : undefined
+
   return (
     <ProtectRoute>
-      <Router />
+      <Layout header={<AppHeader />} sidebar={workspaceId ? <AppSidebar /> : undefined}>
+        <Outlet />
+      </Layout>
     </ProtectRoute>
   )
 }
-
-export default App
