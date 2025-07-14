@@ -11,10 +11,10 @@ import {TableIcon} from '@/shared/TableIcon'
 import {Txt} from '@/shared/Txt'
 import {seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
-import {useNavigate} from 'react-router-dom'
 import {AddUserForm} from './AddUserForm'
 import {useQueryUser} from '@/core/query/useQueryUser'
 import {useSession} from '@/core/Session/SessionContext'
+import {useNavigate} from '@tanstack/react-router'
 
 export const AdminUsers = () => {
   const {m, formatDate, formatDateTime} = useI18n()

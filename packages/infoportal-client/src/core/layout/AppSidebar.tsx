@@ -9,6 +9,7 @@ import {Controller, useForm} from 'react-hook-form'
 import {NavLink} from 'react-router-dom'
 import {styleUtils} from '../theme'
 import {useQueryForm} from '@/core/query/useQueryForm'
+import {Link} from '@tanstack/react-router'
 
 type Form = {
   id: string
@@ -107,13 +108,13 @@ export const AppSidebar = () => {
 
   return (
     <Sidebar headerId="app-header">
-      <NavLink to={router.settings.root}>
+      <Link to="/app/$workspaceId/settings" params={{workspaceId}}>
         {({isActive}) => (
           <SidebarItem icon="settings" active={isActive}>
             {m.settings}
           </SidebarItem>
         )}
-      </NavLink>
+      </Link>
       <NavLink to={router.importKoboForm}>
         {({isActive, isPending}) => (
           <SidebarItem icon="add" active={isActive}>

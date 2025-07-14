@@ -66,7 +66,6 @@ export const useWorkspaceRouterMaybe = () => {
 export const useWorkspaceRouter = () => {
   const {wsId} = appRoutes.app.workspace.root.useParams()
   const navigate = useNavigate()
-  const location = useLocation()
   return {
     router: appRouter.ws(wsId),
     changeWorkspace: (wsId: string) => navigate(appRouter.ws(wsId).root),
