@@ -4,10 +4,9 @@ import {useI18n} from '@/core/i18n'
 import {ReactNode} from 'react'
 import {Box, Switch, useTheme} from '@mui/material'
 import {useFormContext} from '@/features/Form/Form'
-import {useQueryForm, useQueryFormById} from '@/core/query/useQueryForm'
-import {useNavigate} from 'react-router-dom'
-import {appRouter} from '@/Router'
-import {fnSwitch, match} from '@axanc/ts-utils'
+import {useQueryFormById} from '@/core/query/useQueryForm'
+import {match} from '@axanc/ts-utils'
+import {useNavigate} from '@tanstack/react-router'
 
 const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; children: ReactNode}) => {
   const t = useTheme()
@@ -91,7 +90,7 @@ export const FormSettings = () => {
               onConfirm={async (e, close) => {
                 await queryForm.remove.mutateAsync()
                 close()
-                navigate(appRouter.ws(workspaceId).form.list)
+                navigate({to: '/app/$workspaceId/form/list', params: {workspaceId}})
               }}
             >
               <IpBtn color="error" variant="outlined" icon="delete">

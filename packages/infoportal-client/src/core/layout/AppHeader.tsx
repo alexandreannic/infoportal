@@ -1,5 +1,4 @@
-import {appRouter} from '@/Router'
-import {useQueryWorkspace, useWorkspaceRouterMaybe} from '@/core/query/useQueryWorkspace'
+import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
@@ -11,9 +10,12 @@ import {PopoverWrapper} from '@/shared/PopoverWrapper'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Obj} from '@axanc/ts-utils'
 import {alpha, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme} from '@mui/material'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from '@tanstack/react-router'
+import {Ip} from 'infoportal-api-sdk'
 
-interface Props extends BoxProps {}
+interface Props extends BoxProps {
+  workspaceId?: Ip.Uuid
+}
 
 const lightThemeIcons = {
   light: 'light_mode',
@@ -21,12 +23,12 @@ const lightThemeIcons = {
   system: 'brightness_medium',
 } as const
 
-export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) => {
+export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...props}: Props) => {
   const {m} = useI18n()
   const t = useTheme()
 
+  const navigate = useNavigate()
   const {sidebarOpen, showSidebarButton, setSidebarOpen, title} = useLayoutContext()
-  const {workspaceId, changeWorkspace} = useWorkspaceRouterMaybe()
 
   const queryWorkspaces = useQueryWorkspace()
   const {mode, setMode} = useColorScheme()
@@ -94,7 +96,7 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
             }
             value={workspaceId}
             hideNullOption
-            onChange={_ => _ && changeWorkspace(_)}
+            onChange={_ => navigate({to: '/app/$workspaceId', params: {workspaceId: _}})}
             sx={{width: 200, mr: 0.5}}
             options={(queryWorkspaces.get.data ?? []).map(_ => ({
               value: _.id,
@@ -125,7 +127,7 @@ export const AppHeader = ({children, sx, id = 'aa-header-id', ...props}: Props) 
         >
           <IpIconBtn children={lightThemeIcons[mode ?? 'system']} />
         </PopoverWrapper>
-        <Link to={appRouter.root}>
+        <Link to="/app">
           <IpIconBtn children="home" />
         </Link>
         <AppHeaderMenu />

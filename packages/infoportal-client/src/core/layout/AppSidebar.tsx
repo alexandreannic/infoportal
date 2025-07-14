@@ -6,15 +6,12 @@ import {Box, BoxProps, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
 import Fuse from 'fuse.js'
 import {forwardRef, useMemo} from 'react'
 import {Controller, useForm} from 'react-hook-form'
-import {NavLink} from 'react-router-dom'
 import {styleUtils} from '../theme'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {Link} from '@tanstack/react-router'
 
 type Form = {
   id: string
-  // custom?: boolean
-  url: string
   name: string
   archived?: boolean
 }
@@ -73,7 +70,6 @@ export const AppSidebar = () => {
       queryForm.accessibleForms.data?.map(_ => ({
         ..._,
         id: _.id,
-        url: router.form.byId(_.id).root,
         archived: _.deploymentStatus === 'archived',
         name: _.name,
       })) ?? []
@@ -115,16 +111,16 @@ export const AppSidebar = () => {
           </SidebarItem>
         )}
       </Link>
-      <NavLink to={router.importKoboForm}>
-        {({isActive, isPending}) => (
+      <Link to="/app/$workspaceId/new-form" params={{workspaceId}}>
+        {({isActive}) => (
           <SidebarItem icon="add" active={isActive}>
             {m.newForm}
           </SidebarItem>
         )}
-      </NavLink>
-      <NavLink to={router.form.list}>
-        {({isActive, isPending}) => <SidebarItem icon="home">{m.forms}</SidebarItem>}
-      </NavLink>
+      </Link>
+      <Link to="/app/$workspaceId/new-form" params={{workspaceId}}>
+        {({isActive}) => <SidebarItem icon="home">{m.forms}</SidebarItem>}
+      </Link>
       <SidebarHr />
       {queryForm.accessibleForms.isLoading ? (
         <>
@@ -160,8 +156,8 @@ export const AppSidebar = () => {
 
           {filteredForms.map((_: Form) => (
             <Tooltip key={_.id} title={_.name} placement="right-end">
-              <NavLink to={_.url}>
-                {({isActive, isPending}) => (
+              <Link to="/app/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
+                {({isActive}) => (
                   <SidebarItem
                     size={'tiny'}
                     sx={{height: 26}}
@@ -193,7 +189,7 @@ export const AppSidebar = () => {
                     </Txt>
                   </SidebarItem>
                 )}
-              </NavLink>
+              </Link>
             </Tooltip>
           ))}
         </>

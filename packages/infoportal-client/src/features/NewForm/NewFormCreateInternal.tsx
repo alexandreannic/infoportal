@@ -7,8 +7,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {PanelFoot} from '@/shared/Panel/PanelFoot'
 import {IpBtn} from '@/shared'
 import {Autocomplete, Grid} from '@mui/material'
-import {useNavigate} from 'react-router-dom'
-import {appRouter} from '@/Router'
+import {useNavigate} from '@tanstack/react-router'
 
 type Form = {
   name: string
@@ -27,7 +26,7 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.Uuid}) => 
       onSubmit={form.handleSubmit(async _ => {
         const newForm = await queryForm.create.mutateAsync(_)
         form.reset()
-        navigate(appRouter.ws(workspaceId).form.byId(newForm.id).root)
+        navigate({to: '/app/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})
       })}
     >
       <Panel>

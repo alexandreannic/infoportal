@@ -1,3 +1,5 @@
+- Delete yup
+
 - Split as dedicated project with distinct root using tsconfig
     - All sdks
     - Script to generate Kobo interface

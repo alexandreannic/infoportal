@@ -1,21 +1,20 @@
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {Page, PageTitle} from '@/shared/Page'
+import {Page} from '@/shared/Page'
 import {Panel} from '@/shared/Panel'
 import {TableIconBtn} from '@/shared/TableIcon'
 import {Txt} from '@/shared/Txt'
 import {seq} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
 import {useEffect, useMemo} from 'react'
-import {NavLink} from 'react-router-dom'
 import {useQueryServers} from '@/core/query/useQueryServers'
-
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
+import {Link} from '@tanstack/react-router'
 
 export const Forms = () => {
-  const {workspaceId, router} = useWorkspaceRouter()
+  const {workspaceId} = useWorkspaceRouter()
   const {formatDate, m} = useI18n()
   const t = useTheme()
   const {setTitle} = useLayoutContext()
@@ -176,9 +175,9 @@ export const Forms = () => {
                   align: 'right',
                   head: '',
                   renderQuick: _ => (
-                    <NavLink to={router.form.byId(_.id).root}>
+                    <Link to="/app/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
                       <TableIconBtn color="primary" children="chevron_right" />
-                    </NavLink>
+                    </Link>
                   ),
                 },
               ]}

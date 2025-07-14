@@ -13,7 +13,7 @@ import {useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {User} from '@/core/sdk/server/user/User'
 import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate} from '@tanstack/react-router'
 
 export interface SessionContext {
   originalEmail?: string
@@ -69,7 +69,7 @@ export const SessionProvider = ({children}: {children: ReactNode}) => {
         setUser: (_: User) => queryClient.setQueryData(queryKeys.session(), _),
         logout: async () => {
           await querySession.logout.mutateAsync()
-          await navigate('/')
+          await navigate({to: '/'})
         },
       }}
     >

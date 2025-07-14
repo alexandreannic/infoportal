@@ -1,5 +1,5 @@
 import React from 'react'
-import {createRootRoute, createRoute, Link, Outlet, Router} from '@tanstack/react-router'
+import {createRootRoute, createRoute, createRouter, Link, Outlet} from '@tanstack/react-router'
 import {Workspaces} from '@/features/Workspace/Workspaces'
 import {NewForm} from '@/features/NewForm/NewForm'
 import {App} from './App'
@@ -17,6 +17,7 @@ import {DatabaseHistory} from '@/features/Form/History/DatabaseHistory'
 import {DatabaseTableRoute} from '@/features/Form/Database/DatabaseTable'
 import {FormSettings} from './features/Form/Settings/FormSettings'
 import {DatabaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
+import {z} from 'zod'
 
 const Collect = () => {
   const {formId} = appRoutes.collect.useParams()
@@ -70,6 +71,16 @@ export const appRoutes = (() => {
           })
           return {
             root: workspace,
+            dashboard: createRoute({
+              getParentRoute: () => workspace,
+              path: '/',
+              component: () => <div>Dashboard</div>,
+            }),
+            importKoboForm: createRoute({
+              getParentRoute: () => workspace,
+              path: 'new-form',
+              component: NewForm,
+            }),
             forms: (() => {
               const forms = createRoute({
                 getParentRoute: () => workspace,
@@ -93,7 +104,7 @@ export const appRoutes = (() => {
                     root: form,
                     answer: createRoute({
                       getParentRoute: () => form,
-                      path: 'answer',
+                      path: 'answer/$answerId',
                       component: DatabaseKoboAnswerViewPage,
                     }),
                     formCreator: createRoute({
@@ -113,8 +124,12 @@ export const appRoutes = (() => {
                     }),
                     group: createRoute({
                       getParentRoute: () => form,
-                      path: 'group',
+                      path: 'group/$group',
                       component: DatabaseKoboRepeatRoute,
+                      validateSearch: z.object({
+                        id: z.string().optional(),
+                        index: z.number().optional(),
+                      }),
                     }),
                     settings: createRoute({
                       getParentRoute: () => form,
@@ -160,81 +175,12 @@ export const appRoutes = (() => {
                 }),
               }
             })(),
-            dashboard: createRoute({
-              getParentRoute: () => workspace,
-              path: '/',
-              component: () => <div>Dashboard</div>,
-            }),
-            importKoboForm: createRoute({
-              getParentRoute: () => workspace,
-              path: 'import',
-              component: NewForm,
-            }),
           }
         })(),
       }
     })(),
   }
 })()
-
-// const home = createRoute({
-//   getParentRoute: () => rootRoute,
-//   path: '/',
-//   component: () => (
-//     <div>
-//       Test
-//       <Link to="/app">App</Link>
-//     </div>
-//   ),
-// })
-//
-// const contact = createRoute({
-//   getParentRoute: () => rootRoute,
-//   path: 'contact',
-//   component: () => <div>Contact</div>,
-// })
-//
-// const collect = createRoute({
-//   getParentRoute: () => rootRoute,
-//   path: 'collect/$formId',
-//   component: Collect,
-// })
-
-// const app = createRoute({
-//   getParentRoute: () => rootRoute,
-//   path: 'app',
-//   component: App,
-// })
-
-// const workspaces = createRoute({
-//   getParentRoute: () => app,
-//   path: '/',
-//   component: Workspaces,
-// })
-//
-// export const workspace = createRoute({
-//   getParentRoute: () => app,
-//   path: '$workspaceId',
-//   component: () => <Outlet />,
-// })
-
-// const dashboard = createRoute({
-//   getParentRoute: () => workspace,
-//   path: '/',
-//   component: () => <div>Dashboard</div>,
-// })
-//
-// const importKoboForm = createRoute({
-//   getParentRoute: () => workspace,
-//   path: 'import',
-//   component: () => <NewForm />,
-// })
-//
-// const settings = createRoute({
-//   getParentRoute: () => workspace,
-//   path: 'settings',
-//   component: () => <Settings />,
-// })
 
 const tsRoutes = [
   appRoutes.home,
@@ -270,4 +216,4 @@ const tsRoutes = [
 ]
 
 const routeTree = appRoutes.root.addChildren(tsRoutes)
-export const tsRouter = new Router({routeTree})
+export const tsRouter = createRouter({routeTree})

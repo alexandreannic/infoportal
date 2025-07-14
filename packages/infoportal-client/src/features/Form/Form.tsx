@@ -6,10 +6,9 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {useEffect, useMemo} from 'react'
 import {useLocation, useOutletContext, useParams} from 'react-router'
-import {NavLink, Outlet, useNavigate} from 'react-router-dom'
+import {NavLink, Outlet} from 'react-router-dom'
 import * as yup from 'yup'
 import {useQueryFormById} from '@/core/query/useQueryForm'
-import {appRouter} from '@/Router'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {Page} from '@/shared'
@@ -18,16 +17,19 @@ export const databaseUrlParamsValidation = yup.object({
   formId: yup.string().required(),
 })
 
-const useDefaultTabRedirect = ({workspaceId, formId}: {workspaceId: Ip.Uuid; formId: Ip.FormId}) => {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const querySchema = useQuerySchema({formId, workspaceId})
-  useEffect(() => {
-    if (querySchema.isLoading) return
-    if (location.pathname !== appRouter.ws(workspaceId).form.byId(formId).root) return
-    if (querySchema.data) navigate(appRouter.ws(workspaceId).form.byId(formId).answers)
-    else navigate(appRouter.ws(workspaceId).form.byId(formId).formCreator)
-  }, [formId, querySchema.isLoading])
+export const useDefaultTabRedirect = ({workspaceId, formId}: {workspaceId: Ip.Uuid; formId: Ip.FormId}) => {
+  // const navigate = useNavigate()
+  // const pathname = useRouterState({select: s => s.location.pathname})
+  // const querySchema = useQuerySchema({formId, workspaceId})
+  //
+  // useEffect(() => {
+  //   if (querySchema.isLoading) return
+  //   const expectedRoot = appRouter.ws(workspaceId).form.byId(formId).root
+  //   const toAnswers = appRouter.ws(workspaceId).form.byId(formId).answers
+  //   const toFormCreator = appRouter.ws(workspaceId).form.byId(formId).formCreator
+  //   if (pathname !== expectedRoot) return
+  //   navigate(querySchema.data ? toAnswers : toFormCreator)
+  // }, [pathname, querySchema.isLoading])
 }
 
 export type FormContext = {

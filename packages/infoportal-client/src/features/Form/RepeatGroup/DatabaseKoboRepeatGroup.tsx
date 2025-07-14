@@ -12,19 +12,12 @@ import {useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo} from 'react'
-import {NavLink, useNavigate, useParams, useSearchParams} from 'react-router-dom'
-import * as yup from 'yup'
 import {Ip} from 'infoportal-api-sdk'
-import {useFormContext} from '@/features/Form/Form'
-
-const databaseUrlParamsValidation = yup.object({
-  formId: yup.string().required(),
-  group: yup.string().required(),
-})
+import {appRoutes} from '@/TanstackRouter'
+import {useNavigate, Link, useSearch} from '@tanstack/react-router'
 
 export const DatabaseKoboRepeatRoute = () => {
-  const {workspaceId} = useFormContext()
-  const {formId, group} = databaseUrlParamsValidation.validateSync(useParams())
+  const {workspaceId, formId, group} = appRoutes.app.workspace.forms.byId.group.useParams()
   const querySchema = useQuerySchema({workspaceId, formId})
 
   return (
@@ -112,13 +105,9 @@ const DatabaseKoboRepeat = ({
   const t = useTheme()
   const {m} = useI18n()
   const {router} = useWorkspaceRouter()
-  const [searchParams] = useSearchParams()
-  const navigate = useNavigate()
+  const qs = useSearch({from: appRoutes.app.workspace.forms.byId.group.fullPath})
 
-  const qs = {
-    id: searchParams.get('id') ?? undefined,
-    index: searchParams.get('index') ?? undefined,
-  }
+  const navigate = useNavigate()
 
   const queryAnswers = useQueryAnswer({workspaceId, formId})
   const data = queryAnswers.data?.data
@@ -131,7 +120,15 @@ const DatabaseKoboRepeat = ({
       schema,
       t,
       m,
-      onRepeatGroupClick: _ => navigate(router.form.byId(formId).group(_.name, _.row.id, _.row._index)),
+      onRepeatGroupClick: _ =>
+        navigate({
+          to: '/app/$workspaceId/form/$formId/group/$group',
+          params: {group: _.name, workspaceId, formId},
+          search: {
+            id: _.row.id,
+            index: _.row._index,
+          },
+        }),
       groupName: groupInfo.name,
     })
     return {
@@ -151,17 +148,25 @@ const DatabaseKoboRepeat = ({
     <Datatable
       defaultFilters={filters}
       header={
-        <NavLink
-          to={
-            groupInfo.depth > 1
-              ? router.form.byId(formId).group(paths[paths.length - 2], qs.id)
-              : router.form.byId(formId).answers
-          }
-        >
-          <IpBtn variant="contained" icon="arrow_back">
-            {m.back}
-          </IpBtn>
-        </NavLink>
+        groupInfo.depth > 1 ? (
+          <Link
+            params={{workspaceId, formId, group: paths[paths.length - 2]}}
+            to="/app/$workspaceId/form/$formId/group/$group"
+            search={{
+              id: qs.id,
+            }}
+          >
+            <IpBtn variant="contained" icon="arrow_back">
+              {m.back}
+            </IpBtn>
+          </Link>
+        ) : (
+          <Link params={{workspaceId, formId}} to="/app/$workspaceId/form/$formId/answers">
+            <IpBtn variant="contained" icon="arrow_back">
+              {m.back}
+            </IpBtn>
+          </Link>
+        )
       }
       id={`db${formId}-g${group}`}
       columns={columns}

@@ -29,20 +29,13 @@ import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
-import {useParams} from 'react-router'
 import {NavLink} from 'react-router-dom'
-import * as yup from 'yup'
 import {useQueryFormById} from '@/core/query/useQueryForm'
-
-const databaseUrlParamsValidation = yup.object({
-  formId: yup.string().required(),
-  answerId: yup.string().required(),
-})
+import {appRoutes} from '@/TanstackRouter'
 
 export const DatabaseKoboAnswerViewPage = () => {
-  const {workspaceId} = useWorkspaceRouter()
   const {m} = useI18n()
-  const {formId, answerId} = databaseUrlParamsValidation.validateSync(useParams())
+  const {workspaceId, formId, answerId} = appRoutes.app.workspace.forms.byId.answer.useParams()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
   const queryForm = useQueryFormById({formId, workspaceId}).get
   const queryAnswers = useQueryAnswer({formId, workspaceId})

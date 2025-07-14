@@ -17,11 +17,11 @@ import {AdapterDateFns} from '@mui/x-date-pickers-pro/AdapterDateFns'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {DialogsProvider} from '@toolpad/core'
 import React, {useEffect, useMemo} from 'react'
-import {HashRouter, useLocation} from 'react-router-dom'
+import {useLocation} from 'react-router-dom'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {defaultTheme} from '@/core/theme'
 import {buildIpClient, IpClient} from 'infoportal-api-sdk'
-import {Outlet, useMatchRoute} from '@tanstack/react-router'
+import {Outlet, useMatchRoute, useRouterState} from '@tanstack/react-router'
 import {AppHeader} from '@/core/layout/AppHeader'
 import {AppSidebar} from '@/core/layout/AppSidebar'
 import {Layout} from '@/shared/Layout/Layout'
@@ -47,6 +47,14 @@ export const App = () => {
   )
 }
 
+const TrackLocation = () => {
+  const location = useRouterState({select: s => s.location})
+  useEffect(() => {
+    api.session.track(location.pathname)
+  }, [location.pathname])
+  return null
+}
+
 const AppWithConfig = () => {
   const settings = useAppSettings()
   const msal = useMemo(() => getMsalInstance(settings.conf), [settings.conf])
@@ -60,12 +68,12 @@ const AppWithConfig = () => {
         _ => <CssBaseline children={_} />,
         _ => <I18nProvider children={_} />,
         _ => <MsalProvider children={_} instance={msal} />,
-        _ => <HashRouter children={_} />,
         _ => <QueryClientProvider client={queryClient} children={_} />,
         _ => <SessionProvider children={_} />,
         _ => <DialogsProvider children={_} />,
       ]}
     >
+      <TrackLocation />
       <AppWithBaseContext />
       {!settings.conf.production && <ReactQueryDevtools initialIsOpen={false} />}
     </Provide>
@@ -108,11 +116,11 @@ const AppWithBaseContext = () => {
   }
   const matchRoute = useMatchRoute()
   const match = matchRoute({from: appRoutes.app.workspace.root.fullPath})
-  const workspaceId = match ? match.wsId : undefined
+  const workspaceId = match ? match.workspaceId : undefined
 
   return (
     <ProtectRoute>
-      <Layout header={<AppHeader />} sidebar={workspaceId ? <AppSidebar /> : undefined}>
+      <Layout header={<AppHeader workspaceId={workspaceId} />} sidebar={workspaceId ? <AppSidebar /> : undefined}>
         <Outlet />
       </Layout>
     </ProtectRoute>
