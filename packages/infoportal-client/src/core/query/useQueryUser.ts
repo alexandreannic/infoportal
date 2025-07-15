@@ -4,7 +4,7 @@ import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {queryKeys} from './query.index'
 import {UUID} from 'infoportal-common'
-import {WorkspaceAccessLevel} from '@/features/Admin/AddUserForm'
+import {Ip} from 'infoportal-api-sdk'
 
 export const useQueryUser = (workspaceId: UUID) => {
   const {api} = useAppSettings()
@@ -19,7 +19,7 @@ export const useQueryUser = (workspaceId: UUID) => {
   })
 
   const create = useMutation({
-    mutationFn: async (_: {email: string; level: WorkspaceAccessLevel}) => {
+    mutationFn: async (_: {email: string; level: Ip.Workspace.AccessLevel}) => {
       return api.workspaceAccess.create({..._, workspaceId})
     },
     onSuccess: () => {

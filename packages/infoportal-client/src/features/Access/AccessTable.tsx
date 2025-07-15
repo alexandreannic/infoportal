@@ -94,7 +94,7 @@ export const AccessTable = ({
               return {
                 value: row.level,
                 label: (
-                  <IpSelectSingle<any>
+                  <IpSelectSingle<keyof typeof Ip.Form.Access.Level>
                     value={row.level}
                     placeholder=""
                     onChange={_ => queryAccess.update.mutate({id: row.id, level: _})}

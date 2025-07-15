@@ -14,11 +14,7 @@ import {NewFormCreateInternal} from '@/features/NewForm/NewFormCreateInternal'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {createRoute} from '@tanstack/react-router'
-
-enum FormSource {
-  kobo = 'kobo',
-  internal = 'internal',
-}
+import {Ip} from 'infoportal-api-sdk'
 
 export const newFormRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -30,7 +26,7 @@ function NewForm() {
   const {m} = useI18n()
   const {workspaceId} = newFormRoute.useParams()
   const dialog = useDialogs()
-  const [source, setSource] = useState<FormSource>(FormSource.internal)
+  const [source, setSource] = useState<Ip.Form.Source>(Ip.Form.Source.internal)
   const [selectedServerId, setSelectedServerId] = useState<UUID>()
   const {setTitle} = useLayoutContext()
 
@@ -41,8 +37,8 @@ function NewForm() {
   }
 
   const icons = {
-    [FormSource.kobo]: 'cloud_download',
-    [FormSource.internal]: 'add',
+    [Ip.Form.Source.kobo]: 'cloud_download',
+    [Ip.Form.Source.internal]: 'add',
   }
 
   useEffect(() => {
@@ -96,7 +92,11 @@ function NewForm() {
                   </PanelBody>
                 </Panel>
                 <Collapse in={!!selectedServerId} mountOnEnter unmountOnExit>
-                  <SelectKoboForm workspaceId={workspaceId} serverId={selectedServerId!} onAdded={() => queryServer.getAll.refetch()} />
+                  <SelectKoboForm
+                    workspaceId={workspaceId}
+                    serverId={selectedServerId!}
+                    onAdded={() => queryServer.getAll.refetch()}
+                  />
                 </Collapse>
               </>
             ),

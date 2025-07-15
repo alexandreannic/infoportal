@@ -2,7 +2,6 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {queryKeys} from '@/core/query/query.index'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
-// import {useLocation, useNavigate} from 'react-router-dom'
 import {duration} from '@axanc/ts-utils'
 
 export const useQueryWorkspace = () => {

@@ -81,7 +81,7 @@ const AppWithConfig = () => {
   )
 }
 
-const AppWithBaseContext = memo(() => {
+const AppWithBaseContext = () => {
   const settings = useAppSettings()
   const {m} = useI18n()
   if (settings.conf.appOff) {
@@ -111,4 +111,4 @@ const AppWithBaseContext = memo(() => {
   }
 
   return <Outlet />
-})
+}

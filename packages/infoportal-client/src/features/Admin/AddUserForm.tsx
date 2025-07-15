@@ -5,15 +5,11 @@ import {PanelFoot} from '@/shared/Panel/PanelFoot'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {Regexp} from 'infoportal-common'
 import {Controller, useForm} from 'react-hook-form'
-
-export enum WorkspaceAccessLevel {
-  Admin = 'Admin',
-  User = 'User',
-}
+import {Ip} from 'infoportal-api-sdk'
 
 type Form = {
   email: string
-  level: any
+  level: Ip.Workspace.AccessLevel
 }
 
 export const AddUserForm = ({
@@ -28,7 +24,7 @@ export const AddUserForm = ({
   onSubmit: (_: Form) => Promise<any>
 }) => {
   const {m} = useI18n()
-  const form = useForm<Form>({mode: 'onChange', defaultValues: {email: '', level: 'User'}})
+  const form = useForm<Form>({mode: 'onChange', defaultValues: {email: '', level: Ip.Workspace.AccessLevel.User}})
 
   const submit = async () => {
     await onSubmit(form.getValues())
@@ -71,7 +67,7 @@ export const AddUserForm = ({
             value={value}
             onChange={_ => onChange({target: {value: _}})}
           >
-            {Object.keys(WorkspaceAccessLevel).map(_ => (
+            {Object.keys(Ip.Workspace.AccessLevel).map(_ => (
               <ScRadioGroupItem value={_} title={_} />
             ))}
           </ScRadioGroup>
