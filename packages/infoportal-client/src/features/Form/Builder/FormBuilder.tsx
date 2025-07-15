@@ -10,11 +10,18 @@ import {VersionRow, VersionRowRoot, VersionRowShowMore} from '@/features/Form/Bu
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFender'
 import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
-import {appRoutes} from '@/Router'
+import {createRoute} from '@tanstack/react-router'
+import {formRoute} from '@/features/Form/Form'
 
-export const FormBuilder = () => {
+export const formBuilderRoute = createRoute({
+  getParentRoute: () => formRoute,
+  path: 'formCreator',
+  component: FormBuilder,
+})
+
+function FormBuilder() {
   const {m} = useI18n()
-  const {workspaceId, formId} = appRoutes.workspace.forms.byId.formCreator.useParams()
+  const {workspaceId, formId} = formBuilderRoute.useParams()
   const [versionVisible, setVersionVisible] = useState(5)
   const queryForm = useQueryFormById({workspaceId, formId}).get
   const queryVersion = useQueryVersion({workspaceId, formId})

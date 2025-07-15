@@ -1,4 +1,3 @@
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQueryAnswer} from '@/core/query/useQueryAnswer'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
@@ -13,11 +12,24 @@ import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo} from 'react'
 import {Ip} from 'infoportal-api-sdk'
-import {appRoutes} from '@/Router'
-import {useNavigate, Link, useSearch} from '@tanstack/react-router'
+import {createRoute, Link, useNavigate} from '@tanstack/react-router'
+import {z} from 'zod'
+import {formRoute} from '@/features/Form/Form'
 
-export const DatabaseKoboRepeatRoute = () => {
-  const {workspaceId, formId, group} = appRoutes.workspace.forms.byId.group.useParams()
+export const databaseKoboRepeatRoute = createRoute({
+  getParentRoute: () => formRoute,
+  path: 'group/$group',
+  component: DatabaseKoboRepeatContainer,
+  validateSearch: z.object({
+    id: z.string().optional(),
+    index: z.number().optional(),
+  }),
+})
+
+function DatabaseKoboRepeatContainer() {
+  const {workspaceId, formId, group} = databaseKoboRepeatRoute.useParams()
+  const {id, index} = databaseKoboRepeatRoute.useSearch()
+
   const querySchema = useQuerySchema({workspaceId, formId})
 
   return (
@@ -30,7 +42,14 @@ export const DatabaseKoboRepeatRoute = () => {
     >
       {map(querySchema.data, schema => (
         <Panel sx={{mb: 0}}>
-          <DatabaseKoboRepeat schema={schema} group={group} formId={formId} workspaceId={workspaceId} />
+          <DatabaseKoboRepeat
+            id={id}
+            index={index}
+            schema={schema}
+            group={group}
+            formId={formId}
+            workspaceId={workspaceId}
+          />
         </Panel>
       ))}
     </Page>
@@ -93,10 +112,14 @@ export const getColumnsForRepeatGroup = ({
 
 const DatabaseKoboRepeat = ({
   schema,
+  id,
+  index,
   workspaceId,
   group,
   formId,
 }: {
+  id?: string
+  index?: number
   workspaceId: Ip.Uuid
   formId: Ip.FormId
   group: string
@@ -104,7 +127,6 @@ const DatabaseKoboRepeat = ({
 }) => {
   const t = useTheme()
   const {m} = useI18n()
-  const qs = useSearch({from: appRoutes.workspace.forms.byId.group.fullPath})
 
   const navigate = useNavigate()
 
@@ -133,8 +155,8 @@ const DatabaseKoboRepeat = ({
     return {
       columns: res,
       filters: {
-        id: qs.id,
-        ...(qs.index ? {_parent_index: {value: qs.index}} : {}),
+        id: id,
+        ...(index ? {_parent_index: {value: index}} : {}),
       },
     }
   }, [formId, group, schema, data])
@@ -152,7 +174,7 @@ const DatabaseKoboRepeat = ({
             params={{workspaceId, formId, group: paths[paths.length - 2]}}
             to="/$workspaceId/form/$formId/group/$group"
             search={{
-              id: qs.id,
+              id,
             }}
           >
             <IpBtn variant="contained" icon="arrow_back">

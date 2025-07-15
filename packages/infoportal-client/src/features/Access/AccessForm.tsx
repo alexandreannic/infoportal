@@ -82,7 +82,7 @@ export const AccessForm = ({workspaceId, form}: {workspaceId: UUID; form: UseFor
             ),
             job: (
               <>
-                <AccessFormInputJob form={form} sx={{mb: 2}} />
+                <AccessFormInputJob workspaceId={workspaceId} form={form} sx={{mb: 2}} />
                 <AccessFormInputLocation form={form} />
               </>
             ),
@@ -154,7 +154,15 @@ export const AccessFormInputAccessLevel = ({form}: {form: UseFormReturn<IAccessF
   )
 }
 
-export const AccessFormInputJob = ({form, sx}: {form: UseFormReturn<IAccessForm>; sx?: SxProps<Theme>}) => {
+export const AccessFormInputJob = ({
+  workspaceId,
+  form,
+  sx,
+}: {
+  workspaceId: Ip.Uuid
+  form: UseFormReturn<IAccessForm>
+  sx?: SxProps<Theme>
+}) => {
   const {m} = useI18n()
   const required = form.watch('selectBy') === 'job'
   return (
@@ -163,7 +171,13 @@ export const AccessFormInputJob = ({form, sx}: {form: UseFormReturn<IAccessForm>
       name="job"
       rules={{required: {value: required, message: m.required}}}
       render={({field: {onChange, ...field}}) => (
-        <DrcJobInputMultiple {...field} sx={sx} value={field.value ?? []} onChange={(e: any, _) => _ && onChange(_)} />
+        <DrcJobInputMultiple
+          {...field}
+          sx={sx}
+          workspaceId={workspaceId}
+          value={field.value ?? []}
+          onChange={(e: any, _) => _ && onChange(_)}
+        />
       )}
     />
   )

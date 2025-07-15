@@ -4,12 +4,14 @@ import React, {useEffect} from 'react'
 import {useI18n} from '@/core/i18n'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useFetcher} from '@/shared/hook/useFetcher'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
+import {Ip} from 'infoportal-api-sdk'
 
-export const DrcJobInputMultiple = (
-  props: Omit<AutocompleteProps<string, any, any, any>, 'renderInput' | 'options'>,
-) => {
-  const {workspaceId} = useWorkspaceRouter()
+export const DrcJobInputMultiple = ({
+  workspaceId,
+  ...props
+}: Omit<AutocompleteProps<string, any, any, any>, 'renderInput' | 'options'> & {
+  workspaceId: Ip.Uuid
+}) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
   const drcJobsFetcher = useFetcher(api.user.fetchJobs)
@@ -38,10 +40,14 @@ export const DrcJobInputMultiple = (
   )
 }
 
-export const DrcJobInputSingle = (props: Omit<AutocompleteProps<string, any, any, any>, 'renderInput' | 'options'>) => {
+export const DrcJobInputSingle = ({
+  workspaceId,
+  ...props
+}: Omit<AutocompleteProps<string, any, any, any>, 'renderInput' | 'options'> & {
+  workspaceId: Ip.Uuid
+}) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
-  const {workspaceId} = useWorkspaceRouter()
   const drcJobsFetcher = useFetcher(api.user.fetchJobs)
 
   useEffect(() => {

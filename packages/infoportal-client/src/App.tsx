@@ -21,6 +21,7 @@ import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {defaultTheme} from '@/core/theme'
 import {buildIpClient, IpClient} from 'infoportal-api-sdk'
 import {Outlet, useRouterState} from '@tanstack/react-router'
+import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -70,7 +71,12 @@ const AppWithConfig = () => {
     >
       <TrackLocation />
       <AppWithBaseContext />
-      {!settings.conf.production && <ReactQueryDevtools initialIsOpen={false} />}
+      {!settings.conf.production && (
+        <>
+          <TanStackRouterDevtools />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </>
+      )}
     </Provide>
   )
 }

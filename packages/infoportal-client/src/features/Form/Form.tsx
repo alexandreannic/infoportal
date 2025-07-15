@@ -5,13 +5,30 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {createContext, useContext, useEffect, useMemo} from 'react'
 // import {useLocation, useOutletContext} from 'react-router'
-import {Link, Outlet, useRouteContext} from '@tanstack/react-router'
+import {createRoute, Link, Outlet, useMatches} from '@tanstack/react-router'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {Page} from '@/shared'
-import {useMatches} from '@tanstack/react-router'
-import {appRoutes} from '@/Router'
+import {workspaceRoute} from '@/features/Workspace/Workspace'
+import {answersRoute} from '@/features/Form/Database/DatabaseTable'
+import {formSettingsRoute} from '@/features/Form/Settings/FormSettings'
+import {databaseHistoryRoute} from './History/DatabaseHistory'
+import {databaseAccessRoute} from './Access/DatabaseAccess'
+import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
+import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
+
+export const formRootRoute = createRoute({
+  getParentRoute: () => workspaceRoute,
+  path: 'form',
+  component: Outlet,
+})
+
+export const formRoute = createRoute({
+  getParentRoute: () => formRootRoute,
+  path: '$formId',
+  component: Form,
+})
 
 export const useDefaultTabRedirect = ({workspaceId, formId}: {workspaceId: Ip.Uuid; formId: Ip.FormId}) => {
   // const navigate = useNavigate()
@@ -38,8 +55,8 @@ const Context = createContext<FormContext>({} as FormContext)
 
 export const useFormContext = (): FormContext => useContext<FormContext>(Context)
 
-export const Form = () => {
-  const {workspaceId, formId} = appRoutes.workspace.forms.byId.root.useParams()
+function Form() {
+  const {workspaceId, formId} = formRoute.useParams()
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
   const match = useMatches().slice(-1)[0]
@@ -88,8 +105,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.workspace.forms.byId.answers.fullPath}
-          to={appRoutes.workspace.forms.byId.answers.fullPath}
+          value={answersRoute.fullPath}
+          to={answersRoute.fullPath}
           label={m.data}
           disabled={!schema}
         />
@@ -98,8 +115,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.workspace.forms.byId.formCreator.fullPath}
-          to={appRoutes.workspace.forms.byId.formCreator.fullPath}
+          value={formBuilderRoute.fullPath}
+          to={formBuilderRoute.fullPath}
           label={m.form}
         />
         <Tab
@@ -107,8 +124,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.workspace.forms.byId.access.fullPath}
-          to={appRoutes.workspace.forms.byId.access.fullPath}
+          value={databaseAccessRoute.fullPath}
+          to={databaseAccessRoute.fullPath}
           disabled={!schema}
           label={m.access}
         />
@@ -117,8 +134,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.workspace.forms.byId.history.fullPath}
-          to={appRoutes.workspace.forms.byId.history.fullPath}
+          value={databaseHistoryRoute.fullPath}
+          to={databaseHistoryRoute.fullPath}
           label={m.history}
         />
         <Tab
@@ -126,8 +143,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.workspace.forms.byId.settings.fullPath}
-          to={appRoutes.workspace.forms.byId.settings.fullPath}
+          value={formSettingsRoute.fullPath}
+          to={formSettingsRoute.fullPath}
           label={m.settings}
         />
         {schema &&
@@ -138,8 +155,8 @@ export const Form = () => {
               key={_}
               sx={{minHeight: 34, py: 1}}
               component={Link}
-              value={appRoutes.workspace.forms.byId.group.fullPath}
-              to={appRoutes.workspace.forms.byId.group.fullPath}
+              value={databaseKoboRepeatRoute.fullPath}
+              to={databaseKoboRepeatRoute.fullPath}
               label={schema.translate.question(_)}
             />
           ))}

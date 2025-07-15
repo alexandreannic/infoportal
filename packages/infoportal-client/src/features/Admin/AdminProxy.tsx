@@ -17,6 +17,8 @@ import {Modal} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {formatDateTime} from '@/core/i18n/localization/en'
 import {appConfig} from '@/conf/AppConfig'
+import {createRoute} from '@tanstack/react-router'
+import {settingsRoute} from '@/features/Settings/Settings'
 
 interface CreateForm {
   name: string
@@ -25,7 +27,13 @@ interface CreateForm {
   expireAt?: Date
 }
 
-export const AdminProxy = () => {
+export const adminProxyRoute = createRoute({
+  getParentRoute: () => settingsRoute,
+  path: 'proxy',
+  component: AdminProxy,
+})
+
+function AdminProxy() {
   const {api} = useAppSettings()
   const {formatDate, m} = useI18n()
 

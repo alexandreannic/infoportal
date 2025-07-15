@@ -2,11 +2,20 @@ import {useI18n} from '@/core/i18n'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {useEffect} from 'react'
-import {Link, Outlet, useMatches} from '@tanstack/react-router'
+import {createRoute, Link, Outlet, useMatches} from '@tanstack/react-router'
 import {Page} from '@/shared'
-import {appRoutes} from '@/Router'
+import {workspaceRoute} from '@/features/Workspace/Workspace'
+import {adminGroupsRoute} from '@/features/Admin/AdminGroups'
+import {adminProxyRoute} from '@/features/Admin/AdminProxy'
+import {adminUsersRoute} from '@/features/Admin/AdminUsers'
 
-export const Settings = () => {
+export const settingsRoute = createRoute({
+  getParentRoute: () => workspaceRoute,
+  path: 'settings',
+  component: Settings,
+})
+
+function Settings() {
   const {m} = useI18n()
   const match = useMatches().slice(-1)[0]
   const {setTitle} = useLayoutContext()
@@ -31,8 +40,8 @@ export const Settings = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.workspace.settings.users.fullPath}
-          to={appRoutes.workspace.settings.users.fullPath}
+          value={adminUsersRoute.fullPath}
+          to={adminUsersRoute.fullPath}
           // to={
           //   tsRouter.buildLocation({
           //     to: '/$workspaceId/settings/users',
@@ -46,8 +55,8 @@ export const Settings = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.workspace.settings.group.fullPath}
-          to={appRoutes.workspace.settings.group.fullPath}
+          value={adminGroupsRoute.fullPath}
+          to={adminGroupsRoute.fullPath}
           label={m.group}
         />
         <Tab
@@ -55,8 +64,8 @@ export const Settings = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.workspace.settings.proxy.fullPath}
-          to={appRoutes.workspace.settings.proxy.fullPath}
+          value={adminProxyRoute.fullPath}
+          to={adminProxyRoute.fullPath}
           label={m.proxy}
         />
         <Tab
@@ -64,8 +73,8 @@ export const Settings = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.workspace.settings.cache.fullPath}
-          to={appRoutes.workspace.settings.cache.fullPath}
+          value={adminUsersRoute.fullPath}
+          to={adminUsersRoute.fullPath}
           label={m.serverCache}
         />
       </Tabs>

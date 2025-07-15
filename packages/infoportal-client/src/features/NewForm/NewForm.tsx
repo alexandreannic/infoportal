@@ -8,20 +8,27 @@ import {useDialogs} from '@toolpad/core'
 import {KoboServerFormDialog} from '@/features/NewForm/KoboServerForm'
 import {UUID} from 'infoportal-common'
 import {SelectKoboForm} from '@/features/NewForm/SelectKoboForm'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useQueryServers} from '@/core/query/useQueryServers'
 import {fnSwitch} from '@axanc/ts-utils'
 import {NewFormCreateInternal} from '@/features/NewForm/NewFormCreateInternal'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
+import {workspaceRoute} from '@/features/Workspace/Workspace'
+import {createRoute} from '@tanstack/react-router'
 
 enum FormSource {
   kobo = 'kobo',
   internal = 'internal',
 }
 
-export const NewForm = () => {
+export const newFormRoute = createRoute({
+  getParentRoute: () => workspaceRoute,
+  path: 'new-form',
+  component: NewForm,
+})
+
+function NewForm() {
   const {m} = useI18n()
-  const {workspaceId} = useWorkspaceRouter()
+  const {workspaceId} = newFormRoute.useParams()
   const dialog = useDialogs()
   const [source, setSource] = useState<FormSource>(FormSource.internal)
   const [selectedServerId, setSelectedServerId] = useState<UUID>()
@@ -89,7 +96,7 @@ export const NewForm = () => {
                   </PanelBody>
                 </Panel>
                 <Collapse in={!!selectedServerId} mountOnEnter unmountOnExit>
-                  <SelectKoboForm serverId={selectedServerId!} onAdded={() => queryServer.getAll.refetch()} />
+                  <SelectKoboForm workspaceId={workspaceId} serverId={selectedServerId!} onAdded={() => queryServer.getAll.refetch()} />
                 </Collapse>
               </>
             ),

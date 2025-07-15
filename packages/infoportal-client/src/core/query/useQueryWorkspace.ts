@@ -4,7 +4,6 @@ import {queryKeys} from '@/core/query/query.index'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 // import {useLocation, useNavigate} from 'react-router-dom'
 import {duration} from '@axanc/ts-utils'
-import {appRoutes} from '@/Router'
 
 export const useQueryWorkspace = () => {
   const {api} = useAppSettings()
@@ -45,41 +44,4 @@ export const useQueryWorkspace = () => {
     create,
     update,
   }
-}
-
-export const useWorkspaceRouterMaybe = () => {
-  // const navigate = useNavigate()
-  // const location = useLocation()
-  // return useMemo(() => {
-  //   const workspaceId = location.pathname.match(/^\/([^/]+)/)?.[1]
-  //   // if (!workspaceId) throw new Error(`Missing workspaceId in URI '${location.pathname}'`)
-  //   return {
-  //     router: appRouter.ws(workspaceId),
-  //     changeWorkspace: (wsId: string) => navigate(appRouter.ws(wsId).root),
-  //     workspaceId,
-  //   }
-  // }, [navigate, location])
-}
-
-export const useWorkspaceRouter = () => {
-  const {workspaceId} = appRoutes.workspace.root.useParams()
-  return {
-    workspaceId,
-  }
-  // const {wsId} = appRoutes.workspace.root.useParams()
-  // const navigate = useNavigate()
-  // return {
-  //   router: appRouter.ws(wsId),
-  //   changeWorkspace: (wsId: string) => navigate(appRouter.ws(wsId).root),
-  //   workspaceId: wsId,
-  // }
-  // return useMemo(() => {
-  //   const workspaceId = location.pathname.match(/^\/([^/]+)/)?.[1]
-  //   if (!workspaceId) throw new Error(`Missing workspaceId in URI '${location.pathname}'`)
-  //   return {
-  //     router: appRouter.ws(workspaceId),
-  //     changeWorkspace: (wsId: string) => navigate(appRouter.ws(wsId).root),
-  //     workspaceId,
-  //   }
-  // }, [navigate, location])
 }

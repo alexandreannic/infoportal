@@ -29,13 +29,19 @@ import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
 import {useQueryFormById} from '@/core/query/useQueryForm'
-import {appRoutes} from '@/Router'
 import {Ip} from 'infoportal-api-sdk'
-import {Link} from '@tanstack/react-router'
+import {createRoute, Link} from '@tanstack/react-router'
+import {formRoute} from '@/features/Form/Form'
 
-export const DatabaseKoboAnswerViewPage = () => {
+export const databaseAnswerViewRoute = createRoute({
+  getParentRoute: () => formRoute,
+  path: 'answer/$answerId',
+  component: DatabaseAnswerView,
+})
+
+function DatabaseAnswerView() {
   const {m} = useI18n()
-  const {workspaceId, formId, answerId} = appRoutes.workspace.forms.byId.answer.useParams()
+  const {workspaceId, formId, answerId} = databaseAnswerViewRoute.useParams()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
   const queryForm = useQueryFormById({formId, workspaceId}).get
   const queryAnswers = useQueryAnswer({formId, workspaceId})

@@ -7,8 +7,16 @@ import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {ProtectRoute} from '@/core/Session/SessionContext'
 import {Layout} from '@/shared/Layout/Layout'
 import {AppHeader} from '@/core/layout/AppHeader'
+import {createRoute} from '@tanstack/react-router'
+import {rootRoute} from '@/Router'
 
-export const Workspaces = () => {
+export const workspacesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/',
+  component: Workspaces,
+})
+
+function Workspaces() {
   const queryWorkspace = useQueryWorkspace()
   const {m} = useI18n()
   return (

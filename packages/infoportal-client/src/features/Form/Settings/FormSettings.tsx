@@ -3,10 +3,16 @@ import {Panel, PanelBody} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
 import {ReactNode} from 'react'
 import {Box, Switch, useTheme} from '@mui/material'
-import {useFormContext} from '@/features/Form/Form'
+import {formRoute, useFormContext} from '@/features/Form/Form'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {match} from '@axanc/ts-utils'
-import {useNavigate} from '@tanstack/react-router'
+import {createRoute, useNavigate} from '@tanstack/react-router'
+
+export const formSettingsRoute = createRoute({
+  getParentRoute: () => formRoute,
+  path: 'settings',
+  component: FormSettings,
+})
 
 const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; children: ReactNode}) => {
   const t = useTheme()
@@ -28,7 +34,7 @@ const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; childr
   )
 }
 
-export const FormSettings = () => {
+function FormSettings() {
   const {m} = useI18n()
   const {workspaceId, form, schema} = useFormContext()
   const queryForm = useQueryFormById({workspaceId, formId: form.id})

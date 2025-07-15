@@ -1,4 +1,3 @@
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {Page} from '@/shared/Page'
@@ -11,10 +10,17 @@ import {useEffect, useMemo} from 'react'
 import {useQueryServers} from '@/core/query/useQueryServers'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
-import {Link} from '@tanstack/react-router'
+import {createRoute, Link} from '@tanstack/react-router'
+import {formRootRoute} from '@/features/Form/Form'
 
-export const Forms = () => {
-  const {workspaceId} = useWorkspaceRouter()
+export const formsRoute = createRoute({
+  getParentRoute: () => formRootRoute,
+  path: 'list',
+  component: Forms,
+})
+
+function Forms() {
+  const {workspaceId} = formsRoute.useParams()
   const {formatDate, m} = useI18n()
   const t = useTheme()
   const {setTitle} = useLayoutContext()

@@ -19,8 +19,15 @@ import {useQueryAccess} from '@/core/query/useQueryAccess'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {UUID} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
-import {useFormContext} from '@/features/Form/Form'
+import {formRoute, useFormContext} from '@/features/Form/Form'
 import {Page} from '@/shared'
+import {createRoute} from '@tanstack/react-router'
+
+export const answersRoute = createRoute({
+  getParentRoute: () => formRoute,
+  path: 'answers',
+  component: DatabaseTableContainer,
+})
 
 export interface DatabaseTableProps {
   workspaceId: UUID
@@ -37,7 +44,7 @@ export interface DatabaseTableProps {
   overrideEditAccess?: boolean
 }
 
-export const DatabaseTableRoute = () => {
+function DatabaseTableContainer() {
   const props = useFormContext()
   return (
     <Page width="full">
@@ -46,7 +53,7 @@ export const DatabaseTableRoute = () => {
   )
 }
 
-export const DatabaseTable = ({
+const DatabaseTable = ({
   workspaceId,
   formId,
   onFiltersChange,
