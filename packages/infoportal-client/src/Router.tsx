@@ -1,8 +1,7 @@
 import React from 'react'
-import {createRootRoute, createRoute, createRouter, Link, Outlet} from '@tanstack/react-router'
+import {createRootRoute, createRoute, createRouter, Outlet} from '@tanstack/react-router'
 import {Workspaces} from '@/features/Workspace/Workspaces'
 import {NewForm} from '@/features/NewForm/NewForm'
-import {App} from './App'
 import {Settings} from './features/Settings/Settings'
 import {AdminUsers} from '@/features/Admin/AdminUsers'
 import {AdminProxy} from '@/features/Admin/AdminProxy'
@@ -18,6 +17,8 @@ import {DatabaseTableRoute} from '@/features/Form/Database/DatabaseTable'
 import {FormSettings} from './features/Form/Settings/FormSettings'
 import {DatabaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {z} from 'zod'
+import {Workspace} from '@/features/Workspace/Workspace'
+import {App} from '@/App'
 
 const Collect = () => {
   const {formId} = appRoutes.collect.useParams()
@@ -30,159 +31,131 @@ const Dashboard = () => {
 
 export const appRoutes = (() => {
   const rootRoute = createRootRoute({
-    component: Outlet,
+    component: App,
   })
   return {
     root: rootRoute,
-    home: createRoute({
-      getParentRoute: () => rootRoute,
-      path: '/',
-      ssr: true,
-      staticData: true,
-      component: () => (
-        <div>
-          Test
-          <Link to="/app">App</Link>
-        </div>
-      ),
-    }),
-    contact: createRoute({
-      getParentRoute: () => rootRoute,
-      path: 'contact',
-      staticData: true,
-      component: () => <div>Contact</div>,
-    }),
     collect: createRoute({
       getParentRoute: () => rootRoute,
       path: 'collect/$formId',
       staticData: true,
       component: Collect,
     }),
-    app: (() => {
-      const app = createRoute({
+    workspaces: createRoute({
+      getParentRoute: () => rootRoute,
+      path: '/',
+      component: Workspaces,
+    }),
+    workspace: (() => {
+      const workspace = createRoute({
         getParentRoute: () => rootRoute,
-        path: 'app',
-        component: App,
+        path: '$workspaceId',
+        component: Workspace,
       })
       return {
-        root: app,
-        workspaces: createRoute({
-          getParentRoute: () => app,
+        root: workspace,
+        dashboard: createRoute({
+          getParentRoute: () => workspace,
           path: '/',
-          component: Workspaces,
+          component: Dashboard,
         }),
-        workspace: (() => {
-          const workspace = createRoute({
-            getParentRoute: () => app,
-            path: '$workspaceId',
+        importKoboForm: createRoute({
+          getParentRoute: () => workspace,
+          path: 'new-form',
+          component: NewForm,
+        }),
+        forms: (() => {
+          const forms = createRoute({
+            getParentRoute: () => workspace,
+            path: 'form',
             component: Outlet,
           })
           return {
-            root: workspace,
-            dashboard: createRoute({
-              getParentRoute: () => workspace,
-              path: '/',
-              component: Dashboard,
+            root: forms,
+            list: createRoute({
+              getParentRoute: () => forms,
+              path: 'list',
+              component: Forms,
             }),
-            importKoboForm: createRoute({
-              getParentRoute: () => workspace,
-              path: 'new-form',
-              component: NewForm,
-            }),
-            forms: (() => {
-              const forms = createRoute({
-                getParentRoute: () => workspace,
-                path: 'form',
-                component: Outlet,
+            byId: (() => {
+              const form = createRoute({
+                getParentRoute: () => forms,
+                path: '$formId',
+                component: Form,
               })
               return {
-                root: forms,
-                list: createRoute({
-                  getParentRoute: () => forms,
-                  path: 'list',
-                  component: Forms,
+                root: form,
+                answer: createRoute({
+                  getParentRoute: () => form,
+                  path: 'answer/$answerId',
+                  component: DatabaseKoboAnswerViewPage,
                 }),
-                byId: (() => {
-                  const form = createRoute({
-                    getParentRoute: () => forms,
-                    path: '$formId',
-                    component: Form,
-                  })
-                  return {
-                    root: form,
-                    answer: createRoute({
-                      getParentRoute: () => form,
-                      path: 'answer/$answerId',
-                      component: DatabaseKoboAnswerViewPage,
-                    }),
-                    formCreator: createRoute({
-                      getParentRoute: () => form,
-                      path: 'formCreator',
-                      component: FormBuilder,
-                    }),
-                    access: createRoute({
-                      getParentRoute: () => form,
-                      path: 'access',
-                      component: DatabaseAccess,
-                    }),
-                    history: createRoute({
-                      getParentRoute: () => form,
-                      path: 'history',
-                      component: DatabaseHistory,
-                    }),
-                    group: createRoute({
-                      getParentRoute: () => form,
-                      path: 'group/$group',
-                      component: DatabaseKoboRepeatRoute,
-                      validateSearch: z.object({
-                        id: z.string().optional(),
-                        index: z.number().optional(),
-                      }),
-                    }),
-                    settings: createRoute({
-                      getParentRoute: () => form,
-                      path: 'settings',
-                      component: FormSettings,
-                    }),
-                    answers: createRoute({
-                      getParentRoute: () => form,
-                      path: 'answers',
-                      component: DatabaseTableRoute,
-                    }),
-                  }
-                })(),
-              }
-            })(),
-            settings: (() => {
-              const settings = createRoute({
-                getParentRoute: () => workspace,
-                path: 'settings',
-                component: Settings,
-              })
-              return {
-                root: settings,
-                users: createRoute({
-                  getParentRoute: () => settings,
-                  path: 'users',
-                  component: AdminUsers,
+                formCreator: createRoute({
+                  getParentRoute: () => form,
+                  path: 'formCreator',
+                  component: FormBuilder,
                 }),
-                proxy: createRoute({
-                  getParentRoute: () => settings,
-                  path: 'proxy',
-                  component: AdminProxy,
+                access: createRoute({
+                  getParentRoute: () => form,
+                  path: 'access',
+                  component: DatabaseAccess,
+                }),
+                history: createRoute({
+                  getParentRoute: () => form,
+                  path: 'history',
+                  component: DatabaseHistory,
                 }),
                 group: createRoute({
-                  getParentRoute: () => settings,
-                  path: 'group',
-                  component: AdminGroups,
+                  getParentRoute: () => form,
+                  path: 'group/$group',
+                  component: DatabaseKoboRepeatRoute,
+                  validateSearch: z.object({
+                    id: z.string().optional(),
+                    index: z.number().optional(),
+                  }),
                 }),
-                cache: createRoute({
-                  getParentRoute: () => settings,
-                  path: 'cache',
-                  component: AdminCache,
+                settings: createRoute({
+                  getParentRoute: () => form,
+                  path: 'settings',
+                  component: FormSettings,
+                }),
+                answers: createRoute({
+                  getParentRoute: () => form,
+                  path: 'answers',
+                  component: DatabaseTableRoute,
                 }),
               }
             })(),
+          }
+        })(),
+        settings: (() => {
+          const settings = createRoute({
+            getParentRoute: () => workspace,
+            path: 'settings',
+            component: Settings,
+          })
+          return {
+            root: settings,
+            users: createRoute({
+              getParentRoute: () => settings,
+              path: 'users',
+              component: AdminUsers,
+            }),
+            proxy: createRoute({
+              getParentRoute: () => settings,
+              path: 'proxy',
+              component: AdminProxy,
+            }),
+            group: createRoute({
+              getParentRoute: () => settings,
+              path: 'group',
+              component: AdminGroups,
+            }),
+            cache: createRoute({
+              getParentRoute: () => settings,
+              path: 'cache',
+              component: AdminCache,
+            }),
           }
         })(),
       }
@@ -191,32 +164,28 @@ export const appRoutes = (() => {
 })()
 
 const tsRoutes = [
-  appRoutes.home,
-  appRoutes.contact,
   appRoutes.collect,
-  appRoutes.app.root.addChildren([
-    appRoutes.app.workspaces,
-    appRoutes.app.workspace.root.addChildren([
-      appRoutes.app.workspace.dashboard,
-      appRoutes.app.workspace.importKoboForm,
-      appRoutes.app.workspace.forms.root.addChildren([
-        appRoutes.app.workspace.forms.list,
-        appRoutes.app.workspace.forms.byId.root.addChildren([
-          appRoutes.app.workspace.forms.byId.answer,
-          appRoutes.app.workspace.forms.byId.formCreator,
-          appRoutes.app.workspace.forms.byId.access,
-          appRoutes.app.workspace.forms.byId.history,
-          appRoutes.app.workspace.forms.byId.group,
-          appRoutes.app.workspace.forms.byId.settings,
-          appRoutes.app.workspace.forms.byId.answers,
-        ]),
+  appRoutes.workspaces,
+  appRoutes.workspace.root.addChildren([
+    appRoutes.workspace.dashboard,
+    appRoutes.workspace.importKoboForm,
+    appRoutes.workspace.forms.root.addChildren([
+      appRoutes.workspace.forms.list,
+      appRoutes.workspace.forms.byId.root.addChildren([
+        appRoutes.workspace.forms.byId.answer,
+        appRoutes.workspace.forms.byId.formCreator,
+        appRoutes.workspace.forms.byId.access,
+        appRoutes.workspace.forms.byId.history,
+        appRoutes.workspace.forms.byId.group,
+        appRoutes.workspace.forms.byId.settings,
+        appRoutes.workspace.forms.byId.answers,
       ]),
-      appRoutes.app.workspace.settings.root.addChildren([
-        appRoutes.app.workspace.settings.group,
-        appRoutes.app.workspace.settings.users,
-        appRoutes.app.workspace.settings.proxy,
-        appRoutes.app.workspace.settings.cache,
-      ]),
+    ]),
+    appRoutes.workspace.settings.root.addChildren([
+      appRoutes.workspace.settings.group,
+      appRoutes.workspace.settings.users,
+      appRoutes.workspace.settings.proxy,
+      appRoutes.workspace.settings.cache,
     ]),
   ]),
 ]

@@ -26,7 +26,7 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.Uuid}) => 
       onSubmit={form.handleSubmit(async _ => {
         const newForm = await queryForm.create.mutateAsync(_)
         form.reset()
-        navigate({to: '/app/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})
+        navigate({to: '/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})
       })}
     >
       <Panel>

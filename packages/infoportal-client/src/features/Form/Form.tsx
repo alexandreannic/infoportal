@@ -39,7 +39,7 @@ const Context = createContext<FormContext>({} as FormContext)
 export const useFormContext = (): FormContext => useContext<FormContext>(Context)
 
 export const Form = () => {
-  const {workspaceId, formId} = appRoutes.app.workspace.forms.byId.root.useParams()
+  const {workspaceId, formId} = appRoutes.workspace.forms.byId.root.useParams()
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
   const match = useMatches().slice(-1)[0]
@@ -88,8 +88,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.app.workspace.forms.byId.answers.fullPath}
-          to={appRoutes.app.workspace.forms.byId.answers.fullPath}
+          value={appRoutes.workspace.forms.byId.answers.fullPath}
+          to={appRoutes.workspace.forms.byId.answers.fullPath}
           label={m.data}
           disabled={!schema}
         />
@@ -98,8 +98,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.app.workspace.forms.byId.formCreator.fullPath}
-          to={appRoutes.app.workspace.forms.byId.formCreator.fullPath}
+          value={appRoutes.workspace.forms.byId.formCreator.fullPath}
+          to={appRoutes.workspace.forms.byId.formCreator.fullPath}
           label={m.form}
         />
         <Tab
@@ -107,8 +107,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.app.workspace.forms.byId.access.fullPath}
-          to={appRoutes.app.workspace.forms.byId.access.fullPath}
+          value={appRoutes.workspace.forms.byId.access.fullPath}
+          to={appRoutes.workspace.forms.byId.access.fullPath}
           disabled={!schema}
           label={m.access}
         />
@@ -117,8 +117,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.app.workspace.forms.byId.history.fullPath}
-          to={appRoutes.app.workspace.forms.byId.history.fullPath}
+          value={appRoutes.workspace.forms.byId.history.fullPath}
+          to={appRoutes.workspace.forms.byId.history.fullPath}
           label={m.history}
         />
         <Tab
@@ -126,8 +126,8 @@ export const Form = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.app.workspace.forms.byId.settings.fullPath}
-          to={appRoutes.app.workspace.forms.byId.settings.fullPath}
+          value={appRoutes.workspace.forms.byId.settings.fullPath}
+          to={appRoutes.workspace.forms.byId.settings.fullPath}
           label={m.settings}
         />
         {schema &&
@@ -138,8 +138,8 @@ export const Form = () => {
               key={_}
               sx={{minHeight: 34, py: 1}}
               component={Link}
-              value={appRoutes.app.workspace.forms.byId.group.fullPath}
-              to={appRoutes.app.workspace.forms.byId.group.fullPath}
+              value={appRoutes.workspace.forms.byId.group.fullPath}
+              to={appRoutes.workspace.forms.byId.group.fullPath}
               label={schema.translate.question(_)}
             />
           ))}

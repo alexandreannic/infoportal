@@ -96,7 +96,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             }
             value={workspaceId}
             hideNullOption
-            onChange={_ => navigate({to: '/app/$workspaceId', params: {workspaceId: _}})}
+            onChange={_ => navigate({to: '/$workspaceId', params: {workspaceId: _}})}
             sx={{width: 200, mr: 0.5}}
             options={(queryWorkspaces.get.data ?? []).map(_ => ({
               value: _.id,
@@ -127,7 +127,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
         >
           <IpIconBtn children={lightThemeIcons[mode ?? 'system']} />
         </PopoverWrapper>
-        <Link to="/app">
+        <Link to="/">
           <IpIconBtn children="home" />
         </Link>
         <AppHeaderMenu />

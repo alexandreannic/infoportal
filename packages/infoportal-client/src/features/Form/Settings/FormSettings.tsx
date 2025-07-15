@@ -90,7 +90,7 @@ export const FormSettings = () => {
               onConfirm={async (e, close) => {
                 await queryForm.remove.mutateAsync()
                 close()
-                navigate({to: '/app/$workspaceId/form/list', params: {workspaceId}})
+                navigate({to: '/$workspaceId/form/list', params: {workspaceId}})
               }}
             >
               <IpBtn color="error" variant="outlined" icon="delete">

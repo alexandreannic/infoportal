@@ -14,7 +14,7 @@ import {appRoutes} from '@/Router'
 
 export const FormBuilder = () => {
   const {m} = useI18n()
-  const {workspaceId, formId} = appRoutes.app.workspace.forms.byId.formCreator.useParams()
+  const {workspaceId, formId} = appRoutes.workspace.forms.byId.formCreator.useParams()
   const [versionVisible, setVersionVisible] = useState(5)
   const queryForm = useQueryFormById({workspaceId, formId}).get
   const queryVersion = useQueryVersion({workspaceId, formId})

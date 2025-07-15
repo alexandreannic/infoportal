@@ -123,11 +123,11 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: User) => void}) 
           padding: 4,
         }}
       >
-        <IpLogo sx={{margin: 'auto', display: 'block', mb: 2}} height={60}/>
+        <IpLogo sx={{margin: 'auto', display: 'block', mb: 1}} height={60} />
         <Txt sx={{textAlign: 'center'}} size="big" color="hint" block>
           {m.subTitle}
         </Txt>
-        <Txt sx={{textAlign: 'center', mb: 4, fontSize: 40}} block>
+        <Txt sx={{textAlign: 'center', mt: 1, mb: 2, fontSize: 40}} block>
           {m.title}
         </Txt>
 

@@ -35,7 +35,7 @@ import {Link} from '@tanstack/react-router'
 
 export const DatabaseKoboAnswerViewPage = () => {
   const {m} = useI18n()
-  const {workspaceId, formId, answerId} = appRoutes.app.workspace.forms.byId.answer.useParams()
+  const {workspaceId, formId, answerId} = appRoutes.workspace.forms.byId.answer.useParams()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
   const queryForm = useQueryFormById({formId, workspaceId}).get
   const queryAnswers = useQueryAnswer({formId, workspaceId})
@@ -106,7 +106,7 @@ export const DialogAnswerView = ({
       <DialogTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
           <Link
-            to="/app/$workspaceId/form/$formId/answer/$answerId"
+            to="/$workspaceId/form/$formId/answer/$answerId"
             params={{workspaceId, formId, answerId: answer.id}}
             onClick={() => onClose()}
           >

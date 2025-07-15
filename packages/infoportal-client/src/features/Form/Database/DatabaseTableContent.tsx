@@ -78,7 +78,7 @@ export const DatabaseTableContent = ({
       externalFilesIndex: ctx.externalFilesIndex,
       onRepeatGroupClick: _ =>
         navigate({
-          to: '/app/$workspaceId/form/$formId/group/$group',
+          to: '/$workspaceId/form/$formId/group/$group',
           params: {workspaceId, formId: ctx.form.id, group: _.name},
           search: {
             id: _.row.id,
@@ -104,7 +104,7 @@ export const DatabaseTableContent = ({
       schema: ctx.schema,
       onRepeatGroupClick: _ =>
         navigate({
-          to: '/app/$workspaceId/form/$formId/group/$group',
+          to: '/$workspaceId/form/$formId/group/$group',
           params: {workspaceId, formId: ctx.form.id, group: _.name},
           search: {
             id: _.row.id,

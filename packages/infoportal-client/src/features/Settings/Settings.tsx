@@ -31,11 +31,11 @@ export const Settings = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.app.workspace.settings.users.fullPath}
-          to={appRoutes.app.workspace.settings.users.fullPath}
+          value={appRoutes.workspace.settings.users.fullPath}
+          to={appRoutes.workspace.settings.users.fullPath}
           // to={
           //   tsRouter.buildLocation({
-          //     to: '/app/$workspaceId/settings/users',
+          //     to: '/$workspaceId/settings/users',
           //     params: {workspaceId},
           //   }).pathname
           // }
@@ -46,8 +46,8 @@ export const Settings = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.app.workspace.settings.group.fullPath}
-          to={appRoutes.app.workspace.settings.group.fullPath}
+          value={appRoutes.workspace.settings.group.fullPath}
+          to={appRoutes.workspace.settings.group.fullPath}
           label={m.group}
         />
         <Tab
@@ -55,8 +55,8 @@ export const Settings = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.app.workspace.settings.proxy.fullPath}
-          to={appRoutes.app.workspace.settings.proxy.fullPath}
+          value={appRoutes.workspace.settings.proxy.fullPath}
+          to={appRoutes.workspace.settings.proxy.fullPath}
           label={m.proxy}
         />
         <Tab
@@ -64,8 +64,8 @@ export const Settings = () => {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={appRoutes.app.workspace.settings.cache.fullPath}
-          to={appRoutes.app.workspace.settings.cache.fullPath}
+          value={appRoutes.workspace.settings.cache.fullPath}
+          to={appRoutes.workspace.settings.cache.fullPath}
           label={m.serverCache}
         />
       </Tabs>

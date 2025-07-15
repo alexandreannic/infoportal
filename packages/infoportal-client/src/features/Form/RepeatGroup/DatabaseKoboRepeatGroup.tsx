@@ -17,7 +17,7 @@ import {appRoutes} from '@/Router'
 import {useNavigate, Link, useSearch} from '@tanstack/react-router'
 
 export const DatabaseKoboRepeatRoute = () => {
-  const {workspaceId, formId, group} = appRoutes.app.workspace.forms.byId.group.useParams()
+  const {workspaceId, formId, group} = appRoutes.workspace.forms.byId.group.useParams()
   const querySchema = useQuerySchema({workspaceId, formId})
 
   return (
@@ -104,7 +104,7 @@ const DatabaseKoboRepeat = ({
 }) => {
   const t = useTheme()
   const {m} = useI18n()
-  const qs = useSearch({from: appRoutes.app.workspace.forms.byId.group.fullPath})
+  const qs = useSearch({from: appRoutes.workspace.forms.byId.group.fullPath})
 
   const navigate = useNavigate()
 
@@ -121,7 +121,7 @@ const DatabaseKoboRepeat = ({
       m,
       onRepeatGroupClick: _ =>
         navigate({
-          to: '/app/$workspaceId/form/$formId/group/$group',
+          to: '/$workspaceId/form/$formId/group/$group',
           params: {group: _.name, workspaceId, formId},
           search: {
             id: _.row.id,
@@ -150,7 +150,7 @@ const DatabaseKoboRepeat = ({
         groupInfo.depth > 1 ? (
           <Link
             params={{workspaceId, formId, group: paths[paths.length - 2]}}
-            to="/app/$workspaceId/form/$formId/group/$group"
+            to="/$workspaceId/form/$formId/group/$group"
             search={{
               id: qs.id,
             }}
@@ -160,7 +160,7 @@ const DatabaseKoboRepeat = ({
             </IpBtn>
           </Link>
         ) : (
-          <Link params={{workspaceId, formId}} to="/app/$workspaceId/form/$formId/answers">
+          <Link params={{workspaceId, formId}} to="/$workspaceId/form/$formId/answers">
             <IpBtn variant="contained" icon="arrow_back">
               {m.back}
             </IpBtn>

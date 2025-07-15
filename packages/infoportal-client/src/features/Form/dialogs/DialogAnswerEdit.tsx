@@ -26,7 +26,7 @@ export const DialogAnswerEdit = ({
       <DialogTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
           <Link
-            to="/app/$workspaceId/form/$formId/answer/$answerId"
+            to="/$workspaceId/form/$formId/answer/$answerId"
             params={{workspaceId, formId, answerId: answer.id}}
             onClick={() => onClose()}
           >

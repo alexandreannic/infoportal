@@ -62,11 +62,11 @@ export const useWorkspaceRouterMaybe = () => {
 }
 
 export const useWorkspaceRouter = () => {
-  const {workspaceId} = appRoutes.app.workspace.root.useParams()
+  const {workspaceId} = appRoutes.workspace.root.useParams()
   return {
     workspaceId,
   }
-  // const {wsId} = appRoutes.app.workspace.root.useParams()
+  // const {wsId} = appRoutes.workspace.root.useParams()
   // const navigate = useNavigate()
   // return {
   //   router: appRouter.ws(wsId),

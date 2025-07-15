@@ -1,4 +1,3 @@
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {Fender, Txt} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
@@ -9,6 +8,7 @@ import {Controller, useForm} from 'react-hook-form'
 import {styleUtils} from '../theme'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {Link} from '@tanstack/react-router'
+import {Ip} from 'infoportal-api-sdk'
 
 type Form = {
   id: string
@@ -56,8 +56,7 @@ const SearchInput = forwardRef(
   },
 )
 
-export const AppSidebar = () => {
-  const {workspaceId} = useWorkspaceRouter()
+export const AppSidebar = ({workspaceId}: {workspaceId: Ip.Uuid}) => {
   const {m} = useI18n()
   const t = useTheme()
   const searchForm = useForm<{name: string}>()
@@ -103,21 +102,21 @@ export const AppSidebar = () => {
 
   return (
     <Sidebar headerId="app-header">
-      <Link to="/app/$workspaceId/settings" params={{workspaceId}}>
+      <Link to="/$workspaceId/settings" params={{workspaceId}}>
         {({isActive}) => (
           <SidebarItem icon="settings" active={isActive}>
             {m.settings}
           </SidebarItem>
         )}
       </Link>
-      <Link to="/app/$workspaceId/new-form" params={{workspaceId}}>
+      <Link to="/$workspaceId/new-form" params={{workspaceId}}>
         {({isActive}) => (
           <SidebarItem icon="add" active={isActive}>
             {m.newForm}
           </SidebarItem>
         )}
       </Link>
-      <Link to="/app/$workspaceId/new-form" params={{workspaceId}}>
+      <Link to="/$workspaceId/new-form" params={{workspaceId}}>
         {({isActive}) => <SidebarItem icon="home">{m.forms}</SidebarItem>}
       </Link>
       <SidebarHr />
@@ -155,7 +154,7 @@ export const AppSidebar = () => {
 
           {filteredForms.map((_: Form) => (
             <Tooltip key={_.id} title={_.name} placement="right-end">
-              <Link to="/app/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
+              <Link to="/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
                 {({isActive}) => (
                   <SidebarItem
                     size={'tiny'}

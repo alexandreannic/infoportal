@@ -4,7 +4,7 @@ import {I18nProvider, useI18n} from '@/core/i18n'
 import {getMsalInstance} from '@/core/msal'
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
-import {ProtectRoute, SessionProvider} from '@/core/Session/SessionContext'
+import {SessionProvider} from '@/core/Session/SessionContext'
 import {CenteredContent, Txt} from '@/shared'
 import {IpLogo} from '@/shared/logo/logo'
 import {Provide} from '@/shared/Provide'
@@ -20,11 +20,7 @@ import React, {memo, useEffect, useMemo} from 'react'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {defaultTheme} from '@/core/theme'
 import {buildIpClient, IpClient} from 'infoportal-api-sdk'
-import {Outlet, useMatchRoute, useRouterState} from '@tanstack/react-router'
-import {AppHeader} from '@/core/layout/AppHeader'
-import {AppSidebar} from '@/core/layout/AppSidebar'
-import {Layout} from '@/shared/Layout/Layout'
-import {appRoutes} from '@/Router'
+import {Outlet, useRouterState} from '@tanstack/react-router'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -68,8 +64,8 @@ const AppWithConfig = () => {
         _ => <I18nProvider children={_} />,
         _ => <MsalProvider children={_} instance={msal} />,
         _ => <QueryClientProvider client={queryClient} children={_} />,
-        _ => <SessionProvider children={_} />,
         _ => <DialogsProvider children={_} />,
+        _ => <SessionProvider children={_} />,
       ]}
     >
       <TrackLocation />
@@ -80,7 +76,6 @@ const AppWithConfig = () => {
 }
 
 const AppWithBaseContext = memo(() => {
-  console.log('rerender')
   const settings = useAppSettings()
   const {m} = useI18n()
   if (settings.conf.appOff) {
@@ -109,15 +104,5 @@ const AppWithBaseContext = memo(() => {
     )
   }
 
-  const workspaceId = useRouterState({
-    select: state => state.matches.find(m => m.routeId === appRoutes.app.workspace.root.id)?.params.workspaceId,
-  })
-
-  return (
-    <ProtectRoute>
-      <Layout header={<AppHeader workspaceId={workspaceId} />} sidebar={workspaceId ? <AppSidebar /> : undefined}>
-        <Outlet />
-      </Layout>
-    </ProtectRoute>
-  )
+  return <Outlet />
 })

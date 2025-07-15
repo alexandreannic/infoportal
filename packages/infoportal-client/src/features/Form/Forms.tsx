@@ -175,7 +175,7 @@ export const Forms = () => {
                   align: 'right',
                   head: '',
                   renderQuick: _ => (
-                    <Link to="/app/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
+                    <Link to="/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
                       <TableIconBtn color="primary" children="chevron_right" />
                     </Link>
                   ),
