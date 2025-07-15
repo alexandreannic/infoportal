@@ -30,6 +30,7 @@ export const DatabaseAccess = () => {
       {accessSum && schema && (
         <Panel>
           <AccessTable
+            workspaceId={workspaceId}
             isAdmin={accessSum.admin}
             onRemoved={refresh}
             header={

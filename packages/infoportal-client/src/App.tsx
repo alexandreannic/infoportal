@@ -16,8 +16,7 @@ import {LocalizationProvider} from '@mui/x-date-pickers-pro'
 import {AdapterDateFns} from '@mui/x-date-pickers-pro/AdapterDateFns'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {DialogsProvider} from '@toolpad/core'
-import React, {useEffect, useMemo} from 'react'
-import {useLocation} from 'react-router-dom'
+import React, {memo, useEffect, useMemo} from 'react'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {defaultTheme} from '@/core/theme'
 import {buildIpClient, IpClient} from 'infoportal-api-sdk'
@@ -25,7 +24,7 @@ import {Outlet, useMatchRoute, useRouterState} from '@tanstack/react-router'
 import {AppHeader} from '@/core/layout/AppHeader'
 import {AppSidebar} from '@/core/layout/AppSidebar'
 import {Layout} from '@/shared/Layout/Layout'
-import {appRoutes} from '@/TanstackRouter'
+import {appRoutes} from '@/Router'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -80,15 +79,10 @@ const AppWithConfig = () => {
   )
 }
 
-const AppWithBaseContext = () => {
+const AppWithBaseContext = memo(() => {
+  console.log('rerender')
   const settings = useAppSettings()
   const {m} = useI18n()
-  const location = useLocation()
-  useEffect(() => {
-    // initSentry(appConfigConfig)
-    api.session.track(location.pathname)
-  }, [location.pathname])
-
   if (settings.conf.appOff) {
     return (
       <CenteredContent>
@@ -114,9 +108,10 @@ const AppWithBaseContext = () => {
       </CenteredContent>
     )
   }
-  const matchRoute = useMatchRoute()
-  const match = matchRoute({from: appRoutes.app.workspace.root.fullPath})
-  const workspaceId = match ? match.workspaceId : undefined
+
+  const workspaceId = useRouterState({
+    select: state => state.matches.find(m => m.routeId === appRoutes.app.workspace.root.id)?.params.workspaceId,
+  })
 
   return (
     <ProtectRoute>
@@ -125,4 +120,4 @@ const AppWithBaseContext = () => {
       </Layout>
     </ProtectRoute>
   )
-}
+})

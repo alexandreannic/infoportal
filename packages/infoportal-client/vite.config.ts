@@ -10,4 +10,10 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  ssr: {
+    noExternal: ['@prisma/client'], // or true
+  },
+  optimizeDeps: {
+    exclude: ['@prisma/client'],
+  },
 })

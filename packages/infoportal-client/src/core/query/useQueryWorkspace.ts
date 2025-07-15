@@ -4,6 +4,7 @@ import {queryKeys} from '@/core/query/query.index'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 // import {useLocation, useNavigate} from 'react-router-dom'
 import {duration} from '@axanc/ts-utils'
+import {appRoutes} from '@/Router'
 
 export const useQueryWorkspace = () => {
   const {api} = useAppSettings()
@@ -61,6 +62,10 @@ export const useWorkspaceRouterMaybe = () => {
 }
 
 export const useWorkspaceRouter = () => {
+  const {workspaceId} = appRoutes.app.workspace.root.useParams()
+  return {
+    workspaceId,
+  }
   // const {wsId} = appRoutes.app.workspace.root.useParams()
   // const navigate = useNavigate()
   // return {

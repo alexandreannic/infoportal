@@ -2,14 +2,13 @@ import {useI18n} from '@/core/i18n'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {useEffect} from 'react'
-import {Outlet, Link, useRouterState} from '@tanstack/react-router'
+import {Link, Outlet, useMatches} from '@tanstack/react-router'
 import {Page} from '@/shared'
-import {appRoutes, tsRouter} from '@/TanstackRouter'
+import {appRoutes} from '@/Router'
 
 export const Settings = () => {
   const {m} = useI18n()
-  const {workspaceId} = appRoutes.app.workspace.settings.root.useParams()
-  const pathname = useRouterState({select: s => s.location.pathname})
+  const match = useMatches().slice(-1)[0]
   const {setTitle} = useLayoutContext()
 
   useEffect(() => {
@@ -22,7 +21,7 @@ export const Settings = () => {
       <Tabs
         variant="scrollable"
         scrollButtons="auto"
-        value={pathname}
+        value={match}
         sx={{
           borderBottom: t => `1px solid ${t.palette.divider}`,
         }}
@@ -33,12 +32,13 @@ export const Settings = () => {
           sx={{minHeight: 34, py: 1}}
           component={Link}
           value={appRoutes.app.workspace.settings.users.fullPath}
-          to={
-            tsRouter.buildLocation({
-              to: '/app/$workspaceId/settings/users',
-              params: {workspaceId},
-            }).pathname
-          }
+          to={appRoutes.app.workspace.settings.users.fullPath}
+          // to={
+          //   tsRouter.buildLocation({
+          //     to: '/app/$workspaceId/settings/users',
+          //     params: {workspaceId},
+          //   }).pathname
+          // }
           label={m.users}
         />
         <Tab
@@ -47,12 +47,7 @@ export const Settings = () => {
           sx={{minHeight: 34, py: 1}}
           component={Link}
           value={appRoutes.app.workspace.settings.group.fullPath}
-          to={
-            tsRouter.buildLocation({
-              to: '/app/$workspaceId/settings/group',
-              params: {workspaceId},
-            }).pathname
-          }
+          to={appRoutes.app.workspace.settings.group.fullPath}
           label={m.group}
         />
         <Tab
@@ -61,12 +56,7 @@ export const Settings = () => {
           sx={{minHeight: 34, py: 1}}
           component={Link}
           value={appRoutes.app.workspace.settings.proxy.fullPath}
-          to={
-            tsRouter.buildLocation({
-              to: '/app/$workspaceId/settings/proxy',
-              params: {workspaceId},
-            }).pathname
-          }
+          to={appRoutes.app.workspace.settings.proxy.fullPath}
           label={m.proxy}
         />
         <Tab
@@ -75,12 +65,7 @@ export const Settings = () => {
           sx={{minHeight: 34, py: 1}}
           component={Link}
           value={appRoutes.app.workspace.settings.cache.fullPath}
-          to={
-            tsRouter.buildLocation({
-              to: '/app/$workspaceId/settings/cache',
-              params: {workspaceId},
-            }).pathname
-          }
+          to={appRoutes.app.workspace.settings.cache.fullPath}
           label={m.serverCache}
         />
       </Tabs>

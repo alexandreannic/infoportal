@@ -26,7 +26,7 @@ export const AdminUsers = () => {
 
   const connectAs = async (email: string) => {
     await ctxSession.connectAs.mutateAsync(email)
-    await navigate('/')
+    await navigate({to: '/'})
   }
 
   const emailsLists = useMemo(() => queryUser.get.data?.map(_ => _.email), [queryUser.get.data])

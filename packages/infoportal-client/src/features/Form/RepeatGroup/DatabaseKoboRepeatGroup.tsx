@@ -13,7 +13,7 @@ import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo} from 'react'
 import {Ip} from 'infoportal-api-sdk'
-import {appRoutes} from '@/TanstackRouter'
+import {appRoutes} from '@/Router'
 import {useNavigate, Link, useSearch} from '@tanstack/react-router'
 
 export const DatabaseKoboRepeatRoute = () => {
@@ -104,7 +104,6 @@ const DatabaseKoboRepeat = ({
 }) => {
   const t = useTheme()
   const {m} = useI18n()
-  const {router} = useWorkspaceRouter()
   const qs = useSearch({from: appRoutes.app.workspace.forms.byId.group.fullPath})
 
   const navigate = useNavigate()
@@ -146,7 +145,7 @@ const DatabaseKoboRepeat = ({
 
   return (
     <Datatable
-      defaultFilters={filters}
+      defaultFilters={{}}
       header={
         groupInfo.depth > 1 ? (
           <Link

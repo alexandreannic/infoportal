@@ -39,7 +39,7 @@ export const WorkspaceCard = ({workspace}: {workspace: Workspace}) => {
   const t = useTheme()
 
   return (
-    <Link to="/app/$wsId" params={{wsId: workspace.id}}>
+    <Link to="/app/$workspaceId" params={{workspaceId: workspace.id}}>
       <Panel
         sx={{
           mb: 0,

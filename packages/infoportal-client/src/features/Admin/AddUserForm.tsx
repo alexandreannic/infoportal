@@ -3,13 +3,17 @@ import {IpBtn} from '@/shared'
 import {IpInput} from '@/shared/Input/Input'
 import {PanelFoot} from '@/shared/Panel/PanelFoot'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
-import {WorkspaceAccessLevel} from '@prisma/client'
 import {Regexp} from 'infoportal-common'
 import {Controller, useForm} from 'react-hook-form'
 
+export enum WorkspaceAccessLevel {
+  Admin = 'Admin',
+  User = 'User',
+}
+
 type Form = {
   email: string
-  level: WorkspaceAccessLevel
+  level: any
 }
 
 export const AddUserForm = ({

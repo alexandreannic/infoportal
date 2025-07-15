@@ -4,20 +4,17 @@ import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
 import React, {useMemo, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
-import {useParams} from 'react-router'
-import {databaseUrlParamsValidation} from '@/features/Form/Form'
 import {XlsFileUploadForm} from '@/features/Form/Builder/XlsFileUploadForm'
 import {map, seq} from '@axanc/ts-utils'
 import {VersionRow, VersionRowRoot, VersionRowShowMore} from '@/features/Form/Builder/VersionRow'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFender'
 import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
+import {appRoutes} from '@/Router'
 
 export const FormBuilder = () => {
   const {m} = useI18n()
-  const {workspaceId} = useWorkspaceRouter()
-  const {formId} = databaseUrlParamsValidation.validateSync(useParams())
+  const {workspaceId, formId} = appRoutes.app.workspace.forms.byId.formCreator.useParams()
   const [versionVisible, setVersionVisible] = useState(5)
   const queryForm = useQueryFormById({workspaceId, formId}).get
   const queryVersion = useQueryVersion({workspaceId, formId})

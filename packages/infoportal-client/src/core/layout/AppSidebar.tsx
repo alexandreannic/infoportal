@@ -60,7 +60,6 @@ export const AppSidebar = () => {
   const {workspaceId} = useWorkspaceRouter()
   const {m} = useI18n()
   const t = useTheme()
-  const {router} = useWorkspaceRouter()
   const searchForm = useForm<{name: string}>()
   const values = searchForm.watch()
   const queryForm = useQueryForm(workspaceId)

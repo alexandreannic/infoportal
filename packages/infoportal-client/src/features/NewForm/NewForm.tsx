@@ -10,16 +10,20 @@ import {UUID} from 'infoportal-common'
 import {SelectKoboForm} from '@/features/NewForm/SelectKoboForm'
 import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useQueryServers} from '@/core/query/useQueryServers'
-import {FormSource} from '@prisma/client'
 import {fnSwitch} from '@axanc/ts-utils'
 import {NewFormCreateInternal} from '@/features/NewForm/NewFormCreateInternal'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
+
+enum FormSource {
+  kobo = 'kobo',
+  internal = 'internal',
+}
 
 export const NewForm = () => {
   const {m} = useI18n()
   const {workspaceId} = useWorkspaceRouter()
   const dialog = useDialogs()
-  const [source, setSource] = useState<FormSource>('internal')
+  const [source, setSource] = useState<FormSource>(FormSource.internal)
   const [selectedServerId, setSelectedServerId] = useState<UUID>()
   const {setTitle} = useLayoutContext()
 

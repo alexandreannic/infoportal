@@ -1,5 +1,4 @@
 import {Page} from '@/shared/Page'
-import {useAppSettings} from '@/core/context/ConfigContext'
 import React, {useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {IpBtn} from '@/shared/Btn'
@@ -24,8 +23,7 @@ interface GoupForm {
 
 export const AdminGroups = () => {
   const {workspaceId} = useWorkspaceRouter()
-  const {api} = useAppSettings()
-  const {m, formatDate, formatDateTime} = useI18n()
+  const {m, formatDateTime} = useI18n()
 
   const groupForm = useForm<GoupForm>()
   const accessForm = useForm<IAccessForm>()

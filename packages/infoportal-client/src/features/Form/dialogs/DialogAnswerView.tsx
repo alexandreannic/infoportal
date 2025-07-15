@@ -1,4 +1,3 @@
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQueryAnswer} from '@/core/query/useQueryAnswer'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
@@ -29,9 +28,10 @@ import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
-import {NavLink} from 'react-router-dom'
 import {useQueryFormById} from '@/core/query/useQueryForm'
-import {appRoutes} from '@/TanstackRouter'
+import {appRoutes} from '@/Router'
+import {Ip} from 'infoportal-api-sdk'
+import {Link} from '@tanstack/react-router'
 
 export const DatabaseKoboAnswerViewPage = () => {
   const {m} = useI18n()
@@ -91,23 +91,27 @@ export const DatabaseKoboAnswerViewPage = () => {
 
 export const DialogAnswerView = ({
   onClose,
-  payload: {schema, formId, answer},
+  payload: {schema, formId, answer, workspaceId},
 }: DialogProps<{
+  workspaceId: Ip.Uuid
   formId: Kobo.FormId
   schema: KoboSchemaHelper.Bundle
   answer: KoboMappedAnswer
 }>) => {
   const {m} = useI18n()
-  const {router} = useWorkspaceRouter()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
 
   return (
     <Dialog open={true}>
       <DialogTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
-          <NavLink to={router.form.byId(formId).answer(answer.id)} onClick={() => onClose()}>
+          <Link
+            to="/app/$workspaceId/form/$formId/answer/$answerId"
+            params={{workspaceId, formId, answerId: answer.id}}
+            onClick={() => onClose()}
+          >
             <IpIconBtn color="primary">open_in_new</IpIconBtn>
-          </NavLink>
+          </Link>
           {answer.id}
           <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
             <Txt sx={{fontSize: '1rem'}} color="hint">
