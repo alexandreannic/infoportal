@@ -1,8 +1,8 @@
 import {createRootRoute, createRouter} from '@tanstack/react-router'
 import {settingsRoute} from './features/Settings/Settings'
-import {adminUsersRoute} from '@/features/Admin/AdminUsers'
-import {adminProxyRoute} from '@/features/Admin/AdminProxy'
-import {adminCacheRoute} from '@/features/Admin/AdminCache'
+import {settingsUsersRoute} from '@/features/Settings/SettingsUsers'
+import {settingsProxyRoute} from '@/features/Settings/SettingsProxy'
+import {settingsCacheRoute} from '@/features/Settings/SettingsCache'
 import {formsRoute} from '@/features/Form/Forms'
 import {formRootRoute, formRoute} from '@/features/Form/Form'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
@@ -18,7 +18,7 @@ import {answersRoute} from '@/features/Form/Database/DatabaseTable'
 import {workspacesRoute} from '@/features/Workspace/Workspaces'
 import {newFormRoute} from '@/features/NewForm/NewForm'
 import {databaseAnswerViewRoute} from '@/features/Form/dialogs/DialogAnswerView'
-import {adminGroupsRoute} from '@/features/Admin/AdminGroups'
+import {settingsGroupsRoute} from '@/features/Settings/SettingsGroups'
 
 export const rootRoute = createRootRoute({
   component: App,
@@ -42,7 +42,7 @@ const tsRoutes = [
         formSettingsRoute,
       ]),
     ]),
-    settingsRoute.addChildren([adminGroupsRoute, adminCacheRoute, adminProxyRoute, adminUsersRoute]),
+    settingsRoute.addChildren([settingsGroupsRoute, settingsCacheRoute, settingsProxyRoute, settingsUsersRoute]),
   ]),
 ]
 

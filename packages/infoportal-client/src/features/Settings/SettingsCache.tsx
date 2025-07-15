@@ -15,13 +15,13 @@ import {IpIconBtn} from '@/shared/IconBtn'
 import {settingsRoute} from '@/features/Settings/Settings'
 import {createRoute} from '@tanstack/react-router'
 
-export const adminCacheRoute = createRoute({
+export const settingsCacheRoute = createRoute({
   getParentRoute: () => settingsRoute,
   path: 'cache',
-  component: AdminCache,
+  component: SettingsCache,
 })
 
-function AdminCache() {
+function SettingsCache() {
   const {api} = useAppSettings()
   const {m, formatDate, dateFromNow, formatDateTime} = useI18n()
   const t = useTheme()

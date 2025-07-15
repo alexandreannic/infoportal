@@ -9,7 +9,7 @@ import {IpInput} from '@/shared/Input/Input'
 import {useForm} from 'react-hook-form'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {accessLevelIcon, IAccessForm} from '@/features/Access/AccessForm'
-import {AdminGroupAccessForm} from '@/features/Admin/AdminGroupAccessForm'
+import {SettingsGroupAccessForm} from '@/features/Settings/SettingsGroupAccessForm'
 import {BasicDialog} from '@/shared/BasicDialog'
 import {UUID} from 'infoportal-common'
 import {Datatable} from '@/shared/Datatable/Datatable'
@@ -22,14 +22,14 @@ interface GoupForm {
   desc?: string
 }
 
-export const adminGroupsRoute = createRoute({
+export const settingsGroupsRoute = createRoute({
   getParentRoute: () => settingsRoute,
   path: 'group',
-  component: AdminGroups,
+  component: SettingsGroups,
 })
 
-function AdminGroups() {
-  const {workspaceId} = adminGroupsRoute.useParams()
+function SettingsGroups() {
+  const {workspaceId} = settingsGroupsRoute.useParams()
   const {m, formatDateTime} = useI18n()
 
   const groupForm = useForm<GoupForm>()
@@ -234,7 +234,7 @@ function AdminGroups() {
           }
         >
           <Box sx={{width: 400}}>
-            <AdminGroupAccessForm form={accessForm} workspaceId={workspaceId} />
+            <SettingsGroupAccessForm form={accessForm} workspaceId={workspaceId} />
           </Box>
         </BasicDialog>
       </Panel>

@@ -16,16 +16,16 @@ import {useSession} from '@/core/Session/SessionContext'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
 
-export const adminUsersRoute = createRoute({
+export const settingsUsersRoute = createRoute({
   getParentRoute: () => settingsRoute,
   path: 'users',
-  component: AdminUsers,
+  component: SettingsUsers,
 })
 
-function AdminUsers() {
+function SettingsUsers() {
   const {m, formatDate, formatDateTime} = useI18n()
   const {conf} = useAppSettings()
-  const {workspaceId} = adminUsersRoute.useParams()
+  const {workspaceId} = settingsUsersRoute.useParams()
   const navigate = useNavigate()
   const ctxSession = useSession()
   const queryUser = useQueryUser(workspaceId)

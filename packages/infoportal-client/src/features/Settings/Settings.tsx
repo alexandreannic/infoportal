@@ -5,10 +5,10 @@ import {useEffect} from 'react'
 import {createRoute, Link, Outlet, useMatches} from '@tanstack/react-router'
 import {Page} from '@/shared'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
-import {adminGroupsRoute} from '@/features/Admin/AdminGroups'
-import {adminProxyRoute} from '@/features/Admin/AdminProxy'
-import {adminUsersRoute} from '@/features/Admin/AdminUsers'
-import {adminCacheRoute} from '@/features/Admin/AdminCache'
+import {settingsGroupsRoute} from '@/features/Settings/SettingsGroups'
+import {settingsProxyRoute} from '@/features/Settings/SettingsProxy'
+import {settingsUsersRoute} from '@/features/Settings/SettingsUsers'
+import {settingsCacheRoute} from '@/features/Settings/SettingsCache'
 
 export const settingsRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -40,8 +40,8 @@ function Settings() {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={adminUsersRoute.fullPath}
-          to={adminUsersRoute.fullPath}
+          value={settingsUsersRoute.fullPath}
+          to={settingsUsersRoute.fullPath}
           label={m.users}
         />
         <Tab
@@ -49,8 +49,8 @@ function Settings() {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={adminGroupsRoute.fullPath}
-          to={adminGroupsRoute.fullPath}
+          value={settingsGroupsRoute.fullPath}
+          to={settingsGroupsRoute.fullPath}
           label={m.group}
         />
         <Tab
@@ -58,8 +58,8 @@ function Settings() {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={adminProxyRoute.fullPath}
-          to={adminProxyRoute.fullPath}
+          value={settingsProxyRoute.fullPath}
+          to={settingsProxyRoute.fullPath}
           label={m.proxy}
         />
         <Tab
@@ -67,8 +67,8 @@ function Settings() {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={adminCacheRoute.fullPath}
-          to={adminCacheRoute.fullPath}
+          value={settingsCacheRoute.fullPath}
+          to={settingsCacheRoute.fullPath}
           label={m.serverCache}
         />
       </Tabs>

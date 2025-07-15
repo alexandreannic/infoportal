@@ -27,13 +27,13 @@ interface CreateForm {
   expireAt?: Date
 }
 
-export const adminProxyRoute = createRoute({
+export const settingsProxyRoute = createRoute({
   getParentRoute: () => settingsRoute,
   path: 'proxy',
-  component: AdminProxy,
+  component: SettingsProxy,
 })
 
-function AdminProxy() {
+function SettingsProxy() {
   const {api} = useAppSettings()
   const {formatDate, m} = useI18n()
 
