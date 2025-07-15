@@ -1,33 +1,57 @@
 import {appConfig} from '@/conf/AppConfig'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
-import {useEffect, useMemo} from 'react'
-import {useLocation, useOutletContext, useParams} from 'react-router'
-import {NavLink, Outlet, useNavigate} from 'react-router-dom'
-import * as yup from 'yup'
+import {createContext, useContext, useEffect, useMemo} from 'react'
+import {createRoute, Link, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
 import {useQueryFormById} from '@/core/query/useQueryForm'
-import {appRouter} from '@/Router'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {Page} from '@/shared'
+import {workspaceRoute} from '@/features/Workspace/Workspace'
+import {answersRoute} from '@/features/Form/Database/DatabaseTable'
+import {formSettingsRoute} from '@/features/Form/Settings/FormSettings'
+import {databaseHistoryRoute} from './History/DatabaseHistory'
+import {databaseAccessRoute} from './Access/DatabaseAccess'
+import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
+import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 
-export const databaseUrlParamsValidation = yup.object({
-  formId: yup.string().required(),
+export const formRootRoute = createRoute({
+  getParentRoute: () => workspaceRoute,
+  path: 'form',
+  component: Outlet,
 })
 
-const useDefaultTabRedirect = ({workspaceId, formId}: {workspaceId: Ip.Uuid; formId: Ip.FormId}) => {
-  const location = useLocation()
+export const formRoute = createRoute({
+  getParentRoute: () => formRootRoute,
+  path: '$formId',
+  component: Form,
+})
+
+export const useDefaultTabRedirect = ({
+  currentFullPath,
+  workspaceId,
+  formId,
+}: {
+  currentFullPath?: string
+  workspaceId: Ip.Uuid
+  formId: Ip.FormId
+}) => {
   const navigate = useNavigate()
+  const pathname = useRouterState({select: s => s.location.pathname})
   const querySchema = useQuerySchema({formId, workspaceId})
+
   useEffect(() => {
     if (querySchema.isLoading) return
-    if (location.pathname !== appRouter.ws(workspaceId).form.byId(formId).root) return
-    if (querySchema.data) navigate(appRouter.ws(workspaceId).form.byId(formId).answers)
-    else navigate(appRouter.ws(workspaceId).form.byId(formId).formCreator)
-  }, [formId, querySchema.isLoading])
+    if (currentFullPath == formRoute.fullPath) {
+      if (querySchema.data) {
+        navigate({to: '/$workspaceId/form/$formId/answers', params: {workspaceId, formId}})
+      } else {
+        navigate({to: '/$workspaceId/form/$formId/formCreator', params: {workspaceId, formId}})
+      }
+    }
+  }, [pathname, querySchema.isLoading])
 }
 
 export type FormContext = {
@@ -36,15 +60,15 @@ export type FormContext = {
   schema?: KoboSchemaHelper.Bundle
 }
 
-export const useFormContext = (): FormContext => useOutletContext<FormContext>()
+const Context = createContext<FormContext>({} as FormContext)
 
-export const Form = () => {
-  const {workspaceId} = useWorkspaceRouter()
-  const {formId} = databaseUrlParamsValidation.validateSync(useParams())
+export const useFormContext = (): FormContext => useContext<FormContext>(Context)
+
+function Form() {
+  const {workspaceId, formId} = formRoute.useParams()
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
-  const {pathname} = useLocation()
-  const {router} = useWorkspaceRouter()
+  const currentFullPath = useMatches().slice(-1)[0].fullPath
 
   const querySchema = useQuerySchema({formId, workspaceId})
   const queryForm = useQueryFormById({workspaceId, formId}).get
@@ -66,26 +90,32 @@ export const Form = () => {
       return <Page width="full" loading={true} />
     }
     if (!queryForm.data) {
-      return <>ERROR</>
+      return <>Error</>
     }
-    const context: FormContext = {
-      workspaceId,
-      form: queryForm.data,
-      schema: querySchema.data!,
-    }
-    return <Outlet context={context} />
+
+    return (
+      <Context.Provider
+        value={{
+          workspaceId,
+          form: queryForm.data,
+          schema: querySchema.data!,
+        }}
+      >
+        <Outlet />
+      </Context.Provider>
+    )
   }, [queryForm.status, queryForm.data, querySchema.status, querySchema.data, workspaceId])
 
   return (
     <Page width="full">
-      <Tabs variant="scrollable" scrollButtons="auto" value={pathname}>
+      <Tabs variant="scrollable" scrollButtons="auto" value={currentFullPath}>
         <Tab
           icon={<Icon>{appConfig.icons.dataTable}</Icon>}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
-          component={NavLink}
-          value={router.form.byId(formId).answers}
-          to={router.form.byId(formId).answers}
+          component={Link}
+          value={answersRoute.fullPath}
+          to={answersRoute.fullPath}
           label={m.data}
           disabled={!schema}
         />
@@ -93,18 +123,18 @@ export const Form = () => {
           icon={<Icon>edit</Icon>}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
-          component={NavLink}
-          value={router.form.byId(formId).formCreator}
-          to={router.form.byId(formId).formCreator}
+          component={Link}
+          value={formBuilderRoute.fullPath}
+          to={formBuilderRoute.fullPath}
           label={m.form}
         />
         <Tab
           icon={<Icon>lock</Icon>}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
-          component={NavLink}
-          value={router.form.byId(formId).access}
-          to={router.form.byId(formId).access}
+          component={Link}
+          value={databaseAccessRoute.fullPath}
+          to={databaseAccessRoute.fullPath}
           disabled={!schema}
           label={m.access}
         />
@@ -112,18 +142,18 @@ export const Form = () => {
           icon={<Icon>history</Icon>}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
-          component={NavLink}
-          value={router.form.byId(formId).history}
-          to={router.form.byId(formId).history}
+          component={Link}
+          value={databaseHistoryRoute.fullPath}
+          to={databaseHistoryRoute.fullPath}
           label={m.history}
         />
         <Tab
           icon={<Icon>settings</Icon>}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
-          component={NavLink}
-          value={router.form.byId(formId).settings}
-          to={router.form.byId(formId).settings}
+          component={Link}
+          value={formSettingsRoute.fullPath}
+          to={formSettingsRoute.fullPath}
           label={m.settings}
         />
         {schema &&
@@ -133,9 +163,9 @@ export const Form = () => {
               iconPosition="start"
               key={_}
               sx={{minHeight: 34, py: 1}}
-              component={NavLink}
-              value={router.form.byId(formId).group(_)}
-              to={router.form.byId(formId).group(_)}
+              component={Link}
+              value={databaseKoboRepeatRoute.fullPath}
+              to={databaseKoboRepeatRoute.fullPath}
               label={schema.translate.question(_)}
             />
           ))}

@@ -1,4 +1,3 @@
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {useQueryAnswer} from '@/core/query/useQueryAnswer'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
@@ -29,20 +28,20 @@ import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
-import {useParams} from 'react-router'
-import {NavLink} from 'react-router-dom'
-import * as yup from 'yup'
 import {useQueryFormById} from '@/core/query/useQueryForm'
+import {Ip} from 'infoportal-api-sdk'
+import {createRoute, Link} from '@tanstack/react-router'
+import {formRoute} from '@/features/Form/Form'
 
-const databaseUrlParamsValidation = yup.object({
-  formId: yup.string().required(),
-  answerId: yup.string().required(),
+export const databaseAnswerViewRoute = createRoute({
+  getParentRoute: () => formRoute,
+  path: 'answer/$answerId',
+  component: DatabaseAnswerView,
 })
 
-export const DatabaseKoboAnswerViewPage = () => {
-  const {workspaceId} = useWorkspaceRouter()
+function DatabaseAnswerView() {
   const {m} = useI18n()
-  const {formId, answerId} = databaseUrlParamsValidation.validateSync(useParams())
+  const {workspaceId, formId, answerId} = databaseAnswerViewRoute.useParams()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
   const queryForm = useQueryFormById({formId, workspaceId}).get
   const queryAnswers = useQueryAnswer({formId, workspaceId})
@@ -98,23 +97,27 @@ export const DatabaseKoboAnswerViewPage = () => {
 
 export const DialogAnswerView = ({
   onClose,
-  payload: {schema, formId, answer},
+  payload: {schema, formId, answer, workspaceId},
 }: DialogProps<{
+  workspaceId: Ip.Uuid
   formId: Kobo.FormId
   schema: KoboSchemaHelper.Bundle
   answer: KoboMappedAnswer
 }>) => {
   const {m} = useI18n()
-  const {router} = useWorkspaceRouter()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
 
   return (
     <Dialog open={true}>
       <DialogTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
-          <NavLink to={router.form.byId(formId).answer(answer.id)} onClick={() => onClose()}>
+          <Link
+            to="/$workspaceId/form/$formId/answer/$answerId"
+            params={{workspaceId, formId, answerId: answer.id}}
+            onClick={() => onClose()}
+          >
             <IpIconBtn color="primary">open_in_new</IpIconBtn>
-          </NavLink>
+          </Link>
           {answer.id}
           <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
             <Txt sx={{fontSize: '1rem'}} color="hint">

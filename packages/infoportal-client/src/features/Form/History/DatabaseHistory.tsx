@@ -1,7 +1,7 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {KoboAnswerHistory} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistory'
-import {useFormContext} from '@/features/Form/Form'
+import {formRoute, useFormContext} from '@/features/Form/Form'
 import {Txt} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Datatable} from '@/shared/Datatable/Datatable'
@@ -13,8 +13,15 @@ import {TableIcon} from '@/shared/TableIcon'
 import {fnSwitch, map} from '@axanc/ts-utils'
 import {alpha, Icon, useTheme} from '@mui/material'
 import {useEffect} from 'react'
+import {createRoute} from '@tanstack/react-router'
 
-export const DatabaseHistory = () => {
+export const databaseHistoryRoute = createRoute({
+  getParentRoute: () => formRoute,
+  path: 'history',
+  component: DatabaseHistory,
+})
+
+function DatabaseHistory() {
   const {schema, workspaceId, form} = useFormContext()
   const t = useTheme()
   const {m, formatDateTime, formatDate} = useI18n()

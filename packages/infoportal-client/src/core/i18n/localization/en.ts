@@ -1,5 +1,4 @@
 import {formatDistance, formatDuration as formatDurationFns} from 'date-fns'
-import {FormSource} from '@prisma/client'
 
 const invalidDate = ''
 
@@ -276,8 +275,8 @@ export const en = Object.freeze({
     submit: 'Submit',
     newForm: 'New form',
     formSource: {
-      [FormSource.kobo]: 'Import from KoboToolbox',
-      [FormSource.internal]: 'Create new form',
+      kobo: 'Import from KoboToolbox',
+      internal: 'Create new form',
     },
     changeAccount: 'Change account',
     addNewKoboAccount: 'Add new Kobo account',

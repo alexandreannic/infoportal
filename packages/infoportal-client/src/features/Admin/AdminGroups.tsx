@@ -1,5 +1,4 @@
 import {Page} from '@/shared/Page'
-import {useAppSettings} from '@/core/context/ConfigContext'
 import React, {useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {IpBtn} from '@/shared/Btn'
@@ -15,17 +14,23 @@ import {BasicDialog} from '@/shared/BasicDialog'
 import {UUID} from 'infoportal-common'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
+import {createRoute} from '@tanstack/react-router'
+import {settingsRoute} from '@/features/Settings/Settings'
 
 interface GoupForm {
   name: string
   desc?: string
 }
 
-export const AdminGroups = () => {
-  const {workspaceId} = useWorkspaceRouter()
-  const {api} = useAppSettings()
-  const {m, formatDate, formatDateTime} = useI18n()
+export const adminGroupsRoute = createRoute({
+  getParentRoute: () => settingsRoute,
+  path: 'group',
+  component: AdminGroups,
+})
+
+function AdminGroups() {
+  const {workspaceId} = adminGroupsRoute.useParams()
+  const {m, formatDateTime} = useI18n()
 
   const groupForm = useForm<GoupForm>()
   const accessForm = useForm<IAccessForm>()
@@ -229,7 +234,7 @@ export const AdminGroups = () => {
           }
         >
           <Box sx={{width: 400}}>
-            <AdminGroupAccessForm form={accessForm} />
+            <AdminGroupAccessForm form={accessForm} workspaceId={workspaceId} />
           </Box>
         </BasicDialog>
       </Panel>

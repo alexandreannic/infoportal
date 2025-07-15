@@ -1,10 +1,10 @@
 import {duration} from '@axanc/ts-utils'
-import {WorkspaceAccessLevel} from '@prisma/client'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {queryKeys} from './query.index'
 import {UUID} from 'infoportal-common'
+import {Ip} from 'infoportal-api-sdk'
 
 export const useQueryUser = (workspaceId: UUID) => {
   const {api} = useAppSettings()
@@ -19,7 +19,7 @@ export const useQueryUser = (workspaceId: UUID) => {
   })
 
   const create = useMutation({
-    mutationFn: async (_: {email: string; level: WorkspaceAccessLevel}) => {
+    mutationFn: async (_: {email: string; level: Ip.Workspace.AccessLevel}) => {
       return api.workspaceAccess.create({..._, workspaceId})
     },
     onSuccess: () => {

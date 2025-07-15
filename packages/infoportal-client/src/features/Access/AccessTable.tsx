@@ -9,21 +9,20 @@ import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {Txt} from '@/shared/Txt'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useQueryAccess} from '@/core/query/useQueryAccess'
 import {Ip} from 'infoportal-api-sdk'
-import {FormAccessLevel} from '@prisma/client'
 
 export const AccessTable = ({
   isAdmin,
   header,
   onRemoved,
+  workspaceId,
 }: {
+  workspaceId: Ip.Uuid
   isAdmin?: boolean
   onRemoved?: (_: UUID) => void
   header?: ReactNode
 }) => {
-  const {workspaceId} = useWorkspaceRouter()
   const {m, formatDate} = useI18n()
   const {api} = useAppSettings()
   const drcJobs = useFetcher(api.user.fetchJobs)
@@ -95,7 +94,7 @@ export const AccessTable = ({
               return {
                 value: row.level,
                 label: (
-                  <IpSelectSingle<FormAccessLevel>
+                  <IpSelectSingle<keyof typeof Ip.Form.Access.Level>
                     value={row.level}
                     placeholder=""
                     onChange={_ => queryAccess.update.mutate({id: row.id, level: _})}

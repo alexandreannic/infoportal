@@ -8,18 +8,25 @@ import {useDialogs} from '@toolpad/core'
 import {KoboServerFormDialog} from '@/features/NewForm/KoboServerForm'
 import {UUID} from 'infoportal-common'
 import {SelectKoboForm} from '@/features/NewForm/SelectKoboForm'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useQueryServers} from '@/core/query/useQueryServers'
-import {FormSource} from '@prisma/client'
 import {fnSwitch} from '@axanc/ts-utils'
 import {NewFormCreateInternal} from '@/features/NewForm/NewFormCreateInternal'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
+import {workspaceRoute} from '@/features/Workspace/Workspace'
+import {createRoute} from '@tanstack/react-router'
+import {Ip} from 'infoportal-api-sdk'
 
-export const NewForm = () => {
+export const newFormRoute = createRoute({
+  getParentRoute: () => workspaceRoute,
+  path: 'new-form',
+  component: NewForm,
+})
+
+function NewForm() {
   const {m} = useI18n()
-  const {workspaceId} = useWorkspaceRouter()
+  const {workspaceId} = newFormRoute.useParams()
   const dialog = useDialogs()
-  const [source, setSource] = useState<FormSource>('internal')
+  const [source, setSource] = useState<Ip.Form.Source>(Ip.Form.Source.internal)
   const [selectedServerId, setSelectedServerId] = useState<UUID>()
   const {setTitle} = useLayoutContext()
 
@@ -30,8 +37,8 @@ export const NewForm = () => {
   }
 
   const icons = {
-    [FormSource.kobo]: 'cloud_download',
-    [FormSource.internal]: 'add',
+    [Ip.Form.Source.kobo]: 'cloud_download',
+    [Ip.Form.Source.internal]: 'add',
   }
 
   useEffect(() => {
@@ -85,7 +92,11 @@ export const NewForm = () => {
                   </PanelBody>
                 </Panel>
                 <Collapse in={!!selectedServerId} mountOnEnter unmountOnExit>
-                  <SelectKoboForm serverId={selectedServerId!} onAdded={() => queryServer.getAll.refetch()} />
+                  <SelectKoboForm
+                    workspaceId={workspaceId}
+                    serverId={selectedServerId!}
+                    onAdded={() => queryServer.getAll.refetch()}
+                  />
                 </Collapse>
               </>
             ),

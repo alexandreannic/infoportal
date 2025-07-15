@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react'
 import {Access} from '@/core/sdk/server/access/Access'
 import {useI18n} from '@/core/i18n'
-import {useFormContext} from '@/features/Form/Form'
+import {formRoute, useFormContext} from '@/features/Form/Form'
 import {IpBtn} from '@/shared/Btn'
 import {DatabaseAccessForm} from '@/features/Form/Access/DatabaseAccessForm'
 import {Panel} from '@/shared/Panel'
@@ -9,8 +9,15 @@ import {AccessTable} from '@/features/Access/AccessTable'
 import {useQueryAccess} from '@/core/query/useQueryAccess'
 import {useSession} from '@/core/Session/SessionContext'
 import {Page} from '@/shared'
+import {createRoute} from '@tanstack/react-router'
 
-export const DatabaseAccess = () => {
+export const databaseAccessRoute = createRoute({
+  getParentRoute: () => formRoute,
+  path: 'access',
+  component: DatabaseAccess,
+})
+
+function DatabaseAccess() {
   const {workspaceId, form, schema} = useFormContext()
   const {m} = useI18n()
   const {user} = useSession()
@@ -30,6 +37,7 @@ export const DatabaseAccess = () => {
       {accessSum && schema && (
         <Panel>
           <AccessTable
+            workspaceId={workspaceId}
             isAdmin={accessSum.admin}
             onRemoved={refresh}
             header={

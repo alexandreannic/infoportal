@@ -3,11 +3,16 @@ import {Panel, PanelBody} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
 import {ReactNode} from 'react'
 import {Box, Switch, useTheme} from '@mui/material'
-import {useFormContext} from '@/features/Form/Form'
-import {useQueryForm, useQueryFormById} from '@/core/query/useQueryForm'
-import {useNavigate} from 'react-router-dom'
-import {appRouter} from '@/Router'
-import {fnSwitch, match} from '@axanc/ts-utils'
+import {formRoute, useFormContext} from '@/features/Form/Form'
+import {useQueryFormById} from '@/core/query/useQueryForm'
+import {match} from '@axanc/ts-utils'
+import {createRoute, useNavigate} from '@tanstack/react-router'
+
+export const formSettingsRoute = createRoute({
+  getParentRoute: () => formRoute,
+  path: 'settings',
+  component: FormSettings,
+})
 
 const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; children: ReactNode}) => {
   const t = useTheme()
@@ -29,7 +34,7 @@ const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; childr
   )
 }
 
-export const FormSettings = () => {
+function FormSettings() {
   const {m} = useI18n()
   const {workspaceId, form, schema} = useFormContext()
   const queryForm = useQueryFormById({workspaceId, formId: form.id})
@@ -91,7 +96,7 @@ export const FormSettings = () => {
               onConfirm={async (e, close) => {
                 await queryForm.remove.mutateAsync()
                 close()
-                navigate(appRouter.ws(workspaceId).form.list)
+                navigate({to: '/$workspaceId/form/list', params: {workspaceId}})
               }}
             >
               <IpBtn color="error" variant="outlined" icon="delete">

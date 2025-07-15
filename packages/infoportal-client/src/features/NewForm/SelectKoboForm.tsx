@@ -5,15 +5,22 @@ import {Icon, useTheme} from '@mui/material'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {UUID} from 'infoportal-common'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
+import {Ip} from 'infoportal-api-sdk'
 
-export const SelectKoboForm = ({serverId, onAdded}: {serverId: UUID; onAdded?: () => void}) => {
+export const SelectKoboForm = ({
+  workspaceId,
+  serverId,
+  onAdded,
+}: {
+  workspaceId: Ip.Uuid
+  serverId: UUID
+  onAdded?: () => void
+}) => {
   const {api} = useAppSettings()
   const {m, formatDate} = useI18n()
-  const {workspaceId} = useWorkspaceRouter()
   const t = useTheme()
   const queryForms = useQueryForm(workspaceId)
 

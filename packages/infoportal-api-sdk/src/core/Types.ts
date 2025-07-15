@@ -1,5 +1,5 @@
 import type * as Prisma from '@prisma/client'
-import {FormAccessLevel} from '@prisma/client'
+import {FormAccessLevel, FormSource, WorkspaceAccessLevel} from '@prisma/client'
 
 import {Kobo} from 'kobo-sdk'
 
@@ -11,6 +11,13 @@ export namespace Ip {
   export type Form = Prisma.Form
 
   export type Server = Prisma.KoboServer
+
+  export type Workspace = Prisma.Workspace
+
+  export namespace Workspace {
+    export type AccessLevel = WorkspaceAccessLevel
+    export const AccessLevel = WorkspaceAccessLevel
+  }
 
   export namespace Server {
     export namespace Payload {
@@ -24,6 +31,9 @@ export namespace Ip {
     export type Schema = Kobo.Form['content'] & {files?: Kobo.Form.File[]}
 
     export type Version = Omit<Prisma.FormVersion, 'schema'>
+
+    export type Source = FormSource
+    export const Source = FormSource
 
     export namespace Payload {
       export type Update = {

@@ -12,8 +12,16 @@ import {IpBtn} from '@/shared/Btn'
 import {Txt} from '@/shared/Txt'
 import {useAsync} from '@/shared/hook/useAsync'
 import {IpIconBtn} from '@/shared/IconBtn'
+import {settingsRoute} from '@/features/Settings/Settings'
+import {createRoute} from '@tanstack/react-router'
 
-export const AdminCache = () => {
+export const adminCacheRoute = createRoute({
+  getParentRoute: () => settingsRoute,
+  path: 'cache',
+  component: AdminCache,
+})
+
+function AdminCache() {
   const {api} = useAppSettings()
   const {m, formatDate, dateFromNow, formatDateTime} = useI18n()
   const t = useTheme()

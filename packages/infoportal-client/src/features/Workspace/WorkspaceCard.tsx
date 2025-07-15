@@ -3,8 +3,7 @@ import {Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
 import {Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Panel} from '@/shared/Panel'
-import {Link} from 'react-router-dom'
-import {appRouter} from '@/Router'
+import {Link} from '@tanstack/react-router'
 
 export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
   const t = useTheme()
@@ -40,7 +39,7 @@ export const WorkspaceCard = ({workspace}: {workspace: Workspace}) => {
   const t = useTheme()
 
   return (
-    <Link to={appRouter.ws(workspace.id).root}>
+    <Link to="/$workspaceId" params={{workspaceId: workspace.id}}>
       <Panel
         sx={{
           mb: 0,

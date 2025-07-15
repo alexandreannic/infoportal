@@ -1,4 +1,3 @@
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {Fender, Txt} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
@@ -6,14 +5,13 @@ import {Box, BoxProps, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
 import Fuse from 'fuse.js'
 import {forwardRef, useMemo} from 'react'
 import {Controller, useForm} from 'react-hook-form'
-import {NavLink} from 'react-router-dom'
 import {styleUtils} from '../theme'
 import {useQueryForm} from '@/core/query/useQueryForm'
+import {Link} from '@tanstack/react-router'
+import {Ip} from 'infoportal-api-sdk'
 
 type Form = {
   id: string
-  // custom?: boolean
-  url: string
   name: string
   archived?: boolean
 }
@@ -58,11 +56,9 @@ const SearchInput = forwardRef(
   },
 )
 
-export const AppSidebar = () => {
-  const {workspaceId} = useWorkspaceRouter()
+export const AppSidebar = ({workspaceId}: {workspaceId: Ip.Uuid}) => {
   const {m} = useI18n()
   const t = useTheme()
-  const {router} = useWorkspaceRouter()
   const searchForm = useForm<{name: string}>()
   const values = searchForm.watch()
   const queryForm = useQueryForm(workspaceId)
@@ -72,7 +68,6 @@ export const AppSidebar = () => {
       queryForm.accessibleForms.data?.map(_ => ({
         ..._,
         id: _.id,
-        url: router.form.byId(_.id).root,
         archived: _.deploymentStatus === 'archived',
         name: _.name,
       })) ?? []
@@ -107,23 +102,23 @@ export const AppSidebar = () => {
 
   return (
     <Sidebar headerId="app-header">
-      <NavLink to={router.settings.root}>
+      <Link to="/$workspaceId/settings" params={{workspaceId}}>
         {({isActive}) => (
           <SidebarItem icon="settings" active={isActive}>
             {m.settings}
           </SidebarItem>
         )}
-      </NavLink>
-      <NavLink to={router.importKoboForm}>
-        {({isActive, isPending}) => (
+      </Link>
+      <Link to="/$workspaceId/new-form" params={{workspaceId}}>
+        {({isActive}) => (
           <SidebarItem icon="add" active={isActive}>
             {m.newForm}
           </SidebarItem>
         )}
-      </NavLink>
-      <NavLink to={router.form.list}>
-        {({isActive, isPending}) => <SidebarItem icon="home">{m.forms}</SidebarItem>}
-      </NavLink>
+      </Link>
+      <Link to="/$workspaceId/new-form" params={{workspaceId}}>
+        {({isActive}) => <SidebarItem icon="home">{m.forms}</SidebarItem>}
+      </Link>
       <SidebarHr />
       {queryForm.accessibleForms.isLoading ? (
         <>
@@ -159,8 +154,8 @@ export const AppSidebar = () => {
 
           {filteredForms.map((_: Form) => (
             <Tooltip key={_.id} title={_.name} placement="right-end">
-              <NavLink to={_.url}>
-                {({isActive, isPending}) => (
+              <Link to="/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
+                {({isActive}) => (
                   <SidebarItem
                     size={'tiny'}
                     sx={{height: 26}}
@@ -192,7 +187,7 @@ export const AppSidebar = () => {
                     </Txt>
                   </SidebarItem>
                 )}
-              </NavLink>
+              </Link>
             </Tooltip>
           ))}
         </>

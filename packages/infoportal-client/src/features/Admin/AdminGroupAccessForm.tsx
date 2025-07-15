@@ -6,13 +6,14 @@ import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {fnSwitch} from '@axanc/ts-utils'
 import {
   AccessFormInputAccessLevel,
+  AccessFormInputEmail,
   AccessFormInputJob,
   AccessFormInputLocation,
-  AccessFormInputEmail,
   IAccessForm,
 } from '@/features/Access/AccessForm'
+import {Ip} from 'infoportal-api-sdk'
 
-export const AdminGroupAccessForm = ({form}: {form: UseFormReturn<IAccessForm>}) => {
+export const AdminGroupAccessForm = ({workspaceId, form}: {workspaceId: Ip.Uuid; form: UseFormReturn<IAccessForm>}) => {
   const {m} = useI18n()
   const watchSelectBy = form.watch('selectBy')
   const watch = form.watch()
@@ -58,7 +59,7 @@ export const AdminGroupAccessForm = ({form}: {form: UseFormReturn<IAccessForm>})
           {
             job: (
               <>
-                <AccessFormInputJob form={form} sx={{mb: 2}} />
+                <AccessFormInputJob workspaceId={workspaceId} form={form} sx={{mb: 2}} />
                 <AccessFormInputLocation form={form} />
               </>
             ),

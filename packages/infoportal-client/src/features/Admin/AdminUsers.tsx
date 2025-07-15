@@ -1,5 +1,4 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useWorkspaceRouter} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {IpBtn, Modal} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
@@ -11,22 +10,29 @@ import {TableIcon} from '@/shared/TableIcon'
 import {Txt} from '@/shared/Txt'
 import {seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
-import {useNavigate} from 'react-router-dom'
 import {AddUserForm} from './AddUserForm'
 import {useQueryUser} from '@/core/query/useQueryUser'
 import {useSession} from '@/core/Session/SessionContext'
+import {createRoute, useNavigate} from '@tanstack/react-router'
+import {settingsRoute} from '@/features/Settings/Settings'
 
-export const AdminUsers = () => {
+export const adminUsersRoute = createRoute({
+  getParentRoute: () => settingsRoute,
+  path: 'users',
+  component: AdminUsers,
+})
+
+function AdminUsers() {
   const {m, formatDate, formatDateTime} = useI18n()
   const {conf} = useAppSettings()
-  const {workspaceId} = useWorkspaceRouter()
+  const {workspaceId} = adminUsersRoute.useParams()
   const navigate = useNavigate()
   const ctxSession = useSession()
   const queryUser = useQueryUser(workspaceId)
 
   const connectAs = async (email: string) => {
     await ctxSession.connectAs.mutateAsync(email)
-    await navigate('/')
+    await navigate({to: '/'})
   }
 
   const emailsLists = useMemo(() => queryUser.get.data?.map(_ => _.email), [queryUser.get.data])

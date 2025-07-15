@@ -1,4 +1,3 @@
-import {appConfig} from '@/conf/AppConfig'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
@@ -26,10 +25,9 @@ import {Alert, AlertProps, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
-import {useNavigate} from 'react-router-dom'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
-import {appRouter} from '@/Router'
+import {useNavigate} from '@tanstack/react-router'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -79,7 +77,14 @@ export const DatabaseTableContent = ({
       schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,
       onRepeatGroupClick: _ =>
-        navigate(appRouter.ws(workspaceId).form.byId(ctx.form.id).group(_.name, _.row.id, _.row._index)),
+        navigate({
+          to: '/$workspaceId/form/$formId/group/$group',
+          params: {workspaceId, formId: ctx.form.id, group: _.name},
+          search: {
+            id: _.row.id,
+            index: _.row._index,
+          },
+        }),
       onEdit:
         selectedIds.length > 0
           ? questionName =>
@@ -98,7 +103,14 @@ export const DatabaseTableContent = ({
       formId: ctx.form.id,
       schema: ctx.schema,
       onRepeatGroupClick: _ =>
-        navigate(appRouter.ws(workspaceId).form.byId(ctx.form.id).group(_.name, _.row.id, _.row._index)),
+        navigate({
+          to: '/$workspaceId/form/$formId/group/$group',
+          params: {workspaceId, formId: ctx.form.id, group: _.name},
+          search: {
+            id: _.row.id,
+            index: _.row._index,
+          },
+        }),
       display: ctx.groupDisplay.get,
       m,
       t,

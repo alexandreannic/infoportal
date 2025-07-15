@@ -4,8 +4,7 @@ import {I18nProvider, useI18n} from '@/core/i18n'
 import {getMsalInstance} from '@/core/msal'
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
-import {ProtectRoute, SessionProvider} from '@/core/Session/SessionContext'
-import {Router} from '@/Router'
+import {SessionProvider} from '@/core/Session/SessionContext'
 import {CenteredContent, Txt} from '@/shared'
 import {IpLogo} from '@/shared/logo/logo'
 import {Provide} from '@/shared/Provide'
@@ -17,11 +16,12 @@ import {LocalizationProvider} from '@mui/x-date-pickers-pro'
 import {AdapterDateFns} from '@mui/x-date-pickers-pro/AdapterDateFns'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {DialogsProvider} from '@toolpad/core'
-import {useEffect, useMemo} from 'react'
-import {HashRouter, useLocation} from 'react-router-dom'
+import React, {memo, useEffect, useMemo} from 'react'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {defaultTheme} from '@/core/theme'
 import {buildIpClient, IpClient} from 'infoportal-api-sdk'
+import {Outlet, useRouterState} from '@tanstack/react-router'
+import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -35,12 +35,20 @@ const apiv2: IpClient = buildIpClient(appConfig.apiURL)
 
 export const queryClient = new QueryClient()
 
-const App = () => {
+export const App = () => {
   return (
     <AppSettingsProvider api={api} apiv2={apiv2}>
       <AppWithConfig />
     </AppSettingsProvider>
   )
+}
+
+const TrackLocation = () => {
+  const location = useRouterState({select: s => s.location})
+  useEffect(() => {
+    api.session.track(location.pathname)
+  }, [location.pathname])
+  return null
 }
 
 const AppWithConfig = () => {
@@ -56,14 +64,19 @@ const AppWithConfig = () => {
         _ => <CssBaseline children={_} />,
         _ => <I18nProvider children={_} />,
         _ => <MsalProvider children={_} instance={msal} />,
-        _ => <HashRouter children={_} />,
         _ => <QueryClientProvider client={queryClient} children={_} />,
-        _ => <SessionProvider children={_} />,
         _ => <DialogsProvider children={_} />,
+        _ => <SessionProvider children={_} />,
       ]}
     >
+      <TrackLocation />
       <AppWithBaseContext />
-      {!settings.conf.production && <ReactQueryDevtools initialIsOpen={false} />}
+      {!settings.conf.production && (
+        <>
+          <TanStackRouterDevtools />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </>
+      )}
     </Provide>
   )
 }
@@ -71,12 +84,6 @@ const AppWithConfig = () => {
 const AppWithBaseContext = () => {
   const settings = useAppSettings()
   const {m} = useI18n()
-  const location = useLocation()
-  useEffect(() => {
-    // initSentry(appConfigConfig)
-    api.session.track(location.pathname)
-  }, [location.pathname])
-
   if (settings.conf.appOff) {
     return (
       <CenteredContent>
@@ -102,11 +109,6 @@ const AppWithBaseContext = () => {
       </CenteredContent>
     )
   }
-  return (
-    <ProtectRoute>
-      <Router />
-    </ProtectRoute>
-  )
-}
 
-export default App
+  return <Outlet />
+}
