@@ -99,7 +99,7 @@ function Form() {
 
   return (
     <Page width="full">
-      <Tabs variant="scrollable" scrollButtons="auto" value={match}>
+      <Tabs variant="scrollable" scrollButtons="auto" value={match.fullPath}>
         <Tab
           icon={<Icon>{appConfig.icons.dataTable}</Icon>}
           iconPosition="start"

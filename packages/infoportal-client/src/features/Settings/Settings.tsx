@@ -8,6 +8,7 @@ import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {adminGroupsRoute} from '@/features/Admin/AdminGroups'
 import {adminProxyRoute} from '@/features/Admin/AdminProxy'
 import {adminUsersRoute} from '@/features/Admin/AdminUsers'
+import {adminCacheRoute} from '@/features/Admin/AdminCache'
 
 export const settingsRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -26,11 +27,10 @@ function Settings() {
 
   return (
     <Page width="full">
-      {/* <PageTitle>{m.settings}</PageTitle> */}
       <Tabs
         variant="scrollable"
         scrollButtons="auto"
-        value={match}
+        value={match.fullPath}
         sx={{
           borderBottom: t => `1px solid ${t.palette.divider}`,
         }}
@@ -42,12 +42,6 @@ function Settings() {
           component={Link}
           value={adminUsersRoute.fullPath}
           to={adminUsersRoute.fullPath}
-          // to={
-          //   tsRouter.buildLocation({
-          //     to: '/$workspaceId/settings/users',
-          //     params: {workspaceId},
-          //   }).pathname
-          // }
           label={m.users}
         />
         <Tab
@@ -73,8 +67,8 @@ function Settings() {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={adminUsersRoute.fullPath}
-          to={adminUsersRoute.fullPath}
+          value={adminCacheRoute.fullPath}
+          to={adminCacheRoute.fullPath}
           label={m.serverCache}
         />
       </Tabs>
