@@ -424,7 +424,7 @@ export const en = Object.freeze({
         `Synchronize Kobo data.<br/>Last synchronization: <b>${formatDateTime(lastUpdate)}</b>.`,
       valueNoLongerInOption: 'This value is no longer in the options list',
       noAccessToForm: `You don't have access to any database.`,
-      openKoboForm: 'Open Kobo form',
+      openForm: 'Open form',
     },
     _admin: {
       createGroup: 'Create groupDisplay',

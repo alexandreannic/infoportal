@@ -1,6 +1,4 @@
 import type * as Prisma from '@prisma/client'
-import {FormAccessLevel, FormSource, WorkspaceAccessLevel} from '@prisma/client'
-
 import {Kobo} from 'kobo-sdk'
 
 export namespace Ip {
@@ -15,8 +13,10 @@ export namespace Ip {
   export type Workspace = Prisma.Workspace
 
   export namespace Workspace {
-    export type AccessLevel = WorkspaceAccessLevel
-    export const AccessLevel = WorkspaceAccessLevel
+    export enum AccessLevel {
+      Admin = 'Admin',
+      User = 'User',
+    }
   }
 
   export namespace Server {
@@ -32,8 +32,11 @@ export namespace Ip {
 
     export type Version = Omit<Prisma.FormVersion, 'schema'>
 
-    export type Source = FormSource
-    export const Source = FormSource
+    export enum Source {
+      kobo = 'kobo',
+      disconnected = 'disconnected',
+      internal = 'internal',
+    }
 
     export namespace Payload {
       export type Update = {
@@ -62,12 +65,11 @@ export namespace Ip {
     export namespace Access {
       export type Filters = Record<string, string[]>
 
-      export const Level = FormAccessLevel
-      export type Level = FormAccessLevel // export enum Level {
-      //   Read = 'Read',
-      //   Write = 'Write',
-      //   Admin = 'Admin',
-      // }
+      export enum Level {
+        Read = 'Read',
+        Write = 'Write',
+        Admin = 'Admin',
+      }
 
       export namespace Payload {
         export type Create = {

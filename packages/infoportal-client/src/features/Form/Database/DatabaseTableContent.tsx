@@ -27,7 +27,7 @@ import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
-import {useNavigate} from '@tanstack/react-router'
+import {Link, useNavigate} from '@tanstack/react-router'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -210,14 +210,23 @@ export const DatabaseTableContent = ({
             {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 
             <div style={{marginLeft: 'auto'}}>
-              {ctx.form.source === 'kobo' && (
+              {ctx.form.source === 'kobo' ? (
                 <IpIconBtn
                   disabled={!ctx.form.enketoUrl || ctx.form.deploymentStatus === 'archived'}
                   href={ctx.form.enketoUrl ?? ''}
                   target="_blank"
                   children="file_open"
-                  tooltip={m._koboDatabase.openKoboForm}
+                  tooltip={m._koboDatabase.openForm}
                 />
+              ) : (
+                <Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId: ctx.form.id}}>
+                  <IpIconBtn
+                    disabled={ctx.form.deploymentStatus === 'archived'}
+                    target="_blank"
+                    children="file_open"
+                    tooltip={m._koboDatabase.openForm}
+                  />
+                </Link>
               )}
               {ctx.form.source === 'kobo' && (
                 <DatabaseKoboSyncBtn
