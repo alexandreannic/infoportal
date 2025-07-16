@@ -16,20 +16,4 @@ export class Access {
       read: hasAny([Ip.AccessLevel.Read, Ip.AccessLevel.Write, Ip.AccessLevel.Admin]),
     }
   }
-
-  // static readonly toSum = (accesses: Ip.Form.Access[], admin?: boolean) => {
-  //   return {
-  //     admin: admin || !!accesses.find(_ => _.level === Ip.AccessLevel.Admin),
-  //     write:
-  //       admin || !!accesses.find(_ => _.level === Ip.AccessLevel.Write || _.level === Ip.AccessLevel.Admin),
-  //     read:
-  //       admin ||
-  //       !!accesses.find(
-  //         _ =>
-  //           _.level === Ip.AccessLevel.Write ||
-  //           _.level === Ip.AccessLevel.Admin ||
-  //           _.level === Ip.AccessLevel.Read,
-  //       ),
-  //   }
-  // }
 }

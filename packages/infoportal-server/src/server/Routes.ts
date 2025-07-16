@@ -4,7 +4,6 @@ import {ControllerMain} from './controller/ControllerMain.js'
 import {PrismaClient} from '@prisma/client'
 import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi.js'
 import {ControllerSession} from './controller/ControllerSession.js'
-import {ControllerKoboServer} from './controller/kobo/ControllerKoboServer.js'
 import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer.js'
 import {ControllerUser} from './controller/ControllerUser.js'
 import {AppError} from '../helper/Errors.js'
@@ -29,7 +28,6 @@ import {ErrorHttpStatusCode, SuccessfulHttpStatusCode} from '@ts-rest/core'
 import {FormAccessService} from '../feature/form/access/FormAccessService.js'
 import {PermissionService} from '../feature/PermissionService.js'
 import {Ip, ipContract, Meta} from 'infoportal-api-sdk'
-import {HttpStatus} from '@azure/msal-common'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -72,7 +70,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   interface HandlerArgs<TReq = Request, TParams = any, TBody = any> {
     req: Request
     res: Response
-    params: TParams
+    params?: TParams
     body?: TBody
     headers: any
     file?: unknown //Express.Multer.File
@@ -148,6 +146,37 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const s = initServer()
 
   const tsRestRouter = s.router(ipContract, {
+    permission: {
+      getMineGlobal: _ =>
+        auth2(_)
+          .then(({req}) =>
+            permission.getGlobal({
+              user: req.session.app?.user,
+            }),
+          )
+          .then(ok)
+          .catch(handleError),
+      getMineByWorkspace: _ =>
+        auth2(_)
+          .then(({params, req}) =>
+            permission.getByWorkspace({
+              user: req.session.app?.user,
+              ...params,
+            }),
+          )
+          .then(ok)
+          .catch(handleError),
+      getMineByForm: _ =>
+        auth2(_)
+          .then(({params, req}) =>
+            permission.getByForm({
+              user: req.session.app?.user,
+              ...params,
+            }),
+          )
+          .then(ok)
+          .catch(handleError),
+    },
     server: {
       delete: _ =>
         auth2(_)

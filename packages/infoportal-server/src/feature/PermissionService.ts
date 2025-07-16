@@ -48,15 +48,46 @@ export class PermissionService {
     formId?: Ip.FormId
   }): Promise<boolean> {
     if (!permissions) return false
-    if (permissions.global && this.canGlobal(user, permissions.global)) return true
-    if (permissions.workspace && (await this.canWorkspace({user, workspaceId, required: permissions.workspace})))
-      return true
-    if (permissions.form && (await this.canForm({user, workspaceId, formId, required: permissions.form}))) return true
+    if (permissions.global && (await this.canGlobal(user, permissions.global))) return true
+    if (permissions.workspace) {
+      if (!workspaceId) throw new AppError.BadRequest('Missing workspaceId')
+      if (await this.canWorkspace({user, workspaceId, required: permissions.workspace})) return true
+    }
+    if (permissions.form) {
+      if (!workspaceId) throw new AppError.BadRequest('Missing workspaceId')
+      if (!formId) throw new AppError.BadRequest('Missing formId')
+      if (await this.canForm({user, workspaceId, formId, required: permissions.form})) return true
+    }
     return false
   }
 
-  private canGlobal(user: Ip.User, required: Array<keyof Permission.Global>): boolean {
-    const evals = Permission.Evaluate.global(user)
+  async getGlobal({user}: {user: Ip.User}): Promise<Permission.Global> {
+    return Permission.Evaluate.global(user)
+  }
+
+  async getByWorkspace({user, workspaceId}: {user: Ip.User; workspaceId: Ip.Uuid}): Promise<Permission.Workspace> {
+    const wsAccess = await this.workspace.getByUser({workspaceId, user})
+    return Permission.Evaluate.workspace(user, wsAccess)
+  }
+
+  async getByForm({
+    user,
+    workspaceId,
+    formId,
+  }: {
+    user: Ip.User
+    workspaceId: Ip.Uuid
+    formId: Ip.FormId
+  }): Promise<Permission.Form> {
+    const wsAccess = await this.workspace.getByUser({workspaceId, user})
+    const formAccesses = await this.formAccess
+      .searchForUser({workspaceId, user})
+      .then(_ => _.filter(_ => _.formId === formId))
+    return Permission.Evaluate.form(user, wsAccess, formAccesses)
+  }
+
+  private async canGlobal(user: Ip.User, required: Array<keyof Permission.Global>): Promise<boolean> {
+    const evals = await this.getGlobal({user})
     return required.some(perm => evals[perm])
   }
 
@@ -66,15 +97,10 @@ export class PermissionService {
     required,
   }: {
     user: Ip.User
-    workspaceId?: Ip.Uuid
+    workspaceId: Ip.Uuid
     required: Array<keyof Permission.Workspace>
   }): Promise<boolean> {
-    if (!workspaceId) throw new AppError.BadRequest('Missing workspaceId')
-
-    const wsAccess = await this.workspace.getByUser({workspaceId, user})
-    if (!wsAccess) return false
-
-    const evals = Permission.Evaluate.workspace(user, wsAccess)
+    const evals = await this.getByWorkspace({user, workspaceId})
     return required.some(perm => evals[perm])
   }
 
@@ -85,60 +111,11 @@ export class PermissionService {
     required,
   }: {
     user: Ip.User
-    workspaceId?: Ip.Uuid
-    formId?: Ip.FormId
+    workspaceId: Ip.Uuid
+    formId: Ip.FormId
     required: Array<keyof Permission.Form>
   }): Promise<boolean> {
-    if (!workspaceId) throw new AppError.BadRequest('Missing workspaceId')
-    if (!formId) throw new AppError.BadRequest('Missing formId')
-
-    const wsAccess = await this.workspace.getByUser({workspaceId, user})
-    if (!wsAccess) return false
-
-    const formAccesses = await this.formAccess.searchForUser({workspaceId, user})
-    if (!formAccesses) return false
-
-    const evals = Permission.Evaluate.form(user, wsAccess, formAccesses)
+    const evals = await this.getByForm({user, workspaceId, formId})
     return required.some(perm => evals[perm])
   }
 }
-
-// readonly checkPermissions = async ({
-//   permissions,
-//   user,
-//   workspaceId,
-//   formId,
-// }: {
-//   workspaceId?: Ip.Uuid
-//   formId: Ip.FormId
-//   user: Ip.User
-//   permissions?: Permission.Requirements
-// }) => {
-//   if (!permissions) return
-//   if (permissions.global) {
-//     const evaluation = Permission.Evaluate.global(user)
-//     const can = permissions.global.some(_ => evaluation[_])
-//     if (can) return true
-//   }
-//   if (permissions.workspace) {
-//     if (!workspaceId) throw new AppError.BadRequest('Missing workspaceId')
-//     const workspaceAccess = await this.workspace.getByUser({workspaceId, user})
-//     if (workspaceAccess) {
-//       const evaluation = Permission.Evaluate.workspace(user, workspaceAccess)
-//       const can = permissions.workspace.some(_ => evaluation[_])
-//       if (can) return true
-//     }
-//   }
-//   if (permissions.form) {
-//     if (!workspaceId) throw new AppError.BadRequest('Missing workspaceId')
-//     if (!formId) throw new AppError.BadRequest('Missing formId')
-//     const workspaceAccess = await this.workspace.getByUser({workspaceId, user})
-//     const formAccesses = await this.formAccess.searchForUser({workspaceId, user})
-//     if (workspaceAccess && formAccesses) {
-//       const evaluation = Permission.Evaluate.form(user, workspaceAccess, formAccesses)
-//       const can = permissions.form.some(_ => evaluation[_])
-//       if (can) return true
-//     }
-//   }
-// }
-// }

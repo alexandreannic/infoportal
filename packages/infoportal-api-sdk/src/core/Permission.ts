@@ -98,23 +98,23 @@ export namespace Permission {
       return Obj.mapValues(permissionsMatrix.global, _ => canDo({required: _, user: user.accessLevel}))
     }
 
-    static readonly workspace = (user: Ip.User, workspaceAccess: Ip.Workspace.Access): Workspace => {
+    static readonly workspace = (user: Ip.User, workspaceAccess?: Ip.Workspace.Access | null): Workspace => {
       return Obj.mapValues(permissionsMatrix.workspace, _ => {
-        const userLevel = maxLevel(user.accessLevel, workspaceAccess.level)
+        const userLevel = workspaceAccess ? maxLevel(user.accessLevel, workspaceAccess.level) : undefined
         return canDo({required: _, user: userLevel})
       })
     }
 
     static readonly form = (
       user: Ip.User,
-      workspaceAccess: Ip.Workspace.Access,
-      formAccesses: Ip.Form.Access[],
+      workspaceAccess?: Ip.Workspace.Access | null,
+      formAccesses?: Ip.Form.Access[] | null,
     ): Form => {
       return Obj.mapValues(permissionsMatrix.form, _ => {
-        const userLevel =
-          user.accessLevel === Level.Admin || workspaceAccess.level === Level.Admin
-            ? Level.Admin
-            : computeFormAccesses(formAccesses)
+        let userLevel
+        if (user.accessLevel === Level.Admin) userLevel = Level.Admin
+        if (workspaceAccess && workspaceAccess.level === Level.Admin) userLevel = Level.Admin
+        if (formAccesses) userLevel = computeFormAccesses(formAccesses)
         return canDo({required: _, user: userLevel})
       })
     }
