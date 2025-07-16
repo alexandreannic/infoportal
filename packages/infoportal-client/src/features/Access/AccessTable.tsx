@@ -87,20 +87,20 @@ export const AccessTable = ({
           id: 'level',
           head: m.accessLevel,
           type: 'select_one',
-          options: () => Obj.keys(Ip.Form.Access.Level).map(_ => ({value: _, label: _})),
+          options: () => Obj.keys(Ip.AccessLevel).map(_ => ({value: _, label: _})),
           render: row => {
             if (!!row.groupName) return {value: undefined, label: ''}
             if (isAdmin)
               return {
                 value: row.level,
                 label: (
-                  <IpSelectSingle<keyof typeof Ip.Form.Access.Level>
+                  <IpSelectSingle<keyof typeof Ip.AccessLevel>
                     value={row.level}
                     placeholder=""
                     onChange={_ => queryAccess.update.mutate({id: row.id, level: _})}
                     hideNullOption
                     disabled={!!row.groupName}
-                    options={Obj.keys(Ip.Form.Access.Level)}
+                    options={Obj.keys(Ip.AccessLevel)}
                   />
                 ),
               }

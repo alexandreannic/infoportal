@@ -4,19 +4,27 @@ import {Kobo} from 'kobo-sdk'
 export namespace Ip {
   export type Uuid = string
 
+  export type AccessLevel = Prisma.AccessLevel
+  export const AccessLevel = {
+    Read: 'Read',
+    Write: 'Write',
+    Admin: 'Admin',
+  } as const
+
   export type FormId = Form.Id
 
   export type Form = Prisma.Form
 
   export type Server = Prisma.KoboServer
 
+  export type User = Prisma.User
+
+  export namespace User {}
+
   export type Workspace = Prisma.Workspace
 
   export namespace Workspace {
-    export enum AccessLevel {
-      Admin = 'Admin',
-      User = 'User',
-    }
+    export type Access = Prisma.WorkspaceAccess
   }
 
   export namespace Server {
@@ -64,12 +72,6 @@ export namespace Ip {
 
     export namespace Access {
       export type Filters = Record<string, string[]>
-
-      export enum Level {
-        Read = 'Read',
-        Write = 'Write',
-        Admin = 'Admin',
-      }
 
       export namespace Payload {
         export type Create = {

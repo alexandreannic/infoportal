@@ -6,7 +6,7 @@ import {Ip} from 'infoportal-api-sdk'
 export class WorkspaceAccessSdk {
   constructor(private client: ApiClient) {}
 
-  readonly create = (body: {email: string; level: Ip.Workspace.AccessLevel; workspaceId: UUID}) => {
+  readonly create = (body: {email: string; level: Ip.AccessLevel; workspaceId: UUID}) => {
     return this.client.put<Workspace>(`/workspace-access`, {body: body})
   }
 

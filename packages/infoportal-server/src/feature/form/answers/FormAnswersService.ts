@@ -24,7 +24,6 @@ import {AppError} from '../../../helper/Errors.js'
 import {Util} from '../../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
-import {FormService} from '../FormService'
 import Event = GlobalEvent.Event
 
 export type DbFormAnswer = KoboSubmission & {
@@ -63,7 +62,8 @@ export class FormAnswersService {
     workspaceId: UUID
   }): Promise<ApiPaginate<DbFormAnswer>> => {
     if (!user) return ApiPaginateHelper.make()([])
-    if (!user.admin) {
+    // TODO(Alex) reimplement
+    if (user.accessLevel !== Ip.AccessLevel.Admin) {
       const access = await this.access
         .searchForUser({workspaceId, user})
         .then(_ => seq(_).filter(_ => _.formId === params.formId))

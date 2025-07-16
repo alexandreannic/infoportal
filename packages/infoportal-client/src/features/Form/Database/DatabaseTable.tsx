@@ -70,8 +70,8 @@ const DatabaseTable = ({
 
   const access = useMemo(() => {
     const list = queryAccess.accessesByFormIdMap[formId] ?? []
-    const admin = session.user.admin || !!list.find(_ => _.level === Ip.Form.Access.Level.Admin)
-    const write = admin || !!list.find(_ => _.level === Ip.Form.Access.Level.Write)
+    const admin = session.user.admin || !!list.find(_ => _.level === Ip.AccessLevel.Admin)
+    const write = admin || !!list.find(_ => _.level === Ip.AccessLevel.Write)
     const read = write || list.length > 0
     return {admin, write, read}
   }, [queryAccess.accessesByFormIdMap])

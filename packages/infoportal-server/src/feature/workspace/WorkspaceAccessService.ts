@@ -1,7 +1,8 @@
-import {PrismaClient, WorkspaceAccessLevel} from '@prisma/client'
+import {PrismaClient, User} from '@prisma/client'
 import {InferType} from 'yup'
 import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {UserService} from '../user/UserService.js'
+import {Ip} from 'infoportal-api-sdk'
 
 export type WorkspaceAccessCreate = InferType<typeof WorkspaceAccessService.schema.create>
 
@@ -16,7 +17,7 @@ export class WorkspaceAccessService {
     create: yup.object({
       workspaceId: yup.string().required(),
       email: yup.string().required(),
-      level: yup.mixed<WorkspaceAccessLevel>().oneOf(Object.values(WorkspaceAccessLevel)).required(),
+      level: yup.mixed<Ip.AccessLevel>().oneOf(Object.values(Ip.AccessLevel)).required(),
     }),
   }
 
@@ -35,5 +36,11 @@ export class WorkspaceAccessService {
       // TODO
       throw new Error('TODO Implement invitation')
     }
+  }
+
+  readonly getByUser = async ({workspaceId, user}: {workspaceId: Ip.Uuid; user: User}) => {
+    return this.prisma.workspaceAccess.findFirst({
+      where: {workspaceId, user: {email: user.email}},
+    })
   }
 }

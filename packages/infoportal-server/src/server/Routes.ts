@@ -19,22 +19,23 @@ import {ControllerKoboApiXlsImport} from './controller/kobo/ControllerKoboApiXls
 import {ControllerWorkspace} from './controller/ControllerWorkspace.js'
 import {AuthRequest} from '../typings'
 import {ControllerWorkspaceAccess} from './controller/ControllerWorkspaceAccess.js'
-import {UUID} from 'infoportal-common'
 import multer from 'multer'
 import {initServer} from '@ts-rest/express'
-import {ipContract} from 'infoportal-api-sdk'
 import {FormVersionService} from '../feature/form/FormVersionService.js'
 import {KoboFormService} from '../feature/kobo/KoboFormService.js'
 import {ServerService} from '../feature/ServerService.js'
 import {FormService} from '../feature/form/FormService.js'
 import {ErrorHttpStatusCode, SuccessfulHttpStatusCode} from '@ts-rest/core'
 import {FormAccessService} from '../feature/form/access/FormAccessService.js'
+import {PermissionService} from '../feature/PermissionService.js'
+import {Ip, ipContract, Meta} from 'infoportal-api-sdk'
+import {HttpStatus} from '@azure/msal-common'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
 }
 
-export const getWorkspaceId = (req: Request): UUID => {
+export const getWorkspaceId = (req: Request): Ip.Uuid => {
   return req.params.workspaceId
 }
 
@@ -56,7 +57,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const main = new ControllerMain()
   const workspace = new ControllerWorkspace(prisma)
   const workspaceAccess = new ControllerWorkspaceAccess(prisma)
-  const koboServer = new ControllerKoboServer(prisma)
   const koboAnswer = new ControllerKoboAnswer(prisma)
   const koboApi = new ControllerKoboApi(prisma)
   const session = new ControllerSession(prisma)
@@ -79,32 +79,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     files?: unknown //Express.Multer.File[]
   }
 
-  const checkAccess = async <T extends HandlerArgs>(
-    access: Access = {},
-    args: T,
-  ): Promise<Omit<T, 'req'> & {req: AuthRequest}> => {
-    const email = args.req.session.app?.user.email
-    if (!email) {
-      throw new AppError.Forbidden('auth_user_not_connected')
-    }
-    const user = await UserService.getInstance(prisma).getUserByEmail(email)
-    if (!user) {
-      throw new AppError.Forbidden('user_not_allowed')
-    }
-    if (access.level === 'admin' && access.scope === 'global' && !user.admin) {
-      throw new AppError.Forbidden('user_not_admin')
-    }
-    return args as any
-  }
-
-  const ok = <T>(body: T): {status: SuccessfulHttpStatusCode; body: T} => {
-    return {status: 200, body}
-  }
-
-  const notFound = (): {status: ErrorHttpStatusCode; body: string} => {
-    return {status: 404, body: 'Resource not found'}
-  }
-
   const auth = (options: {adminOnly?: true} = {}) => {
     return async (req: Request, res: Response, next: NextFunction) => {
       //req.session.app.user = {
@@ -121,7 +95,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         if (!user) {
           throw new AppError.Forbidden('user_not_allowed')
         }
-        if (options.adminOnly && !user.admin) {
+        if (options.adminOnly && user.accessLevel === Ip.AccessLevel.Admin) {
           throw new AppError.Forbidden('user_not_admin')
         }
         next()
@@ -131,34 +105,22 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     }
   }
 
-  type Access = {
-    level?: 'read' | 'write' | 'admin'
-    scope?: 'global' | 'workspace' | 'form'
+  const ok = <T>(body: T): {status: SuccessfulHttpStatusCode; body: T} => {
+    return {status: 200, body}
   }
 
-  type WithAuthOptions = {
-    ensureFile?: boolean
-    access?: Access
+  const notFound = (): {status: ErrorHttpStatusCode; body: string} => {
+    return {status: 404, body: 'Resource not found'}
   }
 
-  type EnrichedRequest<TArgs extends HandlerArgs, Opts extends WithAuthOptions> = AuthRequest<TArgs['req']> &
-    (Opts['ensureFile'] extends true ? {file: Express.Multer.File} : {}) // & (Opts['access'] extends true ? {admin: true} : {})
+  const okOrNotFound = <T>(
+    body: T,
+  ): {status: SuccessfulHttpStatusCode; body: T} | {status: ErrorHttpStatusCode; body: string} => {
+    return body ? ok(body) : notFound()
+  }
 
-  function ctrl<Opts extends WithAuthOptions, TArgs extends HandlerArgs, TResult>(
-    options: Opts,
-    handler: (args: Omit<TArgs, 'req'> & {req: EnrichedRequest<TArgs, Opts>}) => Promise<TResult>,
-  ): (
-    args: TArgs,
-  ) => Promise<{status: SuccessfulHttpStatusCode; body: TResult} | {status: ErrorHttpStatusCode; body: string}> {
-    return async (args: TArgs) => {
-      await checkAccess(options.access, args as any)
-
-      if (options.ensureFile && !args.req.file) {
-        throw new AppError.BadRequest('Missing file.')
-      }
-      const data = await handler(args as any)
-      return data ? ok(data) : notFound()
-    }
+  const handleError = (e: Error): {status: ErrorHttpStatusCode; body: string} => {
+    return {status: 500, body: e.message}
   }
 
   const koboForm = new KoboFormService(prisma)
@@ -167,73 +129,169 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const formAccess = new FormAccessService(prisma)
   const server = new ServerService(prisma)
 
+  const permission = new PermissionService(prisma, undefined, formAccess)
+
+  const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
+    const meta: Meta | undefined = (args.req as any).tsRestRoute.metadata
+    if (meta) await permission.throwIfNoPermitted({req: args.req, permissions: meta.access})
+    return args as any
+  }
+  const ensureFile = <T extends HandlerArgs>(args: T): Promise<T & {file: Express.Multer.File}> => {
+    return new Promise((resolve, reject) => {
+      if (!args.req.file) {
+        return reject(new AppError.BadRequest('Missing file.'))
+      }
+      return resolve(args as any)
+    })
+  }
+
   const s = initServer()
 
   const tsRestRouter = s.router(ipContract, {
     server: {
-      delete: ctrl({}, ({params}) => server.delete({id: params.id})),
-      create: ctrl({}, ({params, body}) => server.create({workspaceId: params.workspaceId, ...body})),
-      getAll: ctrl({}, ({params}) => server.getAll(params)),
-      get: ctrl({}, ({params}) => server.get(params)),
+      delete: _ =>
+        auth2(_)
+          .then(({params}) => server.delete({id: params.id}))
+          .then(ok)
+          .catch(handleError),
+      create: _ =>
+        auth2(_)
+          .then(({params, body}) => server.create({workspaceId: params.workspaceId, ...body}))
+          .then(ok)
+          .catch(handleError),
+      getAll: _ =>
+        auth2(_)
+          .then(({params}) => server.getAll(params))
+          .then(ok)
+          .catch(handleError),
+      get: _ =>
+        auth2(_)
+          .then(({params}) => server.get(params))
+          .then(okOrNotFound)
+          .catch(handleError),
     },
     kobo: {
-      importFromKobo: ctrl({}, ({req, body, params}) =>
-        koboForm.importFromKobo({
-          ...body,
-          uploadedBy: req.session.app?.user.email!,
-          workspaceId: params.workspaceId,
-        }),
-      ),
+      importFromKobo: _ =>
+        auth2(_)
+          .then(({req, body, params}) =>
+            koboForm.importFromKobo({
+              ...body,
+              uploadedBy: req.session.app?.user.email!,
+              workspaceId: params.workspaceId,
+            }),
+          )
+          .then(ok)
+          .catch(handleError),
     },
     form: {
-      update: ctrl({}, ({params, body}) => form.update({...params, ...body})),
-      remove: ctrl({}, ({params}) => form.remove(params.formId)),
-      get: ctrl({}, ({params}) => form.get(params.formId)),
-      getAll: ctrl({}, ({params}) => form.getAll({wsId: params.workspaceId})),
-      create: ctrl({}, ({req, body, params}) =>
-        form.create({
-          uploadedBy: req.session.app?.user.email!,
-          workspaceId: params.workspaceId,
-          ...body,
-        }),
-      ),
-      refreshAll: ctrl({}, ({req, params}) =>
-        koboForm.refreshAll({
-          byEmail: req.session.app?.user.email!,
-          wsId: params.workspaceId,
-        }),
-      ),
-      getSchema: ctrl({}, async ({params}) => form.getSchema({formId: params.formId})),
-      getSchemaByVersion: ctrl({}, ({params}) =>
-        form.getSchemaByVersion({formId: params.formId, versionId: params.versionId}),
-      ),
-      access: {
-        create: ctrl({}, ({params, body}) => formAccess.create({workspaceId: params.workspaceId, ...body})),
-        update: ctrl({}, ({params, body}) => formAccess.update({...params, ...body})),
-        remove: ctrl({}, ({params}) => formAccess.remove({id: params.id})),
-        search: ctrl({}, ({params, req}) => formAccess.searchForUser({workspaceId: params.workspaceId})),
-        searchMine: ctrl({}, ({params, req}) =>
-          formAccess.searchForUser({workspaceId: params.workspaceId, user: req.session.app.user}),
+      update: _ =>
+        auth2(_)
+          .then(({params, body}) => form.update({...params, ...body}))
+          .then(ok)
+          .catch(handleError),
+      remove: _ =>
+        auth2(_)
+          .then(({params}) => form.remove(params.formId))
+          .then(ok)
+          .catch(handleError),
+      get: ({params}) => form.get(params.formId).then(okOrNotFound).catch(handleError),
+      getAll: _ =>
+        auth2(_)
+          .then(({params}) => form.getAll({wsId: params.workspaceId}))
+          .then(ok)
+          .catch(handleError),
+      create: _ =>
+        auth2(_).then(({req, body, params}) =>
+          form
+            .create({
+              uploadedBy: req.session.app?.user.email!,
+              workspaceId: params.workspaceId,
+              ...body,
+            })
+            .then(ok)
+            .catch(handleError),
         ),
+      refreshAll: _ =>
+        auth2(_)
+          .then(({req, params}) =>
+            koboForm.refreshAll({
+              byEmail: req.session.app?.user.email!,
+              wsId: params.workspaceId,
+            }),
+          )
+          .then(ok)
+          .catch(handleError),
+      getSchema: ({params}) => form.getSchema({formId: params.formId}).then(okOrNotFound).catch(handleError),
+      getSchemaByVersion: _ =>
+        auth2(_)
+          .then(({params}) => form.getSchemaByVersion({formId: params.formId, versionId: params.versionId}))
+          .then(ok)
+          .catch(handleError),
+      access: {
+        create: _ =>
+          auth2(_)
+            .then(({params, body}) => formAccess.create({workspaceId: params.workspaceId, ...body}))
+            .then(ok)
+            .catch(handleError),
+        update: _ =>
+          auth2(_)
+            .then(({params, body}) => formAccess.update({...params, ...body}))
+            .then(ok)
+            .catch(handleError),
+        remove: _ =>
+          auth2(_)
+            .then(({params}) => formAccess.remove({id: params.id}))
+            .then(ok)
+            .catch(handleError),
+        search: _ =>
+          auth2(_)
+            .then(({params, req}) => formAccess.searchForUser({workspaceId: params.workspaceId}))
+            .then(ok)
+            .catch(handleError),
+        searchMine: _ =>
+          auth2(_)
+            .then(({params, req}) =>
+              formAccess.searchForUser({workspaceId: params.workspaceId, user: req.session.app.user}),
+            )
+            .then(ok)
+            .catch(handleError),
       },
       version: {
         validateXlsForm: {
           middleware: [uploader.single('file')],
-          handler: ctrl({ensureFile: true}, ({req}) => formVersion.validateAndParse(req.file.path)),
+          handler: _ =>
+            auth2(_)
+              .then(ensureFile)
+              .then(({file}) => formVersion.validateAndParse(file.path))
+              .then(ok)
+              .catch(handleError),
         },
         uploadXlsForm: {
           middleware: [uploader.single('file')],
-          handler: ctrl({ensureFile: true}, ({params, req, body}) =>
-            formVersion.upload({
-              uploadedBy: req.session.app.user.email,
-              formId: params.formId,
-              file: req.file!,
-              message: body.message,
-            }),
-          ),
+          handler: _ =>
+            auth2(_)
+              .then(ensureFile)
+              .then(({params, req, body}) =>
+                formVersion.upload({
+                  uploadedBy: req.session.app.user.email,
+                  formId: params.formId,
+                  file: req.file!,
+                  message: body.message,
+                }),
+              )
+              .then(ok)
+              .catch(handleError),
         },
-        getByFormId: ctrl({}, ({params}) => formVersion.getVersions({formId: params.formId})),
-        deployLast: ctrl({}, ({req, params}) => formVersion.deployLastDraft({formId: params.formId})),
+        getByFormId: _ =>
+          auth2(_)
+            .then(({params}) => formVersion.getVersions({formId: params.formId}))
+            .then(ok)
+            .catch(handleError),
+        deployLast: _ =>
+          auth2(_)
+            .then(({req, params}) => formVersion.deployLastDraft({formId: params.formId}))
+            .then(ok)
+            .catch(handleError),
       },
     },
   })
@@ -297,25 +355,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     )
 
     r.post('/kobo-answer-history/search', safe(koboAnswerHistory.search))
-
-    r.put('/:workspaceId/kobo/server', auth(), safe(koboServer.create))
-    r.delete('/:workspaceId/kobo/server/:id', auth(), safe(koboServer.delete))
-    r.get('/:workspaceId/kobo/server', auth(), safe(koboServer.getAll))
-
-    // r.get('/:workspaceId/form', auth(), safe(koboForm.getAll))
-    // r.post('/:workspaceId/form/refresh', auth(), safe(koboForm.refreshAll))
-    // r.get('/:workspaceId/form/:id', auth(), safe(koboForm.get))
-    // r.put('/:workspaceId/form', auth(), safe(koboForm.add))
-
-    // r.post('/:workspaceId/form/:formId/schema', auth(), uploader.single('uf-xlsform'), safe(schema.uploadXlsForm))
-    // r.post(
-    //   '/:workspaceId/form/:formId/schema/validate',
-    //   auth(),
-    //   uploader.single('uf-xlsform'),
-    //   safe(schema.validateXlsForm),
-    // )
-    // r.get('/:workspaceId/form/:formId/schema', auth(), safe(schema.get))
-    // r.post('/:workspaceId/form/:formId/schema/:versionId', auth(), safe(schema.updateVersion))
 
     r.post('/:workspaceId/form/:formId/answer/by-access', auth(), safe(koboAnswer.searchByUserAccess))
     r.patch('/:workspaceId/form/:formId/answer/validation', auth(), safe(koboAnswer.updateValidation))

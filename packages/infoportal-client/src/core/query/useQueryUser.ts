@@ -19,7 +19,7 @@ export const useQueryUser = (workspaceId: UUID) => {
   })
 
   const create = useMutation({
-    mutationFn: async (_: {email: string; level: Ip.Workspace.AccessLevel}) => {
+    mutationFn: async (_: {email: string; level: Ip.AccessLevel}) => {
       return api.workspaceAccess.create({..._, workspaceId})
     },
     onSuccess: () => {

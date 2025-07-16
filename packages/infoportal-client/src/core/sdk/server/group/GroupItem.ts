@@ -19,7 +19,7 @@ export class GroupHelper {
 
 export interface GroupItem {
   id: UUID
-  level: Ip.Form.Access.Level
+  level: Ip.AccessLevel
   email?: string
   drcJob?: string
   drcOffice?: string

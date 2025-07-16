@@ -1,6 +1,6 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {schema} from '../core/Schema'
+import {makeMeta, schema} from '../core/Schema'
 import {Ip} from '../core/Types'
 import {mapClientResponse, TsRestClient} from '../core/IpClient'
 
@@ -17,6 +17,11 @@ export const serverContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Server | undefined>,
     },
+    metadata: makeMeta({
+      access: {
+        workspace: ['server_canGet'],
+      },
+    }),
   },
 
   getAll: {
@@ -28,6 +33,11 @@ export const serverContract = c.router({
     responses: {
       200: c.type<Ip.Server[]>(),
     },
+    metadata: makeMeta({
+      access: {
+        workspace: ['server_canGet'],
+      },
+    }),
   },
 
   create: {
@@ -40,6 +50,11 @@ export const serverContract = c.router({
     responses: {
       200: c.type<Ip.Server>(),
     },
+    metadata: makeMeta({
+      access: {
+        workspace: ['server_canCreate'],
+      },
+    }),
   },
 
   delete: {
@@ -52,6 +67,11 @@ export const serverContract = c.router({
     responses: {
       200: c.type<void>(),
     },
+    metadata: makeMeta({
+      access: {
+        workspace: ['server_canDelete'],
+      },
+    }),
   },
 })
 

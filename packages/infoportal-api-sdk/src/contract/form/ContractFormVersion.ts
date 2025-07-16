@@ -1,7 +1,7 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {Ip} from '../../core/Types'
-import {schema} from '../../core/Schema'
+import {makeMeta, schema} from '../../core/Schema'
 import {mapClientResponse, TsRestClient} from '../../core/IpClient'
 
 const c = initContract()
@@ -21,6 +21,11 @@ export const formVersionContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form.Schema.Validation>,
     },
+    metadata: makeMeta({
+      access: {
+        form: ['version_canCreate'],
+      },
+    }),
   },
 
   uploadXlsForm: {
@@ -38,6 +43,11 @@ export const formVersionContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form.Version>,
     },
+    metadata: makeMeta({
+      access: {
+        form: ['version_canCreate'],
+      },
+    }),
   },
 
   getByFormId: {
@@ -54,6 +64,11 @@ export const formVersionContract = c.router({
     responses: {
       200: z.array(z.custom<Ip.Form.Version>()),
     },
+    metadata: makeMeta({
+      access: {
+        form: ['version_canGet'],
+      },
+    }),
   },
 
   deployLast: {
@@ -67,6 +82,11 @@ export const formVersionContract = c.router({
     responses: {
       200: z.custom<Ip.Form.Version>(),
     },
+    metadata: makeMeta({
+      access: {
+        form: ['version_canDeploy'],
+      },
+    }),
   },
 })
 

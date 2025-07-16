@@ -1,4 +1,4 @@
-import {FormAccessLevel, PrismaClient, User} from '@prisma/client'
+import {PrismaClient, User} from '@prisma/client'
 import {app, AppLogger} from '../../../index.js'
 import {Ip} from 'infoportal-api-sdk'
 
@@ -81,10 +81,10 @@ export class FormAccessService {
         const accesses = _.group?.items.reduce((acc, curr) => {
           acc.set(curr.level, curr.level)
           return acc
-        }, new Map<FormAccessLevel, FormAccessLevel>())
+        }, new Map<Ip.AccessLevel, Ip.AccessLevel>())
         return {
           ..._,
-          level: accesses?.get('Admin') ?? accesses?.get('Write') ?? FormAccessLevel.Read,
+          level: accesses?.get('Admin') ?? accesses?.get('Write') ?? Ip.AccessLevel.Read,
           groupName: _.group?.name,
         }
       }),

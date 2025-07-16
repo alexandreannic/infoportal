@@ -1,6 +1,6 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {schema} from '../../core/Schema'
+import {makeMeta, schema} from '../../core/Schema'
 import {Ip} from '../../core/Types'
 import {mapClientResponse, TsRestClient} from '../../core/IpClient'
 
@@ -17,6 +17,11 @@ export const formContract = c.router({
     responses: {
       200: z.void(),
     },
+    metadata: makeMeta({
+      access: {
+        form: ['canSyncWithKobo'],
+      },
+    }),
   },
 
   getSchema: {
@@ -42,6 +47,11 @@ export const formContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form.Schema | undefined>,
     },
+    metadata: makeMeta({
+      access: {
+        form: ['canGet'],
+      },
+    }),
   },
 
   update: {
@@ -52,6 +62,11 @@ export const formContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form>,
     },
+    metadata: makeMeta({
+      access: {
+        form: ['canUpdate'],
+      },
+    }),
   },
 
   create: {
@@ -64,6 +79,11 @@ export const formContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form>,
     },
+    metadata: makeMeta({
+      access: {
+        workspace: ['form_canCreate'],
+      },
+    }),
   },
 
   get: {
@@ -76,6 +96,11 @@ export const formContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form | undefined>,
     },
+    metadata: makeMeta({
+      access: {
+        form: ['canGet'],
+      },
+    }),
   },
 
   remove: {
@@ -88,6 +113,11 @@ export const formContract = c.router({
     responses: {
       200: z.number(),
     },
+    metadata: makeMeta({
+      access: {
+        form: ['canDelete'],
+      },
+    }),
   },
 
   getAll: {
@@ -99,6 +129,11 @@ export const formContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form[]>,
     },
+    metadata: makeMeta({
+      access: {
+        form: ['canGet'],
+      },
+    }),
   },
 })
 
