@@ -1,4 +1,4 @@
-import {AppError} from '../../../helper/Errors.js'
+import {AppError} from '../../../helper/Errors'
 
 export namespace AccessError {
   export class InvalidFeatureId extends AppError.BadRequest {

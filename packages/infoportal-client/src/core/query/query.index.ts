@@ -9,12 +9,17 @@ const concat = (...args: (string | undefined)[]) => {
 
 export const queryKeys = {
   session: () => ['session'],
+  permission: {
+    global: () => ['permission', 'global'],
+    byWorkspaceId: (workspaceId: Ip.Uuid) => ['permission', 'workspace', workspaceId],
+    byFormId: (workspaceId: Ip.Uuid, formId: Ip.FormId) => ['permission', 'form', workspaceId, formId],
+  },
   workspaces: () => ['workspaces'],
   originalEmail: () => ['originalEmail'],
   koboForm: (workspaceId?: Ip.Uuid) => concat('koboForm', workspaceId),
   servers: (workspaceId?: Ip.Uuid) => concat('servers', workspaceId),
   server: (workspaceId?: Ip.Uuid, serverId?: Ip.Uuid) => concat('server', workspaceId, serverId),
-  access: (workspaceId?: Ip.Uuid) => concat('access', workspaceId),
+  formAccess: (workspaceId?: Ip.Uuid, formId?: Ip.FormId) => concat('formAccess', workspaceId, formId),
   user: (workspaceId?: Ip.Uuid) => concat('user', workspaceId),
   koboSchema: (formId: Kobo.FormId) => ['koboSchema', formId],
   version: (workspaceId?: Ip.Uuid, formId?: Kobo.FormId) => concat('version', workspaceId, formId),

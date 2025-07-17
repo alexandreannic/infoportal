@@ -19,6 +19,7 @@ import {formatDateTime} from '@/core/i18n/localization/en'
 import {appConfig} from '@/conf/AppConfig'
 import {createRoute} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
+import {useWorkspaceContext} from '@/features/Workspace/Workspace'
 
 interface CreateForm {
   name: string
@@ -35,7 +36,8 @@ export const settingsProxyRoute = createRoute({
 
 function SettingsProxy() {
   const {api} = useAppSettings()
-  const {formatDate, m} = useI18n()
+  const {permission} = useWorkspaceContext()
+  const {m} = useI18n()
 
   const _createForm = useForm<CreateForm>({
     mode: 'onChange',
@@ -61,7 +63,7 @@ function SettingsProxy() {
         <Datatable
           id="proxy"
           header={
-            <>
+            permission.proxy_manage && (
               <Modal
                 title={m.create}
                 loading={_search.creating}
@@ -146,7 +148,7 @@ function SettingsProxy() {
               >
                 <IpIconBtn>add</IpIconBtn>
               </Modal>
-            </>
+            )
           }
           data={_search.list}
           loading={_search.fetching}

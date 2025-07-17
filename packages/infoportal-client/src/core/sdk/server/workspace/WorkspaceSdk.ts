@@ -1,12 +1,13 @@
 import {ApiClient} from '@/core/sdk/server/ApiClient'
-import {Workspace, WorkspaceCreate, WorkspaceUpdate} from '@/core/sdk/server/workspace/Workspace'
+import {WorkspaceCreate, WorkspaceUpdate} from '@/core/sdk/server/workspace/Workspace'
 import {UUID} from 'infoportal-common'
+import {Ip} from 'infoportal-api-sdk'
 
 export class WorkspaceSdk {
   constructor(private client: ApiClient) {}
 
   readonly getMine = () => {
-    return this.client.get<Workspace[]>(`/workspace/me`)
+    return this.client.get<Ip.Workspace[]>(`/workspace/me`)
   }
 
   readonly checkSlug = (slug: string): Promise<{isFree: boolean; suggestedSlug: string}> => {
@@ -14,11 +15,11 @@ export class WorkspaceSdk {
   }
 
   readonly create = (body: WorkspaceCreate) => {
-    return this.client.put<Workspace>(`/workspace`, {body: body})
+    return this.client.put<Ip.Workspace>(`/workspace`, {body: body})
   }
 
   readonly update = (id: UUID, body: WorkspaceUpdate) => {
-    return this.client.post<Workspace>(`/workspace/${id}`, {body: body})
+    return this.client.post<Ip.Workspace>(`/workspace/${id}`, {body: body})
   }
 
   readonly delete = (id: UUID) => {

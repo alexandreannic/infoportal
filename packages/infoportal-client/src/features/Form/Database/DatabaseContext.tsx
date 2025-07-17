@@ -9,7 +9,6 @@ import * as csvToJson from 'csvtojson'
 import {Obj, seq} from '@axanc/ts-utils'
 import {FetchParams} from '@/shared/hook/useFetchers'
 import {UseDatabaseView, useDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
-import {AccessSum} from '@/core/sdk/server/access/Access'
 import {useObjectState, UseObjectStateReturn} from '@/shared/hook/useObjectState'
 import {DatabaseDisplay} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {Ip} from 'infoportal-api-sdk'
@@ -20,9 +19,8 @@ export type KoboExternalFilesIndex = Record<string, Record<string, ExternalFiles
 export interface DatabaseContext {
   refetch: (p?: FetchParams) => Promise<void>
   schema: KoboSchemaHelper.Bundle
-  canEdit?: AccessSum
-  access: AccessSum
   form: Ip.Form
+  permission: Ip.Permission.Form
   asyncRefresh: UseAsyncSimple<() => Promise<void>>
   asyncEdit: (answerId: Kobo.SubmissionId) => string
   data?: KoboMappedAnswer[]
@@ -42,8 +40,8 @@ export const DatabaseKoboTableProvider = (props: {
   dataFilter?: (_: KoboMappedAnswer) => boolean
   children: ReactNode
   loading?: boolean
+  permission: Ip.Permission.Form
   refetch: (p?: FetchParams) => Promise<void>
-  access: DatabaseContext['access']
   form: Ip.Form
   data?: KoboMappedAnswer[]
 }) => {

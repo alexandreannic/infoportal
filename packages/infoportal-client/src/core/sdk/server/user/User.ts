@@ -1,11 +1,12 @@
 import {UUID} from 'infoportal-common'
+import {Ip} from 'infoportal-api-sdk'
 
 export interface User {
   id: UUID
   email: string
   name: string
   accessToken: string
-  admin?: boolean
+  accessLevel: Ip.AccessLevel
   drcJob?: string
   drcOffice?: string
   createdAt?: Date

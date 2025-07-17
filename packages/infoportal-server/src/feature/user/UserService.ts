@@ -34,7 +34,7 @@ export class UserService {
         id: true,
         accessToken: true,
         activities: false,
-        admin: true,
+        accessLevel: true,
         avatar: false,
         createdBy: true,
         createdAt: true,

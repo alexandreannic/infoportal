@@ -30,7 +30,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
   const navigate = useNavigate()
   const {sidebarOpen, showSidebarButton, setSidebarOpen, title} = useLayoutContext()
 
-  const queryWorkspaces = useQueryWorkspace()
+  const queryWorkspaces = useQueryWorkspace.get()
   const {mode, setMode} = useColorScheme()
 
   return (
@@ -98,7 +98,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             hideNullOption
             onChange={_ => navigate({to: '/$workspaceId', params: {workspaceId: _}})}
             sx={{width: 200, mr: 0.5}}
-            options={(queryWorkspaces.get.data ?? []).map(_ => ({
+            options={(queryWorkspaces.data ?? []).map(_ => ({
               value: _.id,
               children: (
                 <>

@@ -11,6 +11,7 @@ import {IpAlert} from '@/shared'
 import {DatabaseViewInputRow} from '@/features/Form/Database/view/DatabaseViewInputRow'
 import {DatabaseViewDefaultName, UseDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
 import {useSession} from '@/core/Session/SessionContext'
+import {useFormContext} from '@/features/Form/Form'
 
 interface FormCreate {
   name: string
@@ -19,6 +20,7 @@ interface FormCreate {
 export const DatabaseViewInput = ({sx, view: ctx}: {view: UseDatabaseView; sx?: SxProps<Theme>}) => {
   const {m, formatDate} = useI18n()
   const t = useTheme()
+  const {permission} = useFormContext()
   const [open, setOpen] = useState<string | undefined>(undefined)
   const session = useSession()
 
@@ -38,7 +40,7 @@ export const DatabaseViewInput = ({sx, view: ctx}: {view: UseDatabaseView; sx?: 
                 view.name === DatabaseViewDefaultName ||
                 (view.visibility === DatabaseViewVisibility.Sealed &&
                   view.createdBy !== session.user.email &&
-                  !session.user.admin)
+                  !permission.databaseview_manage)
               }
               open={open === view.id}
               onDelete={() => ctx.asyncViewDelete.call(view.id)}

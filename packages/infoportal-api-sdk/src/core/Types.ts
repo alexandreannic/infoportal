@@ -1,8 +1,73 @@
 import type * as Prisma from '@prisma/client'
 import {Kobo} from 'kobo-sdk'
+import {Permission} from './Permission'
+import {KeyOf} from '@axanc/ts-utils'
 
 export namespace Ip {
   export type Uuid = string
+
+  export namespace Permission {
+    export type Scope = 'global' | 'workspace' | 'form'
+
+    export type Requirements = {
+      global?: KeyOf<Permission.Global>[]
+      workspace?: KeyOf<Permission.Workspace>[]
+      form?: KeyOf<Permission.Form>[]
+    }
+
+    export type Form = {
+      canGet: boolean
+      canUpdate: boolean
+      canDelete: boolean
+      canSyncWithKobo: boolean
+      user_canAdd: boolean
+      user_canDelete: boolean
+      user_canEdit: boolean
+      access_canAdd: boolean
+      access_canDelete: boolean
+      access_canEdit: boolean
+      answers_canSubmit: boolean
+      answers_canUpdate: boolean
+      answers_canDelete: boolean
+      version_canCreate: boolean
+      version_canDeploy: boolean
+      version_canGet: boolean
+      answers_import: boolean
+      databaseview_manage: boolean
+    }
+
+    export type Workspace = {
+      form_canCreate: boolean
+      canDelete: boolean
+      server_canGet: boolean
+      server_canCreate: boolean
+      server_canDelete: boolean
+      server_canUpdate: boolean
+      group_canCreate: boolean
+      group_canDelete: boolean
+      group_canUpdate: boolean
+      group_canRead: boolean
+      proxy_manage: boolean
+      proxy_canRead: boolean
+      user_canCreate: boolean
+      user_canDelete: boolean
+      user_canUpdate: boolean
+      user_canRead: boolean
+      use_canConnectAs: boolean
+    }
+
+    export type Global = {
+      workspace_canCreate: boolean
+      cache_manage: boolean
+    }
+  }
+
+  export type AccessLevel = Prisma.AccessLevel
+  export const AccessLevel = {
+    Read: 'Read',
+    Write: 'Write',
+    Admin: 'Admin',
+  } as const
 
   export type FormId = Form.Id
 
@@ -10,13 +75,14 @@ export namespace Ip {
 
   export type Server = Prisma.KoboServer
 
+  export type User = Prisma.User
+
+  export namespace User {}
+
   export type Workspace = Prisma.Workspace
 
   export namespace Workspace {
-    export enum AccessLevel {
-      Admin = 'Admin',
-      User = 'User',
-    }
+    export type Access = Prisma.WorkspaceAccess
   }
 
   export namespace Server {
@@ -32,11 +98,12 @@ export namespace Ip {
 
     export type Version = Omit<Prisma.FormVersion, 'schema'>
 
-    export enum Source {
-      kobo = 'kobo',
-      disconnected = 'disconnected',
-      internal = 'internal',
-    }
+    export type Source = Prisma.FormSource
+    export const Source = {
+      kobo: 'kobo',
+      disconnected: 'disconnected',
+      internal: 'internal',
+    } as const
 
     export namespace Payload {
       export type Update = {
@@ -64,12 +131,6 @@ export namespace Ip {
 
     export namespace Access {
       export type Filters = Record<string, string[]>
-
-      export enum Level {
-        Read = 'Read',
-        Write = 'Write',
-        Admin = 'Admin',
-      }
 
       export namespace Payload {
         export type Create = {

@@ -66,7 +66,7 @@ export class DbInit {
     return this.upsertUsers([
       {
         email: this.conf.ownerEmail,
-        admin: true,
+        accessLevel: 'Admin',
       },
     ])
   }

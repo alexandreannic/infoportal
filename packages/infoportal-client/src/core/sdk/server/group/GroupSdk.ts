@@ -11,7 +11,7 @@ type GroupItemCreate = {
   workspaceId: UUID
   groupId: UUID
   email?: string | null
-  level: Ip.Form.Access.Level
+  level: Ip.AccessLevel
   drcOffice?: string | null
   drcJob?: string[] | null
 }
@@ -20,7 +20,7 @@ export type GroupItemUpdate = {
   workspaceId: UUID
   itemId: UUID
   email?: string | null
-  level: Ip.Form.Access.Level
+  level: Ip.AccessLevel
   drcOffice?: string | null
   drcJob?: string | null
 }

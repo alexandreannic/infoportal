@@ -1,3 +1,5 @@
 export {ipContract} from './contract/Contract'
 export {Ip} from './core/Types'
 export {IpClient, buildIpClient} from './core/IpClient'
+export {Meta} from './core/Schema'
+export {Permission} from './core/Permission'

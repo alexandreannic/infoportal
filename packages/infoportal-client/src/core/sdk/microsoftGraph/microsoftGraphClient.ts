@@ -1,5 +1,5 @@
 import {ApiClient} from '../server/ApiClient'
-import {appConfig} from '../../../conf/AppConfig'
+import {appConfig} from '@/conf/AppConfig'
 
 export interface ExcelWorksheet {
   text: string[][]

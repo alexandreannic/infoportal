@@ -1,10 +1,12 @@
 import React, {ReactNode} from 'react'
 import {useSession} from '@/core/Session/SessionContext'
-import {Box, BoxProps, Icon, Popover, SxProps, useTheme} from '@mui/material'
+import {Box, BoxProps, Chip, Icon, Popover, SxProps, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
 import {IpBtn} from '@/shared/Btn'
 import {AppAvatar} from '@/shared/AppAvatar'
+import {fnSwitch} from '@axanc/ts-utils'
+import {Ip} from 'infoportal-api-sdk'
 
 const Row = ({
   icon,
@@ -31,6 +33,12 @@ const Row = ({
       </Txt>
     </Box>
   )
+}
+
+export const accessLevelIcon: Record<Ip.AccessLevel, string> = {
+  Admin: 'shield_person',
+  Read: 'edit',
+  Write: 'visibility',
 }
 
 export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
@@ -61,16 +69,18 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
               {me.name}
             </Txt>
             <Row icon="email">{me.email}</Row>
-            <Row icon="badge">{me.drcJob}</Row>
-            {me.admin && (
-              <Row
-                icon="offline_pin"
-                sxText={{color: t.palette.success.main, fontWeight: t.typography.fontWeightBold}}
-                sxIcon={{color: t.palette.success.main}}
-              >
-                {m.admin}
-              </Row>
-            )}
+            <Row icon="work">{me.drcJob}</Row>
+            <Row icon="badge">
+              {m.access}
+              <Chip
+                sx={{ml: 1}}
+                color="info"
+                icon={<Icon>{accessLevelIcon[me.accessLevel]}</Icon>}
+                variant="filled"
+                size="small"
+                label={me.accessLevel}
+              />
+            </Row>
           </Box>
           <Box sx={{px: 2}}>
             <IpBtn icon="logout" variant="outlined" onClick={logout} sx={{mb: 2}}>

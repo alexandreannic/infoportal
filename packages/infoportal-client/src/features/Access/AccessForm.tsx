@@ -19,10 +19,10 @@ export interface IAccessForm {
   groupId?: Ip.Uuid | null
   location?: string | null
   job?: string[] | null
-  level: Ip.Form.Access.Level
+  level: Ip.AccessLevel
 }
 
-export const accessLevelIcon: Record<Ip.Form.Access.Level, string> = {
+export const accessLevelIcon: Record<Ip.AccessLevel, string> = {
   Read: 'visibility',
   Write: 'edit',
   Admin: 'gavel',
@@ -136,16 +136,16 @@ export const AccessFormInputAccessLevel = ({form}: {form: UseFormReturn<IAccessF
   return (
     <Controller
       name="level"
-      defaultValue={Ip.Form.Access.Level.Read}
+      defaultValue={Ip.AccessLevel.Read}
       control={form.control}
       render={({field}) => (
-        <ScRadioGroup<Ip.Form.Access.Level>
+        <ScRadioGroup<Ip.AccessLevel>
           error={!!form.formState.errors.level}
           dense
           {...field}
           // onChange={_ => field.onChange({target: {value: _}} as any)}
         >
-          {Obj.values(Ip.Form.Access.Level).map(level => (
+          {Obj.values(Ip.AccessLevel).map(level => (
             <ScRadioGroupItem icon={accessLevelIcon[level]} value={level} key={level} title={level} />
           ))}
         </ScRadioGroup>

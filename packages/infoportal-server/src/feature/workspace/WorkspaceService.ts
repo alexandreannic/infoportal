@@ -30,7 +30,7 @@ export class WorkspaceService {
 
   readonly getMe = async ({workspaceId, user}: {workspaceId: UUID; user: User}) => {
     const [accesses, groups] = await Promise.all([
-      this.access.searchForUser({workspaceId, user}),
+      this.access.search({workspaceId, user}),
       this.group.search({workspaceId, user}),
     ])
     return {

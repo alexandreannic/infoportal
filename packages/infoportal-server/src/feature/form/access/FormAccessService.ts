@@ -1,4 +1,4 @@
-import {FormAccessLevel, PrismaClient, User} from '@prisma/client'
+import {PrismaClient, User} from '@prisma/client'
 import {app, AppLogger} from '../../../index.js'
 import {Ip} from 'infoportal-api-sdk'
 
@@ -8,10 +8,19 @@ export class FormAccessService {
     private log: AppLogger = app.logger('FormAccess'),
   ) {}
 
-  private readonly searchFromAccess = async ({workspaceId, user}: {workspaceId: Ip.Uuid; user?: User}) => {
+  private readonly searchFromAccess = async ({
+    workspaceId,
+    formId,
+    user,
+  }: {
+    formId?: Ip.FormId
+    workspaceId: Ip.Uuid
+    user?: User
+  }) => {
     return this.prisma.formAccess.findMany({
       distinct: ['id'],
       where: {
+        formId,
         workspaceId,
         AND: [
           {groupId: null},
@@ -31,13 +40,22 @@ export class FormAccessService {
     })
   }
 
-  private readonly searchFromGroup = async ({workspaceId, user}: {workspaceId: Ip.Uuid; user?: User}) => {
+  private readonly searchFromGroup = async ({
+    workspaceId,
+    user,
+    formId,
+  }: {
+    formId?: Ip.FormId
+    workspaceId: Ip.Uuid
+    user?: User
+  }) => {
     return this.prisma.formAccess.findMany({
       include: {
         group: {include: {items: true}},
       },
       where: {
         workspaceId,
+        formId,
         groupId: {not: null},
         group: user
           ? {
@@ -64,16 +82,18 @@ export class FormAccessService {
 
   // TODO Perf can be optimized using a single SQL query
   // @ts-ignore
-  readonly searchForUser = async ({
+  readonly search = async ({
     workspaceId,
     user,
+    formId,
   }: {
     workspaceId: Ip.Uuid
+    formId?: Ip.FormId
     user?: User
   }): Promise<Ip.Form.Access[]> => {
     const [fromGroup, fromAccess] = await Promise.all([
-      this.searchFromGroup({workspaceId, user}),
-      this.searchFromAccess({workspaceId, user}),
+      this.searchFromGroup({formId, workspaceId, user}),
+      this.searchFromAccess({formId, workspaceId, user}),
     ])
     return [
       ...fromAccess,
@@ -81,10 +101,10 @@ export class FormAccessService {
         const accesses = _.group?.items.reduce((acc, curr) => {
           acc.set(curr.level, curr.level)
           return acc
-        }, new Map<FormAccessLevel, FormAccessLevel>())
+        }, new Map<Ip.AccessLevel, Ip.AccessLevel>())
         return {
           ..._,
-          level: accesses?.get('Admin') ?? accesses?.get('Write') ?? FormAccessLevel.Read,
+          level: accesses?.get('Admin') ?? accesses?.get('Write') ?? Ip.AccessLevel.Read,
           groupName: _.group?.name,
         }
       }),

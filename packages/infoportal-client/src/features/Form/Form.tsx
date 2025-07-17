@@ -16,6 +16,7 @@ import {databaseHistoryRoute} from './History/DatabaseHistory'
 import {databaseAccessRoute} from './Access/DatabaseAccess'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
+import {useQueryPermission} from '@/core/query/useQueryPermission'
 
 export const formRootRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -58,6 +59,7 @@ export type FormContext = {
   workspaceId: Ip.Uuid
   form: Ip.Form
   schema?: KoboSchemaHelper.Bundle
+  permission: Ip.Permission.Form
 }
 
 const Context = createContext<FormContext>({} as FormContext)
@@ -72,6 +74,7 @@ function Form() {
 
   const querySchema = useQuerySchema({formId, workspaceId})
   const queryForm = useQueryFormById({workspaceId, formId}).get
+  const queryPermission = useQueryPermission.form({workspaceId, formId})
 
   useEffect(() => {
     if (queryForm.data) setTitle(m._koboDatabase.title(queryForm.data.name))
@@ -86,10 +89,10 @@ function Form() {
   useDefaultTabRedirect({workspaceId, formId})
 
   const outlet = useMemo(() => {
-    if (queryForm.isPending || querySchema.isPending) {
+    if (queryForm.isPending || querySchema.isPending || queryPermission.isPending) {
       return <Page width="full" loading={true} />
     }
-    if (!queryForm.data) {
+    if (!queryForm.data || !queryPermission.data || !querySchema.data) {
       return <>Error</>
     }
 
@@ -98,7 +101,8 @@ function Form() {
         value={{
           workspaceId,
           form: queryForm.data,
-          schema: querySchema.data!,
+          schema: querySchema.data,
+          permission: queryPermission.data,
         }}
       >
         <Outlet />

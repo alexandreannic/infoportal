@@ -29,20 +29,15 @@ model Workspace {
   @@index([slug])
 }
 
-enum WorkspaceAccessLevel {
-  Admin
-  User
-}
-
 model WorkspaceAccess {
-  id          String               @id @default(uuid()) @db.Uuid
-  createdAt   DateTime             @default(now())
+  id          String      @id @default(uuid()) @db.Uuid
+  createdAt   DateTime    @default(now())
   createdBy   String
-  level       WorkspaceAccessLevel
-  user        User                 @relation(fields: [userId], references: [id])
-  userId      String               @db.Uuid
-  workspace   Workspace            @relation(fields: [workspaceId], references: [id])
-  workspaceId String               @db.Uuid
+  level       AccessLevel
+  user        User        @relation(fields: [userId], references: [id])
+  userId      String      @db.Uuid
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id])
+  workspaceId String      @db.Uuid
 
   @@unique([workspaceId, userId])
 }
@@ -174,7 +169,7 @@ model User {
   drcJob          String?
   drcOffice       String?
   avatar          Bytes?            @db.ByteA
-  admin           Boolean           @default(false)
+  accessLevel     AccessLevel       @default(Read)
   officer         String?
   activities      UserActivity[]
   workspaceAccess WorkspaceAccess[]
@@ -191,27 +186,27 @@ model UserActivity {
   userId String?  @db.Uuid
 }
 
-enum FormAccessLevel {
+enum AccessLevel {
   Read
   Write
   Admin
 }
 
 model FormAccess {
-  id          String          @id @default(uuid()) @db.Uuid
+  id          String      @id @default(uuid()) @db.Uuid
   createdBy   String?
-  createdAt   DateTime        @default(now())
+  createdAt   DateTime    @default(now())
   updatedAt   DateTime?
-  form        Form            @relation(fields: [formId], references: [id])
-  formId      String          @db.VarChar(32)
+  form        Form        @relation(fields: [formId], references: [id])
+  formId      String      @db.VarChar(32)
   job         String?
   location    String?
   email       String?
-  level       FormAccessLevel
-  groupId     String?         @db.Uuid
-  group       Group?          @relation(fields: [groupId], references: [id])
-  workspace   Workspace       @relation(fields: [workspaceId], references: [id])
-  workspaceId String          @db.Uuid
+  level       AccessLevel
+  groupId     String?     @db.Uuid
+  group       Group?      @relation(fields: [groupId], references: [id])
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id])
+  workspaceId String      @db.Uuid
   filters     Json?
 }
 
@@ -228,14 +223,14 @@ model Group {
 }
 
 model GroupItem {
-  id        String          @id @default(uuid()) @db.Uuid
-  createdAt DateTime        @default(now())
+  id        String      @id @default(uuid()) @db.Uuid
+  createdAt DateTime    @default(now())
   drcJob    String?
   drcOffice String?
   email     String?
-  level     FormAccessLevel
-  group     Group?          @relation(fields: [groupId], references: [id])
-  groupId   String?         @db.Uuid
+  level     AccessLevel
+  group     Group?      @relation(fields: [groupId], references: [id])
+  groupId   String?     @db.Uuid
 }
 
 model AccessToken {

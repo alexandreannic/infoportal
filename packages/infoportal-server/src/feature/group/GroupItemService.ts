@@ -13,14 +13,14 @@ export class GroupItemService {
 
   static readonly schema = {
     create: yup.object({
-      level: yup.mixed<Ip.Form.Access.Level>().oneOf(Obj.values(Ip.Form.Access.Level)).required(),
+      level: yup.mixed<Ip.AccessLevel>().oneOf(Obj.values(Ip.AccessLevel)).required(),
       job: yup.array().of(yup.string()).nullable(),
       location: yup.string().nullable(),
       email: yup.string().nullable(),
     }),
 
     update: yup.object({
-      level: yup.mixed<Ip.Form.Access.Level>().oneOf(Obj.values(Ip.Form.Access.Level)),
+      level: yup.mixed<Ip.AccessLevel>().oneOf(Obj.values(Ip.AccessLevel)),
       job: yup.string().optional().nullable(),
       location: yup.string().optional().nullable(),
       email: yup.string().optional().nullable(),

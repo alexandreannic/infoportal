@@ -9,7 +9,7 @@ import {Ip} from 'infoportal-api-sdk'
 
 type Form = {
   email: string
-  level: Ip.Workspace.AccessLevel
+  level: Ip.AccessLevel
 }
 
 export const AddUserForm = ({
@@ -24,7 +24,7 @@ export const AddUserForm = ({
   onSubmit: (_: Form) => Promise<any>
 }) => {
   const {m} = useI18n()
-  const form = useForm<Form>({mode: 'onChange', defaultValues: {email: '', level: Ip.Workspace.AccessLevel.User}})
+  const form = useForm<Form>({mode: 'onChange', defaultValues: {email: '', level: Ip.AccessLevel.Read}})
 
   const submit = async () => {
     await onSubmit(form.getValues())
@@ -67,7 +67,7 @@ export const AddUserForm = ({
             value={value}
             onChange={_ => onChange({target: {value: _}})}
           >
-            {Object.keys(Ip.Workspace.AccessLevel).map(_ => (
+            {Object.keys(Ip.AccessLevel).map(_ => (
               <ScRadioGroupItem value={_} title={_} />
             ))}
           </ScRadioGroup>

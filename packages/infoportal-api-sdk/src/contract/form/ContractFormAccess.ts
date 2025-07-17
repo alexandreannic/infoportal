@@ -1,6 +1,6 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {schema} from '../../core/Schema'
+import {makeMeta, schema} from '../../core/Schema'
 import {Ip} from '../../core/Types'
 import {mapClientResponse, TsRestClient} from '../../core/IpClient'
 
@@ -15,6 +15,11 @@ export const formAccessContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form.Access[]>,
     },
+    metadata: makeMeta({
+      access: {
+        form: ['access_canAdd'],
+      },
+    }),
   },
 
   update: {
@@ -25,6 +30,11 @@ export const formAccessContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form.Access>,
     },
+    metadata: makeMeta({
+      access: {
+        form: ['access_canEdit'],
+      },
+    }),
   },
 
   remove: {
@@ -34,26 +44,41 @@ export const formAccessContract = c.router({
     responses: {
       200: schema.uuid,
     },
+    metadata: makeMeta({
+      access: {
+        form: ['access_canDelete'],
+      },
+    }),
   },
 
   search: {
     method: 'POST',
-    body: z.object({}),
+    body: c.type<{formId?: Ip.FormId}>(),
     pathParams: c.type<{workspaceId: Ip.Uuid}>(),
-    path: `/:workspaceId/access`,
+    path: `/:workspaceId/access/search`,
     responses: {
       200: z.any() as z.ZodType<Ip.Form.Access[]>,
     },
+    metadata: makeMeta({
+      access: {
+        form: ['access_canDelete'],
+      },
+    }),
   },
 
   searchMine: {
     method: 'POST',
-    body: z.object({}),
+    body: c.type<{formId?: Ip.FormId}>(),
     pathParams: c.type<{workspaceId: Ip.Uuid}>(),
-    path: `/:workspaceId/access/me`,
+    path: `/:workspaceId/access/search/me`,
     responses: {
       200: z.any() as z.ZodType<Ip.Form.Access[]>,
     },
+    metadata: makeMeta({
+      access: {
+        form: ['canGet'],
+      },
+    }),
   },
 })
 
@@ -81,9 +106,9 @@ export const formAccessClient = (client: TsRestClient) => {
     remove: (params: {workspaceId: Ip.Uuid; id: Ip.Uuid}) =>
       client.form.access.remove({params}).then(mapClientResponse),
 
-    search: ({workspaceId}: {workspaceId: Ip.Uuid}) =>
+    search: ({workspaceId, formId}: {formId?: Ip.FormId; workspaceId: Ip.Uuid}) =>
       client.form.access
-        .search({body: {}, params: {workspaceId}})
+        .search({body: {formId}, params: {workspaceId}})
         .then(mapClientResponse)
         .then(_ => _.map(mapFormAccess)),
 

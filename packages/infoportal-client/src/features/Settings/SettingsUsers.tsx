@@ -6,15 +6,17 @@ import {Datatable} from '@/shared/Datatable/Datatable'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {Page} from '@/shared/Page'
 import {Panel} from '@/shared/Panel'
-import {TableIcon} from '@/shared/TableIcon'
 import {Txt} from '@/shared/Txt'
-import {seq} from '@axanc/ts-utils'
+import {Obj, seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
 import {AddUserForm} from './AddUserForm'
 import {useQueryUser} from '@/core/query/useQueryUser'
 import {useSession} from '@/core/Session/SessionContext'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
+import {IpSelectSingle} from '@/shared/Select/SelectSingle'
+import {Ip} from 'infoportal-api-sdk'
+import {useWorkspaceContext} from '@/features/Workspace/Workspace'
 
 export const settingsUsersRoute = createRoute({
   getParentRoute: () => settingsRoute,
@@ -24,45 +26,49 @@ export const settingsUsersRoute = createRoute({
 
 function SettingsUsers() {
   const {m, formatDate, formatDateTime} = useI18n()
+  const {permission} = useWorkspaceContext()
   const {conf} = useAppSettings()
   const {workspaceId} = settingsUsersRoute.useParams()
   const navigate = useNavigate()
   const ctxSession = useSession()
-  const queryUser = useQueryUser(workspaceId)
+  const queryUserGet = useQueryUser.getAll(workspaceId)
+  const queryUserCreate = useQueryUser.create(workspaceId)
 
   const connectAs = async (email: string) => {
     await ctxSession.connectAs.mutateAsync(email)
     await navigate({to: '/'})
   }
 
-  const emailsLists = useMemo(() => queryUser.get.data?.map(_ => _.email), [queryUser.get.data])
+  const emailsLists = useMemo(() => queryUserGet.data?.map(_ => _.email), [queryUserGet.data])
 
   return (
     <Page width="full">
       <Panel>
         <Datatable
-          loading={queryUser.get.isLoading}
+          loading={queryUserGet.isLoading}
           id="users"
           showExportBtn
           defaultLimit={100}
-          data={queryUser.get.data}
+          data={queryUserGet.data}
           header={
-            <Modal
-              onClose={null}
-              title={m.addUser}
-              content={close => (
-                <AddUserForm
-                  existingEmails={emailsLists}
-                  loading={queryUser.create.isPending}
-                  onClose={close}
-                  onSubmit={_ => queryUser.create.mutateAsync(_)}
-                />
-              )}
-            >
-              <IpBtn icon="person_add" variant="outlined">
-                {m.addUser}
-              </IpBtn>
-            </Modal>
+            permission.user_canCreate && (
+              <Modal
+                onClose={null}
+                title={m.addUser}
+                content={close => (
+                  <AddUserForm
+                    existingEmails={emailsLists}
+                    loading={queryUserCreate.isPending}
+                    onClose={close}
+                    onSubmit={_ => queryUserCreate.mutateAsync(_)}
+                  />
+                )}
+              >
+                <IpBtn icon="person_add" variant="outlined">
+                  {m.addUser}
+                </IpBtn>
+              </Modal>
+            )
           }
           columns={[
             {
@@ -118,7 +124,7 @@ function SettingsUsers() {
               renderQuick: _ => _.drcJob,
               type: 'select_one',
               options: () =>
-                seq(queryUser.get.data?.map(_ => _.drcJob))
+                seq(queryUserGet.data?.map(_ => _.drcJob))
                   .distinct(_ => _)
                   .compact()
                   .map(_ => ({value: _, label: _})),
@@ -137,27 +143,32 @@ function SettingsUsers() {
               align: 'center',
               head: m.admin,
               render: _ => ({
-                label: _.admin && <TableIcon color="success">check_circle</TableIcon>,
-                value: _.admin ? 'true' : 'false',
+                label: (
+                  <IpSelectSingle
+                    disabled={!permission.user_canUpdate}
+                    onChange={console.log}
+                    value={_.accessLevel}
+                    options={Obj.keys(Ip.AccessLevel)}
+                  />
+                ),
+                value: _.accessLevel,
               }),
-              options: () => [
-                {value: 'true', label: m.yes},
-                {value: 'false', label: m.no},
-              ],
+              options: () => Obj.keys(Ip.AccessLevel).map(_ => ({value: _, label: _})),
             },
             {
               id: 'action',
               width: 10,
               align: 'right',
-              renderQuick: _ => (
-                <IpIconBtn
-                  disabled={_.email === conf.contact || _.email === ctxSession.user.email}
-                  children="visibility"
-                  loading={ctxSession.connectAs.isPending}
-                  onClick={() => connectAs(_.email)}
-                  tooltip={m.connectAs}
-                />
-              ),
+              renderQuick: _ =>
+                permission.use_canConnectAs && (
+                  <IpIconBtn
+                    disabled={_.email === conf.contact || _.email === ctxSession.user.email}
+                    children="visibility"
+                    loading={ctxSession.connectAs.isPending}
+                    onClick={() => connectAs(_.email)}
+                    tooltip={m.connectAs}
+                  />
+                ),
             },
           ]}
         />

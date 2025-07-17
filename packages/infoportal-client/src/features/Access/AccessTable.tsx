@@ -9,24 +9,26 @@ import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import {Txt} from '@/shared/Txt'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {useQueryAccess} from '@/core/query/useQueryAccess'
+import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
 
 export const AccessTable = ({
   isAdmin,
   header,
-  onRemoved,
   workspaceId,
+  formId,
 }: {
+  formId: Ip.FormId
   workspaceId: Ip.Uuid
   isAdmin?: boolean
-  onRemoved?: (_: UUID) => void
   header?: ReactNode
 }) => {
   const {m, formatDate} = useI18n()
   const {api} = useAppSettings()
   const drcJobs = useFetcher(api.user.fetchJobs)
-  const queryAccess = useQueryAccess(workspaceId)
+  const queryAccess = useQueryFormAccess.getByFormId({workspaceId, formId})
+  const queryAccessUpdate = useQueryFormAccess.update({workspaceId})
+  const queryAccessRemove = useQueryFormAccess.remove({workspaceId})
 
   useEffect(() => {
     drcJobs.fetch({}, {workspaceId})
@@ -37,9 +39,9 @@ export const AccessTable = ({
       defaultLimit={100}
       id="access"
       getRenderRowKey={_ => _.id}
-      loading={queryAccess.getAll.isLoading}
+      loading={queryAccess.isLoading}
       header={header}
-      data={queryAccess.getAll.data}
+      data={queryAccess.data}
       columns={[
         {
           width: 80,
@@ -66,7 +68,7 @@ export const AccessTable = ({
           renderQuick: _ => _.location,
           type: 'select_one',
           options: () =>
-            seq(queryAccess.getAll.data?.map(_ => _.location))
+            seq(queryAccess.data?.map(_ => _.location))
               .distinct(_ => _)
               .compact()
               .map(_ => ({value: _, label: _})),
@@ -87,20 +89,20 @@ export const AccessTable = ({
           id: 'level',
           head: m.accessLevel,
           type: 'select_one',
-          options: () => Obj.keys(Ip.Form.Access.Level).map(_ => ({value: _, label: _})),
+          options: () => Obj.keys(Ip.AccessLevel).map(_ => ({value: _, label: _})),
           render: row => {
             if (!!row.groupName) return {value: undefined, label: ''}
             if (isAdmin)
               return {
                 value: row.level,
                 label: (
-                  <IpSelectSingle<keyof typeof Ip.Form.Access.Level>
+                  <IpSelectSingle<keyof typeof Ip.AccessLevel>
                     value={row.level}
                     placeholder=""
-                    onChange={_ => queryAccess.update.mutate({id: row.id, level: _})}
+                    onChange={_ => queryAccessUpdate.mutate({id: row.id, level: _})}
                     hideNullOption
                     disabled={!!row.groupName}
-                    options={Obj.keys(Ip.Form.Access.Level)}
+                    options={Obj.keys(Ip.AccessLevel)}
                   />
                 ),
               }
@@ -117,8 +119,8 @@ export const AccessTable = ({
                 renderQuick: (_: Ip.Form.Access) => {
                   return (
                     <TableIconBtn
-                      loading={queryAccess.remove.isPending}
-                      onClick={() => queryAccess.remove.mutateAsync({id: _.id}).then(() => onRemoved?.(_.id))}
+                      loading={queryAccessRemove.isPending}
+                      onClick={() => queryAccessRemove.mutateAsync({id: _.id})}
                       children="delete"
                     />
                   )

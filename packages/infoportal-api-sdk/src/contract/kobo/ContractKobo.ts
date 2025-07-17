@@ -1,5 +1,5 @@
 import {z} from 'zod'
-import {schema} from '../../core/Schema'
+import {makeMeta, schema} from '../../core/Schema'
 import {Ip} from '../../core/Types'
 import {initContract} from '@ts-rest/core'
 import {mapClientResponse, TsRestClient} from '../../core/IpClient'
@@ -19,6 +19,11 @@ export const koboContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form>,
     },
+    metadata: makeMeta({
+      access: {
+        workspace: ['form_canCreate'],
+      },
+    }),
   },
 })
 

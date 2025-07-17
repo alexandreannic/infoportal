@@ -1,7 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ES2021", "dom"],
+    "lib": [
+      "ES2021",
+      "dom"
+    ],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "declaration": true,
@@ -13,5 +16,10 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "lib/**/*"
+  ]
 }

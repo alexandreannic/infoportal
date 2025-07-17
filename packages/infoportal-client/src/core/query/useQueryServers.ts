@@ -1,13 +1,12 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {duration} from '@axanc/ts-utils'
-import {UUID} from 'infoportal-common'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {Ip} from 'infoportal-api-sdk'
 
-export const useQueryServers = (workspaceId: UUID) => {
+export const useQueryServers = (workspaceId: Ip.Uuid) => {
   const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
   const {toastAndThrowHttpError, toastHttpError} = useIpToast()
