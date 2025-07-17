@@ -1,16 +1,4 @@
 import {Form, Prisma, PrismaClient, User} from '@prisma/client'
-import {
-  ApiPaginate,
-  ApiPaginateHelper,
-  ApiPagination,
-  KoboCustomDirective,
-  KoboHelper,
-  KoboSubmission,
-  KoboSubmissionMetaData,
-  KoboValidation,
-  logPerformance,
-  UUID,
-} from 'infoportal-common'
 import {KoboSdkGenerator} from '../../kobo/KoboSdkGenerator.js'
 import {duration, Obj, seq} from '@axanc/ts-utils'
 import {KoboAnswersFilters} from '../../../server/controller/kobo/ControllerKoboAnswer.js'
@@ -23,16 +11,22 @@ import {FormAnswerHistoryService} from '../history/FormAnswerHistoryService.js'
 import {AppError} from '../../../helper/Errors.js'
 import {Util} from '../../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip, Paginate} from 'infoportal-api-sdk'
+import {
+  ApiPaginateHelper,
+  ApiPagination,
+  KoboCustomDirective,
+  KoboHelper,
+  KoboSubmission,
+  KoboSubmissionMetaData,
+  KoboValidation,
+  logPerformance,
+  UUID,
+} from 'infoportal-common'
 import Event = GlobalEvent.Event
 
 export type DbFormAnswer = KoboSubmission & {
   formId: Ip.FormId
-}
-
-export interface KoboAnswerFilter {
-  filters?: KoboAnswersFilters
-  paginate?: ApiPagination
 }
 
 export class FormAnswersService {
@@ -60,8 +54,8 @@ export class FormAnswersService {
     paginate?: Partial<ApiPagination>
     user?: User
     workspaceId: UUID
-  }): Promise<ApiPaginate<DbFormAnswer>> => {
-    if (!user) return ApiPaginateHelper.make()([])
+  }): Promise<Ip.Paginate<Ip.Submission>> => {
+    if (!user) return Paginate.make()([])
     // TODO(Alex) reimplement
     if (user.accessLevel !== Ip.AccessLevel.Admin) {
       const access = await this.access
@@ -114,7 +108,7 @@ export class FormAnswersService {
       formId: string
       filters?: KoboAnswersFilters
       paginate?: Partial<ApiPagination>
-    }): Promise<ApiPaginate<DbFormAnswer>> => {
+    }): Promise<Ip.Paginate<Ip.Submission>> => {
       const {
         formId,
         filters = {},
@@ -122,7 +116,7 @@ export class FormAnswersService {
         // includeMeta,
       } = params
       return (
-        this.prisma.formAnswer
+        this.prisma.formSubmission
           .findMany({
             take: paginate.limit,
             skip: paginate.offset,
@@ -193,7 +187,7 @@ export class FormAnswersService {
   private static readonly mapAnswer = (
     formId: Ip.FormId,
     _: KoboSubmission,
-  ): Prisma.FormAnswerUncheckedCreateInput => {
+  ): Prisma.FormSubmissionUncheckedCreateInput => {
     return {
       formId,
       answers: _.answers,
@@ -213,12 +207,12 @@ export class FormAnswersService {
   }
 
   readonly create = (formId: Ip.FormId, answer: KoboSubmission) => {
-    return this.prisma.formAnswer.create({data: FormAnswersService.mapAnswer(formId, answer)})
+    return this.prisma.formSubmission.create({data: FormAnswersService.mapAnswer(formId, answer)})
   }
 
   readonly createMany = (formId: Ip.FormId, answers: KoboSubmission[]) => {
     const inserts = answers.map(_ => FormAnswersService.mapAnswer(formId, _))
-    return this.prisma.formAnswer.createMany({
+    return this.prisma.formSubmission.createMany({
       data: inserts,
       skipDuplicates: true,
     })
@@ -289,7 +283,7 @@ export class FormAnswersService {
     authorEmail?: string
   }) => {
     await Promise.all([
-      this.prisma.formAnswer.updateMany({
+      this.prisma.formSubmission.updateMany({
         data: {
           deletedAt: new Date(),
           deletedBy: authorEmail,
@@ -360,7 +354,7 @@ export class FormAnswersService {
     const validationKey: keyof KoboSubmissionMetaData = 'validationStatus'
     const sdk = await this.sdkGenerator.getBy.formId(formId)
     const [sqlRes] = await Promise.all([
-      this.prisma.formAnswer.updateMany({
+      this.prisma.formSubmission.updateMany({
         where: {id: {in: answerIds}},
         data: {
           validationStatus: status,

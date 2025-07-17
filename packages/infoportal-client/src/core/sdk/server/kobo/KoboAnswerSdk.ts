@@ -32,27 +32,6 @@ export type KoboUpdateAnswers<T extends Record<string, any> = any, K extends Key
 export class KoboAnswerSdk {
   constructor(private client: ApiClient) {}
 
-  readonly searchByAccess = ({
-    formId,
-    workspaceId,
-    filters = {},
-    paginate = {offset: 0, limit: 100000},
-  }: KoboAnswerSearch) => {
-    return this.client
-      .post<ApiPaginate<KoboSubmission>>(`/${workspaceId}/form/${formId}/answer/by-access`, {
-        body: {...KoboAnswerSdk.mapFilters(filters), ...paginate},
-      })
-      .then(KoboMapper.mapPaginateAnswer)
-  }
-
-  readonly search = ({formId, workspaceId, filters = {}, paginate = {offset: 0, limit: 100000}}: KoboAnswerSearch) => {
-    return this.client
-      .post<ApiPaginate<KoboSubmission>>(`/${workspaceId}/form/${formId}/answer`, {
-        body: {...KoboAnswerSdk.mapFilters(filters), ...paginate},
-      })
-      .then(KoboMapper.mapPaginateAnswer)
-  }
-
   readonly delete = async ({
     workspaceId,
     answerIds,

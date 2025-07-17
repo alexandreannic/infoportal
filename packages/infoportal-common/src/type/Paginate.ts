@@ -1,13 +1,16 @@
+/** @deprecated*/
 export interface ApiPaginate<T> {
   total: number
   data: T[]
 }
 
+/** @deprecated*/
 export interface ApiPagination {
   offset: number
   limit: number
 }
 
+/** @deprecated*/
 export class ApiPaginateHelper {
   static readonly map =
     <T, R>(fn: (_: T) => R) =>

@@ -26,8 +26,8 @@ import {ErrorHttpStatusCode, SuccessfulHttpStatusCode} from '@ts-rest/core'
 import {FormAccessService} from '../feature/form/access/FormAccessService.js'
 import {PermissionService} from '../feature/PermissionService.js'
 import {Ip, ipContract, Meta} from 'infoportal-api-sdk'
-import {WorkspaceService} from '../feature/workspace/WorkspaceService'
-import {WorkspaceAccessService} from '../feature/workspace/WorkspaceAccessService'
+import {WorkspaceService} from '../feature/workspace/WorkspaceService.js'
+import {WorkspaceAccessService} from '../feature/workspace/WorkspaceAccessService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -415,7 +415,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.patch('/:workspaceId/form/:formId/answer/validation', auth(), safe(koboAnswer.updateValidation))
     r.patch('/:workspaceId/form/:formId/answer', auth(), safe(koboAnswer.updateAnswers))
     r.delete('/:workspaceId/form/:formId/answer', auth({adminOnly: true}), safe(koboAnswer.deleteAnswers))
-    r.post('/:workspaceId/form/:formId/answer', safe(koboAnswer.search))
 
     r.post(`/database-view/:viewId/col/:colName`, auth(), safe(databaseView.updateCol))
     r.post(`/database-view`, auth(), safe(databaseView.search))

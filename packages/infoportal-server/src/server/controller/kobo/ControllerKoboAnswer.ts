@@ -87,19 +87,6 @@ export class ControllerKoboAnswer {
     res.send()
   }
 
-  /** TODO need to handle public access */
-  readonly search = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const {formId} = req.params
-      const filters = await answersFiltersValidation.validate(req.body)
-      const paginate = await validateApiPaginate.validate(req.body)
-      const answers = await this.service.searchAnswers({formId, filters, paginate})
-      res.send(answers)
-    } catch (error) {
-      res.status(500).send(JSON.stringify(error))
-    }
-  }
-
   readonly searchByUserAccess = async (req: Request, res: Response, next: NextFunction) => {
     if (!isAuthenticated(req)) throw new AppError.Forbidden()
     const workspaceId = getWorkspaceId(req)

@@ -18,20 +18,6 @@ export type KoboMappedAnswerType = string | string[] | Date | number | undefined
 export type KoboMappedAnswer = KoboSubmissionMetaData & Record<string, KoboMappedAnswerType>
 
 export class KoboMapper {
-  static readonly mapAnswer = ({answers, ...meta}: KoboSubmission): KoboSubmissionFlat => {
-    return {
-      ...answers,
-      ...KoboMapper.mapAnswerMetaData(meta),
-    }
-  }
-
-  static readonly mapPaginateAnswer = (_: ApiPaginate<KoboSubmission>): ApiPaginate<KoboSubmissionFlat> => {
-    return {
-      ..._,
-      data: _.data.map(KoboMapper.mapAnswer),
-    }
-  }
-
   static readonly mapAnswerBySchema = (
     indexedSchema: Record<string, Kobo.Form.Question>,
     answers: KoboSubmissionFlat,

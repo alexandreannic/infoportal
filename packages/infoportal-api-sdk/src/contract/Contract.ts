@@ -7,6 +7,7 @@ import {formAccessContract} from './form/ContractFormAccess'
 import {permissionContract} from './ContractPermission'
 import {workspaceContract} from './workspace/ContractWorkspace'
 import {workspaceAccessContract} from './workspace/ContractWorkspaceAccess'
+import {contractFormSubmission} from './form/ContractFormSubmission'
 
 export const ipContract = initContract().router({
   permission: permissionContract,
@@ -18,6 +19,7 @@ export const ipContract = initContract().router({
   },
   form: {
     ...formContract,
+    submission: contractFormSubmission,
     access: formAccessContract,
     version: formVersionContract,
   },

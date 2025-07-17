@@ -1,5 +1,5 @@
 import {useI18n} from '@/core/i18n'
-import {useQueryAnswer} from '@/core/query/useQueryAnswer'
+import {useQuerySubmissionSearch} from '@/core/query/useQuerySubmissionSearch'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useLangIndex} from '@/core/store/useLangIndex'
@@ -44,7 +44,7 @@ function DatabaseAnswerView() {
   const {workspaceId, formId, answerId} = databaseAnswerViewRoute.useParams()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
   const queryForm = useQueryFormById({formId, workspaceId}).get
-  const queryAnswers = useQueryAnswer({formId, workspaceId})
+  const queryAnswers = useQuerySubmissionSearch({formId, workspaceId})
   const querySchema = useQuerySchema({workspaceId, formId})
 
   const answer = useMemo(() => {

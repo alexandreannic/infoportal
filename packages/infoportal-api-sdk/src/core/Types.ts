@@ -2,9 +2,25 @@ import type * as Prisma from '@prisma/client'
 import {Kobo} from 'kobo-sdk'
 import {Permission} from './Permission'
 import {KeyOf} from '@axanc/ts-utils'
+import * as yup from 'yup'
 
 export namespace Ip {
   export type Uuid = string
+
+  export type Period = {
+    start: Date
+    end: Date
+  }
+
+  export type Pagination = {
+    offset?: number
+    limit?: number
+  }
+
+  export type Paginate<T> = {
+    total: number
+    data: T[]
+  }
 
   export namespace Permission {
     export type Scope = 'global' | 'workspace' | 'form'
@@ -99,6 +115,34 @@ export namespace Ip {
   export namespace Server {
     export namespace Payload {
       export type Create = Omit<Server, 'id'>
+    }
+  }
+
+  export type Submission<T extends Record<string, any> = Record<string, any>> = Omit<
+    Prisma.FormSubmission,
+    'answers' | 'deletedBy' | 'deletedAt' | 'formId' | 'form' | 'histories'
+  > & {
+    answers: T
+  }
+
+  export type SubmissionId = Submission.Id
+  export namespace Submission {
+    export type Id = string
+    export namespace Payload {
+      export type Filter = {
+        ids?: Kobo.FormId[]
+        filterBy?: {
+          column: string
+          value: (string | null | undefined)[]
+          type?: 'array'
+        }[]
+      }
+      export type Search = Pagination &
+        Partial<Period> &
+        Filter & {
+          workspaceId: Uuid
+          formId: FormId
+        }
     }
   }
 
