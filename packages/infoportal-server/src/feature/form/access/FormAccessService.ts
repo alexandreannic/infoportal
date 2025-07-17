@@ -8,10 +8,19 @@ export class FormAccessService {
     private log: AppLogger = app.logger('FormAccess'),
   ) {}
 
-  private readonly searchFromAccess = async ({workspaceId, user}: {workspaceId: Ip.Uuid; user?: User}) => {
+  private readonly searchFromAccess = async ({
+    workspaceId,
+    formId,
+    user,
+  }: {
+    formId?: Ip.FormId
+    workspaceId: Ip.Uuid
+    user?: User
+  }) => {
     return this.prisma.formAccess.findMany({
       distinct: ['id'],
       where: {
+        formId,
         workspaceId,
         AND: [
           {groupId: null},
@@ -31,13 +40,22 @@ export class FormAccessService {
     })
   }
 
-  private readonly searchFromGroup = async ({workspaceId, user}: {workspaceId: Ip.Uuid; user?: User}) => {
+  private readonly searchFromGroup = async ({
+    workspaceId,
+    user,
+    formId,
+  }: {
+    formId?: Ip.FormId
+    workspaceId: Ip.Uuid
+    user?: User
+  }) => {
     return this.prisma.formAccess.findMany({
       include: {
         group: {include: {items: true}},
       },
       where: {
         workspaceId,
+        formId,
         groupId: {not: null},
         group: user
           ? {
@@ -64,16 +82,18 @@ export class FormAccessService {
 
   // TODO Perf can be optimized using a single SQL query
   // @ts-ignore
-  readonly searchForUser = async ({
+  readonly search = async ({
     workspaceId,
     user,
+    formId,
   }: {
     workspaceId: Ip.Uuid
+    formId?: Ip.FormId
     user?: User
   }): Promise<Ip.Form.Access[]> => {
     const [fromGroup, fromAccess] = await Promise.all([
-      this.searchFromGroup({workspaceId, user}),
-      this.searchFromAccess({workspaceId, user}),
+      this.searchFromGroup({formId, workspaceId, user}),
+      this.searchFromAccess({formId, workspaceId, user}),
     ])
     return [
       ...fromAccess,

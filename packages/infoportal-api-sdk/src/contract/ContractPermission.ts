@@ -1,6 +1,5 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {Permission} from '../core/Permission'
 import {schema} from '../core/Schema'
 import {mapClientResponse, TsRestClient} from '../core/IpClient'
 import {Ip} from '../core/Types'
@@ -12,7 +11,7 @@ export const permissionContract = c.router({
     method: 'GET',
     path: '/permission',
     responses: {
-      200: c.type<Permission.Global>(),
+      200: c.type<Ip.Permission.Global>(),
     },
   },
 
@@ -23,7 +22,7 @@ export const permissionContract = c.router({
       workspaceId: schema.uuid,
     }),
     responses: {
-      200: c.type<Permission.Workspace>(),
+      200: c.type<Ip.Permission.Workspace>(),
     },
   },
 
@@ -35,7 +34,7 @@ export const permissionContract = c.router({
       formId: schema.formId,
     }),
     responses: {
-      200: c.type<Permission.Form>(),
+      200: c.type<Ip.Permission.Form>(),
     },
   },
 })

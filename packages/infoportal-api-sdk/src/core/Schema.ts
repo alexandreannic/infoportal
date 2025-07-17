@@ -1,5 +1,5 @@
 import {z} from 'zod'
-import {Permission} from './Permission'
+import {Ip} from './Types'
 
 const createZodEnumFromObject = <T extends Record<string, string>>(obj: T) => {
   const values = Object.values(obj)
@@ -7,7 +7,7 @@ const createZodEnumFromObject = <T extends Record<string, string>>(obj: T) => {
 }
 
 export type Meta = {
-  access?: Permission.Requirements
+  access?: Ip.Permission.Requirements
 }
 
 export const makeMeta = (_: Meta) => _

@@ -5,63 +5,37 @@ type Level = Ip.AccessLevel
 const Level = Ip.AccessLevel
 
 export namespace Permission {
-  export type Scope = 'global' | 'workspace' | 'form'
-
-  export type Requirements = {
-    global?: KeyOf<Permission.Global>[]
-    workspace?: KeyOf<Permission.Workspace>[]
-    form?: KeyOf<Permission.Form>[]
-  }
-
-  export type Form = {
-    canGet: boolean
-    canUpdate: boolean
-    canDelete: boolean
-    canSyncWithKobo: boolean
-    user_canAdd: boolean
-    user_canDelete: boolean
-    user_canEdit: boolean
-    access_canAdd: boolean
-    access_canDelete: boolean
-    access_canEdit: boolean
-    answers_canSubmit: boolean
-    answers_canUpdate: boolean
-    answers_canDelete: boolean
-    version_canCreate: boolean
-    version_canDeploy: boolean
-    version_canGet: boolean
-  }
-
-  export type Workspace = {
-    form_canCreate: boolean
-    canDelete: boolean
-    server_canGet: boolean
-    server_canCreate: boolean
-    server_canDelete: boolean
-    server_canUpdate: boolean
-  }
-
-  export type Global = {
-    workspace_canCreate: boolean
-  }
-
-  const define = <T extends Global | Form | Workspace>(_: Record<KeyOf<T>, Level>): Record<KeyOf<T>, Level> => {
+  const define = <T extends Ip.Permission.Global | Ip.Permission.Form | Ip.Permission.Workspace>(
+    _: Record<KeyOf<T>, Level>,
+  ): Record<KeyOf<T>, Level> => {
     return _
   }
 
   const permissionsMatrix = {
-    global: define<Global>({
+    global: define<Ip.Permission.Global>({
       workspace_canCreate: Level.Admin,
+      cache_manage: Level.Admin,
     }),
-    workspace: define<Workspace>({
+    workspace: define<Ip.Permission.Workspace>({
       canDelete: Level.Admin,
       server_canGet: Level.Read,
       server_canCreate: Level.Admin,
       server_canDelete: Level.Admin,
       server_canUpdate: Level.Admin,
+      group_canCreate: Level.Write,
+      group_canDelete: Level.Write,
+      group_canUpdate: Level.Write,
+      group_canRead: Level.Read,
+      proxy_manage: Level.Write,
+      proxy_canRead: Level.Read,
+      user_canCreate: Level.Admin,
+      user_canDelete: Level.Admin,
+      user_canUpdate: Level.Admin,
+      user_canRead: Level.Read,
+      use_canConnectAs: Level.Admin,
       form_canCreate: Level.Write,
     }),
-    form: define<Form>({
+    form: define<Ip.Permission.Form>({
       canGet: Level.Read,
       canUpdate: Level.Admin,
       canDelete: Level.Admin,
@@ -78,6 +52,8 @@ export namespace Permission {
       version_canCreate: Level.Admin,
       version_canDeploy: Level.Admin,
       version_canGet: Level.Read,
+      answers_import: Level.Admin,
+      databaseview_manage: Level.Admin,
     }),
   }
 
@@ -94,11 +70,14 @@ export namespace Permission {
   }
 
   export class Evaluate {
-    static readonly global = (user: Ip.User): Global => {
+    static readonly global = (user: Ip.User): Ip.Permission.Global => {
       return Obj.mapValues(permissionsMatrix.global, _ => canDo({required: _, user: user.accessLevel}))
     }
 
-    static readonly workspace = (user: Ip.User, workspaceAccess?: Ip.Workspace.Access | null): Workspace => {
+    static readonly workspace = (
+      user: Ip.User,
+      workspaceAccess?: Ip.Workspace.Access | null,
+    ): Ip.Permission.Workspace => {
       return Obj.mapValues(permissionsMatrix.workspace, _ => {
         const userLevel = workspaceAccess ? maxLevel(user.accessLevel, workspaceAccess.level) : undefined
         return canDo({required: _, user: userLevel})
@@ -109,7 +88,7 @@ export namespace Permission {
       user: Ip.User,
       workspaceAccess?: Ip.Workspace.Access | null,
       formAccesses?: Ip.Form.Access[] | null,
-    ): Form => {
+    ): Ip.Permission.Form => {
       return Obj.mapValues(permissionsMatrix.form, _ => {
         let userLevel
         if (user.accessLevel === Level.Admin) userLevel = Level.Admin

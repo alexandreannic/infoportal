@@ -11,11 +11,12 @@ import {IpIconBtn} from '@/shared/IconBtn'
 import {accessLevelIcon, IAccessForm} from '@/features/Access/AccessForm'
 import {SettingsGroupAccessForm} from '@/features/Settings/SettingsGroupAccessForm'
 import {BasicDialog} from '@/shared/BasicDialog'
-import {UUID} from 'infoportal-common'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
 import {createRoute} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
+import {Ip} from 'infoportal-api-sdk'
+import {useWorkspaceContext} from '@/features/Workspace/Workspace'
 
 interface GoupForm {
   name: string
@@ -29,9 +30,8 @@ export const settingsGroupsRoute = createRoute({
 })
 
 function SettingsGroups() {
-  const {workspaceId} = settingsGroupsRoute.useParams()
   const {m, formatDateTime} = useI18n()
-
+  const {permission, workspace, workspaceId} = useWorkspaceContext()
   const groupForm = useForm<GoupForm>()
   const accessForm = useForm<IAccessForm>()
 
@@ -40,8 +40,8 @@ function SettingsGroups() {
 
   const [selectedGroupId, setSelectedGroupId] = useState<
     | {
-        groupId: UUID
-        accessId?: UUID
+        groupId: Ip.Uuid
+        accessId?: Ip.Uuid
       }
     | undefined
   >()
@@ -54,7 +54,7 @@ function SettingsGroups() {
           loading={queryGet.isLoading}
           id="group"
           header={
-            <>
+            permission.group_canCreate && (
               <Modal
                 onOpen={groupForm.reset}
                 onConfirm={(e, close) =>
@@ -74,7 +74,7 @@ function SettingsGroups() {
                   {m.create}
                 </IpBtn>
               </Modal>
-            </>
+            )
           }
           columns={[
             {
@@ -111,13 +111,17 @@ function SettingsGroups() {
                 <>
                   {_.items.map(item => (
                     <Chip
-                      onClick={() => {
-                        accessForm.reset({
-                          ...item,
-                          job: item.drcJob ? [item.drcJob] : undefined,
-                        })
-                        setSelectedGroupId({groupId: _.id, accessId: item.id})
-                      }}
+                      onClick={
+                        permission.group_canUpdate
+                          ? () => {
+                              accessForm.reset({
+                                ...item,
+                                job: item.drcJob ? [item.drcJob] : undefined,
+                              })
+                              setSelectedGroupId({groupId: _.id, accessId: item.id})
+                            }
+                          : undefined
+                      }
                       onDelete={e => query.deleteItem.mutate({id: item.id})}
                       sx={{mr: 0.5, my: 0.25}}
                       icon={<Icon>{accessLevelIcon[item.level]}</Icon>}

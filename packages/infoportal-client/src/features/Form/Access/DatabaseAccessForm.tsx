@@ -9,7 +9,7 @@ import {useI18n} from '@/core/i18n'
 import {AccessForm, IAccessForm} from '@/features/Access/AccessForm'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {DirectiveTemplate, koboIconMap} from '@/features/Form/Database/columns/columnBySchema'
-import {useQueryAccess} from '@/core/query/useQueryAccess'
+import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
 
 interface Form extends IAccessForm {
@@ -34,7 +34,7 @@ export const DatabaseAccessForm = ({
   const survey = form.survey
 
   const {m} = useI18n()
-  const queryAccess = useQueryAccess(workspaceId)
+  const queryAccessCreate = useQueryFormAccess.create({workspaceId})
 
   const accessForm = useForm<Form>()
 
@@ -73,7 +73,7 @@ export const DatabaseAccessForm = ({
   )
 
   const submit = ({selectBy, question, questionAnswer, ...f}: Form) => {
-    queryAccess.create
+    queryAccessCreate
       .mutateAsync({
         ...nullValuesToUndefined(f),
         workspaceId,
@@ -85,7 +85,7 @@ export const DatabaseAccessForm = ({
 
   return (
     <Modal
-      loading={queryAccess.getAll.isLoading}
+      loading={queryAccessCreate.isPending}
       confirmDisabled={!accessForm.formState.isValid}
       onConfirm={(_, close) =>
         accessForm.handleSubmit(_ => {

@@ -2,18 +2,18 @@ import {ReactNode} from 'react'
 import {IpBtn, Modal, Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Kobo} from 'kobo-sdk'
-import {AccessSum} from '@/core/sdk/server/access/Access'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {UUID} from 'infoportal-common'
+import {Ip} from 'infoportal-api-sdk'
 
 export const useCustomSelectedHeader = ({
   formId,
-  access,
+  permission,
   workspaceId,
   selectedIds,
 }: {
   workspaceId: UUID
-  access: AccessSum
+  permission: Ip.Permission.Form
   formId: Kobo.FormId
   selectedIds: Kobo.SubmissionId[]
 }): ReactNode => {
@@ -21,7 +21,7 @@ export const useCustomSelectedHeader = ({
   const query = useQueryAnswerUpdate()
   return (
     <>
-      {access.write && (
+      {permission.answers_canUpdate && (
         <Modal
           loading={query.remove.isPending}
           onConfirm={(event, close) =>

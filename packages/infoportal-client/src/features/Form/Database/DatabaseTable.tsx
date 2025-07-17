@@ -15,13 +15,14 @@ import {Skeleton} from '@mui/material'
 import {useIsFetching} from '@tanstack/react-query'
 import {Kobo} from 'kobo-sdk'
 import {useCallback, useMemo} from 'react'
-import {useQueryAccess} from '@/core/query/useQueryAccess'
+import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {UUID} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
+import {useQueryPermission} from '@/core/query/useQueryPermission'
 
 export const answersRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -33,6 +34,7 @@ export interface DatabaseTableProps {
   workspaceId: UUID
   form?: Ip.Form
   formId: Kobo.FormId
+  permission: Ip.Permission.Form
   dataFilter?: (_: KoboMappedAnswer) => boolean
   onFiltersChange?: (_: Record<string, DatatableFilterValue>) => void
   onDataChange?: (_: {
@@ -48,7 +50,12 @@ function DatabaseTableContainer() {
   const props = useFormContext()
   return (
     <Page width="full">
-      <DatabaseTable formId={props.form.id} workspaceId={props.workspaceId} form={props.form} />
+      <DatabaseTable
+        permission={props.permission}
+        formId={props.form.id}
+        workspaceId={props.workspaceId}
+        form={props.form}
+      />
     </Page>
   )
 }
@@ -59,22 +66,12 @@ const DatabaseTable = ({
   onFiltersChange,
   onDataChange,
   dataFilter,
+  permission,
   overrideEditAccess,
 }: DatabaseTableProps) => {
-  const session = useSession()
-
   const queryForm = useQueryFormById({workspaceId, formId}).get
   const querySchema = useQuerySchema({formId, workspaceId})
   const queryAnswers = useQueryAnswer({workspaceId, formId})
-  const queryAccess = useQueryAccess(workspaceId)
-
-  const access = useMemo(() => {
-    const list = queryAccess.accessesByFormIdMap[formId] ?? []
-    const admin = session.user.admin || !!list.find(_ => _.level === Ip.AccessLevel.Admin)
-    const write = admin || !!list.find(_ => _.level === Ip.AccessLevel.Write)
-    const read = write || list.length > 0
-    return {admin, write, read}
-  }, [queryAccess.accessesByFormIdMap])
 
   const loading = queryAnswers.isLoading
   const refetch = useCallback(
@@ -106,10 +103,10 @@ const DatabaseTable = ({
           form={form}
           schema={schema}
           dataFilter={dataFilter}
-          access={access}
           refetch={refetch}
           loading={loading}
           data={queryAnswers.data?.data}
+          permission={permission}
         >
           <DatabaseTableContent
             workspaceId={workspaceId}

@@ -17,7 +17,7 @@ export const workspacesRoute = createRoute({
 })
 
 function Workspaces() {
-  const queryWorkspace = useQueryWorkspace()
+  const queryWorkspace = useQueryWorkspace.get()
   const {m} = useI18n()
   return (
     <ProtectRoute>
@@ -34,7 +34,7 @@ function Workspaces() {
                 <WorkspaceCardAdd />
               </Modal>
             </Grid>
-            {queryWorkspace.get.isLoading && (
+            {queryWorkspace.isLoading && (
               <Grid size={{xs: 6, sm: 4, md: 3}}>
                 <Skeleton
                   variant="rectangular"
@@ -45,7 +45,7 @@ function Workspaces() {
                 />
               </Grid>
             )}
-            {queryWorkspace.get.data?.map(_ => (
+            {queryWorkspace.data?.map(_ => (
               <Grid key={_.slug} size={{xs: 6, sm: 4, md: 3}}>
                 <WorkspaceCard workspace={_} />
               </Grid>

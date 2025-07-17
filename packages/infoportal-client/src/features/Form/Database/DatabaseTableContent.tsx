@@ -1,7 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
-import {useSession} from '@/core/Session/SessionContext'
 import {useIpToast} from '@/core/useToast'
 import {columnBySchemaGenerator} from '@/features/Form/Database/columns/columnBySchema'
 import {getColumnsBase} from '@/features/Form/Database/columns/columnsBase'
@@ -54,7 +53,6 @@ export const DatabaseTableContent = ({
   const langIndex = useLangIndex(_ => _.langIndex)
   const setLangIndex = useLangIndex(_ => _.setLangIndex)
   const navigate = useNavigate()
-  const session = useSession()
   const ctx = useDatabaseKoboTableContext()
   const dialogs = useKoboDialogs()
 
@@ -123,7 +121,7 @@ export const DatabaseTableContent = ({
       queryUpdate: queryUpdate,
       workspaceId,
       formId: ctx.form.id,
-      canEdit: ctx.access.write,
+      canEdit: ctx.permission.answers_canUpdate,
       m,
       dialogs,
     })
@@ -134,7 +132,12 @@ export const DatabaseTableContent = ({
   }, [schemaColumns, ctx.view.currentView])
 
   const {api} = useAppSettings()
-  const selectedHeader = useCustomSelectedHeader({workspaceId, access: ctx.access, formId: ctx.form.id, selectedIds})
+  const selectedHeader = useCustomSelectedHeader({
+    workspaceId,
+    permission: ctx.permission,
+    formId: ctx.form.id,
+    selectedIds,
+  })
   const _importFromXLS = useAsync(api.importData.importFromXLSFile)
   const {toastHttpError} = useIpToast()
 
@@ -164,7 +167,7 @@ export const DatabaseTableContent = ({
         onFiltersChange={onFiltersChange}
         onDataChange={onDataChange}
         select={
-          ctx.access.write
+          ctx.permission.answers_canUpdate
             ? {
                 onSelect: setSelectedIds,
                 selectActions: selectedHeader,
@@ -240,7 +243,7 @@ export const DatabaseTableContent = ({
                 />
               )}
 
-              {session.user.admin && (
+              {ctx.permission.answers_import && (
                 <DatabaseImportBtn
                   onUploadNewData={file => handleImportData(file, 'create')}
                   onUpdateExistingData={file => handleImportData(file, 'update')}

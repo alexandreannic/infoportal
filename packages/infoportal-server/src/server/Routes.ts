@@ -274,13 +274,13 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .catch(handleError),
         search: _ =>
           auth2(_)
-            .then(({params, req}) => formAccess.searchForUser({workspaceId: params.workspaceId}))
+            .then(({params, body, req}) => formAccess.search({formId: body.formId, workspaceId: params.workspaceId}))
             .then(ok)
             .catch(handleError),
         searchMine: _ =>
           auth2(_)
-            .then(({params, req}) =>
-              formAccess.searchForUser({workspaceId: params.workspaceId, user: req.session.app.user}),
+            .then(({params, req, body}) =>
+              formAccess.search({formId: body.formId, workspaceId: params.workspaceId, user: req.session.app.user}),
             )
             .then(ok)
             .catch(handleError),

@@ -129,11 +129,11 @@ export const formContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form[]>,
     },
-    metadata: makeMeta({
-      access: {
-        form: ['canGet'],
-      },
-    }),
+    // metadata: makeMeta({
+    //   access: {
+    //     form: ['canGet'],
+    //   },
+    // }),
   },
 })
 

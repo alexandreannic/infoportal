@@ -14,10 +14,13 @@ import {queryKeys} from '@/core/query/query.index'
 import {User} from '@/core/sdk/server/user/User'
 import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useNavigate} from '@tanstack/react-router'
+import {Ip} from 'infoportal-api-sdk'
+import {useQueryPermission} from '@/core/query/useQueryPermission'
 
 export interface SessionContext {
   originalEmail?: string
   user: User
+  globalPermission: Ip.Permission.Global
   logout: () => Promise<void>
   connectAs: ReturnType<typeof useQuerySession>['connectAs']
   revertConnectAs: ReturnType<typeof useQuerySession>['revertConnectAs']
@@ -26,6 +29,7 @@ export interface SessionContext {
 
 const Context = React.createContext(
   {} as {
+    globalPermission?: SessionContext['globalPermission']
     originalEmail?: SessionContext['originalEmail']
     user?: SessionContext['user']
     logout: SessionContext['logout']
@@ -44,6 +48,7 @@ export const useSession = (): SessionContext => {
     throw new Error('useSession must be used within ProtectRoute')
   }
   return {
+    globalPermission: ctx.globalPermission!,
     revertConnectAs: ctx.revertConnectAs!,
     originalEmail: ctx.originalEmail,
     connectAs: ctx.connectAs!,
@@ -56,12 +61,14 @@ export const useSession = (): SessionContext => {
 export const SessionProvider = ({children}: {children: ReactNode}) => {
   const querySession = useQuerySession()
   const user = querySession.getMe.data
+  const queryPermission = useQueryPermission.global()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
   return (
     <Context.Provider
       value={{
+        globalPermission: queryPermission.data,
         originalEmail: querySession.originalEmail,
         revertConnectAs: querySession.revertConnectAs,
         connectAs: querySession.connectAs,
@@ -78,13 +85,14 @@ export const SessionProvider = ({children}: {children: ReactNode}) => {
   )
 }
 
-export const ProtectRoute = ({adminOnly, children}: {children: ReactNode; adminOnly?: boolean}) => {
+export const ProtectRoute = ({children}: {children: ReactNode}) => {
   const {m} = useI18n()
+  const queryPermission = useQueryPermission.global()
   const querySession = useQuerySession()
-  const queryWorkspace = useQueryWorkspace()
+  const queryWorkspace = useQueryWorkspace.get()
   const {user, originalEmail, revertConnectAs, setUser, logout} = useSessionPending()
 
-  if (querySession.getMe.isPending) {
+  if (querySession.getMe.isPending || queryPermission.isPending) {
     return (
       <CenteredContent>
         <LinearProgress sx={{mt: 2, width: 200}} />
@@ -100,14 +108,7 @@ export const ProtectRoute = ({adminOnly, children}: {children: ReactNode; adminO
       </CenteredContent>
     )
   }
-  if (adminOnly && !user.admin) {
-    return (
-      <CenteredContent>
-        <Fender type="error" />
-      </CenteredContent>
-    )
-  }
-  if (queryWorkspace.get.data?.length === 0) {
+  if (queryWorkspace.data?.length === 0) {
     return (
       <Page sx={{maxWidth: 400}}>
         <CenteredContent>

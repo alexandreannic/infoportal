@@ -65,7 +65,7 @@ export class FormAnswersService {
     // TODO(Alex) reimplement
     if (user.accessLevel !== Ip.AccessLevel.Admin) {
       const access = await this.access
-        .searchForUser({workspaceId, user})
+        .search({workspaceId, user})
         .then(_ => seq(_).filter(_ => _.formId === params.formId))
       if (access.length === 0) return ApiPaginateHelper.make()([])
       const hasEmptyFilter = access.some(_ => !_?.filters || Object.keys(_.filters).length === 0)

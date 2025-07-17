@@ -21,7 +21,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
   const {toastHttpError} = useIpToast()
   const {m} = useI18n()
 
-  const queryWorkspaces = useQueryWorkspace()
+  const queryWorkspaceCreate = useQueryWorkspace.create()
 
   const form = useForm<Form>()
   const [disableSlug, setDisableSlug] = useState(true)
@@ -63,7 +63,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
 
   const submit = async () => {
     try {
-      await queryWorkspaces.create.mutate(form.getValues())
+      await queryWorkspaceCreate.mutate(form.getValues())
       form.reset({
         name: '',
         slug: '',
@@ -145,7 +145,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
             {m.close}
           </IpBtn>
         )}
-        <IpBtn variant="contained" size="large" loading={queryWorkspaces.create.isPending} onClick={submit}>
+        <IpBtn variant="contained" size="large" loading={queryWorkspaceCreate.isPending} onClick={submit}>
           {m.create}
         </IpBtn>
       </CardActions>

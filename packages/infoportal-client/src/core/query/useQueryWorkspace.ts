@@ -4,24 +4,38 @@ import {queryKeys} from '@/core/query/query.index'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {duration} from '@axanc/ts-utils'
 
-export const useQueryWorkspace = () => {
-  const {api} = useAppSettings()
-  const queryClient = useQueryClient()
+export const useQueryWorkspace = {
+  get,
+  create,
+  update,
+  remove,
+}
 
-  const get = useQuery({
+function get() {
+  const {api} = useAppSettings()
+  return useQuery({
     staleTime: duration(20, 'minute'),
     queryKey: queryKeys.workspaces(),
     queryFn: () => api.workspace.getMine(),
   })
+}
 
-  const create = useMutation({
+function create() {
+  const {api} = useAppSettings()
+  const queryClient = useQueryClient()
+  return useMutation({
     mutationFn: api.workspace.create,
     onSuccess: res => {
       queryClient.invalidateQueries({queryKey: queryKeys.workspaces()})
     },
   })
+}
 
-  const update = useMutation({
+function update() {
+  const {api} = useAppSettings()
+  const queryClient = useQueryClient()
+
+  return useMutation({
     mutationFn: async (args: Parameters<ApiSdk['workspace']['update']>) => {
       return api.workspace.update(...args)
     },
@@ -29,18 +43,16 @@ export const useQueryWorkspace = () => {
       queryClient.invalidateQueries({queryKey: queryKeys.workspaces()})
     },
   })
+}
 
-  const remove = useMutation({
+function remove() {
+  const {api} = useAppSettings()
+  const queryClient = useQueryClient()
+
+  return useMutation({
     mutationFn: api.workspace.delete,
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({queryKey: queryKeys.workspaces()})
     },
   })
-
-  return {
-    get,
-    remove,
-    create,
-    update,
-  }
 }

@@ -2,9 +2,12 @@ import {AppHeader} from '@/core/layout/AppHeader'
 import {AppSidebar} from '@/core/layout/AppSidebar'
 import {ProtectRoute} from '@/core/Session/SessionContext'
 import {createRoute, Outlet} from '@tanstack/react-router'
-import React from 'react'
+import React, {createContext, useContext} from 'react'
 import {rootRoute} from '@/Router'
 import {Layout} from '@/shared/Layout/Layout'
+import {Ip} from 'infoportal-api-sdk'
+import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {useQueryPermission} from '@/core/query/useQueryPermission'
 
 export const workspaceRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -12,12 +15,35 @@ export const workspaceRoute = createRoute({
   component: Workspace,
 })
 
+export type WorkspaceContext = {
+  workspaceId: Ip.Uuid
+  workspace: Ip.Workspace
+  permission: Ip.Permission.Workspace
+}
+
+const Context = createContext<WorkspaceContext>({} as any)
+export const useWorkspaceContext = () => useContext<WorkspaceContext>(Context)
+
 function Workspace() {
   const {workspaceId} = workspaceRoute.useParams()
+  const queryWorkspaceGet = useQueryWorkspace.get()
+  const queryPermission = useQueryPermission.workspace({workspaceId})
+  const workspace = queryWorkspaceGet.data?.find(_ => _.id === workspaceId)
+
   return (
     <ProtectRoute>
       <Layout header={<AppHeader workspaceId={workspaceId} />} sidebar={<AppSidebar workspaceId={workspaceId} />}>
-        <Outlet />
+        {workspace && queryPermission.data && (
+          <Context.Provider
+            value={{
+              workspaceId: workspace.id,
+              workspace,
+              permission: queryPermission.data,
+            }}
+          >
+            <Outlet />
+          </Context.Provider>
+        )}
       </Layout>
     </ProtectRoute>
   )

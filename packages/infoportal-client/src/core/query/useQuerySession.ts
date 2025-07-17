@@ -49,7 +49,7 @@ export const useQuerySession = () => {
     mutationFn: async () => {
       await api.session.logout()
       queryClient.removeQueries({queryKey: queryKeys.session()})
-      queryClient.removeQueries({queryKey: queryKeys.access()})
+      queryClient.removeQueries({queryKey: queryKeys.formAccess()})
       queryClient.removeQueries({queryKey: queryKeys.workspaces()})
     },
     onError: toastHttpError,
