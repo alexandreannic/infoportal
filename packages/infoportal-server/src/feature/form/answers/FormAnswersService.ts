@@ -122,7 +122,7 @@ export class FormAnswersService {
         // includeMeta,
       } = params
       return (
-        this.prisma.formAnswers
+        this.prisma.formAnswer
           .findMany({
             take: paginate.limit,
             skip: paginate.offset,
@@ -193,7 +193,7 @@ export class FormAnswersService {
   private static readonly mapAnswer = (
     formId: Ip.FormId,
     _: KoboSubmission,
-  ): Prisma.FormAnswersUncheckedCreateInput => {
+  ): Prisma.FormAnswerUncheckedCreateInput => {
     return {
       formId,
       answers: _.answers,
@@ -213,12 +213,12 @@ export class FormAnswersService {
   }
 
   readonly create = (formId: Ip.FormId, answer: KoboSubmission) => {
-    return this.prisma.formAnswers.create({data: FormAnswersService.mapAnswer(formId, answer)})
+    return this.prisma.formAnswer.create({data: FormAnswersService.mapAnswer(formId, answer)})
   }
 
   readonly createMany = (formId: Ip.FormId, answers: KoboSubmission[]) => {
     const inserts = answers.map(_ => FormAnswersService.mapAnswer(formId, _))
-    return this.prisma.formAnswers.createMany({
+    return this.prisma.formAnswer.createMany({
       data: inserts,
       skipDuplicates: true,
     })
@@ -289,7 +289,7 @@ export class FormAnswersService {
     authorEmail?: string
   }) => {
     await Promise.all([
-      this.prisma.formAnswers.updateMany({
+      this.prisma.formAnswer.updateMany({
         data: {
           deletedAt: new Date(),
           deletedBy: authorEmail,
@@ -360,7 +360,7 @@ export class FormAnswersService {
     const validationKey: keyof KoboSubmissionMetaData = 'validationStatus'
     const sdk = await this.sdkGenerator.getBy.formId(formId)
     const [sqlRes] = await Promise.all([
-      this.prisma.formAnswers.updateMany({
+      this.prisma.formAnswer.updateMany({
         where: {id: {in: answerIds}},
         data: {
           validationStatus: status,

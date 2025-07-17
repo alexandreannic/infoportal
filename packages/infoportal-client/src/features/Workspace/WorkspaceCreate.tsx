@@ -17,7 +17,7 @@ type Form = {
 }
 
 export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
-  const {api} = useAppSettings()
+  const {apiv2} = useAppSettings()
   const {toastHttpError} = useIpToast()
   const {m} = useI18n()
 
@@ -26,7 +26,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
   const form = useForm<Form>()
   const [disableSlug, setDisableSlug] = useState(true)
 
-  const fetchCheckSlug = useFetcher(api.workspace.checkSlug)
+  const fetchCheckSlug = useFetcher(apiv2.workspace.checkSlug)
 
   const watch = {
     name: form.watch('name'),

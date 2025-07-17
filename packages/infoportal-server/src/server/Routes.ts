@@ -66,7 +66,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const importData = new ControllerKoboApiXlsImport(prisma)
 
   interface HandlerArgs<TReq = Request, TParams = any, TBody = any> {
-    req: Request
+    req: TReq
     res: Response
     params?: TParams
     body?: TBody
@@ -368,7 +368,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.post('/session/connect-as-revert', auth(), safe(session.revertConnectAs))
     r.delete('/session', safe(session.logout))
     r.get('/session/me', safe(session.getMe))
-    
+
     r.get('/proxy/:slug', safe(proxy.redirect))
     r.put('/proxy', auth({adminOnly: true}), safe(proxy.create))
     r.post('/proxy/:id', auth({adminOnly: true}), safe(proxy.update))

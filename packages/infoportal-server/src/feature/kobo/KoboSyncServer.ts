@@ -161,7 +161,7 @@ export class KoboSyncServer {
     this.debug(formId, `Fetch remote answers... ${remoteAnswers.length} fetched.`)
 
     this.debug(formId, `Fetch local answers...`)
-    const localAnswersIndex = await this.prisma.formAnswers
+    const localAnswersIndex = await this.prisma.formAnswer
       .findMany({where: {formId, deletedAt: null}, select: {id: true, lastValidatedTimestamp: true, uuid: true}})
       .then(_ => {
         return _.reduce(
@@ -187,7 +187,7 @@ export class KoboSyncServer {
         data: idsToDelete,
         size: this.conf.db.maxPreparedStatementParams,
         fn: ids => {
-          return this.prisma.formAnswers.updateMany({
+          return this.prisma.formAnswer.updateMany({
             data: {
               deletedAt: new Date(),
               deletedBy: 'system-sync-' + tracker,
@@ -204,7 +204,7 @@ export class KoboSyncServer {
       this.debug(formId, `Handle create (${notInsertedAnswers.length})...`)
       await this.service.createMany(formId, notInsertedAnswers)
       const inserts = notInsertedAnswers.map(_ => {
-        const res: Prisma.FormAnswersUncheckedCreateInput = {
+        const res: Prisma.FormAnswerUncheckedCreateInput = {
           formId,
           answers: _.answers,
           id: _.id,
@@ -227,7 +227,7 @@ export class KoboSyncServer {
         })
         return res
       })
-      await this.prisma.formAnswers.createMany({
+      await this.prisma.formAnswer.createMany({
         data: inserts,
         skipDuplicates: true,
       })
@@ -250,7 +250,7 @@ export class KoboSyncServer {
             answerIds: [a.id],
             status: a.validationStatus,
           })
-          return this.prisma.formAnswers.update({
+          return this.prisma.formAnswer.update({
             where: {id: a.id},
             data: {
               validationStatus: a.validationStatus,
@@ -271,7 +271,7 @@ export class KoboSyncServer {
         })
         .compact()
       this.debug(formId, `Handle update (${answersToUpdate.length})...`)
-      const previewsAnswersById = await this.prisma.formAnswers
+      const previewsAnswersById = await this.prisma.formAnswer
         .findMany({
           select: {id: true, answers: true},
           where: {id: {in: answersToUpdate.map(_ => _.id)}},
@@ -293,7 +293,7 @@ export class KoboSyncServer {
               skipProperties: ['instanceID', 'rootUuid', 'deprecatedID'],
             }),
           })
-          return this.prisma.formAnswers.update({
+          return this.prisma.formAnswer.update({
             where: {
               id: a.id,
             },

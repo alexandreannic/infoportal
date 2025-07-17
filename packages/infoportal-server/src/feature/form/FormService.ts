@@ -89,7 +89,7 @@ export class FormService {
   readonly remove = async (id: Ip.FormId): Promise<number> => {
     await Promise.any([
       this.prisma.databaseView.deleteMany({where: {databaseId: id}}),
-      this.prisma.formAnswers.deleteMany({where: {formId: id}}),
+      this.prisma.formAnswer.deleteMany({where: {formId: id}}),
       this.prisma.formVersion.deleteMany({where: {formId: id}}),
       this.prisma.formAccess.deleteMany({where: {formId: id}}),
     ])
