@@ -84,6 +84,11 @@ export namespace Ip {
 
   export namespace Workspace {
     export type Access = Prisma.WorkspaceAccess
+    export namespace Access {
+      export namespace Payload {
+        export type Create = {email: string; level: AccessLevel; workspaceId: Uuid}
+      }
+    }
 
     export namespace Payload {
       export type Create = Omit<Workspace, 'id' | 'createdAt' | 'createdBy'>

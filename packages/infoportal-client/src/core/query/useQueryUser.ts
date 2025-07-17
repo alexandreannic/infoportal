@@ -3,7 +3,6 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {queryKeys} from './query.index'
-import {UUID} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
 
 export const useQueryUser = {
@@ -11,7 +10,7 @@ export const useQueryUser = {
   create,
 }
 
-function getAll(workspaceId: UUID) {
+function getAll(workspaceId: Ip.Uuid) {
   const {api} = useAppSettings()
   const {toastAndThrowHttpError} = useIpToast()
 
@@ -22,13 +21,13 @@ function getAll(workspaceId: UUID) {
   })
 }
 
-function create(workspaceId: UUID) {
-  const {api} = useAppSettings()
+function create(workspaceId: Ip.Uuid) {
+  const {apiv2} = useAppSettings()
   const {toastHttpError} = useIpToast()
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (_: {email: string; level: Ip.AccessLevel}) => {
-      return api.workspaceAccess.create({..._, workspaceId})
+    mutationFn: async (_: Omit<Ip.Workspace.Access.Payload.Create, 'workspaceId'>) => {
+      return apiv2.workspace.access.create({..._, workspaceId})
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: queryKeys.user(workspaceId)})

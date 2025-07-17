@@ -6,6 +6,7 @@ import {koboContract} from './kobo/ContractKobo'
 import {formAccessContract} from './form/ContractFormAccess'
 import {permissionContract} from './ContractPermission'
 import {workspaceContract} from './workspace/ContractWorkspace'
+import {workspaceAccessContract} from './workspace/ContractWorkspaceAccess'
 
 export const ipContract = initContract().router({
   permission: permissionContract,
@@ -13,6 +14,7 @@ export const ipContract = initContract().router({
   kobo: koboContract,
   workspace: {
     ...workspaceContract,
+    access: workspaceAccessContract,
   },
   form: {
     ...formContract,

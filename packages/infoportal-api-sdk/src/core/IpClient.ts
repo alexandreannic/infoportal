@@ -7,6 +7,7 @@ import {koboClient} from '../contract/kobo/ContractKobo'
 import {formAccessClient} from '../contract/form/ContractFormAccess'
 import {permissionClient, permissionContract} from '../contract/ContractPermission'
 import {workspaceClient} from '../contract/workspace/ContractWorkspace'
+import {workspaceAccessClient} from '../contract/workspace/ContractWorkspaceAccess'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -22,6 +23,7 @@ export const buildIpClient = (baseUrl: string) => {
   return {
     workspace: {
       ...workspaceClient(client),
+      access: workspaceAccessClient(client),
     },
     permission: permissionClient(client),
     server: serverClient(client),

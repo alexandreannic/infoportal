@@ -16,7 +16,6 @@ import {UserService} from '../feature/user/UserService.js'
 import {ControllerDatabaseView} from './controller/ControllerDatabaseView.js'
 import {ControllerKoboApiXlsImport} from './controller/kobo/ControllerKoboApiXlsImport.js'
 import {AuthRequest} from '../typings'
-import {ControllerWorkspaceAccess} from './controller/ControllerWorkspaceAccess.js'
 import multer from 'multer'
 import {initServer} from '@ts-rest/express'
 import {FormVersionService} from '../feature/form/FormVersionService.js'
@@ -28,6 +27,7 @@ import {FormAccessService} from '../feature/form/access/FormAccessService.js'
 import {PermissionService} from '../feature/PermissionService.js'
 import {Ip, ipContract, Meta} from 'infoportal-api-sdk'
 import {WorkspaceService} from '../feature/workspace/WorkspaceService'
+import {WorkspaceAccessService} from '../feature/workspace/WorkspaceAccessService'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -53,8 +53,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
 
   const r = express.Router()
   const main = new ControllerMain()
-  const workspace = new WorkspaceService(prisma)
-  const workspaceAccess = new ControllerWorkspaceAccess(prisma)
   const koboAnswer = new ControllerKoboAnswer(prisma)
   const koboApi = new ControllerKoboApi(prisma)
   const session = new ControllerSession(prisma)
@@ -121,6 +119,8 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     return {status: 500, body: e.message}
   }
 
+  const workspace = new WorkspaceService(prisma)
+  const workspaceAccess = new WorkspaceAccessService(prisma)
   const koboForm = new KoboFormService(prisma)
   const form = new FormService(prisma)
   const formVersion = new FormVersionService(prisma)
@@ -172,6 +172,13 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({params}) => workspace.remove(params.id))
           .then(ok)
           .catch(handleError),
+      access: {
+        create: _ =>
+          auth2(_)
+            .then(({body, req}) => workspaceAccess.create(body, req.session.app.user.email))
+            .then(ok)
+            .catch(handleError),
+      },
     },
     permission: {
       getMineGlobal: _ =>
@@ -361,9 +368,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.post('/session/connect-as-revert', auth(), safe(session.revertConnectAs))
     r.delete('/session', safe(session.logout))
     r.get('/session/me', safe(session.getMe))
-
-    r.put('/workspace-access', safe(workspaceAccess.create))
-
+    
     r.get('/proxy/:slug', safe(proxy.redirect))
     r.put('/proxy', auth({adminOnly: true}), safe(proxy.create))
     r.post('/proxy/:id', auth({adminOnly: true}), safe(proxy.update))
