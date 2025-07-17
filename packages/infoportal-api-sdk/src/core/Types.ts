@@ -120,13 +120,23 @@ export namespace Ip {
 
   export type Submission<T extends Record<string, any> = Record<string, any>> = Omit<
     Prisma.FormSubmission,
-    'answers' | 'deletedBy' | 'deletedAt' | 'formId' | 'form' | 'histories'
+    'attachments' | 'answers' | 'deletedBy' | 'deletedAt' | 'formId' | 'form' | 'histories'
   > & {
     answers: T
+    attachments: Kobo.Submission.Attachment[]
   }
 
   export type SubmissionId = Submission.Id
   export namespace Submission {
+    export type Validation = Prisma.FormSubmissionValidation
+    export const Validation = {
+      Approved: 'Approved',
+      Pending: 'Pending',
+      Rejected: 'Rejected',
+      Flagged: 'Flagged',
+      UnderReview: 'UnderReview',
+    } as const
+
     export type Id = string
     export namespace Payload {
       export type Filter = {

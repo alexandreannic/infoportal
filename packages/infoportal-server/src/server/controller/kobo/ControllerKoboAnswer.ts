@@ -3,13 +3,14 @@ import * as yup from 'yup'
 import {ObjectSchema} from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {FormAnswersService} from '../../../feature/form/answers/FormAnswersService.js'
-import {KoboValidation, Period} from 'infoportal-common'
+import {Period} from 'infoportal-common'
 import {validateApiPaginate} from '../../../core/Type.js'
 import {Kobo} from 'kobo-sdk'
 import {Obj} from '@axanc/ts-utils'
 import {app} from '../../../index.js'
 import {getWorkspaceId, isAuthenticated} from '../../Routes.js'
 import {AppError} from '../../../helper/Errors.js'
+import {Ip} from 'infoportal-api-sdk'
 
 export interface KoboAnswersFilters extends Partial<Period> {
   ids?: Kobo.FormId[]
@@ -68,7 +69,7 @@ export class ControllerKoboAnswer {
     const body = await yup
       .object({
         answerIds: yup.array().of(yup.string().required()).required(),
-        status: yup.mixed<KoboValidation>().oneOf(Obj.values(KoboValidation)).required(),
+        status: yup.mixed<Ip.Submission.Validation>().oneOf(Obj.values(Ip.Submission.Validation)).required(),
       })
       .validate(req.body)
     const data = await this.service.updateValidation({...params, ...body, authorEmail: email})

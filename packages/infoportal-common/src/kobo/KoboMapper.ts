@@ -1,14 +1,7 @@
 import {Kobo} from 'kobo-sdk'
 import {fnSwitch} from '@axanc/ts-utils'
 import {KoboCustomDirective} from './KoboCustomDirective.js'
-
-export enum KoboValidation {
-  Approved = 'Approved',
-  Pending = 'Pending',
-  Rejected = 'Rejected',
-  Flagged = 'Flagged',
-  UnderReview = 'UnderReview',
-}
+import {Ip} from 'infoportal-api-sdk'
 
 export type KoboSubmissionMetaData = {
   start: Date
@@ -16,14 +9,12 @@ export type KoboSubmissionMetaData = {
   end: Date
   /** Set by Kobo Server, not editable */
   submissionTime: Kobo.Submission['_submission_time']
-  /** Extracted from question `date` when exists. */
-  date: Date
   version?: Kobo.Submission['__version__']
   attachments: Kobo.Submission.Attachment[]
   geolocation: Kobo.Submission['_geolocation']
   id: Kobo.SubmissionId
   uuid: Kobo.Submission['_uuid']
-  validationStatus?: KoboValidation
+  validationStatus?: Ip.Submission.Validation
   validatedBy?: string
   submittedBy?: string
   lastValidatedTimestamp?: number
@@ -36,10 +27,6 @@ export type KoboSubmission = KoboSubmissionMetaData & {
 }
 
 export type KoboSubmissionFlat = KoboSubmissionMetaData & Record<string, any>
-
-export interface KoboBaseTags {
-  _validation?: KoboValidation
-}
 
 export class KoboHelper {
   static readonly timestampToDate: {
@@ -56,34 +43,34 @@ export class KoboHelper {
   }
 
   static readonly mapValidation = {
-    fromKobo: (_: Kobo.Submission.Raw): undefined | KoboValidation => {
+    fromKobo: (_: Kobo.Submission.Raw): undefined | Ip.Submission.Validation => {
       if (_._validation_status?.uid)
         return fnSwitch(_._validation_status.uid, {
-          validation_status_on_hold: KoboValidation.Pending,
-          validation_status_approved: KoboValidation.Approved,
-          validation_status_not_approved: KoboValidation.Rejected,
+          validation_status_on_hold: Ip.Submission.Validation.Pending,
+          validation_status_approved: Ip.Submission.Validation.Approved,
+          validation_status_not_approved: Ip.Submission.Validation.Rejected,
           no_status: undefined,
         })
       if (_[KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]) {
-        return KoboValidation[_._IP_VALIDATION_STATUS_EXTRA as keyof typeof KoboValidation]
+        return Ip.Submission.Validation[_._IP_VALIDATION_STATUS_EXTRA as keyof typeof Ip.Submission.Validation]
       }
     },
     toKobo: (
-      _?: KoboValidation,
+      _?: Ip.Submission.Validation,
     ): {
-      _IP_VALIDATION_STATUS_EXTRA?: KoboValidation
+      _IP_VALIDATION_STATUS_EXTRA?: Ip.Submission.Validation
       _validation_status?: Kobo.Submission.Validation
     } => {
-      if (_ === KoboValidation.Flagged || _ === KoboValidation.UnderReview) {
+      if (_ === Ip.Submission.Validation.Flagged || _ === Ip.Submission.Validation.UnderReview) {
         return {[KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: _}
       }
       return {
         _validation_status: fnSwitch(
           _!,
           {
-            [KoboValidation.Pending]: Kobo.Submission.Validation.validation_status_on_hold,
-            [KoboValidation.Approved]: Kobo.Submission.Validation.validation_status_approved,
-            [KoboValidation.Rejected]: Kobo.Submission.Validation.validation_status_not_approved,
+            [Ip.Submission.Validation.Pending]: Kobo.Submission.Validation.validation_status_on_hold,
+            [Ip.Submission.Validation.Approved]: Kobo.Submission.Validation.validation_status_approved,
+            [Ip.Submission.Validation.Rejected]: Kobo.Submission.Validation.validation_status_not_approved,
           },
           () => Kobo.Submission.Validation.no_status,
         ),

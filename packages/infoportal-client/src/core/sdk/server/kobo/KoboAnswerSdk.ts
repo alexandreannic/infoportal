@@ -1,11 +1,11 @@
 import {ApiClient} from '../ApiClient'
-import {KeyOf, KoboSubmission, KoboValidation, UUID} from 'infoportal-common'
-import {KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
+import {KeyOf, UUID} from 'infoportal-common'
 import {AnswersFilters} from '@/core/sdk/server/kobo/KoboApiSdk'
 import {endOfDay, startOfDay} from 'date-fns'
 import {map} from '@axanc/ts-utils'
-import {ApiPaginate, ApiPagination} from '@/core/sdk/server/_core/ApiSdkUtils'
+import {ApiPagination} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Kobo} from 'kobo-sdk'
+import {Ip} from 'infoportal-api-sdk'
 
 export interface KoboAnswerSearch {
   workspaceId: UUID
@@ -18,7 +18,7 @@ export type KoboUpdateValidation = {
   workspaceId: UUID
   formId: Kobo.FormId
   answerIds: Kobo.SubmissionId[]
-  status: KoboValidation | null
+  status: Ip.Submission.Validation | null
 }
 
 export type KoboUpdateAnswers<T extends Record<string, any> = any, K extends KeyOf<T> = any> = {

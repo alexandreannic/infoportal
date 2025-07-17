@@ -1,13 +1,14 @@
 import {IpSelectOption, IpSelectSingle, IpSelectSingleNullableProps} from '@/shared/Select/SelectSingle'
 import {KeyOf, Obj} from '@axanc/ts-utils'
 import React, {ReactNode, useMemo} from 'react'
-import {KoboValidation, StateStatus} from 'infoportal-common'
+import {StateStatus} from 'infoportal-common'
 import {Box, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
+import {Ip} from 'infoportal-api-sdk'
 
 export namespace SelectStatusConfig {
   export const enumStatus = {
-    KoboValidation: KoboValidation,
+    KoboValidation: Ip.Submission.Validation,
   }
 
   export type EnumStatus = keyof typeof enumStatus
@@ -55,7 +56,7 @@ export namespace SelectStatusConfig {
       Rejected: 'error',
       Flagged: 'info',
       UnderReview: 'disabled',
-    } as Record<KoboValidation, StateStatus>,
+    } as Record<Ip.Submission.Validation, StateStatus>,
   }
 }
 

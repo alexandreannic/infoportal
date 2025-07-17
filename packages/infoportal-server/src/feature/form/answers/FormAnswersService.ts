@@ -1,4 +1,4 @@
-import {Form, Prisma, PrismaClient, User} from '@prisma/client'
+import {Prisma, PrismaClient, User} from '@prisma/client'
 import {KoboSdkGenerator} from '../../kobo/KoboSdkGenerator.js'
 import {duration, Obj, seq} from '@axanc/ts-utils'
 import {KoboAnswersFilters} from '../../../server/controller/kobo/ControllerKoboAnswer.js'
@@ -13,13 +13,10 @@ import {Util} from '../../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip, Paginate} from 'infoportal-api-sdk'
 import {
-  ApiPaginateHelper,
-  ApiPagination,
   KoboCustomDirective,
   KoboHelper,
   KoboSubmission,
   KoboSubmissionMetaData,
-  KoboValidation,
   logPerformance,
   UUID,
 } from 'infoportal-common'
@@ -40,10 +37,6 @@ export class FormAnswersService {
     private conf = appConf,
   ) {}
 
-  readonly getForms = async (): Promise<Form[]> => {
-    return this.prisma.form.findMany()
-  }
-
   private readonly _searchAnswersByUsersAccess = async ({
     user,
     workspaceId,
@@ -51,7 +44,7 @@ export class FormAnswersService {
   }: {
     formId: string
     filters: KoboAnswersFilters
-    paginate?: Partial<ApiPagination>
+    paginate?: Partial<Ip.Pagination>
     user?: User
     workspaceId: UUID
   }): Promise<Ip.Paginate<Ip.Submission>> => {
@@ -61,7 +54,7 @@ export class FormAnswersService {
       const access = await this.access
         .search({workspaceId, user})
         .then(_ => seq(_).filter(_ => _.formId === params.formId))
-      if (access.length === 0) return ApiPaginateHelper.make()([])
+      if (access.length === 0) return Paginate.make()([])
       const hasEmptyFilter = access.some(_ => !_?.filters || Object.keys(_.filters).length === 0)
       if (!hasEmptyFilter) {
         const accessFilters = access
@@ -104,31 +97,20 @@ export class FormAnswersService {
     genIndex: p => p.formId,
     ttlMs: duration(1, 'day').toMs,
     fn: (params: {
-      // includeMeta?: boolean
       formId: string
       filters?: KoboAnswersFilters
-      paginate?: Partial<ApiPagination>
+      paginate?: Partial<Ip.Pagination>
     }): Promise<Ip.Paginate<Ip.Submission>> => {
-      const {
-        formId,
-        filters = {},
-        paginate = defaultPagination,
-        // includeMeta,
-      } = params
+      const {formId, filters = {}, paginate = defaultPagination} = params
       return (
         this.prisma.formSubmission
           .findMany({
             take: paginate.limit,
             skip: paginate.offset,
-            orderBy: [{date: 'desc'}, {submissionTime: 'desc'}],
-            // ...includeMeta ? {
-            //   include: {
-            //     meta: includeMeta,
-            //   }
-            // } : {},
+            orderBy: [{submissionTime: 'desc'}],
             where: {
               deletedAt: null,
-              date: {
+              submissionTime: {
                 gte: filters.start,
                 lt: filters.end,
               },
@@ -151,25 +133,6 @@ export class FormAnswersService {
               },
             },
           })
-          .then(_ =>
-            _.map(d => ({
-              start: d.start,
-              end: d.end,
-              date: d.date,
-              version: d.version ?? undefined,
-              attachments: d.attachments as Kobo.Submission.Attachment[],
-              geolocation: d.geolocation as any,
-              submissionTime: d.submissionTime,
-              id: d.id,
-              uuid: d.uuid,
-              validationStatus: d.validationStatus as any,
-              validatedBy: d.validatedBy ?? undefined,
-              lastValidatedTimestamp: d.lastValidatedTimestamp ?? undefined,
-              answers: d.answers as any,
-              formId: d.formId,
-              tags: d.tags,
-            })),
-          )
           // .then(_ => {
           //   if (_?.[0].answers.date)
           //     return _.sort((a, b) => {
@@ -179,7 +142,7 @@ export class FormAnswersService {
           //     })
           //   return _
           // })
-          .then(ApiPaginateHelper.make())
+          .then(Paginate.make()) as Promise<Ip.Paginate<Ip.Submission>>
       )
     },
   })
@@ -193,7 +156,6 @@ export class FormAnswersService {
       answers: _.answers,
       id: _.id,
       uuid: _.uuid,
-      date: _.date,
       start: _.start,
       end: _.end,
       submissionTime: _.submissionTime,
@@ -217,52 +179,6 @@ export class FormAnswersService {
       skipDuplicates: true,
     })
   }
-
-  // readonly generateXLSFromAnswers = async ({
-  //   fileName,
-  //   formId,
-  //   data,
-  //   langIndex,
-  //   password,
-  // }: {
-  //   fileName: string
-  //   formId: Ip.FormId,
-  //   data: DbKoboAnswer[],
-  //   langIndex?: number
-  //   password?: string
-  // }) => {
-  //   const koboFormDetails = await this.getFormDetails(formId)
-  //   const translated = langIndex !== undefined ? await this.translateForm({formId, langIndex, data}) : data
-  //   const flatTranslated = translated.map(({answers, ...meta}) => ({...meta, ...answers}))
-  //   const columns = (() => {
-  //     const metaColumns: (keyof Kobo.Submission.MetaData)[] = ['id', 'submissionTime', 'version']
-  //     const schemaColumns = koboFormDetails.content.survey.filter(filterKoboQuestionType)
-  //       .map(_ => langIndex !== undefined && _.label
-  //         ? removeHtml(_.label[langIndex]) ?? _.name
-  //         : _.name)
-  //     return [...metaColumns, ...schemaColumns]
-  //   })()
-  //   const workbook = await XlsxPopulate.fromBlankAsync()
-  //   const sheet = workbook.sheet('Sheet1')
-  //   sheet.cell('A1').value([columns] as any)
-  //   sheet.cell('A2').value(flatTranslated.map(a =>
-  //     columns.map(_ => a[_])
-  //   ) as any)
-  //
-  //   const findColumnByName = (name: string) => convertNumberIndexToLetter(Object.keys(columns).indexOf(name))
-  //
-  //   sheet.freezePanes(2, 1)
-  //   // const ['start', 'end', 'su']
-  //   sheet.column('A').width(11)
-  //   sheet.column('B').width(11)
-  //   sheet.row(1).style({
-  //     'bold': true,
-  //     'fill': 'f2f2f2',
-  //     'fontColor': '6e7781',
-  //   })
-  //
-  //   workbook.toFileAsync(appConf.rootProjectDir + `/${fileName}.xlsx`, {password})
-  // }
 
   private static readonly safeJsonValue = (_: string): string => _.replace(/'/g, "''")
 
@@ -347,7 +263,7 @@ export class FormAnswersService {
   }: {
     formId: Ip.FormId
     answerIds: Kobo.SubmissionId[]
-    status: KoboValidation
+    status: Ip.Submission.Validation
     authorEmail: string
   }) => {
     const mappedValidation = KoboHelper.mapValidation.toKobo(status)

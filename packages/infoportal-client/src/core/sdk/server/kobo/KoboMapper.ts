@@ -2,6 +2,7 @@ import {KoboSubmission, KoboSubmissionFlat, KoboSubmissionMetaData, UUID} from '
 import {Obj} from '@axanc/ts-utils'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Kobo} from 'kobo-sdk'
+import {Ip} from 'infoportal-api-sdk'
 
 /** @deprecated use from sdk*/
 export type KoboServer = {
@@ -18,12 +19,13 @@ export type KoboMappedAnswerType = string | string[] | Date | number | undefined
 export type KoboMappedAnswer = KoboSubmissionMetaData & Record<string, KoboMappedAnswerType>
 
 export class KoboMapper {
-  static readonly mapAnswerBySchema = (
+  static readonly mapSubmissionBySchema = (
     indexedSchema: Record<string, Kobo.Form.Question>,
-    answers: KoboSubmissionFlat,
+    submissions: Ip.Submission,
   ): KoboMappedAnswer => {
-    const mapped: KoboMappedAnswer = {...answers}
-    Obj.entries(mapped).forEach(([question, answer]) => {
+    const {answers, ...meta} = submissions
+    const res: KoboMappedAnswer = {...meta}
+    Obj.entries(answers).forEach(([question, answer]) => {
       const type = indexedSchema[question]?.type
       if (!type || !answer) return
       switch (type) {
@@ -49,7 +51,7 @@ export class KoboMapper {
     return mapped
   }
 
-  static readonly unmapAnswerBySchema = (
+  static readonly unmapSubmissionBySchema = (
     schemaQuestionIndex: Record<string, Kobo.Form.Question>,
     mapped: KoboMappedAnswer,
   ): KoboSubmissionFlat => {

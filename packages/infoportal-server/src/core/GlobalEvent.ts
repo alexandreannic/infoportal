@@ -1,7 +1,7 @@
 import {EventEmitter} from 'events'
 import {app} from '../index.js'
 import {Kobo} from 'kobo-sdk'
-import {KoboValidation} from 'infoportal-common'
+import {Ip} from 'infoportal-api-sdk'
 
 export namespace GlobalEvent {
   export interface KoboTagEditedParams {
@@ -23,7 +23,7 @@ export namespace GlobalEvent {
   export interface KoboValidationEditedParams {
     formId: Kobo.FormId
     answerIds: Kobo.SubmissionId[]
-    status?: KoboValidation
+    status?: Ip.Submission.Validation
     index?: number
     total?: number
   }

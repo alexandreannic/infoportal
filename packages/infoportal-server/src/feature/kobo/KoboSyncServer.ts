@@ -10,6 +10,7 @@ import {AppError} from '../../helper/Errors.js'
 import {appConf} from '../../core/conf/AppConf.js'
 import {genUUID, previewList, Util} from '../../helper/Utils.js'
 import {Kobo, KoboSubmissionFormatter} from 'kobo-sdk'
+import {Ip} from 'infoportal-api-sdk'
 
 export type KoboSyncServerResult = {
   answersIdsDeleted: Kobo.FormId[]
@@ -29,7 +30,7 @@ export class KoboSyncServer {
     private log: AppLogger = app.logger('KoboSyncServer'),
   ) {}
 
-  private static readonly mapAnswer = (k: Kobo.Submission.Raw): KoboSubmission => {
+  private static readonly mapAnswer = (k: Kobo.Submission.Raw): Ip.Submission => {
     const {
       ['formhub/uuid']: formhubUuid,
       ['meta/instanceId']: instanceId,
@@ -209,7 +210,6 @@ export class KoboSyncServer {
           answers: _.answers,
           id: _.id,
           uuid: _.uuid,
-          date: _.date,
           start: _.start,
           end: _.end,
           submissionTime: _.submissionTime,
@@ -300,7 +300,6 @@ export class KoboSyncServer {
             data: {
               uuid: a.uuid,
               attachments: a.attachments,
-              date: a.date,
               start: a.start,
               end: a.end,
               answers: a.answers,
