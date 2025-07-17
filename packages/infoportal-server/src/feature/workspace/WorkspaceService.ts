@@ -4,8 +4,7 @@ import {InferType} from 'yup'
 import {slugify, UUID} from 'infoportal-common'
 import {GroupService} from '../group/GroupService.js'
 import {FormAccessService} from '../form/access/FormAccessService.js'
-
-export type WorkspaceCreate = InferType<typeof WorkspaceService.schema.create>
+import {Ip} from 'infoportal-api-sdk'
 
 export class WorkspaceService {
   constructor(
@@ -13,20 +12,6 @@ export class WorkspaceService {
     private group = new GroupService(prisma),
     private access = new FormAccessService(prisma),
   ) {}
-
-  static readonly schema = {
-    id: idParamsSchema,
-    slug: yup.object({
-      slug: yup.string().required(),
-    }),
-    create: yup.object({
-      slug: yup.string().required(),
-      name: yup.string().required(),
-    }),
-    update: yup.object({
-      name: yup.string().required(),
-    }),
-  }
 
   readonly getMe = async ({workspaceId, user}: {workspaceId: UUID; user: User}) => {
     const [accesses, groups] = await Promise.all([
@@ -36,6 +21,14 @@ export class WorkspaceService {
     return {
       accesses,
       groups,
+    }
+  }
+
+  readonly checkSlug = async (name: string) => {
+    const suggestedSlug = await this.getUniqSlug(name)
+    return {
+      isFree: name === suggestedSlug,
+      suggestedSlug,
     }
   }
 
@@ -80,7 +73,7 @@ export class WorkspaceService {
       })
   }
 
-  readonly create = async (data: WorkspaceCreate, user: User) => {
+  readonly create = async (data: Ip.Workspace.Payload.Create, user: User) => {
     return this.prisma.workspace.create({
       data: {
         ...data,
@@ -100,15 +93,15 @@ export class WorkspaceService {
     })
   }
 
-  readonly update = (id: UUID, data: Partial<WorkspaceCreate>) => {
+  readonly update = (id: UUID, data: Partial<Ip.Workspace.Payload.Update>) => {
     return this.prisma.workspace.update({
       where: {id},
       data: data,
     })
   }
 
-  readonly remove = (id: UUID) => {
-    return this.prisma.workspace.delete({
+  readonly remove = async (id: UUID) => {
+    await this.prisma.workspace.delete({
       where: {id},
     })
   }

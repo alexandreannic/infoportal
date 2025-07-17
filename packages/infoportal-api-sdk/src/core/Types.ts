@@ -37,8 +37,9 @@ export namespace Ip {
     }
 
     export type Workspace = {
-      form_canCreate: boolean
+      canUpdate: boolean
       canDelete: boolean
+      form_canCreate: boolean
       server_canGet: boolean
       server_canCreate: boolean
       server_canDelete: boolean
@@ -83,6 +84,11 @@ export namespace Ip {
 
   export namespace Workspace {
     export type Access = Prisma.WorkspaceAccess
+
+    export namespace Payload {
+      export type Create = Omit<Workspace, 'id' | 'createdAt' | 'createdBy'>
+      export type Update = {id: Uuid} & Partial<Omit<Workspace, 'id' | 'createdAt' | 'createdBy'>>
+    }
   }
 
   export namespace Server {

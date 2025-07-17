@@ -1,7 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {queryKeys} from '@/core/query/query.index'
-import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {duration} from '@axanc/ts-utils'
 
 export const useQueryWorkspace = {
@@ -12,19 +11,19 @@ export const useQueryWorkspace = {
 }
 
 function get() {
-  const {api} = useAppSettings()
+  const {apiv2} = useAppSettings()
   return useQuery({
     staleTime: duration(20, 'minute'),
     queryKey: queryKeys.workspaces(),
-    queryFn: () => api.workspace.getMine(),
+    queryFn: () => apiv2.workspace.getMine(),
   })
 }
 
 function create() {
-  const {api} = useAppSettings()
+  const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: api.workspace.create,
+    mutationFn: apiv2.workspace.create,
     onSuccess: res => {
       queryClient.invalidateQueries({queryKey: queryKeys.workspaces()})
     },
@@ -32,13 +31,11 @@ function create() {
 }
 
 function update() {
-  const {api} = useAppSettings()
+  const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (args: Parameters<ApiSdk['workspace']['update']>) => {
-      return api.workspace.update(...args)
-    },
+    mutationFn: apiv2.workspace.update,
     onSuccess: res => {
       queryClient.invalidateQueries({queryKey: queryKeys.workspaces()})
     },
@@ -46,11 +43,11 @@ function update() {
 }
 
 function remove() {
-  const {api} = useAppSettings()
+  const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: api.workspace.delete,
+    mutationFn: apiv2.workspace.remove,
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({queryKey: queryKeys.workspaces()})
     },

@@ -12,12 +12,10 @@ import {KoboAnswerHistorySdk} from '@/core/sdk/server/kobo/answerHistory/KoboAns
 import {CacheSdk} from '@/core/sdk/server/cache/CacheSdk'
 import {DatabaseViewSdk} from '@/core/sdk/server/databaseView/DatabaseViewSdk'
 import {ImportFromXlsDataSdk} from '@/core/sdk/server/importXls/ImportFromXlsSdk'
-import {WorkspaceSdk} from '@/core/sdk/server/workspace/WorkspaceSdk'
 import {WorkspaceAccessSdk} from './workspace/WorkspaceAccessSdk'
 
 export class ApiSdk {
   constructor(private client: ApiClient) {
-    this.workspace = new WorkspaceSdk(client)
     this.workspaceAccess = new WorkspaceAccessSdk(client)
     this.session = new SessionSdk(client)
     this.kobo = {
@@ -47,7 +45,6 @@ export class ApiSdk {
       },
     })
   }
-  readonly workspace: WorkspaceSdk
   readonly workspaceAccess: WorkspaceAccessSdk
   readonly session: SessionSdk
   readonly kobo: {

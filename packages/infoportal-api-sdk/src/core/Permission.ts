@@ -13,11 +13,12 @@ export namespace Permission {
 
   const permissionsMatrix = {
     global: define<Ip.Permission.Global>({
-      workspace_canCreate: Level.Admin,
+      workspace_canCreate: Level.Read,
       cache_manage: Level.Admin,
     }),
     workspace: define<Ip.Permission.Workspace>({
       canDelete: Level.Admin,
+      canUpdate: Level.Admin,
       server_canGet: Level.Read,
       server_canCreate: Level.Admin,
       server_canDelete: Level.Admin,

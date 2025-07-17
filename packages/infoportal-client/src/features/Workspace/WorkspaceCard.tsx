@@ -1,9 +1,9 @@
-import {Workspace} from '@/core/sdk/server/workspace/Workspace'
 import {Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
 import {Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Panel} from '@/shared/Panel'
 import {Link} from '@tanstack/react-router'
+import {Ip} from 'infoportal-api-sdk'
 
 export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
   const t = useTheme()
@@ -34,7 +34,7 @@ export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
   )
 }
 
-export const WorkspaceCard = ({workspace}: {workspace: Workspace}) => {
+export const WorkspaceCard = ({workspace}: {workspace: Ip.Workspace}) => {
   const {m, formatDate} = useI18n()
   const t = useTheme()
 
