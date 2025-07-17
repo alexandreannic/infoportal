@@ -16,7 +16,7 @@ export const useQuerySubmissionSearch = ({formId, workspaceId}: {formId: Kobo.Fo
   const query = useQuery({
     queryKey: queryKeys.answers(formId),
     queryFn: async () => {
-      const answersPromise = apiv2.form.submission.search({workspaceId, formId})
+      const answersPromise = apiv2.submission.search({workspaceId, formId})
       const schema = querySchema.data // ?? (await querySchema.refetch().then(r => r.data!))
       const answers = await answersPromise
       return Paginate.map((_: Ip.Submission) => KoboMapper.mapSubmissionBySchema(schema!.helper.questionIndex, _))(

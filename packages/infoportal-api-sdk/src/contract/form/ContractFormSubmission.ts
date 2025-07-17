@@ -34,7 +34,7 @@ export const mapFormSubmission = (_: Ip.Submission): Ip.Submission => {
 export const formSubmissionClient = (client: TsRestClient) => {
   return {
     search: ({workspaceId, formId, ...body}: Ip.Submission.Payload.Search) =>
-      client.form.submission
+      client.submission
         .search({
           params: {workspaceId, formId},
           body,

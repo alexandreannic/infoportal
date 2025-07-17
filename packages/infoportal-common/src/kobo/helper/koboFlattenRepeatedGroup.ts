@@ -1,9 +1,9 @@
-import {KoboSubmissionMetaData} from '../KoboMapper'
+import {Ip} from 'infoportal-api-sdk'
 
 export namespace KoboFlattenRepeatedGroup {
-  export type Data = Pick<KoboSubmissionMetaData, 'id' | 'submissionTime'> & Cursor & Record<string, any>
+  export type Data = Pick<Ip.Submission, 'id' | 'submissionTime'> & Cursor & Record<string, any>
 
-  type Row = Record<string, any> & Pick<KoboSubmissionMetaData, 'id' | 'submissionTime'>
+  type Row = Record<string, any> & Pick<Ip.Submission, 'id' | 'submissionTime'>
 
   export type Cursor = {
     _index?: number

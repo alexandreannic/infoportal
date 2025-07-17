@@ -15,6 +15,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
+import {getColumnBase} from '@/features/Form/Database/columns/columnsBase'
 
 export const databaseKoboRepeatRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -103,8 +104,8 @@ export const getColumnsForRepeatGroup = ({
       head: '_index',
       renderQuick: _ => '' + _._index,
     },
-    schemaGenerator.getId(),
-    schemaGenerator.getSubmissionTime(),
+    getColumnBase.id(),
+    getColumnBase.submissionTime({m}),
     ...schemaGenerator.getByQuestions(groupInfo.questions),
   )
   return res

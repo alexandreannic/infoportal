@@ -89,7 +89,7 @@ function Form() {
   useDefaultTabRedirect({workspaceId, formId})
 
   const outlet = useMemo(() => {
-    if (queryForm.isPending || querySchema.isPending || queryPermission.isPending) {
+    if (queryForm.isLoading || querySchema.isLoading || queryPermission.isLoading) {
       return <Page width="full" loading={true} />
     }
     if (!queryForm.data || !queryPermission.data || !querySchema.data) {
@@ -108,7 +108,7 @@ function Form() {
         <Outlet />
       </Context.Provider>
     )
-  }, [queryForm.status, queryForm.data, querySchema.status, querySchema.data, workspaceId])
+  }, [queryForm.status, queryForm.data, querySchema.status, queryPermission.data, workspaceId])
 
   return (
     <Page width="full">

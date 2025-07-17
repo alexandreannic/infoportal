@@ -29,9 +29,9 @@ export const buildIpClient = (baseUrl: string) => {
     permission: permissionClient(client),
     server: serverClient(client),
     kobo: koboClient(client),
+    submission: formSubmissionClient(client),
     form: {
       ...formClient(client),
-      submission: formSubmissionClient(client),
       access: formAccessClient(client),
       version: formVersionClient(client),
     },

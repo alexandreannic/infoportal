@@ -2,12 +2,12 @@ import {DialogAnswerEdit} from '@/features/Form/dialogs/DialogAnswerEdit'
 import {DialogAnswerView} from '@/features/Form/dialogs/DialogAnswerView'
 import {useQueryClient} from '@tanstack/react-query'
 import {useDialogs} from '@toolpad/core'
-import {KoboSubmissionFlat} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {create} from 'zustand'
 import {getKoboSchema} from '../query/useQuerySchema'
 import {KoboUpdateModal} from '@/shared/koboEdit/KoboUpdateModal'
 import {Ip} from 'infoportal-api-sdk'
+import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 
 type LangIndex = {
   langIndex: number
@@ -24,7 +24,7 @@ export const useLangIndex = create<LangIndex>(set => ({
 
 export interface OpenModalProps {
   workspaceId: Ip.Uuid
-  answer: KoboSubmissionFlat
+  answer: KoboMappedAnswer
   formId: Kobo.FormId
 }
 

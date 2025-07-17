@@ -9,7 +9,7 @@ import {useI18n} from '@/core/i18n/I18n'
 import {fnSwitch, map, seq} from '@axanc/ts-utils'
 import {TableIcon} from '@/shared/TableIcon'
 import React from 'react'
-import {DatatableHeadIcon, DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
+import {DatatableHeadIcon} from '@/shared/Datatable/DatatableHead'
 import {alpha, IconProps, Theme} from '@mui/material'
 import {IpBtn, TableEditCellBtn, Txt} from '@/shared'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
@@ -33,15 +33,15 @@ export const MissingOption = ({value}: {value?: string}) => {
 const ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['begin_group'])
 
 const noEditableColsId: Set<string> = new Set<keyof KoboSubmissionMetaData>([
-  'start',
-  'end',
-  'version',
+  // 'start',
+  // 'end',
+  // 'version',
   // 'date',
-  'uuid',
-  'validationStatus',
-  'validatedBy',
-  'lastValidatedTimestamp',
-  'geolocation',
+  // 'uuid',
+  // 'validationStatus',
+  // 'validatedBy',
+  // 'lastValidatedTimestamp',
+  // 'geolocation',
 ])
 
 const editableColsType: Set<Kobo.Form.QuestionType> = new Set([
@@ -454,56 +454,54 @@ export const columnBySchemaGenerator = ({
     return seq(questions).map(getByQuestion).compact()
   }
 
-  const getId = (): DatatableColumn.Props<any> => {
-    return {
-      type: 'id',
-      id: 'id',
-      head: 'ID',
-      typeIcon: <DatatableHeadIconByType type="id" />,
-      className: 'td-id',
-      style: row => {
-        const data = getRow(row) as KoboFlattenRepeatedGroup.Data
-        if (data[KoboFlattenRepeatedGroup.INDEX_COL]! > 0) {
-          return {
-            opacity: '.5',
-          }
-        }
-        return {}
-      },
-      renderQuick: (row: Row) => {
-        const data = getRow(row) as KoboFlattenRepeatedGroup.Data
-        const childIndex = data[KoboFlattenRepeatedGroup.INDEX_COL]
-        return (data.id ?? '') + (childIndex !== undefined ? '#' + (childIndex + 1) : '')
-      },
-    }
-  }
-
-  const getSubmissionTime = (): DatatableColumn.Props<any> => {
-    return {
-      head: m.submissionTime,
-      id: 'submissionTime',
-      type: 'date',
-      typeIcon: <DatatableHeadIconByType type="date" />,
-      render: (row: Row) => {
-        const _ = getRow(row)
-        const time = formatDateTime(_.submissionTime)
-        return {
-          label: formatDate(_.submissionTime),
-          value: _.submissionTime,
-          tooltip: time,
-          export: time,
-        }
-      },
-    }
-  }
+  // const getId = (): DatatableColumn.Props<any> => {
+  //   return {
+  //     type: 'id',
+  //     id: 'id',
+  //     head: 'ID',
+  //     typeIcon: <DatatableHeadIconByType type="id" />,
+  //     className: 'td-id',
+  //     style: row => {
+  //       const data = getRow(row) as KoboFlattenRepeatedGroup.Data
+  //       if (data[KoboFlattenRepeatedGroup.INDEX_COL]! > 0) {
+  //         return {
+  //           opacity: '.5',
+  //         }
+  //       }
+  //       return {}
+  //     },
+  //     renderQuick: (row: Row) => {
+  //       const data = getRow(row) as KoboFlattenRepeatedGroup.Data
+  //       const childIndex = data[KoboFlattenRepeatedGroup.INDEX_COL]
+  //       return (data.id ?? '') + (childIndex !== undefined ? '#' + (childIndex + 1) : '')
+  //     },
+  //   }
+  // }
+  //
+  // const getSubmissionTime = (): DatatableColumn.Props<any> => {
+  //   return {
+  //     head: m.submissionTime,
+  //     id: 'submissionTime',
+  //     type: 'date',
+  //     typeIcon: <DatatableHeadIconByType type="date" />,
+  //     render: (row: Row) => {
+  //       const _ = getRow(row)
+  //       const time = formatDateTime(_.submissionTime)
+  //       return {
+  //         label: formatDate(_.submissionTime),
+  //         value: _.submissionTime,
+  //         tooltip: time,
+  //         export: time,
+  //       }
+  //     },
+  //   }
+  // }
 
   const getAll = (): DatatableColumn.Props<any>[] => {
-    return [getId(), getSubmissionTime(), ...getByQuestions(schema.schemaFlatAndSanitized)]
+    return getByQuestions(schema.schemaFlatAndSanitized)
   }
 
   return {
-    getId,
-    getSubmissionTime,
     getBy,
     getAll,
     getByQuestion,

@@ -1,8 +1,10 @@
 import type * as Prisma from '@prisma/client'
 import {Kobo} from 'kobo-sdk'
-import {Permission} from './Permission'
 import {KeyOf} from '@axanc/ts-utils'
-import * as yup from 'yup'
+
+type ReplaceNullWithUndefined<T> = {
+  [K in keyof T]: Exclude<T[K], null> | Extract<T[K], null> extends never ? undefined : Exclude<T[K], null> | undefined
+}
 
 export namespace Ip {
   export type Uuid = string
@@ -139,6 +141,26 @@ export namespace Ip {
 
     export type Id = string
     export namespace Payload {
+      export type Create = {
+        id: string
+        uuid: string
+        formId: string
+        start: Date
+        end: Date
+        submissionTime: Date
+        submittedBy?: string
+        version?: string
+        validationStatus?: Validation
+        validatedBy?: string
+        source: Form.Source
+        lastValidatedTimestamp?: number
+        geolocation: [number, number] | [null, null]
+        answers: Record<string, any>
+        attachments: Kobo.Submission.Attachment[]
+        deletedAt?: Date
+        deletedBy?: string
+      }
+
       export type Filter = {
         ids?: Kobo.FormId[]
         filterBy?: {
@@ -147,6 +169,7 @@ export namespace Ip {
           type?: 'array'
         }[]
       }
+
       export type Search = Pagination &
         Partial<Period> &
         Filter & {

@@ -121,16 +121,16 @@ model FormSubmission {
   uuid                   String
   form                   Form                      @relation(fields: [formId], references: [id])
   formId                 String
-  updatedAt              DateTime?
   start                  DateTime
   end                    DateTime
   submissionTime         DateTime
+  submittedBy            String?
   version                String?
   validationStatus       FormSubmissionValidation?
   validatedBy            String?
   source                 FormSource                @default(kobo)
   lastValidatedTimestamp Int?
-  geolocation            String?
+  geolocation            Int[]                     @default([])
   answers                Json
   attachments            Json[]
   deletedAt              DateTime?

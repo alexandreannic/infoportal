@@ -12,19 +12,8 @@ import {AppError} from '../../../helper/Errors.js'
 import {Util} from '../../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip, Paginate} from 'infoportal-api-sdk'
-import {
-  KoboCustomDirective,
-  KoboHelper,
-  KoboSubmission,
-  KoboSubmissionMetaData,
-  logPerformance,
-  UUID,
-} from 'infoportal-common'
+import {KoboCustomDirective, KoboHelper, KoboSubmissionMetaData, logPerformance, UUID} from 'infoportal-common'
 import Event = GlobalEvent.Event
-
-export type DbFormAnswer = KoboSubmission & {
-  formId: Ip.FormId
-}
 
 export class FormAnswersService {
   constructor(
@@ -41,13 +30,12 @@ export class FormAnswersService {
     user,
     workspaceId,
     ...params
-  }: {
-    formId: string
-    filters: KoboAnswersFilters
-    paginate?: Partial<Ip.Pagination>
-    user?: User
-    workspaceId: UUID
-  }): Promise<Ip.Paginate<Ip.Submission>> => {
+  }: KoboAnswersFilters &
+    Partial<Ip.Pagination> & {
+      formId: string
+      user?: User
+      workspaceId: UUID
+    }): Promise<Ip.Paginate<Ip.Submission>> => {
     if (!user) return Paginate.make()([])
     // TODO(Alex) reimplement
     if (user.accessLevel !== Ip.AccessLevel.Admin) {
@@ -71,8 +59,8 @@ export class FormAnswersService {
             return acc
           }, {} as const)
         Obj.entries(accessFilters).forEach(([question, answer]) => {
-          if (!params.filters.filterBy) params.filters.filterBy = []
-          params.filters.filterBy?.push({
+          if (!params.filterBy) params.filterBy = []
+          params.filterBy?.push({
             column: question,
             value: answer,
           })
@@ -105,6 +93,18 @@ export class FormAnswersService {
       return (
         this.prisma.formSubmission
           .findMany({
+            select: {
+              id: true,
+              start: true,
+              end: true,
+              submissionTime: true,
+              submittedBy: true,
+              version: true,
+              validationStatus: true,
+              geolocation: true,
+              answers: true,
+              attachments: true,
+            },
             take: paginate.limit,
             skip: paginate.offset,
             orderBy: [{submissionTime: 'desc'}],
@@ -149,30 +149,32 @@ export class FormAnswersService {
 
   private static readonly mapAnswer = (
     formId: Ip.FormId,
-    _: KoboSubmission,
+    _: Ip.Submission.Payload.Create,
   ): Prisma.FormSubmissionUncheckedCreateInput => {
-    return {
-      formId,
-      answers: _.answers,
-      id: _.id,
-      uuid: _.uuid,
-      start: _.start,
-      end: _.end,
-      submissionTime: _.submissionTime,
-      validationStatus: _.validationStatus,
-      lastValidatedTimestamp: _.lastValidatedTimestamp,
-      validatedBy: _.validatedBy,
-      version: _.version,
-      // source: serverId,
-      attachments: _.attachments,
-    }
+    _.formId = formId
+    return _ as any
+    // return {
+    //   formId,
+    // answers: _.answers,
+    // id: _.id,
+    // uuid: _.uuid,
+    // start: _.start,
+    // end: _.end,
+    // submissionTime: _.submissionTime,
+    // validationStatus: _.validationStatus,
+    // lastValidatedTimestamp: _.lastValidatedTimestamp,
+    // validatedBy: _.validatedBy,
+    // version: _.version,
+    // // source: serverId,
+    // attachments: _.attachments,
+    // }
   }
 
-  readonly create = (formId: Ip.FormId, answer: KoboSubmission) => {
+  readonly create = (formId: Ip.FormId, answer: Ip.Submission.Payload.Create) => {
     return this.prisma.formSubmission.create({data: FormAnswersService.mapAnswer(formId, answer)})
   }
 
-  readonly createMany = (formId: Ip.FormId, answers: KoboSubmission[]) => {
+  readonly createMany = (formId: Ip.FormId, answers: Ip.Submission.Payload.Create[]) => {
     const inserts = answers.map(_ => FormAnswersService.mapAnswer(formId, _))
     return this.prisma.formSubmission.createMany({
       data: inserts,
@@ -246,8 +248,8 @@ export class FormAnswersService {
       sdk.v2.submission.update({formId, submissionIds: answerIds, data: {[question]: answer}}),
       await this.prisma.$executeRawUnsafe(
         `UPDATE "KoboAnswers"
-         SET answers     = jsonb_set(answers, '{${question}}', '"${FormAnswersService.safeJsonValue(answer ?? '')}"'),
-             "updatedAt" = NOW()
+         SET answers = jsonb_set(answers, '{${question}}', '"${FormAnswersService.safeJsonValue(answer ?? '')}"'),
+             "end"   = NOW()
          WHERE id IN (${FormAnswersService.safeIds(answerIds).join(',')})
         `,
       ),
@@ -274,7 +276,7 @@ export class FormAnswersService {
         where: {id: {in: answerIds}},
         data: {
           validationStatus: status,
-          updatedAt: new Date(),
+          end: new Date(),
         },
       }),
       (async () => {
@@ -309,7 +311,7 @@ export class FormAnswersService {
         }
       })(),
       this.history.create({
-        type: 'tag',
+        type: 'validation',
         formId,
         answerIds,
         property: validationKey,

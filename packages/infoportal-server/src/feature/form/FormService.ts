@@ -61,7 +61,7 @@ export class FormService {
     return (await this.prisma.form.findFirst({where: {id}})) ?? undefined
   }
 
-  readonly update = async (params: Ip.Form.Payload.Update) => {
+  readonly update = async (params: Ip.Form.Payload.Update): Promise<Ip.Form> => {
     const {formId, archive, source} = params
 
     const koboUpdate$ = this.koboForm.update(params)

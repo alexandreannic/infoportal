@@ -88,14 +88,14 @@ export class ControllerKoboAnswer {
     res.send()
   }
 
-  readonly searchByUserAccess = async (req: Request, res: Response, next: NextFunction) => {
-    if (!isAuthenticated(req)) throw new AppError.Forbidden()
-    const workspaceId = getWorkspaceId(req)
-    const {formId} = req.params
-    const user = req.session.app.user
-    const filters = await answersFiltersValidation.validate(req.body)
-    const paginate = await validateApiPaginate.validate(req.body)
-    const answers = await this.service.searchAnswersByUsersAccess({workspaceId, formId, filters, paginate, user})
-    res.send(answers)
-  }
+  // readonly searchByUserAccess = async (req: Request, res: Response, next: NextFunction) => {
+  //   if (!isAuthenticated(req)) throw new AppError.Forbidden()
+  //   const workspaceId = getWorkspaceId(req)
+  //   const {formId} = req.params
+  //   const user = req.session.app.user
+  //   const filters = await answersFiltersValidation.validate(req.body)
+  //   const paginate = await validateApiPaginate.validate(req.body)
+  //   const answers = await this.service.searchAnswersByUsersAccess({workspaceId, formId, filters, paginate, user})
+  //   res.send(answers)
+  // }
 }

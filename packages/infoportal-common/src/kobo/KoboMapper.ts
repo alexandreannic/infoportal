@@ -22,12 +22,6 @@ export type KoboSubmissionMetaData = {
   updatedAt?: Date
 }
 
-export type KoboSubmission = KoboSubmissionMetaData & {
-  answers: Record<string, any>
-}
-
-export type KoboSubmissionFlat = KoboSubmissionMetaData & Record<string, any>
-
 export class KoboHelper {
   static readonly timestampToDate: {
     (_: number): Date

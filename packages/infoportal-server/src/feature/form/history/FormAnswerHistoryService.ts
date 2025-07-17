@@ -1,9 +1,9 @@
 import {Prisma, PrismaClient} from '@prisma/client'
 import {app, AppLogger} from '../../../index.js'
-import {ApiPaginateHelper} from 'infoportal-common'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {KoboAnswerHistoryHelper} from './FormAnswerHistoryType'
+import {Paginate} from 'infoportal-api-sdk'
 
 type Create = {
   authorEmail: string
@@ -11,7 +11,7 @@ type Create = {
   answerIds: Kobo.SubmissionId[]
 } & (
   | {
-      type: 'answer' | 'tag'
+      type: 'answer' | 'validation'
       newValue: any
       property: string
     }
@@ -49,7 +49,7 @@ export class FormAnswerHistoryService {
           answerIds: history.answers.map(_ => _.id),
         }))
       })
-      .then(ApiPaginateHelper.wrap())
+      .then(Paginate.wrap())
   }
 
   readonly create = async ({authorEmail, formId, answerIds, property, newValue, type}: Create) => {
@@ -67,14 +67,18 @@ export class FormAnswerHistoryService {
     }
     const currentByPrevValue = await this.prisma.formSubmission
       .findMany({
+        select: {
+          id: true,
+          validationStatus: true,
+          answers: true,
+        },
         where: {
           id: {in: answerIds},
         },
       })
       .then(res =>
         seq(res).groupBy(_ => {
-          const data: any = _[type === 'tag' ? 'tags' : 'answers'] ?? {}
-          return data[property]
+          return type === 'answer' ? (_.answers as any)[property] : _.validationStatus
         }),
       )
     return Promise.all(

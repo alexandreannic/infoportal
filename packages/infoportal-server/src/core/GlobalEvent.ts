@@ -1,28 +1,27 @@
 import {EventEmitter} from 'events'
 import {app} from '../index.js'
-import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 
 export namespace GlobalEvent {
   export interface KoboTagEditedParams {
-    formId: Kobo.FormId
-    answerIds: Kobo.SubmissionId[]
+    formId: Ip.FormId
+    answerIds: Ip.SubmissionId[]
     tags: Record<string, any>
     index?: number
     total?: number
   }
 
   export interface KoboAnswerEditedParams {
-    formId: Kobo.FormId
-    answerIds: Kobo.SubmissionId[]
+    formId: Ip.FormId
+    answerIds: Ip.SubmissionId[]
     answer: Record<string, any>
     index?: number
     total?: number
   }
 
   export interface KoboValidationEditedParams {
-    formId: Kobo.FormId
-    answerIds: Kobo.SubmissionId[]
+    formId: Ip.FormId
+    answerIds: Ip.SubmissionId[]
     status?: Ip.Submission.Validation
     index?: number
     total?: number
@@ -32,7 +31,7 @@ export namespace GlobalEvent {
     // extends KoboSyncServerResult
     index?: number
     total?: number
-    formId: Kobo.FormId
+    formId: Ip.FormId
   }
 
   export enum Event {

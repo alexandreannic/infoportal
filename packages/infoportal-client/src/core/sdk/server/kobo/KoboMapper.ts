@@ -1,6 +1,5 @@
-import {KoboSubmission, KoboSubmissionFlat, KoboSubmissionMetaData, UUID} from 'infoportal-common'
+import {UUID} from 'infoportal-common'
 import {Obj} from '@axanc/ts-utils'
-import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 
@@ -43,7 +42,7 @@ export class KoboMapper {
     indexedSchema: Record<string, Kobo.Form.Question>,
     answers: Ip.Submission['answers'],
   ): MappedAnswer => {
-    const res: MappedAnswer = {}
+    const res: MappedAnswer = {...answers}
     Obj.entries(answers).forEach(([question, answer]) => {
       const type = indexedSchema[question]?.type
       if (!type || !answer) return
@@ -103,21 +102,5 @@ export class KoboMapper {
       }
     })
     return res
-  }
-
-  static readonly mapAnswerMetaData = (k: Partial<Record<keyof KoboSubmissionMetaData, any>>): KoboSubmissionFlat => {
-    delete (k as any)['deviceid']
-    return {
-      ...k,
-      start: new Date(k.start),
-      end: new Date(k.end),
-      submissionTime: new Date(k.submissionTime),
-      version: k.version,
-      id: k.id,
-      validationStatus: k.validationStatus,
-      validatedBy: k.validatedBy,
-      lastValidatedTimestamp: k.lastValidatedTimestamp,
-      geolocation: k.geolocation,
-    } as any
   }
 }

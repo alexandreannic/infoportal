@@ -3,7 +3,7 @@ import {useI18n} from '@/core/i18n'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useIpToast} from '@/core/useToast'
 import {columnBySchemaGenerator} from '@/features/Form/Database/columns/columnBySchema'
-import {getColumnsBase} from '@/features/Form/Database/columns/columnsBase'
+import {getColumnBase} from '@/features/Form/Database/columns/columnsBase'
 import {useCustomSelectedHeader} from '@/features/Form/Database/customization/useCustomSelectedHeader'
 import {DatabaseImportBtn} from '@/features/Form/Database/DatabaseImportBtn'
 import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
@@ -27,6 +27,7 @@ import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
+import {buildFormColumns} from '@/features/Form/Database/columns/columns'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -70,7 +71,8 @@ export const DatabaseTableContent = ({
   }, [ctx.data, ctx.groupDisplay.get])
 
   const schemaColumns = useMemo(() => {
-    const schemaColumns = columnBySchemaGenerator({
+    const schemaColumns = buildFormColumns.byType.all({
+      getRow: (_: KoboMappedAnswer) => _.answers,
       formId: ctx.form.id,
       schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,
@@ -95,7 +97,7 @@ export const DatabaseTableContent = ({
           : undefined,
       m,
       t,
-    }).getAll()
+    })
     return databaseKoboDisplayBuilder({
       data: ctx.data ?? [],
       formId: ctx.form.id,
@@ -116,7 +118,7 @@ export const DatabaseTableContent = ({
   }, [ctx.data, ctx.schema.schema, langIndex, selectedIds, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: DatatableColumn.Props<any>[] = useMemo(() => {
-    const base = getColumnsBase({
+    const base = buildFormColumns.byMeta.all({
       selectedIds,
       queryUpdate: queryUpdate,
       workspaceId,
@@ -193,7 +195,7 @@ export const DatabaseTableContent = ({
         }}
         title={ctx.form.name}
         id={ctx.form.id}
-        getRenderRowKey={_ => _.id + (_._index ?? '')}
+        getRenderRowKey={_ => _.id + ((_ as any) /** TODO Make it typesafe?*/._index ?? '')}
         columns={columns}
         data={flatData}
         header={params => (

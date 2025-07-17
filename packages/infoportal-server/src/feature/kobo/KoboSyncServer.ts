@@ -1,4 +1,4 @@
-import {KoboHelper, KoboSubmission, logPerformance, UUID} from 'infoportal-common'
+import {KoboHelper, logPerformance, UUID} from 'infoportal-common'
 import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {app, AppCacheKey, AppLogger} from '../../index.js'
@@ -14,9 +14,9 @@ import {Ip} from 'infoportal-api-sdk'
 
 export type KoboSyncServerResult = {
   answersIdsDeleted: Kobo.FormId[]
-  answersCreated: KoboSubmission[]
-  answersUpdated: KoboSubmission[]
-  validationUpdated: KoboSubmission[]
+  answersCreated: Ip.Submission.Payload.Create[]
+  answersUpdated: Ip.Submission.Payload.Create[]
+  validationUpdated: Ip.Submission.Payload.Create[]
 }
 
 export class KoboSyncServer {
@@ -30,7 +30,7 @@ export class KoboSyncServer {
     private log: AppLogger = app.logger('KoboSyncServer'),
   ) {}
 
-  private static readonly mapAnswer = (k: Kobo.Submission.Raw): Ip.Submission => {
+  private static readonly mapAnswer = (k: Kobo.Submission.Raw): Ip.Submission.Payload.Create => {
     const {
       ['formhub/uuid']: formhubUuid,
       ['meta/instanceId']: instanceId,
@@ -53,9 +53,10 @@ export class KoboSyncServer {
     const answersUngrouped = KoboSubmissionFormatter.removePath(answers)
     const date = answersUngrouped.date ? new Date(answersUngrouped.date as number) : new Date(_submission_time)
     return {
+      formId: _xform_id_string,
+      source: 'kobo',
       attachments: _attachments ?? [],
-      geolocation: _geolocation,
-      date: date,
+      geolocation: _geolocation.filter(_ => _ !== null) as [number, number],
       start: start ?? date,
       end: end ?? date,
       submissionTime: new Date(_submission_time),
@@ -65,7 +66,7 @@ export class KoboSyncServer {
       submittedBy: _submitted_by,
       validationStatus: KoboHelper.mapValidation.fromKobo(k),
       lastValidatedTimestamp: _validation_status?.timestamp,
-      validatedBy: _validation_status?.by_whom,
+      // validatedBy: _validation_status?.by_whom,
       answers: answersUngrouped,
     }
   }
@@ -155,9 +156,9 @@ export class KoboSyncServer {
     const sdk = await this.koboSdkGenerator.getBy.formId(formId)
     this.debug(formId, `Fetch remote answers...`)
     const remoteAnswers = await sdk.v2.submission.getRaw({formId}).then(_ => _.results.map(KoboSyncServer.mapAnswer))
-    const remoteIdsIndex: Map<Kobo.FormId, KoboSubmission> = remoteAnswers.reduce(
+    const remoteIdsIndex: Map<Kobo.FormId, Ip.Submission.Payload.Create> = remoteAnswers.reduce(
       (map, curr) => map.set(curr.id, curr),
-      new Map<Kobo.FormId, KoboSubmission>(),
+      new Map<Kobo.FormId, Ip.Submission.Payload.Create>(),
     ) //new Map(remoteAnswers.map(_ => _.id))
     this.debug(formId, `Fetch remote answers... ${remoteAnswers.length} fetched.`)
 

@@ -17,9 +17,9 @@ export const ipContract = initContract().router({
     ...workspaceContract,
     access: workspaceAccessContract,
   },
+  submission: contractFormSubmission,
   form: {
     ...formContract,
-    submission: contractFormSubmission,
     access: formAccessContract,
     version: formVersionContract,
   },
