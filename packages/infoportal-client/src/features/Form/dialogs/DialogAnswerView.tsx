@@ -100,7 +100,7 @@ export const DialogAnswerView = ({
   payload: {schema, formId, answer, workspaceId},
 }: DialogProps<{
   workspaceId: Ip.Uuid
-  formId: Kobo.FormId
+  formId: Ip.FormId
   schema: KoboSchemaHelper.Bundle
   answer: KoboMappedAnswer
 }>) => {
@@ -151,13 +151,18 @@ const KoboAnswerFormView = ({
   schema: KoboSchemaHelper.Bundle
   showQuestionWithoutAnswer?: boolean
   answer: KoboMappedAnswer
-  formId: Kobo.FormId
+  formId: Ip.FormId
 }) => {
   return (
     <Box>
       {seq(schema.schemaSanitized.survey)
         .compactBy('name')
-        .filter(q => showQuestionWithoutAnswer || q.type === 'begin_group' || (answer[q.name] !== '' && answer[q.name]))
+        .filter(
+          q =>
+            showQuestionWithoutAnswer ||
+            q.type === 'begin_group' ||
+            (answer.answers[q.name] !== '' && answer.answers[q.name]),
+        )
         .map(q => (
           <Box key={q.name} sx={{mb: 1.5}}>
             <KoboAnswerQuestionView formId={formId} schema={schema} answer={answer} questionSchema={q} />
@@ -173,7 +178,7 @@ const KoboAnswerQuestionView = ({
   answer: row,
   formId,
 }: {
-  formId: Kobo.FormId
+  formId: Ip.FormId
   schema: KoboSchemaHelper.Bundle
   questionSchema: NonNullableKey<Kobo.Form.Question, 'name'>
   answer: KoboMappedAnswer
@@ -209,14 +214,14 @@ const KoboAnswerQuestionView = ({
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <Box>
             <Txt block size="small" color="hint">
-              {row[questionSchema.name] as string}
+              {row.answers[questionSchema.name] as string}
             </Txt>
             <KoboAttachedImg
               formId={formId}
               answerId={row.id}
               attachments={row.attachments}
               size={84}
-              fileName={row[questionSchema.name] as string}
+              fileName={row.answers[questionSchema.name] as string}
             />
           </Box>
         </>
@@ -226,7 +231,9 @@ const KoboAnswerQuestionView = ({
       return (
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
-          <KoboQuestionAnswerView icon="short_text">{row[questionSchema.name] as string}</KoboQuestionAnswerView>
+          <KoboQuestionAnswerView icon="short_text">
+            {row.answers[questionSchema.name] as string}
+          </KoboQuestionAnswerView>
         </>
       )
     }
@@ -234,7 +241,7 @@ const KoboAnswerQuestionView = ({
       return (
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
-          <KoboQuestionAnswerView icon="info">{row[questionSchema.name] as string}</KoboQuestionAnswerView>
+          <KoboQuestionAnswerView icon="info">{row.answers[questionSchema.name] as string}</KoboQuestionAnswerView>
         </>
       )
     }
@@ -242,7 +249,7 @@ const KoboAnswerQuestionView = ({
       return (
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
-          <Datatable columns={columns!} data={row[questionSchema.name] as any[]} id={questionSchema.name} />
+          <Datatable columns={columns!} data={row.answers[questionSchema.name] as any[]} id={questionSchema.name} />
         </>
       )
     }
@@ -254,7 +261,7 @@ const KoboAnswerQuestionView = ({
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <KoboQuestionAnswerView icon="event">
-            {formatDateTime(row[questionSchema.name] as Date)}
+            {formatDateTime(row.answers[questionSchema.name] as Date)}
           </KoboQuestionAnswerView>
         </>
       )
@@ -263,7 +270,7 @@ const KoboAnswerQuestionView = ({
       return (
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
-          {(row[questionSchema.name] as string[])?.map(_ => (
+          {(row.answers[questionSchema.name] as string[])?.map(_ => (
             <KoboQuestionAnswerView key={_} icon="check_box">
               {schema.translate.choice(questionSchema.name, _)}
             </KoboQuestionAnswerView>
@@ -276,7 +283,7 @@ const KoboAnswerQuestionView = ({
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <KoboQuestionAnswerView icon="radio_button_checked">
-            {schema.translate.choice(questionSchema.name, row[questionSchema.name] as string)}
+            {schema.translate.choice(questionSchema.name, row.answers[questionSchema.name] as string)}
           </KoboQuestionAnswerView>
         </>
       )
@@ -285,7 +292,7 @@ const KoboAnswerQuestionView = ({
       return (
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
-          <KoboQuestionAnswerView icon="functions">{row[questionSchema.name] as string}</KoboQuestionAnswerView>
+          <KoboQuestionAnswerView icon="functions">{row.answers[questionSchema.name] as string}</KoboQuestionAnswerView>
         </>
       )
     case 'decimal':
@@ -293,7 +300,7 @@ const KoboAnswerQuestionView = ({
       return (
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
-          <KoboQuestionAnswerView icon="tag">{row[questionSchema.name] as string}</KoboQuestionAnswerView>
+          <KoboQuestionAnswerView icon="tag">{row.answers[questionSchema.name] as string}</KoboQuestionAnswerView>
         </>
       )
     }
@@ -301,7 +308,9 @@ const KoboAnswerQuestionView = ({
       return (
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
-          <KoboQuestionAnswerView icon="short_text">{JSON.stringify(row[questionSchema.name])}</KoboQuestionAnswerView>
+          <KoboQuestionAnswerView icon="short_text">
+            {JSON.stringify(row.answers[questionSchema.name])}
+          </KoboQuestionAnswerView>
         </>
       )
     }

@@ -14,9 +14,13 @@ export type KoboServer = {
   workspaceId: UUID
 }
 
-export type KoboMappedAnswerType = string | string[] | Date | number | undefined | KoboSubmissionFlat[]
+export type KoboMappedAnswerType = string | string[] | Date | number | undefined
 
-export type KoboMappedAnswer = KoboSubmissionMetaData & Record<string, KoboMappedAnswerType>
+export type MappedAnswer = {
+  [key: string]: KoboMappedAnswerType | MappedAnswer[]
+}
+
+export type KoboMappedAnswer = Ip.Submission<MappedAnswer>
 
 export class KoboMapper {
   static readonly mapSubmissionBySchema = (
@@ -24,23 +28,38 @@ export class KoboMapper {
     submissions: Ip.Submission,
   ): KoboMappedAnswer => {
     const {answers, ...meta} = submissions
-    const res: KoboMappedAnswer = {...meta}
+    return {...meta, answers: KoboMapper.mapAnswerBySchema(indexedSchema, answers)}
+  }
+
+  static readonly unmapSubmissionBySchema = (
+    indexedSchema: Record<string, Kobo.Form.Question>,
+    mapped: KoboMappedAnswer,
+  ): Ip.Submission => {
+    const {answers, ...meta} = mapped
+    return {...meta, answers: KoboMapper.unmapAnswersBySchema(indexedSchema, answers)}
+  }
+
+  private static readonly mapAnswerBySchema = (
+    indexedSchema: Record<string, Kobo.Form.Question>,
+    answers: Ip.Submission['answers'],
+  ): MappedAnswer => {
+    const res: MappedAnswer = {}
     Obj.entries(answers).forEach(([question, answer]) => {
       const type = indexedSchema[question]?.type
       if (!type || !answer) return
       switch (type) {
         case 'today':
         case 'date': {
-          ;(mapped as any)[question] = new Date(answer as Date)
+          res[question] = new Date(answer as Date)
           break
         }
         case 'select_multiple': {
-          mapped[question] = (answer as string).split(' ')
+          res[question] = (answer as string).split(' ')
           break
         }
         case 'begin_repeat': {
-          if (mapped[question]) {
-            mapped[question] = (mapped[question] as any).map((_: any) => KoboMapper.mapAnswerBySchema(indexedSchema, _))
+          if (res[question]) {
+            res[question] = (res[question] as any).map((_: any) => KoboMapper.mapAnswerBySchema(indexedSchema, _))
           }
           break
         }
@@ -48,35 +67,34 @@ export class KoboMapper {
           break
       }
     })
-    return mapped
+    return res
   }
 
-  static readonly unmapSubmissionBySchema = (
-    schemaQuestionIndex: Record<string, Kobo.Form.Question>,
-    mapped: KoboMappedAnswer,
-  ): KoboSubmissionFlat => {
-    const flat: KoboSubmissionFlat = {...mapped}
-
-    Obj.entries(flat).forEach(([question, answer]) => {
-      const type = schemaQuestionIndex[question]?.type
+  private static readonly unmapAnswersBySchema = (
+    indexedSchema: Record<string, Kobo.Form.Question>,
+    answers: MappedAnswer,
+  ): Ip.Submission['answers'] => {
+    const res: Ip.Submission['answers'] = {}
+    Obj.entries(answers).forEach(([question, answer]) => {
+      const type = indexedSchema[question]?.type
       if (!type || !answer) return
       switch (type) {
         case 'today':
         case 'date': {
           if (answer instanceof Date) {
-            flat[question] = answer.toISOString().split('T')[0]
+            res[question] = answer.toISOString().split('T')[0]
           }
           break
         }
         case 'select_multiple': {
           if (Array.isArray(answer)) {
-            flat[question] = answer.join(' ')
+            res[question] = answer.join(' ')
           }
           break
         }
         case 'begin_repeat': {
           if (Array.isArray(answer)) {
-            flat[question] = answer.map(item => KoboMapper.unmapAnswerBySchema(schemaQuestionIndex, item))
+            res[question] = (answer as MappedAnswer[]).map(item => KoboMapper.unmapAnswersBySchema(indexedSchema, item))
           }
           break
         }
@@ -84,8 +102,7 @@ export class KoboMapper {
           break
       }
     })
-
-    return flat
+    return res
   }
 
   static readonly mapAnswerMetaData = (k: Partial<Record<keyof KoboSubmissionMetaData, any>>): KoboSubmissionFlat => {
@@ -94,7 +111,6 @@ export class KoboMapper {
       ...k,
       start: new Date(k.start),
       end: new Date(k.end),
-      date: new Date(k.date),
       submissionTime: new Date(k.submissionTime),
       version: k.version,
       id: k.id,
