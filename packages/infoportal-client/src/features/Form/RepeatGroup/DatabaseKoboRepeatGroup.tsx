@@ -1,7 +1,7 @@
 import {useI18n} from '@/core/i18n'
 import {useQuerySubmissionSearch} from '@/core/query/useQuerySubmissionSearch'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {columnBySchemaGenerator, ColumnBySchemaGeneratorProps} from '@/features/Form/Database/columns/columnBySchema'
+import {ColumnBySchemaGeneratorProps} from '@/features/Form/Database/columns/columnBySchema'
 import {IpBtn, Page} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
@@ -15,7 +15,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
-import {getColumnBase} from '@/features/Form/Database/columns/columnsBase'
+import {buildFormColumns} from '@/features/Form/Database/columns/columns'
 
 export const databaseKoboRepeatRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -74,13 +74,6 @@ export const getColumnsForRepeatGroup = ({
 }) => {
   const groupInfo = schema.helper.group.getByName(groupName)!
   const res: DatatableColumn.Props<KoboFlattenRepeatedGroup.Data>[] = []
-  const schemaGenerator = columnBySchemaGenerator({
-    onRepeatGroupClick,
-    formId,
-    schema,
-    t,
-    m,
-  })
   if (groupInfo.depth > 1) {
     res.push(
       {
@@ -104,9 +97,16 @@ export const getColumnsForRepeatGroup = ({
       head: '_index',
       renderQuick: _ => '' + _._index,
     },
-    getColumnBase.id(),
-    getColumnBase.submissionTime({m}),
-    ...schemaGenerator.getByQuestions(groupInfo.questions),
+    buildFormColumns.meta.id(),
+    buildFormColumns.meta.submissionTime({m}),
+    ...buildFormColumns.type.byQuestions({
+      formId,
+      questions: groupInfo.questions,
+      onRepeatGroupClick,
+      schema,
+      t,
+      m,
+    }),
   )
   return res
 }
@@ -163,12 +163,17 @@ const DatabaseKoboRepeat = ({
   }, [formId, group, schema, data])
 
   const flat = useMemo(() => {
-    return KoboFlattenRepeatedGroup.run({data: data ?? [], path: paths})
+    return KoboFlattenRepeatedGroup.run({
+      data: data?.map(_ => ({id: _.id, submissionTime: _.submissionTime, ..._.answers})) ?? [],
+      path: paths,
+    })
   }, [data, groupInfo])
 
   return (
     <Datatable
-      defaultFilters={{}}
+      defaultFilters={{
+        id,
+      }}
       header={
         groupInfo.depth > 1 ? (
           <Link

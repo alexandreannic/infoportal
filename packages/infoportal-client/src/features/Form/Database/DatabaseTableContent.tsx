@@ -2,8 +2,6 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useIpToast} from '@/core/useToast'
-import {columnBySchemaGenerator} from '@/features/Form/Database/columns/columnBySchema'
-import {getColumnBase} from '@/features/Form/Database/columns/columnsBase'
 import {useCustomSelectedHeader} from '@/features/Form/Database/customization/useCustomSelectedHeader'
 import {DatabaseImportBtn} from '@/features/Form/Database/DatabaseImportBtn'
 import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
@@ -71,7 +69,7 @@ export const DatabaseTableContent = ({
   }, [ctx.data, ctx.groupDisplay.get])
 
   const schemaColumns = useMemo(() => {
-    const schemaColumns = buildFormColumns.byType.all({
+    const schemaColumns = buildFormColumns.type.bySchema({
       getRow: (_: KoboMappedAnswer) => _.answers,
       formId: ctx.form.id,
       schema: ctx.schema,
@@ -118,7 +116,7 @@ export const DatabaseTableContent = ({
   }, [ctx.data, ctx.schema.schema, langIndex, selectedIds, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: DatatableColumn.Props<any>[] = useMemo(() => {
-    const base = buildFormColumns.byMeta.all({
+    const base = buildFormColumns.meta.all({
       selectedIds,
       queryUpdate: queryUpdate,
       workspaceId,

@@ -22,7 +22,7 @@ import {TableIconBtn} from '@/shared/TableIcon'
 import {SelectStatusBy} from '@/shared/customInput/SelectStatus'
 
 export const buildFormColumns = {
-  byType: {
+  type: {
     selectOneFromFile: selectOneFromFile,
     text: text,
     integer: integer,
@@ -32,9 +32,10 @@ export const buildFormColumns = {
     selectMultiple: selectMultiple,
     geopoint: geopoint,
     unknown: unknown,
-    all: byType,
+    bySchema,
+    byQuestions,
   },
-  byMeta: {
+  meta: {
     id: id,
     submissionTime: submissionTime,
     start: start,
@@ -95,17 +96,17 @@ function getCommon({
   }
 }
 
-function byType(
-  props: Pick<
-    Props,
-    // | 'translateQuestion'
-    // | 'q'
-    // | 'choicesIndex'
-    // | 'translateChoice'
-    'onEdit' | 'getRow' | 'schema' | 'formId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
-  >,
-): DatatableColumn.Props<Row>[] {
-  const ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['begin_group'])
+function byQuestions({
+  questions,
+  ...props
+}: {questions: Kobo.Form.Question[]} & Pick<
+  Props,
+  // | 'translateQuestion'
+  // | 'q'
+  // | 'choicesIndex'
+  // | 'translateChoice'
+  'onEdit' | 'getRow' | 'schema' | 'formId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
+>): DatatableColumn.Props<Row>[] {
   const getBy = (q: Question): DatatableColumn.Props<Row> | undefined => {
     const args = {
       q,
@@ -137,11 +138,21 @@ function byType(
     }
     return map[q.type]
   }
+  return questions.map(getBy).filter(_ => !!_)
+}
 
-  return props.schema.schemaFlatAndSanitized
-    .filter(q => !ignoredColType.has(q.type))
-    .map(getBy)
-    .filter(_ => !!_)
+function bySchema(
+  props: Pick<
+    Props,
+    // | 'translateQuestion'
+    // | 'q'
+    // | 'choicesIndex'
+    // | 'translateChoice'
+    'onEdit' | 'getRow' | 'schema' | 'formId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
+  >,
+): DatatableColumn.Props<Row>[] {
+  const ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['begin_group'])
+  return byQuestions({...props, questions: props.schema.schemaFlatAndSanitized.filter(q => !ignoredColType.has(q.type))})
 }
 
 function selectOneFromFile(props: CommonProps & Pick<Props, 'externalFilesIndex'>): DatatableColumn.Props<Row> {
@@ -362,7 +373,7 @@ type MetaProps = {
   m: Messages
 }
 
-function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'>): DatatableColumn.Props<Row> {
+function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'> = {}): DatatableColumn.Props<Row> {
   return {
     type: 'id',
     id: 'id' as const,
