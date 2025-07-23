@@ -1,11 +1,14 @@
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {KoboSchemaHelper} from 'infoportal-common'
-import {
-  colorRepeatedQuestionHeader,
-  columnBySchemaGenerator,
-  ColumnBySchemaGeneratorProps,
-} from '../columns/columnBySchema'
 import {mapFor} from '@axanc/ts-utils'
+import {Messages} from '@/core/i18n/localization/en'
+import {Theme} from '@mui/material'
+import {Ip} from 'infoportal-api-sdk'
+import {
+  BuildFormColumnProps,
+  buildDatabaseColumns,
+  colorRepeatedQuestionHeader,
+} from '@/features/Form/Database/columns/databaseColumnBuilder'
 
 export type DatabaseDisplay = {
   repeatAs?: 'rows' | 'columns'
@@ -16,10 +19,10 @@ type DatabaseKoboDisplayProps = {
   data: Record<string, any>[]
   display: DatabaseDisplay
   schema: KoboSchemaHelper.Bundle
-  formId: ColumnBySchemaGeneratorProps['formId']
-  onRepeatGroupClick?: ColumnBySchemaGeneratorProps['onRepeatGroupClick']
-  m: ColumnBySchemaGeneratorProps['m']
-  t: ColumnBySchemaGeneratorProps['t']
+  formId: Ip.FormId
+  onRepeatGroupClick?: BuildFormColumnProps['onRepeatGroupClick']
+  m: Messages
+  t: Theme
 }
 
 export const databaseKoboDisplayBuilder = ({
@@ -41,15 +44,16 @@ export const databaseKoboDisplayBuilder = ({
             const index = copy.findIndex(_ => _.id == group.name)
             const groupSize = Math.max(...data.map(_ => _[group.name]?.length ?? 0))
             mapFor(groupSize, repeat => {
-              const newCols = columnBySchemaGenerator({
-                schema,
-                onRepeatGroupClick,
-                getRow: _ => _[group.name]?.[repeat] ?? {},
-                formId,
-                m,
-                t,
-              })
-                .getByQuestions(group.questions)
+              const newCols = buildDatabaseColumns.type
+                .byQuestions({
+                  questions: group.questions,
+                  schema,
+                  onRepeatGroupClick,
+                  getRow: _ => _[group.name]?.[repeat] ?? {},
+                  formId,
+                  m,
+                  t,
+                })
                 .map((_, i) => {
                   _.head = `[${repeat}] ${_.head}`
                   _.group = group.name + repeat
@@ -74,14 +78,15 @@ export const databaseKoboDisplayBuilder = ({
         if (!display.repeatGroupName) return columns
         const group = schema.helper.group.getByName(display.repeatGroupName)
         if (!group || group.depth > 1) return columns
-        const repeatGroupColumns = columnBySchemaGenerator({
-          schema,
-          onRepeatGroupClick,
-          formId,
-          m,
-          t,
-        })
-          .getByQuestions(group.questions)
+        const repeatGroupColumns = buildDatabaseColumns.type
+          .byQuestions({
+            questions: group.questions,
+            schema,
+            onRepeatGroupClick,
+            formId,
+            m,
+            t,
+          })
           .map(_ => {
             _.styleHead = {
               background: colorRepeatedQuestionHeader(t),

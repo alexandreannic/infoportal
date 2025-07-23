@@ -1,11 +1,6 @@
 import {formatDate, formatDateTime, Messages} from '@/core/i18n/localization/en'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import React from 'react'
-import {
-  colorRepeatedQuestionHeader,
-  DatatableHeadTypeIconByKoboType,
-  MissingOption,
-} from '@/features/Form/Database/columns/columnBySchema'
 import {Kobo} from 'kobo-sdk'
 import {map} from '@axanc/ts-utils'
 import {IpBtn, TableEditCellBtn, Txt} from '@/shared'
@@ -14,14 +9,16 @@ import {KoboExternalFilesIndex} from '@/features/Form/Database/DatabaseContext'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {Ip} from 'infoportal-api-sdk'
-import {Theme} from '@mui/material'
+import {alpha, Theme} from '@mui/material'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useKoboDialogs} from '@/core/store/useLangIndex'
-import {TableIconBtn} from '@/shared/TableIcon'
+import {TableIcon, TableIconBtn} from '@/shared/TableIcon'
 import {SelectStatusBy} from '@/shared/customInput/SelectStatus'
+import {useI18n} from '@/core/i18n'
+import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
 
-export const buildFormColumns = {
+export const buildDatabaseColumns = {
   type: {
     selectOneFromFile: selectOneFromFile,
     text: text,
@@ -44,15 +41,30 @@ export const buildFormColumns = {
   },
 }
 
-type Row = KoboFlattenRepeatedGroup.Data
-type Data = Record<string, any>
+const ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['begin_group'])
 
+const editableColsType: Set<Kobo.Form.QuestionType> = new Set([
+  'select_one',
+  'calculate',
+  'select_multiple',
+  'text',
+  'integer',
+  'decimal',
+  'date',
+  'datetime',
+])
+
+export const colorRepeatedQuestionHeader = (t: Theme) => alpha(t.palette.info.light, 0.22)
+
+type Row = KoboFlattenRepeatedGroup.Data
+
+type Data = Record<string, any>
 type Question = Pick<
   Kobo.Form.Question,
   'select_from_list_name' | 'file' | '$xpath' | 'appearance' | 'type' | 'label' | 'name'
 >
 
-type Props = {
+export type BuildFormColumnProps = {
   formId: Ip.FormId
   q: Question
   onEdit?: (name: string) => void
@@ -67,9 +79,9 @@ type Props = {
   m: Messages
 }
 
-type CommonProps = Pick<Props, 'getRow' | 'q' | 'onEdit' | 'translateQuestion'>
+type CommonProps = Pick<BuildFormColumnProps, 'getRow' | 'q' | 'onEdit' | 'translateQuestion'>
 
-function getValue({q, row, getRow = _ => _ as Row}: Pick<Props, 'q' | 'getRow'> & {row: Row}): any {
+function getValue({q, row, getRow = _ => _ as Row}: Pick<BuildFormColumnProps, 'q' | 'getRow'> & {row: Row}): any {
   return getRow(row)[q.name]
 }
 
@@ -100,7 +112,7 @@ function byQuestions({
   questions,
   ...props
 }: {questions: Kobo.Form.Question[]} & Pick<
-  Props,
+  BuildFormColumnProps,
   // | 'translateQuestion'
   // | 'q'
   // | 'choicesIndex'
@@ -108,33 +120,34 @@ function byQuestions({
   'onEdit' | 'getRow' | 'schema' | 'formId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
 >): DatatableColumn.Props<Row>[] {
   const getBy = (q: Question): DatatableColumn.Props<Row> | undefined => {
-    const args = {
+    const args = (isReadonly?: boolean) => ({
       q,
       translateQuestion: props.schema.translate.question,
       translateChoice: props.schema.translate.choice,
       choicesIndex: props.schema.helper.choicesIndex,
       ...props,
-    }
+      onEdit: isReadonly ? undefined : props.onEdit,
+    })
     const map: Partial<Record<Kobo.Form.QuestionType, DatatableColumn.Props<Row>>> = {
-      image: image(args),
-      file: file(args),
-      calculate: text(args),
-      select_one_from_file: selectOneFromFile(args),
-      username: text(args),
-      text: text(args),
-      deviceid: text(args),
-      decimal: integer(args),
-      integer: integer(args),
-      note: note(args),
-      end: date(args),
-      start: date(args),
-      datetime: date(args),
-      today: date(args),
-      date: date(args),
-      begin_repeat: repeatGroup(args),
-      select_one: selectOne(args),
-      select_multiple: selectMultiple(args),
-      geopoint: geopoint(args),
+      // username: text(args()),
+      // deviceid: text(args()),
+      // end: date(args()),
+      // start: date(args()),
+      calculate: text(args(true)),
+      text: text(args(true)),
+      decimal: integer(args(true)),
+      integer: integer(args(true)),
+      datetime: date(args(true)),
+      today: date(args(true)),
+      date: date(args(true)),
+      select_one: selectOne(args(true)),
+      select_multiple: selectMultiple(args(true)),
+      image: image(args()),
+      file: file(args()),
+      select_one_from_file: selectOneFromFile(args()),
+      note: note(args()),
+      begin_repeat: repeatGroup(args()),
+      geopoint: geopoint(args()),
     }
     return map[q.type]
   }
@@ -143,7 +156,7 @@ function byQuestions({
 
 function bySchema(
   props: Pick<
-    Props,
+    BuildFormColumnProps,
     // | 'translateQuestion'
     // | 'q'
     // | 'choicesIndex'
@@ -151,11 +164,15 @@ function bySchema(
     'onEdit' | 'getRow' | 'schema' | 'formId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
   >,
 ): DatatableColumn.Props<Row>[] {
-  const ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['begin_group'])
-  return byQuestions({...props, questions: props.schema.schemaFlatAndSanitized.filter(q => !ignoredColType.has(q.type))})
+  return byQuestions({
+    ...props,
+    questions: props.schema.schemaFlatAndSanitized.filter(q => !ignoredColType.has(q.type)),
+  })
 }
 
-function selectOneFromFile(props: CommonProps & Pick<Props, 'externalFilesIndex'>): DatatableColumn.Props<Row> {
+function selectOneFromFile(
+  props: CommonProps & Pick<BuildFormColumnProps, 'externalFilesIndex'>,
+): DatatableColumn.Props<Row> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -177,7 +194,7 @@ function text(props: CommonProps): DatatableColumn.Props<Row> {
   }
 }
 
-function image(props: CommonProps & Pick<Props, 'formId'>): DatatableColumn.Props<Row> {
+function image(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): DatatableColumn.Props<Row> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -200,7 +217,7 @@ function image(props: CommonProps & Pick<Props, 'formId'>): DatatableColumn.Prop
   }
 }
 
-function file(props: CommonProps & Pick<Props, 'formId'>): DatatableColumn.Props<Row> {
+function file(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): DatatableColumn.Props<Row> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -261,7 +278,9 @@ function date(props: CommonProps): DatatableColumn.Props<Row> {
   }
 }
 
-function selectOne(props: CommonProps & Pick<Props, 'translateChoice' | 'm'>): DatatableColumn.Props<Row> {
+function selectOne(
+  props: CommonProps & Pick<BuildFormColumnProps, 'translateChoice' | 'm'>,
+): DatatableColumn.Props<Row> {
   return {
     ...getCommon(props),
     type: 'select_one',
@@ -281,7 +300,7 @@ function selectOne(props: CommonProps & Pick<Props, 'translateChoice' | 'm'>): D
 let lastError: string | undefined
 
 function selectMultiple(
-  props: CommonProps & Pick<Props, 'choicesIndex' | 'translateChoice'>,
+  props: CommonProps & Pick<BuildFormColumnProps, 'choicesIndex' | 'translateChoice'>,
 ): DatatableColumn.Props<Row> {
   return {
     ...getCommon(props),
@@ -316,7 +335,9 @@ function selectMultiple(
   }
 }
 
-function geopoint(props: CommonProps & Pick<Props, 'getRow' | 'q' | 'onEdit'>): DatatableColumn.Props<Row> {
+function geopoint(
+  props: CommonProps & Pick<BuildFormColumnProps, 'getRow' | 'q' | 'onEdit'>,
+): DatatableColumn.Props<Row> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -324,7 +345,7 @@ function geopoint(props: CommonProps & Pick<Props, 'getRow' | 'q' | 'onEdit'>): 
   }
 }
 
-function unknown(props: Props): DatatableColumn.Props<any> {
+function unknown(props: BuildFormColumnProps): DatatableColumn.Props<any> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -332,7 +353,9 @@ function unknown(props: Props): DatatableColumn.Props<any> {
   }
 }
 
-function repeatGroup(props: CommonProps & Pick<Props, 't' | 'onRepeatGroupClick'>): DatatableColumn.Props<Row> {
+function repeatGroup(
+  props: CommonProps & Pick<BuildFormColumnProps, 't' | 'onRepeatGroupClick'>,
+): DatatableColumn.Props<Row> {
   return {
     ...getCommon(props),
     type: 'number',
@@ -539,4 +562,14 @@ function validation({
 
 function byMeta(props: MetaProps): DatatableColumn.Props<any>[] {
   return [actions(props), validation(props), id(props), submissionTime(props)] as const
+}
+
+function MissingOption({value}: {value?: string}) {
+  const {m} = useI18n()
+  return (
+    <span title={value}>
+      <TableIcon color="disabled" tooltip={m._koboDatabase.valueNoLongerInOption} sx={{mr: 1}} children="error" />
+      {value}
+    </span>
+  )
 }

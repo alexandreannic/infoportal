@@ -25,7 +25,7 @@ import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
-import {buildFormColumns} from '@/features/Form/Database/columns/columns'
+import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -69,7 +69,7 @@ export const DatabaseTableContent = ({
   }, [ctx.data, ctx.groupDisplay.get])
 
   const schemaColumns = useMemo(() => {
-    const schemaColumns = buildFormColumns.type.bySchema({
+    const schemaColumns = buildDatabaseColumns.type.bySchema({
       getRow: (_: KoboMappedAnswer) => _.answers,
       formId: ctx.form.id,
       schema: ctx.schema,
@@ -116,7 +116,7 @@ export const DatabaseTableContent = ({
   }, [ctx.data, ctx.schema.schema, langIndex, selectedIds, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: DatatableColumn.Props<any>[] = useMemo(() => {
-    const base = buildFormColumns.meta.all({
+    const base = buildDatabaseColumns.meta.all({
       selectedIds,
       queryUpdate: queryUpdate,
       workspaceId,

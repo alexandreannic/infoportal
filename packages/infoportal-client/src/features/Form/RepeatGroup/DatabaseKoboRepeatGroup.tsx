@@ -1,13 +1,12 @@
 import {useI18n} from '@/core/i18n'
 import {useQuerySubmissionSearch} from '@/core/query/useQuerySubmissionSearch'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {ColumnBySchemaGeneratorProps} from '@/features/Form/Database/columns/columnBySchema'
 import {IpBtn, Page} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {Panel} from '@/shared/Panel'
 import {map} from '@axanc/ts-utils'
-import {useTheme} from '@mui/material'
+import {Theme, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo} from 'react'
@@ -15,7 +14,8 @@ import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
-import {buildFormColumns} from '@/features/Form/Database/columns/columns'
+import {BuildFormColumnProps, buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
+import {Messages} from '@/core/i18n/localization/en'
 
 export const databaseKoboRepeatRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -68,9 +68,9 @@ export const getColumnsForRepeatGroup = ({
   groupName: string
   formId: Kobo.FormId
   schema: KoboSchemaHelper.Bundle
-  onRepeatGroupClick?: ColumnBySchemaGeneratorProps['onRepeatGroupClick']
-  m: ColumnBySchemaGeneratorProps['m']
-  t: ColumnBySchemaGeneratorProps['t']
+  onRepeatGroupClick?: BuildFormColumnProps['onRepeatGroupClick']
+  m: Messages
+  t: Theme
 }) => {
   const groupInfo = schema.helper.group.getByName(groupName)!
   const res: DatatableColumn.Props<KoboFlattenRepeatedGroup.Data>[] = []
@@ -97,9 +97,9 @@ export const getColumnsForRepeatGroup = ({
       head: '_index',
       renderQuick: _ => '' + _._index,
     },
-    buildFormColumns.meta.id(),
-    buildFormColumns.meta.submissionTime({m}),
-    ...buildFormColumns.type.byQuestions({
+    buildDatabaseColumns.meta.id(),
+    buildDatabaseColumns.meta.submissionTime({m}),
+    ...buildDatabaseColumns.type.byQuestions({
       formId,
       questions: groupInfo.questions,
       onRepeatGroupClick,

@@ -3,7 +3,6 @@ import {useQuerySubmissionSearch} from '@/core/query/useQuerySubmissionSearch'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
 import {useLangIndex} from '@/core/store/useLangIndex'
-import {columnBySchemaGenerator} from '@/features/Form/Database/columns/columnBySchema'
 import {IpBtn} from '@/shared/Btn'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {IpIconBtn} from '@/shared/IconBtn'
@@ -32,6 +31,7 @@ import {useQueryFormById} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
+import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
 
 export const databaseAnswerViewRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -191,12 +191,13 @@ const KoboAnswerQuestionView = ({
     if (questionSchema.type !== 'begin_repeat') return
     const group = schema.helper.group.getByName(questionSchema.name)
     if (!group) return
-    return columnBySchemaGenerator({
-      m,
-      formId,
-      t,
+    return buildDatabaseColumns.type.byQuestions({
+      questions: group.questions,
       schema,
-    }).getByQuestions(group.questions)
+      formId,
+      m,
+      t,
+    })
   }, [schema.schemaSanitized, langIndex])
   switch (questionSchema.type) {
     case 'begin_group': {

@@ -1,4 +1,4 @@
-import {KoboCustomDirective, KoboSchemaHelper, nullValuesToUndefined, UUID} from 'infoportal-common'
+import {KoboSchemaHelper, nullValuesToUndefined, UUID} from 'infoportal-common'
 import React, {ReactElement, useCallback, useMemo} from 'react'
 import {Modal, Txt} from '@/shared'
 import {Autocomplete, Box, Chip, createFilterOptions, Icon} from '@mui/material'
@@ -8,9 +8,9 @@ import {map, seq} from '@axanc/ts-utils'
 import {useI18n} from '@/core/i18n'
 import {AccessForm, IAccessForm} from '@/features/Access/AccessForm'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
-import {DirectiveTemplate, koboIconMap} from '@/features/Form/Database/columns/columnBySchema'
 import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
+import {koboIconMap} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
 
 interface Form extends IAccessForm {
   question?: string
@@ -130,36 +130,20 @@ export const DatabaseAccessForm = ({
                     />
                   )}
                   renderOption={(props, option) => {
-                    if (indexQuestion[option].name.startsWith(KoboCustomDirective.make('TRIGGER_EMAIL'))) {
-                      const template = DirectiveTemplate.render.TRIGGER_EMAIL
-                      return (
-                        <Box component="li" {...props} key={option} sx={{color: template.color}}>
-                          <Icon color="disabled" sx={{mr: 1, color: template.color}}>
-                            {template.icon}
-                          </Icon>
-                          <div>
-                            <Txt bold block>
-                              {template.label(indexQuestion[option], m)}
-                            </Txt>
-                            <Txt color="disabled">{option}</Txt>
-                          </div>
-                        </Box>
-                      )
-                    } else
-                      return (
-                        <Box component="li" {...props} key={option}>
-                          <Icon color="disabled" sx={{mr: 1}}>
-                            {koboIconMap[indexQuestion[option].type]}
-                          </Icon>
-                          <div>
-                            <Txt block>
-                              {KoboSchemaHelper.getLabel(indexQuestion[option], langIndex).replace(/<[^>]+>/g, '') ??
-                                option}
-                            </Txt>
-                            <Txt color="disabled">{option}</Txt>
-                          </div>
-                        </Box>
-                      )
+                    return (
+                      <Box component="li" {...props} key={option}>
+                        <Icon color="disabled" sx={{mr: 1}}>
+                          {koboIconMap[indexQuestion[option].type]}
+                        </Icon>
+                        <div>
+                          <Txt block>
+                            {KoboSchemaHelper.getLabel(indexQuestion[option], langIndex).replace(/<[^>]+>/g, '') ??
+                              option}
+                          </Txt>
+                          <Txt color="disabled">{option}</Txt>
+                        </div>
+                      </Box>
+                    )
                   }}
                 />
               )}
