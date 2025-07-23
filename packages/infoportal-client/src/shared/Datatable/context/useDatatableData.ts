@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useState} from 'react'
-import {ApiPaginateHelper, KeyOf, multipleFilters, safeNumber} from 'infoportal-common'
+import {KeyOf, multipleFilters, safeNumber} from 'infoportal-common'
 import {fnSwitch, map, Obj} from '@axanc/ts-utils'
 import {
   DatatableColumn,
@@ -12,6 +12,7 @@ import {
 import {OrderBy} from '@axanc/react-hooks'
 import {usePersistentState} from '@/shared/hook/usePersistantState'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
+import {Paginate} from 'infoportal-api-sdk'
 
 export type UseDatatableData<T extends DatatableRow> = ReturnType<typeof useDatatableData<T>>
 
@@ -107,7 +108,7 @@ export const useDatatableData = <T extends DatatableRow>({
 
   const filteredSortedAndPaginatedData = useMemo(() => {
     if (!filteredAndSortedData) return
-    return ApiPaginateHelper.make(search.limit, search.offset)<T>(filteredAndSortedData)
+    return Paginate.make(search.limit, search.offset)<T>(filteredAndSortedData)
   }, [search.limit, search.offset, filteredAndSortedData])
 
   return {

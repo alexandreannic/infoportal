@@ -13,26 +13,26 @@ export type KoboServer = {
   workspaceId: UUID
 }
 
-export type KoboMappedAnswerType = string | string[] | Date | number | undefined
+export type SubmissionMappedType = string | string[] | Date | number | undefined
 
-export type MappedAnswer = {
-  [key: string]: KoboMappedAnswerType | MappedAnswer[]
+type SubmissionMapped = {
+  [key: string]: SubmissionMappedType | SubmissionMapped[]
 }
 
-export type KoboMappedAnswer = Ip.Submission<MappedAnswer>
+export type Submission = Ip.Submission<SubmissionMapped>
 
 export class KoboMapper {
   static readonly mapSubmissionBySchema = (
     indexedSchema: Record<string, Kobo.Form.Question>,
     submissions: Ip.Submission,
-  ): KoboMappedAnswer => {
+  ): Submission => {
     const {answers, ...meta} = submissions
     return {...meta, answers: KoboMapper.mapAnswerBySchema(indexedSchema, answers)}
   }
 
   static readonly unmapSubmissionBySchema = (
     indexedSchema: Record<string, Kobo.Form.Question>,
-    mapped: KoboMappedAnswer,
+    mapped: Submission,
   ): Ip.Submission => {
     const {answers, ...meta} = mapped
     return {...meta, answers: KoboMapper.unmapAnswersBySchema(indexedSchema, answers)}
@@ -41,8 +41,8 @@ export class KoboMapper {
   private static readonly mapAnswerBySchema = (
     indexedSchema: Record<string, Kobo.Form.Question>,
     answers: Ip.Submission['answers'],
-  ): MappedAnswer => {
-    const res: MappedAnswer = {...answers}
+  ): SubmissionMapped => {
+    const res: SubmissionMapped = {...answers}
     Obj.entries(answers).forEach(([question, answer]) => {
       const type = indexedSchema[question]?.type
       if (!type || !answer) return
@@ -71,7 +71,7 @@ export class KoboMapper {
 
   private static readonly unmapAnswersBySchema = (
     indexedSchema: Record<string, Kobo.Form.Question>,
-    answers: MappedAnswer,
+    answers: SubmissionMapped,
   ): Ip.Submission['answers'] => {
     const res: Ip.Submission['answers'] = {}
     Obj.entries(answers).forEach(([question, answer]) => {
@@ -93,7 +93,9 @@ export class KoboMapper {
         }
         case 'begin_repeat': {
           if (Array.isArray(answer)) {
-            res[question] = (answer as MappedAnswer[]).map(item => KoboMapper.unmapAnswersBySchema(indexedSchema, item))
+            res[question] = (answer as SubmissionMapped[]).map(item =>
+              KoboMapper.unmapAnswersBySchema(indexedSchema, item),
+            )
           }
           break
         }

@@ -12,7 +12,7 @@ import {AppError} from '../../../helper/Errors.js'
 import {Util} from '../../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip, Paginate} from 'infoportal-api-sdk'
-import {KoboCustomDirective, KoboHelper, KoboSubmissionMetaData, logPerformance, UUID} from 'infoportal-common'
+import {KoboCustomDirective, KoboHelper, logPerformance, UUID} from 'infoportal-common'
 import Event = GlobalEvent.Event
 
 export class FormAnswersService {
@@ -269,7 +269,7 @@ export class FormAnswersService {
     authorEmail: string
   }) => {
     const mappedValidation = KoboHelper.mapValidation.toKobo(status)
-    const validationKey: keyof KoboSubmissionMetaData = 'validationStatus'
+    const validationKey: keyof Ip.Submission.Meta = 'validationStatus'
     const sdk = await this.sdkGenerator.getBy.formId(formId)
     const [sqlRes] = await Promise.all([
       this.prisma.formSubmission.updateMany({

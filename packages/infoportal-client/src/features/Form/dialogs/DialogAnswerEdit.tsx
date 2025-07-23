@@ -1,5 +1,5 @@
 import {useI18n} from '@/core/i18n'
-import {KoboMappedAnswer, KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
+import {Submission, KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
 import {IpBtn} from '@/shared/Btn'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from '@mui/material'
@@ -17,7 +17,7 @@ export const DialogAnswerEdit = ({
   schema: KoboSchemaHelper.Bundle
   workspaceId: Ip.Uuid
   formId: Ip.FormId
-  answer: KoboMappedAnswer
+  answer: Submission
 }>) => {
   const formRef = useRef<XlsFormFillerHandle>(null)
   const {m} = useI18n()

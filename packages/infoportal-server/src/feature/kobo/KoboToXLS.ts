@@ -1,4 +1,4 @@
-import {convertNumberIndexToLetter, KoboSubmissionMetaData} from 'infoportal-common'
+import {convertNumberIndexToLetter} from 'infoportal-common'
 import XlsxPopulate from 'xlsx-populate'
 import {PrismaClient} from '@prisma/client'
 import {appConf} from '../../core/conf/AppConf.js'
@@ -49,7 +49,7 @@ export class KoboToXLS {
 
     const flatTranslated = translated.map(({answers, ...meta}) => ({...meta, ...answers}))
     const columns = (() => {
-      const metaColumns: (keyof KoboSubmissionMetaData)[] = ['id', 'submissionTime', 'version']
+      const metaColumns: (keyof Ip.Submission.Meta)[] = ['id', 'submissionTime', 'version']
       const schemaColumns = koboFormDetails.survey
         .filter(_ => koboQuestionType.includes(_.type))
         .map(_ =>

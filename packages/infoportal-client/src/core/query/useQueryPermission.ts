@@ -34,8 +34,5 @@ function useQueryPermissionByForm({workspaceId, formId}: {workspaceId: Ip.Uuid; 
     queryKey: queryKeys.permission.byFormId(workspaceId, formId),
     queryFn: () => apiv2.permission.getMineByForm({workspaceId, formId}),
     staleTime: duration(10, 'minute'),
-    enabled: true,
-    retry: true,
-    throwOnError: true,
   })
 }

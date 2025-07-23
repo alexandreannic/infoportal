@@ -1,6 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
-import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
+import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {useIpToast} from '@/core/useToast'
 import {useCustomSelectedHeader} from '@/features/Form/Database/customization/useCustomSelectedHeader'
 import {DatabaseImportBtn} from '@/features/Form/Database/DatabaseImportBtn'
@@ -59,18 +59,18 @@ export const DatabaseTableContent = ({
 
   const [selectedIds, setSelectedIds] = useState<Kobo.SubmissionId[]>([])
 
-  const flatData: KoboMappedAnswer[] | undefined = useMemo(() => {
+  const flatData: Submission[] | undefined = useMemo(() => {
     if (ctx.groupDisplay.get.repeatAs !== 'rows' || ctx.groupDisplay.get.repeatGroupName === undefined) return ctx.data
     return KoboFlattenRepeatedGroup.run({
       data: ctx.data,
       path: [ctx.groupDisplay.get.repeatGroupName],
       replicateParentData: true,
-    }) as (KoboFlattenRepeatedGroup.Cursor & KoboMappedAnswer)[]
+    }) as (KoboFlattenRepeatedGroup.Cursor & Submission)[]
   }, [ctx.data, ctx.groupDisplay.get])
 
   const schemaColumns = useMemo(() => {
     const schemaColumns = buildDatabaseColumns.type.bySchema({
-      getRow: (_: KoboMappedAnswer) => _.answers,
+      getRow: (_: Submission) => _.answers,
       formId: ctx.form.id,
       schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,

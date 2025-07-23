@@ -3,7 +3,7 @@ import {useAppSettings} from '../context/ConfigContext'
 import {Kobo} from 'kobo-sdk'
 import {queryKeys} from './query.index'
 import {ApiPaginate, UUID} from 'infoportal-common'
-import {KoboMappedAnswer} from '../sdk/server/kobo/KoboMapper'
+import {Submission} from '../sdk/server/kobo/KoboMapper'
 import {Ip} from 'infoportal-api-sdk'
 
 export type DeleteAnswersParams = {
@@ -43,7 +43,7 @@ const onMutate = async (
 ) => {
   const queryKey = queryKeys.answers(formId)
   await queryClient.cancelQueries({queryKey})
-  const previous = queryClient.getQueryData<ApiPaginate<KoboMappedAnswer>>(queryKey)
+  const previous = queryClient.getQueryData<ApiPaginate<Submission>>(queryKey)
   if (previous) {
     const idsIndex = new Set(answerIds)
     queryClient.setQueryData(queryKey, {
@@ -117,9 +117,9 @@ export const useQueryAnswerUpdate = () => {
       onMutate: async ({formId, answerIds}) => {
         await queryClient.cancelQueries({queryKey: queryKeys.answers(formId)})
 
-        const previousData = queryClient.getQueryData<ApiPaginate<KoboMappedAnswer>>(queryKeys.answers(formId))
+        const previousData = queryClient.getQueryData<ApiPaginate<Submission>>(queryKeys.answers(formId))
 
-        queryClient.setQueryData<ApiPaginate<KoboMappedAnswer>>(queryKeys.answers(formId), old => {
+        queryClient.setQueryData<ApiPaginate<Submission>>(queryKeys.answers(formId), old => {
           if (!old) return old
           const idsIndex = new Set(answerIds)
           return {

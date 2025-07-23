@@ -7,7 +7,7 @@ import {create} from 'zustand'
 import {getKoboSchema} from '../query/useQuerySchema'
 import {KoboUpdateModal} from '@/shared/koboEdit/KoboUpdateModal'
 import {Ip} from 'infoportal-api-sdk'
-import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
+import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 
 type LangIndex = {
   langIndex: number
@@ -24,7 +24,7 @@ export const useLangIndex = create<LangIndex>(set => ({
 
 export interface OpenModalProps {
   workspaceId: Ip.Uuid
-  answer: KoboMappedAnswer
+  answer: Submission
   formId: Kobo.FormId
 }
 

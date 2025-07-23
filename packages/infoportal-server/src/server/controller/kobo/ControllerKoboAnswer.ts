@@ -4,12 +4,9 @@ import {ObjectSchema} from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {FormAnswersService} from '../../../feature/form/answers/FormAnswersService.js'
 import {Period} from 'infoportal-common'
-import {validateApiPaginate} from '../../../core/Type.js'
 import {Kobo} from 'kobo-sdk'
 import {Obj} from '@axanc/ts-utils'
 import {app} from '../../../index.js'
-import {getWorkspaceId, isAuthenticated} from '../../Routes.js'
-import {AppError} from '../../../helper/Errors.js'
 import {Ip} from 'infoportal-api-sdk'
 
 export interface KoboAnswersFilters extends Partial<Period> {
@@ -20,19 +17,6 @@ export interface KoboAnswersFilters extends Partial<Period> {
     type?: 'array'
   }[]
 }
-
-const answersFiltersValidation: ObjectSchema<KoboAnswersFilters> = yup.object({
-  start: yup.date().optional(),
-  end: yup.date().optional(),
-  ids: yup.array().of(yup.string().required()).optional(),
-  filterBy: yup.array(
-    yup.object({
-      column: yup.string().required(),
-      value: yup.array().of(yup.string().nullable().optional()).required(),
-      type: yup.mixed<'array'>().oneOf(['array']).optional(),
-    }),
-  ),
-})
 
 export class ControllerKoboAnswer {
   constructor(
@@ -87,15 +71,4 @@ export class ControllerKoboAnswer {
     await this.service.deleteAnswers({formId, answerIds, authorEmail: email})
     res.send()
   }
-
-  // readonly searchByUserAccess = async (req: Request, res: Response, next: NextFunction) => {
-  //   if (!isAuthenticated(req)) throw new AppError.Forbidden()
-  //   const workspaceId = getWorkspaceId(req)
-  //   const {formId} = req.params
-  //   const user = req.session.app.user
-  //   const filters = await answersFiltersValidation.validate(req.body)
-  //   const paginate = await validateApiPaginate.validate(req.body)
-  //   const answers = await this.service.searchAnswersByUsersAccess({workspaceId, formId, filters, paginate, user})
-  //   res.send(answers)
-  // }
 }

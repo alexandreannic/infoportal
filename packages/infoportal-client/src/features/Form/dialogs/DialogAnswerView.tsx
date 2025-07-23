@@ -1,7 +1,7 @@
 import {useI18n} from '@/core/i18n'
 import {useQuerySubmissionSearch} from '@/core/query/useQuerySubmissionSearch'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
+import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {useLangIndex} from '@/core/store/useLangIndex'
 import {IpBtn} from '@/shared/Btn'
 import {Datatable} from '@/shared/Datatable/Datatable'
@@ -102,7 +102,7 @@ export const DialogAnswerView = ({
   workspaceId: Ip.Uuid
   formId: Ip.FormId
   schema: KoboSchemaHelper.Bundle
-  answer: KoboMappedAnswer
+  answer: Submission
 }>) => {
   const {m} = useI18n()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
@@ -150,7 +150,7 @@ const KoboAnswerFormView = ({
 }: {
   schema: KoboSchemaHelper.Bundle
   showQuestionWithoutAnswer?: boolean
-  answer: KoboMappedAnswer
+  answer: Submission
   formId: Ip.FormId
 }) => {
   return (
@@ -181,7 +181,7 @@ const KoboAnswerQuestionView = ({
   formId: Ip.FormId
   schema: KoboSchemaHelper.Bundle
   questionSchema: NonNullableKey<Kobo.Form.Question, 'name'>
-  answer: KoboMappedAnswer
+  answer: Submission
 }) => {
   const langIndex = useLangIndex()
   const {formatDateTime} = useI18n()

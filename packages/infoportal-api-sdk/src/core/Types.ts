@@ -139,6 +139,25 @@ export namespace Ip {
       UnderReview: 'UnderReview',
     } as const
 
+    export type Meta = {
+      start: Date
+      /** Refresh whenever submission is updated */
+      end: Date
+      /** Set by Kobo Server, not editable */
+      submissionTime: Kobo.Submission['_submission_time']
+      version?: Kobo.Submission['__version__']
+      attachments: Kobo.Submission.Attachment[]
+      geolocation: Kobo.Submission['_geolocation']
+      id: Kobo.SubmissionId
+      uuid: Kobo.Submission['_uuid']
+      validationStatus?: Ip.Submission.Validation
+      validatedBy?: string
+      submittedBy?: string
+      lastValidatedTimestamp?: number
+      source?: string
+      updatedAt?: Date
+    }
+
     export type Id = string
     export namespace Payload {
       export type Create = {
