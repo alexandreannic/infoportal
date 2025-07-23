@@ -1,12 +1,12 @@
 import {NextFunction, Request, Response} from 'express'
 import {AppError} from '../../../helper/Errors.js'
 import {PrismaClient} from '@prisma/client'
-import {FormAnswersImportService} from '../../../feature/form/answers/FormAnswersImportService.js'
+import {SubmissionImportService} from '../../../feature/form/submission/SubmissionImportService.js'
 
 export class ControllerKoboApiXlsImport {
   constructor(
     private prisma: PrismaClient,
-    private service = new FormAnswersImportService(prisma),
+    private service = new SubmissionImportService(prisma),
   ) {}
 
   readonly handleFileUpload = async (req: Request, res: Response, next: NextFunction) => {

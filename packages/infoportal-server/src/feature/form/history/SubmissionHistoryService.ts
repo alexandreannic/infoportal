@@ -2,7 +2,7 @@ import {Prisma, PrismaClient} from '@prisma/client'
 import {app, AppLogger} from '../../../index.js'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
-import {KoboAnswerHistoryHelper} from './FormAnswerHistoryType'
+import {KoboAnswerHistoryHelper} from './SubmissionHistoryType.js'
 import {Paginate} from 'infoportal-api-sdk'
 
 type Create = {
@@ -22,7 +22,7 @@ type Create = {
     }
 )
 
-export class FormAnswerHistoryService {
+export class SubmissionHistoryService {
   constructor(
     private prisma: PrismaClient,
     private log: AppLogger = app.logger('KoboAnswerHistoryService'),

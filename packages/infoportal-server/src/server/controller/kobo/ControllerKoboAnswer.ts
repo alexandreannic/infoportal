@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {ObjectSchema} from 'yup'
 import {PrismaClient} from '@prisma/client'
-import {FormAnswersService} from '../../../feature/form/answers/FormAnswersService.js'
+import {SubmissionService} from '../../../feature/form/submission/SubmissionService.js'
 import {Period} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {Obj} from '@axanc/ts-utils'
@@ -22,7 +22,7 @@ export class ControllerKoboAnswer {
   constructor(
     private pgClient: PrismaClient,
     private log = app.logger('ControllerKoboAnswer'),
-    private service = new FormAnswersService(pgClient),
+    private service = new SubmissionService(pgClient),
   ) {}
 
   readonly updateAnswers = async (req: Request, res: Response, next: NextFunction) => {

@@ -5,13 +5,13 @@ import {app, AppCacheKey, AppLogger} from '../../index.js'
 import {createdBySystem} from '../../core/DbInit.js'
 import {chunkify, fnSwitch, seq} from '@axanc/ts-utils'
 import {GlobalEvent} from '../../core/GlobalEvent.js'
-import {FormAnswersService} from '../form/answers/FormAnswersService.js'
+import {SubmissionService} from '../form/submission/SubmissionService.js'
 import {AppError} from '../../helper/Errors.js'
 import {appConf} from '../../core/conf/AppConf.js'
 import {genUUID, previewList, Util} from '../../helper/Utils.js'
 import {Kobo, KoboSubmissionFormatter} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
-import {KoboCustomDirective} from 'infoportal-common/kobo'
+import {KoboMapper} from './KoboMapper.js'
 
 export type KoboSyncServerResult = {
   answersIdsDeleted: Kobo.FormId[]
@@ -23,7 +23,7 @@ export type KoboSyncServerResult = {
 export class KoboSyncServer {
   constructor(
     private prisma: PrismaClient,
-    private service = new FormAnswersService(prisma),
+    private service = new SubmissionService(prisma),
     private koboSdkGenerator: KoboSdkGenerator = KoboSdkGenerator.getSingleton(prisma),
     private event = GlobalEvent.Class.getInstance(),
     private appCache = app.cache,
@@ -65,7 +65,7 @@ export class KoboSyncServer {
       id: '' + _id,
       uuid: _uuid,
       submittedBy: _submitted_by,
-      validationStatus: Mapper.mapValidation.fromKobo(k),
+      validationStatus: KoboMapper.mapValidation.fromKobo(k),
       lastValidatedTimestamp: _validation_status?.timestamp,
       // validatedBy: _validation_status?.by_whom,
       answers: answersUngrouped,
@@ -332,55 +332,4 @@ export class KoboSyncServer {
       `${r.answersCreated.length} created, ${r.answersUpdated.length} updated, ${r.answersIdsDeleted.length} deleted.`,
     fn: this._syncApiFormAnswers,
   })
-}
-
-class Mapper {
-  static readonly timestampToDate: {
-    (_: number): Date
-    (_: undefined): undefined
-    (_?: number | undefined): Date | undefined
-  } = koboTs => (koboTs ? new Date(koboTs * 1000) : undefined) as any
-
-  static readonly findAttachmentId = (
-    attachments?: Kobo.Submission.Attachment[],
-    fileName?: string,
-  ): number | undefined => {
-    return fileName ? attachments?.find(x => x.filename.includes(fileName))?.id : undefined
-  }
-
-  static readonly mapValidation = {
-    fromKobo: (_: Kobo.Submission.Raw): undefined | Ip.Submission.Validation => {
-      if (_._validation_status?.uid)
-        return fnSwitch(_._validation_status.uid, {
-          validation_status_on_hold: Ip.Submission.Validation.Pending,
-          validation_status_approved: Ip.Submission.Validation.Approved,
-          validation_status_not_approved: Ip.Submission.Validation.Rejected,
-          no_status: undefined,
-        })
-      if (_[KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]) {
-        return Ip.Submission.Validation[_._IP_VALIDATION_STATUS_EXTRA as keyof typeof Ip.Submission.Validation]
-      }
-    },
-    toKobo: (
-      _?: Ip.Submission.Validation,
-    ): {
-      _IP_VALIDATION_STATUS_EXTRA?: Ip.Submission.Validation
-      _validation_status?: Kobo.Submission.Validation
-    } => {
-      if (_ === Ip.Submission.Validation.Flagged || _ === Ip.Submission.Validation.UnderReview) {
-        return {[KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: _}
-      }
-      return {
-        _validation_status: fnSwitch(
-          _!,
-          {
-            [Ip.Submission.Validation.Pending]: Kobo.Submission.Validation.validation_status_on_hold,
-            [Ip.Submission.Validation.Approved]: Kobo.Submission.Validation.validation_status_approved,
-            [Ip.Submission.Validation.Rejected]: Kobo.Submission.Validation.validation_status_not_approved,
-          },
-          () => Kobo.Submission.Validation.no_status,
-        ),
-      }
-    },
-  }
 }

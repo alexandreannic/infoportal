@@ -7,20 +7,21 @@ import {GlobalEvent} from '../../../core/GlobalEvent.js'
 import {defaultPagination} from '../../../core/Type.js'
 import {app, AppCacheKey} from '../../../index.js'
 import {appConf} from '../../../core/conf/AppConf.js'
-import {FormAnswerHistoryService} from '../history/FormAnswerHistoryService.js'
+import {SubmissionHistoryService} from '../history/SubmissionHistoryService.js'
 import {AppError} from '../../../helper/Errors.js'
 import {Util} from '../../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip, Paginate} from 'infoportal-api-sdk'
-import {KoboCustomDirective, KoboHelper, logPerformance, UUID} from 'infoportal-common'
+import {KoboCustomDirective, logPerformance, UUID} from 'infoportal-common'
+import {KoboMapper} from '../../kobo/KoboMapper.js'
 import Event = GlobalEvent.Event
 
-export class FormAnswersService {
+export class SubmissionService {
   constructor(
     private prisma: PrismaClient,
     private access = new FormAccessService(prisma),
     private sdkGenerator: KoboSdkGenerator = KoboSdkGenerator.getSingleton(prisma),
-    private history = new FormAnswerHistoryService(prisma),
+    private history = new SubmissionHistoryService(prisma),
     private event: GlobalEvent.Class = GlobalEvent.Class.getInstance(),
     private log = app.logger('KoboService'),
     private conf = appConf,
@@ -171,11 +172,11 @@ export class FormAnswersService {
   }
 
   readonly create = (formId: Ip.FormId, answer: Ip.Submission.Payload.Create) => {
-    return this.prisma.formSubmission.create({data: FormAnswersService.mapAnswer(formId, answer)})
+    return this.prisma.formSubmission.create({data: SubmissionService.mapAnswer(formId, answer)})
   }
 
   readonly createMany = (formId: Ip.FormId, answers: Ip.Submission.Payload.Create[]) => {
-    const inserts = answers.map(_ => FormAnswersService.mapAnswer(formId, _))
+    const inserts = answers.map(_ => SubmissionService.mapAnswer(formId, _))
     return this.prisma.formSubmission.createMany({
       data: inserts,
       skipDuplicates: true,
@@ -248,9 +249,9 @@ export class FormAnswersService {
       sdk.v2.submission.update({formId, submissionIds: answerIds, data: {[question]: answer}}),
       await this.prisma.$executeRawUnsafe(
         `UPDATE "KoboAnswers"
-         SET answers = jsonb_set(answers, '{${question}}', '"${FormAnswersService.safeJsonValue(answer ?? '')}"'),
+         SET answers = jsonb_set(answers, '{${question}}', '"${SubmissionService.safeJsonValue(answer ?? '')}"'),
              "end"   = NOW()
-         WHERE id IN (${FormAnswersService.safeIds(answerIds).join(',')})
+         WHERE id IN (${SubmissionService.safeIds(answerIds).join(',')})
         `,
       ),
     ])
@@ -268,7 +269,7 @@ export class FormAnswersService {
     status: Ip.Submission.Validation
     authorEmail: string
   }) => {
-    const mappedValidation = KoboHelper.mapValidation.toKobo(status)
+    const mappedValidation = KoboMapper.mapValidation.toKobo(status)
     const validationKey: keyof Ip.Submission.Meta = 'validationStatus'
     const sdk = await this.sdkGenerator.getBy.formId(formId)
     const [sqlRes] = await Promise.all([

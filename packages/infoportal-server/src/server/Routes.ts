@@ -28,7 +28,7 @@ import {PermissionService} from '../feature/PermissionService.js'
 import {Ip, ipContract, Meta} from 'infoportal-api-sdk'
 import {WorkspaceService} from '../feature/workspace/WorkspaceService.js'
 import {WorkspaceAccessService} from '../feature/workspace/WorkspaceAccessService.js'
-import {FormAnswersService} from '../feature/form/answers/FormAnswersService.js'
+import {SubmissionService} from '../feature/form/submission/SubmissionService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -126,7 +126,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const form = new FormService(prisma)
   const formVersion = new FormVersionService(prisma)
   const formAccess = new FormAccessService(prisma)
-  const formSubmission = new FormAnswersService(prisma)
+  const formSubmission = new SubmissionService(prisma)
   const server = new ServerService(prisma)
 
   const permission = new PermissionService(prisma, undefined, formAccess)
