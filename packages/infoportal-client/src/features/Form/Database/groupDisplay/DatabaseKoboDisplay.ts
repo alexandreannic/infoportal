@@ -40,7 +40,7 @@ export const databaseKoboDisplayBuilder = ({
         const copy = [...columns]
         schema.helper.group.search({depth: 1}).map(group => {
           const index = copy.findIndex(_ => _.id == group.name)
-          const groupSize = Math.max(...data.map(_ => _.answers[group.name]?.length ?? 0))
+          const groupSize = Math.max(0, ...data.map(_ => _.answers[group.name]?.length ?? 0))
           mapFor(groupSize, repeat => {
             const newCols = buildDatabaseColumns.type
               .byQuestions({

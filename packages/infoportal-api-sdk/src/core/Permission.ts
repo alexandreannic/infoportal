@@ -44,6 +44,7 @@ export namespace Permission {
       user_canAdd: Level.Admin,
       user_canDelete: Level.Admin,
       user_canEdit: Level.Admin,
+      access_canRead: Level.Read,
       access_canAdd: Level.Admin,
       access_canDelete: Level.Admin,
       access_canEdit: Level.Admin,

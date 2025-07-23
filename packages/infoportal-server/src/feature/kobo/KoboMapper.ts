@@ -1,7 +1,7 @@
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {fnSwitch} from '@axanc/ts-utils'
-import {KoboCustomDirective} from 'infoportal-common/kobo'
+import {KoboCustomDirective} from 'infoportal-common'
 
 export class KoboMapper {
   static readonly timestampToDate: {

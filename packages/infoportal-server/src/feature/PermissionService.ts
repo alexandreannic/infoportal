@@ -27,7 +27,7 @@ export class PermissionService {
       user: connectedUser,
       permissions,
     })
-    if (!hasPermission) throw new AppError.Forbidden()
+    if (!hasPermission) throw new AppError.Forbidden(`Permissions does not match`, {permissions})
   }
 
   private static readonly searchWhereIsFormId = (req: Request) => {

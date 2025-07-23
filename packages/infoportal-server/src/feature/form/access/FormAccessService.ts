@@ -1,6 +1,7 @@
 import {PrismaClient, User} from '@prisma/client'
-import {app, AppLogger} from '../../../index.js'
+import {App, app, AppLogger} from '../../../index.js'
 import {Ip} from 'infoportal-api-sdk'
+import {AppError} from '../../../helper/Errors.js'
 
 export class FormAccessService {
   constructor(
@@ -142,13 +143,26 @@ export class FormAccessService {
     })
   }
 
-  readonly remove = ({id}: {id: Ip.Uuid}) => {
+  readonly remove = async ({deletedByEmail, id}: {deletedByEmail: string; id: Ip.Uuid}) => {
+    const access = await this.prisma.formAccess.findFirst({
+      select: {
+        email: true,
+      },
+      where: {
+        id,
+      },
+    })
+    if (!access) throw new AppError.NotFound()
+    if (access.email === deletedByEmail) throw new AppError.Forbidden('Cannot delete yourself')
     return this.prisma.formAccess
       .delete({
+        select: {
+          id: true,
+        },
         where: {
           id,
         },
       })
-      .then(() => id)
+      .then(_ => _.id)
   }
 }

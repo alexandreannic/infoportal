@@ -61,7 +61,7 @@ export const formAccessContract = c.router({
     },
     metadata: makeMeta({
       access: {
-        form: ['access_canDelete'],
+        form: ['access_canRead'],
       },
     }),
   },

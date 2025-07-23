@@ -44,6 +44,7 @@ export namespace Ip {
       access_canAdd: boolean
       access_canDelete: boolean
       access_canEdit: boolean
+      access_canRead: boolean
       answers_canSubmit: boolean
       answers_canUpdate: boolean
       answers_canDelete: boolean

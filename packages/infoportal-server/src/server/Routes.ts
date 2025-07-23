@@ -104,18 +104,26 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     return {status: 200, body}
   }
 
-  const notFound = (): {status: ErrorHttpStatusCode; body: string} => {
-    return {status: 404, body: 'Resource not found'}
+  type ErrBody = {message: string; data?: object}
+
+  const notFound = (): {status: ErrorHttpStatusCode; body: ErrBody} => {
+    return {status: 404, body: {message: 'Resource not found'}}
   }
 
   const okOrNotFound = <T>(
     body: T,
-  ): {status: SuccessfulHttpStatusCode; body: T} | {status: ErrorHttpStatusCode; body: string} => {
+  ): {status: SuccessfulHttpStatusCode; body: T} | {status: ErrorHttpStatusCode; body: ErrBody} => {
     return body ? ok(body) : notFound()
   }
 
-  const handleError = (e: Error): {status: ErrorHttpStatusCode; body: string} => {
-    return {status: 500, body: e.message}
+  const handleError = (e: Error): {status: ErrorHttpStatusCode; body: ErrBody} => {
+    if (e instanceof AppError.Forbidden) {
+      return {status: 403, body: {message: e.message, data: e.data}}
+    }
+    if (e instanceof AppError.NotFound) {
+      return {status: 404, body: {message: e.message, data: e.data}}
+    }
+    return {status: 500, body: {message: e.message, data: (e as any)?.data}}
   }
 
   const workspace = new WorkspaceService(prisma)
@@ -318,7 +326,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           )
           .then(ok)
           .catch(handleError),
-      getSchema: ({params}) => form.getSchema({formId: params.formId}).then(okOrNotFound).catch(handleError),
+      getSchema: ({params}) => form.getSchema({formId: params.formId}).then(ok).catch(handleError),
       getSchemaByVersion: _ =>
         auth2(_)
           .then(({params}) => form.getSchemaByVersion({formId: params.formId, versionId: params.versionId}))
@@ -337,7 +345,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .catch(handleError),
         remove: _ =>
           auth2(_)
-            .then(({params}) => formAccess.remove({id: params.id}))
+            .then(({req, params}) => formAccess.remove({id: params.id, deletedByEmail: req.session.app.user.email}))
             .then(ok)
             .catch(handleError),
         search: _ =>

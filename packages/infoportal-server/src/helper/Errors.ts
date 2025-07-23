@@ -1,6 +1,9 @@
 export namespace AppError {
   export class Base extends Error {
-    constructor(message: string) {
+    constructor(
+      public message: string,
+      public data?: any,
+    ) {
       super(message)
     }
   }
@@ -17,13 +20,19 @@ export namespace AppError {
   }
 
   export class Forbidden extends Base {
-    constructor(message: string = '') {
+    constructor(
+      public message: string = 'No access',
+      public data?: any,
+    ) {
       super(message)
     }
   }
 
   export class NotFound extends Base {
-    constructor(message: string) {
+    constructor(
+      public message: string = 'Resource not found',
+      public data?: any,
+    ) {
       super(message)
     }
   }

@@ -3,12 +3,14 @@ import {UUID} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboFormService} from '../kobo/KoboFormService.js'
 import {FormVersionService} from './FormVersionService.js'
+import {FormAccessService} from './access/FormAccessService.js'
 
 export class FormService {
   constructor(
     private prisma: PrismaClient,
     private koboForm = new KoboFormService(prisma),
     private formVersion = new FormVersionService(prisma),
+    private formAccess = new FormAccessService(prisma),
   ) {}
 
   readonly getSchema = async ({formId}: {formId: Ip.FormId}): Promise<undefined | Ip.Form.Schema> => {
@@ -45,7 +47,7 @@ export class FormService {
   }
 
   readonly create = async (payload: Ip.Form.Payload.Create & {uploadedBy: string; workspaceId: Ip.Uuid}) => {
-    return this.prisma.form.create({
+    const created = await this.prisma.form.create({
       data: {
         name: payload.name,
         category: payload.category,
@@ -55,6 +57,13 @@ export class FormService {
         workspaces: {connect: {id: payload.workspaceId}},
       },
     })
+    await this.formAccess.create({
+      formId: created.id,
+      workspaceId: payload.workspaceId,
+      email: payload.uploadedBy,
+      level: 'Admin',
+    })
+    return created
   }
 
   readonly get = async (id: Ip.FormId): Promise<Ip.Form | undefined> => {

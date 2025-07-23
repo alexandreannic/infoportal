@@ -92,7 +92,7 @@ function Form() {
     if (queryForm.isLoading || querySchema.isLoading || queryPermission.isLoading) {
       return <Page width="full" loading={true} />
     }
-    if (!queryForm.data || !queryPermission.data || !querySchema.data) {
+    if (!queryForm.data || !queryPermission.data) {
       return <>Error</>
     }
 
@@ -144,6 +144,7 @@ function Form() {
         />
         <Tab
           icon={<Icon>history</Icon>}
+          disabled={!schema}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}

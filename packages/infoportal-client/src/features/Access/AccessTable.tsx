@@ -11,6 +11,7 @@ import {Txt} from '@/shared/Txt'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
+import {useSession} from '@/core/Session/SessionContext'
 
 export const AccessTable = ({
   isAdmin,
@@ -24,6 +25,7 @@ export const AccessTable = ({
   header?: ReactNode
 }) => {
   const {m, formatDate} = useI18n()
+  const {user} = useSession()
   const {api} = useAppSettings()
   const drcJobs = useFetcher(api.user.fetchJobs)
   const queryAccess = useQueryFormAccess.getByFormId({workspaceId, formId})
@@ -119,6 +121,7 @@ export const AccessTable = ({
                 renderQuick: (_: Ip.Form.Access) => {
                   return (
                     <TableIconBtn
+                      disabled={_.email === user.email}
                       loading={queryAccessRemove.isPending}
                       onClick={() => queryAccessRemove.mutateAsync({id: _.id})}
                       children="delete"
