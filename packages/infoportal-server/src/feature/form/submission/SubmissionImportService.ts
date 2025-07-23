@@ -8,7 +8,7 @@ import {Kobo, KoboClient} from 'kobo-sdk'
 
 type KoboData = {_parent_index?: number; _index?: number} & Record<string, any>
 
-export class FormAnswersImportService {
+export class SubmissionImportService {
   constructor(
     private prisma: PrismaClient,
     private koboSdkGenerator = KoboSdkGenerator.getSingleton(prisma),
@@ -20,17 +20,17 @@ export class FormAnswersImportService {
     const schemaHelper = KoboSchemaHelper.buildBundle({schema: schema.content})
 
     const sheetData = Obj.mapValues(this.getSheets(xlsx.readFile(filePath)), sheet =>
-      FormAnswersImportService.fixStupidMicrosoftDate(sheet, schemaHelper),
+      SubmissionImportService.fixStupidMicrosoftDate(sheet, schemaHelper),
     )
     if (action === 'create') {
-      const mergedData = FormAnswersImportService.mergeNestedSheets(sheetData, schemaHelper)
+      const mergedData = SubmissionImportService.mergeNestedSheets(sheetData, schemaHelper)
       const taggedData = mergedData.map(_ => {
         _._IP_ADDED_FROM_XLS = true
         return _
       })
       await this.batchCreate(taggedData, sdk, formId)
     } else if (action === 'update') {
-      await FormAnswersImportService.batchUpdate(sdk, Object.values(sheetData)[0], formId)
+      await SubmissionImportService.batchUpdate(sdk, Object.values(sheetData)[0], formId)
     }
   }
 
@@ -72,7 +72,7 @@ export class FormAnswersImportService {
     return data.map(d => {
       return Obj.map(d, (k, v) => {
         if (dates.has(schemaHelper.helper.questionIndex[k]?.type)) {
-          return [k, FormAnswersImportService.stupidMicrosoftDateToJSDate(v)]
+          return [k, SubmissionImportService.stupidMicrosoftDateToJSDate(v)]
         }
         return [k, v]
       })

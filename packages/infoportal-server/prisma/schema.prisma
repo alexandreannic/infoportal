@@ -66,12 +66,12 @@ enum FormSource {
 }
 
 model Form {
-  id               String              @id @default(cuid()) @db.VarChar(32)
+  id               String                  @id @default(cuid()) @db.VarChar(32)
   name             String
-  server           KoboServer?         @relation(fields: [serverId], references: [id])
-  serverId         String?             @db.Uuid
-  source           FormSource          @default(kobo)
-  createdAt        DateTime            @default(now())
+  server           KoboServer?             @relation(fields: [serverId], references: [id])
+  serverId         String?                 @db.Uuid
+  source           FormSource              @default(kobo)
+  createdAt        DateTime                @default(now())
   updatedAt        DateTime?
   deploymentStatus DeploymentStatus?
   updatedBy        String?
@@ -79,8 +79,8 @@ model Form {
   enketoUrl        String?
   category         String?
   submissionsCount Int?
-  answers          FormAnswer[]
-  answersHistory   FormAnswerHistory[]
+  answers          FormSubmission[]
+  answersHistory   FormSubmissionHistory[]
   workspaces       Workspace[]
   formVersion      FormVersion[]
   formAccess       FormAccess[]
@@ -108,7 +108,7 @@ model FormVersion {
   @@unique([formId, source, version])
 }
 
-enum FormAnswerValidation {
+enum FormSubmissionValidation {
   Approved
   Pending
   Rejected
@@ -116,43 +116,40 @@ enum FormAnswerValidation {
   UnderReview
 }
 
-model FormAnswer {
-  id                     String                @id
+model FormSubmission {
+  id                     String                    @id
   uuid                   String
-  form                   Form                  @relation(fields: [formId], references: [id])
+  form                   Form                      @relation(fields: [formId], references: [id])
   formId                 String
-  updatedAt              DateTime?
   start                  DateTime
   end                    DateTime
-  date                   DateTime
-  version                String?
   submissionTime         DateTime
-  validationStatus       FormAnswerValidation?
+  submittedBy            String?
+  version                String?
+  validationStatus       FormSubmissionValidation?
   validatedBy            String?
-  source                 FormSource            @default(kobo)
+  source                 FormSource                @default(kobo)
   lastValidatedTimestamp Int?
-  geolocation            String?
+  geolocation            Int[]                     @default([])
   answers                Json
   attachments            Json[]
   deletedAt              DateTime?
   deletedBy              String?
-  tags                   Json?
-  histories              FormAnswerHistory[]   @relation("FormAnswerToHistory")
+  histories              FormSubmissionHistory[]   @relation("FormSubmissionToHistory")
 
   @@unique([id, formId])
   @@index([deletedAt])
-  @@index([date])
   @@index([formId])
 }
 
-model FormAnswerHistory {
-  id       String       @id @default(uuid()) @db.Uuid
-  form     Form?        @relation(fields: [formId], references: [id])
+model FormSubmissionHistory {
+  id       String           @id @default(uuid()) @db.Uuid
+  form     Form?            @relation(fields: [formId], references: [id])
   formId   String?
   answerId String?
-  answers  FormAnswer[] @relation("FormAnswerToHistory")
+  answers  FormSubmission[] @relation("FormSubmissionToHistory")
   by       String
-  date     DateTime     @default(now())
+  date     DateTime         @default(now())
   type     String?
   property String?
   oldValue Json?

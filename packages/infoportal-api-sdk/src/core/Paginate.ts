@@ -1,24 +1,18 @@
-export interface ApiPaginate<T> {
-  total: number
-  data: T[]
-}
+import {Ip} from './Types'
 
-export interface ApiPagination {
-  offset: number
-  limit: number
-}
-
-export class ApiPaginateHelper {
+export class Paginate {
   static readonly map =
     <T, R>(fn: (_: T) => R) =>
-    (paginated: ApiPaginate<T>): ApiPaginate<T> => {
-      paginated.data = paginated.data.map(fn) as any
-      return paginated
+    (paginated: Ip.Paginate<T>): Ip.Paginate<R> => {
+      return {
+        ...paginated,
+        data: paginated.data.map(fn),
+      }
     }
 
   static readonly wrap =
     (totalSize?: number) =>
-    <T>(data: T[]): ApiPaginate<T> => {
+    <T>(data: T[]): Ip.Paginate<T> => {
       return {
         data,
         total: totalSize ?? data.length,
@@ -27,7 +21,7 @@ export class ApiPaginateHelper {
 
   static readonly make =
     (limit?: number, offset: number = 0) =>
-    <T>(data: T[]): ApiPaginate<T> => {
+    <T>(data: T[]): Ip.Paginate<T> => {
       return {
         data: limit || offset ? data.slice(offset, offset + (limit ?? data.length)) : data,
         total: data.length,

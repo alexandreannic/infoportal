@@ -228,7 +228,7 @@ export namespace DatatableColumn {
       | SelectMultiple.TypeInner<T>
       | Undefined.TypeInner<T>
     )
-  export type Props<T extends DatatableRow, K extends string = string> = Base<T, K> &
+  export type Props<T extends DatatableRow = Record<string, any>, K extends string = string> = Base<T, K> &
     (
       | Text.TypeOuter<T>
       | SelectOne.TypeOuter<T>

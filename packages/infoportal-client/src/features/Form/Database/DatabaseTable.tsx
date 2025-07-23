@@ -1,8 +1,8 @@
 import {queryKeys} from '@/core/query/query.index'
-import {useQueryAnswer} from '@/core/query/useQueryAnswer'
+import {useQuerySubmissionSearch} from '@/core/query/useQuerySubmissionSearch'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
-import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
+import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {DatabaseKoboTableProvider} from '@/features/Form/Database/DatabaseContext'
 import {DatabaseTableContent} from '@/features/Form/Database/DatabaseTableContent'
 import {DatatableSkeleton} from '@/shared/Datatable/DatatableSkeleton'
@@ -32,13 +32,13 @@ export interface DatabaseTableProps {
   form?: Ip.Form
   formId: Kobo.FormId
   permission: Ip.Permission.Form
-  dataFilter?: (_: KoboMappedAnswer) => boolean
+  dataFilter?: (_: Submission) => boolean
   onFiltersChange?: (_: Record<string, DatatableFilterValue>) => void
   onDataChange?: (_: {
-    data?: KoboMappedAnswer[]
-    filteredData?: KoboMappedAnswer[]
-    filteredAndSortedData?: KoboMappedAnswer[]
-    filteredSortedAndPaginatedData?: ApiPaginate<KoboMappedAnswer>
+    data?: Submission[]
+    filteredData?: Submission[]
+    filteredAndSortedData?: Submission[]
+    filteredSortedAndPaginatedData?: ApiPaginate<Submission>
   }) => void
   overrideEditAccess?: boolean
 }
@@ -68,7 +68,7 @@ const DatabaseTable = ({
 }: DatabaseTableProps) => {
   const queryForm = useQueryFormById({workspaceId, formId}).get
   const querySchema = useQuerySchema({formId, workspaceId})
-  const queryAnswers = useQueryAnswer({workspaceId, formId})
+  const queryAnswers = useQuerySubmissionSearch({workspaceId, formId})
 
   const loading = queryAnswers.isLoading
   const refetch = useCallback(

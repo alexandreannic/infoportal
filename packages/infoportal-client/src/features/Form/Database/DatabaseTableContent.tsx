@@ -1,9 +1,7 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
-import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
+import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {useIpToast} from '@/core/useToast'
-import {columnBySchemaGenerator} from '@/features/Form/Database/columns/columnBySchema'
-import {getColumnsBase} from '@/features/Form/Database/columns/columnsBase'
 import {useCustomSelectedHeader} from '@/features/Form/Database/customization/useCustomSelectedHeader'
 import {DatabaseImportBtn} from '@/features/Form/Database/DatabaseImportBtn'
 import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
@@ -27,6 +25,7 @@ import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
+import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -60,17 +59,18 @@ export const DatabaseTableContent = ({
 
   const [selectedIds, setSelectedIds] = useState<Kobo.SubmissionId[]>([])
 
-  const flatData: KoboMappedAnswer[] | undefined = useMemo(() => {
+  const flatData: Submission[] | undefined = useMemo(() => {
     if (ctx.groupDisplay.get.repeatAs !== 'rows' || ctx.groupDisplay.get.repeatGroupName === undefined) return ctx.data
     return KoboFlattenRepeatedGroup.run({
       data: ctx.data,
       path: [ctx.groupDisplay.get.repeatGroupName],
       replicateParentData: true,
-    }) as (KoboFlattenRepeatedGroup.Cursor & KoboMappedAnswer)[]
+    }) as (KoboFlattenRepeatedGroup.Cursor & Submission)[]
   }, [ctx.data, ctx.groupDisplay.get])
 
   const schemaColumns = useMemo(() => {
-    const schemaColumns = columnBySchemaGenerator({
+    const schemaColumns = buildDatabaseColumns.type.bySchema({
+      getRow: (_: Submission) => _.answers,
       formId: ctx.form.id,
       schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,
@@ -95,7 +95,7 @@ export const DatabaseTableContent = ({
           : undefined,
       m,
       t,
-    }).getAll()
+    })
     return databaseKoboDisplayBuilder({
       data: ctx.data ?? [],
       formId: ctx.form.id,
@@ -116,7 +116,7 @@ export const DatabaseTableContent = ({
   }, [ctx.data, ctx.schema.schema, langIndex, selectedIds, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: DatatableColumn.Props<any>[] = useMemo(() => {
-    const base = getColumnsBase({
+    const base = buildDatabaseColumns.meta.all({
       selectedIds,
       queryUpdate: queryUpdate,
       workspaceId,
@@ -193,7 +193,7 @@ export const DatabaseTableContent = ({
         }}
         title={ctx.form.name}
         id={ctx.form.id}
-        getRenderRowKey={_ => _.id + (_._index ?? '')}
+        getRenderRowKey={_ => _.id + ((_ as any) /** TODO Make it typesafe?*/._index ?? '')}
         columns={columns}
         data={flatData}
         header={params => (

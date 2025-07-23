@@ -1,12 +1,12 @@
 import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
 import {idParamsSchema, yup} from '../../../helper/Utils.js'
-import {FormAnswersService} from '../../../feature/form/answers/FormAnswersService.js'
+import {SubmissionService} from '../../../feature/form/submission/SubmissionService.js'
 
 export class ControllerKoboServer {
   constructor(
     private pgClient: PrismaClient,
-    private service = new FormAnswersService(pgClient),
+    private service = new SubmissionService(pgClient),
   ) {}
 
   static readonly schema = {

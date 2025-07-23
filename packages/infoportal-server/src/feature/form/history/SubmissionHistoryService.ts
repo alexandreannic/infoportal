@@ -1,9 +1,9 @@
 import {Prisma, PrismaClient} from '@prisma/client'
 import {app, AppLogger} from '../../../index.js'
-import {ApiPaginateHelper} from 'infoportal-common'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
-import {KoboAnswerHistoryHelper} from './FormAnswerHistoryType'
+import {KoboAnswerHistoryHelper} from './SubmissionHistoryType.js'
+import {Paginate} from 'infoportal-api-sdk'
 
 type Create = {
   authorEmail: string
@@ -11,7 +11,7 @@ type Create = {
   answerIds: Kobo.SubmissionId[]
 } & (
   | {
-      type: 'answer' | 'tag'
+      type: 'answer' | 'validation'
       newValue: any
       property: string
     }
@@ -22,14 +22,14 @@ type Create = {
     }
 )
 
-export class FormAnswerHistoryService {
+export class SubmissionHistoryService {
   constructor(
     private prisma: PrismaClient,
     private log: AppLogger = app.logger('KoboAnswerHistoryService'),
   ) {}
 
   readonly search = (params: KoboAnswerHistoryHelper.Search) => {
-    return this.prisma.formAnswerHistory
+    return this.prisma.formSubmissionHistory
       .findMany({
         include: {
           answers: {
@@ -49,12 +49,12 @@ export class FormAnswerHistoryService {
           answerIds: history.answers.map(_ => _.id),
         }))
       })
-      .then(ApiPaginateHelper.wrap())
+      .then(Paginate.wrap())
   }
 
   readonly create = async ({authorEmail, formId, answerIds, property, newValue, type}: Create) => {
     if (type === 'delete') {
-      return this.prisma.formAnswerHistory.create({
+      return this.prisma.formSubmissionHistory.create({
         data: {
           answers: {
             connect: answerIds.map(id => ({id})),
@@ -65,21 +65,25 @@ export class FormAnswerHistoryService {
         },
       })
     }
-    const currentByPrevValue = await this.prisma.formAnswer
+    const currentByPrevValue = await this.prisma.formSubmission
       .findMany({
+        select: {
+          id: true,
+          validationStatus: true,
+          answers: true,
+        },
         where: {
           id: {in: answerIds},
         },
       })
       .then(res =>
         seq(res).groupBy(_ => {
-          const data: any = _[type === 'tag' ? 'tags' : 'answers'] ?? {}
-          return data[property]
+          return type === 'answer' ? (_.answers as any)[property] : _.validationStatus
         }),
       )
     return Promise.all(
       Obj.entries(currentByPrevValue).map(([oldValue, v]) => {
-        return this.prisma.formAnswerHistory.create({
+        return this.prisma.formSubmissionHistory.create({
           data: {
             answers: {
               connect: v.map(_ => ({id: _.id})),

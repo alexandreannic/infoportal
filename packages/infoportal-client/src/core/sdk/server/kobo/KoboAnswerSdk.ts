@@ -1,11 +1,11 @@
 import {ApiClient} from '../ApiClient'
-import {KeyOf, KoboSubmission, KoboValidation, UUID} from 'infoportal-common'
-import {KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
+import {KeyOf, UUID} from 'infoportal-common'
 import {AnswersFilters} from '@/core/sdk/server/kobo/KoboApiSdk'
 import {endOfDay, startOfDay} from 'date-fns'
 import {map} from '@axanc/ts-utils'
-import {ApiPaginate, ApiPagination} from '@/core/sdk/server/_core/ApiSdkUtils'
+import {ApiPagination} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Kobo} from 'kobo-sdk'
+import {Ip} from 'infoportal-api-sdk'
 
 export interface KoboAnswerSearch {
   workspaceId: UUID
@@ -18,7 +18,7 @@ export type KoboUpdateValidation = {
   workspaceId: UUID
   formId: Kobo.FormId
   answerIds: Kobo.SubmissionId[]
-  status: KoboValidation | null
+  status: Ip.Submission.Validation | null
 }
 
 export type KoboUpdateAnswers<T extends Record<string, any> = any, K extends KeyOf<T> = any> = {
@@ -31,27 +31,6 @@ export type KoboUpdateAnswers<T extends Record<string, any> = any, K extends Key
 
 export class KoboAnswerSdk {
   constructor(private client: ApiClient) {}
-
-  readonly searchByAccess = ({
-    formId,
-    workspaceId,
-    filters = {},
-    paginate = {offset: 0, limit: 100000},
-  }: KoboAnswerSearch) => {
-    return this.client
-      .post<ApiPaginate<KoboSubmission>>(`/${workspaceId}/form/${formId}/answer/by-access`, {
-        body: {...KoboAnswerSdk.mapFilters(filters), ...paginate},
-      })
-      .then(KoboMapper.mapPaginateAnswer)
-  }
-
-  readonly search = ({formId, workspaceId, filters = {}, paginate = {offset: 0, limit: 100000}}: KoboAnswerSearch) => {
-    return this.client
-      .post<ApiPaginate<KoboSubmission>>(`/${workspaceId}/form/${formId}/answer`, {
-        body: {...KoboAnswerSdk.mapFilters(filters), ...paginate},
-      })
-      .then(KoboMapper.mapPaginateAnswer)
-  }
 
   readonly delete = async ({
     workspaceId,

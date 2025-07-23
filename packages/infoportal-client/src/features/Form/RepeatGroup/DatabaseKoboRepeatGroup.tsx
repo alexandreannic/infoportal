@@ -1,13 +1,12 @@
 import {useI18n} from '@/core/i18n'
-import {useQueryAnswer} from '@/core/query/useQueryAnswer'
+import {useQuerySubmissionSearch} from '@/core/query/useQuerySubmissionSearch'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {columnBySchemaGenerator, ColumnBySchemaGeneratorProps} from '@/features/Form/Database/columns/columnBySchema'
 import {IpBtn, Page} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {Panel} from '@/shared/Panel'
 import {map} from '@axanc/ts-utils'
-import {useTheme} from '@mui/material'
+import {Theme, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo} from 'react'
@@ -15,6 +14,8 @@ import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
+import {BuildFormColumnProps, buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
+import {Messages} from '@/core/i18n/localization/en'
 
 export const databaseKoboRepeatRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -67,19 +68,12 @@ export const getColumnsForRepeatGroup = ({
   groupName: string
   formId: Kobo.FormId
   schema: KoboSchemaHelper.Bundle
-  onRepeatGroupClick?: ColumnBySchemaGeneratorProps['onRepeatGroupClick']
-  m: ColumnBySchemaGeneratorProps['m']
-  t: ColumnBySchemaGeneratorProps['t']
+  onRepeatGroupClick?: BuildFormColumnProps['onRepeatGroupClick']
+  m: Messages
+  t: Theme
 }) => {
   const groupInfo = schema.helper.group.getByName(groupName)!
   const res: DatatableColumn.Props<KoboFlattenRepeatedGroup.Data>[] = []
-  const schemaGenerator = columnBySchemaGenerator({
-    onRepeatGroupClick,
-    formId,
-    schema,
-    t,
-    m,
-  })
   if (groupInfo.depth > 1) {
     res.push(
       {
@@ -103,9 +97,16 @@ export const getColumnsForRepeatGroup = ({
       head: '_index',
       renderQuick: _ => '' + _._index,
     },
-    schemaGenerator.getId(),
-    schemaGenerator.getSubmissionTime(),
-    ...schemaGenerator.getByQuestions(groupInfo.questions),
+    buildDatabaseColumns.meta.id(),
+    buildDatabaseColumns.meta.submissionTime({m}),
+    ...buildDatabaseColumns.type.byQuestions({
+      formId,
+      questions: groupInfo.questions,
+      onRepeatGroupClick,
+      schema,
+      t,
+      m,
+    }),
   )
   return res
 }
@@ -130,7 +131,7 @@ const DatabaseKoboRepeat = ({
 
   const navigate = useNavigate()
 
-  const queryAnswers = useQueryAnswer({workspaceId, formId})
+  const queryAnswers = useQuerySubmissionSearch({workspaceId, formId})
   const data = queryAnswers.data?.data
   const groupInfo = schema.helper.group.getByName(group)!
   const paths = groupInfo.pathArr
@@ -162,12 +163,17 @@ const DatabaseKoboRepeat = ({
   }, [formId, group, schema, data])
 
   const flat = useMemo(() => {
-    return KoboFlattenRepeatedGroup.run({data: data ?? [], path: paths})
+    return KoboFlattenRepeatedGroup.run({
+      data: data?.map(_ => ({id: _.id, submissionTime: _.submissionTime, ..._.answers})) ?? [],
+      path: paths,
+    })
   }, [data, groupInfo])
 
   return (
     <Datatable
-      defaultFilters={{}}
+      defaultFilters={{
+        id,
+      }}
       header={
         groupInfo.depth > 1 ? (
           <Link

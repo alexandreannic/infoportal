@@ -5,9 +5,10 @@ import {formClient} from '../contract/form/ContractForm'
 import {serverClient} from '../contract/ContractServer'
 import {koboClient} from '../contract/kobo/ContractKobo'
 import {formAccessClient} from '../contract/form/ContractFormAccess'
-import {permissionClient, permissionContract} from '../contract/ContractPermission'
+import {permissionClient} from '../contract/ContractPermission'
 import {workspaceClient} from '../contract/workspace/ContractWorkspace'
 import {workspaceAccessClient} from '../contract/workspace/ContractWorkspaceAccess'
+import {formSubmissionClient} from '../contract/form/ContractFormSubmission'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -28,6 +29,7 @@ export const buildIpClient = (baseUrl: string) => {
     permission: permissionClient(client),
     server: serverClient(client),
     kobo: koboClient(client),
+    submission: formSubmissionClient(client),
     form: {
       ...formClient(client),
       access: formAccessClient(client),

@@ -9,13 +9,14 @@ import {KoboUpdateAnswers, KoboUpdateValidation} from '@/core/sdk/server/kobo/Ko
 import {IpBtn} from '@/shared/Btn'
 import {useKoboColumnDef} from '@/shared/koboEdit/KoboSchemaWrapper'
 import {Txt} from '@/shared/Txt'
-import {ArrayValues, KoboValidation, UUID} from 'infoportal-common'
+import {ArrayValues, UUID} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {Obj} from '@axanc/ts-utils'
 import {DialogProps} from '@toolpad/core'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useQueryFormById} from '@/core/query/useQueryForm'
+import {Ip} from 'infoportal-api-sdk'
 
 export type KoboEditModalOption = {
   value: string | null
@@ -221,7 +222,7 @@ export namespace KoboUpdateModal {
           },
           title: `${m.edit} (${answerIds.length}) - ${m.validation}`,
           type: 'select_one',
-          options: Obj.values(KoboValidation).map(_ => ({
+          options: Obj.values(Ip.Submission.Validation).map(_ => ({
             value: _,
             label: _,
             before: (

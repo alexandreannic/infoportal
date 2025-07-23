@@ -1,6 +1,6 @@
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState} from 'react'
 import {useAsync, UseAsyncSimple} from '@/shared/hook/useAsync'
-import {KoboMappedAnswer} from '@/core/sdk/server/kobo/KoboMapper'
+import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {Kobo} from 'kobo-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {useAppSettings} from '@/core/context/ConfigContext'
@@ -23,9 +23,9 @@ export interface DatabaseContext {
   permission: Ip.Permission.Form
   asyncRefresh: UseAsyncSimple<() => Promise<void>>
   asyncEdit: (answerId: Kobo.SubmissionId) => string
-  data?: KoboMappedAnswer[]
+  data?: Submission[]
   loading?: boolean
-  setData: Dispatch<SetStateAction<KoboMappedAnswer[]>>
+  setData: Dispatch<SetStateAction<Submission[]>>
   externalFilesIndex?: KoboExternalFilesIndex
   view: UseDatabaseView
   groupDisplay: UseObjectStateReturn<DatabaseDisplay>
@@ -37,13 +37,13 @@ export const useDatabaseKoboTableContext = () => useContext<DatabaseContext>(Con
 
 export const DatabaseKoboTableProvider = (props: {
   schema: KoboSchemaHelper.Bundle
-  dataFilter?: (_: KoboMappedAnswer) => boolean
+  dataFilter?: (_: Submission) => boolean
   children: ReactNode
   loading?: boolean
   permission: Ip.Permission.Form
   refetch: (p?: FetchParams) => Promise<void>
   form: Ip.Form
-  data?: KoboMappedAnswer[]
+  data?: Submission[]
 }) => {
   const {form, data, children, refetch} = props
   const {api} = useAppSettings()
@@ -86,7 +86,7 @@ export const DatabaseKoboTableProvider = (props: {
 
   const asyncEdit = (answerId: Kobo.SubmissionId) => api.koboApi.getEditUrl({formId: form.id, answerId})
 
-  const [mappedData, setMappedData] = useState<KoboMappedAnswer[] | undefined>(undefined)
+  const [mappedData, setMappedData] = useState<Submission[] | undefined>(undefined)
 
   useEffect(() => {
     if (data) setMappedData(data)
@@ -109,7 +109,7 @@ export const DatabaseKoboTableProvider = (props: {
         view,
         groupDisplay,
         data: mappedData,
-        setData: setMappedData as Dispatch<SetStateAction<KoboMappedAnswer[]>>,
+        setData: setMappedData as Dispatch<SetStateAction<Submission[]>>,
       }}
     >
       {children}

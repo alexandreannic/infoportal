@@ -61,7 +61,7 @@ export class FormService {
     return (await this.prisma.form.findFirst({where: {id}})) ?? undefined
   }
 
-  readonly update = async (params: Ip.Form.Payload.Update) => {
+  readonly update = async (params: Ip.Form.Payload.Update): Promise<Ip.Form> => {
     const {formId, archive, source} = params
 
     const koboUpdate$ = this.koboForm.update(params)
@@ -89,7 +89,7 @@ export class FormService {
   readonly remove = async (id: Ip.FormId): Promise<number> => {
     await Promise.any([
       this.prisma.databaseView.deleteMany({where: {databaseId: id}}),
-      this.prisma.formAnswer.deleteMany({where: {formId: id}}),
+      this.prisma.formSubmission.deleteMany({where: {formId: id}}),
       this.prisma.formVersion.deleteMany({where: {formId: id}}),
       this.prisma.formAccess.deleteMany({where: {formId: id}}),
     ])

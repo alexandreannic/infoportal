@@ -1,10 +1,28 @@
 import type * as Prisma from '@prisma/client'
 import {Kobo} from 'kobo-sdk'
-import {Permission} from './Permission'
 import {KeyOf} from '@axanc/ts-utils'
+
+type ReplaceNullWithUndefined<T> = {
+  [K in keyof T]: Exclude<T[K], null> | Extract<T[K], null> extends never ? undefined : Exclude<T[K], null> | undefined
+}
 
 export namespace Ip {
   export type Uuid = string
+
+  export type Period = {
+    start: Date
+    end: Date
+  }
+
+  export type Pagination = {
+    offset?: number
+    limit?: number
+  }
+
+  export type Paginate<T> = {
+    total: number
+    data: T[]
+  }
 
   export namespace Permission {
     export type Scope = 'global' | 'workspace' | 'form'
@@ -99,6 +117,84 @@ export namespace Ip {
   export namespace Server {
     export namespace Payload {
       export type Create = Omit<Server, 'id'>
+    }
+  }
+
+  export type Submission<T extends Record<string, any> = Record<string, any>> = Omit<
+    Prisma.FormSubmission,
+    'attachments' | 'answers' | 'deletedBy' | 'deletedAt' | 'formId' | 'form' | 'histories'
+  > & {
+    answers: T
+    attachments: Kobo.Submission.Attachment[]
+  }
+
+  export type SubmissionId = Submission.Id
+  export namespace Submission {
+    export type Validation = Prisma.FormSubmissionValidation
+    export const Validation = {
+      Approved: 'Approved',
+      Pending: 'Pending',
+      Rejected: 'Rejected',
+      Flagged: 'Flagged',
+      UnderReview: 'UnderReview',
+    } as const
+
+    export type Meta = {
+      start: Date
+      /** Refresh whenever submission is updated */
+      end: Date
+      /** Set by Kobo Server, not editable */
+      submissionTime: Kobo.Submission['_submission_time']
+      version?: Kobo.Submission['__version__']
+      attachments: Kobo.Submission.Attachment[]
+      geolocation: Kobo.Submission['_geolocation']
+      id: Kobo.SubmissionId
+      uuid: Kobo.Submission['_uuid']
+      validationStatus?: Ip.Submission.Validation
+      validatedBy?: string
+      submittedBy?: string
+      lastValidatedTimestamp?: number
+      source?: string
+      updatedAt?: Date
+    }
+
+    export type Id = string
+    export namespace Payload {
+      export type Create = {
+        id: string
+        uuid: string
+        formId: string
+        start: Date
+        end: Date
+        submissionTime: Date
+        submittedBy?: string
+        version?: string
+        validationStatus?: Validation
+        validatedBy?: string
+        source: Form.Source
+        lastValidatedTimestamp?: number
+        geolocation: [number, number] | [null, null]
+        answers: Record<string, any>
+        attachments: Kobo.Submission.Attachment[]
+        deletedAt?: Date
+        deletedBy?: string
+      }
+
+      export type Filter = {
+        ids?: Kobo.FormId[]
+        filterBy?: {
+          column: string
+          value: (string | null | undefined)[]
+          type?: 'array'
+        }[]
+      }
+
+      export type Search = Pagination &
+        Partial<Period> &
+        Filter & {
+          workspaceId: Uuid
+          formId: FormId
+        }
     }
   }
 
