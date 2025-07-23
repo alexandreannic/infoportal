@@ -343,7 +343,7 @@ export const muiTheme = ({
         styleOverrides: {
           root: {
             fontWeight: 'bold',
-            borderRadius: 20,
+            // borderRadius: 20,
           },
           outlinedPrimary: ({theme}) => ({
             borderColor: theme.palette.divider,
