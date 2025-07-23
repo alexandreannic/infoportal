@@ -41,6 +41,8 @@ export const buildDatabaseColumns = {
   },
 }
 
+export const colorRepeatedQuestionHeader = (t: Theme) => alpha(t.palette.info.light, 0.22)
+
 const ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['begin_group'])
 
 const editableColsType: Set<Kobo.Form.QuestionType> = new Set([
@@ -53,8 +55,6 @@ const editableColsType: Set<Kobo.Form.QuestionType> = new Set([
   'date',
   'datetime',
 ])
-
-export const colorRepeatedQuestionHeader = (t: Theme) => alpha(t.palette.info.light, 0.22)
 
 type Row = KoboFlattenRepeatedGroup.Data
 
@@ -151,7 +151,10 @@ function byQuestions({
     }
     return map[q.type]
   }
-  return questions.map(getBy).filter(_ => !!_)
+  return questions
+    .filter(q => !(q.type === 'note' && !q.calculation))
+    .map(getBy)
+    .filter(_ => !!_)
 }
 
 function bySchema(

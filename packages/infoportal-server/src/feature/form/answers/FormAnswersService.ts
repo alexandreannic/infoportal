@@ -90,7 +90,6 @@ export class FormAnswersService {
       paginate?: Partial<Ip.Pagination>
     }): Promise<Ip.Paginate<Ip.Submission>> => {
       const {formId, filters = {}, paginate = defaultPagination} = params
-      console.log(formId)
       return (
         this.prisma.formSubmission
           .findMany({

@@ -3,7 +3,9 @@ import {Ip} from 'infoportal-api-sdk'
 export namespace KoboFlattenRepeatedGroup {
   export type Data = Pick<Ip.Submission, 'id' | 'submissionTime'> & Cursor & Record<string, any>
 
-  type Row = Record<string, any> & Pick<Ip.Submission, 'id' | 'submissionTime'>
+  type Row = Pick<Ip.Submission, 'answers' | 'id' | 'submissionTime'> & {
+    _index?: number
+  }
 
   export type Cursor = {
     _index?: number
@@ -30,7 +32,7 @@ export namespace KoboFlattenRepeatedGroup {
     return run({
       data: data.flatMap(
         (d, i: number) =>
-          d[path[depth]]?.map((_: any, j: number) => ({
+          d.answers[path[depth]]?.map((_: any, j: number) => ({
             ...(replicateParentData ? d : {}),
             ...(_ ?? {}),
             submissionTime: d.submissionTime,
