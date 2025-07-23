@@ -1,10 +1,8 @@
-import {Prisma, PrismaClient, User} from '@prisma/client'
+import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from '../../kobo/KoboSdkGenerator.js'
 import {duration, Obj, seq} from '@axanc/ts-utils'
-import {KoboAnswersFilters} from '../../../server/controller/kobo/ControllerKoboAnswer.js'
 import {FormAccessService} from '../access/FormAccessService.js'
 import {GlobalEvent} from '../../../core/GlobalEvent.js'
-import {defaultPagination} from '../../../core/Type.js'
 import {app, AppCacheKey} from '../../../index.js'
 import {appConf} from '../../../core/conf/AppConf.js'
 import {SubmissionHistoryService} from '../history/SubmissionHistoryService.js'
@@ -12,7 +10,7 @@ import {AppError} from '../../../helper/Errors.js'
 import {Util} from '../../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip, Paginate} from 'infoportal-api-sdk'
-import {KoboCustomDirective, logPerformance, UUID} from 'infoportal-common'
+import {KoboCustomDirective, logPerformance} from 'infoportal-common'
 import {KoboMapper} from '../../kobo/KoboMapper.js'
 import Event = GlobalEvent.Event
 
@@ -27,21 +25,14 @@ export class SubmissionService {
     private conf = appConf,
   ) {}
 
-  private readonly _searchAnswersByUsersAccess = async ({
-    user,
-    workspaceId,
-    ...params
-  }: KoboAnswersFilters &
-    Partial<Ip.Pagination> & {
-      formId: string
-      user?: User
-      workspaceId: UUID
-    }): Promise<Ip.Paginate<Ip.Submission>> => {
-    if (!user) return Paginate.make()([])
+  private readonly _searchAnswersByUsersAccess = async (
+    params: Ip.Submission.Payload.Search,
+  ): Promise<Ip.Paginate<Ip.Submission>> => {
+    if (!params.user) return Paginate.make()([])
     // TODO(Alex) reimplement
-    if (user.accessLevel !== Ip.AccessLevel.Admin) {
+    if (params.user.accessLevel !== Ip.AccessLevel.Admin) {
       const access = await this.access
-        .search({workspaceId, user})
+        .search({workspaceId: params.workspaceId, user: params.user})
         .then(_ => seq(_).filter(_ => _.formId === params.formId))
       if (access.length === 0) return Paginate.make()([])
       const hasEmptyFilter = access.some(_ => !_?.filters || Object.keys(_.filters).length === 0)
@@ -60,8 +51,9 @@ export class SubmissionService {
             return acc
           }, {} as const)
         Obj.entries(accessFilters).forEach(([question, answer]) => {
-          if (!params.filterBy) params.filterBy = []
-          params.filterBy?.push({
+          if (!params.filters) params.filters = {}
+          if (!params.filters.filterBy) params.filters.filterBy = []
+          params.filters.filterBy?.push({
             column: question,
             value: answer,
           })
@@ -85,12 +77,7 @@ export class SubmissionService {
     },
     genIndex: p => p.formId,
     ttlMs: duration(1, 'day').toMs,
-    fn: (params: {
-      formId: string
-      filters?: KoboAnswersFilters
-      paginate?: Partial<Ip.Pagination>
-    }): Promise<Ip.Paginate<Ip.Submission>> => {
-      const {formId, filters = {}, paginate = defaultPagination} = params
+    fn: ({formId, filters = {}, paginate = {}}: Ip.Submission.Payload.Search): Promise<Ip.Paginate<Ip.Submission>> => {
       return (
         this.prisma.formSubmission
           .findMany({
@@ -320,6 +307,5 @@ export class SubmissionService {
         authorEmail,
       }),
     ])
-    return sqlRes
   }
 }

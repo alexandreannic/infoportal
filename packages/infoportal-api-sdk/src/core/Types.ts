@@ -160,6 +160,24 @@ export namespace Ip {
 
     export type Id = string
     export namespace Payload {
+      export type UpdateValidation = {
+        formId: FormId
+        workspaceId: Uuid
+        answerIds: Id[]
+        status: Validation
+      }
+      export type Remove = {
+        formId: FormId
+        workspaceId: Uuid
+        answerIds: Id[]
+      }
+      export type Update<T extends Record<string, any> = any, K extends KeyOf<T> = any> = {
+        formId: FormId
+        workspaceId: Uuid
+        answerIds: Id[]
+        question: K
+        answer: T[K] | null
+      }
       export type Create = {
         id: string
         uuid: string
@@ -189,12 +207,13 @@ export namespace Ip {
         }[]
       }
 
-      export type Search = Pagination &
-        Partial<Period> &
-        Filter & {
-          workspaceId: Uuid
-          formId: FormId
-        }
+      export type Search = {
+        filters?: Filter & Partial<Period>
+        paginate?: Pagination
+        workspaceId: Uuid
+        formId: FormId
+        user?: User
+      }
     }
   }
 

@@ -5,7 +5,6 @@ import {Alert, Box, Collapse} from '@mui/material'
 import {useI18n} from '@/core/i18n'
 import {IpInput} from '@/shared/Input/Input'
 import {IpDatepicker} from '@/shared/Datepicker/IpDatepicker'
-import {KoboUpdateAnswers, KoboUpdateValidation} from '@/core/sdk/server/kobo/KoboAnswerSdk'
 import {IpBtn} from '@/shared/Btn'
 import {useKoboColumnDef} from '@/shared/koboEdit/KoboSchemaWrapper'
 import {Txt} from '@/shared/Txt'
@@ -161,7 +160,7 @@ export namespace KoboUpdateModal {
     formId: Kobo.FormId
     columnName: string
     answerIds: Kobo.SubmissionId[]
-    onUpdated?: (params: KoboUpdateAnswers<any, any>) => void
+    onUpdated?: (params: Ip.Submission.Payload.Update) => void
   }>) => {
     const {workspaceId, formId, columnName, answerIds, onUpdated} = payload
     const {m} = useI18n()
@@ -200,7 +199,7 @@ export namespace KoboUpdateModal {
     workspaceId: UUID
     formId: Kobo.FormId
     answerIds: Kobo.SubmissionId[]
-    onUpdated?: (params: KoboUpdateValidation) => void
+    onUpdated?: (params: Ip.Submission.Payload.UpdateValidation) => void
   }>) => {
     const {workspaceId, formId, answerIds, onUpdated} = payload
     const {m} = useI18n()

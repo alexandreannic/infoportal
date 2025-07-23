@@ -4,7 +4,6 @@ import {ControllerMain} from './controller/ControllerMain.js'
 import {PrismaClient} from '@prisma/client'
 import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi.js'
 import {ControllerSession} from './controller/ControllerSession.js'
-import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer.js'
 import {ControllerUser} from './controller/ControllerUser.js'
 import {AppError} from '../helper/Errors.js'
 import {ControllerProxy} from './controller/ControllerProxy.js'
@@ -54,7 +53,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
 
   const r = express.Router()
   const main = new ControllerMain()
-  const koboAnswer = new ControllerKoboAnswer(prisma)
   const koboApi = new ControllerKoboApi(prisma)
   const session = new ControllerSession(prisma)
   const accessGroup = new ControllerGroup(prisma)
@@ -249,6 +247,27 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .catch(handleError),
     },
     submission: {
+      updateAnswers: _ =>
+        auth2(_)
+          .then(({req, params, body}) =>
+            formSubmission.updateAnswers({...body, ...params, authorEmail: req.session.app?.user.email!}),
+          )
+          .then(ok)
+          .catch(handleError),
+      updateValidation: _ =>
+        auth2(_)
+          .then(({req, params, body}) =>
+            formSubmission.updateValidation({...body, ...params, authorEmail: req.session.app?.user.email!}),
+          )
+          .then(ok)
+          .catch(handleError),
+      remove: _ =>
+        auth2(_)
+          .then(({req, params, body}) =>
+            formSubmission.deleteAnswers({...body, ...params, authorEmail: req.session.app?.user.email!}),
+          )
+          .then(ok)
+          .catch(handleError),
       search: _ =>
         auth2(_)
           .then(({req, params, body}) =>
@@ -425,11 +444,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     )
 
     r.post('/kobo-answer-history/search', safe(koboAnswerHistory.search))
-
-    // r.post('/:workspaceId/form/:formId/answer/by-access', auth(), safe(koboAnswer.searchByUserAccess))
-    r.patch('/:workspaceId/form/:formId/answer/validation', auth(), safe(koboAnswer.updateValidation))
-    r.patch('/:workspaceId/form/:formId/answer', auth(), safe(koboAnswer.updateAnswers))
-    r.delete('/:workspaceId/form/:formId/answer', auth({adminOnly: true}), safe(koboAnswer.deleteAnswers))
 
     r.post(`/database-view/:viewId/col/:colName`, auth(), safe(databaseView.updateCol))
     r.post(`/database-view`, auth(), safe(databaseView.search))

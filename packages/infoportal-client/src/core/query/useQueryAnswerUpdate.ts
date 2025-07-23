@@ -2,30 +2,8 @@ import {QueryClient, useMutation, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {Kobo} from 'kobo-sdk'
 import {queryKeys} from './query.index'
-import {ApiPaginate, UUID} from 'infoportal-common'
 import {Submission} from '../sdk/server/kobo/KoboMapper'
 import {Ip} from 'infoportal-api-sdk'
-
-export type DeleteAnswersParams = {
-  formId: string
-  answerIds: Kobo.SubmissionId[]
-  workspaceId: UUID
-}
-
-export type UpdateAnswersParams = {
-  answerIds: Kobo.SubmissionId[]
-  workspaceId: UUID
-  formId: string
-  question: string
-  answer: any | null
-}
-
-export type KoboUpdateValidation = {
-  workspaceId: UUID
-  formId: Kobo.FormId
-  answerIds: Kobo.SubmissionId[]
-  status: Ip.Submission.Validation | null
-}
 
 const onMutate = async (
   queryClient: QueryClient,
@@ -43,7 +21,7 @@ const onMutate = async (
 ) => {
   const queryKey = queryKeys.answers(formId)
   await queryClient.cancelQueries({queryKey})
-  const previous = queryClient.getQueryData<ApiPaginate<Submission>>(queryKey)
+  const previous = queryClient.getQueryData<Ip.Paginate<Submission>>(queryKey)
   if (previous) {
     const idsIndex = new Set(answerIds)
     queryClient.setQueryData(queryKey, {
@@ -56,12 +34,12 @@ const onMutate = async (
 
 export const useQueryAnswerUpdate = () => {
   const queryClient = useQueryClient()
-  const {api} = useAppSettings()
+  const {apiv2: api} = useAppSettings()
 
   return {
     updateValidation: useMutation({
-      mutationFn: async (params: KoboUpdateValidation) => {
-        return api.kobo.answer.updateValidation(params)
+      mutationFn: async (params: Ip.Submission.Payload.UpdateValidation) => {
+        return api.submission.updateValidation(params)
       },
 
       onMutate: async ({formId, answerIds, status}) => {
@@ -85,8 +63,8 @@ export const useQueryAnswerUpdate = () => {
     }),
 
     update: useMutation({
-      mutationFn: async (params: UpdateAnswersParams) => {
-        return api.kobo.answer.updateAnswers(params)
+      mutationFn: async (params: Ip.Submission.Payload.Update) => {
+        return api.submission.updateAnswers(params)
       },
 
       onMutate: async ({formId, answerIds, question, answer}) => {
@@ -110,16 +88,16 @@ export const useQueryAnswerUpdate = () => {
     }),
 
     remove: useMutation({
-      mutationFn: async ({workspaceId, formId, answerIds}: DeleteAnswersParams) => {
-        return api.kobo.answer.delete({workspaceId, formId, answerIds})
+      mutationFn: async ({workspaceId, formId, answerIds}: Ip.Submission.Payload.Remove) => {
+        return api.submission.remove({workspaceId, formId, answerIds})
       },
 
       onMutate: async ({formId, answerIds}) => {
         await queryClient.cancelQueries({queryKey: queryKeys.answers(formId)})
 
-        const previousData = queryClient.getQueryData<ApiPaginate<Submission>>(queryKeys.answers(formId))
+        const previousData = queryClient.getQueryData<Ip.Paginate<Submission>>(queryKeys.answers(formId))
 
-        queryClient.setQueryData<ApiPaginate<Submission>>(queryKeys.answers(formId), old => {
+        queryClient.setQueryData<Ip.Paginate<Submission>>(queryKeys.answers(formId), old => {
           if (!old) return old
           const idsIndex = new Set(answerIds)
           return {

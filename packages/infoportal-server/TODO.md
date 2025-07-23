@@ -1,3 +1,4 @@
+- Implement searchAnswers accesses
 - Delete yup
 
 - Split as dedicated project with distinct root using tsconfig
