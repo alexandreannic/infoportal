@@ -161,6 +161,12 @@ export namespace Ip {
 
     export type Id = string
     export namespace Payload {
+      export type Submit = {
+        workspaceId: Ip.Uuid
+        formId: Ip.FormId
+        attachments: any[]
+        answers: object
+      }
       export type UpdateValidation = {
         formId: FormId
         workspaceId: Uuid
@@ -178,25 +184,6 @@ export namespace Ip {
         answerIds: Id[]
         question: K
         answer: T[K] | null
-      }
-      export type Create = {
-        id: string
-        uuid: string
-        formId: string
-        start: Date
-        end: Date
-        submissionTime: Date
-        submittedBy?: string
-        version?: string
-        validationStatus?: Validation
-        validatedBy?: string
-        source: Form.Source
-        lastValidatedTimestamp?: number
-        geolocation: [number, number] | [null, null]
-        answers: Record<string, any>
-        attachments: Kobo.Submission.Attachment[]
-        deletedAt?: Date
-        deletedBy?: string
       }
 
       export type Filter = {

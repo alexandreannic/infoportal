@@ -34,6 +34,10 @@ export namespace GlobalEvent {
     formId: Ip.FormId
   }
 
+  interface NewSubmissionParams {
+    submission: Ip.Submission
+  }
+
   export enum Event {
     KOBO_FORM_SYNCHRONIZED = 'KOBO_FORM_SYNCHRONIZED',
     KOBO_VALIDATION_EDITED_FROM_KOBO = 'KOBO_VALIDATION_EDITED_FROM_KOBO',
@@ -41,6 +45,7 @@ export namespace GlobalEvent {
     KOBO_ANSWER_EDITED_FROM_IP = 'KOBO_ANSWER_EDITED_FROM_IP',
     KOBO_ANSWER_NEW = 'KOBO_ANSWER_NEW',
     KOBO_TAG_EDITED = 'KOBO_TAG_EDITED',
+    NEW_SUBMISSION = 'NEW_SUBMISSION',
   }
 
   type Emit = {
@@ -50,6 +55,7 @@ export namespace GlobalEvent {
     (event: Event.KOBO_ANSWER_NEW, params: KoboAnswerEditedParams): void
     (event: Event.KOBO_TAG_EDITED, params: KoboTagEditedParams): void
     (event: Event.KOBO_FORM_SYNCHRONIZED, params: KoboFormSyncParams): void
+    (event: Event.NEW_SUBMISSION, params: NewSubmissionParams): void
   }
 
   type Listen = {
@@ -59,6 +65,7 @@ export namespace GlobalEvent {
     (event: Event.KOBO_ANSWER_NEW, cb: (params: KoboAnswerEditedParams) => void): void
     (event: Event.KOBO_TAG_EDITED, cb: (params: KoboTagEditedParams) => void): void
     (event: Event.KOBO_FORM_SYNCHRONIZED, cb: (params: KoboFormSyncParams) => void): void
+    (event: Event.NEW_SUBMISSION, cb: (params: NewSubmissionParams) => void): void
   }
 
   export class Class {

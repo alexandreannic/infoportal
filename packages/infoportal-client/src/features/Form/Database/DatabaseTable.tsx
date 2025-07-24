@@ -1,5 +1,5 @@
 import {queryKeys} from '@/core/query/query.index'
-import {useQuerySubmissionSearch} from '@/core/query/useQuerySubmissionSearch'
+import {useQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
@@ -68,7 +68,7 @@ const DatabaseTable = ({
 }: DatabaseTableProps) => {
   const queryForm = useQueryFormById({workspaceId, formId}).get
   const querySchema = useQuerySchema({formId, workspaceId})
-  const queryAnswers = useQuerySubmissionSearch({workspaceId, formId})
+  const queryAnswers = useQuerySubmission.search({workspaceId, formId})
 
   const loading = queryAnswers.isLoading
   const refetch = useCallback(

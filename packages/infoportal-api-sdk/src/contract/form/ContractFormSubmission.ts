@@ -12,7 +12,7 @@ const c = initContract()
 export const contractFormSubmission = c.router({
   search: {
     method: 'POST',
-    path: '/:workspaceId/form/:formId/answer/search',
+    path: '/:workspaceId/form/:formId/submission/search',
     pathParams: z.object({
       workspaceId: schema.uuid,
       formId: schema.formId,
@@ -24,7 +24,7 @@ export const contractFormSubmission = c.router({
   },
   updateAnswers: {
     method: 'PATCH',
-    path: '/:workspaceId/form/:formId/answer',
+    path: '/:workspaceId/form/:formId/submission',
     pathParams: z.object({
       workspaceId: schema.uuid,
       formId: schema.formId,
@@ -45,7 +45,7 @@ export const contractFormSubmission = c.router({
   },
   updateValidation: {
     method: 'PATCH',
-    path: '/:workspaceId/form/:formId/answer/validation',
+    path: '/:workspaceId/form/:formId/submission/validation',
     pathParams: z.object({
       workspaceId: schema.uuid,
       formId: schema.formId,
@@ -65,7 +65,7 @@ export const contractFormSubmission = c.router({
   },
   remove: {
     method: 'DELETE',
-    path: '/:workspaceId/form/:formId/answer',
+    path: '/:workspaceId/form/:formId/submission',
     pathParams: z.object({
       workspaceId: schema.uuid,
       formId: schema.formId,
@@ -82,6 +82,21 @@ export const contractFormSubmission = c.router({
       },
     }),
   },
+  submit: {
+    method: 'PUT',
+    path: '/:workspaceId/form/:formId/submission',
+    pathParams: z.object({
+      workspaceId: schema.uuid,
+      formId: schema.formId,
+    }),
+    body: z.object({
+      answers: z.record(z.any()),
+      attachments: z.array(z.any()),
+    }),
+    responses: {
+      200: c.type<Ip.Submission>(),
+    },
+  },
 })
 
 export const mapFormSubmission = (_: Ip.Submission): Ip.Submission => {
@@ -95,6 +110,14 @@ export const mapFormSubmission = (_: Ip.Submission): Ip.Submission => {
 
 export const formSubmissionClient = (client: TsRestClient) => {
   return {
+    submit: (params: Ip.Submission.Payload.Submit) =>
+      client.submission
+        .submit({
+          params,
+          body: params,
+        })
+        .then(mapClientResponse)
+        .then(mapFormSubmission),
     search: ({workspaceId, formId, ...body}: Ip.Submission.Payload.Search) =>
       client.submission
         .search({
@@ -103,8 +126,8 @@ export const formSubmissionClient = (client: TsRestClient) => {
             ...body,
             filters: {
               ...body.filters,
-              start: map(body.filters.start ?? undefined, startOfDay),
-              end: map(body.filters.end ?? undefined, endOfDay),
+              start: map(body.filters?.start ?? undefined, startOfDay),
+              end: map(body.filters?.end ?? undefined, endOfDay),
             },
           },
         })

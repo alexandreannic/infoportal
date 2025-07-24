@@ -121,8 +121,8 @@ model FormSubmission {
   uuid                   String
   form                   Form                      @relation(fields: [formId], references: [id])
   formId                 String
-  start                  DateTime
-  end                    DateTime
+  start                  DateTime?
+  end                    DateTime?
   submissionTime         DateTime
   submittedBy            String?
   version                String?
@@ -132,7 +132,7 @@ model FormSubmission {
   lastValidatedTimestamp Int?
   geolocation            Int[]                     @default([])
   answers                Json
-  attachments            Json[]
+  attachments            Json[]                    @default([])
   deletedAt              DateTime?
   deletedBy              String?
   histories              FormSubmissionHistory[]   @relation("FormSubmissionToHistory")

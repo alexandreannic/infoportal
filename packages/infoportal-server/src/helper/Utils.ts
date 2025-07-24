@@ -12,7 +12,7 @@ export const yup = _yup
 
 export const genUUID = v4
 
-export const genShortid = (length: number = 4) => genUUID().replace(/-/g, '').slice(0, 4)
+export const genShortid = (length: number = 4) => genUUID().replace(/-/g, '').slice(0, length)
 
 export const toYYYYMMDD = (_: Date) => format(_, 'yyyy-MM-dd') //_.toString().substring(0, 10)
 

@@ -1,3 +1,7 @@
+- Landing page
+  - Realtime updates
+  - Next generation of collection tools
+  - Flexible and easy data protection
 - Implement searchAnswers accesses
 - Delete yup
 

@@ -1,4 +1,4 @@
-import {useQuery, useQueryClient} from '@tanstack/react-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {Kobo} from 'kobo-sdk'
 import {useAppSettings} from '../context/ConfigContext'
 import {KoboMapper} from '../sdk/server/kobo/KoboMapper'
@@ -7,7 +7,12 @@ import {useQuerySchema} from './useQuerySchema'
 import {duration} from '@axanc/ts-utils'
 import {Ip, Paginate} from 'infoportal-api-sdk'
 
-export const useQuerySubmissionSearch = ({formId, workspaceId}: {formId: Kobo.FormId; workspaceId: Ip.Uuid}) => {
+export const useQuerySubmission = {
+  search,
+  submit,
+}
+
+export function search({formId, workspaceId}: {formId: Kobo.FormId; workspaceId: Ip.Uuid}) {
   const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
   const querySchema = useQuerySchema({workspaceId, formId})
@@ -38,4 +43,15 @@ export const useQuerySubmissionSearch = ({formId, workspaceId}: {formId: Kobo.Fo
     set,
     find,
   }
+}
+
+function submit() {
+  const {apiv2} = useAppSettings()
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (params: Ip.Submission.Payload.Submit) => apiv2.submission.submit(params),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({queryKey: queryKeys.answers(variables.formId)})
+    },
+  })
 }

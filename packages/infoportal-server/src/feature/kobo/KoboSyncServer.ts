@@ -3,7 +3,7 @@ import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {app, AppCacheKey, AppLogger} from '../../index.js'
 import {createdBySystem} from '../../core/DbInit.js'
-import {chunkify, fnSwitch, seq} from '@axanc/ts-utils'
+import {chunkify, seq} from '@axanc/ts-utils'
 import {GlobalEvent} from '../../core/GlobalEvent.js'
 import {SubmissionService} from '../form/submission/SubmissionService.js'
 import {AppError} from '../../helper/Errors.js'
@@ -13,11 +13,31 @@ import {Kobo, KoboSubmissionFormatter} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboMapper} from './KoboMapper.js'
 
+export type KoboInsert = {
+  id: string
+  uuid: string
+  formId: string
+  start: Date
+  end: Date
+  submissionTime: Date
+  submittedBy?: string
+  version?: string
+  validationStatus?: Ip.Submission.Validation
+  validatedBy?: string
+  source: Ip.Form.Source
+  lastValidatedTimestamp?: number
+  geolocation: [number, number]
+  answers: Record<string, any>
+  attachments: Kobo.Submission.Attachment[]
+  deletedAt?: Date
+  deletedBy?: string
+}
+
 export type KoboSyncServerResult = {
   answersIdsDeleted: Kobo.FormId[]
-  answersCreated: Ip.Submission.Payload.Create[]
-  answersUpdated: Ip.Submission.Payload.Create[]
-  validationUpdated: Ip.Submission.Payload.Create[]
+  answersCreated: KoboInsert[]
+  answersUpdated: KoboInsert[]
+  validationUpdated: KoboInsert[]
 }
 
 export class KoboSyncServer {
@@ -31,7 +51,7 @@ export class KoboSyncServer {
     private log: AppLogger = app.logger('KoboSyncServer'),
   ) {}
 
-  private static readonly mapAnswer = (k: Kobo.Submission.Raw): Ip.Submission.Payload.Create => {
+  private static readonly mapAnswer = (k: Kobo.Submission.Raw): KoboInsert => {
     const {
       ['formhub/uuid']: formhubUuid,
       ['meta/instanceId']: instanceId,
@@ -79,8 +99,8 @@ export class KoboSyncServer {
     formId?: Kobo.FormId
     answer: Kobo.Submission
   }) => {
-    const answer = KoboSyncServer.mapAnswer(_answer)
-    this.log.info(`Handle webhook for form ${formId}, ${answer.id}`)
+    const answers = KoboSyncServer.mapAnswer(_answer)
+    this.log.info(`Handle webhook for form ${formId}, ${answers.id}`)
     if (!formId) throw new AppError.WrongFormat('missing_form_id')
     const connectedForm = this.prisma.form.findFirst({where: {id: formId}})
     if (!connectedForm) {
@@ -88,10 +108,10 @@ export class KoboSyncServer {
     }
     this.event.emit(GlobalEvent.Event.KOBO_ANSWER_NEW, {
       formId,
-      answerIds: [answer.id],
-      answer: answer.answers,
+      answerIds: [answers.id],
+      answer: answers.answers,
     })
-    return this.service.create(formId, answer)
+    return this.service.create({answers})
   }
 
   readonly syncApiAnswersToDbAll = async (updatedBy: string = createdBySystem) => {
@@ -157,9 +177,9 @@ export class KoboSyncServer {
     const sdk = await this.koboSdkGenerator.getBy.formId(formId)
     this.debug(formId, `Fetch remote answers...`)
     const remoteAnswers = await sdk.v2.submission.getRaw({formId}).then(_ => _.results.map(KoboSyncServer.mapAnswer))
-    const remoteIdsIndex: Map<Kobo.FormId, Ip.Submission.Payload.Create> = remoteAnswers.reduce(
+    const remoteIdsIndex: Map<Kobo.FormId, KoboInsert> = remoteAnswers.reduce(
       (map, curr) => map.set(curr.id, curr),
-      new Map<Kobo.FormId, Ip.Submission.Payload.Create>(),
+      new Map<Kobo.FormId, KoboInsert>(),
     ) //new Map(remoteAnswers.map(_ => _.id))
     this.debug(formId, `Fetch remote answers... ${remoteAnswers.length} fetched.`)
 
@@ -205,7 +225,7 @@ export class KoboSyncServer {
     const handleCreate = async () => {
       const notInsertedAnswers = remoteAnswers.filter(_ => !localAnswersIndex.has(_.id))
       this.debug(formId, `Handle create (${notInsertedAnswers.length})...`)
-      await this.service.createMany(formId, notInsertedAnswers)
+      await this.service.createMany(notInsertedAnswers)
       const inserts = notInsertedAnswers.map(_ => {
         const res: Prisma.FormSubmissionUncheckedCreateInput = {
           formId,

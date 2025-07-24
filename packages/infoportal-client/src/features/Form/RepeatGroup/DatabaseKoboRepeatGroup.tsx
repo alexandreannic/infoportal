@@ -1,5 +1,5 @@
 import {useI18n} from '@/core/i18n'
-import {useQuerySubmissionSearch} from '@/core/query/useQuerySubmissionSearch'
+import {useQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {IpBtn, Page} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
@@ -131,7 +131,7 @@ const DatabaseKoboRepeat = ({
 
   const navigate = useNavigate()
 
-  const queryAnswers = useQuerySubmissionSearch({workspaceId, formId})
+  const queryAnswers = useQuerySubmission.search({workspaceId, formId})
   const data = queryAnswers.data?.data
   const groupInfo = schema.helper.group.getByName(group)!
   const paths = groupInfo.pathArr

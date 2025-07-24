@@ -55,7 +55,7 @@ export const appConfig = {
     koboFormLink: 'fact_check',
     office: 'business',
     displacementStatus: 'directions_run',
-    dataTable: 'table_view',
+    dataTable: 'data_table',
     dashboard: 'stacked_bar_chart',
   },
   iconStatus: {

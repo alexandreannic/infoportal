@@ -7,16 +7,18 @@ import {app, AppCacheKey} from '../../../index.js'
 import {appConf} from '../../../core/conf/AppConf.js'
 import {SubmissionHistoryService} from '../history/SubmissionHistoryService.js'
 import {AppError} from '../../../helper/Errors.js'
-import {Util} from '../../../helper/Utils.js'
+import {genShortid, genUUID, Util} from '../../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip, Paginate} from 'infoportal-api-sdk'
 import {KoboCustomDirective, logPerformance} from 'infoportal-common'
 import {KoboMapper} from '../../kobo/KoboMapper.js'
 import Event = GlobalEvent.Event
+import {FormService} from '../FormService.js'
 
 export class SubmissionService {
   constructor(
     private prisma: PrismaClient,
+    private form = new FormService(prisma),
     private access = new FormAccessService(prisma),
     private sdkGenerator: KoboSdkGenerator = KoboSdkGenerator.getSingleton(prisma),
     private history = new SubmissionHistoryService(prisma),
@@ -135,35 +137,53 @@ export class SubmissionService {
     },
   })
 
-  private static readonly mapAnswer = (
-    formId: Ip.FormId,
-    _: Ip.Submission.Payload.Create,
-  ): Prisma.FormSubmissionUncheckedCreateInput => {
-    _.formId = formId
-    return _ as any
-    // return {
-    //   formId,
-    // answers: _.answers,
-    // id: _.id,
-    // uuid: _.uuid,
-    // start: _.start,
-    // end: _.end,
-    // submissionTime: _.submissionTime,
-    // validationStatus: _.validationStatus,
-    // lastValidatedTimestamp: _.lastValidatedTimestamp,
-    // validatedBy: _.validatedBy,
-    // version: _.version,
-    // // source: serverId,
-    // attachments: _.attachments,
-    // }
+  private static readonly genId = () => genShortid(10)
+
+  private static readonly mapAnswer = ({
+    answers,
+    formId,
+    attachments,
+    author,
+  }: {
+    author?: string
+    formId: Ip.FormId
+  } & Ip.Submission.Payload.Submit): Prisma.FormSubmissionUncheckedCreateInput => {
+    return {
+      formId: formId,
+      id: this.genId(),
+      start: new Date(),
+      end: new Date(),
+      uuid: genUUID(),
+      submissionTime: new Date(),
+      source: 'internal',
+      submittedBy: author,
+      answers,
+      attachments,
+    }
   }
 
-  readonly create = (formId: Ip.FormId, answer: Ip.Submission.Payload.Create) => {
-    return this.prisma.formSubmission.create({data: SubmissionService.mapAnswer(formId, answer)})
+  readonly submit = async (
+    props: Ip.Submission.Payload.Submit & {
+      workspaceId: Ip.Uuid
+      formId: Ip.FormId
+      author?: string
+    },
+  ): Promise<Ip.Submission> => {
+    const form = await this.form.get(props.formId)
+    if (!form) throw new AppError.NotFound(`Form ${props.formId} does not exists.`)
+    if (form.source === 'kobo') throw new AppError.BadRequest(`Cannot submit in a Kobo form.`)
+    return this.create({answers: SubmissionService.mapAnswer(props)})
   }
 
-  readonly createMany = (formId: Ip.FormId, answers: Ip.Submission.Payload.Create[]) => {
-    const inserts = answers.map(_ => SubmissionService.mapAnswer(formId, _))
+  readonly create = async ({answers}: {answers: Prisma.FormSubmissionUncheckedCreateInput}): Promise<Ip.Submission> => {
+    const submission: any = await this.prisma.formSubmission.create({
+      data: answers,
+    })
+    this.event.emit(Event.NEW_SUBMISSION, {submission})
+    return submission
+  }
+
+  readonly createMany = (inserts: Prisma.FormSubmissionUncheckedCreateInput[]) => {
     return this.prisma.formSubmission.createMany({
       data: inserts,
       skipDuplicates: true,

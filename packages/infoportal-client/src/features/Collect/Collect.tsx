@@ -5,6 +5,8 @@ import {XlsFormFiller} from 'xls-form-filler'
 import {Page} from '@/shared'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {useQueryFormById} from '@/core/query/useQueryForm'
+import {useQuerySubmission} from '@/core/query/useQuerySubmission'
+import {useIpToast} from '@/core/useToast'
 
 export const collectRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -15,6 +17,8 @@ export const collectRoute = createRoute({
 
 function Collect() {
   const {workspaceId, formId} = collectRoute.useParams()
+  const {toastSuccess} = useIpToast()
+  const querySubmit = useQuerySubmission.submit()
   const querySchema = useQuerySchema({workspaceId, formId})
   const queryForm = useQueryFormById({workspaceId, formId}).get
   if (querySchema.isPending) {
@@ -26,7 +30,10 @@ function Collect() {
         <Panel>
           <PanelHead>{queryForm.data.name}</PanelHead>
           <PanelBody>
-            <XlsFormFiller onSubmit={console.log} survey={querySchema.data.schema} />
+            <XlsFormFiller
+              onSubmit={_ => querySubmit.mutateAsync({formId, workspaceId, ..._}).then(() => toastSuccess(''))}
+              survey={querySchema.data.schema}
+            />
           </PanelBody>
         </Panel>
       )}

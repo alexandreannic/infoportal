@@ -255,6 +255,15 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .catch(handleError),
     },
     submission: {
+      submit: ({params, body, req}) =>
+        formSubmission
+          .submit({
+            ...params,
+            ...body,
+            author: req.session.app?.user?.email,
+          })
+          .then(ok)
+          .catch(handleError),
       updateAnswers: _ =>
         auth2(_)
           .then(({req, params, body}) =>

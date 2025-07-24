@@ -52,7 +52,7 @@ export const useDefaultTabRedirect = ({
         navigate({to: '/$workspaceId/form/$formId/formCreator', params: {workspaceId, formId}})
       }
     }
-  }, [pathname, querySchema.isLoading])
+  }, [currentFullPath, pathname, querySchema.isLoading])
 }
 
 export type FormContext = {
@@ -86,7 +86,7 @@ function Form() {
     return schema?.helper.group.search().map(_ => _.name)
   }, [schema])
 
-  useDefaultTabRedirect({workspaceId, formId})
+  useDefaultTabRedirect({workspaceId, formId, currentFullPath})
 
   const outlet = useMemo(() => {
     if (queryForm.isLoading || querySchema.isLoading || queryPermission.isLoading) {
