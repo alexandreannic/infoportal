@@ -1,4 +1,4 @@
-import express, {Express, Request, Response} from 'express'
+import express, {Request, Response} from 'express'
 import bodyParser from 'body-parser'
 import {getRoutes} from './Routes.js'
 import {app} from '../index.js'
@@ -16,8 +16,7 @@ import * as console from 'console'
 import {createExpressEndpoints} from '@ts-rest/express'
 import {ipContract} from 'infoportal-api-sdk'
 import {createServer} from 'http'
-import {WebSocketServer} from 'ws'
-import {initWebsocket} from './Websocket'
+import {AppWebsocket} from './Websocket.js'
 // import * as Sentry from '@sentry/node'
 // import sessionFileStore from 'session-file-store'
 
@@ -26,7 +25,7 @@ export class Server {
     private conf: AppConf = appConf,
     private pgClient: PrismaClient,
     private server = express(),
-    private httpServer = createServer(this.server),
+    // private httpServer = createServer(this.server),
     private log = app.logger('Server'),
   ) {}
 
@@ -118,9 +117,9 @@ export class Server {
     createExpressEndpoints(ipContract, tsRestRoutes, this.server)
     // this.server.use(Sentry.Handlers.errorHandler())
     this.server.use(this.errorHandler)
-    initWebsocket(this.httpServer)
-    this.httpServer.listen(this.conf.port, () => {
+    const httpServer = this.server.listen(this.conf.port, () => {
       this.log.info(`server start listening on port ${this.conf.port}`)
     })
+    new AppWebsocket(httpServer).init()
   }
 }

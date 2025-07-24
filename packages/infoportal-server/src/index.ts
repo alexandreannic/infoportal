@@ -10,6 +10,7 @@ import {Syslog} from 'winston-syslog'
 import {EmailService} from './feature/email/EmailService.js'
 import {DbInit} from './core/DbInit.js'
 import * as os from 'os'
+import {IpEventClient} from 'infoportal-event'
 
 export type AppLogger = WinstonLogger
 
@@ -63,7 +64,8 @@ export const App = (config: AppConf = appConf) => {
     }),
     logger('GlobalCache'),
   )
-  return {logger, cache}
+  const event = new IpEventClient(logger('Event'))
+  return {logger, cache, event}
 }
 
 export const app = App()

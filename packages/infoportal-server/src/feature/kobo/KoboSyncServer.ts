@@ -4,7 +4,6 @@ import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {app, AppCacheKey, AppLogger} from '../../index.js'
 import {createdBySystem} from '../../core/DbInit.js'
 import {chunkify, seq} from '@axanc/ts-utils'
-import {GlobalEvent} from '../../core/GlobalEvent.js'
 import {SubmissionService} from '../form/submission/SubmissionService.js'
 import {AppError} from '../../helper/Errors.js'
 import {appConf} from '../../core/conf/AppConf.js'
@@ -12,6 +11,7 @@ import {genUUID, previewList, Util} from '../../helper/Utils.js'
 import {Kobo, KoboSubmissionFormatter} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboMapper} from './KoboMapper.js'
+import {IpEvent} from 'infoportal-event'
 
 export type KoboInsert = {
   id: string
@@ -45,7 +45,7 @@ export class KoboSyncServer {
     private prisma: PrismaClient,
     private service = new SubmissionService(prisma),
     private koboSdkGenerator: KoboSdkGenerator = KoboSdkGenerator.getSingleton(prisma),
-    private event = GlobalEvent.Class.getInstance(),
+    private event = app.event,
     private appCache = app.cache,
     private conf = appConf,
     private log: AppLogger = app.logger('KoboSyncServer'),
@@ -111,7 +111,7 @@ export class KoboSyncServer {
     if (!connectedForm) {
       throw new AppError.NotFound('form_not_found')
     }
-    this.event.emit(GlobalEvent.Event.KOBO_ANSWER_NEW, {
+    this.event.emit(IpEvent.KOBO_ANSWER_NEW, {
       formId,
       answerIds: [answers.id],
       answer: answers.answers,
@@ -159,7 +159,7 @@ export class KoboSyncServer {
         !this.conf.production ||
         res.answersIdsDeleted.length + res.answersUpdated.length + res.answersIdsDeleted.length > 0
       ) {
-        this.event.emit(GlobalEvent.Event.KOBO_FORM_SYNCHRONIZED, {formId: formId})
+        this.event.emit(IpEvent.KOBO_FORM_SYNCHRONIZED, {formId})
       }
       this.appCache.clear(AppCacheKey.KoboAnswers, formId)
       this.appCache.clear(AppCacheKey.KoboSchema, formId)
@@ -271,8 +271,8 @@ export class KoboSyncServer {
           // source: serverId,
           attachments: _.attachments,
         }
-        this.event.emit(GlobalEvent.Event.KOBO_ANSWER_NEW, {
-          formId: koboFormId,
+        this.event.emit(IpEvent.KOBO_ANSWER_NEW, {
+          formId,
           answerIds: [_.id],
           answer: _.answers,
         })
@@ -296,8 +296,8 @@ export class KoboSyncServer {
       this.debug(koboFormId, `Handle validation (${answersToUpdate.length})...`)
       await Promise.all(
         answersToUpdate.map(a => {
-          this.event.emit(GlobalEvent.Event.KOBO_VALIDATION_EDITED_FROM_KOBO, {
-            formId: koboFormId,
+          this.event.emit(IpEvent.KOBO_VALIDATION_EDITED_FROM_KOBO, {
+            formId,
             answerIds: [a.id],
             status: a.validationStatus,
           })
@@ -335,8 +335,8 @@ export class KoboSyncServer {
         )
       await Promise.all(
         answersToUpdate.map(a => {
-          this.event.emit(GlobalEvent.Event.KOBO_ANSWER_EDITED_FROM_KOBO, {
-            formId: koboFormId,
+          this.event.emit(IpEvent.KOBO_ANSWER_EDITED_FROM_KOBO, {
+            formId,
             answerIds: [a.id],
             answer: Util.getObjectDiff({
               before: previewsAnswersById[a.id],

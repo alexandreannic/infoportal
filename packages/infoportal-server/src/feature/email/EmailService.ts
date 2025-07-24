@@ -1,4 +1,3 @@
-import {GlobalEvent} from '../../core/GlobalEvent.js'
 import {EmailClient} from './EmailClient.js'
 import {KoboCustomDirective, Regexp} from 'infoportal-common'
 import {app} from '../../index.js'
@@ -6,6 +5,7 @@ import {PrismaClient} from '@prisma/client'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {FormService} from '../form/FormService.js'
+import {IpEvent, IpEventParams} from 'infoportal-event'
 
 export enum EmailContext {
   Kobo = 'Kobo',
@@ -15,19 +15,19 @@ export class EmailService {
   constructor(
     private prisma = new PrismaClient(),
     private form = new FormService(prisma),
-    private event = GlobalEvent.Class.getInstance(),
+    private event = app.event,
     private emailHelper = new EmailClient(prisma),
     private log = app.logger('EmailService'),
   ) {}
 
   initializeListeners() {
     this.log.info(`Start listening to Email triggers.`)
-    this.event.listen(GlobalEvent.Event.KOBO_ANSWER_EDITED_FROM_KOBO, this.sendEmailIfTriggered)
-    this.event.listen(GlobalEvent.Event.KOBO_ANSWER_EDITED_FROM_IP, this.sendEmailIfTriggered)
-    this.event.listen(GlobalEvent.Event.KOBO_ANSWER_NEW, this.sendEmailIfTriggered)
+    this.event.listen(IpEvent.KOBO_ANSWER_EDITED_FROM_KOBO, this.sendEmailIfTriggered)
+    this.event.listen(IpEvent.KOBO_ANSWER_EDITED_FROM_IP, this.sendEmailIfTriggered)
+    this.event.listen(IpEvent.KOBO_ANSWER_NEW, this.sendEmailIfTriggered)
   }
 
-  readonly sendEmailIfTriggered = async (p: GlobalEvent.KoboAnswerEditedParams) => {
+  readonly sendEmailIfTriggered = async (p: IpEventParams.KoboAnswerEdited) => {
     const schema = await this.form.getSchema({formId: p.formId})
     if (!schema) {
       this.log.info(`[sendEmailIfTriggered] Missing ${p.formId}`)
@@ -38,7 +38,7 @@ export class EmailService {
     await Promise.all(toSend_questions.map(_ => this.sendByQuestion(_, p)))
   }
 
-  private readonly sendByQuestion = async (question: Kobo.Form.Question, p: GlobalEvent.KoboAnswerEditedParams) => {
+  private readonly sendByQuestion = async (question: Kobo.Form.Question, p: IpEventParams.KoboAnswerEdited) => {
     const html = question.hint?.[0]
     const subject = question.label?.[0]
     if (!html || !subject) {

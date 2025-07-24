@@ -2,7 +2,6 @@ import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from '../../kobo/KoboSdkGenerator.js'
 import {duration, Obj, seq} from '@axanc/ts-utils'
 import {FormAccessService} from '../access/FormAccessService.js'
-import {GlobalEvent} from '../../../core/GlobalEvent.js'
 import {app, AppCacheKey} from '../../../index.js'
 import {appConf} from '../../../core/conf/AppConf.js'
 import {SubmissionHistoryService} from '../history/SubmissionHistoryService.js'
@@ -13,7 +12,7 @@ import {Ip, Paginate} from 'infoportal-api-sdk'
 import {KoboCustomDirective, logPerformance} from 'infoportal-common'
 import {KoboMapper} from '../../kobo/KoboMapper.js'
 import {FormService} from '../FormService.js'
-import Event = GlobalEvent.Event
+import {IpEvent} from 'infoportal-event'
 
 export class SubmissionService {
   constructor(
@@ -22,7 +21,7 @@ export class SubmissionService {
     private access = new FormAccessService(prisma),
     private sdkGenerator: KoboSdkGenerator = KoboSdkGenerator.getSingleton(prisma),
     private history = new SubmissionHistoryService(prisma),
-    private event: GlobalEvent.Class = GlobalEvent.Class.getInstance(),
+    private event = app.event,
     private log = app.logger('KoboService'),
     private conf = appConf,
   ) {}
@@ -177,9 +176,21 @@ export class SubmissionService {
 
   readonly create = async ({answers}: {answers: Prisma.FormSubmissionUncheckedCreateInput}): Promise<Ip.Submission> => {
     const submission: any = await this.prisma.formSubmission.create({
+      select: {
+        id: true,
+        start: true,
+        end: true,
+        submissionTime: true,
+        submittedBy: true,
+        version: true,
+        validationStatus: true,
+        geolocation: true,
+        answers: true,
+        attachments: true,
+      },
       data: answers,
     })
-    this.event.emit(Event.NEW_SUBMISSION, {submission})
+    this.event.emit(IpEvent.NEW_SUBMISSION, {formId: answers.formId, submission})
     return submission
   }
 
@@ -262,7 +273,7 @@ export class SubmissionService {
         `,
       ),
     ])
-    this.event.emit(Event.KOBO_ANSWER_EDITED_FROM_IP, {formId, answerIds, answer: {[question]: answer}})
+    this.event.emit(IpEvent.KOBO_ANSWER_EDITED_FROM_IP, {formId, answerIds, answer: {[question]: answer}})
   }
 
   readonly updateValidation = async ({
