@@ -20,7 +20,6 @@ export const queryKeys = {
   server: (workspaceId?: Ip.WorkspaceId, serverId?: Ip.ServerId) => concat('server', workspaceId, serverId),
   formAccess: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('formAccess', workspaceId, formId),
   user: (workspaceId?: Ip.WorkspaceId) => concat('user', workspaceId),
-  koboSchema: (formId: Ip.FormId) => ['koboSchema', formId],
   version: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('version', workspaceId, formId),
   schemaByVersion: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId, versionId?: Ip.Form.VersionId) =>
     concat('schema', workspaceId, formId, versionId),

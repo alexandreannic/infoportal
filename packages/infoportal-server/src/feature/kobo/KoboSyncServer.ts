@@ -12,6 +12,7 @@ import {Kobo, KoboSubmissionFormatter} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboMapper} from './KoboMapper.js'
 import {IpEvent} from 'infoportal-event'
+import {FormService} from '../form/FormService'
 
 export type KoboInsert = {
   id: string
@@ -102,12 +103,7 @@ export class KoboSyncServer {
     const answers = KoboSyncServer.mapAnswer(_answer)
     this.log.info(`Handle webhook for form ${formId}, ${answers.id}`)
     if (!formId) throw new AppError.WrongFormat('missing_form_id')
-    const connectedForm = this.prisma.form.findFirst({
-      include: {
-        kobo: true,
-      },
-      where: {id: formId},
-    })
+    const connectedForm = await this.prisma.form.findFirst({select: {workspaceId: true}, where: {id: formId}})
     if (!connectedForm) {
       throw new AppError.NotFound('form_not_found')
     }
@@ -116,7 +112,7 @@ export class KoboSyncServer {
       answerIds: [answers.id],
       answer: answers.answers,
     })
-    return this.service.create({answers})
+    return this.service.create({workspaceId: connectedForm.workspaceId, answers})
   }
 
   readonly syncApiAnswersToDbAll = async (updatedBy: string = createdBySystem) => {

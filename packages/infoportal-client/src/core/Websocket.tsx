@@ -4,6 +4,8 @@ import {appConfig} from '@/conf/AppConfig'
 import {IpEvent, IpEventParams} from 'infoportal-event'
 import {queryKeys} from '@/core/query/query.index'
 import {Ip} from 'infoportal-api-sdk'
+import {KoboSchemaHelper} from 'infoportal-common'
+import {KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
 
 type Events =
   | IpEventParams.KoboAnswerEdited
@@ -31,14 +33,22 @@ export const useWebsocket = () => {
     const socket = new WebSocket(appConfig.apiWsURL)
     socket.onmessage = e => {
       const msg: Data<any, any> = JSON.parse(e.data)
-      console.log(msg)
       if (is[IpEvent.NEW_SUBMISSION](msg)) {
+        const {formId, workspaceId, submission} = msg.params
+        const schema = queryClient.getQueryData<KoboSchemaHelper.Bundle | undefined>(
+          queryKeys.schema(workspaceId, formId),
+        )
+        if (!schema) {
+          console.error('Cannot get schema from store.')
+          return
+        }
+        const mapped = KoboMapper.mapSubmissionBySchema(schema.helper.questionIndex, Ip.Submission.map(submission))
         queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(
-          queryKeys.answers(msg.params.formId),
+          queryKeys.answers(formId),
           (old = {data: [], total: 0}) => {
             return {
               total: old.total + 1,
-              data: [...old.data, msg.params.submission],
+              data: [...old.data, mapped],
             }
           },
         )

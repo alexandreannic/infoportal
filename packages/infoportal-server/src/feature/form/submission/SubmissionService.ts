@@ -172,9 +172,16 @@ export class SubmissionService {
     if (!form) throw new AppError.NotFound(`Form ${props.formId} does not exists.`)
     if (form.kobo) throw new AppError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
     return this.create({answers: SubmissionService.mapPayload(props)})
+    return this.create({workspaceId: props.workspaceId, answers: SubmissionService.mapAnswer(props)})
   }
 
-  readonly create = async ({answers}: {answers: Prisma.FormSubmissionUncheckedCreateInput}): Promise<Ip.Submission> => {
+  readonly create = async ({
+    workspaceId,
+    answers,
+  }: {
+    workspaceId: Ip.Uuid
+    answers: Prisma.FormSubmissionUncheckedCreateInput
+  }): Promise<Ip.Submission> => {
     const submission: any = await this.prisma.formSubmission.create({
       select: {
         id: true,
@@ -190,7 +197,7 @@ export class SubmissionService {
       },
       data: answers,
     })
-    this.event.emit(IpEvent.NEW_SUBMISSION, {formId: answers.formId, submission})
+    this.event.emit(IpEvent.NEW_SUBMISSION, {workspaceId, formId: answers.formId, submission})
     return submission
   }
 

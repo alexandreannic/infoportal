@@ -67,7 +67,7 @@ export const useKoboDialogs = () => {
       })
     },
     openView: (params: OpenModalProps) => {
-      const schema = getKoboSchema(queryClient, params.formId)
+      const schema = getKoboSchema({queryClient, ...params})
       if (!schema) {
         console.error(`Missing schema ${params.formId}`)
         return
@@ -75,7 +75,7 @@ export const useKoboDialogs = () => {
       dialogs.open(DialogAnswerView, {schema, ...params})
     },
     openEdit: (params: OpenModalProps) => {
-      const schema = getKoboSchema(queryClient, params.formId)
+      const schema = getKoboSchema({queryClient, ...params})
       if (!schema) {
         console.error(`Missing schema ${params.formId}`)
         return

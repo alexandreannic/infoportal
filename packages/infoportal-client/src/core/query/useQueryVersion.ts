@@ -56,7 +56,3 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Ip.Workspac
     upload,
   }
 }
-
-export const getKoboSchema = (queryClient: QueryClient, formId: Ip.FormId): undefined | KoboSchemaHelper.Bundle => {
-  return queryClient.getQueryData<KoboSchemaHelper.Bundle>(queryKeys.koboSchema(formId))
-}

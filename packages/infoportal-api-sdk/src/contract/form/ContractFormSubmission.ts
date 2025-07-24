@@ -99,15 +99,6 @@ export const contractFormSubmission = c.router({
   },
 })
 
-export const mapFormSubmission = (_: Ip.Submission): Ip.Submission => {
-  return {
-    ..._,
-    start: _.start ? new Date(_.start) : (undefined as any),
-    end: _.end ? new Date(_.end) : (undefined as any),
-    submissionTime: new Date(_.submissionTime),
-  }
-}
-
 export const formSubmissionClient = (client: TsRestClient) => {
   return {
     submit: (params: Ip.Submission.Payload.Submit) =>
@@ -117,7 +108,7 @@ export const formSubmissionClient = (client: TsRestClient) => {
           body: params,
         })
         .then(mapClientResponse)
-        .then(mapFormSubmission),
+        .then(Ip.Submission.map),
     search: ({workspaceId, formId, ...body}: Ip.Submission.Payload.Search) =>
       client.submission
         .search({
@@ -132,7 +123,7 @@ export const formSubmissionClient = (client: TsRestClient) => {
           },
         })
         .then(mapClientResponse)
-        .then(Paginate.map(mapFormSubmission)),
+        .then(Paginate.map(Ip.Submission.map)),
 
     remove: async ({
       workspaceId,

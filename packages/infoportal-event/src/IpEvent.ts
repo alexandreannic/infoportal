@@ -34,6 +34,7 @@ export namespace IpEventParams {
 
   export interface NewSubmission {
     formId: Ip.FormId
+    workspaceId: Ip.Uuid
     submission: Ip.Submission
   }
 }

@@ -143,6 +143,13 @@ export namespace Ip {
   }
   export type SubmissionId = Brand<string, 'submissionId'>
   export namespace Submission {
+    export const map = (_: Submission): Submission => {
+      if (_.start) _.start = new Date(_.start)
+      if (_.end) _.end = new Date(_.end)
+      _.submissionTime = new Date(_.submissionTime)
+      return _
+    }
+
     export type Validation = Prisma.FormSubmissionValidation
     export const Validation = {
       Approved: 'Approved',
