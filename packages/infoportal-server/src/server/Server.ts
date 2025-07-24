@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express'
+import express, {Express, Request, Response} from 'express'
 import bodyParser from 'body-parser'
 import {getRoutes} from './Routes.js'
 import {app} from '../index.js'
@@ -15,6 +15,9 @@ import {duration} from '@axanc/ts-utils'
 import * as console from 'console'
 import {createExpressEndpoints} from '@ts-rest/express'
 import {ipContract} from 'infoportal-api-sdk'
+import {createServer} from 'http'
+import {WebSocketServer} from 'ws'
+import {initWebsocket} from './Websocket'
 // import * as Sentry from '@sentry/node'
 // import sessionFileStore from 'session-file-store'
 
@@ -22,8 +25,8 @@ export class Server {
   constructor(
     private conf: AppConf = appConf,
     private pgClient: PrismaClient,
-    // private ecrecSdk: EcrecSdk,
-    // private legalaidSdk: LegalaidSdk,
+    private server = express(),
+    private httpServer = createServer(this.server),
     private log = app.logger('Server'),
   ) {}
 
@@ -57,7 +60,7 @@ export class Server {
       })
     }
   }
-  //
+
   // readonly corsHeader = (req: Request, res: Response, next: NextFunction) => {
   //   res.header('Access-Control-Allow-Origin', this.conf.cors.allowOrigin)
   //   res.header('Access-Control-Allow-Headers', 'Authorization, Origin, X-Requested-With, Content-Type, Accept')
@@ -67,13 +70,12 @@ export class Server {
   // }
 
   readonly start = () => {
-    const app = express()
     // new IpSentry(this.conf, app,)
-    // app.use(Sentry.Handlers.requestHandler())
-    // app.use(Sentry.Handlers.tracingHandler())
-    app.set('trust proxy', 1)
-    // app.use(this.corsHeader)
-    app.use(
+    // this.server.use(Sentry.Handlers.requestHandler())
+    // this.server.use(Sentry.Handlers.tracingHandler())
+    this.server.set('trust proxy', 1)
+    // this.server.use(this.corsHeader)
+    this.server.use(
       cors({
         credentials: true,
         origin: this.conf.cors.allowOrigin,
@@ -81,8 +83,8 @@ export class Server {
       }),
     )
     // const sessionstore = sessionFileStore(session)
-    app.use(cookieParser())
-    app.use(
+    this.server.use(cookieParser())
+    this.server.use(
       session({
         secret: appConf.sessionSecret,
         resave: false,
@@ -104,19 +106,20 @@ export class Server {
         },
       }),
     )
-    app.use(bodyParser.json({limit: '512mb'}))
-    app.use(bodyParser.urlencoded({extended: false}))
+    this.server.use(bodyParser.json({limit: '512mb'}))
+    this.server.use(bodyParser.urlencoded({extended: false}))
     if (!appConf.production)
-      app.use((req, res, next) => {
+      this.server.use((req, res, next) => {
         const delay = 400 + Math.random() * 200 // 500–1500ms delay
         setTimeout(next, delay)
       })
     const {tsRestRoutes, rawRoutes} = getRoutes(this.pgClient)
-    app.use(rawRoutes)
-    createExpressEndpoints(ipContract, tsRestRoutes, app)
-    // app.use(Sentry.Handlers.errorHandler())
-    app.use(this.errorHandler)
-    app.listen(this.conf.port, () => {
+    this.server.use(rawRoutes)
+    createExpressEndpoints(ipContract, tsRestRoutes, this.server)
+    // this.server.use(Sentry.Handlers.errorHandler())
+    this.server.use(this.errorHandler)
+    initWebsocket(this.httpServer)
+    this.httpServer.listen(this.conf.port, () => {
       this.log.info(`server start listening on port ${this.conf.port}`)
     })
   }

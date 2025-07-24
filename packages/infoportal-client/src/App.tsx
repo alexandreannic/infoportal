@@ -36,6 +36,14 @@ const apiv2: IpClient = buildIpClient(appConfig.apiURL)
 export const queryClient = new QueryClient()
 
 export const App = () => {
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:5001/ws')
+    console.log(socket)
+    socket.onmessage = e => {
+      const msg = JSON.parse(e.data)
+      console.log(msg)
+    }
+  }, [])
   return (
     <AppSettingsProvider api={api} apiv2={apiv2}>
       <AppWithConfig />
