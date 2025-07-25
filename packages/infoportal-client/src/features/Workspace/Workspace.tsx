@@ -16,7 +16,7 @@ export const workspaceRoute = createRoute({
 })
 
 export type WorkspaceContext = {
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
   workspace: Ip.Workspace
   permission: Ip.Permission.Workspace
 }
@@ -25,7 +25,7 @@ const Context = createContext<WorkspaceContext>({} as any)
 export const useWorkspaceContext = () => useContext<WorkspaceContext>(Context)
 
 function Workspace() {
-  const {workspaceId} = workspaceRoute.useParams()
+  const {workspaceId} = workspaceRoute.useParams() as {workspaceId: Ip.WorkspaceId}
   const queryWorkspaceGet = useQueryWorkspace.get()
   const queryPermission = useQueryPermission.workspace({workspaceId})
   const workspace = queryWorkspaceGet.data?.find(_ => _.id === workspaceId)

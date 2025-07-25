@@ -1,6 +1,5 @@
 import {QueryClient, useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {KoboSchemaHelper, UUID} from 'infoportal-common'
-import {Kobo} from 'kobo-sdk'
+import {KoboSchemaHelper} from 'infoportal-common'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {queryKeys} from './query.index'
@@ -10,7 +9,7 @@ import {Ip, IpClient} from 'infoportal-api-sdk'
 type Params<T extends keyof IpClient['form']['version']> = Parameters<IpClient['form']['version'][T]>[0]
 type Return<T extends keyof IpClient['form']['version']> = Awaited<ReturnType<IpClient['form']['version'][T]>>
 
-export const useQueryVersion = ({workspaceId, formId}: {workspaceId: UUID; formId: Kobo.FormId}) => {
+export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
   const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
   const {toastHttpError, toastAndThrowHttpError} = useIpToast()
@@ -26,7 +25,7 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: UUID; formI
   })
 
   const deployLast = useMutation({
-    mutationFn: (params: {workspaceId: Ip.Uuid; formId: Ip.FormId}) => apiv2.form.version.deployLast(params),
+    mutationFn: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => apiv2.form.version.deployLast(params),
     onSuccess: newVersion => {
       queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
       queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, formId)})
@@ -58,6 +57,6 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: UUID; formI
   }
 }
 
-export const getKoboSchema = (queryClient: QueryClient, formId: Kobo.FormId): undefined | KoboSchemaHelper.Bundle => {
+export const getKoboSchema = (queryClient: QueryClient, formId: Ip.FormId): undefined | KoboSchemaHelper.Bundle => {
   return queryClient.getQueryData<KoboSchemaHelper.Bundle>(queryKeys.koboSchema(formId))
 }

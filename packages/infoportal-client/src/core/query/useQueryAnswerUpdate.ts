@@ -1,6 +1,5 @@
 import {QueryClient, useMutation, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
-import {Kobo} from 'kobo-sdk'
 import {queryKeys} from './query.index'
 import {Submission} from '../sdk/server/kobo/KoboMapper'
 import {Ip} from 'infoportal-api-sdk'
@@ -13,8 +12,8 @@ const onMutate = async (
     value,
     answerIds,
   }: {
-    answerIds: Kobo.SubmissionId[]
-    formId: string
+    answerIds: Ip.SubmissionId[]
+    formId: Ip.FormId
     key: string
     value: any
   },

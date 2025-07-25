@@ -38,7 +38,7 @@ export class WorkspaceAccessService {
     }
   }
 
-  readonly getByUser = async ({workspaceId, user}: {workspaceId: Ip.Uuid; user: User}) => {
+  readonly getByUser = async ({workspaceId, user}: {workspaceId: Ip.WorkspaceId; user: User}) => {
     return this.prisma.workspaceAccess.findFirst({
       where: {workspaceId, user: {email: user.email}},
     })

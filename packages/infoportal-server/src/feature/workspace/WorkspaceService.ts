@@ -1,10 +1,10 @@
 import {PrismaClient, User} from '@prisma/client'
-import {genShortid, idParamsSchema, yup} from '../../helper/Utils.js'
-import {InferType} from 'yup'
+import {genShortid} from '../../helper/Utils.js'
 import {slugify, UUID} from 'infoportal-common'
 import {GroupService} from '../group/GroupService.js'
 import {FormAccessService} from '../form/access/FormAccessService.js'
 import {Ip} from 'infoportal-api-sdk'
+import {PrismaHelper} from '../../core/PrismaHelper'
 
 export class WorkspaceService {
   constructor(
@@ -12,17 +12,6 @@ export class WorkspaceService {
     private group = new GroupService(prisma),
     private access = new FormAccessService(prisma),
   ) {}
-
-  readonly getMe = async ({workspaceId, user}: {workspaceId: UUID; user: User}) => {
-    const [accesses, groups] = await Promise.all([
-      this.access.search({workspaceId, user}),
-      this.group.search({workspaceId, user}),
-    ])
-    return {
-      accesses,
-      groups,
-    }
-  }
 
   readonly checkSlug = async (name: string) => {
     const suggestedSlug = await this.getUniqSlug(name)
@@ -71,33 +60,38 @@ export class WorkspaceService {
           }
         })
       })
+      .then(_ => _.map(PrismaHelper.mapWorkspace))
   }
 
   readonly create = async (data: Ip.Workspace.Payload.Create, user: User) => {
-    return this.prisma.workspace.create({
-      data: {
-        ...data,
-        createdBy: user.email,
-        workspaceAccess: {
-          create: {
-            createdBy: user.email,
-            level: 'Admin',
-            user: {
-              connect: {
-                email: user.email,
+    return this.prisma.workspace
+      .create({
+        data: {
+          ...data,
+          createdBy: user.email,
+          workspaceAccess: {
+            create: {
+              createdBy: user.email,
+              level: 'Admin',
+              user: {
+                connect: {
+                  email: user.email,
+                },
               },
             },
           },
         },
-      },
-    })
+      })
+      .then(PrismaHelper.mapWorkspace)
   }
 
   readonly update = (id: UUID, data: Partial<Ip.Workspace.Payload.Update>) => {
-    return this.prisma.workspace.update({
-      where: {id},
-      data: data,
-    })
+    return this.prisma.workspace
+      .update({
+        where: {id},
+        data: data,
+      })
+      .then(PrismaHelper.mapWorkspace)
   }
 
   readonly remove = async (id: UUID) => {

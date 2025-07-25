@@ -14,7 +14,7 @@ import {Link, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 
 interface Props extends BoxProps {
-  workspaceId?: Ip.Uuid
+  workspaceId?: Ip.WorkspaceId
 }
 
 const lightThemeIcons = {

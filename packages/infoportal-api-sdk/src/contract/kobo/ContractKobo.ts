@@ -13,7 +13,7 @@ export const koboContract = c.router({
     method: 'POST',
     path: '/:workspaceId/form/kobo',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
     }),
     body: c.type<Ip.Form.Payload.Import>(),
     responses: {
@@ -29,7 +29,14 @@ export const koboContract = c.router({
 
 export const koboClient = (client: TsRestClient) => {
   return {
-    importFromKobo: ({workspaceId, ...body}: {workspaceId: Ip.Uuid; serverId: Ip.Uuid; uid: Kobo.FormId}) => {
+    importFromKobo: ({
+      workspaceId,
+      ...body
+    }: {
+      workspaceId: Ip.WorkspaceId
+      serverId: Ip.ServerId
+      uid: Kobo.FormId
+    }) => {
       return client.kobo.importFromKobo({params: {workspaceId}, body}).then(mapClientResponse).then(mapForm)
     },
   }

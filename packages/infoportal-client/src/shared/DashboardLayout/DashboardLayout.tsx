@@ -99,13 +99,7 @@ export const DashboardLayout = ({
       {loading && <LinearProgress sx={{position: 'fixed', top: 0, right: 0, left: 0}} />}
       <Layout
         header={
-          <DashboardHeader
-            action={action}
-            header={header}
-            title={title}
-            subTitle={subTitle}
-            id={dashboardHeaderId}
-          />
+          <DashboardHeader action={action} header={header} title={title} subTitle={subTitle} id={dashboardHeaderId} />
         }
         sidebar={map(sections, _ => (
           <Sidebar headerId={dashboardHeaderId} showThemeToggle>

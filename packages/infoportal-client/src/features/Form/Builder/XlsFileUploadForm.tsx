@@ -4,8 +4,6 @@ import React, {useRef, useState} from 'react'
 import {Fender, IpBtn} from '@/shared'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useI18n} from '@/core/i18n'
-import {Kobo} from 'kobo-sdk'
-import {UUID} from 'infoportal-common'
 import {IpInput} from '@/shared/Input/Input'
 import {Alert, AlertTitle, CircularProgress, Icon, Skeleton} from '@mui/material'
 import {DiffView} from '@/features/Form/Builder/DiffView'
@@ -34,8 +32,8 @@ export const XlsFileUploadForm = ({
 }: {
   lastSchema?: Ip.Form.Version
   onSubmit?: (f: Form) => Promise<any>
-  workspaceId: UUID
-  formId: Kobo.FormId
+  workspaceId: Ip.WorkspaceId
+  formId: Ip.FormId
 }) => {
   const {m} = useI18n()
   const {

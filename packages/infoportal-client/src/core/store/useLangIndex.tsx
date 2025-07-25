@@ -2,7 +2,6 @@ import {DialogAnswerEdit} from '@/features/Form/dialogs/DialogAnswerEdit'
 import {DialogAnswerView} from '@/features/Form/dialogs/DialogAnswerView'
 import {useQueryClient} from '@tanstack/react-query'
 import {useDialogs} from '@toolpad/core'
-import {Kobo} from 'kobo-sdk'
 import {create} from 'zustand'
 import {getKoboSchema} from '../query/useQuerySchema'
 import {KoboUpdateModal} from '@/shared/koboEdit/KoboUpdateModal'
@@ -23,23 +22,23 @@ export const useLangIndex = create<LangIndex>(set => ({
 }))
 
 export interface OpenModalProps {
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
   answer: Submission
-  formId: Kobo.FormId
+  formId: Ip.FormId
 }
 
 export type KoboUpdateValidation = {
-  workspaceId: Ip.Uuid
-  formId: Kobo.FormId
-  answerIds: Kobo.SubmissionId[]
+  workspaceId: Ip.WorkspaceId
+  formId: Ip.FormId
+  answerIds: Ip.SubmissionId[]
   // status: KoboValidation | null
   onSuccess?: () => void
 }
 
 export type KoboUpdateAnswers = {
-  workspaceId: Ip.Uuid
-  formId: Kobo.FormId
-  answerIds: Kobo.SubmissionId[]
+  workspaceId: Ip.WorkspaceId
+  formId: Ip.FormId
+  answerIds: Ip.SubmissionId[]
   question: string
   // answer: any | null
   onSuccess?: () => void

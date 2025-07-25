@@ -5,6 +5,7 @@ import {Kobo} from 'kobo-sdk'
 import {yup} from '../../helper/Utils.js'
 import {XlsFormParser} from '../kobo/XlsFormParser.js'
 import {Ip} from 'infoportal-api-sdk'
+import {PrismaHelper} from '../../core/PrismaHelper'
 
 export class FormVersionService {
   constructor(
@@ -31,40 +32,44 @@ export class FormVersionService {
   }: {
     message?: string
     uploadedBy: string
-    formId: Kobo.FormId
+    formId: Ip.FormId
     file: Express.Multer.File
   }) => {
     const validation = await XlsFormParser.validateAndParse(file.path)
     if (!validation.schema || validation.status === 'error') {
       throw new Error('Invalid XLSForm')
     }
-    return this.createNewVersion({fileName: file.filename, schemaJson: validation.schema, ...rest})
+    return this.createNewVersion({fileName: file.filename, schemaJson: validation.schema, ...rest}).then(
+      PrismaHelper.mapVersion,
+    )
   }
 
   readonly deployLastDraft = async ({formId}: {formId: Ip.FormId}) => {
-    return this.prisma.$transaction(async tx => {
-      await tx.formVersion.updateMany({
-        where: {formId, status: {in: ['draft', 'active']}},
-        data: {status: 'inactive'},
-      })
+    return this.prisma
+      .$transaction(async tx => {
+        await tx.formVersion.updateMany({
+          where: {formId, status: {in: ['draft', 'active']}},
+          data: {status: 'inactive'},
+        })
 
-      const last = await tx.formVersion.findFirst({
-        where: {formId},
-        orderBy: {createdAt: 'desc'},
-      })
+        const last = await tx.formVersion.findFirst({
+          where: {formId},
+          orderBy: {createdAt: 'desc'},
+        })
 
-      if (!last) throw new Error('No form version found')
+        if (!last) throw new Error('No form version found')
 
-      await tx.form.update({
-        where: {id: formId},
-        data: {deploymentStatus: 'deployed'},
-      })
+        await tx.form.update({
+          where: {id: formId},
+          data: {deploymentStatus: 'deployed'},
+        })
 
-      return tx.formVersion.update({
-        where: {id: last.id},
-        data: {status: 'active'},
+        return tx.formVersion.update({
+          where: {id: last.id},
+          data: {status: 'active'},
+        })
       })
-    })
+      .then(PrismaHelper.mapVersion)
   }
 
   private readonly createNewVersion = async ({
@@ -74,7 +79,7 @@ export class FormVersionService {
   }: {
     message?: string
     fileName?: string
-    formId: Kobo.Form.Id
+    formId: Ip.Form.Id
     schemaJson: Kobo.Form['content']
     uploadedBy: string
   }) => {
@@ -108,14 +113,16 @@ export class FormVersionService {
     })
   }
 
-  readonly getVersions = ({formId}: {formId: Kobo.FormId}): Promise<Ip.Form.Version[]> => {
-    return this.prisma.formVersion.findMany({
-      omit: {schema: true},
-      where: {formId},
-    })
+  readonly getVersions = ({formId}: {formId: Ip.FormId}): Promise<Ip.Form.Version[]> => {
+    return this.prisma.formVersion
+      .findMany({
+        omit: {schema: true},
+        where: {formId},
+      })
+      .then(_ => _.map(PrismaHelper.mapVersion))
   }
 
-  readonly hasActiveVersion = ({formId}: {formId: Kobo.FormId}): Promise<boolean> => {
+  readonly hasActiveVersion = ({formId}: {formId: Ip.FormId}): Promise<boolean> => {
     return this.prisma.formVersion
       .findFirst({
         where: {formId, status: 'active'},

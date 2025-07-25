@@ -1,15 +1,13 @@
-import {UUID} from 'infoportal-common'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {duration, seq} from '@axanc/ts-utils'
 import {ApiError} from '@/core/sdk/server/ApiClient'
-import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {useMemo} from 'react'
 
-export const useQueryForm = (workspaceId: UUID) => {
+export const useQueryForm = (workspaceId: Ip.WorkspaceId) => {
   const {apiv2} = useAppSettings()
   const {toastHttpError, toastAndThrowHttpError} = useIpToast()
   const queryClient = useQueryClient()
@@ -62,7 +60,7 @@ export const useQueryForm = (workspaceId: UUID) => {
   }
 }
 
-export const useQueryFormById = ({workspaceId, formId}: {workspaceId: UUID; formId: Kobo.FormId}) => {
+export const useQueryFormById = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
   const {apiv2} = useAppSettings()
   const {toastHttpError, toastAndThrowHttpError} = useIpToast()
   const queryClient = useQueryClient()

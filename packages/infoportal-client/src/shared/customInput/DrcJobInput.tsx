@@ -10,7 +10,7 @@ export const DrcJobInputMultiple = ({
   workspaceId,
   ...props
 }: Omit<AutocompleteProps<string, any, any, any>, 'renderInput' | 'options'> & {
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
 }) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
@@ -44,7 +44,7 @@ export const DrcJobInputSingle = ({
   workspaceId,
   ...props
 }: Omit<AutocompleteProps<string, any, any, any>, 'renderInput' | 'options'> & {
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
 }) => {
   const {m} = useI18n()
   const {api} = useAppSettings()

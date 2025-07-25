@@ -33,10 +33,6 @@ export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
 }
 
-export const getWorkspaceId = (req: Request): Ip.Uuid => {
-  return req.params.workspaceId
-}
-
 const uploader = multer({dest: 'uploads/'})
 
 export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Routes')) => {
@@ -450,7 +446,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       '/kobo-api/:formId/submission/:submissionId/attachment/:attachmentId',
       safe(koboApi.getAttachementsWithoutAuth),
     )
-    r.get('/kobo-api/:formId/schema', auth(), safe(koboApi.getSchema))
     r.get('/kobo-api/:formId/edit-url/:answerId', safe(koboApi.edit))
     r.post('/kobo-api/proxy', safe(koboApi.proxy))
     r.post(

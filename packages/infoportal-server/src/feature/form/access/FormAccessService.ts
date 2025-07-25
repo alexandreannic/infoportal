@@ -1,7 +1,8 @@
 import {PrismaClient, User} from '@prisma/client'
-import {App, app, AppLogger} from '../../../index.js'
+import {app, AppLogger} from '../../../index.js'
 import {Ip} from 'infoportal-api-sdk'
 import {AppError} from '../../../helper/Errors.js'
+import {PrismaHelper} from '../../../core/PrismaHelper'
 
 export class FormAccessService {
   constructor(
@@ -15,7 +16,7 @@ export class FormAccessService {
     user,
   }: {
     formId?: Ip.FormId
-    workspaceId: Ip.Uuid
+    workspaceId: Ip.WorkspaceId
     user?: User
   }) => {
     return this.prisma.formAccess.findMany({
@@ -47,7 +48,7 @@ export class FormAccessService {
     formId,
   }: {
     formId?: Ip.FormId
-    workspaceId: Ip.Uuid
+    workspaceId: Ip.WorkspaceId
     user?: User
   }) => {
     return this.prisma.formAccess.findMany({
@@ -88,7 +89,7 @@ export class FormAccessService {
     user,
     formId,
   }: {
-    workspaceId: Ip.Uuid
+    workspaceId: Ip.WorkspaceId
     formId?: Ip.FormId
     user?: User
   }): Promise<Ip.Form.Access[]> => {
@@ -129,10 +130,12 @@ export class FormAccessService {
   }
 
   readonly update = ({id, ...data}: Ip.Form.Access.Payload.Update): Promise<Ip.Form.Access> => {
-    return this.prisma.formAccess.update({
-      where: {id},
-      data: data,
-    }) as Promise<Ip.Form.Access>
+    return this.prisma.formAccess
+      .update({
+        where: {id},
+        data: data,
+      })
+      .then(PrismaHelper.mapAccess)
   }
 
   readonly removeByFormId = ({formId}: {formId: Ip.FormId}) => {
@@ -143,7 +146,7 @@ export class FormAccessService {
     })
   }
 
-  readonly remove = async ({deletedByEmail, id}: {deletedByEmail: string; id: Ip.Uuid}) => {
+  readonly remove = async ({deletedByEmail, id}: {deletedByEmail: string; id: Ip.Form.AccessId}) => {
     const access = await this.prisma.formAccess.findFirst({
       select: {
         email: true,
@@ -163,6 +166,6 @@ export class FormAccessService {
           id,
         },
       })
-      .then(_ => _.id)
+      .then(_ => _.id as Ip.Form.AccessId)
   }
 }

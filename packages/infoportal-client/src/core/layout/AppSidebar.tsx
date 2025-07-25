@@ -56,7 +56,7 @@ const SearchInput = forwardRef(
   },
 )
 
-export const AppSidebar = ({workspaceId}: {workspaceId: Ip.Uuid}) => {
+export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
   const {m} = useI18n()
   const t = useTheme()
   const searchForm = useForm<{name: string}>()

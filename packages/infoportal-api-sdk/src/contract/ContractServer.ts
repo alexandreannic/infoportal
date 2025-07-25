@@ -11,8 +11,8 @@ export const serverContract = c.router({
     method: 'GET',
     path: `/:workspaceId/kobo/server/:id`,
     pathParams: z.object({
-      workspaceId: schema.uuid,
-      id: schema.uuid,
+      workspaceId: schema.workspaceId,
+      id: schema.serverId,
     }),
     responses: {
       200: z.any() as z.ZodType<Ip.Server | undefined>,
@@ -28,7 +28,7 @@ export const serverContract = c.router({
     method: 'GET',
     path: `/:workspaceId/kobo/server`,
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
     }),
     responses: {
       200: c.type<Ip.Server[]>(),
@@ -44,7 +44,7 @@ export const serverContract = c.router({
     method: 'PUT',
     path: `/:workspaceId/kobo/server`,
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
     }),
     body: c.type<Omit<Ip.Server.Payload.Create, 'workspaceId'>>(),
     responses: {
@@ -60,8 +60,8 @@ export const serverContract = c.router({
   delete: {
     method: 'DELETE',
     pathParams: z.object({
-      workspaceId: schema.uuid,
-      id: schema.uuid,
+      workspaceId: schema.workspaceId,
+      id: schema.serverId,
     }),
     path: `/:workspaceId/kobo/server/:id`,
     responses: {
@@ -77,11 +77,11 @@ export const serverContract = c.router({
 
 export const serverClient = (client: TsRestClient) => {
   return {
-    get: (params: {id: Ip.Uuid; workspaceId: Ip.Uuid}) => {
+    get: (params: {id: Ip.ServerId; workspaceId: Ip.WorkspaceId}) => {
       return client.server.get({params}).then(mapClientResponse)
     },
 
-    getAll: ({workspaceId}: {workspaceId: Ip.Uuid}) => {
+    getAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
       return client.server
         .getAll({
           params: {workspaceId},
@@ -98,7 +98,7 @@ export const serverClient = (client: TsRestClient) => {
         .then(mapClientResponse)
     },
 
-    delete: ({workspaceId, id}: {workspaceId: Ip.Uuid; id: Ip.Uuid}) => {
+    delete: ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.ServerId}) => {
       return client.server
         .delete({
           params: {workspaceId, id},

@@ -13,10 +13,18 @@ export type Meta = {
 export const makeMeta = (_: Meta) => _
 
 export const schema = (() => {
-  const uuid = z.string()
-  const formId = z.string()
+  const workspaceId = z.string() as unknown as z.ZodType<Ip.WorkspaceId>
+  const uuid = z.string() as unknown as z.ZodType<Ip.Uuid>
+  const formId = z.string() as unknown as z.ZodType<Ip.FormId>
+  const versionId = z.string() as unknown as z.ZodType<Ip.Form.VersionId>
+  const serverId = z.string() as unknown as z.ZodType<Ip.ServerId>
+  const formAccessId = z.string() as unknown as z.ZodType<Ip.Form.AccessId>
   return {
+    workspaceId,
     uuid,
     formId,
+    versionId,
+    serverId,
+    formAccessId,
   }
 })()

@@ -6,8 +6,13 @@ type ReplaceNullWithUndefined<T> = {
   [K in keyof T]: Exclude<T[K], null> | Extract<T[K], null> extends never ? undefined : Exclude<T[K], null> | undefined
 }
 
+type Brand<K, T> = K & {
+  /** @deprecated Should never be used: compile-time only trick to distinguish different ID types. */
+  __brand: T
+}
+
 export namespace Ip {
-  export type Uuid = string
+  export type Uuid = Brand<string, 'Uuid'>
 
   export type Period = {
     start: Date
@@ -24,6 +29,7 @@ export namespace Ip {
     data: T[]
   }
 
+  // === PERMISSION
   export namespace Permission {
     export type Scope = 'global' | 'workspace' | 'form'
 
@@ -89,49 +95,53 @@ export namespace Ip {
     Admin: 'Admin',
   } as const
 
-  export type FormId = Form.Id
-
-  export type Form = Prisma.Form
-
-  export type Server = Prisma.KoboServer
-
+  // === User
   export type User = Prisma.User
-
   export namespace User {}
 
-  export type Workspace = Prisma.Workspace
-
+  // === Workspace
+  export type Workspace = Prisma.Workspace & {
+    id: WorkspaceId
+  }
+  export type WorkspaceId = Brand<string, 'workspaceId'>
   export namespace Workspace {
     export type Access = Prisma.WorkspaceAccess
     export namespace Access {
       export namespace Payload {
-        export type Create = {email: string; level: AccessLevel; workspaceId: Uuid}
+        export type Create = {email: string; level: AccessLevel; workspaceId: WorkspaceId}
       }
     }
 
     export namespace Payload {
       export type Create = Omit<Workspace, 'id' | 'createdAt' | 'createdBy'>
-      export type Update = {id: Uuid} & Partial<Omit<Workspace, 'id' | 'createdAt' | 'createdBy'>>
+      export type Update = {id: WorkspaceId} & Partial<Omit<Workspace, 'id' | 'createdAt' | 'createdBy'>>
     }
   }
 
+  // === Server
+  export type ServerId = Brand<string, 'serverId'>
+  export type Server = Prisma.KoboServer & {
+    id: ServerId
+    workspaceId: WorkspaceId
+  }
   export namespace Server {
     export namespace Payload {
       export type Create = Omit<Server, 'id'>
     }
   }
 
+  // === Submission
   export type Submission<T extends Record<string, any> = Record<string, any>> = Omit<
     Prisma.FormSubmission,
-    'start' | 'end' | 'attachments' | 'answers' | 'deletedBy' | 'deletedAt' | 'formId' | 'form' | 'histories'
+    'answers' | 'deletedBy' | 'deletedAt' | 'formId' | 'form' | 'histories'
   > & {
-    start?: Date
-    end?: Date
+    id: SubmissionId
+    start?: Date | undefined
+    end?: Date | undefined
     answers: T
     attachments: Kobo.Submission.Attachment[]
   }
-
-  export type SubmissionId = Submission.Id
+  export type SubmissionId = Brand<string, 'submissionId'>
   export namespace Submission {
     export type Validation = Prisma.FormSubmissionValidation
     export const Validation = {
@@ -153,7 +163,7 @@ export namespace Ip {
       geolocation: Kobo.Submission['_geolocation']
       id: Kobo.SubmissionId
       uuid: Kobo.Submission['_uuid']
-      validationStatus?: Ip.Submission.Validation
+      validationStatus?: Submission.Validation
       validatedBy?: string
       submittedBy?: string
       lastValidatedTimestamp?: number
@@ -161,29 +171,28 @@ export namespace Ip {
       updatedAt?: Date
     }
 
-    export type Id = string
     export namespace Payload {
       export type Submit = {
-        workspaceId: Ip.Uuid
-        formId: Ip.FormId
+        workspaceId: WorkspaceId
+        formId: FormId
         attachments: any[]
         answers: object
       }
       export type UpdateValidation = {
         formId: FormId
-        workspaceId: Uuid
-        answerIds: Id[]
+        workspaceId: WorkspaceId
+        answerIds: SubmissionId[]
         status: Validation
       }
       export type Remove = {
         formId: FormId
-        workspaceId: Uuid
-        answerIds: Id[]
+        workspaceId: WorkspaceId
+        answerIds: SubmissionId[]
       }
       export type Update<T extends Record<string, any> = any, K extends KeyOf<T> = any> = {
         formId: FormId
-        workspaceId: Uuid
-        answerIds: Id[]
+        workspaceId: WorkspaceId
+        answerIds: SubmissionId[]
         question: K
         answer: T[K] | null
       }
@@ -200,19 +209,27 @@ export namespace Ip {
       export type Search = {
         filters?: Filter & Partial<Period>
         paginate?: Pagination
-        workspaceId: Uuid
+        workspaceId: WorkspaceId
         formId: FormId
         user?: User
       }
     }
   }
 
+  // === Form
+  export type FormId = Form.Id
+  export type Form = Prisma.Form & {
+    id: FormId
+    serverId: ServerId
+  }
   export namespace Form {
-    export type Id = string
+    export type Id = Brand<string, 'FormId'>
 
     export type Schema = Kobo.Form['content'] & {files?: Kobo.Form.File[]}
 
-    export type Version = Omit<Prisma.FormVersion, 'schema'>
+    export type Version = Omit<Prisma.FormVersion, 'schema' | 'id'> & {
+      id: VersionId
+    }
 
     export type Source = Prisma.FormSource
     export const Source = {
@@ -223,14 +240,14 @@ export namespace Ip {
 
     export namespace Payload {
       export type Update = {
-        workspaceId: Ip.Uuid
-        formId: Ip.FormId
+        workspaceId: WorkspaceId
+        formId: FormId
         source?: 'disconnected' | 'kobo'
         archive?: boolean
       }
 
       export type Import = {
-        serverId: Ip.Uuid
+        serverId: ServerId
         uid: Kobo.FormId
       }
 
@@ -240,31 +257,33 @@ export namespace Ip {
       }
     }
 
+    // === Access
+    export type AccessId = Brand<string, 'accessId'>
     export type Access = Prisma.FormAccess & {
+      id: AccessId
       groupName?: string
       filters?: Access.Filters
     }
-
     export namespace Access {
       export type Filters = Record<string, string[]>
 
       export namespace Payload {
         export type Create = {
-          workspaceId: Prisma.FormAccess['workspaceId']
-          formId: Prisma.FormAccess['formId']
+          workspaceId: WorkspaceId
+          formId: FormId
           level: Prisma.FormAccess['level']
           email?: Prisma.FormAccess['email']
           job?: Prisma.FormAccess['job'][]
-          groupId?: Prisma.FormAccess['groupId']
+          groupId?: GroupId
           filters?: Filters
         }
         export type Update = {
-          id: Prisma.FormAccess['id']
-          workspaceId: Prisma.FormAccess['workspaceId']
+          id: AccessId
+          workspaceId: WorkspaceId
           email?: Prisma.FormAccess['email']
           job?: Prisma.FormAccess['job']
           level?: Prisma.FormAccess['level']
-          groupId?: Prisma.FormAccess['groupId']
+          groupId?: GroupId
         }
       }
     }
@@ -279,6 +298,49 @@ export namespace Ip {
       }
     }
 
+    export type VersionId = Brand<string, 'versionId'>
     export namespace Version {}
+  }
+
+  // === Group
+  export type GroupId = Brand<string, 'groupId'>
+  export type Group = Omit<Prisma.Group, 'id' | 'workspaceId' | 'desc'> & {
+    id: GroupId
+    workspaceId: WorkspaceId
+    desc?: string
+    items: Group.Item[]
+  }
+  export namespace Group {
+    export type ItemId = Brand<string, 'itemId'>
+    export type Item = {
+      id: ItemId
+      level: AccessLevel
+      email?: string
+      drcJob?: string
+      drcOffice?: string
+    }
+
+    export namespace Payload {
+      export type Create = Pick<Group, 'workspaceId' | 'name' | 'desc'>
+
+      export type Update = Pick<Group, 'id' | 'workspaceId' | 'name' | 'desc'>
+
+      export type ItemCreate = {
+        workspaceId: WorkspaceId
+        groupId: GroupId
+        email?: string | null
+        level: AccessLevel
+        drcOffice?: string | null
+        drcJob?: string[] | null
+      }
+      export type ItemUpdate = {
+        itemId: ItemId
+        workspaceId: WorkspaceId
+        email?: string | null
+        level: AccessLevel
+        drcOffice?: string | null
+        drcJob?: string | null
+      }
+    }
   }
 }

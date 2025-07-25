@@ -2,12 +2,11 @@ import {useLangIndex} from '@/core/store/useLangIndex'
 import {duration} from '@axanc/ts-utils'
 import {QueryClient, useQuery} from '@tanstack/react-query'
 import {KoboSchemaHelper} from 'infoportal-common'
-import {Kobo} from 'kobo-sdk'
 import {useAppSettings} from '../context/ConfigContext'
 import {queryKeys} from './query.index'
 import {Ip} from 'infoportal-api-sdk'
 
-export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.Uuid; formId: Kobo.FormId}) => {
+export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
   const {apiv2} = useAppSettings()
   const langIndex = useLangIndex(state => state.langIndex)
   return useQuery({
@@ -23,6 +22,6 @@ export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.Uuid; for
   })
 }
 
-export const getKoboSchema = (queryClient: QueryClient, formId: Kobo.FormId): undefined | KoboSchemaHelper.Bundle => {
+export const getKoboSchema = (queryClient: QueryClient, formId: Ip.FormId): undefined | KoboSchemaHelper.Bundle => {
   return queryClient.getQueryData<KoboSchemaHelper.Bundle>(queryKeys.koboSchema(formId))
 }

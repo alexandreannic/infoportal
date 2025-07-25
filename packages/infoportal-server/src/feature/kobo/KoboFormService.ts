@@ -7,6 +7,7 @@ import {appConf} from '../../core/conf/AppConf.js'
 import {app, AppCacheKey} from '../../index.js'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {Ip} from 'infoportal-api-sdk'
+import {PrismaHelper} from '../../core/PrismaHelper'
 
 export class KoboFormService {
   constructor(
@@ -49,7 +50,9 @@ export class KoboFormService {
 
   static readonly HOOK_NAME = 'InfoPortal'
 
-  readonly importFromKobo = async (payload: Ip.Form.Payload.Import & {uploadedBy: string; workspaceId: UUID}) => {
+  readonly importFromKobo = async (
+    payload: Ip.Form.Payload.Import & {uploadedBy: string; workspaceId: Ip.WorkspaceId},
+  ): Promise<Ip.Form> => {
     const sdk = await this.koboSdk.getBy.serverId(payload.serverId)
     const schema = await sdk.v2.form.get({formId: payload.uid, use$autonameAsName: true})
     const [newFrom] = await Promise.all([
@@ -65,7 +68,7 @@ export class KoboFormService {
     ])
     this.cache.clear(AppCacheKey.KoboServerIndex)
     this.cache.clear(AppCacheKey.KoboClient)
-    return newFrom
+    return PrismaHelper.mapForm(newFrom)
   }
 
   readonly deleteHookIfExists = async ({formId, sdk}: {formId: Kobo.FormId; sdk?: KoboClient}) => {
@@ -125,17 +128,19 @@ export class KoboFormService {
     )
   }
 
-  readonly getAll = async ({wsId}: {wsId: UUID}): Promise<Ip.Form[]> => {
-    return this.prisma.form.findMany({
-      where: {
-        serverId: {not: null},
-        workspaces: {
-          some: {
-            id: wsId,
+  private readonly getAll = async ({wsId}: {wsId: UUID}): Promise<Ip.Form[]> => {
+    return this.prisma.form
+      .findMany({
+        where: {
+          serverId: {not: null},
+          workspaces: {
+            some: {
+              id: wsId,
+            },
           },
         },
-      },
-    })
+      })
+      .then(_ => _.map(PrismaHelper.mapForm))
   }
 
   readonly refreshAll = async ({byEmail, wsId}: {byEmail: string; wsId: UUID}) => {

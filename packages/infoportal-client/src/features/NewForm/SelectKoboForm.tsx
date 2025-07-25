@@ -3,7 +3,6 @@ import {IpBtn} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Icon, useTheme} from '@mui/material'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
-import {UUID} from 'infoportal-common'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {useQuery} from '@tanstack/react-query'
@@ -15,8 +14,8 @@ export const SelectKoboForm = ({
   serverId,
   onAdded,
 }: {
-  workspaceId: Ip.Uuid
-  serverId: UUID
+  workspaceId: Ip.WorkspaceId
+  serverId: Ip.ServerId
   onAdded?: () => void
 }) => {
   const {api} = useAppSettings()

@@ -12,7 +12,7 @@ export const formContract = c.router({
     path: '/:workspaceId/form/refresh',
     body: c.type<void>(),
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
     }),
     responses: {
       200: z.void(),
@@ -28,7 +28,7 @@ export const formContract = c.router({
     method: 'GET',
     path: '/:workspaceId/form/:formId/schema',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
     responses: {
@@ -40,9 +40,9 @@ export const formContract = c.router({
     method: 'GET',
     path: '/:workspaceId/form/:formId/schema/:versionId',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
       formId: schema.formId,
-      versionId: schema.uuid,
+      versionId: schema.versionId,
     }),
     responses: {
       200: z.any() as z.ZodType<Ip.Form.Schema | undefined>,
@@ -73,7 +73,7 @@ export const formContract = c.router({
     method: 'PUT',
     path: '/:workspaceId/form',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
     }),
     body: c.type<Ip.Form.Payload.Create>(),
     responses: {
@@ -90,8 +90,8 @@ export const formContract = c.router({
     method: 'GET',
     path: '/:workspaceId/form/:formId',
     pathParams: z.object({
-      workspaceId: schema.uuid,
-      formId: z.string(),
+      workspaceId: schema.workspaceId,
+      formId: schema.formId,
     }),
     responses: {
       200: z.any() as z.ZodType<Ip.Form | undefined>,
@@ -107,8 +107,8 @@ export const formContract = c.router({
     method: 'DELETE',
     path: '/:workspaceId/form/:formId',
     pathParams: z.object({
-      workspaceId: schema.uuid,
-      formId: z.string(),
+      workspaceId: schema.workspaceId,
+      formId: schema.formId,
     }),
     responses: {
       200: z.number(),
@@ -124,7 +124,7 @@ export const formContract = c.router({
     method: 'GET',
     path: '/:workspaceId/form',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
     }),
     responses: {
       200: z.any() as z.ZodType<Ip.Form[]>,
@@ -149,34 +149,34 @@ export const mapFormNullable = (_?: Ip.Form): undefined | Ip.Form => {
 
 export const formClient = (client: TsRestClient) => {
   return {
-    refreshAll: ({workspaceId}: {workspaceId: Ip.Uuid}) => {
+    refreshAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
       return client.form.refreshAll({params: {workspaceId}, body: undefined}).then(mapClientResponse)
     },
 
-    create: ({workspaceId, ...body}: {workspaceId: Ip.Uuid; name: string; category?: string}) => {
+    create: ({workspaceId, ...body}: {workspaceId: Ip.WorkspaceId; name: string; category?: string}) => {
       return client.form.create({params: {workspaceId}, body}).then(mapClientResponse).then(mapForm)
     },
 
-    remove: ({formId, workspaceId}: {workspaceId: Ip.Uuid; formId: string}) => {
+    remove: ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
       return client.form.remove({params: {workspaceId, formId}}).then(mapClientResponse)
     },
 
-    get: ({formId, workspaceId}: {workspaceId: Ip.Uuid; formId: string}) => {
+    get: ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
       return client.form.get({params: {workspaceId, formId}}).then(mapClientResponse).then(mapFormNullable)
     },
 
-    getAll: ({workspaceId}: {workspaceId: Ip.Uuid}) => {
+    getAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
       return client.form
         .getAll({params: {workspaceId}})
         .then(mapClientResponse)
         .then(_ => _.map(mapForm))
     },
 
-    getSchemaByVersion: (params: {workspaceId: Ip.Uuid; formId: Ip.FormId; versionId: Ip.Uuid}) => {
+    getSchemaByVersion: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId; versionId: Ip.Form.VersionId}) => {
       return client.form.getSchemaByVersion({params}).then(mapClientResponse)
     },
 
-    getSchema: (params: {workspaceId: Ip.Uuid; formId: Ip.FormId}) => {
+    getSchema: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
       return client.form.getSchema({params}).then(mapClientResponse)
     },
 

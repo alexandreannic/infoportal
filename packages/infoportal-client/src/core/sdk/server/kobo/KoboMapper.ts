@@ -1,4 +1,3 @@
-import {UUID} from 'infoportal-common'
 import {Obj} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
@@ -10,7 +9,7 @@ export type KoboServer = {
   url: string
   urlV1: string
   token: string
-  workspaceId: UUID
+  workspaceId: Ip.WorkspaceId
 }
 
 export type SubmissionMappedType = string | string[] | Date | number | undefined

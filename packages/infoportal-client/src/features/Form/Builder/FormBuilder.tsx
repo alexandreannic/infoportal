@@ -14,6 +14,7 @@ import {createRoute, Link, useRouter} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
 import {IpInput} from '@/shared/Input/Input'
 import {useIpToast} from '@/core/useToast'
+import {Ip} from 'infoportal-api-sdk'
 
 export const formBuilderRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -25,7 +26,7 @@ function FormBuilder() {
   const {m} = useI18n()
   const t = useTheme()
   const {toastInfo, toastError} = useIpToast()
-  const {workspaceId, formId} = formBuilderRoute.useParams()
+  const {workspaceId, formId} = formBuilderRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
   const [versionVisible, setVersionVisible] = useState(5)
   const queryForm = useQueryFormById({workspaceId, formId}).get
   const queryVersion = useQueryVersion({workspaceId, formId})

@@ -51,8 +51,8 @@ export namespace GlobalEvent {
   type Emit = {
     (event: Event.KOBO_ANSWER_EDITED_FROM_IP, params: KoboAnswerEditedParams): void
     (event: Event.KOBO_ANSWER_EDITED_FROM_KOBO, params: KoboAnswerEditedParams): void
-    (event: Event.KOBO_VALIDATION_EDITED_FROM_KOBO, params: KoboValidationEditedParams): void
     (event: Event.KOBO_ANSWER_NEW, params: KoboAnswerEditedParams): void
+    (event: Event.KOBO_VALIDATION_EDITED_FROM_KOBO, params: KoboValidationEditedParams): void
     (event: Event.KOBO_TAG_EDITED, params: KoboTagEditedParams): void
     (event: Event.KOBO_FORM_SYNCHRONIZED, params: KoboFormSyncParams): void
     (event: Event.NEW_SUBMISSION, params: NewSubmissionParams): void
@@ -61,8 +61,8 @@ export namespace GlobalEvent {
   type Listen = {
     (event: Event.KOBO_ANSWER_EDITED_FROM_IP, cb: (params: KoboAnswerEditedParams) => void): void
     (event: Event.KOBO_ANSWER_EDITED_FROM_KOBO, cb: (params: KoboAnswerEditedParams) => void): void
-    (event: Event.KOBO_VALIDATION_EDITED_FROM_KOBO, cb: (params: KoboValidationEditedParams) => void): void
     (event: Event.KOBO_ANSWER_NEW, cb: (params: KoboAnswerEditedParams) => void): void
+    (event: Event.KOBO_VALIDATION_EDITED_FROM_KOBO, cb: (params: KoboValidationEditedParams) => void): void
     (event: Event.KOBO_TAG_EDITED, cb: (params: KoboTagEditedParams) => void): void
     (event: Event.KOBO_FORM_SYNCHRONIZED, cb: (params: KoboFormSyncParams) => void): void
     (event: Event.NEW_SUBMISSION, cb: (params: NewSubmissionParams) => void): void

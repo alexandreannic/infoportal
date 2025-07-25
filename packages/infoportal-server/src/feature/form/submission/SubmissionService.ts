@@ -12,8 +12,8 @@ import {Kobo} from 'kobo-sdk'
 import {Ip, Paginate} from 'infoportal-api-sdk'
 import {KoboCustomDirective, logPerformance} from 'infoportal-common'
 import {KoboMapper} from '../../kobo/KoboMapper.js'
-import Event = GlobalEvent.Event
 import {FormService} from '../FormService.js'
+import Event = GlobalEvent.Event
 
 export class SubmissionService {
   constructor(
@@ -139,7 +139,7 @@ export class SubmissionService {
 
   private static readonly genId = () => genShortid(10)
 
-  private static readonly mapAnswer = ({
+  private static readonly mapPayload = ({
     answers,
     formId,
     attachments,
@@ -164,7 +164,7 @@ export class SubmissionService {
 
   readonly submit = async (
     props: Ip.Submission.Payload.Submit & {
-      workspaceId: Ip.Uuid
+      workspaceId: Ip.WorkspaceId
       formId: Ip.FormId
       author?: string
     },
@@ -172,7 +172,7 @@ export class SubmissionService {
     const form = await this.form.get(props.formId)
     if (!form) throw new AppError.NotFound(`Form ${props.formId} does not exists.`)
     if (form.source === 'kobo') throw new AppError.BadRequest(`Cannot submit in a Kobo form.`)
-    return this.create({answers: SubmissionService.mapAnswer(props)})
+    return this.create({answers: SubmissionService.mapPayload(props)})
   }
 
   readonly create = async ({answers}: {answers: Prisma.FormSubmissionUncheckedCreateInput}): Promise<Ip.Submission> => {

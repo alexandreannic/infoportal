@@ -5,7 +5,6 @@ import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
 import {IpBtn} from '@/shared/Btn'
 import {AppAvatar} from '@/shared/AppAvatar'
-import {fnSwitch} from '@axanc/ts-utils'
 import {Ip} from 'infoportal-api-sdk'
 
 const Row = ({

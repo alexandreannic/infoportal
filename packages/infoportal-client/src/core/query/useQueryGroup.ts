@@ -3,13 +3,12 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {queryKeys} from './query.index'
-import {UUID} from 'infoportal-common'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
-import {Group} from '@/core/sdk/server/group/GroupItem'
+import {Ip} from 'infoportal-api-sdk'
 
 type Params<T extends keyof ApiSdk['group']> = Parameters<ApiSdk['group'][T]>[0]
 
-export const useQueryGroup = (workspaceId: UUID) => {
+export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   const {api} = useAppSettings()
   const {toastHttpError, toastAndThrowHttpError} = useIpToast()
   const queryClient = useQueryClient()
@@ -31,7 +30,7 @@ export const useQueryGroup = (workspaceId: UUID) => {
   })
 
   const update = useMutation({
-    mutationFn: async (args: Omit<Params<'update'>, 'workspaceId'>) => {
+    mutationFn: async (args: Omit<Ip.Group.Payload.Update, 'workspaceId'>) => {
       return api.group.update({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -71,7 +70,7 @@ export const useQueryGroup = (workspaceId: UUID) => {
   })
 
   const duplicate = useMutation({
-    mutationFn: async (g: Group) => {
+    mutationFn: async (g: Ip.Group) => {
       const {id, items, createdAt, name, ...params} = g
       const newGroup = await create.mutateAsync({
         name: `${name} (copy)`,

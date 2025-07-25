@@ -86,12 +86,6 @@ export class ControllerKoboApi {
     res.redirect(link.url)
   }
 
-  readonly getSchema = async (req: Request, res: Response, next: NextFunction) => {
-    const {formId} = await this.extractParams(req)
-    const form = await this.koboService.getSchema({formId})
-    res.send(form)
-  }
-
   readonly getAttachementsWithoutAuth = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const params = await yup

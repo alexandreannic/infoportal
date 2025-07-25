@@ -13,7 +13,13 @@ import {
 } from '@/features/Access/AccessForm'
 import {Ip} from 'infoportal-api-sdk'
 
-export const SettingsGroupAccessForm = ({workspaceId, form}: {workspaceId: Ip.Uuid; form: UseFormReturn<IAccessForm>}) => {
+export const SettingsGroupAccessForm = ({
+  workspaceId,
+  form,
+}: {
+  workspaceId: Ip.WorkspaceId
+  form: UseFormReturn<IAccessForm>
+}) => {
   const {m} = useI18n()
   const watchSelectBy = form.watch('selectBy')
   const watch = form.watch()

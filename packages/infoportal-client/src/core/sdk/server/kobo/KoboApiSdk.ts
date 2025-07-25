@@ -4,6 +4,7 @@ import {Kobo} from 'kobo-sdk'
 import {appConfig, AppConfig} from '@/conf/AppConfig'
 import {ApiPagination} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Method} from 'axios'
+import {Ip} from 'infoportal-api-sdk'
 
 export interface FilterBy {
   column: string
@@ -14,7 +15,7 @@ export interface FilterBy {
 export interface AnswersFilters<T extends FilterBy[] = FilterBy[]> {
   start?: Date
   end?: Date
-  ids?: Kobo.FormId[]
+  ids?: Ip.FormId[]
   filterBy?: T
 }
 
@@ -33,16 +34,16 @@ export class KoboApiSdk {
     private conf: AppConfig = appConfig,
   ) {}
 
-  readonly synchronizeAnswers = (formId: Kobo.FormId) => {
+  readonly synchronizeAnswers = (formId: Ip.FormId) => {
     return this.client.post(`/kobo-api/${formId}/sync`)
   }
 
   /** @deprecated*/
-  readonly getSchema = ({id}: {id: Kobo.FormId}): Promise<Kobo.Form> => {
+  readonly getSchema = ({id}: {id: Ip.FormId}): Promise<Kobo.Form> => {
     return this.client.get(`/kobo-api/${id}/schema`)
   }
 
-  readonly getEditUrl = ({formId, answerId}: {formId: Kobo.FormId; answerId: Kobo.SubmissionId}): string => {
+  readonly getEditUrl = ({formId, answerId}: {formId: Ip.FormId; answerId: Kobo.SubmissionId}): string => {
     return `${this.conf.apiURL}/kobo-api/${formId}/edit-url/${answerId}`
   }
 
@@ -66,7 +67,7 @@ export class KoboApiSdk {
     fileName,
   }: {
     baseUrl: string
-    formId: Kobo.FormId
+    formId: Ip.FormId
     answerId: Kobo.SubmissionId
     attachmentId: number
     fileName?: string
@@ -84,7 +85,7 @@ export class KoboApiSdk {
     formId,
     options,
   }: {
-    formId: Kobo.FormId
+    formId: Ip.FormId
     method: Method
     url: string
     options?: RequestOption

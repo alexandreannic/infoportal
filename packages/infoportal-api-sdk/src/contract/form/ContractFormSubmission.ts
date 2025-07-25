@@ -14,7 +14,7 @@ export const contractFormSubmission = c.router({
     method: 'POST',
     path: '/:workspaceId/form/:formId/submission/search',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
     body: c.type<Omit<Ip.Submission.Payload.Search, 'workspaceId' | 'formId'>>(),
@@ -26,7 +26,7 @@ export const contractFormSubmission = c.router({
     method: 'PATCH',
     path: '/:workspaceId/form/:formId/submission',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
     body: z.object({
@@ -47,7 +47,7 @@ export const contractFormSubmission = c.router({
     method: 'PATCH',
     path: '/:workspaceId/form/:formId/submission/validation',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
     body: z.object({
@@ -67,7 +67,7 @@ export const contractFormSubmission = c.router({
     method: 'DELETE',
     path: '/:workspaceId/form/:formId/submission',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
     body: z.object({
@@ -86,7 +86,7 @@ export const contractFormSubmission = c.router({
     method: 'PUT',
     path: '/:workspaceId/form/:formId/submission',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
     body: z.object({
@@ -102,8 +102,8 @@ export const contractFormSubmission = c.router({
 export const mapFormSubmission = (_: Ip.Submission): Ip.Submission => {
   return {
     ..._,
-    start: new Date(_.start),
-    end: new Date(_.end),
+    start: _.start ? new Date(_.start) : (undefined as any),
+    end: _.end ? new Date(_.end) : (undefined as any),
     submissionTime: new Date(_.submissionTime),
   }
 }
@@ -139,7 +139,7 @@ export const formSubmissionClient = (client: TsRestClient) => {
       answerIds,
       formId,
     }: {
-      workspaceId: Ip.Uuid
+      workspaceId: Ip.WorkspaceId
       answerIds: Ip.SubmissionId[]
       formId: Ip.FormId
     }) => {

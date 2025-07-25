@@ -36,7 +36,7 @@ export const useDefaultTabRedirect = ({
   formId,
 }: {
   currentFullPath?: string
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
 }) => {
   const navigate = useNavigate()
@@ -56,7 +56,7 @@ export const useDefaultTabRedirect = ({
 }
 
 export type FormContext = {
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
   form: Ip.Form
   schema?: KoboSchemaHelper.Bundle
   permission: Ip.Permission.Form
@@ -67,7 +67,7 @@ const Context = createContext<FormContext>({} as FormContext)
 export const useFormContext = (): FormContext => useContext<FormContext>(Context)
 
 function Form() {
-  const {workspaceId, formId} = formRoute.useParams()
+  const {workspaceId, formId} = formRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
   const currentFullPath = useMatches().slice(-1)[0].fullPath

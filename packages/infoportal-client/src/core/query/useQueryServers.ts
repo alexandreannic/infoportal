@@ -6,7 +6,7 @@ import {useIpToast} from '@/core/useToast'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {Ip} from 'infoportal-api-sdk'
 
-export const useQueryServers = (workspaceId: Ip.Uuid) => {
+export const useQueryServers = (workspaceId: Ip.WorkspaceId) => {
   const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
   const {toastAndThrowHttpError, toastHttpError} = useIpToast()
@@ -34,7 +34,7 @@ export const useQueryServers = (workspaceId: Ip.Uuid) => {
   return {getAll, create}
 }
 
-export const useQueryServer = ({workspaceId, serverId}: {workspaceId: Ip.Uuid; serverId: Ip.Uuid}) => {
+export const useQueryServer = ({workspaceId, serverId}: {workspaceId: Ip.WorkspaceId; serverId: Ip.ServerId}) => {
   const {apiv2} = useAppSettings()
   const {toastHttpError, toastAndThrowHttpError} = useIpToast()
   const queryClient = useQueryClient()

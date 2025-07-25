@@ -1,4 +1,4 @@
-import {Box, ButtonBase, Icon, useTheme} from '@mui/material'
+import {Box, ButtonBase, useTheme} from '@mui/material'
 import {IpLogo} from '@/shared/logo/logo'
 import {Txt} from '@/shared/Txt'
 import React, {ReactNode} from 'react'

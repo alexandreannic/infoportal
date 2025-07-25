@@ -1,6 +1,5 @@
 import React, {ReactNode, useEffect} from 'react'
 import {useI18n} from '@/core/i18n'
-import {UUID} from 'infoportal-common'
 import {Obj, seq} from '@axanc/ts-utils'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
@@ -20,7 +19,7 @@ export const AccessTable = ({
   formId,
 }: {
   formId: Ip.FormId
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
   isAdmin?: boolean
   header?: ReactNode
 }) => {
@@ -29,8 +28,8 @@ export const AccessTable = ({
   const {api} = useAppSettings()
   const drcJobs = useFetcher(api.user.fetchJobs)
   const queryAccess = useQueryFormAccess.getByFormId({workspaceId, formId})
-  const queryAccessUpdate = useQueryFormAccess.update({workspaceId})
-  const queryAccessRemove = useQueryFormAccess.remove({workspaceId})
+  const queryAccessUpdate = useQueryFormAccess.update({workspaceId, formId})
+  const queryAccessRemove = useQueryFormAccess.remove({workspaceId, formId})
 
   useEffect(() => {
     drcJobs.fetch({}, {workspaceId})

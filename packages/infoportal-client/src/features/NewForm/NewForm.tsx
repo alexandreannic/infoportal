@@ -6,7 +6,6 @@ import {useEffect, useState} from 'react'
 import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {useDialogs} from '@toolpad/core'
 import {KoboServerFormDialog} from '@/features/NewForm/KoboServerForm'
-import {UUID} from 'infoportal-common'
 import {SelectKoboForm} from '@/features/NewForm/SelectKoboForm'
 import {useQueryServers} from '@/core/query/useQueryServers'
 import {fnSwitch} from '@axanc/ts-utils'
@@ -24,10 +23,10 @@ export const newFormRoute = createRoute({
 
 function NewForm() {
   const {m} = useI18n()
-  const {workspaceId} = newFormRoute.useParams()
+  const {workspaceId} = newFormRoute.useParams() as {workspaceId: Ip.WorkspaceId}
   const dialog = useDialogs()
   const [source, setSource] = useState<Ip.Form.Source>(Ip.Form.Source.internal)
-  const [selectedServerId, setSelectedServerId] = useState<UUID>()
+  const [selectedServerId, setSelectedServerId] = useState<Ip.ServerId>()
   const {setTitle} = useLayoutContext()
 
   const queryServer = useQueryServers(workspaceId)

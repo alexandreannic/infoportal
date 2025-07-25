@@ -8,7 +8,7 @@ export const useKoboColumnDef = <T extends Record<string, any>>({
   formId,
   columnName,
 }: {
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   columnName: KeyOf<T>
 }) => {

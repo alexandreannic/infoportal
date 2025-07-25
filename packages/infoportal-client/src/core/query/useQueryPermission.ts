@@ -19,7 +19,7 @@ function useQueryPermissionGlobal() {
   })
 }
 
-function useQueryPermissionByWorkspace({workspaceId}: {workspaceId: Ip.Uuid}) {
+function useQueryPermissionByWorkspace({workspaceId}: {workspaceId: Ip.WorkspaceId}) {
   const {apiv2} = useAppSettings()
   return useQuery({
     queryKey: queryKeys.permission.byWorkspaceId(workspaceId),
@@ -28,7 +28,7 @@ function useQueryPermissionByWorkspace({workspaceId}: {workspaceId: Ip.Uuid}) {
   })
 }
 
-function useQueryPermissionByForm({workspaceId, formId}: {workspaceId: Ip.Uuid; formId: Ip.FormId}) {
+function useQueryPermissionByForm({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
   const {apiv2} = useAppSettings()
   return useQuery({
     queryKey: queryKeys.permission.byFormId(workspaceId, formId),

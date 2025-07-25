@@ -11,7 +11,7 @@ export interface User {
   drcOffice?: string
   createdAt?: Date
   lastConnectedAt?: Date
-  workspaceId: UUID
+  workspaceId: Ip.WorkspaceId
 }
 
 export class User {

@@ -3,6 +3,7 @@ import {TableImg} from '@/shared/TableImg/TableImg'
 import {useMemo} from 'react'
 import {KoboApiSdk} from '@/core/sdk/server/kobo/KoboApiSdk'
 import {Kobo} from 'kobo-sdk'
+import {Ip} from 'infoportal-api-sdk'
 
 const parseKoboFileName = (fileName?: string) =>
   fileName ? fileName.replaceAll(' ', '_').replaceAll(/[^0-9a-zA-Z-_.\u0400-\u04FF]/g, '') : undefined
@@ -25,8 +26,8 @@ export const getKoboAttachmentUrl = ({
   formId,
   answerId,
 }: {
-  formId: Kobo.FormId
-  answerId: Kobo.SubmissionId
+  formId: Ip.FormId
+  answerId: Ip.SubmissionId
   fileName?: string
   attachments: Kobo.Submission.Attachment[]
   conf?: AppConfig
@@ -44,8 +45,8 @@ export const KoboAttachedImg = ({
   answerId,
   tooltipSize = 450,
 }: {
-  formId: Kobo.FormId
-  answerId: Kobo.SubmissionId
+  formId: Ip.FormId
+  answerId: Ip.SubmissionId
   size?: number
   tooltipSize?: number | null
   fileName?: string

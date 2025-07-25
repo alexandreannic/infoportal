@@ -20,12 +20,12 @@ import {IpIconBtn} from '@/shared/IconBtn'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Alert, AlertProps, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from 'infoportal-common'
-import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
 import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
+import {Ip} from 'infoportal-api-sdk'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -57,7 +57,7 @@ export const DatabaseTableContent = ({
 
   const queryUpdate = useQueryAnswerUpdate()
 
-  const [selectedIds, setSelectedIds] = useState<Kobo.SubmissionId[]>([])
+  const [selectedIds, setSelectedIds] = useState<Ip.SubmissionId[]>([])
 
   const flatData: Submission[] | undefined = useMemo(() => {
     if (ctx.groupDisplay.get.repeatAs !== 'rows' || ctx.groupDisplay.get.repeatGroupName === undefined) return ctx.data
@@ -169,7 +169,7 @@ export const DatabaseTableContent = ({
         select={
           ctx.permission.answers_canUpdate
             ? {
-                onSelect: setSelectedIds,
+                onSelect: (_: string[]) => setSelectedIds(_ as Ip.SubmissionId[]),
                 selectActions: selectedHeader,
                 getId: _ => _.id,
               }

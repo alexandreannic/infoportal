@@ -13,7 +13,7 @@ export const workspaceAccessContract = c.router({
     responses: {200: c.type<Ip.Workspace.Access>()},
     metadata: makeMeta({
       access: {
-        workspace: ['user_canCreate']
+        workspace: ['user_canCreate'],
       },
     }),
   },

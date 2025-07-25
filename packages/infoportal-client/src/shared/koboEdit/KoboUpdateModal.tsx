@@ -8,8 +8,7 @@ import {IpDatepicker} from '@/shared/Datepicker/IpDatepicker'
 import {IpBtn} from '@/shared/Btn'
 import {useKoboColumnDef} from '@/shared/koboEdit/KoboSchemaWrapper'
 import {Txt} from '@/shared/Txt'
-import {ArrayValues, UUID} from 'infoportal-common'
-import {Kobo} from 'kobo-sdk'
+import {ArrayValues} from 'infoportal-common'
 import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {Obj} from '@axanc/ts-utils'
 import {DialogProps} from '@toolpad/core'
@@ -156,10 +155,10 @@ export namespace KoboUpdateModal {
     payload,
     ...props
   }: DialogProps<{
-    workspaceId: UUID
-    formId: Kobo.FormId
+    workspaceId: Ip.WorkspaceId
+    formId: Ip.FormId
     columnName: string
-    answerIds: Kobo.SubmissionId[]
+    answerIds: Ip.SubmissionId[]
     onUpdated?: (params: Ip.Submission.Payload.Update) => void
   }>) => {
     const {workspaceId, formId, columnName, answerIds, onUpdated} = payload
@@ -196,9 +195,9 @@ export namespace KoboUpdateModal {
     payload,
     ...props
   }: DialogProps<{
-    workspaceId: UUID
-    formId: Kobo.FormId
-    answerIds: Kobo.SubmissionId[]
+    workspaceId: Ip.WorkspaceId
+    formId: Ip.FormId
+    answerIds: Ip.SubmissionId[]
     onUpdated?: (params: Ip.Submission.Payload.UpdateValidation) => void
   }>) => {
     const {workspaceId, formId, answerIds, onUpdated} = payload

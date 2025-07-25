@@ -1,7 +1,7 @@
 import {IpInput} from '@/shared/Input/Input'
 import {useI18n} from '@/core/i18n'
 import {Controller, useForm} from 'react-hook-form'
-import {Regexp, UUID} from 'infoportal-common'
+import {Regexp} from 'infoportal-common'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {map, Obj} from '@axanc/ts-utils'
 import {useEffect, useState} from 'react'
@@ -218,7 +218,7 @@ export const KoboServerFormDialog = ({
   onClose,
   payload,
 }: DialogProps<{
-  workspaceId: UUID
+  workspaceId: Ip.WorkspaceId
 }>) => {
   const {m} = useI18n()
   const queryCreate = useQueryServers(payload.workspaceId).create

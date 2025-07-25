@@ -280,7 +280,7 @@ const _Datatable = <T extends DatatableRow>({
         (ctx.data.data ? (
           <LinearProgress sx={{position: 'absolute', left: 0, right: 0, top: 0}} />
         ) : (
-          <DatatableSkeleton columns={ctx.columns.length}/>
+          <DatatableSkeleton columns={ctx.columns.length} />
         ))}
       {!hidePagination && (
         <TablePagination

@@ -1,4 +1,4 @@
-import {KoboSchemaHelper, nullValuesToUndefined, UUID} from 'infoportal-common'
+import {KoboSchemaHelper, nullValuesToUndefined} from 'infoportal-common'
 import React, {ReactElement, useCallback, useMemo} from 'react'
 import {Modal, Txt} from '@/shared'
 import {Autocomplete, Box, Chip, createFilterOptions, Icon} from '@mui/material'
@@ -26,7 +26,7 @@ export const DatabaseAccessForm = ({
 }: {
   onAdded?: () => void
   children: ReactElement
-  workspaceId: UUID
+  workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   form: Ip.Form.Schema
 }) => {
@@ -34,7 +34,7 @@ export const DatabaseAccessForm = ({
   const survey = form.survey
 
   const {m} = useI18n()
-  const queryAccessCreate = useQueryFormAccess.create({workspaceId})
+  const queryAccessCreate = useQueryFormAccess.create({workspaceId, formId})
 
   const accessForm = useForm<Form>()
 
@@ -77,7 +77,6 @@ export const DatabaseAccessForm = ({
       .mutateAsync({
         ...nullValuesToUndefined(f),
         workspaceId,
-        formId,
         filters: question && questionAnswer ? {[question]: questionAnswer} : undefined,
       })
       .then(onAdded)

@@ -10,9 +10,9 @@ export const FormBuilderPreview = ({
   formId,
   versionId,
 }: {
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
-  versionId: Ip.Uuid
+  versionId: Ip.Form.VersionId
 }) => {
   const {m} = useI18n()
   const querySchema = useQuerySchemaByVersion({workspaceId, formId, versionId})

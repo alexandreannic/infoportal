@@ -4,6 +4,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {KoboFormService} from '../kobo/KoboFormService.js'
 import {FormVersionService} from './FormVersionService.js'
 import {FormAccessService} from './access/FormAccessService.js'
+import {PrismaHelper} from '../../core/PrismaHelper'
 
 export class FormService {
   constructor(
@@ -33,7 +34,7 @@ export class FormService {
     formId,
     versionId,
   }: {
-    versionId: Ip.Uuid
+    versionId: Ip.Form.VersionId
     formId: Ip.FormId
   }): Promise<undefined | Ip.Form.Schema> => {
     const _ = await this.prisma.formVersion.findFirst({
@@ -46,7 +47,9 @@ export class FormService {
     return _?.schema as any
   }
 
-  readonly create = async (payload: Ip.Form.Payload.Create & {uploadedBy: string; workspaceId: Ip.Uuid}) => {
+  readonly create = async (
+    payload: Ip.Form.Payload.Create & {uploadedBy: string; workspaceId: Ip.WorkspaceId},
+  ): Promise<Ip.Form> => {
     const created = await this.prisma.form.create({
       data: {
         name: payload.name,
@@ -58,16 +61,19 @@ export class FormService {
       },
     })
     await this.formAccess.create({
-      formId: created.id,
+      formId: created.id as Ip.FormId,
       workspaceId: payload.workspaceId,
       email: payload.uploadedBy,
       level: 'Admin',
     })
-    return created
+    return PrismaHelper.mapForm(created)
   }
 
   readonly get = async (id: Ip.FormId): Promise<Ip.Form | undefined> => {
-    return (await this.prisma.form.findFirst({where: {id}})) ?? undefined
+    return this.prisma.form.findFirst({where: {id}}).then(_ => {
+      if (!_) return
+      return PrismaHelper.mapForm(_)
+    })
   }
 
   readonly update = async (params: Ip.Form.Payload.Update): Promise<Ip.Form> => {
@@ -87,10 +93,12 @@ export class FormService {
     }
     const [_, update] = await Promise.all([
       koboUpdate$,
-      this.prisma.form.update({
-        where: {id: formId},
-        data: newData,
-      }),
+      this.prisma.form
+        .update({
+          where: {id: formId},
+          data: newData,
+        })
+        .then(PrismaHelper.mapForm),
     ])
     return update
   }
@@ -107,17 +115,19 @@ export class FormService {
   }
 
   readonly getAll = async ({wsId}: {wsId: UUID}): Promise<Ip.Form[]> => {
-    return this.prisma.form.findMany({
-      include: {
-        server: true,
-      },
-      where: {
-        workspaces: {
-          some: {
-            id: wsId,
+    return this.prisma.form
+      .findMany({
+        include: {
+          server: true,
+        },
+        where: {
+          workspaces: {
+            some: {
+              id: wsId,
+            },
           },
         },
-      },
-    })
+      })
+      .then(_ => _.map(PrismaHelper.mapForm))
   }
 }

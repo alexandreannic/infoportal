@@ -1,4 +1,3 @@
-import {Kobo} from 'kobo-sdk'
 import {UUID} from 'infoportal-common'
 import {useCallback, useEffect, useMemo} from 'react'
 import {useFetcher} from '@/shared/hook/useFetcher'
@@ -13,12 +12,13 @@ import {
 } from '@/core/sdk/server/databaseView/DatabaseView'
 import {usePersistentState} from '@/shared/hook/usePersistantState'
 import {useSession} from '@/core/Session/SessionContext'
+import {Ip} from 'infoportal-api-sdk'
 
 export type UseDatabaseView = ReturnType<typeof useDatabaseView>
 
 export const DatabaseViewDefaultName = 'Default'
 
-export const useDatabaseView = (formId: Kobo.FormId) => {
+export const useDatabaseView = (formId: Ip.FormId) => {
   const {api} = useAppSettings()
   const session = useSession()
   const [currentViewId, setCurrentViewId] = usePersistentState<string | undefined>(undefined, {

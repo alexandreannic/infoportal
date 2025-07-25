@@ -22,7 +22,7 @@ export class PermissionService {
   }) => {
     const connectedUser = await this.checkUserConnected(req)
     const hasPermission = await this.checkPermissions({
-      workspaceId: req.params.workspaceId,
+      workspaceId: req.params.workspaceId as Ip.WorkspaceId,
       formId: PermissionService.searchWhereIsFormId(req),
       user: connectedUser,
       permissions,
@@ -31,7 +31,7 @@ export class PermissionService {
   }
 
   private static readonly searchWhereIsFormId = (req: Request) => {
-    return req.params.formId ?? req.body.formId ?? req.query.formId
+    return (req.params.formId ?? req.body.formId ?? req.query.formId) as Ip.FormId | undefined
   }
 
   readonly checkUserConnected = async (req: Request): Promise<Ip.User> => {
@@ -54,7 +54,7 @@ export class PermissionService {
   }: {
     user: Ip.User
     permissions?: Ip.Permission.Requirements
-    workspaceId?: Ip.Uuid
+    workspaceId?: Ip.WorkspaceId
     formId?: Ip.FormId
   }): Promise<boolean> {
     if (!permissions) return false
@@ -75,7 +75,13 @@ export class PermissionService {
     return Permission.Evaluate.global(user)
   }
 
-  async getByWorkspace({user, workspaceId}: {user: Ip.User; workspaceId: Ip.Uuid}): Promise<Ip.Permission.Workspace> {
+  async getByWorkspace({
+    user,
+    workspaceId,
+  }: {
+    user: Ip.User
+    workspaceId: Ip.WorkspaceId
+  }): Promise<Ip.Permission.Workspace> {
     const wsAccess = await this.workspace.getByUser({workspaceId, user})
     return Permission.Evaluate.workspace(user, wsAccess)
   }
@@ -86,7 +92,7 @@ export class PermissionService {
     formId,
   }: {
     user: Ip.User
-    workspaceId: Ip.Uuid
+    workspaceId: Ip.WorkspaceId
     formId: Ip.FormId
   }): Promise<Ip.Permission.Form> {
     const wsAccess = await this.workspace.getByUser({workspaceId, user})
@@ -105,7 +111,7 @@ export class PermissionService {
     required,
   }: {
     user: Ip.User
-    workspaceId: Ip.Uuid
+    workspaceId: Ip.WorkspaceId
     required: Array<keyof Ip.Permission.Workspace>
   }): Promise<boolean> {
     const evals = await this.getByWorkspace({user, workspaceId})
@@ -119,7 +125,7 @@ export class PermissionService {
     required,
   }: {
     user: Ip.User
-    workspaceId: Ip.Uuid
+    workspaceId: Ip.WorkspaceId
     formId: Ip.FormId
     required: Array<keyof Ip.Permission.Form>
   }): Promise<boolean> {

@@ -12,10 +12,8 @@ import {Panel} from '@/shared/Panel'
 import {map} from '@axanc/ts-utils'
 import {Skeleton} from '@mui/material'
 import {useIsFetching} from '@tanstack/react-query'
-import {Kobo} from 'kobo-sdk'
 import {useCallback} from 'react'
 import {useQueryFormById} from '@/core/query/useQueryForm'
-import {UUID} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {Page} from '@/shared'
@@ -28,9 +26,9 @@ export const answersRoute = createRoute({
 })
 
 export interface DatabaseTableProps {
-  workspaceId: UUID
+  workspaceId: Ip.WorkspaceId
   form?: Ip.Form
-  formId: Kobo.FormId
+  formId: Ip.FormId
   permission: Ip.Permission.Form
   dataFilter?: (_: Submission) => boolean
   onFiltersChange?: (_: Record<string, DatatableFilterValue>) => void

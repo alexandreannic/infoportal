@@ -41,7 +41,11 @@ export const databaseAnswerViewRoute = createRoute({
 
 function DatabaseAnswerView() {
   const {m} = useI18n()
-  const {workspaceId, formId, answerId} = databaseAnswerViewRoute.useParams()
+  const {workspaceId, formId, answerId} = databaseAnswerViewRoute.useParams() as {
+    workspaceId: Ip.WorkspaceId
+    formId: Ip.FormId
+    answerId: Ip.SubmissionId
+  }
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
   const queryForm = useQueryFormById({formId, workspaceId}).get
   const queryAnswers = useQuerySubmission.search({formId, workspaceId})
@@ -99,7 +103,7 @@ export const DialogAnswerView = ({
   onClose,
   payload: {schema, formId, answer, workspaceId},
 }: DialogProps<{
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   schema: KoboSchemaHelper.Bundle
   answer: Submission

@@ -1,5 +1,4 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {Kobo} from 'kobo-sdk'
 import {useAppSettings} from '../context/ConfigContext'
 import {KoboMapper} from '../sdk/server/kobo/KoboMapper'
 import {queryKeys} from './query.index'
@@ -12,7 +11,7 @@ export const useQuerySubmission = {
   submit,
 }
 
-export function search({formId, workspaceId}: {formId: Kobo.FormId; workspaceId: Ip.Uuid}) {
+export function search({formId, workspaceId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) {
   const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
   const querySchema = useQuerySchema({workspaceId, formId})

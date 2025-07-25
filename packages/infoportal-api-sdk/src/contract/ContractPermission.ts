@@ -19,7 +19,7 @@ export const permissionContract = c.router({
     method: 'GET',
     path: '/permission/:workspaceId',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
     }),
     responses: {
       200: c.type<Ip.Permission.Workspace>(),
@@ -30,7 +30,7 @@ export const permissionContract = c.router({
     method: 'GET',
     path: '/permission/:workspaceId/:formId',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
     responses: {
@@ -42,9 +42,9 @@ export const permissionContract = c.router({
 export const permissionClient = (client: TsRestClient) => {
   return {
     getMineGlobal: () => client.permission.getMineGlobal().then(mapClientResponse),
-    getMineByWorkspace: (params: {workspaceId: Ip.Uuid}) =>
+    getMineByWorkspace: (params: {workspaceId: Ip.WorkspaceId}) =>
       client.permission.getMineByWorkspace({params}).then(mapClientResponse),
-    getMineByForm: (params: {formId: Ip.FormId; workspaceId: Ip.Uuid}) =>
+    getMineByForm: (params: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) =>
       client.permission.getMineByForm({params}).then(mapClientResponse),
   }
 }

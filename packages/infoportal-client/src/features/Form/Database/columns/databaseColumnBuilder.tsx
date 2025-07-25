@@ -4,7 +4,7 @@ import React from 'react'
 import {Kobo} from 'kobo-sdk'
 import {map} from '@axanc/ts-utils'
 import {IpBtn, TableEditCellBtn, Txt} from '@/shared'
-import {KoboFlattenRepeatedGroup, KoboSchemaHelper, removeHtml, UUID} from 'infoportal-common'
+import {KoboFlattenRepeatedGroup, KoboSchemaHelper, removeHtml} from 'infoportal-common'
 import {KoboExternalFilesIndex} from '@/features/Form/Database/DatabaseContext'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
@@ -389,12 +389,12 @@ function repeatGroup(
 }
 
 type MetaProps = {
-  workspaceId: UUID
+  workspaceId: Ip.WorkspaceId
   queryUpdate: ReturnType<typeof useQueryAnswerUpdate>
   getRow?: (_: any) => Row
   dialogs: ReturnType<typeof useKoboDialogs>
-  formId: Kobo.FormId
-  selectedIds: Kobo.SubmissionId[]
+  formId: Ip.FormId
+  selectedIds: Ip.SubmissionId[]
   canEdit?: boolean
   m: Messages
 }
@@ -430,8 +430,8 @@ function actions({
   canEdit,
   m,
 }: {
-  workspaceId: UUID
-  formId: Kobo.FormId
+  workspaceId: Ip.WorkspaceId
+  formId: Ip.FormId
   dialogs: ReturnType<typeof useKoboDialogs>
   canEdit?: boolean
   m: Messages

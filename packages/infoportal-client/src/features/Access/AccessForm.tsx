@@ -1,5 +1,4 @@
 import {Controller, UseFormReturn} from 'react-hook-form'
-import {UUID} from 'infoportal-common'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {Autocomplete, autocompleteClasses, Box, SxProps, Theme} from '@mui/material'
 import {fnSwitch, map, Obj, seq} from '@axanc/ts-utils'
@@ -16,7 +15,7 @@ import {Ip} from 'infoportal-api-sdk'
 export interface IAccessForm {
   selectBy?: 'email' | 'job' | 'group' | null
   email?: string | null
-  groupId?: Ip.Uuid | null
+  groupId?: Ip.GroupId | null
   location?: string | null
   job?: string[] | null
   level: Ip.AccessLevel
@@ -28,7 +27,7 @@ export const accessLevelIcon: Record<Ip.AccessLevel, string> = {
   Admin: 'gavel',
 }
 
-export const AccessForm = ({workspaceId, form}: {workspaceId: UUID; form: UseFormReturn<IAccessForm>}) => {
+export const AccessForm = ({workspaceId, form}: {workspaceId: Ip.WorkspaceId; form: UseFormReturn<IAccessForm>}) => {
   const {m} = useI18n()
   const watchSelectBy = form.watch('selectBy')
   const watch = form.watch()
@@ -159,7 +158,7 @@ export const AccessFormInputJob = ({
   form,
   sx,
 }: {
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
   form: UseFormReturn<IAccessForm>
   sx?: SxProps<Theme>
 }) => {
@@ -183,7 +182,13 @@ export const AccessFormInputJob = ({
   )
 }
 
-export const AccessFormInputGroup = ({workspaceId, form}: {workspaceId: UUID; form: UseFormReturn<IAccessForm>}) => {
+export const AccessFormInputGroup = ({
+  workspaceId,
+  form,
+}: {
+  workspaceId: Ip.WorkspaceId
+  form: UseFormReturn<IAccessForm>
+}) => {
   const {m} = useI18n()
   const queryGroup = useQueryGroup(workspaceId)
 

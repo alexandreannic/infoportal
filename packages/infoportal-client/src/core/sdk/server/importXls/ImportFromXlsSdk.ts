@@ -1,6 +1,6 @@
 import {ApiClient} from '@/core/sdk/server/ApiClient'
-import {Kobo} from 'kobo-sdk'
-import FormId = Kobo.FormId
+import {Ip} from 'infoportal-api-sdk'
+import FormId = Ip.FormId
 
 export class ImportFromXlsDataSdk {
   constructor(private client: ApiClient) {}

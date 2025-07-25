@@ -11,8 +11,8 @@ export const formVersionContract = c.router({
     method: 'POST',
     path: '/:workspaceId/form/:formId/schema/validate',
     pathParams: z.object({
-      workspaceId: schema.uuid,
-      formId: z.string(),
+      workspaceId: schema.workspaceId,
+      formId: schema.formId,
     }),
     contentType: 'multipart/form-data',
     body: c.type<{
@@ -33,7 +33,7 @@ export const formVersionContract = c.router({
     path: '/:workspaceId/form/:formId/schema',
     contentType: 'multipart/form-data',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
     body: c.type<{
@@ -54,11 +54,11 @@ export const formVersionContract = c.router({
     method: 'GET',
     path: '/:workspaceId/form/:formId/versions',
     // pathParams: c.type<{
-    //   workspaceId: Ip.Uuid
+    //   workspaceId: Ip.WorkspaceId
     //   formId: Ip.FormId
     // }>(),
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
     responses: {
@@ -75,7 +75,7 @@ export const formVersionContract = c.router({
     method: 'POST',
     path: '/:workspaceId/form/:formId/version',
     pathParams: z.object({
-      workspaceId: schema.uuid,
+      workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
     body: z.object({}),
@@ -92,7 +92,15 @@ export const formVersionContract = c.router({
 
 export const formVersionClient = (client: TsRestClient) => {
   return {
-    validateXlsForm: ({workspaceId, formId, xlsFile}: {workspaceId: Ip.Uuid; formId: Ip.FormId; xlsFile: File}) => {
+    validateXlsForm: ({
+      workspaceId,
+      formId,
+      xlsFile,
+    }: {
+      workspaceId: Ip.WorkspaceId
+      formId: Ip.FormId
+      xlsFile: File
+    }) => {
       return client.form.version
         .validateXlsForm({
           params: {
@@ -110,7 +118,7 @@ export const formVersionClient = (client: TsRestClient) => {
       xlsFile,
       message,
     }: {
-      workspaceId: Ip.Uuid
+      workspaceId: Ip.WorkspaceId
       formId: Ip.FormId
       xlsFile: File
       message?: string
@@ -126,7 +134,7 @@ export const formVersionClient = (client: TsRestClient) => {
         .then(mapClientResponse)
     },
 
-    getByFormId: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.Uuid}) => {
+    getByFormId: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) => {
       return client.form.version
         .getByFormId({
           params: {formId, workspaceId},
@@ -134,7 +142,7 @@ export const formVersionClient = (client: TsRestClient) => {
         .then(mapClientResponse)
     },
 
-    deployLast: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.Uuid}) => {
+    deployLast: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) => {
       return client.form.version
         .deployLast({
           params: {workspaceId, formId},

@@ -28,7 +28,7 @@ function SettingsUsers() {
   const {m, formatDate, formatDateTime} = useI18n()
   const {permission} = useWorkspaceContext()
   const {conf} = useAppSettings()
-  const {workspaceId} = settingsUsersRoute.useParams()
+  const {workspaceId} = settingsUsersRoute.useParams() as {workspaceId: Ip.WorkspaceId}
   const navigate = useNavigate()
   const ctxSession = useSession()
   const queryUserGet = useQueryUser.getAll(workspaceId)

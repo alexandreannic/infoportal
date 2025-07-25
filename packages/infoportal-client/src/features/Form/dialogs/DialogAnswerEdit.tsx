@@ -1,5 +1,5 @@
 import {useI18n} from '@/core/i18n'
-import {Submission, KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
+import {KoboMapper, Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {IpBtn} from '@/shared/Btn'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from '@mui/material'
@@ -15,7 +15,7 @@ export const DialogAnswerEdit = ({
   payload: {schema, workspaceId, formId, answer},
 }: DialogProps<{
   schema: KoboSchemaHelper.Bundle
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   answer: Submission
 }>) => {

@@ -1,9 +1,7 @@
 import {ReactNode} from 'react'
 import {IpBtn, Modal, Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {Kobo} from 'kobo-sdk'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
-import {UUID} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
 
 export const useCustomSelectedHeader = ({
@@ -12,10 +10,10 @@ export const useCustomSelectedHeader = ({
   workspaceId,
   selectedIds,
 }: {
-  workspaceId: UUID
+  workspaceId: Ip.WorkspaceId
   permission: Ip.Permission.Form
-  formId: Kobo.FormId
-  selectedIds: Kobo.SubmissionId[]
+  formId: Ip.FormId
+  selectedIds: Ip.SubmissionId[]
 }): ReactNode => {
   const {m} = useI18n()
   const query = useQueryAnswerUpdate()

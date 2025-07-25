@@ -40,8 +40,8 @@ function SettingsGroups() {
 
   const [selectedGroupId, setSelectedGroupId] = useState<
     | {
-        groupId: Ip.Uuid
-        accessId?: Ip.Uuid
+        groupId: Ip.GroupId
+        itemId?: Ip.Group.ItemId
       }
     | undefined
   >()
@@ -118,7 +118,7 @@ function SettingsGroups() {
                                 ...item,
                                 job: item.drcJob ? [item.drcJob] : undefined,
                               })
-                              setSelectedGroupId({groupId: _.id, accessId: item.id})
+                              setSelectedGroupId({groupId: _.id, itemId: item.id})
                             }
                           : undefined
                       }
@@ -219,11 +219,11 @@ function SettingsGroups() {
           confirmDisabled={!accessForm.formState.isValid}
           onConfirm={e =>
             accessForm.handleSubmit(f => {
-              if (selectedGroupId?.accessId) {
+              if (selectedGroupId?.itemId) {
                 query.updateItem.mutate({
                   ...f,
                   drcJob: f.job?.[0] ?? null,
-                  itemId: selectedGroupId?.accessId,
+                  itemId: selectedGroupId?.itemId,
                 })
               } else if (selectedGroupId?.groupId) {
                 query.createItem.mutate({

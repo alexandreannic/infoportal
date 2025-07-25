@@ -27,7 +27,7 @@ export class KoboToXLS {
     password,
   }: {
     fileName: string
-    formId: Kobo.FormId
+    formId: Ip.FormId
     data: Ip.Submission[]
     langIndex?: number
     password?: string

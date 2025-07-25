@@ -10,7 +10,7 @@ export const useQueryUser = {
   create,
 }
 
-function getAll(workspaceId: Ip.Uuid) {
+function getAll(workspaceId: Ip.WorkspaceId) {
   const {api} = useAppSettings()
   const {toastAndThrowHttpError} = useIpToast()
 
@@ -21,7 +21,7 @@ function getAll(workspaceId: Ip.Uuid) {
   })
 }
 
-function create(workspaceId: Ip.Uuid) {
+function create(workspaceId: Ip.WorkspaceId) {
   const {apiv2} = useAppSettings()
   const {toastHttpError} = useIpToast()
   const queryClient = useQueryClient()

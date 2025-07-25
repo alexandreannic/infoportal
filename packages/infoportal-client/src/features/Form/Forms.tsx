@@ -12,6 +12,7 @@ import {useQueryForm} from '@/core/query/useQueryForm'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRootRoute} from '@/features/Form/Form'
+import {Ip} from 'infoportal-api-sdk'
 
 export const formsRoute = createRoute({
   getParentRoute: () => formRootRoute,
@@ -20,7 +21,7 @@ export const formsRoute = createRoute({
 })
 
 function Forms() {
-  const {workspaceId} = formsRoute.useParams()
+  const {workspaceId} = formsRoute.useParams() as {workspaceId: Ip.WorkspaceId}
   const {formatDate, m} = useI18n()
   const t = useTheme()
   const {setTitle} = useLayoutContext()
@@ -29,7 +30,7 @@ function Forms() {
 
   const formsAccessible = queryForm.accessibleForms.data
 
-  const indexServers = useMemo(() => {
+  const indexServers: Record<Ip.ServerId, Ip.Server> = useMemo(() => {
     return seq(queryServer.getAll.data).groupByFirst(_ => _.id)
   }, [queryServer.getAll.data])
 
