@@ -366,8 +366,11 @@ export const en = Object.freeze({
     connectedToKoboDesc: 'The database is automatically synchronized whenever submissions are made in Kobo.',
     connectToKobo: 'Connect to Kobo',
     connectToKoboDesc: 'The database will be automatically synchronized whenever submissions are made in Kobo.',
+    disconnect: 'Disconnect',
     disconnectToKobo: 'Disconnect from Kobo',
-    disconnectToKoboDesc: "The database won't be synchronized when submissions are made in Kobo.",
+    disconnectToKoboDesc:
+      "The database won't be synchronized when submissions are made in Kobo. " +
+      'Once you disconnect a form, there is no going back. Please be certain.',
     job: 'Job',
     Access: {
       giveAccessBy: 'Grant access by',

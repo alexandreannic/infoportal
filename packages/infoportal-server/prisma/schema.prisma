@@ -43,14 +43,14 @@ model WorkspaceAccess {
 }
 
 model KoboServer {
-  id          String    @id @default(uuid()) @db.Uuid
+  id          String         @id @default(uuid()) @db.Uuid
   name        String
   url         String
   urlV1       String?
   token       String
-  form        Form[]
-  workspace   Workspace @relation(fields: [workspaceId], references: [id])
-  workspaceId String    @db.Uuid
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id])
+  workspaceId String         @db.Uuid
+  form        FormKoboInfo[]
 }
 
 enum DeploymentStatus {
@@ -65,25 +65,35 @@ enum FormSource {
   internal
 }
 
+model FormKoboInfo {
+  id        String     @id @default(uuid())
+  server    KoboServer @relation(fields: [accountId], references: [id])
+  accountId String     @db.Uuid
+  enketoUrl String?
+  koboId    String
+  form      Form       @relation(fields: [formId], references: [id])
+  formId    String     @unique @db.VarChar(32)
+}
+
 model Form {
-  id               String                  @id @default(cuid()) @db.VarChar(32)
-  name             String
-  server           KoboServer?             @relation(fields: [serverId], references: [id])
-  serverId         String?                 @db.Uuid
-  source           FormSource              @default(kobo)
-  createdAt        DateTime                @default(now())
-  updatedAt        DateTime?
-  deploymentStatus DeploymentStatus?
-  updatedBy        String?
-  uploadedBy       String?
-  enketoUrl        String?
-  category         String?
-  submissionsCount Int?
-  answers          FormSubmission[]
-  answersHistory   FormSubmissionHistory[]
-  workspaces       Workspace[]
-  formVersion      FormVersion[]
-  formAccess       FormAccess[]
+  id                     String                  @id @default(cuid()) @db.VarChar(32)
+  name                   String
+  createdAt              DateTime                @default(now())
+  // createdBy
+  uploadedBy             String?
+  updatedAt              DateTime?
+  updatedBy              String?
+  deploymentStatus       DeploymentStatus?
+  category               String?
+  answers                FormSubmission[]
+  histories              FormSubmissionHistory[]
+  workspace              Workspace               @relation(fields: [workspaceId], references: [id])
+  workspaceId            String                  @db.Uuid
+  formVersion            FormVersion[]
+  formAccess             FormAccess[]
+  kobo                   FormKoboInfo?
+  disconnectedFromKoboAt DateTime?
+  disconnectedFromKoboBy String?
 }
 
 enum FormVersionStatus {
@@ -202,8 +212,8 @@ model FormAccess {
   createdBy   String?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime?
-  form        Form        @relation(fields: [formId], references: [id])
-  formId      String      @db.VarChar(32)
+  form        Form?       @relation(fields: [formId], references: [id])
+  formId      String?     @db.VarChar(32)
   job         String?
   location    String?
   email       String?

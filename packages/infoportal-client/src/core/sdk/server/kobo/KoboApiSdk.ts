@@ -38,12 +38,7 @@ export class KoboApiSdk {
     return this.client.post(`/kobo-api/${formId}/sync`)
   }
 
-  /** @deprecated*/
-  readonly getSchema = ({id}: {id: Ip.FormId}): Promise<Kobo.Form> => {
-    return this.client.get(`/kobo-api/${id}/schema`)
-  }
-
-  readonly getEditUrl = ({formId, answerId}: {formId: Ip.FormId; answerId: Kobo.SubmissionId}): string => {
+  readonly getEditUrl = ({formId, answerId}: {formId: Kobo.FormId; answerId: Kobo.SubmissionId}): string => {
     return `${this.conf.apiURL}/kobo-api/${formId}/edit-url/${answerId}`
   }
 

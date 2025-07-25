@@ -34,9 +34,9 @@ export class KoboSdkGenerator {
 
   readonly getBy = {
     formId: async (formId: Kobo.FormId): Promise<KoboClient> => {
-      return this.getServerId(formId).then(this.getBy.serverId)
+      return this.getServerId(formId).then(this.getBy.accountId)
     },
-    serverId: app.cache.request({
+    accountId: app.cache.request({
       key: AppCacheKey.KoboClient,
       ttlMs: duration(7, 'day'),
       genIndex: _ => _,
@@ -52,17 +52,17 @@ export class KoboSdkGenerator {
     key: AppCacheKey.KoboServerIndex,
     ttlMs: duration(7, 'day'),
     fn: async (): Promise<Record<Kobo.FormId, UUID>> => {
-      return this.prisma.form
+      return this.prisma.formKoboInfo
         .findMany({
-          select: {id: true, serverId: true},
+          select: {formId: true, accountId: true},
         })
         .then(_ => {
           this.log.info(`Recalculate server index`)
           return seq(_)
-            .compactBy('serverId')
+            .compactBy('accountId')
             .groupByAndApply(
-              _ => _.id,
-              _ => _[0].serverId,
+              _ => _.formId,
+              _ => _[0].accountId,
             )
         })
     },

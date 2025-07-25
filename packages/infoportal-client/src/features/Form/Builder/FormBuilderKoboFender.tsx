@@ -35,7 +35,7 @@ const Button = ({href, label, icon, sx, ...props}: {href: string; label: string;
 }
 export const FormBuilderKoboFender = ({workspaceId, form}: {workspaceId: Ip.WorkspaceId; form: Ip.Form}) => {
   const {m} = useI18n()
-  const queryServer = useQueryServer({workspaceId, serverId: form.serverId!}).get
+  const queryServer = useQueryServer({workspaceId, serverId: form.kobo!.accountId!}).get
 
   return (
     <Panel loading={queryServer.isLoading}>
@@ -55,7 +55,7 @@ export const FormBuilderKoboFender = ({workspaceId, form}: {workspaceId: Ip.Work
             label={m.viewInKobo}
             href={queryServer.data.url + `/#/forms/${form.id}/landing`}
           />
-          {form.enketoUrl && <Button icon="ballot" href={form.enketoUrl} label={m.fillForm} />}
+          {form.kobo?.enketoUrl && <Button icon="ballot" href={form.kobo?.enketoUrl} label={m.fillForm} />}
         </PanelBody>
       )}
     </Panel>

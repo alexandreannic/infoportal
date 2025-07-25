@@ -213,10 +213,10 @@ export const DatabaseTableContent = ({
             {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 
             <div style={{marginLeft: 'auto'}}>
-              {ctx.form.source === 'kobo' ? (
+              {ctx.form.kobo ? (
                 <IpIconBtn
-                  disabled={!ctx.form.enketoUrl || ctx.form.deploymentStatus === 'archived'}
-                  href={ctx.form.enketoUrl ?? ''}
+                  disabled={!ctx.form.kobo.enketoUrl || ctx.form.deploymentStatus === 'archived'}
+                  href={ctx.form.kobo.enketoUrl ?? ''}
                   target="_blank"
                   children="file_open"
                   tooltip={m._koboDatabase.openForm}
@@ -231,7 +231,7 @@ export const DatabaseTableContent = ({
                   />
                 </Link>
               )}
-              {ctx.form.source === 'kobo' && (
+              {ctx.form.kobo && (
                 <DatabaseKoboSyncBtn
                   loading={ctx.asyncRefresh.loading}
                   tooltip={

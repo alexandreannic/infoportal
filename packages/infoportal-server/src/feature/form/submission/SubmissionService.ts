@@ -171,7 +171,7 @@ export class SubmissionService {
   ): Promise<Ip.Submission> => {
     const form = await this.form.get(props.formId)
     if (!form) throw new AppError.NotFound(`Form ${props.formId} does not exists.`)
-    if (form.source === 'kobo') throw new AppError.BadRequest(`Cannot submit in a Kobo form.`)
+    if (form.kobo) throw new AppError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
     return this.create({answers: SubmissionService.mapPayload(props)})
   }
 

@@ -43,30 +43,18 @@ function FormSettings() {
     <Page width="xs">
       <Panel>
         <PanelBody>
-          {(form.source === 'kobo' || form.source === 'disconnected') && (
+          {form.kobo && (
             <Row label={m.connectedToKobo} desc={m.connectedToKoboDesc}>
               <Modal
                 loading={queryForm.update.isPending}
-                title={match(form.source)
-                  .cases({
-                    kobo: m.disconnectToKobo,
-                    disconnected: m.connectToKobo,
-                  })
-                  .exhaustive()}
-                content={match(form.source)
-                  .cases({
-                    kobo: m.disconnectToKoboDesc,
-                    disconnected: m.connectToKoboDesc,
-                  })
-                  .exhaustive()}
+                title={m.disconnectToKobo}
+                content={m.disconnectToKoboDesc}
                 onConfirm={async (e, close) => {
-                  await queryForm.update.mutateAsync({
-                    source: form.source === 'kobo' ? 'disconnected' : 'kobo',
-                  })
+                  await queryForm.disconnectFromKobo.mutateAsync()
                   close()
                 }}
               >
-                <Switch checked={form.source === 'kobo'} disabled={queryForm.update.isPending} />
+                <IpBtn disabled={queryForm.update.isPending}>{m.disconnect}</IpBtn>
               </Modal>
             </Row>
           )}
@@ -74,8 +62,7 @@ function FormSettings() {
             label={m.archive}
             desc={
               <>
-                {m.archiveFormDesc}{' '}
-                {form.source !== 'internal' && <span style={{fontWeight: 'bold'}}>{m.archiveKoboFormDesc}</span>}
+                {m.archiveFormDesc} {form.kobo && <span style={{fontWeight: 'bold'}}>{m.archiveKoboFormDesc}</span>}
               </>
             }
           >

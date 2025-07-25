@@ -69,6 +69,21 @@ export const formContract = c.router({
     }),
   },
 
+  disconnectFromKobo: {
+    method: 'POST',
+    path: '/:workspaceId/form/:formId/disconnect',
+    pathParams: c.type<Pick<Ip.Form.Payload.Update, 'workspaceId' | 'formId'>>(),
+    body: c.type<void>(),
+    responses: {
+      200: z.any() as z.ZodType<Ip.Form>,
+    },
+    metadata: makeMeta({
+      access: {
+        form: ['canUpdate'],
+      },
+    }),
+  },
+
   create: {
     method: 'PUT',
     path: '/:workspaceId/form',
@@ -182,6 +197,10 @@ export const formClient = (client: TsRestClient) => {
 
     update: ({workspaceId, formId, ...body}: Ip.Form.Payload.Update): Promise<Ip.Form> => {
       return client.form.update({params: {workspaceId, formId}, body}).then(mapClientResponse).then(mapForm)
+    },
+
+    disconnectFromKobo: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}): Promise<Ip.Form> => {
+      return client.form.disconnectFromKobo({params, body: undefined}).then(mapClientResponse).then(mapForm)
     },
   }
 }

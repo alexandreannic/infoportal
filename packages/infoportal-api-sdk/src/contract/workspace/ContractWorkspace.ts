@@ -31,7 +31,7 @@ export const workspaceContract = c.router({
   update: {
     method: 'POST',
     path: `/workspace/:id`,
-    pathParams: c.type<{id: Ip.Uuid}>(),
+    pathParams: c.type<{id: Ip.WorkspaceId}>(),
     body: c.type<Omit<Ip.Workspace.Payload.Update, 'id'>>(),
     responses: {200: c.type<Ip.Workspace>()},
     metadata: makeMeta({

@@ -15,9 +15,9 @@ export class FormService {
   ) {}
 
   readonly getSchema = async ({formId}: {formId: Ip.FormId}): Promise<undefined | Ip.Form.Schema> => {
-    const form = await this.prisma.form.findFirst({where: {id: formId}})
+    const form = await this.prisma.form.findFirst({select: {kobo: true}, where: {id: formId}})
     if (!form) return
-    if (form.source === 'internal')
+    if (!form.kobo)
       return this.prisma.formVersion
         .findFirst({
           select: {schema: true},
@@ -27,7 +27,7 @@ export class FormService {
           },
         })
         .then(_ => _?.schema as any)
-    return this.koboForm.getSchema({formId}).then(_ => _.content)
+    return this.koboForm.getSchema({koboFormId: form.kobo.koboId}).then(_ => _.content)
   }
 
   readonly getSchemaByVersion = async ({
@@ -51,13 +51,15 @@ export class FormService {
     payload: Ip.Form.Payload.Create & {uploadedBy: string; workspaceId: Ip.WorkspaceId},
   ): Promise<Ip.Form> => {
     const created = await this.prisma.form.create({
+      include: {
+        kobo: true,
+      },
       data: {
         name: payload.name,
         category: payload.category,
         deploymentStatus: 'draft',
         uploadedBy: payload.workspaceId,
-        source: 'internal',
-        workspaces: {connect: {id: payload.workspaceId}},
+        workspaceId: payload.workspaceId,
       },
     })
     await this.formAccess.create({
@@ -70,14 +72,28 @@ export class FormService {
   }
 
   readonly get = async (id: Ip.FormId): Promise<Ip.Form | undefined> => {
-    return this.prisma.form.findFirst({where: {id}}).then(_ => {
+    return this.prisma.form.findFirst({include: {kobo: true}, where: {id}}).then(_ => {
       if (!_) return
       return PrismaHelper.mapForm(_)
     })
   }
 
+  readonly disconnectFromKobo = async (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}): Promise<Ip.Form> => {
+    return this.prisma.form
+      .update({
+        include: {
+          kobo: true,
+        },
+        where: {id: params.formId},
+        data: {
+          kobo: {delete: true},
+        },
+      })
+      .then(PrismaHelper.mapForm)
+  }
+
   readonly update = async (params: Ip.Form.Payload.Update): Promise<Ip.Form> => {
-    const {formId, archive, source} = params
+    const {formId, archive} = params
 
     const koboUpdate$ = this.koboForm.update(params)
 
@@ -88,13 +104,13 @@ export class FormService {
       const hasActiveVersion = await this.formVersion.hasActiveVersion({formId})
       newData.deploymentStatus = hasActiveVersion ? 'deployed' : 'draft'
     }
-    if (source) {
-      newData.source = source
-    }
     const [_, update] = await Promise.all([
       koboUpdate$,
       this.prisma.form
         .update({
+          include: {
+            kobo: true,
+          },
           where: {id: formId},
           data: newData,
         })
@@ -114,18 +130,14 @@ export class FormService {
     return 1
   }
 
-  readonly getAll = async ({wsId}: {wsId: UUID}): Promise<Ip.Form[]> => {
+  readonly getAll = async ({wsId}: {wsId: Ip.WorkspaceId}): Promise<Ip.Form[]> => {
     return this.prisma.form
       .findMany({
         include: {
-          server: true,
+          kobo: true,
         },
         where: {
-          workspaces: {
-            some: {
-              id: wsId,
-            },
-          },
+          workspaceId: wsId,
         },
       })
       .then(_ => _.map(PrismaHelper.mapForm))

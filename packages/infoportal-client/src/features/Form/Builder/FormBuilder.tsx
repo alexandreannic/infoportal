@@ -49,7 +49,7 @@ function FormBuilder() {
   return (
     <Page width="full" loading={queryForm.isPending || queryVersion.get.isLoading}>
       {queryForm.data &&
-        (queryForm.data.source === 'kobo' ? (
+        (queryForm.data.kobo ? (
           <FormBuilderKoboFender workspaceId={workspaceId} form={queryForm.data} />
         ) : (
           <Grid container>

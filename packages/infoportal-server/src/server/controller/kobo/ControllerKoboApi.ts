@@ -27,7 +27,7 @@ export class ControllerKoboApi {
         serverId: yup.string().required(),
       })
       .validate(req.body)
-    const sdk = await this.koboSdkGenerator.getBy.serverId(serverId)
+    const sdk = await this.koboSdkGenerator.getBy.accountId(serverId)
     const forms = await sdk.v2.form.getAll()
     res.send(forms)
   }
@@ -45,7 +45,7 @@ export class ControllerKoboApi {
 
   readonly syncAnswersByForm = async (req: Request, res: Response, next: NextFunction) => {
     const {formId} = await this.extractParams(req)
-    await this.syncService.syncApiAnswersToDbByForm({formId, updatedBy: req.session.app?.user.email})
+    await this.syncService.syncApiAnswersToDbByForm({formId: formId as any, updatedBy: req.session.app?.user.email})
     res.send()
   }
 

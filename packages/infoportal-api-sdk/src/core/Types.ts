@@ -220,9 +220,14 @@ export namespace Ip {
   export type FormId = Form.Id
   export type Form = Prisma.Form & {
     id: FormId
-    serverId: ServerId
+    kobo?: Form.KoboInfo
   }
   export namespace Form {
+    export type KoboInfo = Prisma.FormKoboInfo & {
+      accountId: ServerId
+      koboId: Kobo.FormId
+    }
+
     export type Id = Brand<string, 'FormId'>
 
     export type Schema = Kobo.Form['content'] & {files?: Kobo.Form.File[]}
@@ -242,7 +247,6 @@ export namespace Ip {
       export type Update = {
         workspaceId: WorkspaceId
         formId: FormId
-        source?: 'disconnected' | 'kobo'
         archive?: boolean
       }
 

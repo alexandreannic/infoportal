@@ -294,6 +294,11 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .catch(handleError),
     },
     form: {
+      disconnectFromKobo: _ =>
+        auth2(_)
+          .then(({params}) => form.disconnectFromKobo(params))
+          .then(ok)
+          .catch(handleError),
       update: _ =>
         auth2(_)
           .then(({params, body}) => form.update({...params, ...body}))

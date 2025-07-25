@@ -81,7 +81,15 @@ export const useQueryFormById = ({workspaceId, formId}: {workspaceId: Ip.Workspa
     mutationFn: args => apiv2.form.update({workspaceId, formId, ...args}),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, formId)})
-      queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
+      // queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
+    },
+    onError: toastHttpError,
+  })
+
+  const disconnectFromKobo = useMutation<Ip.Form, ApiError, void>({
+    mutationFn: () => apiv2.form.disconnectFromKobo({workspaceId, formId}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, formId)})
     },
     onError: toastHttpError,
   })
@@ -91,5 +99,5 @@ export const useQueryFormById = ({workspaceId, formId}: {workspaceId: Ip.Workspa
     queryFn: () => apiv2.form.get({workspaceId, formId}).catch(toastAndThrowHttpError),
     staleTime: duration(10, 'minute'),
   })
-  return {get, update, remove}
+  return {get, update, remove, disconnectFromKobo}
 }

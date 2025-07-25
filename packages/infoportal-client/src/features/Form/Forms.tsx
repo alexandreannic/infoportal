@@ -85,14 +85,14 @@ function Forms() {
                   id: 'serverId',
                   type: 'select_one',
                   head: m.serverId,
-                  renderQuick: _ => _.serverId,
+                  renderQuick: _ => _.kobo?.accountId,
                 },
                 {
                   id: 'serverUrl',
                   type: 'select_one',
                   head: m.server,
                   render: _ => {
-                    const url = _.serverId ? indexServers[_.serverId]?.url : undefined
+                    const url = _.kobo?.accountId ? indexServers[_.kobo?.accountId]?.url : undefined
                     if (url) {
                       return {
                         value: url,
@@ -123,14 +123,14 @@ function Forms() {
                 //   head: m.program,
                 //   renderQuick: _ => _.name,
                 // },
-                {
-                  id: 'length',
-                  head: m.submissions,
-                  type: 'number',
-                  align: 'right',
-                  width: 0,
-                  renderQuick: _ => _.submissionsCount,
-                },
+                // {
+                //   id: 'length',
+                //   head: m.submissions,
+                //   type: 'number',
+                //   align: 'right',
+                //   width: 0,
+                //   renderQuick: _ => _.kobo.submissionsCount,
+                // },
                 {
                   id: 'createdAt',
                   type: 'date',
@@ -162,13 +162,13 @@ function Forms() {
                   type: 'string',
                   width: 0,
                   render: _ => {
-                    if (!_.enketoUrl) return {label: '', value: undefined}
+                    if (!_.kobo?.enketoUrl) return {label: '', value: undefined}
                     return {
-                      export: _.enketoUrl,
-                      tooltip: _.enketoUrl,
-                      value: _.enketoUrl,
+                      export: _.kobo.enketoUrl,
+                      tooltip: _.kobo.enketoUrl,
+                      value: _.kobo.enketoUrl,
                       label: (
-                        <a href={_.enketoUrl} target="_blank" rel="noopener noreferrer">
+                        <a href={_.kobo.enketoUrl} target="_blank" rel="noopener noreferrer">
                           <TableIconBtn color="primary">file_open</TableIconBtn>
                         </a>
                       ),
