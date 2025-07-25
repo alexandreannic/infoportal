@@ -2,14 +2,13 @@
   "name": "infoportal-api-sdk",
   "version": "1.0.0",
   "description": "Set of utils methods and features",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "lib/index.js",
   "private": false,
   "scripts": {
     "test": "jest",
-    "dev": "tsup --watch",
-    "build": "tsup"
+    "dev": "tsc -w",
+    "build": "tsc --build"
   },
   "author": "",
   "license": "ISC",

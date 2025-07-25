@@ -123,8 +123,10 @@ export namespace Ip {
 
   export type Submission<T extends Record<string, any> = Record<string, any>> = Omit<
     Prisma.FormSubmission,
-    'attachments' | 'answers' | 'deletedBy' | 'deletedAt' | 'formId' | 'form' | 'histories'
+    'start' | 'end' | 'attachments' | 'answers' | 'deletedBy' | 'deletedAt' | 'formId' | 'form' | 'histories'
   > & {
+    start?: Date
+    end?: Date
     answers: T
     attachments: Kobo.Submission.Attachment[]
   }
