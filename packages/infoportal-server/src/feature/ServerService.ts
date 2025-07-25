@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../core/PrismaHelper'
+import {PrismaHelper} from '../core/PrismaHelper.js'
 
 export class ServerService {
   constructor(private prisma: PrismaClient) {}

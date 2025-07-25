@@ -4,7 +4,7 @@ import {slugify, UUID} from 'infoportal-common'
 import {GroupService} from '../group/GroupService.js'
 import {FormAccessService} from '../form/access/FormAccessService.js'
 import {Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper'
+import {PrismaHelper} from '../../core/PrismaHelper.js'
 
 export class WorkspaceService {
   constructor(

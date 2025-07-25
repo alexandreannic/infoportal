@@ -5,7 +5,7 @@ import {Kobo} from 'kobo-sdk'
 import {yup} from '../../helper/Utils.js'
 import {XlsFormParser} from '../kobo/XlsFormParser.js'
 import {Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper'
+import {PrismaHelper} from '../../core/PrismaHelper.js'
 
 export class FormVersionService {
   constructor(

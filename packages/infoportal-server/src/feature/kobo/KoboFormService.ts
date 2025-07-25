@@ -7,7 +7,7 @@ import {appConf} from '../../core/conf/AppConf.js'
 import {app, AppCacheKey} from '../../index.js'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper'
+import {PrismaHelper} from '../../core/PrismaHelper.js'
 
 export class KoboFormService {
   constructor(

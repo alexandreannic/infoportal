@@ -1,4 +1,4 @@
-import {Ip} from './Types'
+import {Ip} from './Types.js'
 import {KeyOf, Obj} from '@axanc/ts-utils'
 
 type Level = Ip.AccessLevel

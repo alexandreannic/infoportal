@@ -13,7 +13,7 @@ import {KoboCustomDirective, logPerformance} from 'infoportal-common'
 import {KoboMapper} from '../../kobo/KoboMapper.js'
 import {FormService} from '../FormService.js'
 import {IpEvent} from 'infoportal-event'
-import {PrismaHelper} from '../../../core/PrismaHelper'
+import {PrismaHelper} from '../../../core/PrismaHelper.js'
 
 export class SubmissionService {
   constructor(

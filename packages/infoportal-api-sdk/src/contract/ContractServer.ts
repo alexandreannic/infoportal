@@ -1,8 +1,8 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {makeMeta, schema} from '../core/Schema'
-import {Ip} from '../core/Types'
-import {mapClientResponse, TsRestClient} from '../core/IpClient'
+import {makeMeta, schema} from '../core/Schema.js'
+import {Ip} from '../core/Types.js'
+import {mapClientResponse, TsRestClient} from '../core/IpClient.js'
 
 const c = initContract()
 

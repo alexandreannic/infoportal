@@ -1,10 +1,10 @@
 import {z} from 'zod'
-import {makeMeta, schema} from '../../core/Schema'
-import {Ip} from '../../core/Types'
+import {makeMeta, schema} from '../../core/Schema.js'
+import {Ip} from '../../core/Types.js'
 import {initContract} from '@ts-rest/core'
-import {mapClientResponse, TsRestClient} from '../../core/IpClient'
+import {mapClientResponse, TsRestClient} from '../../core/IpClient.js'
 import {Kobo} from 'kobo-sdk'
-import {mapForm} from '../form/ContractForm'
+import {mapForm} from '../form/ContractForm.js'
 
 const c = initContract()
 

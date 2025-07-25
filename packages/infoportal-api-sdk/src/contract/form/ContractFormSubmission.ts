@@ -1,9 +1,9 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {makeMeta, schema} from '../../core/Schema'
-import {Ip} from '../../core/Types'
-import {mapClientResponse, TsRestClient} from '../../core/IpClient'
-import {Paginate} from '../../core/Paginate'
+import {makeMeta, schema} from '../../core/Schema.js'
+import {Ip} from '../../core/Types.js'
+import {mapClientResponse, TsRestClient} from '../../core/IpClient.js'
+import {Paginate} from '../../core/Paginate.js'
 import {KeyOf, map, Obj} from '@axanc/ts-utils'
 import {endOfDay, startOfDay} from 'date-fns'
 

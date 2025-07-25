@@ -1,5 +1,5 @@
 import {z} from 'zod'
-import {Ip} from './Types'
+import {Ip} from './Types.js'
 
 const createZodEnumFromObject = <T extends Record<string, string>>(obj: T) => {
   const values = Object.values(obj)
