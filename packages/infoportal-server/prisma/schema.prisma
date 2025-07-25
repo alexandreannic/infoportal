@@ -73,6 +73,8 @@ model FormKoboInfo {
   koboId    String
   form      Form       @relation(fields: [formId], references: [id])
   formId    String     @unique @db.VarChar(32)
+
+  @@index([koboId])
 }
 
 model Form {
@@ -127,7 +129,8 @@ enum FormSubmissionValidation {
 }
 
 model FormSubmission {
-  id                     String                    @id
+  id                     String                    @id @default(cuid()) @db.VarChar(32)
+  koboSubmissionId       String?
   uuid                   String
   form                   Form                      @relation(fields: [formId], references: [id])
   formId                 String
@@ -147,9 +150,10 @@ model FormSubmission {
   deletedBy              String?
   histories              FormSubmissionHistory[]   @relation("FormSubmissionToHistory")
 
-  @@unique([id, formId])
+  @@unique([koboSubmissionId, formId])
   @@index([deletedAt])
   @@index([formId])
+  @@index([formId, koboSubmissionId])
 }
 
 model FormSubmissionHistory {

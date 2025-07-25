@@ -1,10 +1,9 @@
 import {Form, PrismaClient} from '@prisma/client'
-import {UUID} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboFormService} from '../kobo/KoboFormService.js'
 import {FormVersionService} from './FormVersionService.js'
 import {FormAccessService} from './access/FormAccessService.js'
-import {PrismaHelper} from '../../core/PrismaHelper'
+import {PrismaHelper} from '../../core/PrismaHelper.js'
 
 export class FormService {
   constructor(

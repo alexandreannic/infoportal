@@ -3,7 +3,7 @@ import {Ip} from 'infoportal-api-sdk'
 export namespace PrismaHelper {
   export const mapSubmission = <T extends {id: string}>(_: T): T & {id: Ip.SubmissionId} => _ as any
 
-  export const mapForm = <T extends {kobo: any | null; serverId?: string | null; id: string}>(
+  export const mapForm = <T extends {kobo?: any | null; serverId?: string | null; id: string}>(
     _: T,
   ): T & {id: Ip.FormId; serverId?: Ip.ServerId; kobo?: Ip.Form.KoboInfo} => _ as any
 

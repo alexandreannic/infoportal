@@ -22,14 +22,14 @@ export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.Workspace
   })
 }
 
-export const getKoboSchema = ({
+export const getSchema = ({
   workspaceId,
   formId,
   queryClient,
 }: {
-  workspaceId: Ip.Uuid
+  workspaceId: Ip.WorkspaceId
   queryClient: QueryClient
-  formId: Kobo.FormId
+  formId: Ip.FormId
 }): undefined | KoboSchemaHelper.Bundle => {
   return queryClient.getQueryData<KoboSchemaHelper.Bundle>(queryKeys.schema(workspaceId, formId))
 }

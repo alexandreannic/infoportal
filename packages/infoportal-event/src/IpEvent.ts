@@ -1,17 +1,9 @@
 import {Ip} from 'infoportal-api-sdk'
 
 export namespace IpEventParams {
-  export interface KoboTagEdited {
+  export interface SubmissionEdited {
     formId: Ip.FormId
-    answerIds: Ip.SubmissionId[]
-    tags: Record<string, any>
-    index?: number
-    total?: number
-  }
-
-  export interface KoboAnswerEdited {
-    formId: Ip.FormId
-    answerIds: Ip.SubmissionId[]
+    submissionIds: Ip.SubmissionId[]
     answer: Record<string, any>
     index?: number
     total?: number
@@ -34,7 +26,7 @@ export namespace IpEventParams {
 
   export interface NewSubmission {
     formId: Ip.FormId
-    workspaceId: Ip.Uuid
+    workspaceId: Ip.WorkspaceId
     submission: Ip.Submission
   }
 }

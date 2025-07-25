@@ -4,22 +4,16 @@ import {Logger as WinstonLogger} from 'winston'
 
 export enum IpEvent {
   KOBO_FORM_SYNCHRONIZED = 'KOBO_FORM_SYNCHRONIZED',
-  KOBO_VALIDATION_EDITED_FROM_KOBO = 'KOBO_VALIDATION_EDITED_FROM_KOBO',
-  KOBO_ANSWER_EDITED_FROM_KOBO = 'KOBO_ANSWER_EDITED_FROM_KOBO',
-  KOBO_ANSWER_EDITED_FROM_IP = 'KOBO_ANSWER_EDITED_FROM_IP',
-  KOBO_ANSWER_NEW = 'KOBO_ANSWER_NEW',
-  KOBO_TAG_EDITED = 'KOBO_TAG_EDITED',
-  NEW_SUBMISSION = 'NEW_SUBMISSION',
+  // KOBO_VALIDATION_EDITED_FROM_KOBO = 'KOBO_VALIDATION_EDITED_FROM_KOBO',
+  SUBMISSION_NEW = 'SUBMISSION_NEW',
+  SUBMISSION_EDITED = 'SUBMISSION_EDITED',
 }
 
 type IpEventParamMap = {
-  [IpEvent.KOBO_ANSWER_EDITED_FROM_IP]: IpEventParams.KoboAnswerEdited
-  [IpEvent.KOBO_ANSWER_EDITED_FROM_KOBO]: IpEventParams.KoboAnswerEdited
-  [IpEvent.KOBO_VALIDATION_EDITED_FROM_KOBO]: IpEventParams.KoboValidationEdited
-  [IpEvent.KOBO_ANSWER_NEW]: IpEventParams.KoboAnswerEdited
-  [IpEvent.KOBO_TAG_EDITED]: IpEventParams.KoboTagEdited
+  // [IpEvent.KOBO_VALIDATION_EDITED_FROM_KOBO]: IpEventParams.KoboValidationEdited
   [IpEvent.KOBO_FORM_SYNCHRONIZED]: IpEventParams.KoboFormSync
-  [IpEvent.NEW_SUBMISSION]: IpEventParams.NewSubmission
+  [IpEvent.SUBMISSION_NEW]: IpEventParams.NewSubmission
+  [IpEvent.SUBMISSION_EDITED]: IpEventParams.SubmissionEdited
 }
 
 type Emit = <T extends keyof IpEventParamMap>(event: T, params: IpEventParamMap[T]) => void

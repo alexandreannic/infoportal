@@ -23,8 +23,8 @@ export class AppWebsocket {
     })
     wss.on('connection', (ws, req) => {
       this.log.info('[WS] Client connected')
-      this.event.listen(IpEvent.NEW_SUBMISSION, params => {
-        ws.send(JSON.stringify({type: IpEvent.NEW_SUBMISSION, params}))
+      this.event.listen(IpEvent.SUBMISSION_NEW, params => {
+        ws.send(JSON.stringify({type: IpEvent.SUBMISSION_NEW, params}))
       })
     })
     // ==
@@ -41,8 +41,8 @@ export class AppWebsocket {
   }
 
   private readonly listen = (ws: WebSocket) => {
-    this.event.listen(IpEvent.NEW_SUBMISSION, params => {
-      ws.send(JSON.stringify({type: IpEvent.NEW_SUBMISSION, params}))
+    this.event.listen(IpEvent.SUBMISSION_NEW, params => {
+      ws.send(JSON.stringify({type: IpEvent.SUBMISSION_NEW, params}))
     })
   }
 }

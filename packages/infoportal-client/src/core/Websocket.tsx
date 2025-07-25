@@ -8,8 +8,8 @@ import {KoboSchemaHelper} from 'infoportal-common'
 import {KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
 
 type Events =
-  | IpEventParams.KoboAnswerEdited
-  | IpEventParams.KoboTagEdited
+  // | IpEventParams.KoboAnswerEdited
+  // | IpEventParams.KoboTagEdited
   | IpEventParams.KoboValidationEdited
   | IpEventParams.KoboFormSync
   | IpEventParams.NewSubmission
@@ -20,10 +20,10 @@ type Data<T extends IpEvent, TData extends Events> = {
 }
 
 const is = {
-  [IpEvent.NEW_SUBMISSION]: (
+  [IpEvent.SUBMISSION_NEW]: (
     data: Data<any, any>,
-  ): data is Data<IpEvent.NEW_SUBMISSION, IpEventParams.NewSubmission> => {
-    return data.type === IpEvent.NEW_SUBMISSION
+  ): data is Data<IpEvent.SUBMISSION_NEW, IpEventParams.NewSubmission> => {
+    return data.type === IpEvent.SUBMISSION_NEW
   },
 }
 
@@ -33,7 +33,7 @@ export const useWebsocket = () => {
     const socket = new WebSocket(appConfig.apiWsURL)
     socket.onmessage = e => {
       const msg: Data<any, any> = JSON.parse(e.data)
-      if (is[IpEvent.NEW_SUBMISSION](msg)) {
+      if (is[IpEvent.SUBMISSION_NEW](msg)) {
         const {formId, workspaceId, submission} = msg.params
         const schema = queryClient.getQueryData<KoboSchemaHelper.Bundle | undefined>(
           queryKeys.schema(workspaceId, formId),

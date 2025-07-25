@@ -30,7 +30,7 @@ export const contractFormSubmission = c.router({
       formId: schema.formId,
     }),
     body: z.object({
-      answerIds: z.array(z.string()).min(1),
+      answerIds: z.array(schema.submissionId).min(1),
       question: z.string(),
       answer: z.any().nullable(),
     }),
