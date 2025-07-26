@@ -3,7 +3,7 @@ import {DialogAnswerView} from '@/features/Form/dialogs/DialogAnswerView'
 import {useQueryClient} from '@tanstack/react-query'
 import {useDialogs} from '@toolpad/core'
 import {create} from 'zustand'
-import {getKoboSchema} from '../query/useQuerySchema'
+import {getSchema} from '../query/useQuerySchema'
 import {KoboUpdateModal} from '@/shared/koboEdit/KoboUpdateModal'
 import {Ip} from 'infoportal-api-sdk'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
@@ -67,7 +67,7 @@ export const useKoboDialogs = () => {
       })
     },
     openView: (params: OpenModalProps) => {
-      const schema = getKoboSchema(queryClient, params.formId)
+      const schema = getSchema({queryClient, ...params})
       if (!schema) {
         console.error(`Missing schema ${params.formId}`)
         return
@@ -75,7 +75,7 @@ export const useKoboDialogs = () => {
       dialogs.open(DialogAnswerView, {schema, ...params})
     },
     openEdit: (params: OpenModalProps) => {
-      const schema = getKoboSchema(queryClient, params.formId)
+      const schema = getSchema({queryClient, ...params})
       if (!schema) {
         console.error(`Missing schema ${params.formId}`)
         return

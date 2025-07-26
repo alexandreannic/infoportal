@@ -1,22 +1,24 @@
 import {logPerformance, UUID} from 'infoportal-common'
-import {Prisma, PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {app, AppCacheKey, AppLogger} from '../../index.js'
 import {createdBySystem} from '../../core/DbInit.js'
 import {chunkify, seq} from '@axanc/ts-utils'
-import {GlobalEvent} from '../../core/GlobalEvent.js'
 import {SubmissionService} from '../form/submission/SubmissionService.js'
 import {AppError} from '../../helper/Errors.js'
 import {appConf} from '../../core/conf/AppConf.js'
-import {genUUID, previewList, Util} from '../../helper/Utils.js'
+import {genUUID, previewList} from '../../helper/Utils.js'
 import {Kobo, KoboSubmissionFormatter} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboMapper} from './KoboMapper.js'
+import {IpEvent} from 'infoportal-event'
+import {PrismaHelper} from '../../core/PrismaHelper.js'
 
 export type KoboInsert = {
-  id: string
+  formId: Ip.FormId
+  koboSubmissionId: Kobo.SubmissionId
+  // koboFormId: Kobo.FormId
   uuid: string
-  formId: string
   start: Date
   end: Date
   submissionTime: Date
@@ -24,7 +26,6 @@ export type KoboInsert = {
   version?: string
   validationStatus?: Ip.Submission.Validation
   validatedBy?: string
-  source: Ip.Form.Source
   lastValidatedTimestamp?: number
   geolocation: [number, number]
   answers: Record<string, any>
@@ -45,13 +46,13 @@ export class KoboSyncServer {
     private prisma: PrismaClient,
     private service = new SubmissionService(prisma),
     private koboSdkGenerator: KoboSdkGenerator = KoboSdkGenerator.getSingleton(prisma),
-    private event = GlobalEvent.Class.getInstance(),
+    private event = app.event,
     private appCache = app.cache,
     private conf = appConf,
     private log: AppLogger = app.logger('KoboSyncServer'),
   ) {}
 
-  private static readonly mapAnswer = (k: Kobo.Submission.Raw): KoboInsert => {
+  private static readonly mapAnswer = (formId: Ip.FormId, k: Kobo.Submission.Raw): KoboInsert => {
     const {
       ['formhub/uuid']: formhubUuid,
       ['meta/instanceId']: instanceId,
@@ -74,49 +75,46 @@ export class KoboSyncServer {
     const answersUngrouped = KoboSubmissionFormatter.removePath(answers)
     const date = answersUngrouped.date ? new Date(answersUngrouped.date as number) : new Date(_submission_time)
     return {
-      formId: _xform_id_string,
-      source: 'kobo',
+      koboSubmissionId: '' + _id,
+      // koboFormId: _xform_id_string,
       attachments: _attachments ?? [],
       geolocation: _geolocation.filter(_ => _ !== null) as [number, number],
       start: start ?? date,
       end: end ?? date,
       submissionTime: new Date(_submission_time),
       version: __version__,
-      id: '' + _id,
       uuid: _uuid,
       submittedBy: _submitted_by,
       validationStatus: KoboMapper.mapValidation.fromKobo(k),
       lastValidatedTimestamp: _validation_status?.timestamp,
+      formId,
       // validatedBy: _validation_status?.by_whom,
       answers: answersUngrouped,
     }
   }
 
   readonly handleWebhookNewAnswers = async ({
-    formId,
+    koboFormId,
     answer: _answer,
   }: {
-    formId?: Kobo.FormId
+    koboFormId?: Kobo.FormId
     answer: Kobo.Submission
   }) => {
-    const answers = KoboSyncServer.mapAnswer(_answer)
-    this.log.info(`Handle webhook for form ${formId}, ${answers.id}`)
-    if (!formId) throw new AppError.WrongFormat('missing_form_id')
-    const connectedForm = this.prisma.form.findFirst({
-      include: {
-        kobo: true,
-      },
-      where: {id: formId},
+    if (!koboFormId) throw new AppError.WrongFormat('missing_form_id')
+    const connectedForms = await this.prisma.form
+      .findMany({
+        select: {workspaceId: true, id: true},
+        where: {kobo: {koboId: koboFormId}},
+      })
+      .then(_ => _.map(PrismaHelper.mapForm))
+    this.log.info(`Handle webhook for form ${koboFormId}, ${_answer._id}`)
+    connectedForms.map(_ => {
+      const answers = KoboSyncServer.mapAnswer(_.id, _answer)
+      return this.service.create({
+        workspaceId: _.workspaceId as Ip.WorkspaceId,
+        answers,
+      })
     })
-    if (!connectedForm) {
-      throw new AppError.NotFound('form_not_found')
-    }
-    this.event.emit(GlobalEvent.Event.KOBO_ANSWER_NEW, {
-      formId,
-      answerIds: [answers.id],
-      answer: answers.answers,
-    })
-    return this.service.create({answers})
   }
 
   readonly syncApiAnswersToDbAll = async (updatedBy: string = createdBySystem) => {
@@ -159,7 +157,7 @@ export class KoboSyncServer {
         !this.conf.production ||
         res.answersIdsDeleted.length + res.answersUpdated.length + res.answersIdsDeleted.length > 0
       ) {
-        this.event.emit(GlobalEvent.Event.KOBO_FORM_SYNCHRONIZED, {formId: formId})
+        this.event.emit(IpEvent.KOBO_FORM_SYNCHRONIZED, {formId})
       }
       this.appCache.clear(AppCacheKey.KoboAnswers, formId)
       this.appCache.clear(AppCacheKey.KoboSchema, formId)
@@ -199,26 +197,27 @@ export class KoboSyncServer {
     koboFormId: Kobo.FormId
   }): Promise<KoboSyncServerResult> => {
     const sdk = await this.koboSdkGenerator.getBy.formId(koboFormId)
+
     this.debug(koboFormId, `Fetch remote answers...`)
     const remoteAnswers = await sdk.v2.submission
       .getRaw({formId: koboFormId})
-      .then(_ => _.results.map(KoboSyncServer.mapAnswer))
+      .then(_ => _.results.map(_ => KoboSyncServer.mapAnswer(formId, _)))
     const remoteIdsIndex: Map<Kobo.FormId, KoboInsert> = remoteAnswers.reduce(
-      (map, curr) => map.set(curr.id, curr),
+      (map, curr) => map.set(curr.koboSubmissionId, curr),
       new Map<Kobo.FormId, KoboInsert>(),
-    ) //new Map(remoteAnswers.map(_ => _.id))
+    )
     this.debug(koboFormId, `Fetch remote answers... ${remoteAnswers.length} fetched.`)
 
     this.debug(koboFormId, `Fetch local answers...`)
     const localAnswersIndex = await this.prisma.formSubmission
       .findMany({
-        where: {formId, deletedAt: null},
-        select: {id: true, lastValidatedTimestamp: true, uuid: true},
+        where: {formId, deletedAt: null, koboSubmissionId: {not: null}},
+        select: {koboSubmissionId: true, lastValidatedTimestamp: true, uuid: true},
       })
       .then(_ => {
         return _.reduce(
-          (map, {id, ...rest}) => map.set(id, rest),
-          new Map<Kobo.FormId, {lastValidatedTimestamp: null | number; uuid: UUID}>(),
+          (map, {koboSubmissionId, ...rest}) => map.set(koboSubmissionId!, rest),
+          new Map<Kobo.SubmissionId, {lastValidatedTimestamp: null | number; uuid: UUID}>(),
         )
       })
     this.debug(koboFormId, `Fetch local answers... ${localAnswersIndex.size} fetched.`)
@@ -252,36 +251,9 @@ export class KoboSyncServer {
     }
 
     const handleCreate = async () => {
-      const notInsertedAnswers = remoteAnswers.filter(_ => !localAnswersIndex.has(_.id))
+      const notInsertedAnswers = remoteAnswers.filter(_ => !localAnswersIndex.has(_.koboSubmissionId))
       this.debug(koboFormId, `Handle create (${notInsertedAnswers.length})...`)
       await this.service.createMany(notInsertedAnswers)
-      const inserts = notInsertedAnswers.map(_ => {
-        const res: Prisma.FormSubmissionUncheckedCreateInput = {
-          formId: koboFormId,
-          answers: _.answers,
-          id: _.id,
-          uuid: _.uuid,
-          start: _.start,
-          end: _.end,
-          submissionTime: _.submissionTime,
-          validationStatus: _.validationStatus,
-          lastValidatedTimestamp: _.lastValidatedTimestamp,
-          validatedBy: _.validatedBy,
-          version: _.version,
-          // source: serverId,
-          attachments: _.attachments,
-        }
-        this.event.emit(GlobalEvent.Event.KOBO_ANSWER_NEW, {
-          formId: koboFormId,
-          answerIds: [_.id],
-          answer: _.answers,
-        })
-        return res
-      })
-      await this.prisma.formSubmission.createMany({
-        data: inserts,
-        skipDuplicates: true,
-      })
       return notInsertedAnswers
     }
 
@@ -296,13 +268,13 @@ export class KoboSyncServer {
       this.debug(koboFormId, `Handle validation (${answersToUpdate.length})...`)
       await Promise.all(
         answersToUpdate.map(a => {
-          this.event.emit(GlobalEvent.Event.KOBO_VALIDATION_EDITED_FROM_KOBO, {
-            formId: koboFormId,
-            answerIds: [a.id],
-            status: a.validationStatus,
-          })
+          // this.event.emit(IpEvent.KOBO_VALIDATION_EDITED_FROM_KOBO, {
+          //   formId,
+          //   answerIds: [a.id],
+          //   status: a.validationStatus,
+          // })
           return this.prisma.formSubmission.update({
-            where: {id: a.id},
+            where: {koboSubmissionId_formId: {formId, koboSubmissionId: a.koboSubmissionId}},
             data: {
               validationStatus: a.validationStatus,
               lastValidatedTimestamp: a.lastValidatedTimestamp,
@@ -322,31 +294,34 @@ export class KoboSyncServer {
         })
         .compact()
       this.debug(koboFormId, `Handle update (${answersToUpdate.length})...`)
-      const previewsAnswersById = await this.prisma.formSubmission
-        .findMany({
-          select: {id: true, answers: true},
-          where: {id: {in: answersToUpdate.map(_ => _.id)}},
-        })
-        .then(_ =>
-          seq(_).groupByAndApply(
-            _ => _.id,
-            _ => _[0].answers as Record<string, any>,
-          ),
-        )
+      // const previewsAnswersById = await this.prisma.formSubmission
+      //   .findMany({
+      //     select: {id: true, answers: true},
+      //     where: {id: {in: answersToUpdate.map(_ => _.id)}},
+      //   })
+      //   .then(_ =>
+      //     seq(_).groupByAndApply(
+      //       _ => _.id,
+      //       _ => _[0].answers as Record<string, any>,
+      //     ),
+      //   )
       await Promise.all(
         answersToUpdate.map(a => {
-          this.event.emit(GlobalEvent.Event.KOBO_ANSWER_EDITED_FROM_KOBO, {
-            formId: koboFormId,
-            answerIds: [a.id],
-            answer: Util.getObjectDiff({
-              before: previewsAnswersById[a.id],
-              after: a.answers,
-              skipProperties: ['instanceID', 'rootUuid', 'deprecatedID'],
-            }),
-          })
+          // this.event.emit(IpEvent.KOBO_ANSWER_EDITED_FROM_KOBO, {
+          //   formId,
+          //   answerIds: [a.id],
+          //   answer: Util.getObjectDiff({
+          //     before: previewsAnswersById[a.id],
+          //     after: a.answers,
+          //     skipProperties: ['instanceID', 'rootUuid', 'deprecatedID'],
+          //   }),
+          // })
           return this.prisma.formSubmission.update({
             where: {
-              id: a.id,
+              koboSubmissionId_formId: {
+                koboSubmissionId: a.koboSubmissionId,
+                formId,
+              },
             },
             data: {
               uuid: a.uuid,

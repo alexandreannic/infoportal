@@ -96,7 +96,9 @@ export class PermissionService {
     formId: Ip.FormId
   }): Promise<Ip.Permission.Form> {
     const wsAccess = await this.workspace.getByUser({workspaceId, user})
-    const formAccesses = await this.formAccess.search({workspaceId, user}).then(_ => _.filter(_ => _.formId === formId))
+    const formAccesses = await this.formAccess
+      .search({workspaceId, formId, user})
+      .then(_ => _.filter(_ => _.formId === formId))
     return Permission.Evaluate.form(user, wsAccess, formAccesses)
   }
 

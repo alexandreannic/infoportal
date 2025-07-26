@@ -1,9 +1,9 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {makeMeta, schema} from '../../core/Schema'
-import {Ip} from '../../core/Types'
-import {mapClientResponse, TsRestClient} from '../../core/IpClient'
-import {Paginate} from '../../core/Paginate'
+import {makeMeta, schema} from '../../core/Schema.js'
+import {Ip} from '../../core/Types.js'
+import {mapClientResponse, TsRestClient} from '../../core/IpClient.js'
+import {Paginate} from '../../core/Paginate.js'
 import {KeyOf, map, Obj} from '@axanc/ts-utils'
 import {endOfDay, startOfDay} from 'date-fns'
 
@@ -30,7 +30,7 @@ export const contractFormSubmission = c.router({
       formId: schema.formId,
     }),
     body: z.object({
-      answerIds: z.array(z.string()).min(1),
+      answerIds: z.array(schema.submissionId).min(1),
       question: z.string(),
       answer: z.any().nullable(),
     }),
@@ -99,15 +99,6 @@ export const contractFormSubmission = c.router({
   },
 })
 
-export const mapFormSubmission = (_: Ip.Submission): Ip.Submission => {
-  return {
-    ..._,
-    start: _.start ? new Date(_.start) : (undefined as any),
-    end: _.end ? new Date(_.end) : (undefined as any),
-    submissionTime: new Date(_.submissionTime),
-  }
-}
-
 export const formSubmissionClient = (client: TsRestClient) => {
   return {
     submit: (params: Ip.Submission.Payload.Submit) =>
@@ -117,7 +108,7 @@ export const formSubmissionClient = (client: TsRestClient) => {
           body: params,
         })
         .then(mapClientResponse)
-        .then(mapFormSubmission),
+        .then(Ip.Submission.map),
     search: ({workspaceId, formId, ...body}: Ip.Submission.Payload.Search) =>
       client.submission
         .search({
@@ -132,7 +123,7 @@ export const formSubmissionClient = (client: TsRestClient) => {
           },
         })
         .then(mapClientResponse)
-        .then(Paginate.map(mapFormSubmission)),
+        .then(Paginate.map(Ip.Submission.map)),
 
     remove: async ({
       workspaceId,

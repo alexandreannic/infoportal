@@ -1,5 +1,5 @@
 import {z} from 'zod'
-import {Ip} from './Types'
+import {Ip} from './Types.js'
 
 const createZodEnumFromObject = <T extends Record<string, string>>(obj: T) => {
   const values = Object.values(obj)
@@ -19,7 +19,9 @@ export const schema = (() => {
   const versionId = z.string() as unknown as z.ZodType<Ip.Form.VersionId>
   const serverId = z.string() as unknown as z.ZodType<Ip.ServerId>
   const formAccessId = z.string() as unknown as z.ZodType<Ip.Form.AccessId>
+  const submissionId = z.string() as unknown as z.ZodType<Ip.SubmissionId>
   return {
+    submissionId,
     workspaceId,
     uuid,
     formId,

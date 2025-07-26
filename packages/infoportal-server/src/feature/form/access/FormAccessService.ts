@@ -2,7 +2,7 @@ import {PrismaClient, User} from '@prisma/client'
 import {app, AppLogger} from '../../../index.js'
 import {Ip} from 'infoportal-api-sdk'
 import {AppError} from '../../../helper/Errors.js'
-import {PrismaHelper} from '../../../core/PrismaHelper'
+import {PrismaHelper} from '../../../core/PrismaHelper.js'
 
 export class FormAccessService {
   constructor(

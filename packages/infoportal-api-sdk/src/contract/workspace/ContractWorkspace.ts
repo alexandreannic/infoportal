@@ -1,7 +1,7 @@
 import {initContract} from '@ts-rest/core'
-import {Ip} from '../../core/Types'
-import {mapClientResponse, TsRestClient} from '../../core/IpClient'
-import {makeMeta} from '../../core/Schema'
+import {Ip} from '../../core/Types.js'
+import {mapClientResponse, TsRestClient} from '../../core/IpClient.js'
+import {makeMeta} from '../../core/Schema.js'
 
 const c = initContract()
 

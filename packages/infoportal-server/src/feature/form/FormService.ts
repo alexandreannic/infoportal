@@ -1,16 +1,28 @@
 import {Form, PrismaClient} from '@prisma/client'
-import {UUID} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
-import {KoboFormService} from '../kobo/KoboFormService.js'
 import {FormVersionService} from './FormVersionService.js'
 import {FormAccessService} from './access/FormAccessService.js'
-import {PrismaHelper} from '../../core/PrismaHelper'
+import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {Kobo} from 'kobo-sdk'
+import {app, AppCacheKey} from '../../index.js'
+import {duration} from '@axanc/ts-utils'
+import {KoboSdkGenerator} from '../kobo/KoboSdkGenerator.js'
+
+export type FormServiceCreatePayload = Ip.Form.Payload.Create & {
+  kobo?: {
+    formId: Kobo.FormId
+    accountId: Ip.ServerId
+  }
+  uploadedBy: string
+  workspaceId: Ip.WorkspaceId
+  deploymentStatus?: Ip.Form.DeploymentStatus
+}
 
 export class FormService {
   constructor(
     private prisma: PrismaClient,
-    private koboForm = new KoboFormService(prisma),
     private formVersion = new FormVersionService(prisma),
+    private koboSdk = KoboSdkGenerator.getSingleton(prisma),
     private formAccess = new FormAccessService(prisma),
   ) {}
 
@@ -27,8 +39,18 @@ export class FormService {
           },
         })
         .then(_ => _?.schema as any)
-    return this.koboForm.getSchema({koboFormId: form.kobo.koboId}).then(_ => _.content)
+    return this.getKoboSchema({koboFormId: form.kobo.koboId}).then(_ => _.content)
   }
+
+  private readonly getKoboSchema = app.cache.request({
+    key: AppCacheKey.KoboSchema,
+    genIndex: _ => _.koboFormId,
+    ttlMs: duration(2, 'day').toMs,
+    fn: async ({koboFormId}: {koboFormId: Kobo.FormId}): Promise<Kobo.Form> => {
+      const sdk = await this.koboSdk.getBy.formId(koboFormId)
+      return sdk.v2.form.get({formId: koboFormId, use$autonameAsName: true})
+    },
+  })
 
   readonly getSchemaByVersion = async ({
     formId,
@@ -47,25 +69,38 @@ export class FormService {
     return _?.schema as any
   }
 
-  readonly create = async (
-    payload: Ip.Form.Payload.Create & {uploadedBy: string; workspaceId: Ip.WorkspaceId},
-  ): Promise<Ip.Form> => {
+  readonly create = async ({
+    name,
+    category,
+    kobo,
+    deploymentStatus = 'draft',
+    uploadedBy,
+    workspaceId,
+  }: FormServiceCreatePayload): Promise<Ip.Form> => {
     const created = await this.prisma.form.create({
       include: {
         kobo: true,
       },
       data: {
-        name: payload.name,
-        category: payload.category,
-        deploymentStatus: 'draft',
-        uploadedBy: payload.workspaceId,
-        workspaceId: payload.workspaceId,
+        name,
+        category,
+        deploymentStatus,
+        uploadedBy,
+        workspaceId,
+        kobo: kobo
+          ? {
+              create: {
+                accountId: kobo.accountId,
+                koboId: kobo.formId,
+              },
+            }
+          : undefined,
       },
     })
     await this.formAccess.create({
       formId: created.id as Ip.FormId,
-      workspaceId: payload.workspaceId,
-      email: payload.uploadedBy,
+      workspaceId,
+      email: uploadedBy,
       level: 'Admin',
     })
     return PrismaHelper.mapForm(created)
@@ -95,7 +130,8 @@ export class FormService {
   readonly update = async (params: Ip.Form.Payload.Update): Promise<Ip.Form> => {
     const {formId, archive} = params
 
-    const koboUpdate$ = this.koboForm.update(params)
+    // TODO trigger event!
+    // const koboUpdate$ = this.koboForm.update(params)
 
     const newData: Partial<Form> = {}
     if (archive) {
@@ -104,18 +140,15 @@ export class FormService {
       const hasActiveVersion = await this.formVersion.hasActiveVersion({formId})
       newData.deploymentStatus = hasActiveVersion ? 'deployed' : 'draft'
     }
-    const [_, update] = await Promise.all([
-      koboUpdate$,
-      this.prisma.form
-        .update({
-          include: {
-            kobo: true,
-          },
-          where: {id: formId},
-          data: newData,
-        })
-        .then(PrismaHelper.mapForm),
-    ])
+    const update = await this.prisma.form
+      .update({
+        include: {
+          kobo: true,
+        },
+        where: {id: formId},
+        data: newData,
+      })
+      .then(PrismaHelper.mapForm)
     return update
   }
 

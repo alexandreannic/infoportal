@@ -1,13 +1,13 @@
-import {formVersionContract} from './form/ContractFormVersion'
+import {formVersionContract} from './form/ContractFormVersion.js'
 import {initContract} from '@ts-rest/core'
-import {formContract} from './form/ContractForm'
-import {serverContract} from './ContractServer'
-import {koboContract} from './kobo/ContractKobo'
-import {formAccessContract} from './form/ContractFormAccess'
-import {permissionContract} from './ContractPermission'
-import {workspaceContract} from './workspace/ContractWorkspace'
-import {workspaceAccessContract} from './workspace/ContractWorkspaceAccess'
-import {contractFormSubmission} from './form/ContractFormSubmission'
+import {formContract} from './form/ContractForm.js'
+import {serverContract} from './ContractServer.js'
+import {koboContract} from './kobo/ContractKobo.js'
+import {formAccessContract} from './form/ContractFormAccess.js'
+import {permissionContract} from './ContractPermission.js'
+import {workspaceContract} from './workspace/ContractWorkspace.js'
+import {workspaceAccessContract} from './workspace/ContractWorkspaceAccess.js'
+import {contractFormSubmission} from './form/ContractFormSubmission.js'
 
 export const ipContract = initContract().router({
   permission: permissionContract,

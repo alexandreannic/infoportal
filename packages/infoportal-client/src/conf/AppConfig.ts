@@ -7,6 +7,7 @@ enum Env {
   VITE_GOOGLE_MAPS_ID = 'VITE_GOOGLE_MAPS_ID',
   VITE_GOOGLE_CLIENT_ID = 'VITE_GOOGLE_CLIENT_ID',
   VITE_API_BASE_URL = 'VITE_API_BASE_URL',
+  VITE_API_WS_URL = 'VITE_API_WS_URL',
   VITE_MS_BEARER_TOKEN = 'VITE_MS_BEARER_TOKEN',
   VITE_MS_CLIENT_ID = 'VITE_MS_CLIENT_ID',
   VITE_MS_AUTHORITY = 'VITE_MS_AUTHORITY',
@@ -25,6 +26,7 @@ export const appConfig = {
   koboServerUrl: 'https://kobo.drc.ngo',
   contact: 'alexandre.annic@drc.ngo',
   apiURL: e(defaultValue('https://infoportal-ua-api.drc.ngo'))(Env.VITE_API_BASE_URL),
+  apiWsURL: e(defaultValue('ws://infoportal-ua-api.drc.ngo/ws'))(Env.VITE_API_WS_URL),
   baseURL: e(defaultValue('https://infoportal-ua.drc.ngo/'))(Env.VITE_BASE_URL),
   sentry: {
     dsn: e()(Env.VITE_SENTRY_DNS),

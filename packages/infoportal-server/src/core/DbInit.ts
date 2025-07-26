@@ -57,7 +57,6 @@ export class DbInit {
       adminsEmail.map(email => ({
         email,
         createdBy: createdBySystem,
-        admin: true,
       })),
     )
   }

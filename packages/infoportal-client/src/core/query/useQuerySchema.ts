@@ -10,7 +10,7 @@ export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.Workspace
   const {apiv2} = useAppSettings()
   const langIndex = useLangIndex(state => state.langIndex)
   return useQuery({
-    queryKey: queryKeys.koboSchema(formId),
+    queryKey: queryKeys.schema(workspaceId, formId),
     queryFn: async () => {
       const schema = await apiv2.form.getSchema({workspaceId, formId})
       if (schema) {
@@ -22,6 +22,14 @@ export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.Workspace
   })
 }
 
-export const getKoboSchema = (queryClient: QueryClient, formId: Ip.FormId): undefined | KoboSchemaHelper.Bundle => {
-  return queryClient.getQueryData<KoboSchemaHelper.Bundle>(queryKeys.koboSchema(formId))
+export const getSchema = ({
+  workspaceId,
+  formId,
+  queryClient,
+}: {
+  workspaceId: Ip.WorkspaceId
+  queryClient: QueryClient
+  formId: Ip.FormId
+}): undefined | KoboSchemaHelper.Bundle => {
+  return queryClient.getQueryData<KoboSchemaHelper.Bundle>(queryKeys.schema(workspaceId, formId))
 }

@@ -2,7 +2,6 @@ import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from '../../kobo/KoboSdkGenerator.js'
 import {duration, Obj, seq} from '@axanc/ts-utils'
 import {FormAccessService} from '../access/FormAccessService.js'
-import {GlobalEvent} from '../../../core/GlobalEvent.js'
 import {app, AppCacheKey} from '../../../index.js'
 import {appConf} from '../../../core/conf/AppConf.js'
 import {SubmissionHistoryService} from '../history/SubmissionHistoryService.js'
@@ -13,7 +12,8 @@ import {Ip, Paginate} from 'infoportal-api-sdk'
 import {KoboCustomDirective, logPerformance} from 'infoportal-common'
 import {KoboMapper} from '../../kobo/KoboMapper.js'
 import {FormService} from '../FormService.js'
-import Event = GlobalEvent.Event
+import {IpEvent} from 'infoportal-event'
+import {PrismaHelper} from '../../../core/PrismaHelper.js'
 
 export class SubmissionService {
   constructor(
@@ -22,7 +22,7 @@ export class SubmissionService {
     private access = new FormAccessService(prisma),
     private sdkGenerator: KoboSdkGenerator = KoboSdkGenerator.getSingleton(prisma),
     private history = new SubmissionHistoryService(prisma),
-    private event: GlobalEvent.Class = GlobalEvent.Class.getInstance(),
+    private event = app.event,
     private log = app.logger('KoboService'),
     private conf = appConf,
   ) {}
@@ -94,6 +94,7 @@ export class SubmissionService {
               geolocation: true,
               answers: true,
               attachments: true,
+              koboSubmissionId: true,
             },
             take: paginate.limit,
             skip: paginate.offset,
@@ -172,14 +173,34 @@ export class SubmissionService {
     const form = await this.form.get(props.formId)
     if (!form) throw new AppError.NotFound(`Form ${props.formId} does not exists.`)
     if (form.kobo) throw new AppError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
-    return this.create({answers: SubmissionService.mapPayload(props)})
+    return this.create({workspaceId: props.workspaceId, answers: SubmissionService.mapPayload(props)})
   }
 
-  readonly create = async ({answers}: {answers: Prisma.FormSubmissionUncheckedCreateInput}): Promise<Ip.Submission> => {
-    const submission: any = await this.prisma.formSubmission.create({
-      data: answers,
-    })
-    this.event.emit(Event.NEW_SUBMISSION, {submission})
+  readonly create = async ({
+    workspaceId,
+    answers,
+  }: {
+    workspaceId: Ip.WorkspaceId
+    answers: Prisma.FormSubmissionUncheckedCreateInput
+  }): Promise<Ip.Submission> => {
+    const submission: any = await this.prisma.formSubmission
+      .create({
+        select: {
+          id: true,
+          start: true,
+          end: true,
+          submissionTime: true,
+          submittedBy: true,
+          version: true,
+          validationStatus: true,
+          geolocation: true,
+          answers: true,
+          attachments: true,
+        },
+        data: answers,
+      })
+      .then(PrismaHelper.mapSubmission)
+    this.event.emit(IpEvent.SUBMISSION_NEW, {workspaceId, formId: submission.formId, submission})
     return submission
   }
 
@@ -238,7 +259,7 @@ export class SubmissionService {
   }: {
     authorEmail?: string
     formId: Ip.FormId
-    answerIds: Kobo.SubmissionId[]
+    answerIds: Ip.SubmissionId[]
     question: string
     answer?: string
   }) => {
@@ -262,7 +283,7 @@ export class SubmissionService {
         `,
       ),
     ])
-    this.event.emit(Event.KOBO_ANSWER_EDITED_FROM_IP, {formId, answerIds, answer: {[question]: answer}})
+    this.event.emit(IpEvent.SUBMISSION_EDITED, {formId, submissionIds: answerIds, answer: {[question]: answer}})
   }
 
   readonly updateValidation = async ({

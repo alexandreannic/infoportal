@@ -78,7 +78,7 @@ const DatabaseTable = ({
 
   const anyLoading =
     useIsFetching({
-      queryKey: queryKeys.koboSchema(formId),
+      queryKey: queryKeys.schema(workspaceId, formId),
     }) > 0
 
   return (

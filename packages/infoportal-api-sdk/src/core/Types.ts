@@ -143,6 +143,13 @@ export namespace Ip {
   }
   export type SubmissionId = Brand<string, 'submissionId'>
   export namespace Submission {
+    export const map = (_: Submission): Submission => {
+      if (_.start) _.start = new Date(_.start)
+      if (_.end) _.end = new Date(_.end)
+      _.submissionTime = new Date(_.submissionTime)
+      return _
+    }
+
     export type Validation = Prisma.FormSubmissionValidation
     export const Validation = {
       Approved: 'Approved',
@@ -223,6 +230,13 @@ export namespace Ip {
     kobo?: Form.KoboInfo
   }
   export namespace Form {
+    export type DeploymentStatus = Prisma.DeploymentStatus
+    export const DeploymentStatus = {
+      deployed: 'deployed',
+      archived: 'archived',
+      draft: 'draft',
+    } as const
+
     export type KoboInfo = Prisma.FormKoboInfo & {
       accountId: ServerId
       koboId: Kobo.FormId
