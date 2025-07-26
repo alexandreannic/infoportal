@@ -6,7 +6,7 @@ import {KoboSchemaHelper} from 'infoportal-common'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useFetcher} from '@/shared/hook/useFetcher'
 import * as csvToJson from 'csvtojson'
-import {Obj, seq} from '@axanc/ts-utils'
+import {map, Obj, seq} from '@axanc/ts-utils'
 import {FetchParams} from '@/shared/hook/useFetchers'
 import {UseDatabaseView, useDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
 import {useObjectState, UseObjectStateReturn} from '@/shared/hook/useObjectState'
@@ -22,7 +22,7 @@ export interface DatabaseContext {
   form: Ip.Form
   permission: Ip.Permission.Form
   asyncRefresh: UseAsyncSimple<() => Promise<void>>
-  asyncEdit: (answerId: Kobo.SubmissionId) => string
+  koboEditEnketoUrl?: (answerId: Kobo.SubmissionId) => string
   data?: Submission[]
   loading?: boolean
   setData: Dispatch<SetStateAction<Submission[]>>
@@ -84,7 +84,10 @@ export const DatabaseKoboTableProvider = (props: {
     await refetch({force: true, clean: false})
   })
 
-  const asyncEdit = (answerId: Kobo.SubmissionId) => api.koboApi.getEditUrl({formId: form.id, answerId})
+  const koboEditEnketoUrl = map(
+    form.kobo?.koboId,
+    koboId => (answerId: Kobo.SubmissionId) => api.koboApi.getEditUrl({formId: koboId, answerId}),
+  )
 
   const [mappedData, setMappedData] = useState<Submission[] | undefined>(undefined)
 
@@ -105,7 +108,7 @@ export const DatabaseKoboTableProvider = (props: {
         externalFilesIndex: indexExternalFiles,
         asyncRefresh,
         form,
-        asyncEdit,
+        koboEditEnketoUrl,
         view,
         groupDisplay,
         data: mappedData,

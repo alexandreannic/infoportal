@@ -94,6 +94,7 @@ export class SubmissionService {
               geolocation: true,
               answers: true,
               attachments: true,
+              koboSubmissionId: true,
             },
             take: paginate.limit,
             skip: paginate.offset,

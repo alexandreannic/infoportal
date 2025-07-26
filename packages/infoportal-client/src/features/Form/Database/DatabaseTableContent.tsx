@@ -122,6 +122,7 @@ export const DatabaseTableContent = ({
       workspaceId,
       formId: ctx.form.id,
       canEdit: ctx.permission.answers_canUpdate,
+      koboEditEnketoUrl: ctx.koboEditEnketoUrl,
       m,
       dialogs,
     })

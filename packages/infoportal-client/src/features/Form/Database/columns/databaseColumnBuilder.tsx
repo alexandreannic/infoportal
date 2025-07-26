@@ -5,7 +5,7 @@ import {Kobo} from 'kobo-sdk'
 import {map} from '@axanc/ts-utils'
 import {IpBtn, TableEditCellBtn, Txt} from '@/shared'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper, removeHtml} from 'infoportal-common'
-import {KoboExternalFilesIndex} from '@/features/Form/Database/DatabaseContext'
+import {DatabaseContext, KoboExternalFilesIndex} from '@/features/Form/Database/DatabaseContext'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {Ip} from 'infoportal-api-sdk'
@@ -17,6 +17,7 @@ import {TableIcon, TableIconBtn} from '@/shared/TableIcon'
 import {SelectStatusBy} from '@/shared/customInput/SelectStatus'
 import {useI18n} from '@/core/i18n'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
+import Submission = Ip.Submission
 
 export const buildDatabaseColumns = {
   type: {
@@ -395,6 +396,7 @@ type MetaProps = {
   dialogs: ReturnType<typeof useKoboDialogs>
   formId: Ip.FormId
   selectedIds: Ip.SubmissionId[]
+  koboEditEnketoUrl?: DatabaseContext['koboEditEnketoUrl']
   canEdit?: boolean
   m: Messages
 }
@@ -428,42 +430,47 @@ function actions({
   formId,
   dialogs,
   canEdit,
+  koboEditEnketoUrl,
   m,
 }: {
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   dialogs: ReturnType<typeof useKoboDialogs>
   canEdit?: boolean
+  koboEditEnketoUrl?: DatabaseContext['koboEditEnketoUrl']
   m: Messages
-}): DatatableColumn.Props<Row> {
+}): DatatableColumn.Props<Submission> {
   return {
     id: 'actions' as const,
     head: '',
     width: 0,
     noCsvExport: true,
-    render: (_: any) => {
+    render: (_: Submission) => {
       return {
         value: null as any,
         label: (
           <>
             <TableIconBtn
-              disabled={!canEdit}
-              tooltip={m.editKobo}
-              children="edit"
-              onClick={() => dialogs.openEdit({answer: _, workspaceId, formId: formId})}
-            />
-            <TableIconBtn
               tooltip={m.view}
               children="visibility"
               onClick={() => dialogs.openView({answer: _, workspaceId, formId: formId})}
             />
-            {/*<TableIconBtn*/}
-            {/*  disabled={!canEdit}*/}
-            {/*  tooltip={m.editKobo}*/}
-            {/*  target="_blank"*/}
-            {/*  href={asyncEdit(_.id)}*/}
-            {/*  children="edit"*/}
-            {/*/>*/}
+            {koboEditEnketoUrl && _.koboSubmissionId ? (
+              <TableIconBtn
+                disabled={!canEdit}
+                tooltip={m.editKobo}
+                target="_blank"
+                href={koboEditEnketoUrl(_.koboSubmissionId)}
+                children="edit_square"
+              />
+            ) : (
+              <TableIconBtn
+                disabled={!canEdit}
+                tooltip={m.editForm}
+                children="edit"
+                onClick={() => dialogs.openEdit({answer: _, workspaceId, formId: formId})}
+              />
+            )}
           </>
         ),
       }
