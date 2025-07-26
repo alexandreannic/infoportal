@@ -54,14 +54,14 @@ export class KoboSdkGenerator {
     fn: async (): Promise<Record<Kobo.FormId, UUID>> => {
       return this.prisma.formKoboInfo
         .findMany({
-          select: {formId: true, accountId: true},
+          select: {koboId: true, accountId: true},
         })
         .then(_ => {
           this.log.info(`Recalculate server index`)
           return seq(_)
             .compactBy('accountId')
             .groupByAndApply(
-              _ => _.formId,
+              _ => _.koboId,
               _ => _[0].accountId,
             )
         })

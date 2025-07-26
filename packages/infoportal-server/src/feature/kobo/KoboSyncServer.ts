@@ -17,7 +17,7 @@ import {PrismaHelper} from '../../core/PrismaHelper.js'
 export type KoboInsert = {
   formId: Ip.FormId
   koboSubmissionId: Kobo.SubmissionId
-  koboFormId: Kobo.FormId
+  // koboFormId: Kobo.FormId
   uuid: string
   start: Date
   end: Date
@@ -76,7 +76,7 @@ export class KoboSyncServer {
     const date = answersUngrouped.date ? new Date(answersUngrouped.date as number) : new Date(_submission_time)
     return {
       koboSubmissionId: '' + _id,
-      koboFormId: _xform_id_string,
+      // koboFormId: _xform_id_string,
       attachments: _attachments ?? [],
       geolocation: _geolocation.filter(_ => _ !== null) as [number, number],
       start: start ?? date,

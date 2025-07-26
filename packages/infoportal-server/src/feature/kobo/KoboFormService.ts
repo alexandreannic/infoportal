@@ -1,18 +1,19 @@
-import {duration, seq} from '@axanc/ts-utils'
-import {Prisma, PrismaClient} from '@prisma/client'
+import {seq} from '@axanc/ts-utils'
+import {PrismaClient} from '@prisma/client'
 import {PromisePool} from '@supercharge/promise-pool'
-import {UUID} from 'infoportal-common'
 import {Kobo, KoboClient} from 'kobo-sdk'
 import {appConf} from '../../core/conf/AppConf.js'
 import {app, AppCacheKey} from '../../index.js'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {Ip} from 'infoportal-api-sdk'
 import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {FormService, FormServiceCreatePayload} from '../form/FormService.js'
 
 export class KoboFormService {
   constructor(
     private prisma: PrismaClient,
     private koboSdk = KoboSdkGenerator.getSingleton(prisma),
+    private form = new FormService(prisma),
     private cache = app.cache,
     private conf = appConf,
   ) {}
@@ -24,33 +25,21 @@ export class KoboFormService {
     workspaceId,
   }: {
     schema: Kobo.Form
-    accountId: UUID
-    workspaceId: UUID
+    accountId: Ip.ServerId
+    workspaceId: Ip.WorkspaceId
     uploadedBy: string
-  }): Prisma.FormUncheckedCreateInput => {
+  }): FormServiceCreatePayload => {
     return {
       name: schema.name,
       deploymentStatus: schema.deployment_status,
       kobo: {
-        create: {
-          accountId,
-          koboId: schema.uid,
-        },
+        accountId,
+        formId: schema.uid,
       },
       uploadedBy: uploadedBy,
       workspaceId,
     }
   }
-
-  readonly getSchema = app.cache.request({
-    key: AppCacheKey.KoboSchema,
-    genIndex: _ => _.koboFormId,
-    ttlMs: duration(2, 'day').toMs,
-    fn: async ({koboFormId}: {koboFormId: Kobo.FormId}): Promise<Kobo.Form> => {
-      const sdk = await this.koboSdk.getBy.formId(koboFormId)
-      return sdk.v2.form.get({formId: koboFormId, use$autonameAsName: true})
-    },
-  })
 
   static readonly HOOK_NAME = 'InfoPortal'
 
@@ -60,17 +49,25 @@ export class KoboFormService {
     const sdk = await this.koboSdk.getBy.accountId(payload.serverId)
     const schema = await sdk.v2.form.get({formId: payload.uid, use$autonameAsName: true})
     const [newFrom] = await Promise.all([
-      this.prisma.form.create({
-        include: {
-          kobo: true,
-        },
-        data: KoboFormService.apiToDb({
+      this.form.create(
+        KoboFormService.apiToDb({
           schema,
           accountId: payload.serverId,
           uploadedBy: payload.uploadedBy,
           workspaceId: payload.workspaceId,
         }),
-      }),
+      ),
+      // this.prisma.form.create({
+      //   include: {
+      //     kobo: true,
+      //   },
+      //   data: KoboFormService.apiToDb({
+      //     schema,
+      //     accountId: payload.serverId,
+      //     uploadedBy: payload.uploadedBy,
+      //     workspaceId: payload.workspaceId,
+      //   }),
+      // }),
       this.createHookIfNotExists({sdk, koboFormId: payload.uid}),
     ])
     this.cache.clear(AppCacheKey.KoboServerIndex)
@@ -171,7 +168,7 @@ export class KoboFormService {
         throw error
       })
       .process(form => {
-        const db = KoboFormService.apiToDb({
+        const {kobo, ...db} = KoboFormService.apiToDb({
           schema: indexSchema[form.id],
           accountId: indexForm[form.id].kobo!.accountId,
           uploadedBy: byEmail,

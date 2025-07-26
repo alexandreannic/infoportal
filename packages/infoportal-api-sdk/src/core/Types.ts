@@ -230,6 +230,13 @@ export namespace Ip {
     kobo?: Form.KoboInfo
   }
   export namespace Form {
+    export type DeploymentStatus = Prisma.DeploymentStatus
+    export const DeploymentStatus = {
+      deployed: 'deployed',
+      archived: 'archived',
+      draft: 'draft',
+    } as const
+
     export type KoboInfo = Prisma.FormKoboInfo & {
       accountId: ServerId
       koboId: Kobo.FormId

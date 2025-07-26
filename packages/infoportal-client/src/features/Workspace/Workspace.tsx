@@ -8,6 +8,8 @@ import {Layout} from '@/shared/Layout/Layout'
 import {Ip} from 'infoportal-api-sdk'
 import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useQueryPermission} from '@/core/query/useQueryPermission'
+import {CenteredContent, Fender, Page} from '@/shared'
+import {PageNotFound} from '@/shared/PageNotFound'
 
 export const workspaceRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -32,17 +34,24 @@ function Workspace() {
 
   return (
     <ProtectRoute>
-      <Layout header={<AppHeader workspaceId={workspaceId} />} sidebar={<AppSidebar workspaceId={workspaceId} />}>
-        {workspace && queryPermission.data && (
-          <Context.Provider
-            value={{
-              workspaceId: workspace.id,
-              workspace,
-              permission: queryPermission.data,
-            }}
-          >
-            <Outlet />
-          </Context.Provider>
+      <Layout
+        header={<AppHeader workspaceId={workspaceId} />}
+        sidebar={workspace && <AppSidebar workspaceId={workspace.id} />}
+      >
+        {workspace ? (
+          queryPermission.data && (
+            <Context.Provider
+              value={{
+                workspaceId: workspace.id,
+                workspace,
+                permission: queryPermission.data,
+              }}
+            >
+              <Outlet />
+            </Context.Provider>
+          )
+        ) : (
+          <PageNotFound />
         )}
       </Layout>
     </ProtectRoute>

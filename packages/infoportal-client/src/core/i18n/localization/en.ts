@@ -78,6 +78,8 @@ export const en = Object.freeze({
     cancel: 'Cancel',
     custom: 'Custom',
     close: 'Close',
+    home: 'Home',
+    pageNotExists: 'This page does not exist.',
     reinitialize: 'Reinitialize',
     connectAs: 'Connect as',
     budget: 'Budget',
