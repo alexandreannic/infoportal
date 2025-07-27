@@ -1,7 +1,8 @@
 import {Server as HttpServer} from 'http'
 import {WebSocket, WebSocketServer} from 'ws'
 import {app} from '../index.js'
-import {IpEvent} from 'infoportal-event'
+import {IpEvent} from 'infoportal-common'
+import { Server } from 'socket.io'
 
 export class AppWebsocket {
   constructor(

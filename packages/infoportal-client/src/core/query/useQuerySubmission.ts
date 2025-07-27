@@ -1,17 +1,54 @@
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
+import {QueryClient, useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {KoboMapper} from '../sdk/server/kobo/KoboMapper'
 import {queryKeys} from './query.index'
 import {useQuerySchema} from './useQuerySchema'
 import {duration} from '@axanc/ts-utils'
 import {Ip, Paginate} from 'infoportal-api-sdk'
+import {produce} from 'immer'
 
 export const useQuerySubmission = {
   search,
   submit,
+  localUpdate,
 }
 
-export function search({formId, workspaceId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) {
+function localUpdate({
+  queryClient,
+  formId,
+  submissionIds,
+  question,
+  answer,
+}: {
+  question: string
+  answer: string
+  queryClient: QueryClient
+  formId: Ip.FormId
+  submissionIds: Ip.SubmissionId[]
+}) {
+  queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.answers(formId), (old = {data: [], total: 0}) => {
+    return produce(old ?? {data: [], total: 0}, draft => {
+      const idsToUpdate = new Set(submissionIds)
+      for (const submission of draft.data) {
+        if (idsToUpdate.has(submission.id)) {
+          submission.answers[question] = answer
+        }
+      }
+    })
+  })
+  // const set = new Set(data.submissionIds)
+  // return {
+  //   ...old,
+  //   data: old.data.map(_ => {
+  //     if (set.has(_.id)) {
+  //       return {..._, answers: {..._.answers, ...data.answer}}
+  //     }
+  //     return _
+  //   }),
+  // }
+}
+
+function search({formId, workspaceId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) {
   const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
   const querySchema = useQuerySchema({workspaceId, formId})

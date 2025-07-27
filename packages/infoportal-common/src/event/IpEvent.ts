@@ -4,7 +4,9 @@ export namespace IpEventParams {
   export interface SubmissionEdited {
     formId: Ip.FormId
     submissionIds: Ip.SubmissionId[]
-    answer: Record<string, any>
+    question: string
+    answer?: any
+    // answer: Record<string, any>
     index?: number
     total?: number
   }

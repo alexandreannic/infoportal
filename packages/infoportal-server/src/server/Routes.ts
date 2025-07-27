@@ -130,7 +130,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const formAccess = new FormAccessService(prisma)
   const formSubmission = new SubmissionService(prisma)
   const server = new ServerService(prisma)
-
   const permission = new PermissionService(prisma, undefined, formAccess)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
@@ -138,6 +137,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     if (meta) await permission.throwIfNoPermitted({req: args.req, permissions: meta.access})
     return args as any
   }
+
   const ensureFile = <T extends HandlerArgs>(args: T): Promise<T & {file: Express.Multer.File}> => {
     return new Promise((resolve, reject) => {
       if (!args.req.file) {

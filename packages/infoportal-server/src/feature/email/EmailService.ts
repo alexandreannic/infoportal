@@ -5,7 +5,7 @@ import {PrismaClient} from '@prisma/client'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {FormService} from '../form/FormService.js'
-import {IpEvent, IpEventParams} from 'infoportal-event'
+import {IpEvent, IpEventParams} from 'infoportal-common'
 
 export enum EmailContext {
   Kobo = 'Kobo',

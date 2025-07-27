@@ -1,7 +1,7 @@
 import {useQueryClient} from '@tanstack/react-query'
 import {useEffect} from 'react'
 import {appConfig} from '@/conf/AppConfig'
-import {IpEvent, IpEventParams} from 'infoportal-event'
+import {IpEvent, IpEventParams} from 'infoportal-common'
 import {queryKeys} from '@/core/query/query.index'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'

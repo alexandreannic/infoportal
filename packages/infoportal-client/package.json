@@ -70,6 +70,8 @@
     "react-router-dom": "^7.6.3",
     "react-syntax-highlighter": "^15.6.1",
     "recharts": "^2.10.4",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "tss-react": "^4.9.16",
     "ua-location": "^1.0.3",
     "xls-form-filler": "github:alexandreannic/xls-form-filler#c7531cf2afc94acf90c8f966117ae330e2665fd0",

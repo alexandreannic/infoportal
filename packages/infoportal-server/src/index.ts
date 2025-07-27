@@ -10,7 +10,7 @@ import {Syslog} from 'winston-syslog'
 import {EmailService} from './feature/email/EmailService.js'
 import {DbInit} from './core/DbInit.js'
 import * as os from 'os'
-import {IpEventClient} from 'infoportal-event'
+import {IpEventClient} from 'infoportal-common'
 
 export type AppLogger = WinstonLogger
 
