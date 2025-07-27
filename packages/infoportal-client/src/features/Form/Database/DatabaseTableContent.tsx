@@ -18,7 +18,7 @@ import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
 import {useAsync} from '@/shared/hook/useAsync'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
-import {Alert, AlertProps, Icon, useTheme} from '@mui/material'
+import {Alert, AlertProps, Avatar, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from 'infoportal-common'
 import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
@@ -26,6 +26,8 @@ import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
 import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Ip} from 'infoportal-api-sdk'
+import {useFormContext} from '@/features/Form/Form'
+import {AppAvatar} from '@/shared'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -54,6 +56,7 @@ export const DatabaseTableContent = ({
   const navigate = useNavigate()
   const ctx = useDatabaseKoboTableContext()
   const dialogs = useKoboDialogs()
+  const {connectedUsers} = useFormContext()
 
   const queryUpdate = useQueryAnswerUpdate()
 
@@ -213,7 +216,10 @@ export const DatabaseTableContent = ({
             {ctx.schema.helper.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
             {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 
-            <div style={{marginLeft: 'auto'}}>
+            <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>
+              {connectedUsers.map(_ => (
+                <AppAvatar size={32} email={_} overlap borderColor="blue" key={_}/>
+              ))}
               {ctx.form.kobo ? (
                 <IpIconBtn
                   disabled={!ctx.form.kobo.enketoUrl || ctx.form.deploymentStatus === 'archived'}

@@ -1,5 +1,5 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useEffect, useRef} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {Socket} from 'socket.io-client'
 import {useQueryClient} from '@tanstack/react-query'
 import {IpEvent} from 'infoportal-common'
@@ -14,6 +14,7 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceI
   const {conf} = useAppSettings()
   const queryClient = useQueryClient()
   const socketRef = useRef<Socket | null>(null)
+  const [connectedEmail, setConnectedEmails] = useState<Ip.User.Email[]>([])
 
   useEffect(() => {
     const socket = getAppSocket(conf)
@@ -24,6 +25,9 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceI
     })
     socket.on('connect_error', err => {
       console.error('❌ Socket connection error:', err)
+    })
+    socket.on('USERS', data => {
+      setConnectedEmails(data)
     })
     socket.on(IpEvent.SUBMISSION_EDITED, data => {
       useQuerySubmission.localUpdate({
@@ -55,7 +59,7 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceI
         socket.disconnect()
       }
     }
-  }, [formId])
+  }, [workspaceId, formId])
 
-  return socketRef
+  return connectedEmail
 }

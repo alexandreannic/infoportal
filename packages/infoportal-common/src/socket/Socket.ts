@@ -5,6 +5,7 @@ import {Ip} from 'infoportal-api-sdk'
 export interface ServerToClientEvents {
   [IpEvent.SUBMISSION_NEW]: (data: IpEventParams.NewSubmission) => void
   [IpEvent.SUBMISSION_EDITED]: (data: IpEventParams.SubmissionEdited) => void
+  USERS: (data: Ip.User.Email[]) => void
 }
 
 export interface ClientToServerEvents {
