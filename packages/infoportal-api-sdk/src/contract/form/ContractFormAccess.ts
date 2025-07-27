@@ -9,9 +9,9 @@ const c = initContract()
 export const formAccessContract = c.router({
   create: {
     method: 'PUT',
-    path: `/:workspaceId/access`,
-    pathParams: c.type<{workspaceId: Ip.WorkspaceId}>(),
-    body: c.type<Omit<Ip.Form.Access.Payload.Create, 'workspaceId'>>(),
+    path: `/:workspaceId/form/:formId/access`,
+    pathParams: c.type<Ip.Form.Access.Payload.PathParams>(),
+    body: c.type<Omit<Ip.Form.Access.Payload.Create, 'formId' | 'workspaceId'>>(),
     responses: {
       200: z.any() as z.ZodType<Ip.Form.Access[]>,
     },
@@ -24,9 +24,9 @@ export const formAccessContract = c.router({
 
   update: {
     method: 'PATCH',
-    path: `/:workspaceId/access/:id`,
-    pathParams: c.type<Pick<Ip.Form.Access.Payload.Update, 'id' | 'workspaceId'>>(),
-    body: c.type<Omit<Ip.Form.Access.Payload.Update, 'id' | 'workspaceId'>>(),
+    path: `/:workspaceId/form/:formId/access/:id`,
+    pathParams: c.type<Ip.Form.Access.Payload.PathParams & {id: Ip.Form.AccessId}>(),
+    body: c.type<Omit<Ip.Form.Access.Payload.Update, 'id' | 'workspaceId' | 'formId'>>(),
     responses: {
       200: z.any() as z.ZodType<Ip.Form.Access>,
     },
@@ -39,8 +39,8 @@ export const formAccessContract = c.router({
 
   remove: {
     method: 'DELETE',
-    path: `/:workspaceId/access/:id`,
-    pathParams: c.type<{workspaceId: Ip.WorkspaceId; id: Ip.Form.AccessId}>(),
+    path: `/:workspaceId/form/:formId/access/:id`,
+    pathParams: c.type<Ip.Form.Access.Payload.PathParams & {id: Ip.Form.AccessId}>(),
     responses: {
       200: schema.formAccessId,
     },
@@ -94,16 +94,16 @@ export const mapFormAccessNullable = (_?: Ip.Form.Access): undefined | Ip.Form.A
 
 export const formAccessClient = (client: TsRestClient) => {
   return {
-    create: ({workspaceId, ...body}: Ip.Form.Access.Payload.Create) =>
+    create: ({workspaceId, formId, ...body}: Ip.Form.Access.Payload.Create) =>
       client.form.access
-        .create({params: {workspaceId}, body})
+        .create({params: {workspaceId, formId}, body})
         .then(mapClientResponse)
         .then(_ => _.map(mapFormAccess)),
 
-    update: ({workspaceId, id, ...body}: Ip.Form.Access.Payload.Update) =>
-      client.form.access.update({params: {workspaceId, id}, body}).then(mapClientResponse).then(mapFormAccess),
+    update: ({workspaceId, id, formId, ...body}: Ip.Form.Access.Payload.Update) =>
+      client.form.access.update({params: {workspaceId, formId, id}, body}).then(mapClientResponse).then(mapFormAccess),
 
-    remove: (params: {workspaceId: Ip.WorkspaceId; id: Ip.Form.AccessId}) =>
+    remove: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId; id: Ip.Form.AccessId}) =>
       client.form.access.remove({params}).then(mapClientResponse),
 
     search: ({workspaceId, formId}: {formId?: Ip.FormId; workspaceId: Ip.WorkspaceId}) =>

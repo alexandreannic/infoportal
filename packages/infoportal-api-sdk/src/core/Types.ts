@@ -287,18 +287,19 @@ export namespace Ip {
       export type Filters = Record<string, string[]>
 
       export namespace Payload {
-        export type Create = {
+        export type PathParams = {
           workspaceId: WorkspaceId
           formId: FormId
+        }
+        export type Create = PathParams & {
           level: Prisma.FormAccess['level']
           email?: Prisma.FormAccess['email']
           job?: Prisma.FormAccess['job'][]
           groupId?: GroupId
           filters?: Filters
         }
-        export type Update = {
+        export type Update = PathParams & {
           id: AccessId
-          workspaceId: WorkspaceId
           email?: Prisma.FormAccess['email']
           job?: Prisma.FormAccess['job']
           level?: Prisma.FormAccess['level']

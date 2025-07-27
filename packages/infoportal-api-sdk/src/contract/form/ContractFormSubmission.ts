@@ -39,7 +39,7 @@ export const contractFormSubmission = c.router({
     },
     metadata: makeMeta({
       access: {
-        form: ['canUpdate'],
+        form: ['answers_canUpdate'],
       },
     }),
   },
@@ -59,7 +59,7 @@ export const contractFormSubmission = c.router({
     },
     metadata: makeMeta({
       access: {
-        form: ['canUpdate'],
+        form: ['answers_canUpdate'],
       },
     }),
   },
@@ -78,7 +78,7 @@ export const contractFormSubmission = c.router({
     },
     metadata: makeMeta({
       access: {
-        form: ['canDelete'],
+        form: ['answers_canDelete'],
       },
     }),
   },

@@ -345,7 +345,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       access: {
         create: _ =>
           auth2(_)
-            .then(({params, body}) => formAccess.create({workspaceId: params.workspaceId, ...body}))
+            .then(({params, body}) => formAccess.create({...params, ...body}))
             .then(ok)
             .catch(handleError),
         update: _ =>

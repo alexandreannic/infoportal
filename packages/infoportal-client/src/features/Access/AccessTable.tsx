@@ -40,7 +40,7 @@ export const AccessTable = ({
       defaultLimit={100}
       id="access"
       getRenderRowKey={_ => _.id}
-      loading={queryAccess.isLoading}
+      loading={queryAccess.isLoading || queryAccessUpdate.isPending}
       header={header}
       data={queryAccess.data}
       columns={[
@@ -100,7 +100,7 @@ export const AccessTable = ({
                   <IpSelectSingle<keyof typeof Ip.AccessLevel>
                     value={row.level}
                     placeholder=""
-                    onChange={_ => queryAccessUpdate.mutate({id: row.id, level: _})}
+                    onChange={_ => queryAccessUpdate.mutate({id: row.id, formId, level: _})}
                     hideNullOption
                     disabled={!!row.groupName}
                     options={Obj.keys(Ip.AccessLevel)}
