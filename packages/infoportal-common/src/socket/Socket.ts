@@ -1,14 +1,3 @@
-// export type DatabaseEvent =
-//   | {action: 'create'; submission: Record<string, any>}
-//   | {action: 'delete'; submissionId: string}
-//   | {action: 'update'; submissionIds: string[]; property: string; value: unknown}
-//
-// export interface FormChannelEvents {
-//   database: {
-//     change: (event: DatabaseEvent) => void
-//   }
-// }
-
 import {IpEvent} from '../event/IpEventClient.js'
 import {IpEventParams} from '../event/IpEvent.js'
 import {Ip} from 'infoportal-api-sdk'

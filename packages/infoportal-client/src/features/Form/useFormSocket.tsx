@@ -1,26 +1,14 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useEffect, useRef} from 'react'
-import {io, Socket} from 'socket.io-client'
-import {AppConfig} from '@/conf/AppConfig'
+import {Socket} from 'socket.io-client'
 import {useQueryClient} from '@tanstack/react-query'
-import {ClientToServerEvents, IpEvent, ServerToClientEvents} from 'infoportal-common'
+import {IpEvent} from 'infoportal-common'
 import {getSchema} from '@/core/query/useQuerySchema'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
 import {queryKeys} from '@/core/query/query.index'
-import {produce} from 'immer'
 import {useQuerySubmission} from '@/core/query/useQuerySubmission'
-
-let socket: Socket<ServerToClientEvents, ClientToServerEvents> | null = null
-
-function getSocket(conf: AppConfig) {
-  if (!socket) {
-    socket = io(conf.apiWsURL, {
-      transports: ['websocket'],
-    })
-  }
-  return socket
-}
+import {getAppSocket} from '@/core/socket'
 
 export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
   const {conf} = useAppSettings()
@@ -28,7 +16,7 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceI
   const socketRef = useRef<Socket | null>(null)
 
   useEffect(() => {
-    const socket = getSocket(conf)
+    const socket = getAppSocket(conf)
     socket.emit('subscribe', formId)
     socketRef.current = socket
     socket.on('connect', () => {

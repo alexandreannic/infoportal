@@ -17,7 +17,7 @@ import {databaseAccessRoute} from './Access/DatabaseAccess'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {useQueryPermission} from '@/core/query/useQueryPermission'
-import {useFormSocket} from '@/core/Websocket2'
+import {useFormSocket} from '@/features/Form/useFormSocket'
 
 export const formRootRoute = createRoute({
   getParentRoute: () => workspaceRoute,

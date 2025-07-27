@@ -5,6 +5,8 @@ import {Ip} from 'infoportal-api-sdk'
 import {ClientToServerEvents, IpEvent, ServerToClientEvents} from 'infoportal-common'
 
 export class Socket {
+  private static readonly connectedFormUsers = new Map<Ip.FormId, Set<Ip.User.Email>>()
+
   constructor(
     private io: Server<ClientToServerEvents, ServerToClientEvents>,
     private event = app.event,
@@ -16,6 +18,10 @@ export class Socket {
       const user = req.session.app.user
       socket.on('subscribe', (formId: Ip.FormId) => {
         log.debug(`✅ Joined channel: ${formId}`)
+
+        if (!Socket.connectedFormUsers.has(formId)) Socket.connectedFormUsers.set(formId, new Set())
+        Socket.connectedFormUsers.get(formId)!.add(user.email)
+
         socket.join(formId)
       })
 
