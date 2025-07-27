@@ -314,7 +314,6 @@ export class SubmissionService {
   }) => {
     const mappedValidation = KoboMapper.mapValidation.toKobo(status)
     const validationKey: keyof Ip.Submission.Meta = 'validationStatus'
-    const sdk = await this.sdkGenerator.getBy.formId(formId)
     const [sqlRes] = await Promise.all([
       this.prisma.formSubmission.updateMany({
         where: {id: {in: answerIds}},

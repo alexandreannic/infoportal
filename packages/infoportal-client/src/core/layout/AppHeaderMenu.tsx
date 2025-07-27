@@ -40,10 +40,9 @@ export const accessLevelIcon: Record<Ip.AccessLevel, string> = {
   Write: 'visibility',
 }
 
-export const AppHeaderMenu = ({sx, ...props}: Partial<BoxProps>) => {
+export const AppHeaderMenu = ({sx, ...props}: Partial<Omit<BoxProps, 'borderColor'>>) => {
   const {user, logout} = useSession()
   const me = user
-  const t = useTheme()
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
   const open = !!anchorEl
   const {m} = useI18n()

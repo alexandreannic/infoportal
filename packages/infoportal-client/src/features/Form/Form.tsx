@@ -61,7 +61,6 @@ export type FormContext = {
   form: Ip.Form
   schema?: KoboSchemaHelper.Bundle
   permission: Ip.Permission.Form
-  connectedUsers: Ip.User.Email[]
 }
 
 const Context = createContext<FormContext>({} as FormContext)
@@ -89,8 +88,6 @@ function Form() {
   }, [schema])
 
   useDefaultTabRedirect({workspaceId, formId, currentFullPath})
-  const connectedUsers = useFormSocket({workspaceId, formId})
-
   const outlet = useMemo(() => {
     if (queryForm.isLoading || querySchema.isLoading || queryPermission.isLoading) {
       return <Page width="full" loading={true} />
@@ -103,7 +100,6 @@ function Form() {
       <Context.Provider
         value={{
           workspaceId,
-          connectedUsers,
           form: queryForm.data,
           schema: querySchema.data,
           permission: queryPermission.data,

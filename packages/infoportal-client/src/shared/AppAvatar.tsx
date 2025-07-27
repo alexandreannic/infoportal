@@ -2,7 +2,6 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {Box, BoxProps, Icon} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import {makeStyles} from 'tss-react/mui'
-import {Ip} from 'infoportal-api-sdk'
 
 const useStyles = makeStyles<{
   borderColor?: string

@@ -20,9 +20,9 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceI
     const socket = getAppSocket(conf)
     socket.emit('subscribe', formId)
     socketRef.current = socket
-    socket.on('connect', () => {
-      console.log('✅ Connected to socket.io server', formId)
-    })
+    // socket.on('connect', () => {
+    //   console.log('✅ Connected to socket.io server', formId)
+    // })
     socket.on('connect_error', err => {
       console.error('❌ Socket connection error:', err)
     })
@@ -56,7 +56,7 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceI
     return () => {
       if (socket.connected) {
         socket.emit('unsubscribe', formId)
-        socket.disconnect()
+        // socket.disconnect()
       }
     }
   }, [workspaceId, formId])

@@ -18,7 +18,7 @@ import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
 import {useAsync} from '@/shared/hook/useAsync'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
-import {Alert, AlertProps, Avatar, Icon, useTheme} from '@mui/material'
+import {Alert, AlertProps, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from 'infoportal-common'
 import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
@@ -28,6 +28,7 @@ import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseCol
 import {Ip} from 'infoportal-api-sdk'
 import {useFormContext} from '@/features/Form/Form'
 import {AppAvatar} from '@/shared'
+import {useFormSocket} from '@/features/Form/useFormSocket'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -56,7 +57,7 @@ export const DatabaseTableContent = ({
   const navigate = useNavigate()
   const ctx = useDatabaseKoboTableContext()
   const dialogs = useKoboDialogs()
-  const {connectedUsers} = useFormContext()
+  const connectedUsers = useFormSocket({workspaceId, formId: ctx.form.id})
 
   const queryUpdate = useQueryAnswerUpdate()
 
@@ -217,8 +218,8 @@ export const DatabaseTableContent = ({
             {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 
             <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>
-              {connectedUsers.map(_ => (
-                <AppAvatar size={32} email={_} overlap borderColor="blue" key={_}/>
+              {connectedUsers.length > 1 && connectedUsers.map(_ => (
+                <AppAvatar size={36} email={_} overlap borderColor="blue" key={_} />
               ))}
               {ctx.form.kobo ? (
                 <IpIconBtn
