@@ -4,25 +4,23 @@ import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {SessionService} from '../../feature/session/SessionService.js'
 import {AppError} from '../../helper/Errors.js'
-import {appConf} from '../../core/conf/AppConf.js'
-import {SessionError} from '../../feature/session/SessionErrors.js'
 import {isAuthenticated} from '../Routes.js'
+import {Ip} from 'infoportal-api-sdk'
 
 export class ControllerSession extends Controller {
   constructor(
     private prisma: PrismaClient,
     private service = new SessionService(prisma),
-    private conf = appConf,
   ) {
     super({errorKey: 'session'})
   }
 
   readonly getMe = async (req: Request, res: Response, next: NextFunction) => {
     if (!isAuthenticated(req)) throw new AppError.Forbidden('No access.')
-    if (this.conf.production && req.hostname === 'localhost') {
-      const user = await this.prisma.user.findFirstOrThrow({where: {email: this.conf.ownerEmail}})
-      req.session.app = await this.service.get(user)
-    }
+    // if (this.conf.production && req.hostname === 'localhost') {
+    //   const user = await this.prisma.user.findFirstOrThrow({where: {email: this.conf.ownerEmail}})
+    //   req.session.app = await this.service.get(user)
+    // }
     const profile = await this.service.get(req.session.app.user)
     res.send({...profile, ...req.session.app})
   }
@@ -41,19 +39,14 @@ export class ControllerSession extends Controller {
         provider: yup.string().oneOf(['google', 'microsoft']).required(),
       })
       .validate(req.body)
-    const connectedUser = await this.service.login(user)
-    const session = await this.service.get(connectedUser)
-    req.session.app = {user: connectedUser}
+    const session = await this.service.login(user)
+    req.session.app = {user: session.user}
     res.send(session)
   }
 
   readonly revertConnectAs = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.session.app?.originalEmail) {
-      throw new AppError.Forbidden('')
-    }
-    const user = await this.prisma.user.findFirstOrThrow({where: {email: req.session?.app.originalEmail}})
-    req.session.app = await this.service.get(user)
-    res.send(req.session.app)
+    const data = await this.service.revertConnectAs(req.session.app?.originalEmail)
+    res.send(data)
   }
 
   readonly connectAs = async (req: Request, res: Response, next: NextFunction) => {
@@ -63,11 +56,13 @@ export class ControllerSession extends Controller {
         email: yup.string().required(),
       })
       .validate(req.body)
-    const connectAsUser = await this.prisma.user.findFirstOrThrow({where: {email: body.email}})
-    if (connectAsUser.id === req.session.app.user.id) throw new SessionError.UserNoAccess()
-    req.session.app = await this.service.get(connectAsUser)
+    const spyUser = await this.service.connectAs({
+      spyEmail: body.email as Ip.User.Email,
+      connectedUser: req.session.app.user,
+    })
+    req.session.app = spyUser
     req.session.app.originalEmail = req.session.app.user.email
-    res.send(req.session.app)
+    res.send(spyUser)
   }
 
   readonly track = async (req: Request, res: Response, next: NextFunction) => {

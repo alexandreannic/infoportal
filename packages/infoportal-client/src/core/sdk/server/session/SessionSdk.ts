@@ -1,6 +1,7 @@
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {Session, SessionHelper} from '@/core/sdk/server/session/Session'
 import {User} from '@/core/sdk/server/user/User'
+import {Ip} from 'infoportal-api-sdk'
 
 interface LoginRequest {
   name: string
@@ -24,7 +25,7 @@ export class SessionSdk {
     return this.client.get(`/session/me`).then(SessionHelper.map)
   }
 
-  readonly connectAs = (email: string) => {
+  readonly connectAs = (email: Ip.User.Email) => {
     return this.client.post<Session>(`/session/connect-as`, {body: {email}}).then(SessionHelper.map)
   }
 

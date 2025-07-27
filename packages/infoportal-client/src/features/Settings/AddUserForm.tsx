@@ -8,7 +8,7 @@ import {Controller, useForm} from 'react-hook-form'
 import {Ip} from 'infoportal-api-sdk'
 
 type Form = {
-  email: string
+  email: Ip.User.Email
   level: Ip.AccessLevel
 }
 
@@ -18,7 +18,7 @@ export const AddUserForm = ({
   onSubmit,
   onClose,
 }: {
-  existingEmails?: string[]
+  existingEmails?: Ip.User.Email[]
   loading?: boolean
   onClose?: () => void
   onSubmit: (_: Form) => Promise<any>

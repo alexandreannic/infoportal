@@ -1,6 +1,8 @@
 import {PrismaClient} from '@prisma/client'
 import {UUID} from 'infoportal-common'
 import {app, AppLogger} from '../../index.js'
+import {Ip} from 'infoportal-api-sdk'
+import {PrismaHelper} from '../../core/PrismaHelper.js'
 
 export class UserService {
   private static instance: UserService
@@ -48,15 +50,15 @@ export class UserService {
     })
   }
 
-  readonly getUserByEmail = async (email: string) => {
+  readonly getUserByEmail = async (email: Ip.User.Email) => {
     return this.prisma.user.findUnique({where: {email}}).then(_ => _ ?? undefined)
   }
 
-  readonly getUserAvatarByEmail = async (email: string): Promise<Buffer | undefined> => {
-    return this.getUserByEmail(email).then(_ => (_?.avatar ? Buffer.from(_.avatar) : undefined))
+  readonly getUserAvatarByEmail = async (email: Ip.User.Email): Promise<Buffer | undefined> => {
+    return this.getByEmail(email).then(_ => (_?.avatar ? Buffer.from(_.avatar) : undefined))
   }
 
-  readonly update = async ({email, drcOffice}: {email: string; drcOffice?: string}) => {
+  readonly update = async ({email, drcOffice}: {email: Ip.User.Email; drcOffice?: string}) => {
     const updatedUser = await this.prisma.user.update({
       where: {email},
       data: {drcOffice},
@@ -71,5 +73,9 @@ export class UserService {
       where: {drcJob: {not: null}},
     })
     return drcJobs.map(job => job.drcJob!)
+  }
+
+  readonly getByEmail = (email: Ip.User.Email): Promise<Ip.User | undefined> => {
+    return this.prisma.user.findFirst({where: {email}}).then(_ => (_ ? PrismaHelper.mapUser(_) : undefined))
   }
 }

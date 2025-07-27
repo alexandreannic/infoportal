@@ -3,10 +3,10 @@ import {app, AppLogger} from '../../../index.js'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {KoboAnswerHistoryHelper} from './SubmissionHistoryType.js'
-import {Paginate} from 'infoportal-api-sdk'
+import {Ip, Paginate} from 'infoportal-api-sdk'
 
 type Create = {
-  authorEmail: string
+  authorEmail: Ip.User.Email
   formId: Kobo.FormId
   answerIds: Kobo.SubmissionId[]
 } & (

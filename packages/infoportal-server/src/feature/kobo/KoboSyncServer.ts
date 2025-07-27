@@ -31,7 +31,7 @@ export type KoboInsert = {
   answers: Record<string, any>
   attachments: Kobo.Submission.Attachment[]
   deletedAt?: Date
-  deletedBy?: string
+  deletedBy?: Ip.User.Email
 }
 
 export type KoboSyncServerResult = {
@@ -112,12 +112,12 @@ export class KoboSyncServer {
       const answers = KoboSyncServer.mapAnswer(_.id, _answer)
       return this.service.create({
         workspaceId: _.workspaceId as Ip.WorkspaceId,
-        answers,
+        answers: answers as any,
       })
     })
   }
 
-  readonly syncApiAnswersToDbAll = async (updatedBy: string = createdBySystem) => {
+  readonly syncApiAnswersToDbAll = async (updatedBy: Ip.User.Email = createdBySystem) => {
     const allForms = await this.prisma.formKoboInfo.findMany()
     this.log.info(`Synchronize kobo forms:`)
     for (const form of allForms) {
@@ -133,7 +133,7 @@ export class KoboSyncServer {
   private info = (formId: string, message: string) => this.log.info(`${formId}: ${message}`)
   private debug = (formId: string, message: string) => this.log.debug(`${formId}: ${message}`)
 
-  readonly syncApiAnswersToDbByForm = async ({formId, updatedBy}: {formId: Ip.FormId; updatedBy?: string}) => {
+  readonly syncApiAnswersToDbByForm = async ({formId, updatedBy}: {formId: Ip.FormId; updatedBy?: Ip.User.Email}) => {
     const koboFormId = await this.prisma.formKoboInfo
       .findFirst({select: {koboId: true}, where: {formId}})
       .then(_ => _?.koboId)
@@ -253,7 +253,7 @@ export class KoboSyncServer {
     const handleCreate = async () => {
       const notInsertedAnswers = remoteAnswers.filter(_ => !localAnswersIndex.has(_.koboSubmissionId))
       this.debug(koboFormId, `Handle create (${notInsertedAnswers.length})...`)
-      await this.service.createMany(notInsertedAnswers)
+      await this.service.createMany(notInsertedAnswers as any)
       return notInsertedAnswers
     }
 

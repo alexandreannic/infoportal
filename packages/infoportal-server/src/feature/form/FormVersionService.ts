@@ -31,7 +31,7 @@ export class FormVersionService {
     ...rest
   }: {
     message?: string
-    uploadedBy: string
+    uploadedBy: Ip.User.Email
     formId: Ip.FormId
     file: Express.Multer.File
   }) => {
@@ -81,7 +81,7 @@ export class FormVersionService {
     fileName?: string
     formId: Ip.Form.Id
     schemaJson: Kobo.Form['content']
-    uploadedBy: string
+    uploadedBy: Ip.User.Email
   }) => {
     return this.prisma.$transaction(async tx => {
       const latest = await tx.formVersion.findFirst({

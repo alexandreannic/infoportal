@@ -1,5 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Box, BoxProps, Icon} from '@mui/material'
+import {Ip} from 'infoportal-api-sdk'
 import {makeStyles} from 'tss-react/mui'
 
 const useStyles = makeStyles<{url?: string; size: number; tooltipSize?: number}>()((t, {url, size, tooltipSize}) => ({
@@ -23,7 +24,7 @@ export const AppAvatar = ({
   ...props
   // hideTooltip,
 }: {
-  email?: string
+  email?: Ip.User.Email
   size: number
   // hideTooltip?: boolean
 } & BoxProps) => {

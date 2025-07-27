@@ -1,11 +1,12 @@
-import {User, Workspace} from '@prisma/client'
+import {Ip} from 'infoportal-api-sdk'
 
 export type AppSession = {
-  user: User
-  originalEmail?: string
+  user: Ip.User
+  originalEmail?: Ip.User.Email
 }
 
 export type UserProfile = {
-  user: User
-  workspaces: Workspace[]
+  user: Ip.User
+  /** @deprecated ? */
+  workspaces: Ip.Workspace[]
 }

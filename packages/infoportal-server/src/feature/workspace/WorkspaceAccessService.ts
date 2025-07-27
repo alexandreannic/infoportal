@@ -21,8 +21,8 @@ export class WorkspaceAccessService {
     }),
   }
 
-  readonly create = async ({level, email, workspaceId}: WorkspaceAccessCreate, createdBy: string) => {
-    const maybeExistingUser = await this.userService.getUserByEmail(email)
+  readonly create = async ({level, email, workspaceId}: WorkspaceAccessCreate, createdBy: Ip.User.Email) => {
+    const maybeExistingUser = await this.userService.getByEmail(email as Ip.User.Email)
     if (maybeExistingUser) {
       return this.prisma.workspaceAccess.create({
         data: {

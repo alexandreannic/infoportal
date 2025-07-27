@@ -1,11 +1,13 @@
+import {Ip} from 'infoportal-api-sdk'
+
 export type DatabaseView = {
   id: string
   name: string
   databaseId: string
   createdAt: Date
   updatedAt?: Date
-  createdBy: string
-  updatedBy?: string
+  createdBy: Ip.User.Email
+  updatedBy?: Ip.User.Email
   visibility: DatabaseViewVisibility
   details: DatabaseViewCol[]
 }

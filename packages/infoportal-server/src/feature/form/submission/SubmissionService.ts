@@ -223,11 +223,11 @@ export class SubmissionService {
   readonly deleteAnswers = async ({
     answerIds,
     formId,
-    authorEmail = 'system',
+    authorEmail = 'system' as Ip.User.Email,
   }: {
     answerIds: Kobo.SubmissionId[]
     formId: Ip.FormId
-    authorEmail?: string
+    authorEmail?: Ip.User.Email
   }) => {
     await Promise.all([
       this.prisma.formSubmission.updateMany({
@@ -255,9 +255,9 @@ export class SubmissionService {
     answerIds,
     question,
     answer,
-    authorEmail = 'system',
+    authorEmail = 'system' as Ip.User.Email,
   }: {
-    authorEmail?: string
+    authorEmail?: Ip.User.Email
     formId: Ip.FormId
     answerIds: Ip.SubmissionId[]
     question: string
@@ -295,7 +295,7 @@ export class SubmissionService {
     formId: Ip.FormId
     answerIds: Kobo.SubmissionId[]
     status: Ip.Submission.Validation
-    authorEmail: string
+    authorEmail: Ip.User.Email
   }) => {
     const mappedValidation = KoboMapper.mapValidation.toKobo(status)
     const validationKey: keyof Ip.Submission.Meta = 'validationStatus'

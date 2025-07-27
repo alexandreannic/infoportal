@@ -96,8 +96,14 @@ export namespace Ip {
   } as const
 
   // === User
-  export type User = Prisma.User
-  export namespace User {}
+  export type UserId = Brand<string, 'userId'>
+  export type User = Omit<Prisma.User, 'id' | 'email'> & {
+    id: UserId
+    email: User.Email
+  }
+  export namespace User {
+    export type Email = Brand<string, 'email'>
+  }
 
   // === Workspace
   export type Workspace = Prisma.Workspace & {
@@ -108,7 +114,7 @@ export namespace Ip {
     export type Access = Prisma.WorkspaceAccess
     export namespace Access {
       export namespace Payload {
-        export type Create = {email: string; level: AccessLevel; workspaceId: WorkspaceId}
+        export type Create = {email: Ip.User.Email; level: AccessLevel; workspaceId: WorkspaceId}
       }
     }
 
@@ -171,10 +177,9 @@ export namespace Ip {
       id: Kobo.SubmissionId
       uuid: Kobo.Submission['_uuid']
       validationStatus?: Submission.Validation
-      validatedBy?: string
-      submittedBy?: string
+      validatedBy?: Ip.User.Email
+      submittedBy?: Ip.User.Email
       lastValidatedTimestamp?: number
-      source?: string
       updatedAt?: Date
     }
 
@@ -246,10 +251,6 @@ export namespace Ip {
 
     export type Schema = Kobo.Form['content'] & {files?: Kobo.Form.File[]}
 
-    export type Version = Omit<Prisma.FormVersion, 'schema' | 'id'> & {
-      id: VersionId
-    }
-
     export type Source = Prisma.FormSource
     export const Source = {
       kobo: 'kobo',
@@ -316,7 +317,12 @@ export namespace Ip {
       }
     }
 
+    // === Version
     export type VersionId = Brand<string, 'versionId'>
+    export type Version = Omit<Prisma.FormVersion, 'uploadedBy' | 'schema' | 'id'> & {
+      uploadedBy: Ip.User.Email
+      id: VersionId
+    }
     export namespace Version {}
   }
 

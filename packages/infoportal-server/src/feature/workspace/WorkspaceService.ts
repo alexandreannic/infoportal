@@ -39,7 +39,7 @@ export class WorkspaceService {
     return slug
   }
 
-  readonly getByUser = async (email: string) => {
+  readonly getByUser = async (email: Ip.User.Email) => {
     return this.prisma.workspaceAccess
       .findMany({
         where: {

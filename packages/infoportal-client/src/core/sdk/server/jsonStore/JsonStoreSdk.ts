@@ -1,11 +1,12 @@
 import {UUID} from 'infoportal-common'
 import {ApiClient} from '../ApiClient'
+import {Ip} from 'infoportal-api-sdk'
 
 export type JsonStore<T> = {
   id: UUID
   createdAt: Date
   updatedAt: Date
-  updatedBy: string
+  updatedBy: Ip.User.Email
   key: JsonStoreKey
   value: T
 }

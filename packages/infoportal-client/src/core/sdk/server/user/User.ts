@@ -3,7 +3,7 @@ import {Ip} from 'infoportal-api-sdk'
 
 export interface User {
   id: UUID
-  email: string
+  email: Ip.User.Email
   name: string
   accessToken: string
   accessLevel: Ip.AccessLevel

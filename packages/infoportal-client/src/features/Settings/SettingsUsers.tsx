@@ -34,7 +34,7 @@ function SettingsUsers() {
   const queryUserGet = useQueryUser.getAll(workspaceId)
   const queryUserCreate = useQueryUser.create(workspaceId)
 
-  const connectAs = async (email: string) => {
+  const connectAs = async (email: Ip.User.Email) => {
     await ctxSession.connectAs.mutateAsync(email)
     await navigate({to: '/'})
   }

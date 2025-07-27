@@ -13,7 +13,7 @@ export type FormServiceCreatePayload = Ip.Form.Payload.Create & {
     formId: Kobo.FormId
     accountId: Ip.ServerId
   }
-  uploadedBy: string
+  uploadedBy: Ip.User.Email
   workspaceId: Ip.WorkspaceId
   deploymentStatus?: Ip.Form.DeploymentStatus
 }

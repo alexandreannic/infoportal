@@ -9,7 +9,7 @@ export class UserSdk {
     return this.client.post<User>(`${workspaceId}/user/me`, {body: user})
   }
 
-  readonly avatarUrl = ({email}: {email: string}) => {
+  readonly avatarUrl = ({email}: {email: Ip.User.Email}) => {
     return `${this.client.baseUrl}/user/avatar/${email}`
   }
 

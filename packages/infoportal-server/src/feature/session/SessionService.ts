@@ -7,12 +7,15 @@ import {SessionError} from './SessionErrors.js'
 import {google} from 'googleapis'
 import {WorkspaceService} from '../workspace/WorkspaceService.js'
 import {UserProfile} from './AppSession.js'
-
-// import {User} from '@microsoft/msgraph-sdk-javascript/lib/src/models/user'
+import {Ip} from 'infoportal-api-sdk'
+import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {AppError} from '../../helper/Errors.js'
+import {UserService} from '../user/UserService.js'
 
 export class SessionService {
   constructor(
     private prisma: PrismaClient,
+    private user = UserService.getInstance(prisma),
     private workspace = new WorkspaceService(prisma),
     private log: AppLogger = app.logger('SessionService'),
   ) {}
@@ -25,15 +28,19 @@ export class SessionService {
   }) => {
     switch (userBody.provider) {
       case 'google':
-        return this.loginWithGoogle(userBody)
+        return this.loginWithGoogle(userBody).then(this.get)
       case 'microsoft':
-        return this.loginWithMicrosoft(userBody)
+        return this.loginWithMicrosoft(userBody).then(this.get)
       default:
         throw new Error('Invalid provider')
     }
   }
 
-  private readonly loginWithGoogle = async (userBody: {name: string; username: string; accessToken: string}) => {
+  private readonly loginWithGoogle = async (userBody: {
+    name: string
+    username: string
+    accessToken: string
+  }): Promise<Ip.User> => {
     const oauth2Client = new google.auth.OAuth2()
     oauth2Client.setCredentials({access_token: userBody.accessToken})
 
@@ -46,7 +53,7 @@ export class SessionService {
 
     const oauth2 = google.oauth2({version: 'v2', auth: oauth2Client})
     const userInfo = await oauth2.userinfo.get()
-    const email = userInfo.data.email
+    const email = userInfo.data.email as Ip.User.Email
     const name = userInfo.data.name ?? userBody.name
 
     if (!email) {
@@ -73,10 +80,14 @@ export class SessionService {
     })
 
     this.log.info(`${connectedUser.email} connected via Google.`)
-    return connectedUser
+    return PrismaHelper.mapUser(connectedUser)
   }
 
-  readonly loginWithMicrosoft = async (userBody: {name: string; username: string; accessToken: string}) => {
+  readonly loginWithMicrosoft = async (userBody: {
+    name: string
+    username: string
+    accessToken: string
+  }): Promise<Ip.User> => {
     class MyCustomAuthenticationProvider implements AuthenticationProvider {
       getAccessToken = async (authenticationProviderOptions?: AuthenticationProviderOptions) => {
         return userBody.accessToken
@@ -110,14 +121,14 @@ export class SessionService {
       throw new SessionError.UserNotFound()
     }
     const connectedUser = await this.syncUserInDb({
-      email: msUser.mail,
+      email: msUser.mail as Ip.User.Email,
       drcJob: msUser.jobTitle?.trim().replace(/\s+/g, ' '),
       accessToken: userBody.accessToken,
       name: userBody.name,
       avatar: avatar ? Buffer.from(avatar) : undefined,
     })
     this.log.info(`${connectedUser.email} connected.`)
-    return connectedUser
+    return PrismaHelper.mapUser(connectedUser)
   }
 
   readonly syncUserInDb = async ({
@@ -130,7 +141,7 @@ export class SessionService {
     accessToken: string
     avatar?: Buffer
     name: string
-    email: string
+    email: Ip.User.Email
     drcJob?: string
   }): Promise<User> => {
     const user = await this.prisma.user.findFirst({where: {email}})
@@ -171,7 +182,21 @@ export class SessionService {
     })
   }
 
-  readonly get = async (user: User): Promise<UserProfile> => {
+  readonly connectAs = async ({connectedUser, spyEmail}: {connectedUser: Ip.User; spyEmail: Ip.User.Email}) => {
+    const connectAsUser = await this.user.getByEmail(spyEmail).then(AppError.throwNotFoundIfUndefined('connectAs'))
+    if (connectAsUser.id === connectedUser.id) throw new SessionError.UserNoAccess()
+    return this.get(connectAsUser)
+  }
+
+  readonly revertConnectAs = async (originalEmail?: Ip.User.Email) => {
+    if (!originalEmail) {
+      throw new AppError.Forbidden('')
+    }
+    const user = await this.user.getByEmail(originalEmail).then(AppError.throwNotFoundIfUndefined(''))
+    return this.get(user)
+  }
+
+  readonly get = async (user: Ip.User): Promise<UserProfile> => {
     const workspaces = await this.workspace.getByUser(user.email)
     return {
       workspaces,

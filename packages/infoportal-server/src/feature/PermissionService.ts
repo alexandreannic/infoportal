@@ -39,7 +39,7 @@ export class PermissionService {
     if (!email) {
       throw new AppError.Forbidden('auth_user_not_connected')
     }
-    const user = await UserService.getInstance(this.prisma).getUserByEmail(email)
+    const user = await UserService.getInstance(this.prisma).getByEmail(email)
     if (!user) {
       throw new AppError.Forbidden('user_not_allowed')
     }

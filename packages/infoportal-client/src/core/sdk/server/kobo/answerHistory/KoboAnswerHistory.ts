@@ -7,7 +7,7 @@ export interface KoboAnswerHistorySearch {
 export interface KoboAnswerHistory {
   id: string
   answerIds: string[]
-  by: string
+  by: Ip.User.Email
   date: Date
   type: 'answer' | 'tag' | 'delete'
   property?: string
