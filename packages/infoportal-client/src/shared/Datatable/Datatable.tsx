@@ -18,6 +18,7 @@ import {useAsync} from '@/shared/hook/useAsync'
 import {format} from 'date-fns'
 import {slugify} from 'infoportal-common'
 import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
+import {DatatableSelectToolbar} from '@/shared/Datatable/DatatableSelectToolbar'
 
 export const Datatable = <T extends DatatableRow = DatatableRow>({
   total,
@@ -150,7 +151,7 @@ const _Datatable = <T extends DatatableRow>({
   return (
     <Box {...props}>
       {header !== null && (
-        <Box sx={{position: 'relative', p: 1, display: 'flex', flexWrap: 'wrap', alignItems: 'center', width: '100%'}}>
+        <Box sx={{p: 1, position: 'relative', display: 'flex', flexWrap: 'wrap', alignItems: 'center', width: '100%'}}>
           <Badge
             badgeContent={filterCount}
             color="primary"
@@ -187,45 +188,13 @@ const _Datatable = <T extends DatatableRow>({
             />
           )}
           {ctx.selected.size > 0 && (
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                left: 0,
-                bottom: 0,
-                borderRadius: t.shape.borderRadius + 'px',
-                background: t.palette.background.paper,
-              }}
-            >
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  left: 0,
-                  bottom: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  fontWeight: t.typography.fontWeightBold,
-                  background: t.palette.action.focus,
-                  pl: 1,
-                  pr: 2,
-                  border: `2px solid ${t.palette.primary.main}`,
-                  borderTopLeftRadius: t.shape.borderRadius + 'px',
-                  borderTopRightRadius: t.shape.borderRadius + 'px',
-                  // margin: .75,
-                  // color: t.palette.primary.main,
-                  // borderRadius: t.shape.borderRadius + 'px',
-                }}
-              >
-                <IpIconBtn color="primary" children="clear" onClick={ctx.selected.clear} />
-                <Box sx={{mr: 1, whiteSpace: 'nowrap'}}>
-                  <b>{ctx.selected.size}</b> {m.selected}
-                </Box>
-                {ctx.select?.selectActions}
+            <DatatableSelectToolbar>
+              <IpIconBtn color="primary" children="clear" onClick={ctx.selected.clear} />
+              <Box sx={{mr: 1, whiteSpace: 'nowrap'}}>
+                <b>{ctx.selected.size}</b> {m.selected}
               </Box>
-            </Box>
+              {ctx.select?.selectActions}
+            </DatatableSelectToolbar>
           )}
         </Box>
       )}

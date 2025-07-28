@@ -129,7 +129,7 @@ enum FormSubmissionValidation {
 }
 
 model FormSubmission {
-  id                     String                    @id @default(cuid()) @db.VarChar(32)
+  id                     String                    @id @db.VarChar(32)
   koboSubmissionId       String?
   uuid                   String
   form                   Form                      @relation(fields: [formId], references: [id])

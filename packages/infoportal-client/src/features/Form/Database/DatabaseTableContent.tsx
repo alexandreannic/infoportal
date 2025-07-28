@@ -26,6 +26,9 @@ import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
 import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Ip} from 'infoportal-api-sdk'
+import {useFormContext} from '@/features/Form/Form'
+import {AppAvatar} from '@/shared'
+import {useFormSocket} from '@/features/Form/useFormSocket'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -54,6 +57,7 @@ export const DatabaseTableContent = ({
   const navigate = useNavigate()
   const ctx = useDatabaseKoboTableContext()
   const dialogs = useKoboDialogs()
+  const connectedUsers = useFormSocket({workspaceId, formId: ctx.form.id})
 
   const queryUpdate = useQueryAnswerUpdate()
 
@@ -213,7 +217,10 @@ export const DatabaseTableContent = ({
             {ctx.schema.helper.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
             {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 
-            <div style={{marginLeft: 'auto'}}>
+            <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>
+              {connectedUsers.length > 1 && connectedUsers.map(_ => (
+                <AppAvatar size={36} email={_} overlap borderColor="blue" key={_} />
+              ))}
               {ctx.form.kobo ? (
                 <IpIconBtn
                   disabled={!ctx.form.kobo.enketoUrl || ctx.form.deploymentStatus === 'archived'}

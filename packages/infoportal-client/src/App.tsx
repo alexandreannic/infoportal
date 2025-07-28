@@ -22,7 +22,6 @@ import {defaultTheme} from '@/core/theme'
 import {buildIpClient, IpClient} from 'infoportal-api-sdk'
 import {Outlet, useRouterState} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
-import {useWebsocket} from '@/core/Websocket.js'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -85,7 +84,7 @@ const AppWithConfig = () => {
 const AppWithBaseContext = () => {
   const settings = useAppSettings()
   const {m} = useI18n()
-  useWebsocket()
+  // useWebsocket()
   if (settings.conf.appOff) {
     return (
       <CenteredContent>

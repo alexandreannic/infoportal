@@ -17,6 +17,7 @@ import {databaseAccessRoute} from './Access/DatabaseAccess'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {useQueryPermission} from '@/core/query/useQueryPermission'
+import {useFormSocket} from '@/features/Form/useFormSocket'
 
 export const formRootRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -87,7 +88,6 @@ function Form() {
   }, [schema])
 
   useDefaultTabRedirect({workspaceId, formId, currentFullPath})
-
   const outlet = useMemo(() => {
     if (queryForm.isLoading || querySchema.isLoading || queryPermission.isLoading) {
       return <Page width="full" loading={true} />

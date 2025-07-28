@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express'
+import express, {NextFunction, Request, Response} from 'express'
 import bodyParser from 'body-parser'
 import {getRoutes} from './Routes.js'
 import {app} from '../index.js'
@@ -12,13 +12,13 @@ import {PrismaSessionStore} from '@quixo3/prisma-session-store'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import {duration} from '@axanc/ts-utils'
-import * as console from 'console'
 import {createExpressEndpoints} from '@ts-rest/express'
 import {ipContract} from 'infoportal-api-sdk'
-import {createServer} from 'http'
-import {AppWebsocket} from './Websocket.js'
 // import * as Sentry from '@sentry/node'
 // import sessionFileStore from 'session-file-store'
+import {Server as SocketIOServer} from 'socket.io'
+import {PermissionService} from '../feature/PermissionService.js'
+import {Socket} from './Socket.js'
 
 export class Server {
   constructor(
@@ -60,18 +60,32 @@ export class Server {
     }
   }
 
-  // readonly corsHeader = (req: Request, res: Response, next: NextFunction) => {
-  //   res.header('Access-Control-Allow-Origin', this.conf.cors.allowOrigin)
-  //   res.header('Access-Control-Allow-Headers', 'Authorization, Origin, X-Requested-With, Content-Type, Accept')
-  //   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-  //   res.header('Access-Control-Allow-Credentials', 'true')
-  //   next()
-  // }
-
   readonly start = () => {
     // new IpSentry(this.conf, app,)
     // this.server.use(Sentry.Handlers.requestHandler())
     // this.server.use(Sentry.Handlers.tracingHandler())
+
+    const sessionMiddleware = session({
+      secret: this.conf.sessionSecret,
+      resave: false,
+      saveUninitialized: false,
+      name: 'infoportal-session2',
+      // proxy: true,
+      unset: 'destroy',
+      store: new PrismaSessionStore(this.pgClient, {
+        checkPeriod: duration(1, 'day').toMs,
+        dbRecordIdIsSessionId: true,
+        dbRecordIdFunction: undefined,
+      }),
+      cookie: {
+        domain: undefined, //appConf.production ? '.drc.ngo' : undefined,
+        secure: this.conf.production,
+        // httpOnly: true,
+        sameSite: this.conf.production ? 'none' : undefined,
+        maxAge: duration(30, 'day').toMs,
+      },
+    })
+
     this.server.set('trust proxy', 1)
     // this.server.use(this.corsHeader)
     this.server.use(
@@ -83,43 +97,41 @@ export class Server {
     )
     // const sessionstore = sessionFileStore(session)
     this.server.use(cookieParser())
-    this.server.use(
-      session({
-        secret: appConf.sessionSecret,
-        resave: false,
-        saveUninitialized: false,
-        name: 'infoportal-session2',
-        // proxy: true,
-        unset: 'destroy',
-        store: new PrismaSessionStore(this.pgClient, {
-          checkPeriod: duration(1, 'day').toMs,
-          dbRecordIdIsSessionId: true,
-          dbRecordIdFunction: undefined,
-        }),
-        cookie: {
-          domain: undefined, //appConf.production ? '.drc.ngo' : undefined,
-          secure: appConf.production,
-          // httpOnly: true,
-          sameSite: appConf.production ? 'none' : undefined,
-          maxAge: duration(30, 'day').toMs,
-        },
-      }),
-    )
+    this.server.use(sessionMiddleware)
     this.server.use(bodyParser.json({limit: '512mb'}))
     this.server.use(bodyParser.urlencoded({extended: false}))
-    if (!appConf.production)
+    if (!this.conf.production)
       this.server.use((req, res, next) => {
         const delay = 400 + Math.random() * 200 // 500–1500ms delay
         setTimeout(next, delay)
       })
     const {tsRestRoutes, rawRoutes} = getRoutes(this.pgClient)
     this.server.use(rawRoutes)
-    createExpressEndpoints(ipContract, tsRestRoutes, this.server)
+    createExpressEndpoints(ipContract, tsRestRoutes, this.server, {logInitialization: false})
     // this.server.use(Sentry.Handlers.errorHandler())
     this.server.use(this.errorHandler)
     const httpServer = this.server.listen(this.conf.port, () => {
       this.log.info(`server start listening on port ${this.conf.port}`)
     })
-    new AppWebsocket(httpServer).init()
+    const io = new SocketIOServer(httpServer, {
+      cors: {
+        origin: this.conf.cors.allowOrigin,
+        credentials: true,
+      },
+    })
+    io.use((socket, next) => {
+      return sessionMiddleware(socket.request as Request, {} as Response, next as NextFunction)
+    })
+    io.use(async (socket, next) => {
+      try {
+        const req = socket.request as express.Request
+        const permission = new PermissionService(this.pgClient)
+        if (await permission.checkUserConnected(req)) next()
+      } catch (err: any) {
+        next(err)
+      }
+    })
+    new Socket(io)
+    // new AppWebsocket(httpServer).init()
   }
 }

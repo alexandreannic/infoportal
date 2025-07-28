@@ -11,10 +11,11 @@ import {genUUID, previewList} from '../../helper/Utils.js'
 import {Kobo, KoboSubmissionFormatter} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboMapper} from './KoboMapper.js'
-import {IpEvent} from 'infoportal-event'
+import {IpEvent} from 'infoportal-common'
 import {PrismaHelper} from '../../core/PrismaHelper.js'
 
 export type KoboInsert = {
+  id: Ip.SubmissionId
   formId: Ip.FormId
   koboSubmissionId: Kobo.SubmissionId
   // koboFormId: Kobo.FormId
@@ -75,6 +76,7 @@ export class KoboSyncServer {
     const answersUngrouped = KoboSubmissionFormatter.removePath(answers)
     const date = answersUngrouped.date ? new Date(answersUngrouped.date as number) : new Date(_submission_time)
     return {
+      id: SubmissionService.genId(),
       koboSubmissionId: '' + _id,
       // koboFormId: _xform_id_string,
       attachments: _attachments ?? [],
@@ -111,6 +113,7 @@ export class KoboSyncServer {
     connectedForms.map(_ => {
       const answers = KoboSyncServer.mapAnswer(_.id, _answer)
       return this.service.create({
+        formId: _.id,
         workspaceId: _.workspaceId as Ip.WorkspaceId,
         answers: answers as any,
       })

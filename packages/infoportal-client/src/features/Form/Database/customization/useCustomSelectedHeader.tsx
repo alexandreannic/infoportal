@@ -1,8 +1,9 @@
-import {ReactNode} from 'react'
+import React, {ReactNode} from 'react'
 import {IpBtn, Modal, Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Ip} from 'infoportal-api-sdk'
+import {Alert} from '@mui/material'
 
 export const useCustomSelectedHeader = ({
   formId,
@@ -17,6 +18,7 @@ export const useCustomSelectedHeader = ({
 }): ReactNode => {
   const {m} = useI18n()
   const query = useQueryAnswerUpdate()
+  console.log(query.remove.error)
   return (
     <>
       {permission.answers_canUpdate && (
@@ -32,7 +34,12 @@ export const useCustomSelectedHeader = ({
               .then(close)
           }
           title={m.confirmRemove}
-          content={<Txt color="hint">{m.confirmRemoveDesc}</Txt>}
+          content={
+            <>
+              {query.remove.error && <Alert color="error">{m.somethingWentWrong}</Alert>}
+              <Txt color="hint">{m.confirmRemoveDesc}</Txt>
+            </>
+          }
         >
           <IpBtn variant="contained" icon="delete">
             {m.deleteSelected}
