@@ -84,7 +84,7 @@ const createDarkShadows = (primaryColor: string): string[] => {
 }
 
 export const styleUtils = (t: Theme) => ({
-  backdropFilter: 'blur(20px)',
+  backdropFilter: 'blur(10px)',
   gridSpacing: 3 as any,
   fontSize: {
     big: t.typography.fontSize * 1.15,
@@ -98,6 +98,13 @@ export const styleUtils = (t: Theme) => ({
     return `${t.spacing(top)} ${t.spacing(right)} ${t.spacing(bottom)} ${t.spacing(left)}`
   },
   color: {
+    backgroundActive: {
+      background:
+        t.palette.mode === 'dark'
+          ? darken(alpha(t.palette.primary.dark, 0.4), .7)
+          : lighten(alpha(t.palette.primary.light, 0.9), 0.5),
+      backdropFilter: 'blur(6px)',
+    },
     toolbar: {
       default: {
         background: t.palette.mode === 'dark' ? t.palette.background.paper : t.palette.background.default, //'rgb(237, 242, 250)',
