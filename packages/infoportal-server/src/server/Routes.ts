@@ -143,8 +143,16 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const permission = new PermissionService(prisma, undefined, formAccess)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
+    const connectedUser = await permission.checkUserConnected(args.req)
+    if (!connectedUser) {
+      throw new HttpError.Forbidden('User not connected.')
+    }
     const meta: Meta | undefined = (args.req as any).tsRestRoute.metadata
-    if (meta) await permission.throwIfNoPermitted({req: args.req, permissions: meta.access})
+    if (meta) {
+      const permissions = meta.access
+      const hasPermission = await permission.hasPermission({req: args.req, permissions, connectedUser})
+      if (!hasPermission) throw new HttpError.Forbidden(`Permissions does not match`, {permissions})
+    }
     return args as any
   }
 

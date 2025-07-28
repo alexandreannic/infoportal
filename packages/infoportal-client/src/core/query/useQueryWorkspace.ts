@@ -2,6 +2,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {queryKeys} from '@/core/query/query.index'
 import {duration} from '@axanc/ts-utils'
+import {HttpError} from 'infoportal-api-sdk'
 
 export const useQueryWorkspace = {
   get,
@@ -16,6 +17,10 @@ function get() {
     staleTime: duration(20, 'minute'),
     queryKey: queryKeys.workspaces(),
     queryFn: () => apiv2.workspace.getMine(),
+    retry: (failureCount, error) => {
+      if (error instanceof HttpError.Forbidden) return false
+      return failureCount < 5
+    },
   })
 }
 

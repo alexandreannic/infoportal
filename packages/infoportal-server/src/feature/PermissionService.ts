@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {Request} from 'express'
 import {Ip, Permission} from 'infoportal-api-sdk'
-import {HttpError} from 'infoportal-common'
+import {HttpError} from 'infoportal-api-sdk'
 import {UserService} from './user/UserService.js'
 import {FormAccessService} from './form/access/FormAccessService.js'
 import {WorkspaceAccessService} from './workspace/WorkspaceAccessService.js'
@@ -13,21 +13,21 @@ export class PermissionService {
     private formAccess = new FormAccessService(prisma),
   ) {}
 
-  readonly throwIfNoPermitted = async ({
+  readonly hasPermission = async ({
     permissions,
     req,
+    connectedUser,
   }: {
+    connectedUser: Ip.User
     permissions?: Ip.Permission.Requirements
     req: Request
   }) => {
-    const connectedUser = await this.checkUserConnected(req)
-    const hasPermission = await this.checkPermissions({
+    return this.checkPermissions({
       workspaceId: req.params.workspaceId as Ip.WorkspaceId,
       formId: PermissionService.searchWhereIsFormId(req),
       user: connectedUser,
       permissions,
     })
-    if (!hasPermission) throw new HttpError.Forbidden(`Permissions does not match`, {permissions})
   }
 
   private static readonly searchWhereIsFormId = (req: Request) => {

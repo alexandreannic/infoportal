@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
@@ -13,6 +13,10 @@ export const useQueryPermission = {
 function useQueryPermissionGlobal() {
   const {apiv2} = useAppSettings()
   return useQuery({
+    retry: (failureCount, error) => {
+      if (error instanceof HttpError.Forbidden) return false
+      return failureCount < 5
+    },
     queryKey: queryKeys.permission.global(),
     queryFn: apiv2.permission.getMineGlobal,
     staleTime: duration(10, 'minute'),

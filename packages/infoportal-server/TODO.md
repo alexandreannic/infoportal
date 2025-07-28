@@ -1,3 +1,8 @@
+- Right now 3 requests are trigger to check loggin. 
+  It should be merged to avoid hitting the server for nothing especially when 403.
+  - /permission/me
+  - /workspace/me
+  - /me
 - Landing page
   - Realtime updates
   - Next generation of collection tools
