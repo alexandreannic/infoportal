@@ -84,6 +84,7 @@ const createDarkShadows = (primaryColor: string): string[] => {
 }
 
 export const styleUtils = (t: Theme) => ({
+  backdropFilter: 'blur(20px)',
   gridSpacing: 3 as any,
   fontSize: {
     big: t.typography.fontSize * 1.15,
@@ -403,7 +404,7 @@ export const muiTheme = ({
       MuiPaper: {
         styleOverrides: {
           root: ({theme}) => ({
-            backdropFilter: 'blur(20px)',
+            backdropFilter: styleUtils(theme).backdropFilter,
             background: theme.palette.background.paper,
           }),
         },
@@ -649,7 +650,7 @@ const tableTheme = (t: Theme) => ({
     // borderTop: `1px solid ${t.palette.divider}`,
   },
   '.table thead .td, .table thead .th': {
-    backdropFilter: 'blur(20px)',
+    backdropFilter: styleUtils(t).backdropFilter,
     background: styleUtils(t).color.toolbar.default.background,
   },
   '.td-center': {

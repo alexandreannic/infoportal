@@ -51,7 +51,7 @@ export const contractFormSubmission = c.router({
       formId: schema.formId,
     }),
     body: z.object({
-      answerIds: z.array(z.string()).min(1),
+      answerIds: z.array(schema.submissionId).min(1),
       status: z.enum(Obj.keys(Ip.Submission.Validation) as [Ip.Submission.Validation, ...Ip.Submission.Validation[]]),
     }),
     responses: {
@@ -71,7 +71,7 @@ export const contractFormSubmission = c.router({
       formId: schema.formId,
     }),
     body: z.object({
-      answerIds: z.array(z.string()).min(1),
+      answerIds: z.array(schema.submissionId).min(1),
     }),
     responses: {
       200: c.type<void>(),

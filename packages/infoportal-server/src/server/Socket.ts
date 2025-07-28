@@ -48,6 +48,12 @@ export class Socket {
     event.listen(IpEvent.SUBMISSION_EDITED, _ => {
       io.to(_.formId).emit(IpEvent.SUBMISSION_EDITED, _)
     })
+    event.listen(IpEvent.SUBMISSION_REMOVED, _ => {
+      io.to(_.formId).emit(IpEvent.SUBMISSION_REMOVED, _)
+    })
+    event.listen(IpEvent.SUBMISSION_EDITED_VALIDATION, _ => {
+      io.to(_.formId).emit(IpEvent.SUBMISSION_EDITED_VALIDATION, _)
+    })
     event.listen(IpEvent.SUBMISSION_NEW, _ => {
       io.to(_.formId).emit(IpEvent.SUBMISSION_NEW, _)
     })

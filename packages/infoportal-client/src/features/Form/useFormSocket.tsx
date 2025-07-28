@@ -3,10 +3,7 @@ import {useEffect, useRef, useState} from 'react'
 import {Socket} from 'socket.io-client'
 import {useQueryClient} from '@tanstack/react-query'
 import {IpEvent} from 'infoportal-common'
-import {getSchema} from '@/core/query/useQuerySchema'
 import {Ip} from 'infoportal-api-sdk'
-import {KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
-import {queryKeys} from '@/core/query/query.index'
 import {useQuerySubmission} from '@/core/query/useQuerySubmission'
 import {getAppSocket} from '@/core/socket'
 
@@ -30,7 +27,7 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceI
       setConnectedEmails(data)
     })
     socket.on(IpEvent.SUBMISSION_EDITED, data => {
-      useQuerySubmission.localUpdate({
+      useQuerySubmission.cacheUpdate({
         queryClient,
         formId,
         submissionIds: data.submissionIds,
@@ -39,24 +36,23 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceI
       })
     })
     socket.on(IpEvent.SUBMISSION_NEW, data => {
-      const schema = getSchema({formId, workspaceId, queryClient})
-      if (!schema) {
-        console.error('Cannot get schema from store.')
-        return
-      }
-      const mapped = KoboMapper.mapSubmissionBySchema(schema.helper.questionIndex, Ip.Submission.map(data.submission))
-      queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.answers(formId), (old = {data: [], total: 0}) => {
-        return {
-          total: old.total + 1,
-          data: [...old.data, mapped],
-        }
+      useQuerySubmission.cacheInsert({formId, workspaceId, queryClient, submission: data.submission})
+    })
+    socket.on(IpEvent.SUBMISSION_REMOVED, data => {
+      useQuerySubmission.cacheRemove({formId, workspaceId, queryClient, submissionIds: data.submissionIds})
+    })
+    socket.on(IpEvent.SUBMISSION_EDITED_VALIDATION, data => {
+      useQuerySubmission.cacheUpdateValidation({
+        formId,
+        queryClient,
+        submissionIds: data.submissionIds,
+        status: data.status,
       })
     })
 
     return () => {
       if (socket.connected) {
         socket.emit('unsubscribe', formId)
-        // socket.disconnect()
       }
     }
   }, [workspaceId, formId])

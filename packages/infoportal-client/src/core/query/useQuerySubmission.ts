@@ -2,7 +2,7 @@ import {QueryClient, useMutation, useQuery, useQueryClient} from '@tanstack/reac
 import {useAppSettings} from '../context/ConfigContext'
 import {KoboMapper} from '../sdk/server/kobo/KoboMapper'
 import {queryKeys} from './query.index'
-import {useQuerySchema} from './useQuerySchema'
+import {getSchema, useQuerySchema} from './useQuerySchema'
 import {duration} from '@axanc/ts-utils'
 import {Ip, Paginate} from 'infoportal-api-sdk'
 import {produce} from 'immer'
@@ -10,10 +10,81 @@ import {produce} from 'immer'
 export const useQuerySubmission = {
   search,
   submit,
-  localUpdate,
+  cacheUpdate,
+  cacheInsert,
+  cacheRemove,
+  cacheUpdateValidation,
 }
 
-function localUpdate({
+function cacheRemove({
+  formId,
+  queryClient,
+  submissionIds,
+}: {
+  submissionIds: Ip.SubmissionId[]
+  formId: Ip.FormId
+  workspaceId: Ip.WorkspaceId
+  queryClient: QueryClient
+}) {
+  queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.answers(formId), (old = {data: [], total: 0}) => {
+    const idsToDelete = new Set(submissionIds)
+    const newData = old.data.filter(sub => !idsToDelete.has(sub.id))
+    return {
+      data: newData,
+      total: newData.length,
+    }
+  })
+}
+
+function cacheInsert({
+  formId,
+  workspaceId,
+  queryClient,
+  submission,
+}: {
+  formId: Ip.FormId
+  workspaceId: Ip.WorkspaceId
+  queryClient: QueryClient
+  submission: Ip.Submission
+}) {
+  const schema = getSchema({formId, workspaceId, queryClient})
+  if (!schema) {
+    console.error('Cannot get schema from store.')
+    return
+  }
+  const mapped = KoboMapper.mapSubmissionBySchema(schema.helper.questionIndex, Ip.Submission.map(submission))
+  queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.answers(formId), (old = {data: [], total: 0}) => {
+    return {
+      total: old.total + 1,
+      data: [...old.data, mapped],
+    }
+  })
+}
+
+function cacheUpdateValidation({
+  queryClient,
+  formId,
+  submissionIds,
+  status,
+}: {
+  status: Ip.Submission.Validation
+  queryClient: QueryClient
+  formId: Ip.FormId
+  submissionIds: Ip.SubmissionId[]
+}) {
+  queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.answers(formId), (old = {data: [], total: 0}) => {
+    return produce(old ?? {data: [], total: 0}, draft => {
+      const idsToUpdate = new Set(submissionIds)
+      for (const submission of draft.data) {
+        if (idsToUpdate.has(submission.id)) {
+          submission.validationStatus = status
+        }
+      }
+    })
+  })
+}
+
+function cacheUpdate({
   queryClient,
   formId,
   submissionIds,

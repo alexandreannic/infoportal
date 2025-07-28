@@ -7,6 +7,8 @@ export enum IpEvent {
   // KOBO_VALIDATION_EDITED_FROM_KOBO = 'KOBO_VALIDATION_EDITED_FROM_KOBO',
   SUBMISSION_NEW = 'SUBMISSION_NEW',
   SUBMISSION_EDITED = 'SUBMISSION_EDITED',
+  SUBMISSION_EDITED_VALIDATION = 'SUBMISSION_EDITED_VALIDATION',
+  SUBMISSION_REMOVED = 'SUBMISSION_REMOVED',
 }
 
 type IpEventParamMap = {
@@ -14,6 +16,8 @@ type IpEventParamMap = {
   [IpEvent.KOBO_FORM_SYNCHRONIZED]: IpEventParams.KoboFormSync
   [IpEvent.SUBMISSION_NEW]: IpEventParams.NewSubmission
   [IpEvent.SUBMISSION_EDITED]: IpEventParams.SubmissionEdited
+  [IpEvent.SUBMISSION_EDITED_VALIDATION]: IpEventParams.SubmissionEditedValidation
+  [IpEvent.SUBMISSION_REMOVED]: IpEventParams.SubmissionRemoved
 }
 
 type Emit = <T extends keyof IpEventParamMap>(event: T, params: IpEventParamMap[T]) => void

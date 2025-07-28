@@ -11,10 +11,15 @@ export namespace IpEventParams {
     total?: number
   }
 
-  export interface KoboValidationEdited {
+  export interface SubmissionRemoved {
     formId: Ip.FormId
-    answerIds: Ip.SubmissionId[]
-    status?: Ip.Submission.Validation
+    submissionIds: Ip.SubmissionId[]
+  }
+
+  export interface SubmissionEditedValidation {
+    formId: Ip.FormId
+    submissionIds: Ip.SubmissionId[]
+    status: Ip.Submission.Validation
     index?: number
     total?: number
   }
