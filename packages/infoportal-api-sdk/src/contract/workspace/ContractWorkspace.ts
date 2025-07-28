@@ -1,7 +1,7 @@
 import {initContract} from '@ts-rest/core'
 import {Ip} from '../../core/Types.js'
-import {mapClientResponse, TsRestClient} from '../../core/IpClient.js'
-import {makeMeta} from '../../core/Schema.js'
+import {map200, map204, TsRestClient} from '../../core/IpClient.js'
+import {makeMeta, schema} from '../../core/Schema.js'
 
 const c = initContract()
 
@@ -44,7 +44,7 @@ export const workspaceContract = c.router({
     method: 'DELETE',
     path: `/workspace/:id`,
     pathParams: c.type<{id: Ip.Uuid}>(),
-    responses: {200: c.type<void>()},
+    responses: {204: schema.emptyResult},
     metadata: makeMeta({
       access: {
         workspace: ['canDelete'],
@@ -65,13 +65,12 @@ export const workspaceClient = (client: TsRestClient) => {
     getMine: () =>
       client.workspace
         .getMine()
-        .then(mapClientResponse)
+        .then(map200)
         .then(_ => _.map(mapWorkspace)),
-    checkSlug: (slug: string) => client.workspace.checkSlug({body: {slug}}).then(mapClientResponse),
-    create: (body: Ip.Workspace.Payload.Create) =>
-      client.workspace.create({body}).then(mapClientResponse).then(mapWorkspace),
+    checkSlug: (slug: string) => client.workspace.checkSlug({body: {slug}}).then(map200),
+    create: (body: Ip.Workspace.Payload.Create) => client.workspace.create({body}).then(map200).then(mapWorkspace),
     update: ({id, ...body}: Ip.Workspace.Payload.Update) =>
-      client.workspace.update({params: {id}, body}).then(mapClientResponse).then(mapWorkspace),
-    remove: (id: Ip.Uuid) => client.workspace.remove({params: {id}}).then(mapClientResponse),
+      client.workspace.update({params: {id}, body}).then(map200).then(mapWorkspace),
+    remove: (id: Ip.Uuid) => client.workspace.remove({params: {id}}).then(map204),
   }
 }

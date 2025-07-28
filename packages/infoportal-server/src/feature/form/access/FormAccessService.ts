@@ -157,15 +157,13 @@ export class FormAccessService {
     })
     if (!access) throw new AppError.NotFound()
     if (access.email === deletedByEmail) throw new AppError.Forbidden('Cannot delete yourself')
-    return this.prisma.formAccess
-      .delete({
-        select: {
-          id: true,
-        },
-        where: {
-          id,
-        },
-      })
-      .then(_ => _.id as Ip.Form.AccessId)
+    await this.prisma.formAccess.delete({
+      select: {
+        id: true,
+      },
+      where: {
+        id,
+      },
+    })
   }
 }

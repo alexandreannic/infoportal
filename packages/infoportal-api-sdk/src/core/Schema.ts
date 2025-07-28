@@ -1,5 +1,6 @@
 import {z} from 'zod'
 import {Ip} from './Types.js'
+import {initContract} from '@ts-rest/core'
 
 const createZodEnumFromObject = <T extends Record<string, string>>(obj: T) => {
   const values = Object.values(obj)
@@ -20,6 +21,7 @@ export const schema = (() => {
   const serverId = z.string() as unknown as z.ZodType<Ip.ServerId>
   const formAccessId = z.string() as unknown as z.ZodType<Ip.Form.AccessId>
   const submissionId = z.string() as unknown as z.ZodType<Ip.SubmissionId>
+  const emptyResult = initContract().type<void>()
   return {
     submissionId,
     workspaceId,
@@ -28,5 +30,6 @@ export const schema = (() => {
     versionId,
     serverId,
     formAccessId,
+    emptyResult,
   }
 })()

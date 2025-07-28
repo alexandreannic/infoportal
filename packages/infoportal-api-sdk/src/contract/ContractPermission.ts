@@ -1,7 +1,7 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {schema} from '../core/Schema.js'
-import {mapClientResponse, TsRestClient} from '../core/IpClient.js'
+import {map200, TsRestClient} from '../core/IpClient.js'
 import {Ip} from '../core/Types.js'
 
 const c = initContract()
@@ -41,10 +41,10 @@ export const permissionContract = c.router({
 
 export const permissionClient = (client: TsRestClient) => {
   return {
-    getMineGlobal: () => client.permission.getMineGlobal().then(mapClientResponse),
+    getMineGlobal: () => client.permission.getMineGlobal().then(map200),
     getMineByWorkspace: (params: {workspaceId: Ip.WorkspaceId}) =>
-      client.permission.getMineByWorkspace({params}).then(mapClientResponse),
+      client.permission.getMineByWorkspace({params}).then(map200),
     getMineByForm: (params: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) =>
-      client.permission.getMineByForm({params}).then(mapClientResponse),
+      client.permission.getMineByForm({params}).then(map200),
   }
 }

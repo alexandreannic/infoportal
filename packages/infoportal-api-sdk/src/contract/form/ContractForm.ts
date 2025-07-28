@@ -2,7 +2,7 @@ import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {makeMeta, schema} from '../../core/Schema.js'
 import {Ip} from '../../core/Types.js'
-import {mapClientResponse, TsRestClient} from '../../core/IpClient.js'
+import {map200, map204, TsRestClient} from '../../core/IpClient.js'
 
 const c = initContract()
 
@@ -126,7 +126,7 @@ export const formContract = c.router({
       formId: schema.formId,
     }),
     responses: {
-      200: z.number(),
+      204: schema.emptyResult,
     },
     metadata: makeMeta({
       access: {
@@ -165,42 +165,42 @@ export const mapFormNullable = (_?: Ip.Form): undefined | Ip.Form => {
 export const formClient = (client: TsRestClient) => {
   return {
     refreshAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
-      return client.form.refreshAll({params: {workspaceId}, body: undefined}).then(mapClientResponse)
+      return client.form.refreshAll({params: {workspaceId}, body: undefined}).then(map200)
     },
 
     create: ({workspaceId, ...body}: {workspaceId: Ip.WorkspaceId; name: string; category?: string}) => {
-      return client.form.create({params: {workspaceId}, body}).then(mapClientResponse).then(mapForm)
+      return client.form.create({params: {workspaceId}, body}).then(map200).then(mapForm)
     },
 
     remove: ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
-      return client.form.remove({params: {workspaceId, formId}}).then(mapClientResponse)
+      return client.form.remove({params: {workspaceId, formId}}).then(map204)
     },
 
     get: ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
-      return client.form.get({params: {workspaceId, formId}}).then(mapClientResponse).then(mapFormNullable)
+      return client.form.get({params: {workspaceId, formId}}).then(map200).then(mapFormNullable)
     },
 
     getAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
       return client.form
         .getAll({params: {workspaceId}})
-        .then(mapClientResponse)
+        .then(map200)
         .then(_ => _.map(mapForm))
     },
 
     getSchemaByVersion: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId; versionId: Ip.Form.VersionId}) => {
-      return client.form.getSchemaByVersion({params}).then(mapClientResponse)
+      return client.form.getSchemaByVersion({params}).then(map200)
     },
 
     getSchema: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
-      return client.form.getSchema({params}).then(mapClientResponse)
+      return client.form.getSchema({params}).then(map200)
     },
 
     update: ({workspaceId, formId, ...body}: Ip.Form.Payload.Update): Promise<Ip.Form> => {
-      return client.form.update({params: {workspaceId, formId}, body}).then(mapClientResponse).then(mapForm)
+      return client.form.update({params: {workspaceId, formId}, body}).then(map200).then(mapForm)
     },
 
     disconnectFromKobo: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}): Promise<Ip.Form> => {
-      return client.form.disconnectFromKobo({params, body: undefined}).then(mapClientResponse).then(mapForm)
+      return client.form.disconnectFromKobo({params, body: undefined}).then(map200).then(mapForm)
     },
   }
 }

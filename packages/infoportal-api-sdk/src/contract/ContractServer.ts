@@ -2,7 +2,7 @@ import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {makeMeta, schema} from '../core/Schema.js'
 import {Ip} from '../core/Types.js'
-import {mapClientResponse, TsRestClient} from '../core/IpClient.js'
+import {map200, map204, TsRestClient} from '../core/IpClient.js'
 
 const c = initContract()
 
@@ -65,7 +65,7 @@ export const serverContract = c.router({
     }),
     path: `/:workspaceId/kobo/server/:id`,
     responses: {
-      200: c.type<void>(),
+      204: schema.emptyResult,
     },
     metadata: makeMeta({
       access: {
@@ -78,7 +78,7 @@ export const serverContract = c.router({
 export const serverClient = (client: TsRestClient) => {
   return {
     get: (params: {id: Ip.ServerId; workspaceId: Ip.WorkspaceId}) => {
-      return client.server.get({params}).then(mapClientResponse)
+      return client.server.get({params}).then(map200)
     },
 
     getAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
@@ -86,7 +86,7 @@ export const serverClient = (client: TsRestClient) => {
         .getAll({
           params: {workspaceId},
         })
-        .then(mapClientResponse)
+        .then(map200)
     },
 
     create: ({workspaceId, ...body}: Ip.Server.Payload.Create) => {
@@ -95,7 +95,7 @@ export const serverClient = (client: TsRestClient) => {
           params: {workspaceId},
           body,
         })
-        .then(mapClientResponse)
+        .then(map200)
     },
 
     delete: ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.ServerId}) => {
@@ -103,7 +103,7 @@ export const serverClient = (client: TsRestClient) => {
         .delete({
           params: {workspaceId, id},
         })
-        .then(mapClientResponse)
+        .then(map204)
     },
   }
 }

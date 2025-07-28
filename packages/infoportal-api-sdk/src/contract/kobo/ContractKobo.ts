@@ -2,7 +2,7 @@ import {z} from 'zod'
 import {makeMeta, schema} from '../../core/Schema.js'
 import {Ip} from '../../core/Types.js'
 import {initContract} from '@ts-rest/core'
-import {mapClientResponse, TsRestClient} from '../../core/IpClient.js'
+import {map200, TsRestClient} from '../../core/IpClient.js'
 import {Kobo} from 'kobo-sdk'
 import {mapForm} from '../form/ContractForm.js'
 
@@ -37,7 +37,7 @@ export const koboClient = (client: TsRestClient) => {
       serverId: Ip.ServerId
       uid: Kobo.FormId
     }) => {
-      return client.kobo.importFromKobo({params: {workspaceId}, body}).then(mapClientResponse).then(mapForm)
+      return client.kobo.importFromKobo({params: {workspaceId}, body}).then(map200).then(mapForm)
     },
   }
 }

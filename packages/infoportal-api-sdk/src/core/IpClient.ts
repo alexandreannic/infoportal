@@ -38,17 +38,21 @@ export const buildIpClient = (baseUrl: string) => {
   }
 }
 
-type TsRestResponse<T> =
+type TsRestResponse<S extends HTTPStatusCode, T> =
   | {
-      status: 200
+      status: S
       body: T
     }
   | {
-      status: Exclude<HTTPStatusCode, 200>
+      status: Exclude<HTTPStatusCode, S>
       body?: unknown
     }
 
-export const mapClientResponse = <T>(res: TsRestResponse<T>): T => {
-  if (res.status !== 200) throw new Error('Unknown error')
-  return res.body as T
+const map = (res: any) => {
+  if (res.status === 200) return res.body
+  if (res.status === 204) return undefined
+  throw new Error('Unknown error')
 }
+export const map200 = <T>(res: TsRestResponse<200, T>): T => map(res)
+
+export const map204 = <T>(res: TsRestResponse<204, T>): T => map(res)

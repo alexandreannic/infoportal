@@ -96,8 +96,18 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     }
   }
 
-  const ok = <T>(body: T): {status: SuccessfulHttpStatusCode; body: T} => {
-    return {status: 200, body}
+  const ok200 = <T>(body: T): {status: SuccessfulHttpStatusCode; body: T} => {
+    return {
+      status: 200,
+      body: body as T,
+    }
+  }
+
+  const ok204 = <T>(body: T): {status: 204; body: undefined} => {
+    return {
+      status: 204,
+      body: {} as unknown as undefined,
+    }
   }
 
   type ErrBody = {message: string; data?: object}
@@ -109,7 +119,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const okOrNotFound = <T>(
     body: T,
   ): {status: SuccessfulHttpStatusCode; body: T} | {status: ErrorHttpStatusCode; body: ErrBody} => {
-    return body ? ok(body) : notFound()
+    return body ? ok200(body) : notFound()
   }
 
   const handleError = (e: Error): {status: ErrorHttpStatusCode; body: ErrBody} => {
@@ -154,33 +164,33 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       getMine: _ =>
         auth2(_)
           .then(({req}) => workspace.getByUser(req.session.app.user.email))
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       checkSlug: _ =>
         auth2(_)
           .then(({body}) => workspace.checkSlug(body.slug))
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       create: _ =>
         auth2(_)
           .then(({body, req}) => workspace.create(body, req.session.app.user))
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       update: _ =>
         auth2(_)
           .then(({body, params}) => workspace.update(params.id, body))
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       remove: _ =>
         auth2(_)
           .then(({params}) => workspace.remove(params.id))
-          .then(ok)
+          .then(ok204)
           .catch(handleError),
       access: {
         create: _ =>
           auth2(_)
             .then(({body, req}) => workspaceAccess.create(body, req.session.app.user.email))
-            .then(ok)
+            .then(ok200)
             .catch(handleError),
       },
     },
@@ -192,7 +202,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               user: req.session.app?.user,
             }),
           )
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       getMineByWorkspace: _ =>
         auth2(_)
@@ -202,7 +212,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               ...params,
             }),
           )
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       getMineByForm: _ =>
         auth2(_)
@@ -212,24 +222,24 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               ...params,
             }),
           )
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
     },
     server: {
       delete: _ =>
         auth2(_)
           .then(({params}) => server.delete({id: params.id}))
-          .then(ok)
+          .then(ok204)
           .catch(handleError),
       create: _ =>
         auth2(_)
           .then(({params, body}) => server.create({workspaceId: params.workspaceId, ...body}))
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       getAll: _ =>
         auth2(_)
           .then(({params}) => server.getAll(params))
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       get: _ =>
         auth2(_)
@@ -247,7 +257,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               workspaceId: params.workspaceId,
             }),
           )
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
     },
     submission: {
@@ -258,28 +268,28 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             ...body,
             author: req.session.app?.user?.email,
           })
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       updateAnswers: _ =>
         auth2(_)
           .then(({req, params, body}) =>
             formSubmission.updateAnswers({...body, ...params, authorEmail: req.session.app?.user.email!}),
           )
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       updateValidation: _ =>
         auth2(_)
           .then(({req, params, body}) =>
             formSubmission.updateValidation({...body, ...params, authorEmail: req.session.app?.user.email!}),
           )
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       remove: _ =>
         auth2(_)
           .then(({req, params, body}) =>
             formSubmission.deleteAnswers({...body, ...params, authorEmail: req.session.app?.user.email!}),
           )
-          .then(ok)
+          .then(ok204)
           .catch(handleError),
       search: _ =>
         auth2(_)
@@ -290,30 +300,30 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               user: req.session.app.user,
             }),
           )
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
     },
     form: {
       disconnectFromKobo: _ =>
         auth2(_)
           .then(({params}) => form.disconnectFromKobo(params))
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       update: _ =>
         auth2(_)
           .then(({params, body}) => form.update({...params, ...body}))
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       remove: _ =>
         auth2(_)
           .then(({params}) => form.remove(params.formId))
-          .then(ok)
+          .then(ok204)
           .catch(handleError),
       get: ({params}) => form.get(params.formId).then(okOrNotFound).catch(handleError),
       getAll: _ =>
         auth2(_)
           .then(({params}) => form.getAll({wsId: params.workspaceId}))
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       create: _ =>
         auth2(_).then(({req, body, params}) =>
@@ -323,7 +333,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               workspaceId: params.workspaceId,
               ...body,
             })
-            .then(ok)
+            .then(ok200)
             .catch(handleError),
         ),
       refreshAll: _ =>
@@ -334,41 +344,41 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               wsId: params.workspaceId,
             }),
           )
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
-      getSchema: ({params}) => form.getSchema({formId: params.formId}).then(ok).catch(handleError),
+      getSchema: ({params}) => form.getSchema({formId: params.formId}).then(ok200).catch(handleError),
       getSchemaByVersion: _ =>
         auth2(_)
           .then(({params}) => form.getSchemaByVersion({formId: params.formId, versionId: params.versionId}))
-          .then(ok)
+          .then(ok200)
           .catch(handleError),
       access: {
         create: _ =>
           auth2(_)
             .then(({params, body}) => formAccess.create({...params, ...body}))
-            .then(ok)
+            .then(ok200)
             .catch(handleError),
         update: _ =>
           auth2(_)
             .then(({params, body}) => formAccess.update({...params, ...body}))
-            .then(ok)
+            .then(ok200)
             .catch(handleError),
         remove: _ =>
           auth2(_)
             .then(({req, params}) => formAccess.remove({id: params.id, deletedByEmail: req.session.app.user.email}))
-            .then(ok)
+            .then(ok204)
             .catch(handleError),
         search: _ =>
           auth2(_)
             .then(({params, body, req}) => formAccess.search({formId: body.formId, workspaceId: params.workspaceId}))
-            .then(ok)
+            .then(ok200)
             .catch(handleError),
         searchMine: _ =>
           auth2(_)
             .then(({params, req, body}) =>
               formAccess.search({formId: body.formId, workspaceId: params.workspaceId, user: req.session.app.user}),
             )
-            .then(ok)
+            .then(ok200)
             .catch(handleError),
       },
       version: {
@@ -378,7 +388,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             auth2(_)
               .then(ensureFile)
               .then(({file}) => formVersion.validateAndParse(file.path))
-              .then(ok)
+              .then(ok200)
               .catch(handleError),
         },
         uploadXlsForm: {
@@ -394,18 +404,18 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
                   message: body.message,
                 }),
               )
-              .then(ok)
+              .then(ok200)
               .catch(handleError),
         },
         getByFormId: _ =>
           auth2(_)
             .then(({params}) => formVersion.getVersions({formId: params.formId}))
-            .then(ok)
+            .then(ok200)
             .catch(handleError),
         deployLast: _ =>
           auth2(_)
             .then(({req, params}) => formVersion.deployLastDraft({formId: params.formId}))
-            .then(ok)
+            .then(ok200)
             .catch(handleError),
       },
     },

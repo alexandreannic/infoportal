@@ -152,7 +152,7 @@ export class FormService {
     return update
   }
 
-  readonly remove = async (id: Ip.FormId): Promise<number> => {
+  readonly remove = async (id: Ip.FormId): Promise<void> => {
     await Promise.any([
       this.prisma.databaseView.deleteMany({where: {databaseId: id}}),
       this.prisma.formSubmission.deleteMany({where: {formId: id}}),
@@ -160,7 +160,6 @@ export class FormService {
       this.prisma.formAccess.deleteMany({where: {formId: id}}),
     ])
     await this.prisma.form.delete({where: {id}})
-    return 1
   }
 
   readonly getAll = async ({wsId}: {wsId: Ip.WorkspaceId}): Promise<Ip.Form[]> => {

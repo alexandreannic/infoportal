@@ -2,7 +2,7 @@ import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {makeMeta, schema} from '../../core/Schema.js'
 import {Ip} from '../../core/Types.js'
-import {mapClientResponse, TsRestClient} from '../../core/IpClient.js'
+import {map200, map204, TsRestClient} from '../../core/IpClient.js'
 import {Paginate} from '../../core/Paginate.js'
 import {KeyOf, map, Obj} from '@axanc/ts-utils'
 import {endOfDay, startOfDay} from 'date-fns'
@@ -35,7 +35,7 @@ export const contractFormSubmission = c.router({
       answer: z.any().nullable(),
     }),
     responses: {
-      200: c.type<void>(),
+      204: schema.emptyResult,
     },
     metadata: makeMeta({
       access: {
@@ -55,7 +55,7 @@ export const contractFormSubmission = c.router({
       status: z.enum(Obj.keys(Ip.Submission.Validation) as [Ip.Submission.Validation, ...Ip.Submission.Validation[]]),
     }),
     responses: {
-      200: c.type<void>(),
+      204: schema.emptyResult,
     },
     metadata: makeMeta({
       access: {
@@ -74,7 +74,7 @@ export const contractFormSubmission = c.router({
       answerIds: z.array(schema.submissionId).min(1),
     }),
     responses: {
-      200: c.type<void>(),
+      204: schema.emptyResult,
     },
     metadata: makeMeta({
       access: {
@@ -107,7 +107,7 @@ export const formSubmissionClient = (client: TsRestClient) => {
           params,
           body: params,
         })
-        .then(mapClientResponse)
+        .then(map200)
         .then(Ip.Submission.map),
     search: ({workspaceId, formId, ...body}: Ip.Submission.Payload.Search) =>
       client.submission
@@ -122,7 +122,7 @@ export const formSubmissionClient = (client: TsRestClient) => {
             },
           },
         })
-        .then(mapClientResponse)
+        .then(map200)
         .then(Paginate.map(Ip.Submission.map)),
 
     remove: async ({
@@ -139,7 +139,7 @@ export const formSubmissionClient = (client: TsRestClient) => {
           params: {workspaceId, formId},
           body: {answerIds},
         })
-        .then(mapClientResponse)
+        .then(map204)
     },
 
     updateValidation: ({workspaceId, formId, answerIds, status}: Ip.Submission.Payload.UpdateValidation) => {
@@ -151,7 +151,7 @@ export const formSubmissionClient = (client: TsRestClient) => {
             status,
           },
         })
-        .then(mapClientResponse)
+        .then(map204)
     },
 
     updateAnswers: <T extends Record<string, any>, K extends KeyOf<T>>({
@@ -170,7 +170,7 @@ export const formSubmissionClient = (client: TsRestClient) => {
             answer,
           },
         })
-        .then(mapClientResponse)
+        .then(map204)
     },
   }
 }

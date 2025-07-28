@@ -2,7 +2,7 @@ import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {makeMeta, schema} from '../../core/Schema.js'
 import {Ip} from '../../core/Types.js'
-import {mapClientResponse, TsRestClient} from '../../core/IpClient.js'
+import {map200, map204, TsRestClient} from '../../core/IpClient.js'
 
 const c = initContract()
 
@@ -42,7 +42,7 @@ export const formAccessContract = c.router({
     path: `/:workspaceId/form/:formId/access/:id`,
     pathParams: c.type<Ip.Form.Access.Payload.PathParams & {id: Ip.Form.AccessId}>(),
     responses: {
-      200: schema.formAccessId,
+      204: schema.emptyResult,
     },
     metadata: makeMeta({
       access: {
@@ -97,25 +97,25 @@ export const formAccessClient = (client: TsRestClient) => {
     create: ({workspaceId, formId, ...body}: Ip.Form.Access.Payload.Create) =>
       client.form.access
         .create({params: {workspaceId, formId}, body})
-        .then(mapClientResponse)
+        .then(map200)
         .then(_ => _.map(mapFormAccess)),
 
     update: ({workspaceId, id, formId, ...body}: Ip.Form.Access.Payload.Update) =>
-      client.form.access.update({params: {workspaceId, formId, id}, body}).then(mapClientResponse).then(mapFormAccess),
+      client.form.access.update({params: {workspaceId, formId, id}, body}).then(map200).then(mapFormAccess),
 
     remove: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId; id: Ip.Form.AccessId}) =>
-      client.form.access.remove({params}).then(mapClientResponse),
+      client.form.access.remove({params}).then(map204),
 
     search: ({workspaceId, formId}: {formId?: Ip.FormId; workspaceId: Ip.WorkspaceId}) =>
       client.form.access
         .search({body: {formId}, params: {workspaceId}})
-        .then(mapClientResponse)
+        .then(map200)
         .then(_ => _.map(mapFormAccess)),
 
     searchMine: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) =>
       client.form.access
         .searchMine({body: {}, params: {workspaceId}})
-        .then(mapClientResponse)
+        .then(map200)
         .then(_ => _.map(mapFormAccess)),
   }
 }

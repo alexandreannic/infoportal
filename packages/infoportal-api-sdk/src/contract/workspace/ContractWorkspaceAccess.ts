@@ -1,6 +1,6 @@
 import {initContract} from '@ts-rest/core'
 import {Ip} from '../../core/Types.js'
-import {mapClientResponse, TsRestClient} from '../../core/IpClient.js'
+import {map200, TsRestClient} from '../../core/IpClient.js'
 import {makeMeta} from '../../core/Schema.js'
 
 const c = initContract()
@@ -29,6 +29,6 @@ export const mapWorkspaceAccess = (u: Ip.Workspace.Access): Ip.Workspace.Access 
 export const workspaceAccessClient = (client: TsRestClient) => {
   return {
     create: (body: Ip.Workspace.Access.Payload.Create) =>
-      client.workspace.access.create({body}).then(mapClientResponse).then(mapWorkspaceAccess),
+      client.workspace.access.create({body}).then(map200).then(mapWorkspaceAccess),
   }
 }

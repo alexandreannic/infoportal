@@ -2,7 +2,7 @@ import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {Ip} from '../../core/Types.js'
 import {makeMeta, schema} from '../../core/Schema.js'
-import {mapClientResponse, TsRestClient} from '../../core/IpClient.js'
+import {map200, TsRestClient} from '../../core/IpClient.js'
 
 const c = initContract()
 
@@ -109,7 +109,7 @@ export const formVersionClient = (client: TsRestClient) => {
           },
           body: {file: xlsFile},
         })
-        .then(mapClientResponse)
+        .then(map200)
     },
 
     uploadXlsForm: ({
@@ -131,7 +131,7 @@ export const formVersionClient = (client: TsRestClient) => {
           params: {formId, workspaceId},
           body: formData,
         })
-        .then(mapClientResponse)
+        .then(map200)
     },
 
     getByFormId: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) => {
@@ -139,7 +139,7 @@ export const formVersionClient = (client: TsRestClient) => {
         .getByFormId({
           params: {formId, workspaceId},
         })
-        .then(mapClientResponse)
+        .then(map200)
     },
 
     deployLast: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) => {
@@ -147,7 +147,7 @@ export const formVersionClient = (client: TsRestClient) => {
         .deployLast({
           params: {workspaceId, formId},
         })
-        .then(mapClientResponse)
+        .then(map200)
     },
   }
 }
