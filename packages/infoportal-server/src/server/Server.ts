@@ -4,16 +4,14 @@ import {getRoutes} from './Routes.js'
 import {app} from '../index.js'
 import {appConf, AppConf} from '../core/conf/AppConf.js'
 import {genUUID} from '../helper/Utils.js'
-import {HttpError} from './controller/Controller.js'
+import {HttpError, ipContract} from 'infoportal-api-sdk'
 import {PrismaClient} from '@prisma/client'
 import session from 'express-session'
-import {AppError} from '../helper/Errors.js'
 import {PrismaSessionStore} from '@quixo3/prisma-session-store'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import {duration} from '@axanc/ts-utils'
 import {createExpressEndpoints} from '@ts-rest/express'
-import {ipContract} from 'infoportal-api-sdk'
 // import * as Sentry from '@sentry/node'
 // import sessionFileStore from 'session-file-store'
 import {Server as SocketIOServer} from 'socket.io'
@@ -32,12 +30,12 @@ export class Server {
   readonly errorHandler = (err: HttpError, req: Request, res: Response, next: (err?: any) => void) => {
     const errorId = genUUID().split('-')[0]
     try {
-      if (err instanceof AppError.Forbidden) {
+      if (err instanceof HttpError.Forbidden) {
         res.status(401).json({
           data: err.message,
           errorId,
         })
-      } else if (err instanceof AppError.NotFound) {
+      } else if (err instanceof HttpError.NotFound) {
         res.status(404).json({
           data: err.message,
           errorId,

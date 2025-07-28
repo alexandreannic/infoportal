@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express'
-import {AppError} from '../../../helper/Errors.js'
+import {HttpError} from 'infoportal-api-sdk'
 import {PrismaClient} from '@prisma/client'
 import {SubmissionImportService} from '../../../feature/form/submission/SubmissionImportService.js'
 
@@ -11,7 +11,7 @@ export class ControllerKoboApiXlsImport {
 
   readonly handleFileUpload = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file) {
-      return next(new AppError.NoFileUploaded('No file was uploaded'))
+      return next(new HttpError.NoFileUploaded('No file was uploaded'))
     }
     const formId: string = req.params.formId
     const action = req.query.action

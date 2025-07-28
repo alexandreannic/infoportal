@@ -1,7 +1,7 @@
 import {duration, seq} from '@axanc/ts-utils'
 import {KoboServer, PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../index.js'
-import {AppError} from '../../helper/Errors.js'
+import {HttpError} from 'infoportal-api-sdk'
 import {UUID} from 'infoportal-common'
 import {Kobo, KoboClient} from 'kobo-sdk'
 
@@ -71,7 +71,7 @@ export class KoboSdkGenerator {
   private readonly getServerId = async (formId: Kobo.FormId): Promise<UUID> => {
     return await this.getServerIndex()
       .then(_ => _[formId])
-      .then(AppError.throwNotFoundIfUndefined(`No serverId for form ${formId}`))
+      .then(HttpError.throwNotFoundIfUndefined(`No serverId for form ${formId}`))
   }
 
   private readonly buildSdk = (server: KoboServer): KoboClient => {

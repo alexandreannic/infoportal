@@ -5,7 +5,7 @@ import {FormAccessService} from '../access/FormAccessService.js'
 import {app, AppCacheKey} from '../../../index.js'
 import {appConf} from '../../../core/conf/AppConf.js'
 import {SubmissionHistoryService} from '../history/SubmissionHistoryService.js'
-import {AppError} from '../../../helper/Errors.js'
+import {HttpError} from 'infoportal-api-sdk'
 import {genUUID, Util} from '../../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip, Paginate} from 'infoportal-api-sdk'
@@ -170,8 +170,8 @@ export class SubmissionService {
   ): Promise<Ip.Submission> => {
     const {formId, workspaceId} = props
     const form = await this.form.get(formId)
-    if (!form) throw new AppError.NotFound(`Form ${formId} does not exists.`)
-    if (form.kobo) throw new AppError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
+    if (!form) throw new HttpError.NotFound(`Form ${formId} does not exists.`)
+    if (form.kobo) throw new HttpError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
     return this.create({
       workspaceId,
       formId,
@@ -220,7 +220,7 @@ export class SubmissionService {
 
   private static readonly safeIds = (ids: string[]): string[] => {
     return ids.map(_ => {
-      if (!/^[a-zA-Z0-9_-]{10}$/.test(_)) throw new AppError.WrongFormat(`Invalid id ${_}`)
+      if (!/^[a-zA-Z0-9_-]{10}$/.test(_)) throw new HttpError.WrongFormat(`Invalid id ${_}`)
       return `'${_}'`
     })
   }

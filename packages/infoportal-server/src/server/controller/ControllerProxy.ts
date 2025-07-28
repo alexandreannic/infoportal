@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
 import {ProxyService} from '../../feature/proxy/ProxyService.js'
 import {PrismaClient} from '@prisma/client'
-import {AppError} from '../../helper/Errors.js'
+import {HttpError} from 'infoportal-api-sdk'
 
 export class ControllerProxy {
   constructor(
@@ -47,7 +47,7 @@ export class ControllerProxy {
     if (url) {
       res.redirect(url)
     } else {
-      throw new AppError.NotFound('Proxy does not exist or is disabled.')
+      throw new HttpError.NotFound('Proxy does not exist or is disabled.')
     }
   }
 }

@@ -9,6 +9,7 @@ import {permissionClient} from '../contract/ContractPermission.js'
 import {workspaceClient} from '../contract/workspace/ContractWorkspace.js'
 import {workspaceAccessClient} from '../contract/workspace/ContractWorkspaceAccess.js'
 import {formSubmissionClient} from '../contract/form/ContractFormSubmission.js'
+import {HttpError} from './HttpError.js'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -51,7 +52,10 @@ type TsRestResponse<S extends HTTPStatusCode, T> =
 const map = (res: any) => {
   if (res.status === 200) return res.body
   if (res.status === 204) return undefined
-  throw new Error('Unknown error')
+  if (res.status === 404) throw new HttpError.NotFound(res.body?.message)
+  if (res.status === 500) throw new HttpError.InternalServerError(res.body?.message)
+  if (res.status === 403) throw new HttpError.Forbidden(res.body?.message)
+  if (res.status === 400) throw new HttpError.BadRequest(res.body?.message)
 }
 export const map200 = <T>(res: TsRestResponse<200, T>): T => map(res)
 

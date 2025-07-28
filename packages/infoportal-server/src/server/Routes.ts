@@ -5,7 +5,7 @@ import {PrismaClient} from '@prisma/client'
 import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi.js'
 import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerUser} from './controller/ControllerUser.js'
-import {AppError} from '../helper/Errors.js'
+import {HttpError} from 'infoportal-api-sdk'
 import {ControllerProxy} from './controller/ControllerProxy.js'
 import {ControllerGroup} from './controller/ControllerGroup.js'
 import {ControllerJsonStore} from './controller/ControllerJsonStore.js'
@@ -80,14 +80,14 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       try {
         const email = req.session.app?.user.email
         if (!email) {
-          throw new AppError.Forbidden('auth_user_not_connected')
+          throw new HttpError.Forbidden('auth_user_not_connected')
         }
         const user = await UserService.getInstance(prisma).getByEmail(email)
         if (!user) {
-          throw new AppError.Forbidden('user_not_allowed')
+          throw new HttpError.Forbidden('user_not_allowed')
         }
         if (options.adminOnly && user.accessLevel === Ip.AccessLevel.Admin) {
-          throw new AppError.Forbidden('user_not_admin')
+          throw new HttpError.Forbidden('user_not_admin')
         }
         next()
       } catch (e) {
@@ -123,11 +123,11 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   }
 
   const handleError = (e: Error): {status: ErrorHttpStatusCode; body: ErrBody} => {
-    if (e instanceof AppError.Forbidden) {
-      return {status: 403, body: {message: e.message, data: e.data}}
+    if (e instanceof HttpError.Forbidden) {
+      return {status: 403, body: {message: e.message, data: (e as any)?.data}}
     }
-    if (e instanceof AppError.NotFound) {
-      return {status: 404, body: {message: e.message, data: e.data}}
+    if (e instanceof HttpError.NotFound) {
+      return {status: 404, body: {message: e.message, data: (e as any)?.data}}
     }
     return {status: 500, body: {message: e.message, data: (e as any)?.data}}
   }
@@ -151,7 +151,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const ensureFile = <T extends HandlerArgs>(args: T): Promise<T & {file: Express.Multer.File}> => {
     return new Promise((resolve, reject) => {
       if (!args.req.file) {
-        return reject(new AppError.BadRequest('Missing file.'))
+        return reject(new HttpError.BadRequest('Missing file.'))
       }
       return resolve(args as any)
     })

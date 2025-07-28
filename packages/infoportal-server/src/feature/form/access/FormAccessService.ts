@@ -1,7 +1,7 @@
 import {PrismaClient, User} from '@prisma/client'
 import {app, AppLogger} from '../../../index.js'
 import {Ip} from 'infoportal-api-sdk'
-import {AppError} from '../../../helper/Errors.js'
+import {HttpError} from 'infoportal-api-sdk'
 import {PrismaHelper} from '../../../core/PrismaHelper.js'
 
 export class FormAccessService {
@@ -155,8 +155,8 @@ export class FormAccessService {
         id,
       },
     })
-    if (!access) throw new AppError.NotFound()
-    if (access.email === deletedByEmail) throw new AppError.Forbidden('Cannot delete yourself')
+    if (!access) throw new HttpError.NotFound()
+    if (access.email === deletedByEmail) throw new HttpError.Forbidden('Cannot delete yourself')
     await this.prisma.formAccess.delete({
       select: {
         id: true,

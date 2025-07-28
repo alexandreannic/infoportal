@@ -1,6 +1,6 @@
 import {DatabaseViewVisibility, Prisma, PrismaClient} from '@prisma/client'
 import {UUID} from 'infoportal-common'
-import {AppError} from '../../helper/Errors.js'
+import {HttpError} from 'infoportal-api-sdk'
 import {Ip} from 'infoportal-api-sdk'
 
 export class DatabaseView {
@@ -50,9 +50,9 @@ export class DatabaseView {
       select: {visibility: true, createdBy: true},
       where: {id: viewId},
     })
-    if (!view) throw new AppError.NotFound(`DatabaseView ${viewId}.`)
+    if (!view) throw new HttpError.NotFound(`DatabaseView ${viewId}.`)
     if (view.visibility === DatabaseViewVisibility.Sealed && updatedBy !== view.createdBy)
-      throw new AppError.Forbidden(`${updatedBy} cannot edit DatabaseView ${viewId}.`)
+      throw new HttpError.Forbidden(`${updatedBy} cannot edit DatabaseView ${viewId}.`)
 
     await Promise.all([
       this.prisma.databaseView.update({

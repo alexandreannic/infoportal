@@ -1,22 +1,19 @@
-import {Controller} from './Controller.js'
 import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {SessionService} from '../../feature/session/SessionService.js'
-import {AppError} from '../../helper/Errors.js'
+import {HttpError} from 'infoportal-api-sdk'
 import {isAuthenticated} from '../Routes.js'
 import {Ip} from 'infoportal-api-sdk'
 
-export class ControllerSession extends Controller {
+export class ControllerSession {
   constructor(
     private prisma: PrismaClient,
     private service = new SessionService(prisma),
-  ) {
-    super({errorKey: 'session'})
-  }
+  ) {}
 
   readonly getMe = async (req: Request, res: Response, next: NextFunction) => {
-    if (!isAuthenticated(req)) throw new AppError.Forbidden('No access.')
+    if (!isAuthenticated(req)) throw new HttpError.Forbidden('No access.')
     // if (this.conf.production && req.hostname === 'localhost') {
     //   const user = await this.prisma.user.findFirstOrThrow({where: {email: this.conf.ownerEmail}})
     //   req.session.app = await this.service.get(user)
@@ -50,7 +47,7 @@ export class ControllerSession extends Controller {
   }
 
   readonly connectAs = async (req: Request, res: Response, next: NextFunction) => {
-    if (!isAuthenticated(req)) throw new AppError.Forbidden()
+    if (!isAuthenticated(req)) throw new HttpError.Forbidden()
     const body = await yup
       .object({
         email: yup.string().required(),

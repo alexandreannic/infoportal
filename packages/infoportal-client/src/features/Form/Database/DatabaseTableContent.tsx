@@ -218,9 +218,10 @@ export const DatabaseTableContent = ({
             {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 
             <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>
-              {connectedUsers.length > 1 && connectedUsers.map(_ => (
-                <AppAvatar size={36} email={_} overlap borderColor="blue" key={_} />
-              ))}
+              {connectedUsers.length > 1 &&
+                connectedUsers.map(_ => (
+                  <AppAvatar size={36} email={_} overlap borderColor={t.palette.primary.main} key={_} />
+                ))}
               {ctx.form.kobo ? (
                 <IpIconBtn
                   disabled={!ctx.form.kobo.enketoUrl || ctx.form.deploymentStatus === 'archived'}

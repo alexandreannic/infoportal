@@ -30,7 +30,7 @@ function remove({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (args: {id: Ip.Form.AccessId}) => {
-      return apiv2.form.access.remove({...args, workspaceId})
+      return apiv2.form.access.remove({...args, formId, workspaceId})
     },
     onSuccess: (data, variables) =>
       queryClient.invalidateQueries({queryKey: queryKeys.formAccess(workspaceId, formId)}),

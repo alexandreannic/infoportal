@@ -5,7 +5,7 @@ import {app, AppCacheKey, AppLogger} from '../../index.js'
 import {createdBySystem} from '../../core/DbInit.js'
 import {chunkify, seq} from '@axanc/ts-utils'
 import {SubmissionService} from '../form/submission/SubmissionService.js'
-import {AppError} from '../../helper/Errors.js'
+import {HttpError} from 'infoportal-api-sdk'
 import {appConf} from '../../core/conf/AppConf.js'
 import {genUUID, previewList} from '../../helper/Utils.js'
 import {Kobo, KoboSubmissionFormatter} from 'kobo-sdk'
@@ -102,7 +102,7 @@ export class KoboSyncServer {
     koboFormId?: Kobo.FormId
     answer: Kobo.Submission
   }) => {
-    if (!koboFormId) throw new AppError.WrongFormat('missing_form_id')
+    if (!koboFormId) throw new HttpError.WrongFormat('missing_form_id')
     const connectedForms = await this.prisma.form
       .findMany({
         select: {workspaceId: true, id: true},
@@ -140,7 +140,7 @@ export class KoboSyncServer {
     const koboFormId = await this.prisma.formKoboInfo
       .findFirst({select: {koboId: true}, where: {formId}})
       .then(_ => _?.koboId)
-    if (!koboFormId) throw new AppError.BadRequest(`Form ${formId} is not connected to a Kobo form.`)
+    if (!koboFormId) throw new HttpError.BadRequest(`Form ${formId} is not connected to a Kobo form.`)
 
     try {
       this.debug(formId, `Synchronizing by ${updatedBy}...`)

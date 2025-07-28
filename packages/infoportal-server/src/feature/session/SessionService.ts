@@ -9,7 +9,7 @@ import {WorkspaceService} from '../workspace/WorkspaceService.js'
 import {UserProfile} from './AppSession.js'
 import {Ip} from 'infoportal-api-sdk'
 import {PrismaHelper} from '../../core/PrismaHelper.js'
-import {AppError} from '../../helper/Errors.js'
+import {HttpError} from 'infoportal-api-sdk'
 import {UserService} from '../user/UserService.js'
 
 export class SessionService {
@@ -183,16 +183,16 @@ export class SessionService {
   }
 
   readonly connectAs = async ({connectedUser, spyEmail}: {connectedUser: Ip.User; spyEmail: Ip.User.Email}) => {
-    const connectAsUser = await this.user.getByEmail(spyEmail).then(AppError.throwNotFoundIfUndefined('connectAs'))
+    const connectAsUser = await this.user.getByEmail(spyEmail).then(HttpError.throwNotFoundIfUndefined('connectAs'))
     if (connectAsUser.id === connectedUser.id) throw new SessionError.UserNoAccess()
     return this.get(connectAsUser)
   }
 
   readonly revertConnectAs = async (originalEmail?: Ip.User.Email) => {
     if (!originalEmail) {
-      throw new AppError.Forbidden('')
+      throw new HttpError.Forbidden('')
     }
-    const user = await this.user.getByEmail(originalEmail).then(AppError.throwNotFoundIfUndefined(''))
+    const user = await this.user.getByEmail(originalEmail).then(HttpError.throwNotFoundIfUndefined(''))
     return this.get(user)
   }
 

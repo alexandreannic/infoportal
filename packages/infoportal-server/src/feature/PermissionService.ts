@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {Request} from 'express'
 import {Ip, Permission} from 'infoportal-api-sdk'
-import {AppError} from '../helper/Errors.js'
+import {HttpError} from 'infoportal-common'
 import {UserService} from './user/UserService.js'
 import {FormAccessService} from './form/access/FormAccessService.js'
 import {WorkspaceAccessService} from './workspace/WorkspaceAccessService.js'
@@ -27,7 +27,7 @@ export class PermissionService {
       user: connectedUser,
       permissions,
     })
-    if (!hasPermission) throw new AppError.Forbidden(`Permissions does not match`, {permissions})
+    if (!hasPermission) throw new HttpError.Forbidden(`Permissions does not match`, {permissions})
   }
 
   private static readonly searchWhereIsFormId = (req: Request) => {
@@ -37,11 +37,11 @@ export class PermissionService {
   readonly checkUserConnected = async (req: Request): Promise<Ip.User> => {
     const email = req.session.app?.user.email
     if (!email) {
-      throw new AppError.Forbidden('auth_user_not_connected')
+      throw new HttpError.Forbidden('auth_user_not_connected')
     }
     const user = await UserService.getInstance(this.prisma).getByEmail(email)
     if (!user) {
-      throw new AppError.Forbidden('user_not_allowed')
+      throw new HttpError.Forbidden('user_not_allowed')
     }
     return user
   }
@@ -60,12 +60,12 @@ export class PermissionService {
     if (!permissions) return false
     if (permissions.global && (await this.canGlobal(user, permissions.global))) return true
     if (permissions.workspace) {
-      if (!workspaceId) throw new AppError.BadRequest('Missing workspaceId')
+      if (!workspaceId) throw new HttpError.BadRequest('Missing workspaceId')
       if (await this.canWorkspace({user, workspaceId, required: permissions.workspace})) return true
     }
     if (permissions.form) {
-      if (!workspaceId) throw new AppError.BadRequest('Missing workspaceId')
-      if (!formId) throw new AppError.BadRequest('Missing formId')
+      if (!workspaceId) throw new HttpError.BadRequest('Missing workspaceId')
+      if (!formId) throw new HttpError.BadRequest('Missing formId')
       if (await this.canForm({user, workspaceId, formId, required: permissions.form})) return true
     }
     return false
