@@ -50,6 +50,21 @@ export const workspaceInvitationContract = c.router({
       },
     }),
   },
+
+  remove: {
+    method: 'DELETE',
+    path: `/workspace/:workspaceId/invitation/:id`,
+    pathParams: z.object({
+      workspaceId: schema.workspaceId,
+      id: schema.workspaceInvitationId,
+    }),
+    responses: {204: schema.emptyResult},
+    metadata: makeMeta({
+      access: {
+        workspace: ['user_canDelete'],
+      },
+    }),
+  },
 })
 
 export const workspaceInvitationClient = (client: TsRestClient) => {
@@ -74,6 +89,9 @@ export const workspaceInvitationClient = (client: TsRestClient) => {
         .create({params: {workspaceId}, body})
         .then(map200)
         .then(Ip.Workspace.Invitation.map)
+    },
+    remove: (params: {workspaceId: Ip.WorkspaceId; id: Ip.Workspace.InvitationId}) => {
+      return client.workspace.invitation.remove({params}).then(map204)
     },
   }
 }

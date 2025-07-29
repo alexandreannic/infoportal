@@ -26,7 +26,9 @@ export const settingsUsersRoute = createRoute({
   component: SettingsUsers,
 })
 
-type Data = Ip.User & {
+type Data = Omit<Ip.User, 'id'> & {
+  userId?: Ip.UserId
+  invitationId?: Ip.Workspace.InvitationId
   status: 'invitation' | 'user'
 }
 
@@ -39,6 +41,7 @@ function SettingsUsers() {
   const ctxSession = useSession()
   const queryUserGet = useQueryUser.getAll(workspaceId)
   const queryInvitation = useQueryWorkspaceInvitation.search({workspaceId})
+  const queryInvitationRemove = useQueryWorkspaceInvitation.remove({workspaceId})
 
   const connectAs = async (email: Ip.User.Email) => {
     await ctxSession.connectAs.mutateAsync(email)
@@ -50,7 +53,7 @@ function SettingsUsers() {
       return [
         ...queryInvitation.data.map(_ => {
           return {
-            id: _.id as unknown as Ip.UserId,
+            invitationId: _.id,
             accessLevel: _.accessLevel,
             createdAt: _.createdAt,
             status: 'invitation',
@@ -58,7 +61,7 @@ function SettingsUsers() {
             avatar: undefined,
           } as const
         }),
-        ...queryUserGet.data.map(_ => ({..._, status: 'user'}) as const),
+        ...queryUserGet.data.map(_ => ({..._, userId: _.id, status: 'user'}) as const),
       ]
     }
   }, [queryUserGet.data, queryInvitation.data])
@@ -74,6 +77,8 @@ function SettingsUsers() {
           showExportBtn
           defaultLimit={100}
           data={data}
+          getRenderRowKey={_ => _.invitationId ?? _.userId!}
+          // getRenderRowKey={(_, i) => '' + i}
           header={
             permission.user_canCreate && (
               <Modal
@@ -191,18 +196,28 @@ function SettingsUsers() {
             },
             {
               id: 'action',
-              width: 10,
               align: 'right',
-              renderQuick: _ =>
-                permission.use_canConnectAs && (
-                  <IpIconBtn
-                    disabled={_.email === conf.contact || _.email === ctxSession.user.email}
-                    children="visibility"
-                    loading={ctxSession.connectAs.isPending}
-                    onClick={() => connectAs(_.email)}
-                    tooltip={m.connectAs}
-                  />
-                ),
+              renderQuick: _ => (
+                <>
+                  {_.status === 'user' && permission.use_canConnectAs && (
+                    <IpIconBtn
+                      disabled={_.email === conf.contact || _.email === ctxSession.user.email}
+                      children="visibility"
+                      loading={ctxSession.connectAs.isPending}
+                      onClick={() => connectAs(_.email)}
+                      tooltip={m.connectAs}
+                    />
+                  )}
+                  {_.status === 'invitation' && permission.user_canDelete && (
+                    <IpIconBtn
+                      children="delete"
+                      loading={queryInvitationRemove.arePending.has(_.invitationId!)}
+                      onClick={() => queryInvitationRemove.mutate({id: _.invitationId!})}
+                      tooltip={m.connectAs}
+                    />
+                  )}
+                </>
+              ),
             },
           ]}
         />

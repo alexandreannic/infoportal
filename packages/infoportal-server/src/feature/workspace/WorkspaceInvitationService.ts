@@ -53,6 +53,10 @@ export class WorkspaceInvitationService {
       .then(PrismaHelper.mapWorkspaceInvitation)
   }
 
+  readonly remove = async ({id}: {id: Ip.Workspace.InvitationId}) => {
+    await this.prisma.workspaceInvitation.delete({where: {id}})
+  }
+
   readonly accept = async ({id, accept}: {accept: boolean; id: Ip.Workspace.InvitationId}) => {
     const invitation = await this.prisma.workspaceInvitation
       .findFirst({where: {id}})

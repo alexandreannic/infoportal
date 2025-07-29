@@ -18,7 +18,6 @@ export const useCustomSelectedHeader = ({
 }): ReactNode => {
   const {m} = useI18n()
   const query = useQueryAnswerUpdate()
-  console.log(query.remove.error)
   return (
     <>
       {permission.answers_canUpdate && (

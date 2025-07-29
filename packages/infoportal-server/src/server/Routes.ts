@@ -204,6 +204,11 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(ok204)
           .catch(handleError),
       invitation: {
+        remove: _ =>
+          auth2(_)
+            .then(({params}) => workspaceInvitation.remove(params))
+            .then(ok204)
+            .catch(handleError),
         create: _ =>
           auth2(_)
             .then(({body, params, req}) => workspaceInvitation.create({...body, ...params}, req.session.app.user.email))

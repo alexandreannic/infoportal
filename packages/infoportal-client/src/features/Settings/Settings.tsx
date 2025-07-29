@@ -2,7 +2,7 @@ import {useI18n} from '@/core/i18n'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {useEffect} from 'react'
-import {createRoute, Link, Outlet, useMatches} from '@tanstack/react-router'
+import {createRoute, Link, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
 import {Page} from '@/shared'
 import {useWorkspaceContext, workspaceRoute} from '@/features/Workspace/Workspace'
 import {settingsGroupsRoute} from '@/features/Settings/SettingsGroups'
@@ -10,6 +10,7 @@ import {settingsProxyRoute} from '@/features/Settings/SettingsProxy'
 import {settingsUsersRoute} from '@/features/Settings/SettingsUsers'
 import {settingsCacheRoute} from '@/features/Settings/SettingsCache'
 import {useSession} from '@/core/Session/SessionContext'
+import {Ip} from 'infoportal-api-sdk'
 
 export const settingsRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -17,12 +18,25 @@ export const settingsRoute = createRoute({
   component: Settings,
 })
 
+export const useDefaultTabRedirect = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+  const navigate = useNavigate()
+  const pathname = useRouterState({select: s => s.location.pathname})
+  const currentFullPath = useMatches().slice(-1)[0].fullPath
+  useEffect(() => {
+    if (currentFullPath !== settingsRoute.fullPath) return
+    navigate({to: '/$workspaceId/settings/users', params: {workspaceId}})
+  }, [currentFullPath, pathname])
+}
+
 function Settings() {
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
   const match = useMatches().slice(-1)[0]
   const {permission} = useWorkspaceContext()
   const {globalPermission} = useSession()
+  const workspaceId = settingsRoute.useParams().workspaceId as Ip.WorkspaceId
+
+  useDefaultTabRedirect({workspaceId})
 
   useEffect(() => {
     setTitle(m.settings)

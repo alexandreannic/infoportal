@@ -3,12 +3,14 @@ import {useAppSettings} from '@/core/context/ConfigContext.js'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index.js'
 import {useIpToast} from '@/core/useToast.js'
+import {useSetState} from '@axanc/react-hooks'
 
 export const useQueryWorkspaceInvitation = {
   search,
   getMine,
   accept,
   create,
+  remove,
 }
 
 function getMine() {
@@ -56,4 +58,25 @@ function create(workspaceId: Ip.WorkspaceId) {
     },
     // onError: toastHttpError,
   })
+}
+
+function remove({workspaceId}: {workspaceId: Ip.WorkspaceId}) {
+  const {apiv2} = useAppSettings()
+  const queryClient = useQueryClient()
+  const arePending = useSetState<Ip.Workspace.InvitationId>()
+  const mutation = useMutation({
+    mutationFn: async ({id}: {id: Ip.Workspace.InvitationId}) => {
+      return apiv2.workspace.invitation.remove({workspaceId, id})
+    },
+    onMutate: async variables => {
+      arePending.add(variables.id)
+    },
+    onSettled: (data, error, variables) => {
+      arePending.delete(variables.id)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: queryKeys.workspaceInvitation(workspaceId)})
+    },
+  })
+  return {arePending, ...mutation}
 }
