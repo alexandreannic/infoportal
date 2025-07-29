@@ -111,6 +111,11 @@ export namespace Ip {
   }
   export type WorkspaceId = Brand<string, 'workspaceId'>
   export namespace Workspace {
+    export type InvitationId = Brand<string, 'workspaceInvitation'>
+    export type Invitation = Prisma.WorkspaceInvitation & {
+      id: InvitationId
+    }
+
     export type Access = Prisma.WorkspaceAccess
     export namespace Access {
       export namespace Payload {

@@ -23,7 +23,7 @@ function getAll(workspaceId: Ip.WorkspaceId) {
 
 function create(workspaceId: Ip.WorkspaceId) {
   const {apiv2} = useAppSettings()
-  const {toastHttpError} = useIpToast()
+  // const {toastHttpError} = useIpToast()
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (_: Omit<Ip.Workspace.Access.Payload.Create, 'workspaceId'>) => {
@@ -32,6 +32,6 @@ function create(workspaceId: Ip.WorkspaceId) {
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: queryKeys.user(workspaceId)})
     },
-    onError: toastHttpError,
+    // onError: toastHttpError,
   })
 }

@@ -5,7 +5,7 @@ import {PrismaClient} from '@prisma/client'
 import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi.js'
 import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerUser} from './controller/ControllerUser.js'
-import {HttpError} from 'infoportal-api-sdk'
+import {HttpError, Ip, ipContract, Meta} from 'infoportal-api-sdk'
 import {ControllerProxy} from './controller/ControllerProxy.js'
 import {ControllerGroup} from './controller/ControllerGroup.js'
 import {ControllerJsonStore} from './controller/ControllerJsonStore.js'
@@ -24,7 +24,6 @@ import {FormService} from '../feature/form/FormService.js'
 import {ErrorHttpStatusCode, SuccessfulHttpStatusCode} from '@ts-rest/core'
 import {FormAccessService} from '../feature/form/access/FormAccessService.js'
 import {PermissionService} from '../feature/PermissionService.js'
-import {Ip, ipContract, Meta} from 'infoportal-api-sdk'
 import {WorkspaceService} from '../feature/workspace/WorkspaceService.js'
 import {WorkspaceAccessService} from '../feature/workspace/WorkspaceAccessService.js'
 import {SubmissionService} from '../feature/form/submission/SubmissionService.js'
@@ -123,13 +122,21 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   }
 
   const handleError = (e: Error): {status: ErrorHttpStatusCode; body: ErrBody} => {
-    if (e instanceof HttpError.Forbidden) {
-      return {status: 403, body: {message: e.message, data: (e as any)?.data}}
+    const statusMap = new Map<Function, ErrorHttpStatusCode>([
+      [HttpError.Conflict, 409],
+      [HttpError.Forbidden, 403],
+      [HttpError.NotFound, 404],
+    ])
+
+    const status = Array.from(statusMap.entries()).find(([ErrClass]) => e instanceof ErrClass)?.[1] ?? 500
+
+    return {
+      status,
+      body: {
+        message: e.message,
+        data: (e as any)?.data,
+      },
     }
-    if (e instanceof HttpError.NotFound) {
-      return {status: 404, body: {message: e.message, data: (e as any)?.data}}
-    }
-    return {status: 500, body: {message: e.message, data: (e as any)?.data}}
   }
 
   const workspace = new WorkspaceService(prisma)
@@ -194,10 +201,17 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({params}) => workspace.remove(params.id))
           .then(ok204)
           .catch(handleError),
+      invitation: {
+        search: _ =>
+          auth2(_)
+            .then(({params}) => workspaceAccess.searchInvitations({workspaceId: params.workspaceId}))
+            .then(ok200)
+            .catch(handleError),
+      },
       access: {
         create: _ =>
           auth2(_)
-            .then(({body, req}) => workspaceAccess.create(body, req.session.app.user.email))
+            .then(({body, params, req}) => workspaceAccess.create({...body, ...params}, req.session.app.user.email))
             .then(ok200)
             .catch(handleError),
       },

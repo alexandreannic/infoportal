@@ -32,7 +32,6 @@ function SettingsUsers() {
   const navigate = useNavigate()
   const ctxSession = useSession()
   const queryUserGet = useQueryUser.getAll(workspaceId)
-  const queryUserCreate = useQueryUser.create(workspaceId)
 
   const connectAs = async (email: Ip.User.Email) => {
     await ctxSession.connectAs.mutateAsync(email)
@@ -56,12 +55,7 @@ function SettingsUsers() {
                 onClose={null}
                 title={m.addUser}
                 content={close => (
-                  <AddUserForm
-                    existingEmails={emailsLists}
-                    loading={queryUserCreate.isPending}
-                    onClose={close}
-                    onSubmit={_ => queryUserCreate.mutateAsync(_)}
-                  />
+                  <AddUserForm workspaceId={workspaceId} existingEmails={emailsLists} onClose={close} />
                 )}
               >
                 <IpBtn icon="person_add" variant="outlined">

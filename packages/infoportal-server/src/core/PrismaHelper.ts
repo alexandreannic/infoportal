@@ -9,6 +9,8 @@ export namespace PrismaHelper {
 
   export const mapWorkspace = <T extends {id: string}>(_: T): T & {id: Ip.WorkspaceId} => _ as any
 
+  export const mapWorkspaceInvitation = <T extends {id: string}>(_: T): T & {id: Ip.Workspace.InvitationId} => _ as any
+
   export const mapVersion = <T extends {id: string; uploadedBy: string}>(
     _: T,
   ): T & {id: Ip.Form.VersionId; uploadedBy: Ip.User.Email} => _ as any

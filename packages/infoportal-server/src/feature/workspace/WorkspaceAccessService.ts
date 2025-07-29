@@ -2,7 +2,8 @@ import {PrismaClient, User} from '@prisma/client'
 import {InferType} from 'yup'
 import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {UserService} from '../user/UserService.js'
-import {Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
+import {PrismaHelper} from '../../core/PrismaHelper.js'
 
 export type WorkspaceAccessCreate = InferType<typeof WorkspaceAccessService.schema.create>
 
@@ -21,21 +22,57 @@ export class WorkspaceAccessService {
     }),
   }
 
-  readonly create = async ({level, email, workspaceId}: WorkspaceAccessCreate, createdBy: Ip.User.Email) => {
+  readonly create = async (
+    {level, email, workspaceId}: WorkspaceAccessCreate,
+    createdBy: Ip.User.Email,
+  ): Promise<{newAccess?: Ip.Workspace.Access; newInvitation?: Ip.Workspace.Invitation}> => {
     const maybeExistingUser = await this.userService.getByEmail(email as Ip.User.Email)
     if (maybeExistingUser) {
-      return this.prisma.workspaceAccess.create({
-        data: {
-          level,
-          userId: maybeExistingUser.id,
-          workspaceId,
-          createdBy,
-        },
+      const exists = await this.prisma.workspaceAccess.findFirst({
+        select: {id: true},
+        where: {workspaceId, userId: maybeExistingUser.id},
       })
+      if (exists) throw new HttpError.Conflict('Access exists.')
+      return this.prisma.workspaceAccess
+        .create({
+          data: {
+            level,
+            userId: maybeExistingUser.id,
+            workspaceId,
+            createdBy,
+          },
+        })
+        .then(_ => ({newAccess: _}))
     } else {
-      // TODO
-      throw new Error('TODO Implement invitation')
+      const exists = await this.prisma.workspaceInvitation.findFirst({
+        select: {id: true},
+        where: {workspaceId, toEmail: email},
+      })
+      if (exists) throw new HttpError.Conflict('Invitation exists.')
+      return this.prisma.workspaceInvitation
+        .create({
+          data: {
+            workspaceId,
+            createdBy,
+            accessLevel: level,
+            toEmail: email,
+          },
+        })
+        .then(PrismaHelper.mapWorkspaceInvitation)
+        .then(_ => ({newInvitation: _}))
     }
+  }
+
+  readonly searchInvitations = async ({
+    workspaceId,
+  }: {
+    workspaceId: Ip.WorkspaceId
+  }): Promise<Ip.Workspace.Invitation[]> => {
+    return this.prisma.workspaceInvitation
+      .findMany({
+        where: {workspaceId},
+      })
+      .then(_ => _.map(PrismaHelper.mapWorkspaceInvitation))
   }
 
   readonly getByUser = async ({workspaceId, user}: {workspaceId: Ip.WorkspaceId; user: User}) => {

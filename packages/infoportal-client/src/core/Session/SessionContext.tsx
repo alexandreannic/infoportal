@@ -91,7 +91,7 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
   const queryWorkspace = useQueryWorkspace.get()
   const {user, originalEmail, revertConnectAs, setUser, logout} = useSessionPending()
 
-  if (querySession.getMe.isPending || queryPermission.isPending) {
+  if (queryWorkspace.isLoading || querySession.getMe.isPending || queryPermission.isPending) {
     return (
       <CenteredContent>
         <LinearProgress sx={{mt: 2, width: 200}} />

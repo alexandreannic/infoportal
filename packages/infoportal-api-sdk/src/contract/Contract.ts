@@ -8,6 +8,7 @@ import {permissionContract} from './ContractPermission.js'
 import {workspaceContract} from './workspace/ContractWorkspace.js'
 import {workspaceAccessContract} from './workspace/ContractWorkspaceAccess.js'
 import {contractFormSubmission} from './form/ContractFormSubmission.js'
+import {workspaceInvitationContract} from './workspace/ContractWorkspaceInvitation.js'
 
 export const ipContract = initContract().router({
   permission: permissionContract,
@@ -15,6 +16,7 @@ export const ipContract = initContract().router({
   kobo: koboContract,
   workspace: {
     ...workspaceContract,
+    invitation: workspaceInvitationContract,
     access: workspaceAccessContract,
   },
   submission: contractFormSubmission,
