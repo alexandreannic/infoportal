@@ -15,11 +15,11 @@ export interface User {
 }
 
 export class User {
-  static readonly map = (u: Record<keyof User, any>): User => {
+  static readonly map = (u: Record<keyof User, any>): Ip.User => {
     return {
       ...u,
       lastConnectedAt: u.lastConnectedAt ? new Date(u.lastConnectedAt) : undefined,
       createdAt: u.createdAt ? new Date(u.createdAt) : undefined,
-    }
+    } as any
   }
 }

@@ -134,7 +134,7 @@ function search({formId, workspaceId}: {formId: Ip.FormId; workspaceId: Ip.Works
         answers,
       )
     },
-    staleTime: duration(10, 'minute'),
+    
   })
 
   const set = (value: Ip.Paginate<Ip.Submission>) => {

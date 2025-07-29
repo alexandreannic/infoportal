@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {ReactNode, useState} from 'react'
+import {forwardRef, ReactNode, useState} from 'react'
 import {Alert, AlertProps} from '@mui/material'
 import {usePersistentState} from '@/shared/hook/usePersistantState'
 
@@ -17,15 +17,16 @@ export type IpAlertProps = Omit<AlertProps, 'id'> & {
       }
   )
 
-export const IpAlert = ({content, hidden, action, deletable, sx, onClose, ...props}: IpAlertProps) => {
+export const IpAlert = forwardRef(({content, hidden, deletable, sx, onClose, ...props}: IpAlertProps, ref) => {
   const [isPersistentVisible, setPersistentIsVisible] = usePersistentState<boolean>(true, {
-    storageKey: props.id ?? 'NOT NEEDED',
+    storageKey: props.id!,
   })
   const [isVisible, setIsVisible] = useState<boolean>(true)
 
   return (
     <Alert
       {...props}
+      ref={ref as any}
       sx={{
         ...sx,
         ...((hidden || !isVisible || (deletable === 'permanent' && !isPersistentVisible)) && {
@@ -47,4 +48,4 @@ export const IpAlert = ({content, hidden, action, deletable, sx, onClose, ...pro
       }
     />
   )
-}
+})

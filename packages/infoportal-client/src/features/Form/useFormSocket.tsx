@@ -53,6 +53,11 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceI
     return () => {
       if (socket.connected) {
         socket.emit('unsubscribe', formId)
+        socket.off('USERS')
+        socket.off(IpEvent.SUBMISSION_NEW)
+        socket.off(IpEvent.SUBMISSION_REMOVED)
+        socket.off(IpEvent.SUBMISSION_EDITED)
+        socket.off(IpEvent.SUBMISSION_EDITED_VALIDATION)
       }
     }
   }, [workspaceId, formId])

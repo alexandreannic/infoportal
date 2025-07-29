@@ -104,12 +104,8 @@ export const KoboServerForm = ({
           }}
           render={({field, fieldState}) => (
             <IpInput
-              required
-              InputLabelProps={{
-                shrink: !!field.value,
-              }}
               {...field}
-              notched={!!field.value}
+              required
               label={m.serverUrlV1}
               error={fieldState.invalid}
             />
@@ -126,11 +122,7 @@ export const KoboServerForm = ({
           render={({field, fieldState}) => (
             <IpInput
               required
-              InputLabelProps={{
-                shrink: !!field.value,
-              }}
               {...field}
-              notched={!!field.value}
               label={m.serverUrlV2}
               error={fieldState.invalid}
             />

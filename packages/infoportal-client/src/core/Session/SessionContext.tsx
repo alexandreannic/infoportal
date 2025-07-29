@@ -18,12 +18,12 @@ import {useQueryPermission} from '@/core/query/useQueryPermission'
 
 export interface SessionContext {
   originalEmail?: string
-  user: User
+  user: Ip.User
   globalPermission: Ip.Permission.Global
   logout: () => Promise<void>
   connectAs: ReturnType<typeof useQuerySession>['connectAs']
   revertConnectAs: ReturnType<typeof useQuerySession>['revertConnectAs']
-  setUser: (_: User) => void
+  setUser: (_: Ip.User) => void
 }
 
 const Context = React.createContext(
@@ -72,7 +72,7 @@ export const SessionProvider = ({children}: {children: ReactNode}) => {
         revertConnectAs: querySession.revertConnectAs,
         connectAs: querySession.connectAs,
         user: user,
-        setUser: (_: User) => queryClient.setQueryData(queryKeys.session(), _),
+        setUser: (_: Ip.User) => queryClient.setQueryData(queryKeys.session(), _),
         logout: async () => {
           await querySession.logout.mutateAsync()
           await navigate({to: '/'})
@@ -91,7 +91,7 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
   const queryWorkspace = useQueryWorkspace.get()
   const {user, originalEmail, revertConnectAs, setUser, logout} = useSessionPending()
 
-  if (querySession.getMe.isPending || queryPermission.isPending) {
+  if (queryWorkspace.isLoading || querySession.getMe.isPending || queryPermission.isPending) {
     return (
       <CenteredContent>
         <LinearProgress sx={{mt: 2, width: 200}} />
@@ -107,22 +107,25 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
       </CenteredContent>
     )
   }
-  if (queryWorkspace.data?.length === 0) {
-    return (
-      <Page sx={{maxWidth: 400}}>
-        <CenteredContent>
-          <div>
-            {/* <Txt>{session.user.email}</Txt> */}
-            <IpBtn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
-              {user.email}
-            </IpBtn>
-            <PageTitle>{m.onboardingTitle}</PageTitle>
-            <WorkspaceCreate />
-          </div>
-        </CenteredContent>
-      </Page>
-    )
-  }
+  // if (queryWorkspace.data?.length === 0) {
+  //
+  // }
+  // if (queryWorkspace.data?.length === 0) {
+  //   return (
+  //     <Page sx={{maxWidth: 400}}>
+  //       <CenteredContent>
+  //         <div>
+  //           {/* <Txt>{session.user.email}</Txt> */}
+  //           <IpBtn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
+  //             {user.email}
+  //           </IpBtn>
+  //           <PageTitle>{m.onboardingTitle}</PageTitle>
+  //           <WorkspaceCreate />
+  //         </div>
+  //       </CenteredContent>
+  //     </Page>
+  //   )
+  // }
   return (
     <>
       {originalEmail && (

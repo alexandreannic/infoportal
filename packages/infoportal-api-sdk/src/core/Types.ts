@@ -97,9 +97,20 @@ export namespace Ip {
 
   // === User
   export type UserId = Brand<string, 'userId'>
-  export type User = Omit<Prisma.User, 'id' | 'email'> & {
+  export type User = {
     id: UserId
     email: User.Email
+    createdAt: Date
+    lastConnectedAt?: Date
+    name?: string
+    /**@deprecated*/
+    drcJob?: string
+    /**@deprecated*/
+    drcOffice?: string
+    avatar: any
+    accessLevel: AccessLevel
+    location?: string
+    job?: string
   }
   export namespace User {
     export type Email = Brand<string, 'email'>
@@ -111,12 +122,43 @@ export namespace Ip {
   }
   export type WorkspaceId = Brand<string, 'workspaceId'>
   export namespace Workspace {
-    export type Access = Prisma.WorkspaceAccess
-    export namespace Access {
+    export const map = (u: Ip.Workspace): Ip.Workspace => {
+      return {
+        ...u,
+        createdAt: new Date(u.createdAt),
+      }
+    }
+
+    export type InvitationId = Brand<string, 'workspaceInvitation'>
+    export type Invitation = Prisma.WorkspaceInvitation & {
+      id: InvitationId
+      createdBy: User.Email
+      toEmail: User.Email
+    }
+    export type InvitationW_workspace = Prisma.WorkspaceInvitation & {
+      id: InvitationId
+      toEmail: User.Email
+      createdBy: User.Email
+      workspace: Workspace
+    }
+    export namespace Invitation {
       export namespace Payload {
         export type Create = {email: Ip.User.Email; level: AccessLevel; workspaceId: WorkspaceId}
       }
+      export const map = (_: Ip.Workspace.Invitation): Ip.Workspace.Invitation => {
+        _.createdAt = new Date(_.createdAt)
+        return _
+      }
+      export const mapW_workspace = (_: Ip.Workspace.InvitationW_workspace): Ip.Workspace.InvitationW_workspace => {
+        _.createdAt = new Date(_.createdAt)
+        _.workspace = Workspace.map(_.workspace)
+        return _
+      }
     }
+
+    export type Access = Prisma.WorkspaceAccess
+    export type AccessId = Brand<string, 'workspaceAccessId'>
+    export namespace Access {}
 
     export namespace Payload {
       export type Create = Omit<Workspace, 'id' | 'createdAt' | 'createdBy'>
@@ -223,7 +265,7 @@ export namespace Ip {
         paginate?: Pagination
         workspaceId: WorkspaceId
         formId: FormId
-        user?: User
+        user?: Ip.User
       }
     }
   }

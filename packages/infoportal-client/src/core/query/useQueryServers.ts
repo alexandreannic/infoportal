@@ -20,7 +20,7 @@ export const useQueryServers = (workspaceId: Ip.WorkspaceId) => {
       })
       return servers
     },
-    staleTime: duration(10, 'minute'),
+    
   })
 
   const create = useMutation<Ip.Server, ApiError, Ip.Server.Payload.Create>({
@@ -50,7 +50,7 @@ export const useQueryServer = ({workspaceId, serverId}: {workspaceId: Ip.Workspa
   const get = useQuery({
     queryKey: queryKeys.server(workspaceId, serverId),
     queryFn: () => apiv2.server.get({workspaceId, id: serverId}).catch(toastAndThrowHttpError),
-    staleTime: duration(10, 'minute'),
+    
   })
   return {get, remove}
 }

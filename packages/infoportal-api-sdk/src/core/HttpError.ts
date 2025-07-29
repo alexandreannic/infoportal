@@ -53,7 +53,7 @@ export namespace HttpError {
     }
   }
 
-  export class AlreadyExist extends HttpError {
+  export class Conflict extends HttpError {
     constructor(message: string) {
       super(409, message)
       // this.name = this.constructor.name

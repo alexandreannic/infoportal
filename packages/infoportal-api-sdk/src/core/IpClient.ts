@@ -10,6 +10,7 @@ import {workspaceClient} from '../contract/workspace/ContractWorkspace.js'
 import {workspaceAccessClient} from '../contract/workspace/ContractWorkspaceAccess.js'
 import {formSubmissionClient} from '../contract/form/ContractFormSubmission.js'
 import {HttpError} from './HttpError.js'
+import {workspaceInvitationClient} from '../contract/workspace/ContractWorkspaceInvitation.js'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -26,6 +27,7 @@ export const buildIpClient = (baseUrl: string) => {
     workspace: {
       ...workspaceClient(client),
       access: workspaceAccessClient(client),
+      invitation: workspaceInvitationClient(client),
     },
     permission: permissionClient(client),
     server: serverClient(client),
@@ -53,9 +55,11 @@ const map = (res: any) => {
   if (res.status === 200) return res.body
   if (res.status === 204) return undefined
   if (res.status === 404) throw new HttpError.NotFound(res.body?.message)
-  if (res.status === 500) throw new HttpError.InternalServerError(res.body?.message)
   if (res.status === 403) throw new HttpError.Forbidden(res.body?.message)
+  if (res.status === 409) throw new HttpError.Conflict(res.body?.message)
   if (res.status === 400) throw new HttpError.BadRequest(res.body?.message)
+  if (res.status === 500) throw new HttpError.InternalServerError(res.body?.message)
+  throw new HttpError.InternalServerError(res.body?.message)
 }
 export const map200 = <T>(res: TsRestResponse<200, T>): T => map(res)
 

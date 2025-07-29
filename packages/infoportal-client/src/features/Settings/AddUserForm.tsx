@@ -1,11 +1,16 @@
 import {useI18n} from '@/core/i18n'
-import {IpBtn} from '@/shared'
+import {IpAlert, IpBtn} from '@/shared'
 import {IpInput} from '@/shared/Input/Input'
 import {PanelFoot} from '@/shared/Panel/PanelFoot'
 import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {Regexp} from 'infoportal-common'
 import {Controller, useForm} from 'react-hook-form'
-import {Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
+import {useQueryUser} from '@/core/query/useQueryUser'
+import {useState} from 'react'
+import {Collapse, Grow} from '@mui/material'
+import {fnSwitch, Obj} from '@axanc/ts-utils'
+import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 
 type Form = {
   email: Ip.User.Email
@@ -13,27 +18,30 @@ type Form = {
 }
 
 export const AddUserForm = ({
+  workspaceId,
   existingEmails = [],
-  loading,
   onSubmit,
   onClose,
 }: {
+  workspaceId: Ip.WorkspaceId
   existingEmails?: Ip.User.Email[]
-  loading?: boolean
   onClose?: () => void
-  onSubmit: (_: Form) => Promise<any>
+  onSubmit?: (_: Form) => Promise<any>
 }) => {
   const {m} = useI18n()
   const form = useForm<Form>({mode: 'onChange', defaultValues: {email: '', level: Ip.AccessLevel.Read}})
+  const queryInvitation = useQueryWorkspaceInvitation.create(workspaceId)
 
-  const submit = async () => {
-    await onSubmit(form.getValues())
+  const submit = async (values: Form) => {
+    await queryInvitation.mutateAsync(values)
     form.reset()
-    onClose?.()
+    // onClose?.()
   }
 
+  const CloseBtn = <IpBtn children={m.close} color="inherit" size="small" onClick={queryInvitation.reset} />
+
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <form onSubmit={form.handleSubmit(submit)} style={{width: 400}}>
       <Controller
         name="email"
         control={form.control}
@@ -73,9 +81,19 @@ export const AddUserForm = ({
           </ScRadioGroup>
         )}
       />
+      <Collapse in={!!queryInvitation.error} mountOnEnter unmountOnExit>
+        <IpAlert sx={{mt: 1}} severity="error" action={CloseBtn}>
+          {queryInvitation.error instanceof HttpError.Conflict ? m.userInvitationAlreadySent : m.anErrorOccurred}
+        </IpAlert>
+      </Collapse>
+      <Collapse in={queryInvitation.isSuccess} mountOnEnter unmountOnExit>
+        <IpAlert sx={{mt: 1}} severity="info" action={CloseBtn}>
+          {m.userInvitationSent}
+        </IpAlert>
+      </Collapse>
       <PanelFoot sx={{mt: 2, p: 0}} alignEnd>
         {onClose && <IpBtn onClick={onClose}>{m.close}</IpBtn>}
-        <IpBtn variant="outlined" type="submit" disabled={!form.formState.isValid} onClick={submit} loading={loading}>
+        <IpBtn variant="outlined" type="submit" disabled={!form.formState.isValid} loading={queryInvitation.isPending}>
           {m.submit}
         </IpBtn>
       </PanelFoot>

@@ -14,7 +14,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   const queryClient = useQueryClient()
 
   const getAll = useQuery({
-    staleTime: duration(10, 'minute'),
+    
     queryKey: queryKeys.group(workspaceId),
     queryFn: () => {
       return api.group.search({workspaceId}).catch(toastAndThrowHttpError)

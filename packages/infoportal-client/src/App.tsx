@@ -22,6 +22,7 @@ import {defaultTheme} from '@/core/theme'
 import {buildIpClient, IpClient} from 'infoportal-api-sdk'
 import {Outlet, useRouterState} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
+import {duration} from '@axanc/ts-utils'
 
 // LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -33,7 +34,13 @@ const api = new ApiSdk(
 
 const apiv2: IpClient = buildIpClient(appConfig.apiURL)
 
-export const queryClient = new QueryClient()
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: duration(10, 'minute'),
+    },
+  },
+})
 
 export const App = () => {
   return (

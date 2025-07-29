@@ -17,7 +17,7 @@ export class FormAccessService {
   }: {
     formId?: Ip.FormId
     workspaceId: Ip.WorkspaceId
-    user?: User
+    user?: Ip.User
   }) => {
     return this.prisma.formAccess.findMany({
       distinct: ['id'],
@@ -49,7 +49,7 @@ export class FormAccessService {
   }: {
     formId?: Ip.FormId
     workspaceId: Ip.WorkspaceId
-    user?: User
+    user?: Ip.User
   }) => {
     return this.prisma.formAccess.findMany({
       include: {
@@ -91,7 +91,7 @@ export class FormAccessService {
   }: {
     workspaceId: Ip.WorkspaceId
     formId?: Ip.FormId
-    user?: User
+    user?: Ip.User
   }): Promise<Ip.Form.Access[]> => {
     const [fromGroup, fromAccess] = await Promise.all([
       this.searchFromGroup({formId, workspaceId, user}),

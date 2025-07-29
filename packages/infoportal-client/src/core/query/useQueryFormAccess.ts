@@ -20,7 +20,7 @@ function getByFormId({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId
     queryFn: async () => {
       return apiv2.form.access.search({workspaceId, formId}).catch(toastAndThrowHttpError)
     },
-    staleTime: duration(10, 'minute'),
+    
   })
 }
 

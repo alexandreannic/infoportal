@@ -135,7 +135,6 @@ function SettingsProxy() {
                       render={({field, fieldState}) => (
                         <IpInput
                           {...field}
-                          InputLabelProps={{shrink: true}}
                           label={m.expireAt}
                           type="date"
                           error={!!fieldState.error}

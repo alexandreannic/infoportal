@@ -18,6 +18,6 @@ export const useQuerySchemaByVersion = ({
     queryKey: queryKeys.schemaByVersion(workspaceId, formId, versionId),
     queryFn: () => apiv2.form.getSchemaByVersion({workspaceId, formId, versionId: versionId!}),
     enabled: !!versionId,
-    staleTime: duration(10, 'minute'),
+    
   })
 }

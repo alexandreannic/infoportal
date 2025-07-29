@@ -9,9 +9,10 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {PopoverWrapper} from '@/shared/PopoverWrapper'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Obj} from '@axanc/ts-utils'
-import {alpha, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme} from '@mui/material'
+import {alpha, Badge, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme} from '@mui/material'
 import {Link, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
+import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 
 interface Props extends BoxProps {
   workspaceId?: Ip.WorkspaceId
@@ -29,7 +30,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
 
   const navigate = useNavigate()
   const {sidebarOpen, showSidebarButton, setSidebarOpen, title} = useLayoutContext()
-
+  const queryInvitation = useQueryWorkspaceInvitation.getMine()
   const queryWorkspaces = useQueryWorkspace.get()
   const {mode, setMode} = useColorScheme()
 
@@ -128,7 +129,13 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
           <IpIconBtn children={lightThemeIcons[mode ?? 'system']} />
         </PopoverWrapper>
         <Link to="/">
-          <IpIconBtn children="home" />
+          <Badge
+            color="error"
+            overlap="circular"
+            badgeContent={queryInvitation.data ? queryInvitation.data.length : undefined}
+          >
+            <IpIconBtn children="home" />
+          </Badge>
         </Link>
         <AppHeaderMenu />
       </AppHeaderContainer>

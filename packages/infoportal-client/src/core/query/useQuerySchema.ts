@@ -18,7 +18,7 @@ export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.Workspace
       }
     },
     retry: false,
-    staleTime: duration(10, 'minute'),
+    
   })
 }
 

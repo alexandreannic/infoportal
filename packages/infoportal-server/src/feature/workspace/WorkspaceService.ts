@@ -1,4 +1,4 @@
-import {PrismaClient, User} from '@prisma/client'
+import {PrismaClient} from '@prisma/client'
 import {genShortid} from '../../helper/Utils.js'
 import {slugify, UUID} from 'infoportal-common'
 import {GroupService} from '../group/GroupService.js'
@@ -63,7 +63,7 @@ export class WorkspaceService {
       .then(_ => _.map(PrismaHelper.mapWorkspace))
   }
 
-  readonly create = async (data: Ip.Workspace.Payload.Create, user: User) => {
+  readonly create = async (data: Ip.Workspace.Payload.Create, user: Ip.User) => {
     return this.prisma.workspace
       .create({
         data: {

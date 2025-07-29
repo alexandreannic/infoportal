@@ -21,28 +21,23 @@ export class DbInit {
         email: 'prot.man.hrk@dummy',
         drcJob: 'Protection Manager',
         drcOffice: 'Kharkiv',
-        createdBy: createdBySystem,
       },
       {
         email: 'mpca.assist.hrk@dummy',
         drcJob: 'MPCA/NFI Assistant',
         drcOffice: 'Kharkiv',
-        createdBy: createdBySystem,
       },
       {
         email: 'prot.officer.dnp@dummy',
         drcJob: 'Protection Officer',
         drcOffice: 'Dnipro',
-        createdBy: createdBySystem,
       },
       {
         email: 'prot.co@dummy',
         drcJob: 'Protection Coordinator',
-        createdBy: createdBySystem,
       },
       {
         email: 'noaccess@dummy',
-        createdBy: createdBySystem,
       },
     ])
   }
@@ -57,7 +52,6 @@ export class DbInit {
     return this.upsertUsers(
       adminsEmail.map(email => ({
         email,
-        createdBy: createdBySystem,
       })),
     )
   }
