@@ -308,6 +308,7 @@ export const en = Object.freeze({
     duration: 'Duration',
     userInvitationAlreadySent: 'An invitation has already been sent.',
     userInvitationSent: 'The user isn’t in the system yet. We’ve sent them an invitation to join.',
+    userAdded: 'User added',
     notSpecified: 'Not specified',
     confirmYourOffice: (office: string) => `Confirm ${office} office`,
     itCannotBeChanged: (admin: string) =>

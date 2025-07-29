@@ -17,7 +17,7 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Ip.Workspac
   const get = useQuery({
     queryKey: queryKeys.version(workspaceId, formId),
     queryFn: () => apiv2.form.version.getByFormId({workspaceId, formId}),
-    staleTime: duration(10, 'minute'),
+    
   })
 
   const validateXls = useMutation({

@@ -7,7 +7,7 @@ import {IpIconBtn} from '@/shared/IconBtn'
 import {Page} from '@/shared/Page'
 import {Panel} from '@/shared/Panel'
 import {Txt} from '@/shared/Txt'
-import {Obj, seq} from '@axanc/ts-utils'
+import {fnSwitch, Obj, seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
 import {AddUserForm} from './AddUserForm'
 import {useQueryUser} from '@/core/query/useQueryUser'
@@ -17,12 +17,18 @@ import {settingsRoute} from '@/features/Settings/Settings'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Ip} from 'infoportal-api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
+import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {Icon} from '@mui/material'
 
 export const settingsUsersRoute = createRoute({
   getParentRoute: () => settingsRoute,
   path: 'users',
   component: SettingsUsers,
 })
+
+type Data = Ip.User & {
+  status: 'invitation' | 'user'
+}
 
 function SettingsUsers() {
   const {m, formatDate, formatDateTime} = useI18n()
@@ -32,11 +38,30 @@ function SettingsUsers() {
   const navigate = useNavigate()
   const ctxSession = useSession()
   const queryUserGet = useQueryUser.getAll(workspaceId)
+  const queryInvitation = useQueryWorkspaceInvitation.search({workspaceId})
 
   const connectAs = async (email: Ip.User.Email) => {
     await ctxSession.connectAs.mutateAsync(email)
     await navigate({to: '/'})
   }
+
+  const data: Data[] | undefined = useMemo(() => {
+    if (queryUserGet.data && queryInvitation.data) {
+      return [
+        ...queryInvitation.data.map(_ => {
+          return {
+            id: _.id as unknown as Ip.UserId,
+            accessLevel: _.accessLevel,
+            createdAt: _.createdAt,
+            status: 'invitation',
+            email: _.toEmail,
+            avatar: undefined,
+          } as const
+        }),
+        ...queryUserGet.data.map(_ => ({..._, status: 'user'}) as const),
+      ]
+    }
+  }, [queryUserGet.data, queryInvitation.data])
 
   const emailsLists = useMemo(() => queryUserGet.data?.map(_ => _.email), [queryUserGet.data])
 
@@ -48,7 +73,7 @@ function SettingsUsers() {
           id="users"
           showExportBtn
           defaultLimit={100}
-          data={queryUserGet.data}
+          data={data}
           header={
             permission.user_canCreate && (
               <Modal
@@ -67,9 +92,24 @@ function SettingsUsers() {
           columns={[
             {
               width: 0,
+              id: 'status',
+              type: 'select_one',
+              head: m.status,
+              align: 'center',
+              render: _ => {
+                const label = fnSwitch(_.status, {
+                  user: <Icon color="success">person_check</Icon>,
+                  invitation: <Icon color="warning">schedule</Icon>,
+                })
+                return {label, value: _.status}
+              },
+            },
+            {
+              width: 0,
+              align: 'center',
               id: 'avatar',
               head: '',
-              renderQuick: _ => <AppAvatar size={24} email={_.email} />,
+              renderQuick: _ => _.status === 'user' && <AppAvatar size={24} email={_.email} />,
             },
             {
               type: 'string',

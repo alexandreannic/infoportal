@@ -18,12 +18,12 @@ import {useQueryPermission} from '@/core/query/useQueryPermission'
 
 export interface SessionContext {
   originalEmail?: string
-  user: User
+  user: Ip.User
   globalPermission: Ip.Permission.Global
   logout: () => Promise<void>
   connectAs: ReturnType<typeof useQuerySession>['connectAs']
   revertConnectAs: ReturnType<typeof useQuerySession>['revertConnectAs']
-  setUser: (_: User) => void
+  setUser: (_: Ip.User) => void
 }
 
 const Context = React.createContext(
@@ -72,7 +72,7 @@ export const SessionProvider = ({children}: {children: ReactNode}) => {
         revertConnectAs: querySession.revertConnectAs,
         connectAs: querySession.connectAs,
         user: user,
-        setUser: (_: User) => queryClient.setQueryData(queryKeys.session(), _),
+        setUser: (_: Ip.User) => queryClient.setQueryData(queryKeys.session(), _),
         logout: async () => {
           await querySession.logout.mutateAsync()
           await navigate({to: '/'})

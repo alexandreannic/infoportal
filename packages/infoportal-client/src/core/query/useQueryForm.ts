@@ -26,7 +26,7 @@ export const useQueryForm = (workspaceId: Ip.WorkspaceId) => {
       //   .catch(toastAndThrowHttpError)
       // // return _forms.get?.filter(_ => session.user.admin || koboAccesses.includes(_.id))
     },
-    staleTime: duration(10, 'minute'),
+    
   })
 
   const importFromKobo = useMutation<Ip.Form, ApiError, Ip.Form.Payload.Import>({
@@ -97,7 +97,7 @@ export const useQueryFormById = ({workspaceId, formId}: {workspaceId: Ip.Workspa
   const get = useQuery({
     queryKey: queryKeys.form(workspaceId, formId),
     queryFn: () => apiv2.form.get({workspaceId, formId}).catch(toastAndThrowHttpError),
-    staleTime: duration(10, 'minute'),
+    
   })
   return {get, update, remove, disconnectFromKobo}
 }

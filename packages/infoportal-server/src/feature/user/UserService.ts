@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient, User} from '@prisma/client'
 import {UUID} from 'infoportal-common'
 import {app, AppLogger} from '../../index.js'
 import {Ip} from 'infoportal-api-sdk'
@@ -34,18 +34,18 @@ export class UserService {
       orderBy: {lastConnectedAt: 'desc'},
       select: {
         id: true,
-        accessToken: true,
-        activities: false,
         accessLevel: true,
-        avatar: false,
-        createdBy: true,
         createdAt: true,
         drcOffice: true,
         drcJob: true,
         email: true,
         lastConnectedAt: true,
         name: true,
-        officer: true,
+        location: true,
+        job: true,
+        accessToken: false,
+        activities: false,
+        avatar: false,
       },
     })
   }

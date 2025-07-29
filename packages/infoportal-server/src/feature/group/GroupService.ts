@@ -3,6 +3,7 @@ import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {InferType} from 'yup'
 import {UUID} from 'infoportal-common'
 import {format} from 'date-fns'
+import {Ip} from 'infoportal-api-sdk'
 
 export type GroupCreateParams = InferType<typeof GroupService.schema.create>
 export type GroupUpdateParams = InferType<typeof GroupService.schema.update>
@@ -61,7 +62,7 @@ export class GroupService {
     user,
   }: {
     workspaceId: UUID
-    user?: User
+    user?: Ip.User
     name?: string
     featureId?: UUID
   }) => {

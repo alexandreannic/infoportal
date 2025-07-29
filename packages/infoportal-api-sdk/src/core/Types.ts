@@ -97,9 +97,20 @@ export namespace Ip {
 
   // === User
   export type UserId = Brand<string, 'userId'>
-  export type User = Omit<Prisma.User, 'id' | 'email'> & {
+  export type User = {
     id: UserId
     email: User.Email
+    createdAt: Date
+    lastConnectedAt?: Date
+    name?: string
+    /**@deprecated*/
+    drcJob?: string
+    /**@deprecated*/
+    drcOffice?: string
+    avatar: any
+    accessLevel: AccessLevel
+    location?: string
+    job?: string
   }
   export namespace User {
     export type Email = Brand<string, 'email'>
@@ -114,6 +125,7 @@ export namespace Ip {
     export type InvitationId = Brand<string, 'workspaceInvitation'>
     export type Invitation = Prisma.WorkspaceInvitation & {
       id: InvitationId
+      toEmail: User.Email
     }
 
     export type Access = Prisma.WorkspaceAccess
@@ -228,7 +240,7 @@ export namespace Ip {
         paginate?: Pagination
         workspaceId: WorkspaceId
         formId: FormId
-        user?: User
+        user?: Ip.User
       }
     }
   }

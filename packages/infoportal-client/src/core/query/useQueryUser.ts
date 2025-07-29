@@ -1,4 +1,3 @@
-import {duration} from '@axanc/ts-utils'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
@@ -17,7 +16,6 @@ function getAll(workspaceId: Ip.WorkspaceId) {
   return useQuery({
     queryKey: queryKeys.user(workspaceId),
     queryFn: () => api.user.search({workspaceId}).catch(toastAndThrowHttpError),
-    staleTime: duration(10, 'minute'),
   })
 }
 
@@ -31,6 +29,7 @@ function create(workspaceId: Ip.WorkspaceId) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: queryKeys.user(workspaceId)})
+      queryClient.invalidateQueries({queryKey: queryKeys.workspaceInvitation(workspaceId)})
     },
     // onError: toastHttpError,
   })

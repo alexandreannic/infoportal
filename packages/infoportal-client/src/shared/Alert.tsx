@@ -26,7 +26,7 @@ export const IpAlert = forwardRef(({content, hidden, deletable, sx, onClose, ...
   return (
     <Alert
       {...props}
-      ref={ref}
+      ref={ref as any}
       sx={{
         ...sx,
         ...((hidden || !isVisible || (deletable === 'permanent' && !isPersistentVisible)) && {

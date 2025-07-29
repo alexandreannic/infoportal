@@ -19,7 +19,7 @@ function useQueryPermissionGlobal() {
     },
     queryKey: queryKeys.permission.global(),
     queryFn: apiv2.permission.getMineGlobal,
-    staleTime: duration(10, 'minute'),
+    
   })
 }
 
@@ -28,7 +28,7 @@ function useQueryPermissionByWorkspace({workspaceId}: {workspaceId: Ip.Workspace
   return useQuery({
     queryKey: queryKeys.permission.byWorkspaceId(workspaceId),
     queryFn: () => apiv2.permission.getMineByWorkspace({workspaceId}),
-    staleTime: duration(10, 'minute'),
+    
   })
 }
 
@@ -37,6 +37,6 @@ function useQueryPermissionByForm({workspaceId, formId}: {workspaceId: Ip.Worksp
   return useQuery({
     queryKey: queryKeys.permission.byFormId(workspaceId, formId),
     queryFn: () => apiv2.permission.getMineByForm({workspaceId, formId}),
-    staleTime: duration(10, 'minute'),
+    
   })
 }

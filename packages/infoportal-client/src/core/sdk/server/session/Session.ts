@@ -1,9 +1,8 @@
-import {User} from '@/core/sdk/server/user/User'
 import {Ip} from 'infoportal-api-sdk'
 
 export type Session = {
   originalEmail?: string
-  user: User
+  user: Ip.User
   workspaces: Ip.Workspace[]
 }
 

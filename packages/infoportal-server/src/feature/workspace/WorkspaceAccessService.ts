@@ -75,7 +75,7 @@ export class WorkspaceAccessService {
       .then(_ => _.map(PrismaHelper.mapWorkspaceInvitation))
   }
 
-  readonly getByUser = async ({workspaceId, user}: {workspaceId: Ip.WorkspaceId; user: User}) => {
+  readonly getByUser = async ({workspaceId, user}: {workspaceId: Ip.WorkspaceId; user: Ip.User}) => {
     return this.prisma.workspaceAccess.findFirst({
       where: {workspaceId, user: {email: user.email}},
     })
