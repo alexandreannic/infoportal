@@ -6,10 +6,7 @@ import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {Regexp} from 'infoportal-common'
 import {Controller, useForm} from 'react-hook-form'
 import {HttpError, Ip} from 'infoportal-api-sdk'
-import {useQueryUser} from '@/core/query/useQueryUser'
-import {useState} from 'react'
-import {Collapse, Grow} from '@mui/material'
-import {fnSwitch, Obj} from '@axanc/ts-utils'
+import {Collapse} from '@mui/material'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 
 type Form = {
@@ -87,7 +84,7 @@ export const AddUserForm = ({
         </IpAlert>
       </Collapse>
       <Collapse in={queryInvitation.isSuccess} mountOnEnter unmountOnExit>
-        <IpAlert sx={{mt: 1}} severity="info" action={CloseBtn}>
+        <IpAlert sx={{mt: 1}} severity="success" action={CloseBtn}>
           {m.userInvitationSent}
         </IpAlert>
       </Collapse>

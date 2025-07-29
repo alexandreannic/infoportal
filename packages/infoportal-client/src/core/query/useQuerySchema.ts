@@ -1,5 +1,4 @@
 import {useLangIndex} from '@/core/store/useLangIndex'
-import {duration} from '@axanc/ts-utils'
 import {QueryClient, useQuery} from '@tanstack/react-query'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {useAppSettings} from '../context/ConfigContext'
@@ -18,7 +17,6 @@ export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.Workspace
       }
     },
     retry: false,
-    
   })
 }
 

@@ -1,6 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
-import {duration} from '@axanc/ts-utils'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
 import {Ip} from 'infoportal-api-sdk'
@@ -20,7 +19,6 @@ function getByFormId({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId
     queryFn: async () => {
       return apiv2.form.access.search({workspaceId, formId}).catch(toastAndThrowHttpError)
     },
-    
   })
 }
 

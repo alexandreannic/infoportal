@@ -2,9 +2,8 @@ import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {SessionService} from '../../feature/session/SessionService.js'
-import {HttpError} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
 import {isAuthenticated} from '../Routes.js'
-import {Ip} from 'infoportal-api-sdk'
 
 export class ControllerSession {
   constructor(

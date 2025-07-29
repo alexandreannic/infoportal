@@ -1,4 +1,3 @@
-import {duration} from '@axanc/ts-utils'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
@@ -14,7 +13,6 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   const queryClient = useQueryClient()
 
   const getAll = useQuery({
-    
     queryKey: queryKeys.group(workspaceId),
     queryFn: () => {
       return api.group.search({workspaceId}).catch(toastAndThrowHttpError)

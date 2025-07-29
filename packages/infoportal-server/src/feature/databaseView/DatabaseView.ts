@@ -1,7 +1,6 @@
 import {DatabaseViewVisibility, Prisma, PrismaClient} from '@prisma/client'
 import {UUID} from 'infoportal-common'
-import {HttpError} from 'infoportal-api-sdk'
-import {Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
 
 export class DatabaseView {
   constructor(private prisma: PrismaClient) {}

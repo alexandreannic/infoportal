@@ -26,7 +26,6 @@ import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
 import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Ip} from 'infoportal-api-sdk'
-import {useFormContext} from '@/features/Form/Form'
 import {AppAvatar} from '@/shared'
 import {useFormSocket} from '@/features/Form/useFormSocket'
 

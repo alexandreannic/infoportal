@@ -2,7 +2,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
-import {duration, seq} from '@axanc/ts-utils'
+import {seq} from '@axanc/ts-utils'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {Ip} from 'infoportal-api-sdk'
 import {useMemo} from 'react'
@@ -26,7 +26,6 @@ export const useQueryForm = (workspaceId: Ip.WorkspaceId) => {
       //   .catch(toastAndThrowHttpError)
       // // return _forms.get?.filter(_ => session.user.admin || koboAccesses.includes(_.id))
     },
-    
   })
 
   const importFromKobo = useMutation<Ip.Form, ApiError, Ip.Form.Payload.Import>({
@@ -65,7 +64,7 @@ export const useQueryFormById = ({workspaceId, formId}: {workspaceId: Ip.Workspa
   const {toastHttpError, toastAndThrowHttpError} = useIpToast()
   const queryClient = useQueryClient()
 
-  const remove = useMutation<number, ApiError, void>({
+  const remove = useMutation<void, ApiError, void>({
     mutationFn: () => apiv2.form.remove({workspaceId, formId}),
     onSuccess: _ => {
       queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
@@ -97,7 +96,6 @@ export const useQueryFormById = ({workspaceId, formId}: {workspaceId: Ip.Workspa
   const get = useQuery({
     queryKey: queryKeys.form(workspaceId, formId),
     queryFn: () => apiv2.form.get({workspaceId, formId}).catch(toastAndThrowHttpError),
-    
   })
   return {get, update, remove, disconnectFromKobo}
 }

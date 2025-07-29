@@ -3,7 +3,6 @@ import {useAppSettings} from '../context/ConfigContext'
 import {KoboMapper} from '../sdk/server/kobo/KoboMapper'
 import {queryKeys} from './query.index'
 import {getSchema, useQuerySchema} from './useQuerySchema'
-import {duration} from '@axanc/ts-utils'
 import {Ip, Paginate} from 'infoportal-api-sdk'
 import {produce} from 'immer'
 
@@ -134,7 +133,6 @@ function search({formId, workspaceId}: {formId: Ip.FormId; workspaceId: Ip.Works
         answers,
       )
     },
-    
   })
 
   const set = (value: Ip.Paginate<Ip.Submission>) => {

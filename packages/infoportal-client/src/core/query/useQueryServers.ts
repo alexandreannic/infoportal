@@ -1,6 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
-import {duration} from '@axanc/ts-utils'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
 import {ApiError} from '@/core/sdk/server/ApiClient'
@@ -20,7 +19,6 @@ export const useQueryServers = (workspaceId: Ip.WorkspaceId) => {
       })
       return servers
     },
-    
   })
 
   const create = useMutation<Ip.Server, ApiError, Ip.Server.Payload.Create>({
@@ -50,7 +48,6 @@ export const useQueryServer = ({workspaceId, serverId}: {workspaceId: Ip.Workspa
   const get = useQuery({
     queryKey: queryKeys.server(workspaceId, serverId),
     queryFn: () => apiv2.server.get({workspaceId, id: serverId}).catch(toastAndThrowHttpError),
-    
   })
   return {get, remove}
 }

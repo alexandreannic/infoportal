@@ -2,7 +2,7 @@ import {AppConf, appConf} from './core/conf/AppConf.js'
 import {Server} from './server/Server.js'
 import {PrismaClient} from '@prisma/client'
 import {ScheduledTask} from './scheduledTask/ScheduledTask.js'
-import {IpCache, IpCacheApp} from 'infoportal-common'
+import {IpCache, IpCacheApp, IpEventClient} from 'infoportal-common'
 import {duration} from '@axanc/ts-utils'
 import * as winston from 'winston'
 import {format, Logger as WinstonLogger} from 'winston'
@@ -10,7 +10,6 @@ import {Syslog} from 'winston-syslog'
 import {EmailService} from './feature/email/EmailService.js'
 import {DbInit} from './core/DbInit.js'
 import * as os from 'os'
-import {IpEventClient} from 'infoportal-common'
 
 export type AppLogger = WinstonLogger
 

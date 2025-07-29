@@ -1,7 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
-import {duration} from '@axanc/ts-utils'
 import {Ip} from 'infoportal-api-sdk'
 
 export const useQuerySchemaByVersion = ({
@@ -18,6 +17,5 @@ export const useQuerySchemaByVersion = ({
     queryKey: queryKeys.schemaByVersion(workspaceId, formId, versionId),
     queryFn: () => apiv2.form.getSchemaByVersion({workspaceId, formId, versionId: versionId!}),
     enabled: !!versionId,
-    
   })
 }

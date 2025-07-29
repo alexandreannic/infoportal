@@ -103,12 +103,7 @@ export const KoboServerForm = ({
             pattern: Regexp.get.url,
           }}
           render={({field, fieldState}) => (
-            <IpInput
-              {...field}
-              required
-              label={m.serverUrlV1}
-              error={fieldState.invalid}
-            />
+            <IpInput {...field} required label={m.serverUrlV1} error={fieldState.invalid} />
           )}
         />
         <Controller
@@ -120,12 +115,7 @@ export const KoboServerForm = ({
             pattern: Regexp.get.url,
           }}
           render={({field, fieldState}) => (
-            <IpInput
-              required
-              {...field}
-              label={m.serverUrlV2}
-              error={fieldState.invalid}
-            />
+            <IpInput required {...field} label={m.serverUrlV2} error={fieldState.invalid} />
           )}
         />
       </AccessFormSection>

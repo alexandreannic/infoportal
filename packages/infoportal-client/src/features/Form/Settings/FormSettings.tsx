@@ -2,10 +2,9 @@ import {IpBtn, Modal, Page, Txt} from '@/shared'
 import {Panel, PanelBody} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
 import {ReactNode} from 'react'
-import {Box, Switch, useTheme} from '@mui/material'
+import {Box, useTheme} from '@mui/material'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {useQueryFormById} from '@/core/query/useQueryForm'
-import {match} from '@axanc/ts-utils'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 
 export const formSettingsRoute = createRoute({

@@ -101,7 +101,7 @@ export const styleUtils = (t: Theme) => ({
     backgroundActive: {
       background:
         t.palette.mode === 'dark'
-          ? darken(alpha(t.palette.primary.dark, 0.4), .7)
+          ? darken(alpha(t.palette.primary.dark, 0.4), 0.7)
           : lighten(alpha(t.palette.primary.light, 0.9), 0.6),
       backdropFilter: 'blur(6px)',
     },

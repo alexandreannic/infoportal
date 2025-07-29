@@ -1,11 +1,7 @@
 import {EmailClient} from './EmailClient.js'
-import {KoboCustomDirective, Regexp} from 'infoportal-common'
 import {app} from '../../index.js'
 import {PrismaClient} from '@prisma/client'
-import {Obj, seq} from '@axanc/ts-utils'
-import {Kobo} from 'kobo-sdk'
 import {FormService} from '../form/FormService.js'
-import {IpEvent, IpEventParams} from 'infoportal-common'
 
 export enum EmailContext {
   Kobo = 'Kobo',

@@ -1,4 +1,4 @@
-import {Box, BoxProps, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
+import {Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
 import {AppAvatar, IpBtn, Modal, Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Panel, PanelBody} from '@/shared/Panel'
@@ -6,7 +6,6 @@ import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {PanelProps} from '@/shared/Panel/Panel.js'
 import {PanelFoot} from '@/shared/Panel/PanelFoot.js'
-import {styleUtils} from '@/core/theme.js'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 
 export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {

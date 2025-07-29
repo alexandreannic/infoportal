@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react'
 import {useSession} from '@/core/Session/SessionContext'
-import {Box, BoxProps, Chip, Icon, Popover, SxProps, useTheme} from '@mui/material'
+import {Box, BoxProps, Chip, Icon, Popover, SxProps} from '@mui/material'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
 import {IpBtn} from '@/shared/Btn'

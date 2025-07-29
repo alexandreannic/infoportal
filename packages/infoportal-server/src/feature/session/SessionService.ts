@@ -7,9 +7,8 @@ import {SessionError} from './SessionErrors.js'
 import {google} from 'googleapis'
 import {WorkspaceService} from '../workspace/WorkspaceService.js'
 import {UserProfile} from './AppSession.js'
-import {Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
 import {PrismaHelper} from '../../core/PrismaHelper.js'
-import {HttpError} from 'infoportal-api-sdk'
 import {UserService} from '../user/UserService.js'
 
 export class SessionService {

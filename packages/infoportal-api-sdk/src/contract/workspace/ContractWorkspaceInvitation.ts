@@ -3,7 +3,6 @@ import {Ip} from '../../core/Types.js'
 import {map200, map204, TsRestClient} from '../../core/IpClient.js'
 import {makeMeta, schema} from '../../core/Schema.js'
 import {z} from 'zod'
-import {mapWorkspaceAccess} from './ContractWorkspaceAccess.js'
 
 const c = initContract()
 
