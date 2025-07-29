@@ -23,7 +23,14 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
 
   const queryWorkspaceCreate = useQueryWorkspace.create()
 
-  const form = useForm<Form>()
+  const form = useForm<Form>({
+    mode: 'onChange',
+    defaultValues: {
+      name: '',
+      slug: '',
+      sector: '',
+    },
+  })
   const [disableSlug, setDisableSlug] = useState(true)
 
   const fetchCheckSlug = useFetcher(apiv2.workspace.checkSlug)
@@ -35,12 +42,12 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
 
   useEffect(() => {
     if (watch.name === '') {
-      form.setValue('slug', '')
+      form.setValue('slug', '', {shouldValidate: true, shouldTouch: true, shouldDirty: true})
       return
     }
     const handler = setTimeout(() => {
       fetchCheckSlug.fetch({force: true, clean: false}, watch.name).then(res => {
-        form.setValue('slug', res.suggestedSlug)
+        form.setValue('slug', res.suggestedSlug, {shouldValidate: true, shouldTouch: true, shouldDirty: true})
       })
     }, 400)
 
@@ -61,14 +68,10 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
     })
   }, [watch.slug])
 
-  const submit = async () => {
+  const submit = async (values: Form) => {
     try {
-      await queryWorkspaceCreate.mutate(form.getValues())
-      form.reset({
-        name: '',
-        slug: '',
-        sector: '',
-      })
+      await queryWorkspaceCreate.mutate(values)
+      form.reset()
       onClose?.()
     } catch (e) {
       toastHttpError(e)
@@ -76,7 +79,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
   }
 
   return (
-    <>
+    <form onSubmit={form.handleSubmit(submit)}>
       <Controller
         control={form.control}
         rules={{
@@ -100,9 +103,6 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
             required
             error={!!fieldState.error?.message}
             helperText={fieldState.error?.message}
-            InputLabelProps={{
-              shrink: !!field.value,
-            }}
             endAdornment={
               <Box display="flex" justifyContent="center" alignItems="center" height={40}>
                 <CircularProgress sx={{visibility: fetchCheckSlug.loading ? 'visible' : 'hidden'}} size={24} />
@@ -116,6 +116,9 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
       <Controller
         control={form.control}
         name="sector"
+        rules={{
+          required: false,
+        }}
         render={({field}) => (
           <IpSelectSingle
             sx={{mt: 2}}
@@ -145,10 +148,16 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
             {m.close}
           </IpBtn>
         )}
-        <IpBtn variant="contained" size="large" loading={queryWorkspaceCreate.isPending} onClick={submit}>
+        <IpBtn
+          disabled={!form.formState.isValid}
+          variant="contained"
+          size="large"
+          loading={queryWorkspaceCreate.isPending}
+          type="submit"
+        >
           {m.create}
         </IpBtn>
       </CardActions>
-    </>
+    </form>
   )
 }

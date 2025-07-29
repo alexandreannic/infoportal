@@ -14,22 +14,17 @@ export type Meta = {
 export const makeMeta = (_: Meta) => _
 
 export const schema = (() => {
-  const workspaceId = z.string() as unknown as z.ZodType<Ip.WorkspaceId>
-  const uuid = z.string() as unknown as z.ZodType<Ip.Uuid>
-  const formId = z.string() as unknown as z.ZodType<Ip.FormId>
-  const versionId = z.string() as unknown as z.ZodType<Ip.Form.VersionId>
-  const serverId = z.string() as unknown as z.ZodType<Ip.ServerId>
-  const formAccessId = z.string() as unknown as z.ZodType<Ip.Form.AccessId>
-  const submissionId = z.string() as unknown as z.ZodType<Ip.SubmissionId>
-  const emptyResult = initContract().type<void>()
+  const c = initContract()
   return {
-    submissionId,
-    workspaceId,
-    uuid,
-    formId,
-    versionId,
-    serverId,
-    formAccessId,
-    emptyResult,
+    workspaceId: z.string() as unknown as z.ZodType<Ip.WorkspaceId>,
+    workspaceInvitationId: z.string() as unknown as z.ZodType<Ip.Workspace.InvitationId>,
+    uuid: z.string() as unknown as z.ZodType<Ip.Uuid>,
+    formId: z.string() as unknown as z.ZodType<Ip.FormId>,
+    versionId: z.string() as unknown as z.ZodType<Ip.Form.VersionId>,
+    serverId: z.string() as unknown as z.ZodType<Ip.ServerId>,
+    formAccessId: z.string() as unknown as z.ZodType<Ip.Form.AccessId>,
+    submissionId: z.string() as unknown as z.ZodType<Ip.SubmissionId>,
+    emptyResult: c.type<void>(),
+    emptyBody: c.type<void>(),
   }
 })()

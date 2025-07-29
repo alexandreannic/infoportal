@@ -27,6 +27,7 @@ import {PermissionService} from '../feature/PermissionService.js'
 import {WorkspaceService} from '../feature/workspace/WorkspaceService.js'
 import {WorkspaceAccessService} from '../feature/workspace/WorkspaceAccessService.js'
 import {SubmissionService} from '../feature/form/submission/SubmissionService.js'
+import {WorkspaceInvitationService} from '../feature/workspace/WorkspaceInvitationService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -141,6 +142,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
 
   const workspace = new WorkspaceService(prisma)
   const workspaceAccess = new WorkspaceAccessService(prisma)
+  const workspaceInvitation = new WorkspaceInvitationService(prisma)
   const koboForm = new KoboFormService(prisma)
   const form = new FormService(prisma)
   const formVersion = new FormVersionService(prisma)
@@ -202,19 +204,28 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(ok204)
           .catch(handleError),
       invitation: {
-        search: _ =>
-          auth2(_)
-            .then(({params}) => workspaceAccess.searchInvitations({workspaceId: params.workspaceId}))
-            .then(ok200)
-            .catch(handleError),
-      },
-      access: {
         create: _ =>
           auth2(_)
-            .then(({body, params, req}) => workspaceAccess.create({...body, ...params}, req.session.app.user.email))
+            .then(({body, params, req}) => workspaceInvitation.create({...body, ...params}, req.session.app.user.email))
+            .then(ok200)
+            .catch(handleError),
+        accept: _ =>
+          auth2(_)
+            .then(({params, body}) => workspaceInvitation.accept({id: params.id, accept: body.accept}))
+            .then(ok204)
+            .catch(handleError),
+        getMine: _ =>
+          auth2(_)
+            .then(({req}) => workspaceInvitation.getByUser({user: req.session.app.user}))
+            .then(ok200)
+            .catch(handleError),
+        search: _ =>
+          auth2(_)
+            .then(({params}) => workspaceInvitation.getByWorkspace({workspaceId: params.workspaceId}))
             .then(ok200)
             .catch(handleError),
       },
+      access: {},
     },
     permission: {
       getMineGlobal: _ =>

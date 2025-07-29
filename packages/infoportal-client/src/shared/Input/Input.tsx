@@ -18,10 +18,12 @@ export const IpInput = React.forwardRef(
 
     return (
       <FormControl size={size} sx={{width: '100%', ...sx}} error={error}>
-        <InputLabel {...InputLabelProps} htmlFor={id}>
+        <InputLabel {...InputLabelProps} htmlFor={id} shrink={!!props.value}>
           {label}
         </InputLabel>
         <OutlinedInput
+          notched={!!props.value}
+          slotProps={{}}
           error={error}
           label={label}
           inputRef={inputElement}

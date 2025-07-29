@@ -13,7 +13,7 @@ export const queryKeys = {
     byWorkspaceId: (workspaceId: Ip.WorkspaceId) => ['permission', 'workspace', workspaceId],
     byFormId: (workspaceId: Ip.WorkspaceId, formId: Ip.FormId) => ['permission', 'form', workspaceId, formId],
   },
-  workspaceInvitation: (workspaceId?: Ip.WorkspaceId) => concat('workspace', 'invitation', workspaceId),
+  workspaceInvitation: (workspaceId?: Ip.WorkspaceId | 'me') => concat('workspace', 'invitation', workspaceId),
   workspaces: () => ['workspace'],
   originalEmail: () => ['originalEmail'],
   koboForm: (serverId?: Ip.ServerId) => concat('koboForm', serverId),

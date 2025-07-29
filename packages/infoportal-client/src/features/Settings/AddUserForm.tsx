@@ -10,6 +10,7 @@ import {useQueryUser} from '@/core/query/useQueryUser'
 import {useState} from 'react'
 import {Collapse, Grow} from '@mui/material'
 import {fnSwitch, Obj} from '@axanc/ts-utils'
+import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 
 type Form = {
   email: Ip.User.Email
@@ -29,18 +30,15 @@ export const AddUserForm = ({
 }) => {
   const {m} = useI18n()
   const form = useForm<Form>({mode: 'onChange', defaultValues: {email: '', level: Ip.AccessLevel.Read}})
-  const queryUserCreate = useQueryUser.create(workspaceId)
-  const [result, setResult] = useState<'newAccess' | 'newInvitation'>()
+  const queryInvitation = useQueryWorkspaceInvitation.create(workspaceId)
 
   const submit = async (values: Form) => {
-    setResult(undefined)
-    const res = await queryUserCreate.mutateAsync(values)
-    setResult(Obj.keys(res)[0])
+    await queryInvitation.mutateAsync(values)
     form.reset()
     // onClose?.()
   }
 
-  const CloseBtn = <IpBtn children={m.close} color="inherit" size="small" onClick={() => setResult(undefined)} />
+  const CloseBtn = <IpBtn children={m.close} color="inherit" size="small" onClick={queryInvitation.reset} />
 
   return (
     <form onSubmit={form.handleSubmit(submit)} style={{width: 400}}>
@@ -83,41 +81,19 @@ export const AddUserForm = ({
           </ScRadioGroup>
         )}
       />
-      <Collapse in={!!queryUserCreate.error} mountOnEnter unmountOnExit>
-        <IpAlert
-          sx={{mt: 1}}
-          severity="error"
-          action={CloseBtn}
-        >
-          {queryUserCreate.error instanceof HttpError.Conflict ? m.userInvitationAlreadySent : m.anErrorOccurred}
+      <Collapse in={!!queryInvitation.error} mountOnEnter unmountOnExit>
+        <IpAlert sx={{mt: 1}} severity="error" action={CloseBtn}>
+          {queryInvitation.error instanceof HttpError.Conflict ? m.userInvitationAlreadySent : m.anErrorOccurred}
         </IpAlert>
       </Collapse>
-      <Collapse in={!!result} mountOnEnter unmountOnExit>
-        {result &&
-          fnSwitch(result, {
-            newAccess: (
-              <IpAlert
-                sx={{mt: 1}}
-                severity="success"
-                action={CloseBtn}
-              >
-                {m.userAdded}
-              </IpAlert>
-            ),
-            newInvitation: (
-              <IpAlert
-                sx={{mt: 1}}
-                severity="info"
-                action={CloseBtn}
-              >
-                {m.userInvitationSent}
-              </IpAlert>
-            ),
-          })}
+      <Collapse in={queryInvitation.isSuccess} mountOnEnter unmountOnExit>
+        <IpAlert sx={{mt: 1}} severity="info" action={CloseBtn}>
+          {m.userInvitationSent}
+        </IpAlert>
       </Collapse>
       <PanelFoot sx={{mt: 2, p: 0}} alignEnd>
         {onClose && <IpBtn onClick={onClose}>{m.close}</IpBtn>}
-        <IpBtn variant="outlined" type="submit" disabled={!form.formState.isValid} loading={queryUserCreate.isPending}>
+        <IpBtn variant="outlined" type="submit" disabled={!form.formState.isValid} loading={queryInvitation.isPending}>
           {m.submit}
         </IpBtn>
       </PanelFoot>

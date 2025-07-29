@@ -11,21 +11,21 @@ datasource db {
 }
 
 model Workspace {
-  id                  String                @id @default(uuid()) @db.Uuid
-  createdAt           DateTime              @default(now())
-  createdBy           String
-  name                String
-  slug                String                @unique
-  sector              String?
-  koboServer          KoboServer[]
-  form                Form[]
-  groups              Group[]
-  accessTokens        AccessToken[]
-  proxys              Proxy[]
-  emailOutBoxs        EmailOutBox[]
-  featureAccesses     FormAccess[]
-  workspaceAccess     WorkspaceAccess[]
-  workspaceInvitation WorkspaceInvitation[]
+  id              String                @id @default(uuid()) @db.Uuid
+  createdAt       DateTime              @default(now())
+  createdBy       String
+  name            String
+  slug            String                @unique
+  sector          String?
+  koboServer      KoboServer[]
+  form            Form[]
+  groups          Group[]
+  accessTokens    AccessToken[]
+  proxys          Proxy[]
+  emailOutBoxs    EmailOutBox[]
+  featureAccesses FormAccess[]
+  access          WorkspaceAccess[]
+  invitation      WorkspaceInvitation[]
 
   @@index([slug])
 }
@@ -40,6 +40,7 @@ model WorkspaceInvitation {
   workspaceId String      @db.Uuid
 
   @@unique([workspaceId, toEmail])
+  @@index([toEmail])
 }
 
 model WorkspaceAccess {

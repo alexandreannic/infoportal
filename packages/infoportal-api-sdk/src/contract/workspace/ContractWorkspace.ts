@@ -53,24 +53,17 @@ export const workspaceContract = c.router({
   },
 })
 
-export const mapWorkspace = (u: Ip.Workspace): Ip.Workspace => {
-  return {
-    ...u,
-    createdAt: new Date(u.createdAt),
-  }
-}
-
 export const workspaceClient = (client: TsRestClient) => {
   return {
     getMine: () =>
       client.workspace
         .getMine()
         .then(map200)
-        .then(_ => _.map(mapWorkspace)),
+        .then(_ => _.map(Ip.Workspace.map)),
     checkSlug: (slug: string) => client.workspace.checkSlug({body: {slug}}).then(map200),
-    create: (body: Ip.Workspace.Payload.Create) => client.workspace.create({body}).then(map200).then(mapWorkspace),
+    create: (body: Ip.Workspace.Payload.Create) => client.workspace.create({body}).then(map200).then(Ip.Workspace.map),
     update: ({id, ...body}: Ip.Workspace.Payload.Update) =>
-      client.workspace.update({params: {id}, body}).then(map200).then(mapWorkspace),
+      client.workspace.update({params: {id}, body}).then(map200).then(Ip.Workspace.map),
     remove: (id: Ip.Uuid) => client.workspace.remove({params: {id}}).then(map204),
   }
 }

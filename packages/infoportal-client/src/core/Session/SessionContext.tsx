@@ -107,22 +107,25 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
       </CenteredContent>
     )
   }
-  if (queryWorkspace.data?.length === 0) {
-    return (
-      <Page sx={{maxWidth: 400}}>
-        <CenteredContent>
-          <div>
-            {/* <Txt>{session.user.email}</Txt> */}
-            <IpBtn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
-              {user.email}
-            </IpBtn>
-            <PageTitle>{m.onboardingTitle}</PageTitle>
-            <WorkspaceCreate />
-          </div>
-        </CenteredContent>
-      </Page>
-    )
-  }
+  // if (queryWorkspace.data?.length === 0) {
+  //
+  // }
+  // if (queryWorkspace.data?.length === 0) {
+  //   return (
+  //     <Page sx={{maxWidth: 400}}>
+  //       <CenteredContent>
+  //         <div>
+  //           {/* <Txt>{session.user.email}</Txt> */}
+  //           <IpBtn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
+  //             {user.email}
+  //           </IpBtn>
+  //           <PageTitle>{m.onboardingTitle}</PageTitle>
+  //           <WorkspaceCreate />
+  //         </div>
+  //       </CenteredContent>
+  //     </Page>
+  //   )
+  // }
   return (
     <>
       {originalEmail && (
