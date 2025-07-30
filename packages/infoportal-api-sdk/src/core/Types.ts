@@ -79,7 +79,8 @@ export namespace Ip {
       user_canDelete: boolean
       user_canUpdate: boolean
       user_canRead: boolean
-      use_canConnectAs: boolean
+      user_canConnectAs: boolean
+      form_canGetAll: boolean
     }
 
     export type Global = {

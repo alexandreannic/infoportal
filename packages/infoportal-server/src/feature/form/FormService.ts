@@ -5,7 +5,7 @@ import {FormAccessService} from './access/FormAccessService.js'
 import {PrismaHelper} from '../../core/PrismaHelper.js'
 import {Kobo} from 'kobo-sdk'
 import {app, AppCacheKey} from '../../index.js'
-import {duration} from '@axanc/ts-utils'
+import {duration, seq} from '@axanc/ts-utils'
 import {KoboSdkGenerator} from '../kobo/KoboSdkGenerator.js'
 
 export type FormServiceCreatePayload = Ip.Form.Payload.Create & {
@@ -22,6 +22,7 @@ export class FormService {
   constructor(
     private prisma: PrismaClient,
     private formVersion = new FormVersionService(prisma),
+    private access = new FormAccessService(prisma),
     private koboSdk = KoboSdkGenerator.getSingleton(prisma),
     private formAccess = new FormAccessService(prisma),
   ) {}
@@ -160,6 +161,23 @@ export class FormService {
       this.prisma.formAccess.deleteMany({where: {formId: id}}),
     ])
     await this.prisma.form.delete({where: {id}})
+  }
+
+  readonly getByUser = async ({workspaceId, user}: {user: Ip.User; workspaceId: Ip.WorkspaceId}) => {
+    const accesses = await this.access.search({workspaceId, user})
+    return this.prisma.form
+      .findMany({
+        include: {kobo: true},
+        where: {
+          workspaceId,
+          id: {
+            in: seq(accesses)
+              .map(_ => _.formId)
+              .compact(),
+          },
+        },
+      })
+      .then(_ => _.map(PrismaHelper.mapForm))
   }
 
   readonly getAll = async ({wsId}: {wsId: Ip.WorkspaceId}): Promise<Ip.Form[]> => {

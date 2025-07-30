@@ -33,8 +33,9 @@ export namespace Permission {
       user_canDelete: Level.Admin,
       user_canUpdate: Level.Admin,
       user_canRead: Level.Read,
-      use_canConnectAs: Level.Admin,
+      user_canConnectAs: Level.Admin,
       form_canCreate: Level.Write,
+      form_canGetAll: Level.Admin,
     }),
     form: define<Ip.Permission.Form>({
       canGet: Level.Read,

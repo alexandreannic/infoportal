@@ -360,12 +360,17 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({params}) => form.remove(params.formId))
           .then(ok204)
           .catch(handleError),
-      get: ({params}) => form.get(params.formId).then(okOrNotFound).catch(handleError),
       getAll: _ =>
         auth2(_)
           .then(({params}) => form.getAll({wsId: params.workspaceId}))
           .then(ok200)
           .catch(handleError),
+      getMine: _ =>
+        auth2(_)
+          .then(({params, req}) => form.getByUser({user: req.session.app.user, workspaceId: params.workspaceId}))
+          .then(ok200)
+          .catch(handleError),
+      get: ({params}) => form.get(params.formId).then(okOrNotFound).catch(handleError),
       create: _ =>
         auth2(_).then(({req, body, params}) =>
           form

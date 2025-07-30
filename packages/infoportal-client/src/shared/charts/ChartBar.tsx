@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {ReactNode, useMemo, useState} from 'react'
-import {alpha, Box, Icon, TooltipProps} from '@mui/material'
+import {alpha, Box, Checkbox, Icon, TooltipProps} from '@mui/material'
 import {useTimeout} from '@axanc/react-hooks'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
@@ -15,6 +15,7 @@ export interface BarChartData extends ChartDataVal {
 }
 
 interface Props<K extends string> {
+  checked?: K[]
   onClickData?: (_: K, item: BarChartData) => void
   showLastBorder?: boolean
   hideValue?: boolean
@@ -53,6 +54,7 @@ export const ChartBarContent = <K extends string>({
   descs,
   barHeight = 2,
   hideValue,
+  checked,
   onClickData,
   showLastBorder,
 }: Omit<Props<K>, 'data'> & {data: NonNullable<Props<K>['data']>}) => {
@@ -142,8 +144,8 @@ export const ChartBarContent = <K extends string>({
                   >
                     <Txt sx={{p: 0, pr: 0.5, flex: 1}} truncate>
                       <Txt block truncate>
-                        {(labels && labels[k]) ?? ''}
-                        {item.label ?? k}&nbsp;
+                        {checked && <Checkbox size="small" checked={checked.includes(k)} />}
+                        {(labels && labels[k]) ?? item.label ?? k}
                       </Txt>
                       {(item.desc || descs) && (
                         <Txt block color="hint" truncate size="small">

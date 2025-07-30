@@ -7,6 +7,17 @@ import {map200, map204, TsRestClient} from '../../core/IpClient.js'
 const c = initContract()
 
 export const formContract = c.router({
+  getMine: {
+    method: 'GET',
+    path: '/:workspaceId/form/me',
+    pathParams: z.object({
+      workspaceId: schema.workspaceId,
+    }),
+    responses: {
+      200: z.any() as z.ZodType<Ip.Form[]>,
+    },
+  },
+
   refreshAll: {
     method: 'POST',
     path: '/:workspaceId/form/refresh',
@@ -144,11 +155,12 @@ export const formContract = c.router({
     responses: {
       200: z.any() as z.ZodType<Ip.Form[]>,
     },
-    // metadata: makeMeta({
-    //   access: {
-    //     form: ['canGet'],
-    //   },
-    // }),
+    metadata: makeMeta({
+      access: {
+        // global: ['form_canGetAll'],
+        workspace: ['form_canGetAll'],
+      },
+    }),
   },
 })
 
@@ -183,6 +195,13 @@ export const formClient = (client: TsRestClient) => {
     getAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
       return client.form
         .getAll({params: {workspaceId}})
+        .then(map200)
+        .then(_ => _.map(mapForm))
+    },
+
+    getMine: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+      return client.form
+        .getMine({params: {workspaceId}})
         .then(map200)
         .then(_ => _.map(mapForm))
     },

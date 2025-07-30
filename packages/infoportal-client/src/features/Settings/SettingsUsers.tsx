@@ -199,7 +199,7 @@ function SettingsUsers() {
               align: 'right',
               renderQuick: _ => (
                 <>
-                  {_.status === 'user' && permission.use_canConnectAs && (
+                  {_.status === 'user' && permission.user_canConnectAs && (
                     <IpIconBtn
                       disabled={_.email === conf.contact || _.email === ctxSession.user.email}
                       children="visibility"
