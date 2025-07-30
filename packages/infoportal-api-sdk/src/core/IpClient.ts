@@ -11,6 +11,7 @@ import {workspaceAccessClient} from '../contract/workspace/ContractWorkspaceAcce
 import {formSubmissionClient} from '../contract/form/ContractFormSubmission.js'
 import {HttpError} from './HttpError.js'
 import {workspaceInvitationClient} from '../contract/workspace/ContractWorkspaceInvitation.js'
+import {metricsClient} from '../contract/ContractMetrics.js'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -38,6 +39,7 @@ export const buildIpClient = (baseUrl: string) => {
       access: formAccessClient(client),
       version: formVersionClient(client),
     },
+    metrics: metricsClient(client),
   }
 }
 

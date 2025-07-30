@@ -28,6 +28,7 @@ import {WorkspaceService} from '../feature/workspace/WorkspaceService.js'
 import {WorkspaceAccessService} from '../feature/workspace/WorkspaceAccessService.js'
 import {SubmissionService} from '../feature/form/submission/SubmissionService.js'
 import {WorkspaceInvitationService} from '../feature/workspace/WorkspaceInvitationService.js'
+import {MetricsService} from '../feature/MetricsService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -60,8 +61,9 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const cacheController = new ControllerCache()
   const importData = new ControllerKoboApiXlsImport(prisma)
 
-  interface HandlerArgs<TReq = Request, TParams = any, TBody = any> {
+  interface HandlerArgs<TReq = Request, TParams = any, TBody = any, TQuery = any> {
     req: TReq
+    query?: TQuery
     res: Response
     params?: TParams
     body?: TBody
@@ -150,6 +152,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const formSubmission = new SubmissionService(prisma)
   const server = new ServerService(prisma)
   const permission = new PermissionService(prisma, undefined, formAccess)
+  const metrics = new MetricsService(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
     const connectedUser = await permission.checkUserConnected(args.req)
@@ -457,7 +460,26 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .catch(handleError),
       },
     },
+    metrics: {
+      getSubmissionsByMonth: _ =>
+        auth2(_)
+          .then(({params, query}) => metrics.submissionsByMonth({...params, ...parseQs(query)}))
+          .then(ok200)
+          .catch(handleError),
+      getSubmissionsByForm: _ =>
+        auth2(_)
+          .then(({params, query}) => metrics.submissionByForm({...params, ...parseQs(query)}))
+          .then(ok200)
+          .catch(handleError),
+    },
   })
+
+  function parseQs(_: Partial<Record<keyof Ip.Metrics.Payload.Filter, string>>): Ip.Metrics.Payload.Filter {
+    const res = _ as any
+    if (res.end) res.end = new Date(res.end)
+    if (res.start) res.start = new Date(res.start)
+    return res
+  }
 
   try {
     r.get('/', safe(main.ping))

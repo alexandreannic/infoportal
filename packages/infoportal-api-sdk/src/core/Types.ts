@@ -410,4 +410,15 @@ export namespace Ip {
       }
     }
   }
+
+  export namespace Metrics {
+    export namespace Payload {
+      export type Filter = {
+        start?: Date
+        end?: Date
+      }
+    }
+
+    export type CountBy<K extends string> = Array<Record<K, string> & {count: number}>
+  }
 }

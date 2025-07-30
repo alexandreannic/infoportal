@@ -106,7 +106,7 @@ export class ControllerKoboApi {
       }
       res.send(img)
     } catch (e) {
-      console.log((e as AxiosError).code)
+      console.log('ControllerKoboApi/getAttachementsWithoutAuth', (e as AxiosError).code)
       res.send(undefined)
     }
   }
@@ -134,7 +134,7 @@ export class ControllerKoboApi {
       })
       res.send(request.data)
     } catch (e) {
-      console.log((e as AxiosError).code)
+      console.log('ControllerKoboApi/proxy', (e as AxiosError).code)
       next(e)
     }
   }

@@ -33,7 +33,8 @@ export interface ChartLineProps extends Pick<BoxProps, 'sx'> {
 
 export type ChartLineData = {
   name: string
-} & Record<string, number>
+  values: Record<string, number>
+}
 
 const addMissingKeyMonths = <T extends ChartLineData[]>(arr: T): T => {
   // const monthsList = Array.from({length: differenceInMonths(new Date(period.end), new Date(period.start)) + 1}, (_, i) =>
@@ -79,13 +80,19 @@ export const ChartLine = ({
   height = 220,
 }: ChartLineProps) => {
   const theme = useTheme()
-  const lines = Object.keys(data?.[0] ?? {}).filter(_ => _ !== 'name')
+  // const lines = Object.keys(data?.[0] ?? {}).filter(_ => _ !== 'name')
+  const lines = Object.keys(data?.[0]?.values ?? {})
   const [showCurves, setShowCurves] = useState<boolean[]>(new Array(lines.length).fill(false))
 
   const cleanedData = React.useMemo(() => {
-    if (fixMissingMonths && data) return addMissingKeyMonths(data)
-    return data
+    if (!data) return []
+    if (fixMissingMonths) data = addMissingKeyMonths(data)
+    return data.map(row => ({
+      name: row.name,
+      ...row.values,
+    }))
   }, [data, fixMissingMonths])
+
   return (
     <>
       {!hideLabelToggle && (

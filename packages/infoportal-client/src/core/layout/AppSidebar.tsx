@@ -1,5 +1,5 @@
 import {useI18n} from '@/core/i18n'
-import {Fender, Txt} from '@/shared'
+import {Fender, IpBtn, IpIconBtn, Txt} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
 import {Box, BoxProps, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
 import Fuse from 'fuse.js'
@@ -9,6 +9,7 @@ import {styleUtils} from '../theme'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
+import {appConfig} from '@/conf/AppConfig.js'
 
 type Form = {
   id: string
@@ -102,22 +103,46 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
 
   return (
     <Sidebar headerId="app-header">
-      <Link to="/$workspaceId/settings" params={{workspaceId}}>
+      <Link to="/$workspaceId/dashboard" params={{workspaceId}}>
+        {({isActive}) => (
+          <SidebarItem icon="home" active={isActive}>
+            {m.overview}
+          </SidebarItem>
+        )}
+      </Link>
+      <Link to="/$workspaceId/settings/users" params={{workspaceId}}>
         {({isActive}) => (
           <SidebarItem icon="settings" active={isActive}>
             {m.settings}
           </SidebarItem>
         )}
       </Link>
-      <Link to="/$workspaceId/new-form" params={{workspaceId}}>
+      {/*<Link to="/$workspaceId/new-form" params={{workspaceId}}>*/}
+      {/*  {({isActive}) => (*/}
+      {/*    <SidebarItem icon="add" active={isActive}>*/}
+      {/*      {m.newForm}*/}
+      {/*    </SidebarItem>*/}
+      {/*  )}*/}
+      {/*</Link>*/}
+      <Link to="/$workspaceId/form/list" params={{workspaceId}}>
         {({isActive}) => (
-          <SidebarItem icon="add" active={isActive}>
-            {m.newForm}
+          <SidebarItem
+            sx={{pr: 0}}
+            active={isActive}
+            iconEnd={
+              <Link to="/$workspaceId/new-form" params={{workspaceId}}>
+                {({isActive}) => (
+                  <IpBtn variant={isActive ? 'light' : 'outlined'} sx={{mr: 0}}>
+                    <Icon>add</Icon>
+                  </IpBtn>
+                )}
+              </Link>
+            }
+            icon={appConfig.icons.database}
+          >
+            {m.forms}
           </SidebarItem>
         )}
-      </Link>
-      <Link to="/$workspaceId/new-form" params={{workspaceId}}>
-        {({isActive}) => <SidebarItem icon="home">{m.forms}</SidebarItem>}
       </Link>
       <SidebarHr />
       {queryForm.accessibleForms.isLoading ? (

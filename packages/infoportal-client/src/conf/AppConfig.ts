@@ -49,6 +49,7 @@ export const appConfig = {
     sector: 'category',
     program: 'book',
     koboForm: 'fact_check',
+    database: 'data_table',
     donor: 'handshake',
     disability: 'assist_walker',
     project: 'inventory_2',
