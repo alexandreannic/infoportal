@@ -1,5 +1,5 @@
-import {AppAvatar, IpAlert, Lazy, Page, Txt, ViewMoreDiv} from '@/shared'
-import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
+import {AppAvatar, IpAlert, Page, Txt, ViewMoreDiv} from '@/shared'
+import {Panel, PanelBody} from '@/shared/Panel'
 import {createRoute} from '@tanstack/react-router'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {useQueryMetrics} from '@/core/query/useQueryMetrics.js'
@@ -18,19 +18,14 @@ import {useMemo} from 'react'
 import {SelectStatusConfig} from '@/shared/customInput/SelectStatus.js'
 import {ChartPie} from '@/shared/charts/ChartPie.js'
 import {toPercent} from 'infoportal-common'
+import {ChartPieWidget} from '@/shared/charts/ChartPieWidget.js'
+import {PanelWBody} from '@/shared/Panel/PanelWBody.js'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
   path: '/dashboard',
   component: Dashboard,
 })
-
-// const validationColor: Record<Ip.Submission.Validation, (t: Theme) => any> = {
-//   Approved: t => t.palette.success.main,
-//   Pending: t => t.palette.warning.main,
-//   Approved: t => t.palette.success.main,
-//   Approved: t => t.palette.success.main,
-// }
 
 const PieChartStatus = ({percent, validation}: {percent: number; validation: Ip.Submission.Validation}) => {
   const {m} = useI18n()
@@ -73,6 +68,7 @@ function Dashboard() {
   const workspaceId = dashboardRoute.useParams().workspaceId as Ip.WorkspaceId
 
   const queryUsers = useQueryUser.getAll(workspaceId)
+  const queryForms = useQueryForm(workspaceId).accessibleForms
   const queryMetrics = useQueryMetrics({workspaceId})
   const querySubmissionByMonth = queryMetrics.getSubmissionsByMonth
   const querySubmissionsByForm = queryMetrics.getSubmissionsByForm
@@ -88,174 +84,175 @@ function Dashboard() {
     [querySubmissionByMonth.data],
   )
 
-  return (
-    <Page width="full">
-      <Grid container sx={{mb: 1}}>
-        <Grid size={{xs: 6, sm: 2}}>
-          <SlideWidget title={m.forms} icon={appConfig.icons.database}>
-            {formatLargeNumber(querySubmissionsByForm.data?.length)}
-          </SlideWidget>
-        </Grid>
-        <Grid size={{xs: 6, sm: 2}}>
-          <SlideWidget title={m.submissions} icon={appConfig.icons.submission}>
-            {formatLargeNumber(submissionsCount)}
-          </SlideWidget>
-        </Grid>
-        <Grid size={{xs: 6, sm: 2}}>
+  const widgetSubmissionsCount = (
+    <SlideWidget title={m.submissions} icon={appConfig.icons.submission}>
+      {formatLargeNumber(submissionsCount)}
+    </SlideWidget>
+  )
+  const formsCount = (
+    <SlideWidget title={m.forms} icon={appConfig.icons.database}>
+      {formatLargeNumber(querySubmissionsByForm.data?.length)}
+    </SlideWidget>
+  )
+
+  const formsLinkedToKobo = useMemo(() => {
+    if (!queryForms.data) return <Panel sx={{height: '100%'}} />
+    const value = queryForms.data.count(_ => !!_.kobo) ?? 0
+    const base = queryForms.data.length ?? 1
+    if (value === 0) {
+      return (
+        <Panel sx={{height: '100%', py: 1, px: 2}}>
           <SlideWidget title={m.users} icon={appConfig.icons.users}>
             {formatLargeNumber(queryUsers.data?.length)}
           </SlideWidget>
-          {/*<ChartPieWidget*/}
-          {/*  title={m.average}*/}
-          {/*  value={submissionsCount}*/}
-          {/*  base={queryUsers.data?.length ?? 1}*/}
-          {/*></ChartPieWidget>*/}
-        </Grid>
-      </Grid>
+        </Panel>
+      )
+    }
+    return (
+      <Panel sx={{height: '100%', py: 1, px: 2}}>
+        <ChartPieWidget title={m.linkedToKobo} dense showValue showBase value={value} base={base} />
+      </Panel>
+    )
+  }, [queryForms.data])
+
+  const pieChartValidation = (
+    <Panel>
+      <PanelBody sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+        {querySubmissionsByStatus.data?.map(_ => (
+          <PieChartStatus validation={_.key as Ip.Submission.Validation} percent={_.count / submissionsCount} />
+        ))}
+      </PanelBody>
+    </Panel>
+  )
+
+  const submissionByTime = useMemo(() => {
+    if (!querySubmissionByMonth.data) return
+    const data = querySubmissionByMonth.data?.map(_ => {
+      return {
+        name: _.key,
+        values: {count: _.count},
+      }
+    })
+    return (
+      <PanelWBody title={m.submissions}>
+        <ChartLine hideLabelToggle hideLegend data={data} />
+      </PanelWBody>
+    )
+  }, [querySubmissionByMonth.data])
+
+  const submissionsByForm = useMemo(() => {
+    if (!querySubmissionsByForm.data || !formIndex) return
+    const data = seq(querySubmissionsByForm.data).groupByAndApply(
+      _ => _.key,
+      _ => {
+        const formId = _[0]?.key as Ip.FormId
+        const res: BarChartData = {
+          value: _.sum(_ => _.count),
+          label: formIndex?.get(formId)?.name ?? formId,
+        }
+        return res
+      },
+    )
+    return (
+      <Panel title={m.submissionsByForm}>
+        <PanelBody>
+          <ViewMoreDiv>
+            <ChartBar
+              dense
+              data={data}
+              checked={selectedFormsSet.toArray}
+              onClickData={_ => selectedFormsSet.toggle(_)}
+            />
+          </ViewMoreDiv>
+        </PanelBody>
+      </Panel>
+    )
+  }, [querySubmissionsByForm.data, formIndex, selectedFormsSet])
+
+  const submissionsByCategory = useMemo(() => {
+    const byKey = seq(querySubmissionsByCategory.data).groupByFirst(_ => _.key)
+    const data = Obj.mapValues(byKey, _ => {
+      return {
+        label: _.key,
+        value: _.count,
+      }
+    })
+    return (
+      <PanelWBody title={m.submissionsByCategory}>
+        <ChartBar dense data={data} />
+      </PanelWBody>
+    )
+  }, [querySubmissionsByCategory.data])
+
+  const usersByDate = useMemo(() => {
+    const data = getUsersByDate.data?.map(_ => {
+      return {
+        name: _.date,
+        values: {
+          countCreatedAt: _.countCreatedAt,
+          countLastConnectedCount: _.countLastConnectedCount,
+        },
+      }
+    })
+    return (
+      <PanelWBody title={m.users}>
+        <ChartLine hideLabelToggle hideLegend data={data} />
+      </PanelWBody>
+    )
+  }, [getUsersByDate.data])
+
+  const submissionsByUser = useMemo(() => {
+    if (!querySubmissionsByUser.data) return
+    const byUser = seq(querySubmissionsByUser.data).groupByFirst(_ => _.key)
+    const data = new Obj(byUser)
+      .mapValues(_ => {
+        return {
+          value: _.count,
+          label: (
+            <Box display="flex" alignItems="center">
+              {!_.key || _.key === '' ? (
+                <AppAvatar sx={{mr: 1}} size={24} icon="domino_mask" />
+              ) : _.key.includes('@') ? (
+                <AppAvatar sx={{mr: 1}} size={24} email={_.key as Ip.User.Email} />
+              ) : (
+                <AppAvatar sx={{mr: 1}} size={24} />
+              )}
+              {_.key === '' ? <Txt color="disabled">{m.anonymous}</Txt> : _.key}
+            </Box>
+          ),
+        }
+      })
+      .get()
+    return (
+      <PanelWBody title={m.submissionsByUser + ` (${querySubmissionsByUser.data?.length})`}>
+        {querySubmissionsByUser.data?.some(_ => _.key.length > 1 && !_.key.includes('@')) && (
+          <IpAlert sx={{mb: 1}} severity="info">
+            {m.includeKoboAccountNames}
+          </IpAlert>
+        )}
+        <ViewMoreDiv>
+          <ChartBar dense data={data} />
+        </ViewMoreDiv>
+      </PanelWBody>
+    )
+  }, [querySubmissionsByUser.data])
+  return (
+    <Page width="full">
       <Grid container>
         <Grid size={{xs: 12, sm: 6}}>
-          <Panel>
-            <PanelBody sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
-              {querySubmissionsByStatus.data?.map(_ => (
-                <PieChartStatus validation={_.key as Ip.Submission.Validation} percent={_.count / submissionsCount} />
-              ))}
-            </PanelBody>
-          </Panel>
-          <Panel>
-            <PanelHead>{m.users}</PanelHead>
-            <PanelBody>
-              <Lazy
-                deps={[getUsersByDate.data]}
-                fn={data => {
-                  return data?.map(_ => {
-                    return {
-                      name: _.date,
-                      values: {
-                        countCreatedAt: _.countCreatedAt,
-                        countLastConnectedCount: _.countLastConnectedCount,
-                      },
-                    }
-                  })
-                }}
-              >
-                {_ => <ChartLine hideLabelToggle hideLegend data={_} />}
-              </Lazy>
-            </PanelBody>
-          </Panel>
-          <Panel>
-            <PanelHead>{m.submissions}</PanelHead>
-            <PanelBody>
-              <Lazy
-                deps={[querySubmissionByMonth.data]}
-                fn={data => {
-                  return data?.map(_ => {
-                    return {
-                      name: _.key,
-                      values: {count: _.count},
-                    }
-                  })
-                }}
-              >
-                {_ => <ChartLine hideLabelToggle hideLegend data={_} />}
-              </Lazy>
-            </PanelBody>
-          </Panel>
+          <Grid container sx={{mb: 1}}>
+            <Grid size={{xs: 6, sm: 4}}>{widgetSubmissionsCount}</Grid>
+            <Grid size={{xs: 6, sm: 4}}>{formsCount}</Grid>
+            <Grid size={{xs: 6, sm: 4}}>{formsLinkedToKobo}</Grid>
+          </Grid>
+          {pieChartValidation}
+          {submissionByTime}
+          {submissionsByForm}
+          {submissionsByCategory}
         </Grid>
         <Grid size={{xs: 12, sm: 6}}>
-          <Panel>
-            <PanelHead>{m.submissionsByForm}</PanelHead>
-            <PanelBody>
-              <ViewMoreDiv>
-                <Lazy
-                  deps={[querySubmissionsByForm.data, formIndex, selectedFormsSet]}
-                  fn={(data, index, set) => {
-                    if (!data || !index) return
-                    return seq(data).groupByAndApply(
-                      _ => _.key,
-                      _ => {
-                        const formId = _[0]?.key as Ip.FormId
-                        const res: BarChartData = {
-                          value: _.sum(_ => _.count),
-                          label: formIndex?.get(formId)?.name ?? formId,
-                        }
-                        return res
-                      },
-                    )
-                  }}
-                >
-                  {_ => (
-                    <ChartBar
-                      dense
-                      data={_}
-                      checked={selectedFormsSet.toArray}
-                      onClickData={_ => selectedFormsSet.toggle(_)}
-                    />
-                  )}
-                </Lazy>
-              </ViewMoreDiv>
-            </PanelBody>
-          </Panel>
-          <Panel>
-            <PanelBody>
-              <Lazy
-                deps={[querySubmissionsByCategory.data]}
-                fn={data => {
-                  if (!data) return
-                  const byKey = seq(data).groupByFirst(_ => _.key)
-                  return Obj.mapValues(byKey, _ => {
-                    return {
-                      label: _.key,
-                      value: _.count,
-                    }
-                  })
-                }}
-              >
-                {_ => <ChartBar dense data={_} />}
-              </Lazy>
-            </PanelBody>
-          </Panel>
-          <Panel>
-            <PanelHead>
-              {m.submissionsByUser} ({querySubmissionsByUser.data?.length})
-            </PanelHead>
-            <PanelBody>
-              {querySubmissionsByUser.data?.some(_ => _.key.length > 1 && !_.key.includes('@')) && (
-                <IpAlert sx={{mb: 1}} severity="info">
-                  {m.includeKoboAccountNames}
-                </IpAlert>
-              )}
-              <ViewMoreDiv>
-                <Lazy
-                  deps={[querySubmissionsByUser.data]}
-                  fn={data => {
-                    if (!data) return
-                    const byUser = seq(data).groupByFirst(_ => _.key)
-                    return new Obj(byUser)
-                      .mapValues(_ => {
-                        return {
-                          value: _.count,
-                          label: (
-                            <Box display="flex" alignItems="center">
-                              {!_.key || _.key === '' ? (
-                                <AppAvatar sx={{mr: 1}} size={24} icon="domino_mask" />
-                              ) : _.key.includes('@') ? (
-                                <AppAvatar sx={{mr: 1}} size={24} email={_.key as Ip.User.Email} />
-                              ) : (
-                                <AppAvatar sx={{mr: 1}} size={24} />
-                              )}
-                              {_.key === '' ? <Txt color="disabled">{m.anonymous}</Txt> : _.key}
-                            </Box>
-                          ),
-                        }
-                      })
-                      .get()
-                  }}
-                >
-                  {_ => <ChartBar dense data={_} />}
-                </Lazy>
-              </ViewMoreDiv>
-            </PanelBody>
-          </Panel>
+          {usersByDate}
+          {submissionsByUser}
         </Grid>
       </Grid>
     </Page>
