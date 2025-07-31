@@ -44,17 +44,17 @@ function Dashboard() {
   return (
     <Page width="full">
       <Grid container sx={{mb: 1}}>
-        <Grid size={{xs: 6, sm: 3}}>
+        <Grid size={{xs: 6, sm: 2}}>
           <SlideWidget title={m.forms} icon={appConfig.icons.database}>
             {formatLargeNumber(querySubmissionsByForm.data?.length)}
           </SlideWidget>
         </Grid>
-        <Grid size={{xs: 6, sm: 3}}>
+        <Grid size={{xs: 6, sm: 2}}>
           <SlideWidget title={m.submissions} icon={appConfig.icons.submission}>
             {formatLargeNumber(submissionsCount)}
           </SlideWidget>
         </Grid>
-        <Grid size={{xs: 6, sm: 3}}>
+        <Grid size={{xs: 6, sm: 2}}>
           <SlideWidget title={m.users} icon={appConfig.icons.users}>
             {formatLargeNumber(queryUsers.data?.length)}
           </SlideWidget>
@@ -74,7 +74,7 @@ function Dashboard() {
                 fn={data => {
                   return data?.map(_ => {
                     return {
-                      name: _.date,
+                      name: _.key,
                       values: {count: _.count},
                     }
                   })
@@ -93,9 +93,9 @@ function Dashboard() {
                 fn={(data, index, set) => {
                   if (!data || !index) return
                   return seq(data).groupByAndApply(
-                    _ => _.formId,
+                    _ => _.key,
                     _ => {
-                      const formId = _[0]?.formId as Ip.FormId
+                      const formId = _[0]?.key as Ip.FormId
                       const res: BarChartData = {
                         value: _.sum(_ => _.count),
                         label: formIndex?.get(formId)?.name ?? formId,
@@ -122,26 +122,25 @@ function Dashboard() {
                 deps={[querySubmissionsByUser.data]}
                 fn={data => {
                   if (!data) return
-                  const byUser = seq(data).groupByFirst(_ => _.user)
+                  const byUser = seq(data).groupByFirst(_ => _.key)
                   return new Obj(byUser)
                     .mapValues(_ => {
                       return {
                         value: _.count,
                         label: (
                           <Box display="flex" alignItems="center">
-                            {_.user === '' ? (
+                            {!_.key || _.key === '' ? (
                               <AppAvatar sx={{mr: 1}} size={24} icon="domino_mask" />
-                            ) : _.user.includes('@') ? (
-                              <AppAvatar sx={{mr: 1}} size={24} email={_.user as Ip.User.Email} />
+                            ) : _.key.includes('@') ? (
+                              <AppAvatar sx={{mr: 1}} size={24} email={_.key as Ip.User.Email} />
                             ) : (
                               <AppAvatar sx={{mr: 1}} size={24} />
                             )}
-                            {_.user === '' ? <Txt color="disabled">{m.anonymous}</Txt> : _.user}
+                            {_.key === '' ? <Txt color="disabled">{m.anonymous}</Txt> : _.key}
                           </Box>
                         ),
                       }
                     })
-                    .sort(([ka, va], [kb, vb]) => vb.value - va.value)
                     .get()
                 }}
               >

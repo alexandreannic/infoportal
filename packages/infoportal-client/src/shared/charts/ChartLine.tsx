@@ -99,6 +99,7 @@ export const ChartLine = ({
         <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
           {lines.map((c, i) => (
             <Checkbox
+              size="small"
               key={c}
               checked={showCurves[i]}
               onChange={e => setShowCurves(prev => prev.map((_, index) => (i === index ? e.currentTarget.checked : _)))}

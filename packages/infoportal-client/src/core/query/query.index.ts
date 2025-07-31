@@ -29,5 +29,5 @@ export const queryKeys = {
   group: (workspaceId?: Ip.WorkspaceId, args?: Omit<ApiSdk['group']['search'], 'workspaceId'>) =>
     concat('group', workspaceId, args ? Utils.stableStringify(args) : undefined),
   answers: (formId?: Ip.FormId) => concat('answers', formId),
-  metrics: (workspaceId?: Ip.WorkspaceId, type?: string) => concat('metrics', workspaceId, type),
+  metrics: (workspaceId?: Ip.WorkspaceId, ...keys: string[]) => concat('metrics', workspaceId, ...keys),
 }

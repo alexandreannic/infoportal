@@ -413,6 +413,7 @@ export namespace Ip {
   }
 
   export namespace Metrics {
+    export type ByType = 'user' | 'status' | 'category' | 'month' | 'form'
     export namespace Payload {
       export type Filter = {
         start?: Date
@@ -421,5 +422,6 @@ export namespace Ip {
     }
 
     export type CountBy<K extends string> = Array<Record<K, string> & {count: number}>
+    export type CountByKey = CountBy<'key'>
   }
 }

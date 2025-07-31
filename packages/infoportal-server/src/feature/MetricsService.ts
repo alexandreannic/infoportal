@@ -1,7 +1,8 @@
-import {Prisma, PrismaClient} from '@prisma/client'
+import {FormSubmission, Prisma, PrismaClient} from '@prisma/client'
 import {Ip} from 'infoportal-api-sdk'
 import {FormService} from './form/FormService.js'
-import {seq} from '@axanc/ts-utils'
+import {duration, fnSwitch, Seq, seq} from '@axanc/ts-utils'
+import {app} from '../index.js'
 
 type Filters = {
   workspaceId: Ip.WorkspaceId
@@ -17,38 +18,32 @@ export class MetricsService {
     private form = new FormService(prisma),
   ) {}
 
-  private getUsers = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
-    return this.prisma.user.groupBy({
-      where: {workspaceAccess: {some: {workspaceId}}},
-      by: ['id'],
-      _count: {id: true},
+  private readonly getAllowedFormIds = app.cache.request({
+    key: 'allowedFormIds',
+    ttlMs: duration(1, 'hour'),
+    fn: (props: {workspaceId: Ip.WorkspaceId; user: Ip.User}): Promise<Seq<Ip.FormId>> => {
+      return this.form.getByUser(props).then(_ => seq(_).map(_ => _.id))
+    },
+  })
+
+  readonly submissionsBy = async (props: Filters & {type: Ip.Metrics.ByType}): Promise<Ip.Metrics.CountByKey> => {
+    const {type, workspaceId, start, end, formIds} = props
+    const allowedFormIds = await this.getAllowedFormIds(props).then(_ => (formIds ? seq(_).intersect(formIds) : _))
+    if (type === 'month') return this.submissionsByMonth(props)
+    else if (type === 'category') return this.submissionsByCategory(props)
+    const dbColumn: keyof FormSubmission = fnSwitch(type, {
+      form: 'formId',
+      user: 'submittedBy',
+      status: 'validationStatus',
     })
-  }
-
-  // readonly getCount = async (props: Filters): Promise<Ip.Metrics.Count> => {
-  //   const {workspaceId, start, end, formIds} = props
-  //   const forms = await this.form.getByUser(props)
-  //   const [users, submissions] = await Promise.all([
-  //     this.prisma.user.count({where: {workspaceAccess: {some: {workspaceId}}}}),
-  //     this.prisma.formSubmission.count({where: {submissionTime: {gte: start, lte: end},formId: {in: forms.map(_ => _.id)}}}),
-  //   ])
-  //   return {forms: forms.length, users, submissions}
-  // }
-
-  readonly submissionByForm = async ({
-    workspaceId,
-    start,
-    end,
-    formIds,
-  }: Filters): Promise<Ip.Metrics.CountBy<'formId'>> => {
     return this.prisma.formSubmission
       .groupBy({
-        by: ['formId'],
+        by: [dbColumn],
         _count: {
           _all: true,
         },
         where: {
-          formId: {in: formIds},
+          formId: {in: allowedFormIds},
           form: {
             is: {
               workspaceId,
@@ -57,97 +52,34 @@ export class MetricsService {
           deletedAt: null,
           submissionTime: {gte: start, lte: end},
         },
-      })
-      .then(_ =>
-        _.map(({formId, _count}) => ({
-          formId,
-          count: Number(_count._all),
-        })),
-      )
-  }
-
-  readonly submissionByUser = async ({
-    workspaceId,
-    start,
-    end,
-    formIds,
-  }: Filters): Promise<Ip.Metrics.CountBy<'user'>> => {
-    return this.prisma.formSubmission
-      .groupBy({
-        by: ['submittedBy'],
-        _count: {
-          _all: true,
-        },
-        where: {
-          formId: {in: formIds},
-          form: {
-            is: {
-              workspaceId,
-            },
+        orderBy: {
+          _count: {
+            [dbColumn]: 'desc',
           },
-          deletedAt: null,
-          submissionTime: {gte: start, lte: end},
         },
       })
-      .then(_ =>
-        _.map(({submittedBy, _count}) => ({
-          user: submittedBy ?? '',
-          count: Number(_count._all),
-        })),
-      )
+      .then(_ => {
+        return _.map(res => ({
+          key: res[dbColumn]!,
+          count: Number(res._count._all),
+        }))
+      })
   }
 
-  readonly submissionByCategory = async (props: Filters): Promise<Ip.Metrics.CountBy<'category'>> => {
+  readonly submissionsByCategory = async (props: Filters): Promise<Ip.Metrics.CountByKey> => {
     const [byForm, formsMap] = await Promise.all([
-      this.submissionByForm(props),
+      this.submissionsBy({...props, type: 'form'}),
       this.form.getByUser(props).then(_ => seq(_).groupByFirstToMap(_ => _.id)),
     ])
     return byForm.map(_ => {
       return {
-        category: formsMap.get(_.formId as Ip.FormId)?.category ?? '???',
+        key: formsMap.get(_.key as Ip.FormId)?.category ?? '???',
         count: _.count,
       }
     })
   }
 
-  readonly submissionByStatus = async ({
-    start,
-    workspaceId,
-    end,
-    formIds,
-    user,
-  }: Filters): Promise<Ip.Metrics.CountBy<'status'>> => {
-    return this.prisma.formSubmission
-      .groupBy({
-        by: ['validationStatus'],
-        _count: {
-          _all: true,
-        },
-        where: {
-          formId: {in: formIds},
-          form: {
-            is: {
-              workspaceId,
-            },
-          },
-          deletedAt: null,
-          submissionTime: {gte: start, lte: end},
-        },
-      })
-      .then(_ =>
-        _.map(({validationStatus, _count}) => ({
-          status: validationStatus ?? '',
-          count: Number(_count._all),
-        })),
-      )
-  }
-
-  readonly submissionsByMonth = async ({
-    workspaceId,
-    start,
-    end,
-    formIds,
-  }: Filters): Promise<Ip.Metrics.CountBy<'date'>> => {
+  readonly submissionsByMonth = async ({workspaceId, start, end, formIds}: Filters): Promise<Ip.Metrics.CountByKey> => {
     if (!formIds) {
       formIds = await this.prisma.form
         .findMany({select: {id: true}, where: {workspaceId}})
@@ -163,12 +95,12 @@ export class MetricsService {
     const whereClause =
       whereConditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(whereConditions, ` AND `)}` : Prisma.sql``
 
-    return this.prisma.$queryRaw<Ip.Metrics.CountBy<'date'>>`
-      SELECT TO_CHAR("submissionTime", 'YYYY-MM') AS date, COUNT(*) AS count
+    return this.prisma.$queryRaw<Ip.Metrics.CountByKey>`
+      SELECT TO_CHAR("submissionTime", 'YYYY-MM') AS key, COUNT(*) AS count
       FROM "FormSubmission"
         ${whereClause}
-      GROUP BY date
-      ORDER BY date;
+      GROUP BY key
+      ORDER BY key;
     `.then(_ => _.map(_ => ({..._, count: Number(_.count)})))
   }
 }
