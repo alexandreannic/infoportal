@@ -1,12 +1,14 @@
 import {Prisma, PrismaClient} from '@prisma/client'
 import {Ip} from 'infoportal-api-sdk'
 import {FormService} from './form/FormService.js'
+import {seq} from '@axanc/ts-utils'
 
 type Filters = {
   workspaceId: Ip.WorkspaceId
   start?: Date
   end?: Date
   formIds?: Ip.FormId[]
+  user: Ip.User
 }
 
 export class MetricsService {
@@ -22,6 +24,16 @@ export class MetricsService {
       _count: {id: true},
     })
   }
+
+  // readonly getCount = async (props: Filters): Promise<Ip.Metrics.Count> => {
+  //   const {workspaceId, start, end, formIds} = props
+  //   const forms = await this.form.getByUser(props)
+  //   const [users, submissions] = await Promise.all([
+  //     this.prisma.user.count({where: {workspaceAccess: {some: {workspaceId}}}}),
+  //     this.prisma.formSubmission.count({where: {submissionTime: {gte: start, lte: end},formId: {in: forms.map(_ => _.id)}}}),
+  //   ])
+  //   return {forms: forms.length, users, submissions}
+  // }
 
   readonly submissionByForm = async ({
     workspaceId,
@@ -42,7 +54,6 @@ export class MetricsService {
               workspaceId,
             },
           },
-          // form: {workspaceId},
           deletedAt: null,
           submissionTime: {gte: start, lte: end},
         },
@@ -50,6 +61,82 @@ export class MetricsService {
       .then(_ =>
         _.map(({formId, _count}) => ({
           formId,
+          count: Number(_count._all),
+        })),
+      )
+  }
+
+  readonly submissionByUser = async ({
+    workspaceId,
+    start,
+    end,
+    formIds,
+  }: Filters): Promise<Ip.Metrics.CountBy<'user'>> => {
+    return this.prisma.formSubmission
+      .groupBy({
+        by: ['submittedBy'],
+        _count: {
+          _all: true,
+        },
+        where: {
+          formId: {in: formIds},
+          form: {
+            is: {
+              workspaceId,
+            },
+          },
+          deletedAt: null,
+          submissionTime: {gte: start, lte: end},
+        },
+      })
+      .then(_ =>
+        _.map(({submittedBy, _count}) => ({
+          user: submittedBy ?? '',
+          count: Number(_count._all),
+        })),
+      )
+  }
+
+  readonly submissionByCategory = async (props: Filters): Promise<Ip.Metrics.CountBy<'category'>> => {
+    const [byForm, formsMap] = await Promise.all([
+      this.submissionByForm(props),
+      this.form.getByUser(props).then(_ => seq(_).groupByFirstToMap(_ => _.id)),
+    ])
+    return byForm.map(_ => {
+      return {
+        category: formsMap.get(_.formId as Ip.FormId)?.category ?? '???',
+        count: _.count,
+      }
+    })
+  }
+
+  readonly submissionByStatus = async ({
+    start,
+    workspaceId,
+    end,
+    formIds,
+    user,
+  }: Filters): Promise<Ip.Metrics.CountBy<'status'>> => {
+    return this.prisma.formSubmission
+      .groupBy({
+        by: ['validationStatus'],
+        _count: {
+          _all: true,
+        },
+        where: {
+          formId: {in: formIds},
+          form: {
+            is: {
+              workspaceId,
+            },
+          },
+          deletedAt: null,
+          submissionTime: {gte: start, lte: end},
+        },
+      })
+      .then(_ =>
+        _.map(({validationStatus, _count}) => ({
+          status: validationStatus ?? '',
           count: Number(_count._all),
         })),
       )

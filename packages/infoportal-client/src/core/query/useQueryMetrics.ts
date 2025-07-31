@@ -18,5 +18,23 @@ export function useQueryMetrics(params: {workspaceId: Ip.WorkspaceId} & Ip.Metri
     queryKey: queryKeys.metrics(params.workspaceId, 'getSubmissionsByForm'),
     queryFn: () => apiv2.metrics.getSubmissionsByForm(params),
   })
-  return {getSubmissionsByMonth, getSubmissionsByForm}
+  const getSubmissionsByCategory = useQuery({
+    queryKey: queryKeys.metrics(params.workspaceId, 'getSubmissionsByCategory'),
+    queryFn: () => apiv2.metrics.getSubmissionsByCategory(params),
+  })
+  const getSubmissionsByStatus = useQuery({
+    queryKey: queryKeys.metrics(params.workspaceId, 'getSubmissionsByStatus'),
+    queryFn: () => apiv2.metrics.getSubmissionsByStatus(params),
+  })
+  const getSubmissionsByUser = useQuery({
+    queryKey: queryKeys.metrics(params.workspaceId, 'getSubmissionsByUser'),
+    queryFn: () => apiv2.metrics.getSubmissionsByUser(params),
+  })
+  return {
+    getSubmissionsByMonth,
+    getSubmissionsByForm,
+    getSubmissionsByCategory,
+    getSubmissionsByStatus,
+    getSubmissionsByUser,
+  }
 }

@@ -20,10 +20,39 @@ const filters = z.object({
 })
 
 export const metricsContract = c.router({
-  // getUser: {
-  //   method: 'GET',
-  //   path: '/:workspaceId/stats/users',
-  // }
+  getSubmissionsByUser: {
+    method: 'GET',
+    path: '/:workspaceId/metrics/submission/user',
+    pathParams: z.object({
+      workspaceId: schema.workspaceId,
+    }),
+    query: filters,
+    responses: {
+      200: c.type<Ip.Metrics.CountBy<'user'>>(),
+    },
+  },
+  getSubmissionsByStatus: {
+    method: 'GET',
+    path: '/:workspaceId/metrics/submission/status',
+    pathParams: z.object({
+      workspaceId: schema.workspaceId,
+    }),
+    query: filters,
+    responses: {
+      200: c.type<Ip.Metrics.CountBy<'status'>>(),
+    },
+  },
+  getSubmissionsByCategory: {
+    method: 'GET',
+    path: '/:workspaceId/metrics/submission/by-category',
+    pathParams: z.object({
+      workspaceId: schema.workspaceId,
+    }),
+    query: filters,
+    responses: {
+      200: c.type<Ip.Metrics.CountBy<'category'>>(),
+    },
+  },
   getSubmissionsByForm: {
     method: 'GET',
     path: '/:workspaceId/metrics/submission/by-form',
@@ -49,6 +78,30 @@ export const metricsContract = c.router({
 })
 
 export const metricsClient = (client: TsRestClient) => ({
+  getSubmissionsByUser: ({workspaceId, ...query}: {workspaceId: Ip.WorkspaceId} & Ip.Metrics.Payload.Filter) => {
+    return client.metrics
+      .getSubmissionsByUser({
+        params: {workspaceId},
+        query: query,
+      })
+      .then(map200)
+  },
+  getSubmissionsByStatus: ({workspaceId, ...query}: {workspaceId: Ip.WorkspaceId} & Ip.Metrics.Payload.Filter) => {
+    return client.metrics
+      .getSubmissionsByStatus({
+        params: {workspaceId},
+        query: query,
+      })
+      .then(map200)
+  },
+  getSubmissionsByCategory: ({workspaceId, ...query}: {workspaceId: Ip.WorkspaceId} & Ip.Metrics.Payload.Filter) => {
+    return client.metrics
+      .getSubmissionsByCategory({
+        params: {workspaceId},
+        query: query,
+      })
+      .then(map200)
+  },
   getSubmissionsByMonth: ({workspaceId, ...query}: {workspaceId: Ip.WorkspaceId} & Ip.Metrics.Payload.Filter) => {
     return client.metrics
       .getSubmissionsByMonth({

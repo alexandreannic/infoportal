@@ -1,5 +1,5 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {Box, BoxProps, Icon} from '@mui/material'
+import {Box, BoxProps, Icon, useTheme} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import {makeStyles} from 'tss-react/mui'
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles<{
     backgroundSize: 'cover',
     borderRadius: 5000,
     backgroundImage: `url(${url})`,
-    backgroundColor: t.palette.grey['400'],
+    backgroundColor: t.palette.mode === 'light' ? t.palette.grey['300'] : t.palette.grey['800'],
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -31,10 +31,12 @@ export const AppAvatar = ({
   email,
   size,
   overlap,
+  icon = 'person',
   borderColor,
   ...props
   // hideTooltip,
 }: {
+  icon?: string
   borderColor?: string
   overlap?: boolean
   email?: Ip.User.Email
@@ -48,9 +50,19 @@ export const AppAvatar = ({
     url: email ? api.user.avatarUrl({email}) : undefined,
     size,
   })
+  const t = useTheme()
   return (
     <Box title={email} className={classes.root} {...props}>
-      {!email && <Icon sx={{color: 'white', fontSize: size - 2}}>person</Icon>}
+      {!email && (
+        <Icon
+          sx={{
+            color: t.palette.mode === 'light' ? t.palette.grey['600'] : t.palette.grey['400'],
+            fontSize: size - 2,
+          }}
+        >
+          {icon}
+        </Icon>
+      )}
     </Box>
   )
 }

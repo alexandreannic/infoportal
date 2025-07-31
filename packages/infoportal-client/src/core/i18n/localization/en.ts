@@ -108,6 +108,7 @@ export const en = Object.freeze({
     forms: 'Forms',
     contactAdmin: 'Contact:',
     question: 'Question',
+    anonymous: 'Anonymous',
     kobo: 'Kobo',
     answer: 'Answer',
     calculations: 'Calculations',

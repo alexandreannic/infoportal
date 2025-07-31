@@ -468,12 +468,37 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     metrics: {
       getSubmissionsByMonth: _ =>
         auth2(_)
-          .then(({params, query}) => metrics.submissionsByMonth({...params, ...parseQs(query)}))
+          .then(({req, params, query}) =>
+            metrics.submissionsByMonth({...params, user: req.session.app.user, ...parseQs(query)}),
+          )
           .then(ok200)
           .catch(handleError),
       getSubmissionsByForm: _ =>
         auth2(_)
-          .then(({params, query}) => metrics.submissionByForm({...params, ...parseQs(query)}))
+          .then(({req, params, query}) =>
+            metrics.submissionByForm({...params, user: req.session.app.user, ...parseQs(query)}),
+          )
+          .then(ok200)
+          .catch(handleError),
+      getSubmissionsByStatus: _ =>
+        auth2(_)
+          .then(({req, params, query}) =>
+            metrics.submissionByStatus({...params, user: req.session.app.user, ...parseQs(query)}),
+          )
+          .then(ok200)
+          .catch(handleError),
+      getSubmissionsByUser: _ =>
+        auth2(_)
+          .then(({req, params, query}) =>
+            metrics.submissionByUser({...params, user: req.session.app.user, ...parseQs(query)}),
+          )
+          .then(ok200)
+          .catch(handleError),
+      getSubmissionsByCategory: _ =>
+        auth2(_)
+          .then(({req, params, query}) =>
+            metrics.submissionByCategory({...params, user: req.session.app.user, ...parseQs(query)}),
+          )
           .then(ok200)
           .catch(handleError),
     },
