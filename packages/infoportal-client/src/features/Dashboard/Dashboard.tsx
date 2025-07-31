@@ -67,9 +67,11 @@ function Dashboard() {
   const t = useTheme()
   const workspaceId = dashboardRoute.useParams().workspaceId as Ip.WorkspaceId
 
+  const selectedFormsSet = useSetState<Ip.FormId>()
+
   const queryUsers = useQueryUser.getAll(workspaceId)
   const queryForms = useQueryForm(workspaceId).accessibleForms
-  const queryMetrics = useQueryMetrics({workspaceId})
+  const queryMetrics = useQueryMetrics({workspaceId, formIds: selectedFormsSet.toArray})
   const querySubmissionByMonth = queryMetrics.getSubmissionsByMonth
   const querySubmissionsByForm = queryMetrics.getSubmissionsByForm
   const querySubmissionsByCategory = queryMetrics.getSubmissionsByCategory
@@ -77,7 +79,7 @@ function Dashboard() {
   const querySubmissionsByUser = queryMetrics.getSubmissionsByUser
   const getUsersByDate = queryMetrics.getUsersByDate
   const formIndex = useQueryForm(workspaceId).formIndex
-  const selectedFormsSet = useSetState<Ip.FormId>()
+
 
   const submissionsCount = useMemo(
     () => seq(querySubmissionByMonth.data ?? []).sum(_ => _.count),

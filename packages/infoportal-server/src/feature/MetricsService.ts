@@ -63,7 +63,9 @@ export class MetricsService {
 
   readonly submissionsBy = async (props: FiltersForm & {type: Ip.Metrics.ByType}): Promise<Ip.Metrics.CountByKey> => {
     const {type, workspaceId, start, end, formIds} = props
-    const allowedFormIds = await this.getAllowedFormIds(props).then(_ => (formIds ? seq(_).intersect(formIds) : _))
+    const allowedFormIds = await this.getAllowedFormIds(props).then(_ =>
+      formIds && formIds.length > 0 && type !== 'form' ? seq(_).intersect(formIds) : _,
+    )
     if (type === 'month') return this.submissionsByMonth(props)
     else if (type === 'category') return this.submissionsByCategory(props)
     const dbColumn: keyof FormSubmission = fnSwitch(type, {

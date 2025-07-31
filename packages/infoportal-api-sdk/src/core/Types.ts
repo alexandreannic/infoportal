@@ -418,6 +418,7 @@ export namespace Ip {
       export type Filter = {
         start?: Date
         end?: Date
+        formIds: Ip.FormId[]
       }
     }
 

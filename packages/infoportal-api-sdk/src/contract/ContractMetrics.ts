@@ -2,6 +2,7 @@ import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {Ip} from '../core/Types.js'
 import {map200, TsRestClient} from '../core/IpClient.js'
+import {schema} from '../core/Schema.js'
 
 const c = initContract()
 
@@ -14,6 +15,7 @@ const filters = z.object({
     .date()
     .transform(s => s.toISOString())
     .optional(),
+  formIds: z.array(schema.formId).optional(),
   // start: z.coerce.date().optional(),
   // end: z.coerce.date().optional(),
 })

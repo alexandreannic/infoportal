@@ -3,31 +3,41 @@ import {useAppSettings} from '@/core/context/ConfigContext.js'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index.js' //
 
-export function useQueryMetrics(params: {workspaceId: Ip.WorkspaceId} & Ip.Metrics.Payload.Filter) {
+export function useQueryMetrics(
+  params: {workspaceId: Ip.WorkspaceId; formIds: Ip.FormId[]} & Ip.Metrics.Payload.Filter,
+) {
   const {apiv2} = useAppSettings()
 
+  const filtersForms = {formIds: params.formIds.sort(), start: params.start, end: params.end}
+  const filters = {formIds: params.formIds.sort(), start: params.start, end: params.end}
   const getSubmissionsByMonth = useQuery({
-    queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'month'),
+    placeholderData: old => old,
+    queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'month', filtersForms),
     queryFn: () => apiv2.metrics.getSubmissionsBy({type: 'month', ...params}),
   })
   const getSubmissionsByForm = useQuery({
-    queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'form'),
+    placeholderData: old => old,
+    queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'form', filtersForms),
     queryFn: () => apiv2.metrics.getSubmissionsBy({type: 'form', ...params}),
   })
   const getSubmissionsByCategory = useQuery({
-    queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'category'),
+    placeholderData: old => old,
+    queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'category', filtersForms),
     queryFn: () => apiv2.metrics.getSubmissionsBy({type: 'category', ...params}),
   })
   const getSubmissionsByStatus = useQuery({
-    queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'status'),
+    placeholderData: old => old,
+    queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'status', filtersForms),
     queryFn: () => apiv2.metrics.getSubmissionsBy({type: 'status', ...params}),
   })
   const getSubmissionsByUser = useQuery({
-    queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'user'),
+    placeholderData: old => old,
+    queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'user', filtersForms),
     queryFn: () => apiv2.metrics.getSubmissionsBy({type: 'user', ...params}),
   })
   const getUsersByDate = useQuery({
-    queryKey: queryKeys.metrics(params.workspaceId, 'user', 'by-date'),
+    placeholderData: old => old,
+    queryKey: queryKeys.metrics(params.workspaceId, 'user', 'by-date', filters),
     queryFn: () => apiv2.metrics.getUsersByDate(params),
   })
   return {
