@@ -73,7 +73,7 @@ export class MetricsService {
     ])
     return byForm.map(_ => {
       return {
-        key: formsMap.get(_.key as Ip.FormId)?.category ?? '???',
+        key: formsMap.get(_.key as Ip.FormId)?.category ?? '',
         count: _.count,
       }
     })

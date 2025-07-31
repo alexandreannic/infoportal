@@ -73,7 +73,7 @@ export const ChartPieWidget = ({
           ...sx,
         }}
       >
-        <Donut percent={value / base} size={dense ? 45 : 50} color={color} />
+        <ChartPie percent={value / base} size={dense ? 45 : 50} color={color} />
         <Box sx={{ml: dense ? 1 : 1.5}}>
           <SlidePanelTitle icon={titleIcon} noWrap={noWrap} sx={{mb: 0}}>
             {title}
@@ -127,31 +127,4 @@ export const ChartPieWidget = ({
 const renderPercent = (value: number, isPercent?: boolean, fractionDigits = 1) => {
   if (isNaN(value)) return '-'
   return isPercent ? (value * 100).toFixed(fractionDigits) + '%' : value
-}
-
-const Donut = ({percent = 0, size = 55, color}: {percent?: number; size?: number; color?: string}) => {
-  const theme = useTheme()
-  return (
-    <ChartPie
-      stroke="none"
-      hideTooltip={true}
-      outerRadius={size / 2}
-      innerRadius={size / 2 - 9}
-      height={size}
-      width={size}
-      hideLabel
-      data={{
-        value: Math.round(percent * 100) / 100,
-        rest: 1 - percent,
-      }}
-      colors={{
-        value: color ?? theme.palette.primary.main,
-        rest: alpha(color ?? theme.palette.primary.main, 0.16),
-      }}
-      m={{
-        value: 'ukrainian',
-        rest: 'other',
-      }}
-    />
-  )
 }
