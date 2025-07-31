@@ -144,7 +144,7 @@ export const ChartBarContent = <K extends string>({
                   >
                     <Txt sx={{p: 0, pr: 0.5, flex: 1}} truncate>
                       <Txt block truncate>
-                        {checked && <Checkbox size="small" checked={checked.includes(k)} />}
+                        {checked && <Checkbox sx={{padding: .5, mr: 1}} size="small" checked={checked.includes(k)} />}
                         {(labels && labels[k]) ?? item.label ?? k}
                       </Txt>
                       {(item.desc || descs) && (

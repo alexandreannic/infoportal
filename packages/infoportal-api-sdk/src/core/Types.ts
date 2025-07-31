@@ -421,6 +421,7 @@ export namespace Ip {
       }
     }
 
+    export type CountUserByDate = {date: string; countCreatedAt: number; countLastConnectedCount: number}[]
     export type CountBy<K extends string> = Array<Record<K, string> & {count: number}>
     export type CountByKey = CountBy<'key'>
   }

@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
 import {IpIconBtn} from '@/shared/IconBtn.js'
+import {IpBtn} from '@/shared/Btn.js'
 
 export const ViewMoreText = ({
   children,
@@ -34,7 +35,8 @@ interface ExpandableDivProps {
   children: React.ReactNode
 }
 
-export const ViewMoreDiv: React.FC<ExpandableDivProps> = ({initialHeight = 300, step = 120, children}) => {
+export const ViewMoreDiv: React.FC<ExpandableDivProps> = ({initialHeight = 300, step = 200, children}) => {
+  const {m} = useI18n()
   const innerRef = useRef<HTMLDivElement>(null)
   const [expandedHeight, setExpandedHeight] = useState(initialHeight)
   const [contentHeight, setContentHeight] = useState(initialHeight)
@@ -67,9 +69,12 @@ export const ViewMoreDiv: React.FC<ExpandableDivProps> = ({initialHeight = 300, 
       </div>
       {expandedHeight < contentHeight && (
         <Box display="flex" justifyContent="center">
-          <IpIconBtn onClick={handleShowMore} sx={{mt: 1}}>
-            expand
-          </IpIconBtn>
+          <IpBtn icon="expand" size="small" variant="outlined" onClick={handleShowMore}>
+            {m.viewMore}
+          </IpBtn>
+          {/*<IpIconBtn onClick={handleShowMore} sx={{mt: 1}}>*/}
+          {/*  expand*/}
+          {/*</IpIconBtn>*/}
         </Box>
       )}
     </div>

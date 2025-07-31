@@ -79,6 +79,7 @@ function Dashboard() {
   const querySubmissionsByCategory = queryMetrics.getSubmissionsByCategory
   const querySubmissionsByStatus = queryMetrics.getSubmissionsByStatus
   const querySubmissionsByUser = queryMetrics.getSubmissionsByUser
+  const getUsersByDate = queryMetrics.getUsersByDate
   const formIndex = useQueryForm(workspaceId).formIndex
   const selectedFormsSet = useSetState<Ip.FormId>()
 
@@ -118,6 +119,27 @@ function Dashboard() {
               {querySubmissionsByStatus.data?.map(_ => (
                 <PieChartStatus validation={_.key as Ip.Submission.Validation} percent={_.count / submissionsCount} />
               ))}
+            </PanelBody>
+          </Panel>
+          <Panel>
+            <PanelHead>{m.users}</PanelHead>
+            <PanelBody>
+              <Lazy
+                deps={[getUsersByDate.data]}
+                fn={data => {
+                  return data?.map(_ => {
+                    return {
+                      name: _.date,
+                      values: {
+                        countCreatedAt: _.countCreatedAt,
+                        countLastConnectedCount: _.countLastConnectedCount,
+                      },
+                    }
+                  })
+                }}
+              >
+                {_ => <ChartLine hideLabelToggle hideLegend data={_} />}
+              </Lazy>
             </PanelBody>
           </Panel>
           <Panel>

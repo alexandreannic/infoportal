@@ -133,6 +133,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
 
     const status = Array.from(statusMap.entries()).find(([ErrClass]) => e instanceof ErrClass)?.[1] ?? 500
 
+    log.error(status + ':' + e.name + ' - ' + e.message)
     return {
       status,
       body: {
@@ -466,6 +467,13 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       },
     },
     metrics: {
+      getUsersByDate: _ =>
+        auth2(_)
+          .then(({req, params, query}) =>
+            metrics.usersByDate({...params, user: req.session.app.user, ...parseQs(query)}),
+          )
+          .then(ok200)
+          .catch(handleError),
       getSubmissionsBy: _ =>
         auth2(_)
           .then(({req, params, query}) =>

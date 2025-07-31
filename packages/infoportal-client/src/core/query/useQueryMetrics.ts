@@ -1,11 +1,7 @@
 import {Ip} from 'infoportal-api-sdk'
 import {useAppSettings} from '@/core/context/ConfigContext.js'
 import {useQuery} from '@tanstack/react-query'
-import {queryKeys} from '@/core/query/query.index.js'
-//
-// export const useQueryMetrics = {
-//   getSubmissionsByMonth,
-// }
+import {queryKeys} from '@/core/query/query.index.js' //
 
 export function useQueryMetrics(params: {workspaceId: Ip.WorkspaceId} & Ip.Metrics.Payload.Filter) {
   const {apiv2} = useAppSettings()
@@ -30,7 +26,12 @@ export function useQueryMetrics(params: {workspaceId: Ip.WorkspaceId} & Ip.Metri
     queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'user'),
     queryFn: () => apiv2.metrics.getSubmissionsBy({type: 'user', ...params}),
   })
+  const getUsersByDate = useQuery({
+    queryKey: queryKeys.metrics(params.workspaceId, 'user', 'by-date'),
+    queryFn: () => apiv2.metrics.getUsersByDate(params),
+  })
   return {
+    getUsersByDate,
     getSubmissionsByMonth,
     getSubmissionsByForm,
     getSubmissionsByCategory,

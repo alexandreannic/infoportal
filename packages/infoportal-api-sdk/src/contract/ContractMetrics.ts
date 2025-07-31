@@ -31,6 +31,17 @@ export const metricsContract = c.router({
       200: c.type<Ip.Metrics.CountByKey>(),
     },
   },
+  getUsersByDate: {
+    method: 'GET',
+    path: '/:workspaceId/metrics/users/by-date',
+    pathParams: c.type<{
+      workspaceId: Ip.WorkspaceId
+    }>(),
+    query: filters,
+    responses: {
+      200: c.type<Ip.Metrics.CountUserByDate>(),
+    },
+  },
 })
 
 export const metricsClient = (client: TsRestClient) => ({
@@ -42,6 +53,14 @@ export const metricsClient = (client: TsRestClient) => ({
     return client.metrics
       .getSubmissionsBy({
         params: {workspaceId, type},
+        query: query,
+      })
+      .then(map200)
+  },
+  getUsersByDate: ({workspaceId, ...query}: {workspaceId: Ip.WorkspaceId} & Ip.Metrics.Payload.Filter) => {
+    return client.metrics
+      .getUsersByDate({
+        params: {workspaceId},
         query: query,
       })
       .then(map200)
