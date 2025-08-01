@@ -456,7 +456,7 @@ export const en = Object.freeze({
       openForm: 'Open form',
     },
     _admin: {
-      createGroup: 'Create groupDisplay',
+      createGroup: 'Create group',
     },
     resourceDoesNotExist: 'Resource not found. It may have been deleted or never existed.',
     fillForm: 'Fill form',
