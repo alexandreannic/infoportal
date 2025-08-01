@@ -15,6 +15,11 @@ export class DbInit {
     await Promise.all([this.createAccOwner(), this.createAccAdmins(), this.createAccTest()])
   }
 
+  // ([47.9967, -4.0964])
+  // ([4.6504, -74.051])
+  // ([51.547664, 31.5164277])
+  // ([47.9967, -4.0964])
+
   private readonly createAccTest = async () => {
     return this.upsertUsers([
       {

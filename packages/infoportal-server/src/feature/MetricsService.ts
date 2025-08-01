@@ -24,7 +24,7 @@ export class MetricsService {
 
   private readonly getAllowedFormIds = app.cache.request({
     key: 'allowedFormIds',
-    ttlMs: duration(1, 'hour'),
+    ttlMs: duration(1, 'minute'),
     fn: (props: {workspaceId: Ip.WorkspaceId; user: Ip.User}): Promise<Seq<Ip.FormId>> => {
       return this.form.getByUser(props).then(_ => seq(_).map(_ => _.id))
     },
@@ -72,6 +72,7 @@ export class MetricsService {
       form: 'formId',
       user: 'submittedBy',
       status: 'validationStatus',
+      location: 'isoCode',
     })
     return this.prisma.formSubmission
       .groupBy({
@@ -81,11 +82,7 @@ export class MetricsService {
         },
         where: {
           formId: {in: allowedFormIds},
-          form: {
-            is: {
-              workspaceId,
-            },
-          },
+          isoCode: dbColumn === 'isoCode' ? {not: null} : undefined,
           deletedAt: null,
           submissionTime: {gte: start, lte: end},
         },

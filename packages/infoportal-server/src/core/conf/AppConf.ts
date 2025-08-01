@@ -37,6 +37,7 @@ export const appConf = {
   //   password: e(required)('DB_PASSWORD'),
   //   port: e(int, defaultValue(5432))('DB_PORT')
   // },
+  openCageDataApiKey: e()('OPENCAGEDATA_API_KEY'),
   email: {
     address: e(required)('EMAIL_ADDRESS'),
     user: e(required)('EMAIL_USER'),

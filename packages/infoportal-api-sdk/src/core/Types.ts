@@ -14,6 +14,8 @@ type Brand<K, T> = K & {
 export namespace Ip {
   export type Uuid = Brand<string, 'Uuid'>
 
+  export type Geolocation = [number, number]
+
   export type Period = {
     start: Date
     end: Date
@@ -216,7 +218,8 @@ export namespace Ip {
       submissionTime: Kobo.Submission['_submission_time']
       version?: Kobo.Submission['__version__']
       attachments: Kobo.Submission.Attachment[]
-      geolocation: Kobo.Submission['_geolocation']
+      geolocation?: Geolocation
+      isoCode?: string
       id: Kobo.SubmissionId
       uuid: Kobo.Submission['_uuid']
       validationStatus?: Submission.Validation
@@ -232,6 +235,7 @@ export namespace Ip {
         formId: FormId
         attachments: any[]
         answers: object
+        geolocation?: Geolocation
       }
       export type UpdateValidation = {
         formId: FormId
@@ -413,7 +417,7 @@ export namespace Ip {
   }
 
   export namespace Metrics {
-    export type ByType = 'user' | 'status' | 'category' | 'month' | 'form'
+    export type ByType = 'location' | 'user' | 'status' | 'category' | 'month' | 'form'
     export namespace Payload {
       export type Filter = {
         start?: Date

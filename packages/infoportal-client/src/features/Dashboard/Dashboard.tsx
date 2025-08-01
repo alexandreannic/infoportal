@@ -24,6 +24,7 @@ import {PeriodPicker} from '@/shared/PeriodPicker/PeriodPicker.js'
 import {addDays, subYears} from 'date-fns'
 import {DataFilterLayout} from '@/shared/DataFilter/DataFilterLayout.js'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext.js'
+import {ChartGeo} from '@/shared/charts/ChartGeo.js'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -101,6 +102,7 @@ function Dashboard() {
   const querySubmissionsByCategory = queryMetrics.getSubmissionsByCategory
   const querySubmissionsByStatus = queryMetrics.getSubmissionsByStatus
   const querySubmissionsByUser = queryMetrics.getSubmissionsByUser
+  const queryUsersByIsoCode = queryMetrics.getUsersByIsoCode
   const getUsersByDate = queryMetrics.getUsersByDate
   const formIndex = useQueryForm(workspaceId).formIndex
 
@@ -151,6 +153,7 @@ function Dashboard() {
       <PanelBody sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
         {Obj.keys(Ip.Submission.Validation).map(status => (
           <PieChartStatus
+            key={status}
             validation={status as Ip.Submission.Validation}
             percent={
               (querySubmissionsByStatus.data?.find(_ => _.key === status)?.count ?? 0) /
@@ -163,6 +166,7 @@ function Dashboard() {
     </Panel>
   )
 
+  const map = <ChartGeo data={queryUsersByIsoCode.data?.map(_ => ({iso: _.key, count: _.count}))} />
   const submissionByTime = useMemo(() => {
     if (!querySubmissionByMonth.data) return
     const data = querySubmissionByMonth.data?.map(_ => {
@@ -263,7 +267,7 @@ function Dashboard() {
       .get()
     return (
       <PanelWBody title={m.submissionsByUser + ` (${querySubmissionsByUser.data?.length})`}>
-        {querySubmissionsByUser.data?.some(_ => _.key.length > 1 && !_.key.includes('@')) && (
+        {querySubmissionsByUser.data?.some(_ => _.key && _.key.length > 1 && !_.key.includes('@')) && (
           <IpAlert sx={{mb: 1}} severity="info">
             {m.includeKoboAccountNames}
           </IpAlert>
@@ -312,6 +316,7 @@ function Dashboard() {
           {submissionsByCategory}
         </Grid>
         <Grid size={{xs: 12, sm: 6}}>
+          {map}
           {usersByDate}
           {submissionsByUser}
         </Grid>

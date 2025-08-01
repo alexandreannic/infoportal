@@ -35,6 +35,11 @@ export function useQueryMetrics(
     queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'user', filtersForms),
     queryFn: () => apiv2.metrics.getSubmissionsBy({type: 'user', ...params}),
   })
+  const getUsersByIsoCode = useQuery({
+    placeholderData: old => old,
+    queryKey: queryKeys.metrics(params.workspaceId, 'submissionsBy', 'isoCode', filters),
+    queryFn: () => apiv2.metrics.getSubmissionsBy({type: 'location', ...params}),
+  })
   const getUsersByDate = useQuery({
     placeholderData: old => old,
     queryKey: queryKeys.metrics(params.workspaceId, 'user', 'by-date', filters),
@@ -42,6 +47,7 @@ export function useQueryMetrics(
   })
   return {
     getUsersByDate,
+    getUsersByIsoCode,
     getSubmissionsByMonth,
     getSubmissionsByForm,
     getSubmissionsByCategory,

@@ -92,6 +92,7 @@ export const contractFormSubmission = c.router({
     body: z.object({
       answers: z.record(z.any()),
       attachments: z.array(z.any()),
+      geolocation: z.tuple([z.number(), z.number()]).optional(),
     }),
     responses: {
       200: c.type<Ip.Submission>(),
@@ -109,6 +110,7 @@ export const formSubmissionClient = (client: TsRestClient) => {
         })
         .then(map200)
         .then(Ip.Submission.map),
+
     search: ({workspaceId, formId, ...body}: Ip.Submission.Payload.Search) =>
       client.submission
         .search({

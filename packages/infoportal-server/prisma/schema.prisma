@@ -159,7 +159,8 @@ model FormSubmission {
   validatedBy            String?
   source                 FormSource                @default(kobo)
   lastValidatedTimestamp Int?
-  geolocation            Int[]                     @default([])
+  geolocation            Json?
+  isoCode                String?
   answers                Json
   attachments            Json[]                    @default([])
   deletedAt              DateTime?

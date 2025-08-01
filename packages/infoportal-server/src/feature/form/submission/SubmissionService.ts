@@ -142,9 +142,11 @@ export class SubmissionService {
     formId,
     attachments,
     author,
+    isoCode,
   }: {
     author?: string
     formId: Ip.FormId
+    isoCode?: string
   } & Ip.Submission.Payload.Submit): Prisma.FormSubmissionUncheckedCreateInput => {
     return {
       formId: formId,
@@ -153,13 +155,36 @@ export class SubmissionService {
       end: new Date(),
       uuid: genUUID(),
       submissionTime: new Date(),
-      source: 'internal',
+      isoCode,
       submittedBy: author,
       answers,
       attachments,
     }
   }
 
+  private readonly getIsoFromGeopoint = async (geolocation?: Ip.Geolocation) => {
+    if (!geolocation) return
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${geolocation[0]}&lon=${geolocation[1]}&format=json`
+    return fetch(url)
+      .then(_ => _.json())
+      .then(_ => _.address['ISO3166-2-lvl4'])
+      .catch(() => {
+        this.log.warn('Cannot retrieve ISO code from nominatim.openstreetmap.org API')
+        return undefined
+      })
+      .then(iso => {
+        if (iso || !this.conf.openCageDataApiKey) return iso
+        // OpenCageData is limited to 2,500 requests/day.
+        const url = `https://api.opencagedata.com/geocode/v1/json?q=${geolocation[0]}+${geolocation[1]}&key=${this.conf.openCageDataApiKey}`
+        return fetch(url)
+          .then(_ => _.json())
+          .then(_ => _.results[0].components['ISO_3166-2'][0])
+      })
+      .catch(() => {
+        this.log.warn('Cannot retrieve ISO code from OpenCageData API')
+        return undefined
+      })
+  }
   readonly submit = async (
     props: Ip.Submission.Payload.Submit & {
       workspaceId: Ip.WorkspaceId
@@ -171,10 +196,11 @@ export class SubmissionService {
     const form = await this.form.get(formId)
     if (!form) throw new HttpError.NotFound(`Form ${formId} does not exists.`)
     if (form.kobo) throw new HttpError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
+    const isoCode = await this.getIsoFromGeopoint(props.geolocation)
     return this.create({
       workspaceId,
       formId,
-      answers: SubmissionService.mapPayload(props),
+      answers: SubmissionService.mapPayload({...props, isoCode}),
     })
   }
 

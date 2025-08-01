@@ -69,7 +69,7 @@ export const appConfig = {
       [Ip.Form.DeploymentStatus.deployed]: 'public',
       [Ip.Form.DeploymentStatus.archived]: 'archive',
       [Ip.Form.DeploymentStatus.draft]: 'stylus_note',
-    }
+    },
   },
   iconStatus: {
     error: 'error',

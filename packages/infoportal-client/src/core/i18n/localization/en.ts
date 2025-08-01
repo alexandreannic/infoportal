@@ -108,6 +108,7 @@ export const en = Object.freeze({
       [Ip.Form.DeploymentStatus.deployed]: 'Deployed',
     },
     open: 'Open',
+    submissionsByLocation: 'Submissions by location',
     submissionsByCategory: 'Submissions by category',
     submissionsByUser: 'Submissions by user',
     submissionsByForm: 'Submissions by form',
