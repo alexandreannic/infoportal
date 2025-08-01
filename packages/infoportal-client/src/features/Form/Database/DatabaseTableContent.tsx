@@ -28,6 +28,7 @@ import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseCol
 import {Ip} from 'infoportal-api-sdk'
 import {AppAvatar} from '@/shared'
 import {useFormSocket} from '@/features/Form/useFormSocket'
+import {appConfig} from '@/conf/AppConfig.js'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -226,7 +227,7 @@ export const DatabaseTableContent = ({
                   disabled={!ctx.form.kobo.enketoUrl || ctx.form.deploymentStatus === 'archived'}
                   href={ctx.form.kobo.enketoUrl ?? ''}
                   target="_blank"
-                  children="file_open"
+                  children={appConfig.icons.openFormLink}
                   tooltip={m._koboDatabase.openForm}
                 />
               ) : (
@@ -234,7 +235,7 @@ export const DatabaseTableContent = ({
                   <IpIconBtn
                     disabled={ctx.form.deploymentStatus === 'archived'}
                     target="_blank"
-                    children="file_open"
+                    children={appConfig.icons.openFormLink}
                     tooltip={m._koboDatabase.openForm}
                   />
                 </Link>

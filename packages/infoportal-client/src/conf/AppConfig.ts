@@ -1,4 +1,5 @@
 import {bool, defaultValue, env, required} from '@axanc/ts-utils'
+import {Ip} from 'infoportal-api-sdk'
 
 enum Env {
   VITE_SENTRY_DNS = 'VITE_SENTRY_DNS',
@@ -57,11 +58,17 @@ export const appConfig = {
     users: 'group',
     oblast: 'location_on',
     matrix: 'hub',
+    openFormLink: 'file_open',
     koboFormLink: 'fact_check',
     office: 'business',
     displacementStatus: 'directions_run',
     dataTable: 'data_table',
     dashboard: 'stacked_bar_chart',
+    deploymentStatus: {
+      [Ip.Form.DeploymentStatus.deployed]: 'public',
+      [Ip.Form.DeploymentStatus.archived]: 'archive',
+      [Ip.Form.DeploymentStatus.draft]: 'stylus_note',
+    }
   },
   iconStatus: {
     error: 'error',

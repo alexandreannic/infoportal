@@ -256,7 +256,7 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
                             color="disabled"
                             sx={{marginLeft: '4px', marginRight: '-4px', verticalAlign: 'middle'}}
                           >
-                            {_.deploymentStatus === 'archived' ? 'archive' : 'stylus_note'}
+                            {appConfig.icons.deploymentStatus[_.deploymentStatus!]}
                           </Icon>
                         )}
                       </>

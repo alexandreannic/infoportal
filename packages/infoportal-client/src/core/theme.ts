@@ -107,7 +107,7 @@ export const styleUtils = (t: Theme) => ({
     },
     toolbar: {
       default: {
-        background: t.palette.mode === 'dark' ? t.palette.background.paper : t.palette.background.default, //'rgb(237, 242, 250)',
+        background: t.palette.mode === 'dark' ? darken(t.palette.background.paper, .16) : t.palette.background.default, //'rgb(237, 242, 250)',
       }, //'#e9eef6'
       active: {
         background: alpha(t.palette.primary.main, 0.2),

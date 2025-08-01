@@ -4,7 +4,7 @@ import {Page} from '@/shared/Page'
 import {Panel} from '@/shared/Panel'
 import {TableIconBtn} from '@/shared/TableIcon'
 import {Txt} from '@/shared/Txt'
-import {seq} from '@axanc/ts-utils'
+import {fnSwitch, seq} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
 import {useEffect, useMemo} from 'react'
 import {useQueryServers} from '@/core/query/useQueryServers'
@@ -13,7 +13,8 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRootRoute} from '@/features/Form/Form'
 import {Ip} from 'infoportal-api-sdk'
-import {IpBtn} from '@/shared/index.js'
+import {IpBtn, IpIconBtn} from '@/shared/index.js'
+import {appConfig} from '@/conf/AppConfig.js'
 
 export const formsRoute = createRoute({
   getParentRoute: () => formRootRoute,
@@ -67,19 +68,48 @@ function Forms() {
                   align: 'center',
                   render: _ => {
                     return {
-                      label:
-                        _.deploymentStatus === 'archived' ? (
+                      label: fnSwitch(_.deploymentStatus!, {
+                        archived: (
                           <Icon fontSize="small" color="disabled">
-                            archive
+                            {appConfig.icons.deploymentStatus.archived}
                           </Icon>
-                        ) : _.deploymentStatus === 'deployed' ? (
+                        ),
+                        deployed: (
                           <Icon fontSize="small" sx={{color: t.palette.success.light}} color="success">
-                            fiber_manual_record
+                            {appConfig.icons.deploymentStatus.deployed}
                           </Icon>
-                        ) : undefined,
+                        ),
+                        draft: (
+                          <Icon fontSize="small" color="disabled">
+                            {appConfig.icons.deploymentStatus.draft}
+                          </Icon>
+                        ),
+                      }),
                       value: _.deploymentStatus,
                       export: _.deploymentStatus,
                       option: _.deploymentStatus,
+                    }
+                  },
+                },
+                {
+                  id: 'name',
+                  type: 'select_one',
+                  head: m.name,
+                  render: _ => {
+                    return {
+                      label: <Txt bold>{_.name}</Txt>,
+                      value: _.name,
+                    }
+                  },
+                },
+                {
+                  id: 'category',
+                  type: 'select_one',
+                  head: m.category,
+                  render: _ => {
+                    return {
+                      label: _.category,
+                      value: _.category,
                     }
                   },
                 },
@@ -89,16 +119,16 @@ function Forms() {
                   head: m.id,
                   renderQuick: _ => _.id,
                 },
-                {
-                  id: 'serverId',
-                  type: 'select_one',
-                  head: m.serverId,
-                  renderQuick: _ => _.kobo?.accountId,
-                },
+                // {
+                //   id: 'serverId',
+                //   type: 'select_one',
+                //   head: m.serverId,
+                //   renderQuick: _ => _.kobo?.accountId,
+                // },
                 {
                   id: 'serverUrl',
                   type: 'select_one',
-                  head: m.server,
+                  head: m.koboServer,
                   render: _ => {
                     const url = _.kobo?.accountId ? indexServers[_.kobo?.accountId]?.url : undefined
                     if (url) {
@@ -112,17 +142,6 @@ function Forms() {
                       }
                     }
                     return {value: undefined, label: ''}
-                  },
-                },
-                {
-                  id: 'name',
-                  type: 'select_one',
-                  head: m.name,
-                  render: _ => {
-                    return {
-                      label: <Txt bold>{_.name}</Txt>,
-                      value: _.name,
-                    }
                   },
                 },
                 // {
@@ -177,7 +196,7 @@ function Forms() {
                       value: _.kobo.enketoUrl,
                       label: (
                         <a href={_.kobo.enketoUrl} target="_blank" rel="noopener noreferrer">
-                          <TableIconBtn color="primary">file_open</TableIconBtn>
+                          <IpIconBtn color="primary">{appConfig.icons.openFormLink}</IpIconBtn>
                         </a>
                       ),
                     }
@@ -191,7 +210,7 @@ function Forms() {
                   head: '',
                   renderQuick: _ => (
                     <Link to="/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
-                      <TableIconBtn color="primary" children="chevron_right" />
+                      <IpIconBtn color="primary" children="chevron_right" />
                     </Link>
                   ),
                 },

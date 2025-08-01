@@ -100,6 +100,7 @@ export const en = Object.freeze({
     influencingFactors: 'Influencing factors',
     familyUnity: 'Family unity',
     city: 'City',
+    koboServer: 'Kobo server',
     no: 'No',
     deploymentStatus_: {
       [Ip.Form.DeploymentStatus.draft]: 'Draft',
