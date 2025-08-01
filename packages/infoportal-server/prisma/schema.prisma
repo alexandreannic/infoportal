@@ -110,6 +110,8 @@ model Form {
   kobo                   FormKoboInfo?
   disconnectedFromKoboAt DateTime?
   disconnectedFromKoboBy String?
+
+  @@index([category])
 }
 
 enum FormVersionStatus {

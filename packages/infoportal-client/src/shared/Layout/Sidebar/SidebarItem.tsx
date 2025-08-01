@@ -6,10 +6,15 @@ import {fnSwitch} from '@axanc/ts-utils'
 import {makeSx} from '@/core/theme'
 
 const css = makeSx({
-  i: {
+  iStart: {
     textAlign: 'center',
     mr: 1.5,
     ml: -0.5,
+  },
+  iEnd: {
+    textAlign: 'center',
+    ml: 1.5,
+    // mr: -0.5,
   },
 })
 
@@ -97,11 +102,11 @@ export const SidebarItem = ({
     >
       {icon &&
         (typeof icon === 'string' ? (
-          <Icon fontSize={size === 'small' ? 'small' : 'medium'} sx={css.i}>
+          <Icon fontSize={size === 'small' ? 'small' : 'medium'} sx={css.iStart}>
             {icon}
           </Icon>
         ) : (
-          <Box sx={css.i}>{icon}</Box>
+          <Box sx={css.iStart}>{icon}</Box>
         ))}
       <Box
         sx={{
@@ -119,11 +124,11 @@ export const SidebarItem = ({
       </Box>
       {iconEnd &&
         (typeof iconEnd === 'string' ? (
-          <Icon sx={css.i} color="disabled">
+          <Icon sx={css.iEnd} color="disabled">
             {iconEnd}
           </Icon>
         ) : (
-          <Box sx={css.i}>{iconEnd}</Box>
+          <Box sx={css.iEnd}>{iconEnd}</Box>
         ))}
     </ButtonBase>
   )

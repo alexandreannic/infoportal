@@ -15,7 +15,7 @@ export const useQueryForm = (workspaceId: Ip.WorkspaceId) => {
   const accessibleForms = useQuery({
     queryKey: queryKeys.form(workspaceId),
     queryFn: async () => {
-      const forms = await apiv2.form.getAll({workspaceId}).catch(toastAndThrowHttpError)
+      const forms = await apiv2.form.getMine({workspaceId}).catch(toastAndThrowHttpError)
       forms.forEach(form => {
         queryClient.setQueryData(queryKeys.form(workspaceId, form.id), form)
       })
@@ -27,6 +27,12 @@ export const useQueryForm = (workspaceId: Ip.WorkspaceId) => {
       // // return _forms.get?.filter(_ => session.user.admin || koboAccesses.includes(_.id))
     },
   })
+  const formIndex = useMemo(() => {
+    if (!accessibleForms.data) return
+    const map = new Map<Ip.FormId, Ip.Form>()
+    accessibleForms.data.forEach(_ => map.set(_.id, _))
+    return map
+  }, [accessibleForms.data])
 
   const importFromKobo = useMutation<Ip.Form, ApiError, Ip.Form.Payload.Import>({
     mutationFn: args => apiv2.kobo.importFromKobo({workspaceId, ...args}),
@@ -56,6 +62,7 @@ export const useQueryForm = (workspaceId: Ip.WorkspaceId) => {
     create,
     importFromKobo,
     accessibleForms,
+    formIndex,
   }
 }
 

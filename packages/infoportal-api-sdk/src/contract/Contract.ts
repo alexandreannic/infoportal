@@ -9,6 +9,7 @@ import {workspaceContract} from './workspace/ContractWorkspace.js'
 import {workspaceAccessContract} from './workspace/ContractWorkspaceAccess.js'
 import {contractFormSubmission} from './form/ContractFormSubmission.js'
 import {workspaceInvitationContract} from './workspace/ContractWorkspaceInvitation.js'
+import {metricsContract} from './ContractMetrics.js'
 
 export const ipContract = initContract().router({
   permission: permissionContract,
@@ -25,4 +26,5 @@ export const ipContract = initContract().router({
     access: formAccessContract,
     version: formVersionContract,
   },
+  metrics: metricsContract,
 })

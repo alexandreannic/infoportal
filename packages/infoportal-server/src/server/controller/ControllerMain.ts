@@ -27,7 +27,7 @@ export class ControllerMain {
 
       res.send(request.data)
     } catch (e) {
-      console.log((e as AxiosError).code)
+      console.log('ControllerMain/Proxy', (e as AxiosError).code)
       next(e)
     }
   }

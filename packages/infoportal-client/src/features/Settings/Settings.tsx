@@ -18,16 +18,6 @@ export const settingsRoute = createRoute({
   component: Settings,
 })
 
-export const useDefaultTabRedirect = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
-  const navigate = useNavigate()
-  const pathname = useRouterState({select: s => s.location.pathname})
-  const currentFullPath = useMatches().slice(-1)[0].fullPath
-  useEffect(() => {
-    if (currentFullPath !== settingsRoute.fullPath) return
-    navigate({to: '/$workspaceId/settings/users', params: {workspaceId}})
-  }, [currentFullPath, pathname])
-}
-
 function Settings() {
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
@@ -35,8 +25,6 @@ function Settings() {
   const {permission} = useWorkspaceContext()
   const {globalPermission} = useSession()
   const workspaceId = settingsRoute.useParams().workspaceId as Ip.WorkspaceId
-
-  useDefaultTabRedirect({workspaceId})
 
   useEffect(() => {
     setTitle(m.settings)

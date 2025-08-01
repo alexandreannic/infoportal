@@ -28,6 +28,7 @@ import {WorkspaceService} from '../feature/workspace/WorkspaceService.js'
 import {WorkspaceAccessService} from '../feature/workspace/WorkspaceAccessService.js'
 import {SubmissionService} from '../feature/form/submission/SubmissionService.js'
 import {WorkspaceInvitationService} from '../feature/workspace/WorkspaceInvitationService.js'
+import {MetricsService} from '../feature/MetricsService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -60,8 +61,9 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const cacheController = new ControllerCache()
   const importData = new ControllerKoboApiXlsImport(prisma)
 
-  interface HandlerArgs<TReq = Request, TParams = any, TBody = any> {
+  interface HandlerArgs<TReq = Request, TParams = any, TBody = any, TQuery = any> {
     req: TReq
+    query?: TQuery
     res: Response
     params?: TParams
     body?: TBody
@@ -131,6 +133,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
 
     const status = Array.from(statusMap.entries()).find(([ErrClass]) => e instanceof ErrClass)?.[1] ?? 500
 
+    log.error(status + ':' + e.name + ' - ' + e.message)
     return {
       status,
       body: {
@@ -150,6 +153,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const formSubmission = new SubmissionService(prisma)
   const server = new ServerService(prisma)
   const permission = new PermissionService(prisma, undefined, formAccess)
+  const metrics = new MetricsService(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
     const connectedUser = await permission.checkUserConnected(args.req)
@@ -357,12 +361,17 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({params}) => form.remove(params.formId))
           .then(ok204)
           .catch(handleError),
-      get: ({params}) => form.get(params.formId).then(okOrNotFound).catch(handleError),
       getAll: _ =>
         auth2(_)
           .then(({params}) => form.getAll({wsId: params.workspaceId}))
           .then(ok200)
           .catch(handleError),
+      getMine: _ =>
+        auth2(_)
+          .then(({params, req}) => form.getByUser({user: req.session.app.user, workspaceId: params.workspaceId}))
+          .then(ok200)
+          .catch(handleError),
+      get: ({params}) => form.get(params.formId).then(okOrNotFound).catch(handleError),
       create: _ =>
         auth2(_).then(({req, body, params}) =>
           form
@@ -457,7 +466,32 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .catch(handleError),
       },
     },
+    metrics: {
+      getUsersByDate: _ =>
+        auth2(_)
+          .then(({req, params, query}) =>
+            metrics.usersByDate({...params, user: req.session.app.user, ...parseMetricsQs(query)}),
+          )
+          .then(ok200)
+          .catch(handleError),
+      getSubmissionsBy: _ =>
+        auth2(_)
+          .then(({req, params, query}) =>
+            metrics.submissionsBy({...params, user: req.session.app.user, ...parseMetricsQs(query)}),
+          )
+          .then(ok200)
+          .catch(handleError),
+    },
   })
+
+  function parseMetricsQs(
+    _: Partial<Record<keyof Ip.Metrics.Payload.Filter, string | string[]>>,
+  ): Ip.Metrics.Payload.Filter {
+    const res = _ as any
+    if (res.end) res.end = new Date(res.end)
+    if (res.start) res.start = new Date(res.start)
+    return res
+  }
 
   try {
     r.get('/', safe(main.ping))

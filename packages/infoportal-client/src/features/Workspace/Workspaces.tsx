@@ -41,6 +41,16 @@ function Workspaces() {
                   <WorkspaceCardAdd />
                 </Modal>
               </Grid>
+              {queryInvitations.data?.map(_ => (
+                <Grid size={{xs: 6, sm: 4, md: 3}} key={_.id}>
+                  <WorkspaceCardInvitation invitation={_} />
+                </Grid>
+              ))}
+              {queryWorkspace.data?.map(_ => (
+                <Grid key={_.slug} size={{xs: 6, sm: 4, md: 3}}>
+                  <WorkspaceCard workspace={_} />
+                </Grid>
+              ))}
               {loading && (
                 <Grid size={{xs: 6, sm: 4, md: 3}}>
                   <Skeleton
@@ -52,16 +62,6 @@ function Workspaces() {
                   />
                 </Grid>
               )}
-              {queryInvitations.data?.map(_ => (
-                <Grid size={{xs: 6, sm: 4, md: 3}} key={_.id}>
-                  <WorkspaceCardInvitation invitation={_} />
-                </Grid>
-              ))}
-              {queryWorkspace.data?.map(_ => (
-                <Grid key={_.slug} size={{xs: 6, sm: 4, md: 3}}>
-                  <WorkspaceCard workspace={_} />
-                </Grid>
-              ))}
             </AnimateList>
           </Grid>
         </Page>

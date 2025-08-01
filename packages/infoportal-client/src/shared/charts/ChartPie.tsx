@@ -1,4 +1,4 @@
-import {Box, SxProps, Theme, useTheme} from '@mui/material'
+import {alpha, Box, SxProps, Theme, useTheme} from '@mui/material'
 // @ts-ignore
 import {Cell, Pie, PieChart, PieChartProps, PieLabelRenderProps, ResponsiveContainer, Tooltip} from 'recharts'
 import React, {ReactNode} from 'react'
@@ -29,7 +29,7 @@ const CustomizedLabel = ({x, y, fill, value, percent, textAnchor}: PieLabelRende
   )
 }
 
-export const ChartPie = <T extends Record<string, number>>({
+const ChartPieSetup = <T extends Record<string, number>>({
   sx,
   height,
   width,
@@ -105,5 +105,33 @@ export const ChartPie = <T extends Record<string, number>>({
         </PieChart>
       </ResponsiveContainer>
     </Box>
+  )
+}
+
+export const ChartPie = ({percent = 0, size = 55, color, sx}: {percent?: number; size?: number; color?: string; sx?: SxProps<Theme>}) => {
+  const theme = useTheme()
+  return (
+    <ChartPieSetup
+      stroke="none"
+      hideTooltip={true}
+      outerRadius={size / 2}
+      innerRadius={size / 2 - 9}
+      height={size}
+      width={size}
+      hideLabel
+      sx={sx}
+      data={{
+        value: Math.round(percent * 100) / 100,
+        rest: 1 - percent,
+      }}
+      colors={{
+        value: color ?? theme.palette.primary.main,
+        rest: alpha(color ?? theme.palette.primary.main, 0.16),
+      }}
+      m={{
+        value: 'ukrainian',
+        rest: 'other',
+      }}
+    />
   )
 }

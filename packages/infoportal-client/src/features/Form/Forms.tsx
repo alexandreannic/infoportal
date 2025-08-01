@@ -13,6 +13,7 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRootRoute} from '@/features/Form/Form'
 import {Ip} from 'infoportal-api-sdk'
+import {IpBtn} from '@/shared/index.js'
 
 export const formsRoute = createRoute({
   getParentRoute: () => formRootRoute,
@@ -47,6 +48,13 @@ function Forms() {
             <Datatable
               showExportBtn
               defaultLimit={500}
+              header={
+                <Link to="/$workspaceId/new-form" params={{workspaceId}}>
+                  <IpBtn icon="add" variant={'outlined'} sx={{mr: 0}}>
+                    {m.add}
+                  </IpBtn>
+                </Link>
+              }
               id="kobo-index"
               data={formsAccessible}
               columns={[

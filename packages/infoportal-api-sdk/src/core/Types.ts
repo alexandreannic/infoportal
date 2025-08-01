@@ -79,7 +79,8 @@ export namespace Ip {
       user_canDelete: boolean
       user_canUpdate: boolean
       user_canRead: boolean
-      use_canConnectAs: boolean
+      user_canConnectAs: boolean
+      form_canGetAll: boolean
     }
 
     export type Global = {
@@ -409,5 +410,20 @@ export namespace Ip {
         drcJob?: string | null
       }
     }
+  }
+
+  export namespace Metrics {
+    export type ByType = 'user' | 'status' | 'category' | 'month' | 'form'
+    export namespace Payload {
+      export type Filter = {
+        start?: Date
+        end?: Date
+        formIds: Ip.FormId[]
+      }
+    }
+
+    export type CountUserByDate = {date: string; countCreatedAt: number; countLastConnectedCount: number}[]
+    export type CountBy<K extends string> = Array<Record<K, string> & {count: number}>
+    export type CountByKey = CountBy<'key'>
   }
 }
