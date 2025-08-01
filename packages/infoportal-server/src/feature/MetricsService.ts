@@ -121,14 +121,14 @@ export class MetricsService {
     start,
     end,
     formIds,
+    user,
   }: FiltersForm): Promise<Ip.Metrics.CountByKey> => {
-    if (!formIds) {
-      formIds = await this.prisma.form
-        .findMany({select: {id: true}, where: {workspaceId}})
-        .then(_ => _.map(_ => _.id as Ip.FormId))
-    }
+    const allowedFormIds = await this.getAllowedFormIds({workspaceId, user}).then(_ =>
+      formIds && formIds.length > 0 ? seq(_).intersect(formIds) : _,
+    )
+    if (allowedFormIds.length === 0) return []
     const whereConditions = [
-      Prisma.sql`"formId" IN ( ${Prisma.join(formIds!)} )`,
+      allowedFormIds ? Prisma.sql`"formId" IN ( ${Prisma.join(allowedFormIds!)} )` : null,
       Prisma.sql`"deletedAt" IS NULL`,
       start ? Prisma.sql`"submissionTime" >= ${start}` : null,
       end ? Prisma.sql`"submissionTime" <= ${end}` : null,
