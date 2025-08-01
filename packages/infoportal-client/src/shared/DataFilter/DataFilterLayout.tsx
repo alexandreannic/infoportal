@@ -51,7 +51,7 @@ export const DataFilterLayout = ({
           flex: 1,
           mt: -1,
           mb: 1,
-          pt: 2,
+          pt: 1,
           pb: 0.5,
           display: 'flex',
           alignItems: 'center',

@@ -19,7 +19,6 @@ export const workspacesRoute = createRoute({
 })
 
 function Workspaces() {
-  const {formatDateTime} = useI18n()
   const queryWorkspace = useQueryWorkspace.get()
   const queryInvitations = useQueryWorkspaceInvitation.getMine()
   const {m} = useI18n()
@@ -29,7 +28,7 @@ function Workspaces() {
     <ProtectRoute>
       <Layout header={<AppHeader />}>
         <Page>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} sx={{mt: 1}}>
             <AnimateList delay={50}>
               <Grid size={{xs: 6, sm: 4, md: 3}}>
                 <Modal

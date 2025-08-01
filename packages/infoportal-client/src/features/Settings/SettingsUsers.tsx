@@ -114,7 +114,7 @@ function SettingsUsers() {
               align: 'center',
               id: 'avatar',
               head: '',
-              renderQuick: _ => _.status === 'user' && <AppAvatar size={24} email={_.email} />,
+              renderQuick: _ => _.status === 'user' && <AppAvatar sx={{my: .5}} size={28} email={_.email} />,
             },
             {
               type: 'string',

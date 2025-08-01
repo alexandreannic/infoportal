@@ -67,7 +67,7 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<Omit<BoxProps, 'borderColo
               {me.name}
             </Txt>
             <Row icon="email">{me.email}</Row>
-            <Row icon="work">{me.drcJob}</Row>
+            {me.job && <Row icon="work">{me.job}</Row>}
             <Row icon="badge">
               {m.access}
               <Chip

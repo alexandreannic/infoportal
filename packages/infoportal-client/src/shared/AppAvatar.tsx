@@ -11,6 +11,7 @@ const useStyles = makeStyles<{
   tooltipSize?: number
 }>()((t, {url, size, overlap, borderColor, tooltipSize}) => ({
   root: {
+    verticalAlign: 'middle',
     border: '2px solid',
     borderColor: borderColor ?? 'transparent',
     marginLeft: overlap ? t.spacing(-1) : undefined,

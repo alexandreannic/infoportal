@@ -140,7 +140,7 @@ function Dashboard() {
       )
     }
     return (
-      <Panel sx={{height: '100%', py: 1, px: 2}}>
+      <Panel sx={{height: '100%', py: 1, px: 2, display: 'flex', alignItems: 'center'}}>
         <ChartPieWidget title={m.linkedToKobo} dense showValue showBase value={value} base={base} />
       </Panel>
     )
@@ -277,7 +277,9 @@ function Dashboard() {
   return (
     <Page width="full">
       <DataFilterLayout
+        hidePopup
         onClear={() => {
+          selectedFormsSet.clear()
           setPeriod(defaultaPeriod)
         }}
         filters={{}}

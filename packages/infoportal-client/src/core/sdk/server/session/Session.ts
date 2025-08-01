@@ -11,7 +11,7 @@ export class SessionHelper {
     return {
       ..._,
       user: _.user,
-      workspaces: _.workspaces, // TODO Need mapping!
+      workspaces: _.workspaces.map(Ip.Workspace.map),
     }
   }
 }

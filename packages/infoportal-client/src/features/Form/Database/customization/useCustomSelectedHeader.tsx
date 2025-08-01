@@ -20,7 +20,7 @@ export const useCustomSelectedHeader = ({
   const query = useQueryAnswerUpdate()
   return (
     <>
-      {permission.answers_canUpdate && (
+      {permission.answers_canDelete && (
         <Modal
           loading={query.remove.isPending}
           onConfirm={(event, close) =>

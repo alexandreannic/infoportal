@@ -7,6 +7,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {PanelProps} from '@/shared/Panel/Panel.js'
 import {PanelFoot} from '@/shared/Panel/PanelFoot.js'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {appConfig} from '@/conf/AppConfig.js'
 
 export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
   const t = useTheme()
@@ -31,8 +32,11 @@ export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
         ...sx,
       }}
     >
-      <Icon sx={{mb: 1, fontSize: 60, color: t.palette.text.secondary}}>add</Icon>
-      <Box>{m.createWorkspace}</Box>
+      <Icon sx={{mb: 1, fontSize: 60, color: t.palette.text.secondary}}>{appConfig.icons.workspace}</Icon>
+      <Box display="flex" alignItems="center" mt={1}>
+        <Icon fontSize="medium">add</Icon>
+        <Txt bold size="big">{m.createWorkspace}</Txt>
+      </Box>
     </ButtonBase>
   )
 }
@@ -48,6 +52,8 @@ export const WorkspaceCard = ({workspace}: {workspace: Ip.Workspace}) => {
           mb: 0,
           minHeight: 200,
           p: 2,
+          display: 'flex',
+          flexDirection: 'column',
           transition: t.transitions.create(''),
           '&:hover': {
             boxShadow: t.shadows[2],
@@ -57,10 +63,13 @@ export const WorkspaceCard = ({workspace}: {workspace: Ip.Workspace}) => {
         <Txt size="title" bold block>
           {workspace.name}
         </Txt>
-        <Txt size="big" color="hint" block>
+        <Txt color="hint" block>
           {workspace.slug}
         </Txt>
-        <Txt color="hint" block sx={{mt: 1}}>
+        <Txt truncate block>
+          {workspace.sector}
+        </Txt>
+        <Txt color="hint" textAlign="right" block sx={{mt: 'auto'}}>
           {formatDate(workspace.createdAt)}
         </Txt>
       </Panel>
