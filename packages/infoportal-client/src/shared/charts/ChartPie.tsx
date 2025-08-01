@@ -108,7 +108,7 @@ const ChartPieSetup = <T extends Record<string, number>>({
   )
 }
 
-export const ChartPie = ({percent = 0, size = 55, color}: {percent?: number; size?: number; color?: string}) => {
+export const ChartPie = ({percent = 0, size = 55, color, sx}: {percent?: number; size?: number; color?: string; sx?: SxProps<Theme>}) => {
   const theme = useTheme()
   return (
     <ChartPieSetup
@@ -119,6 +119,7 @@ export const ChartPie = ({percent = 0, size = 55, color}: {percent?: number; siz
       height={size}
       width={size}
       hideLabel
+      sx={sx}
       data={{
         value: Math.round(percent * 100) / 100,
         rest: 1 - percent,

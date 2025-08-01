@@ -5,7 +5,7 @@ import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {useQueryMetrics} from '@/core/query/useQueryMetrics.js'
 import {Ip} from 'infoportal-api-sdk'
 import {ChartLine} from '@/shared/charts/ChartLine.js'
-import {Box, Grid, Icon, useTheme} from '@mui/material'
+import {Box, BoxProps, CircularProgress, Grid, Icon, useTheme} from '@mui/material'
 import {BarChartData, ChartBar} from '@/shared/charts/ChartBar.js'
 import {Obj, seq} from '@axanc/ts-utils'
 import {useQueryForm} from '@/core/query/useQueryForm.js'
@@ -14,12 +14,16 @@ import {SlideWidget} from '@/shared/PdfLayout/PdfSlide.js'
 import {appConfig} from '@/conf/AppConfig.js'
 import {useI18n} from '@/core/i18n/index.js'
 import {useQueryUser} from '@/core/query/useQueryUser.js'
-import {useMemo} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import {SelectStatusConfig} from '@/shared/customInput/SelectStatus.js'
 import {ChartPie} from '@/shared/charts/ChartPie.js'
 import {toPercent} from 'infoportal-common'
 import {ChartPieWidget} from '@/shared/charts/ChartPieWidget.js'
 import {PanelWBody} from '@/shared/Panel/PanelWBody.js'
+import {PeriodPicker} from '@/shared/PeriodPicker/PeriodPicker.js'
+import {addDays, subYears} from 'date-fns'
+import {DataFilterLayout} from '@/shared/DataFilter/DataFilterLayout.js'
+import {useLayoutContext} from '@/shared/Layout/LayoutContext.js'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -27,13 +31,13 @@ export const dashboardRoute = createRoute({
   component: Dashboard,
 })
 
-const PieChartStatus = ({percent, validation}: {percent: number; validation: Ip.Submission.Validation}) => {
+const PieChartStatus = ({percent, validation, ...props}: {percent: number; validation: Ip.Submission.Validation} & BoxProps) => {
   const {m} = useI18n()
   const t = useTheme()
   const type = SelectStatusConfig.customStatusToStateStatus.KoboValidation[validation]
   const style = SelectStatusConfig.stateStatusStyle[type ?? 'disabled']
   return (
-    <Box>
+    <Box {...props}>
       <Box sx={{position: 'relative'}}>
         <Box
           sx={{
@@ -50,7 +54,7 @@ const PieChartStatus = ({percent, validation}: {percent: number; validation: Ip.
         >
           <Icon sx={{color: style.color(t)}}>{style.icon}</Icon>
         </Box>
-        <ChartPie percent={percent} color={style.color(t)} size={55} />
+        <ChartPie percent={percent} color={style.color(t)} size={55} sx={{margin: 'auto'}}/>
       </Box>
       <Txt block bold size="big" sx={{mt: 0.5, lineHeight: 1, textAlign: 'center'}}>
         {toPercent(percent)}
@@ -65,13 +69,29 @@ const PieChartStatus = ({percent, validation}: {percent: number; validation: Ip.
 function Dashboard() {
   const {m, formatLargeNumber} = useI18n()
   const t = useTheme()
+  const {setTitle} = useLayoutContext()
   const workspaceId = dashboardRoute.useParams().workspaceId as Ip.WorkspaceId
 
+  useEffect(() => {
+    setTitle(m.overview)
+  }, [])
+
   const selectedFormsSet = useSetState<Ip.FormId>()
+  const today = new Date()
+  const defaultaPeriod = {
+    start: subYears(today, 1),
+    end: addDays(today, 1),
+  }
+  const [period, setPeriod] = useState<Partial<Ip.Period>>(defaultaPeriod)
 
   const queryUsers = useQueryUser.getAll(workspaceId)
   const queryForms = useQueryForm(workspaceId).accessibleForms
-  const queryMetrics = useQueryMetrics({workspaceId, formIds: selectedFormsSet.toArray})
+  const queryMetrics = useQueryMetrics({
+    workspaceId,
+    formIds: selectedFormsSet.toArray,
+    start: period.start,
+    end: period.end,
+  })
   const querySubmissionByMonth = queryMetrics.getSubmissionsByMonth
   const querySubmissionsByForm = queryMetrics.getSubmissionsByForm
   const querySubmissionsByCategory = queryMetrics.getSubmissionsByCategory
@@ -80,6 +100,13 @@ function Dashboard() {
   const getUsersByDate = queryMetrics.getUsersByDate
   const formIndex = useQueryForm(workspaceId).formIndex
 
+  const loading =
+    querySubmissionByMonth.isFetching ||
+    querySubmissionsByForm.isFetching ||
+    querySubmissionsByCategory.isFetching ||
+    querySubmissionsByStatus.isFetching ||
+    querySubmissionsByUser.isFetching ||
+    getUsersByDate.isFetching
 
   const submissionsCount = useMemo(
     () => seq(querySubmissionByMonth.data ?? []).sum(_ => _.count),
@@ -93,7 +120,7 @@ function Dashboard() {
   )
   const formsCount = (
     <SlideWidget title={m.forms} icon={appConfig.icons.database}>
-      {formatLargeNumber(querySubmissionsByForm.data?.length)}
+      {formatLargeNumber(queryForms.data?.length)}
     </SlideWidget>
   )
 
@@ -121,7 +148,7 @@ function Dashboard() {
     <Panel>
       <PanelBody sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
         {querySubmissionsByStatus.data?.map(_ => (
-          <PieChartStatus validation={_.key as Ip.Submission.Validation} percent={_.count / submissionsCount} />
+          <PieChartStatus validation={_.key as Ip.Submission.Validation} percent={_.count / submissionsCount} sx={{flex: 1}} />
         ))}
       </PanelBody>
     </Panel>
@@ -240,6 +267,27 @@ function Dashboard() {
   }, [querySubmissionsByUser.data])
   return (
     <Page width="full">
+      <DataFilterLayout
+        onClear={() => {
+          setPeriod(defaultaPeriod)
+        }}
+        filters={{}}
+        setFilters={console.log}
+        shapes={{}}
+        after={loading && <CircularProgress size={35} />}
+        before={
+          <PeriodPicker
+            sx={{mt: 0, mb: 0, mr: 1}}
+            value={[period.start, period.end]}
+            onChange={([start, end]) => {
+              setPeriod(prev => ({...prev, start: start ?? undefined, end: end ?? undefined}))
+            }}
+            label={[m.start, m.endIncluded]}
+            max={addDays(new Date(), 1)}
+            fullWidth={false}
+          />
+        }
+      />
       <Grid container>
         <Grid size={{xs: 12, sm: 6}}>
           <Grid container sx={{mb: 1}}>

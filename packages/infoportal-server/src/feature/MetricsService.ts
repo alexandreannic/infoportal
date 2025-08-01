@@ -33,7 +33,8 @@ export class MetricsService {
   readonly usersByDate = async ({workspaceId, start, end, user}: Filters): Promise<Ip.Metrics.CountUserByDate> => {
     const whereConditions = [
       start ? Prisma.sql`"WorkspaceAccess"."createdAt" >= ${start}` : null,
-      end ? Prisma.sql`""User".createdAt" <= ${end}` : null,
+      end ? Prisma.sql`"User"."createdAt" <= ${end}` : null,
+      Prisma.sql`"WorkspaceAccess"."workspaceId" = ${workspaceId}::uuid`,
     ].filter(Boolean)
     const whereClause =
       whereConditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(whereConditions, ` AND `)}` : Prisma.sql``
@@ -48,8 +49,7 @@ export class MetricsService {
         AND TO_CHAR("WorkspaceAccess"."createdAt", 'YYYY-MM') = TO_CHAR("User"."lastConnectedAt", 'YYYY-MM')
     ) AS "countLastConnectedCount"
       FROM "User"
-             JOIN "WorkspaceAccess" ON "WorkspaceAccess"."userId" = "User"."id"
-      WHERE "WorkspaceAccess"."workspaceId" = ${workspaceId}::uuid ${whereClause}
+             JOIN "WorkspaceAccess" ON "WorkspaceAccess"."userId" = "User"."id" ${whereClause}
       GROUP BY "date"
       ORDER BY "date"
     `.then(rows =>

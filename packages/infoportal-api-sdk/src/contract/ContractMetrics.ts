@@ -8,12 +8,12 @@ const c = initContract()
 
 const filters = z.object({
   start: z
-    .date()
-    .transform(s => s.toISOString())
+    .string()
+    // .transform(s => new Date(s))
     .optional(),
   end: z
-    .date()
-    .transform(s => s.toISOString())
+    .string()
+    // .transform(s => new Date(s))
     .optional(),
   formIds: z.array(schema.formId).optional(),
   // start: z.coerce.date().optional(),
@@ -46,6 +46,12 @@ export const metricsContract = c.router({
   },
 })
 
+const parseQsDate = <T extends {start?: Date; end?: Date}>(_: T): T & {start?: string; end?: string} => {
+  if (_.end) _.end = new Date(_.end)
+  if (_.start) _.start = new Date(_.start)
+  return _ as any
+}
+
 export const metricsClient = (client: TsRestClient) => ({
   getSubmissionsBy: ({
     workspaceId,
@@ -55,7 +61,7 @@ export const metricsClient = (client: TsRestClient) => ({
     return client.metrics
       .getSubmissionsBy({
         params: {workspaceId, type},
-        query: query,
+        query: parseQsDate(query),
       })
       .then(map200)
   },
@@ -63,7 +69,7 @@ export const metricsClient = (client: TsRestClient) => ({
     return client.metrics
       .getUsersByDate({
         params: {workspaceId},
-        query: query,
+        query: parseQsDate(query),
       })
       .then(map200)
   },

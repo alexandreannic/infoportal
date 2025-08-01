@@ -55,7 +55,7 @@ export namespace SelectStatusConfig {
       Pending: 'warning',
       Rejected: 'error',
       Flagged: 'info',
-      UnderReview: 'disabled',
+      UnderReview: 'warning',
     } as Record<Ip.Submission.Validation, StateStatus>,
   }
 }
