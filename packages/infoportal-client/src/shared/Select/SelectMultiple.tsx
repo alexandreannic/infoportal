@@ -37,14 +37,15 @@ export const IpSelectMultiple = <T extends string | number>({
   id,
   onChange,
   sx,
+  value = [],
   ...props
 }: IpSelectMultipleProps<T>) => {
   const {m} = useI18n()
   const [uncontrolledInnerState, setUncontrolledInnerState] = useState<T[]>(props.defaultValue ?? [])
 
-  const value = useMemo(() => {
-    return props.value ?? uncontrolledInnerState
-  }, [props.value, uncontrolledInnerState])
+  const innerValue = useMemo(() => {
+    return value ?? uncontrolledInnerState
+  }, [value, uncontrolledInnerState])
 
   const options = useMemo(() => {
     const _options = props.options ?? []
@@ -55,12 +56,12 @@ export const IpSelectMultiple = <T extends string | number>({
   }, [props.options])
 
   const handleSelectAll = (e: any) => {
-    const newValue = value.length === options.length ? [] : options.map(_ => _.value)
+    const newValue = innerValue.length === options.length ? [] : options.map(_ => _.value)
     onChange(newValue, e)
     setUncontrolledInnerState(newValue)
   }
 
-  const allSelected = value.length === options.length
+  const allSelected = innerValue.length === options.length
 
   return (
     <FormControl size="small" sx={{width: '100%', ...sx}}>
@@ -88,6 +89,7 @@ export const IpSelectMultiple = <T extends string | number>({
             //   <CircularProgress size={24} color="secondary"/>
           />
         }
+        value={value}
         {...props}
       >
         {options.length > 5 && (
@@ -103,7 +105,7 @@ export const IpSelectMultiple = <T extends string | number>({
           >
             <Checkbox
               size="small"
-              indeterminate={!allSelected && value.length > 0}
+              indeterminate={!allSelected && innerValue.length > 0}
               checked={allSelected}
               sx={{
                 paddingTop: `8px !important`,
@@ -118,7 +120,7 @@ export const IpSelectMultiple = <T extends string | number>({
           <MenuItem dense key={option.key ?? option.value} value={option.value} sx={style.item}>
             <Checkbox
               size="small"
-              checked={value.includes(option.value)}
+              checked={innerValue.includes(option.value)}
               sx={{
                 paddingTop: `8px !important`,
                 paddingBottom: `8px !important`,

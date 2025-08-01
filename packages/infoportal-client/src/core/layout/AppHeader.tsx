@@ -13,6 +13,7 @@ import {alpha, Badge, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme}
 import {Link, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {appConfig} from '@/conf/AppConfig.js'
 
 interface Props extends BoxProps {
   workspaceId?: Ip.WorkspaceId
@@ -92,12 +93,12 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
           <IpSelectSingle
             startAdornment={
               <Icon color="disabled" sx={{mr: 1}}>
-                workspaces
+                {appConfig.icons.workspace}
               </Icon>
             }
             value={workspaceId}
             hideNullOption
-            onChange={_ => navigate({to: '/$workspaceId', params: {workspaceId: _}})}
+            onChange={_ => navigate({to: '/$workspaceId/dashboard', params: {workspaceId: _}})}
             sx={{width: 200, mr: 0.5}}
             options={(queryWorkspaces.data ?? []).map(_ => ({
               value: _.id,

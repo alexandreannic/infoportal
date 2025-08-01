@@ -31,7 +31,11 @@ export const dashboardRoute = createRoute({
   component: Dashboard,
 })
 
-const PieChartStatus = ({percent, validation, ...props}: {percent: number; validation: Ip.Submission.Validation} & BoxProps) => {
+const PieChartStatus = ({
+  percent,
+  validation,
+  ...props
+}: {percent: number; validation: Ip.Submission.Validation} & BoxProps) => {
   const {m} = useI18n()
   const t = useTheme()
   const type = SelectStatusConfig.customStatusToStateStatus.KoboValidation[validation]
@@ -54,7 +58,7 @@ const PieChartStatus = ({percent, validation, ...props}: {percent: number; valid
         >
           <Icon sx={{color: style.color(t)}}>{style.icon}</Icon>
         </Box>
-        <ChartPie percent={percent} color={style.color(t)} size={55} sx={{margin: 'auto'}}/>
+        <ChartPie percent={percent} color={style.color(t)} size={55} sx={{margin: 'auto'}} />
       </Box>
       <Txt block bold size="big" sx={{mt: 0.5, lineHeight: 1, textAlign: 'center'}}>
         {toPercent(percent)}
@@ -130,11 +134,9 @@ function Dashboard() {
     const base = queryForms.data.length ?? 1
     if (value === 0) {
       return (
-        <Panel sx={{height: '100%', py: 1, px: 2}}>
-          <SlideWidget title={m.users} icon={appConfig.icons.users}>
-            {formatLargeNumber(queryUsers.data?.length)}
-          </SlideWidget>
-        </Panel>
+        <SlideWidget title={m.users} icon={appConfig.icons.users}>
+          {formatLargeNumber(queryUsers.data?.length)}
+        </SlideWidget>
       )
     }
     return (
@@ -147,8 +149,15 @@ function Dashboard() {
   const pieChartValidation = (
     <Panel>
       <PanelBody sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
-        {querySubmissionsByStatus.data?.map(_ => (
-          <PieChartStatus validation={_.key as Ip.Submission.Validation} percent={_.count / submissionsCount} sx={{flex: 1}} />
+        {Obj.keys(Ip.Submission.Validation).map(status => (
+          <PieChartStatus
+            validation={status as Ip.Submission.Validation}
+            percent={
+              (querySubmissionsByStatus.data?.find(_ => _.key === status)?.count ?? 0) /
+              Math.max(submissionsCount ?? 0, 1)
+            }
+            sx={{flex: 1}}
+          />
         ))}
       </PanelBody>
     </Panel>
@@ -274,7 +283,7 @@ function Dashboard() {
         filters={{}}
         setFilters={console.log}
         shapes={{}}
-        after={loading && <CircularProgress size={35} />}
+        after={loading && <CircularProgress size={30} />}
         before={
           <PeriodPicker
             sx={{mt: 0, mb: 0, mr: 1}}

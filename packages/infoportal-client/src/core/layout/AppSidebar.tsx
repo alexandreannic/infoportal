@@ -1,87 +1,21 @@
 import {useI18n} from '@/core/i18n'
-import {Fender, IpBtn, IpIconBtn, Txt} from '@/shared'
-import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
-import {Box, Icon, InputProps, Skeleton, Tooltip, useTheme} from '@mui/material'
-import Fuse from 'fuse.js'
-import {forwardRef, useMemo} from 'react'
-import {Controller, useForm} from 'react-hook-form'
+import {Fender, IpBtn, Txt} from '@/shared'
+import {Sidebar, SidebarHeader, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
+import {Box, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
+import {useMemo, useState} from 'react'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
-import {IpInput} from '@/shared/Input/Input.js'
-import {IpSelectMultiple} from '@/shared/Select/SelectMultiple.js'
-import {mapFor, Obj, Seq, seq} from '@axanc/ts-utils'
-import useFormPersist from 'react-hook-form-persist'
-
-const SearchInput = forwardRef(
-  (
-    {
-      sx,
-      onClear,
-      ...props
-    }: InputProps & {
-      onClear?: () => void
-    },
-    ref,
-  ) => {
-    return (
-      <IpInput
-        ref={ref}
-        sx={sx}
-        helperText={null}
-        startAdornment={
-          <Icon color="disabled" sx={{mr: 1}}>
-            search
-          </Icon>
-        }
-        endAdornment={
-          <IpIconBtn onClick={onClear} size="small">
-            clear
-          </IpIconBtn>
-        }
-        {...props}
-      />
-    )
-    // return (
-    //   <Box
-    //     display="flex"
-    //     alignItems="center"
-    //     ref={ref}
-    //     sx={{
-    //       // m: 1,
-    //       mb: 0.5,
-    //       ...styleUtils(t).color.toolbar.default,
-    //       // borderBottom: '1px solid ' + t.palette.divider,
-    //       borderRadius: t.shape.borderRadius + 'px',
-    //       // pl: 1,
-    //       ...sx,
-    //     }}
-    //   >
-    //     <Icon sx={{ml: 1}}>search</Icon>
-    //     <Box component="input" {...props} sx={{ml: 1, height: 36, border: 'none', background: 'none', width: '100%'}} />
-    //   </Box>
-    // )
-  },
-)
-
-type FilterForm = {
-  name: string
-  category: string[]
-  status: Ip.Form.DeploymentStatus[]
-}
+import {mapFor, Seq, seq} from '@axanc/ts-utils'
+import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
+import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
+import {SidebarSection} from '@/shared/Layout/Sidebar/SidebarSection.js'
 
 export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
   const {m} = useI18n()
   const t = useTheme()
-  const searchForm = useForm<FilterForm>()
-  useFormPersist('storageKey', {
-    watch: searchForm.watch,
-    setValue: searchForm.setValue,
-    storage: window.localStorage,
-  })
 
-  const values = searchForm.watch()
   const queryForm = useQueryForm(workspaceId)
 
   const forms: Seq<Ip.Form> = useMemo(() => {
@@ -94,25 +28,9 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
     }))
   }, [queryForm.accessibleForms.data])
 
-  const fuse = useMemo(() => {
-    return new Fuse(forms, {
-      keys: ['name'],
-      includeScore: true,
-      isCaseSensitive: false,
-      threshold: 0.4,
-    })
-  }, [forms])
+  const [filteredForms, setFilteredForms] = useState<Seq<Ip.Form>>(forms)
 
-  const formCategories = useMemo(() => {
-    return forms.map(_ => _.category ?? '').distinct(_ => _)
-  }, [forms])
-
-  const filteredForms = useMemo(() => {
-    const filteredByName = !values.name || values.name === '' ? forms : fuse.search(values.name).map(res => res.item)
-    return filteredByName
-      .filter(_ => (_.category && values.category.includes(_.category)) || values.category.length === 0)
-      .filter(_ => (_.deploymentStatus && values.status.includes(_.deploymentStatus)) || values.status.length === 0)
-  }, [values])
+  const formItemSize: SidebarItemProps['size'] = forms.length > 19 ? 'tiny' : forms.length > 15 ? 'small' : 'normal'
 
   return (
     <Sidebar headerId="app-header">
@@ -158,9 +76,10 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
           </SidebarItem>
         )}
       </Link>
+      <AppSidebarFilters forms={forms} onFilterChanges={setFilteredForms} />
       {queryForm.accessibleForms.isLoading ? (
         mapFor(4, () => (
-          <SidebarItem size="tiny">
+          <SidebarItem size={formItemSize}>
             <Skeleton sx={{width: 160, height: 30}} />
           </SidebarItem>
         ))
@@ -173,52 +92,6 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
         />
       ) : (
         <>
-          <Box sx={{mx: 0.5, mb: 1, mt: 1}}>
-            <Controller
-              name="name"
-              control={searchForm.control}
-              render={({field}) => (
-                <SearchInput
-                  onClear={() => {
-                    searchForm.reset({
-                      status: [],
-                      category: [],
-                      name: '',
-                    })
-                  }}
-                  placeholder={m.searchInForms(forms.length) + '...'}
-                  {...field}
-                />
-              )}
-            />
-            <Box sx={{mt: 1, display: 'flex'}}>
-              <Controller
-                name="category"
-                control={searchForm.control}
-                render={({field}) => (
-                  <IpSelectMultiple {...field} options={formCategories.get()} label={m.category} sx={{mr: 0.5}} />
-                )}
-              />
-              <Controller
-                name="status"
-                control={searchForm.control}
-                render={({field}) => (
-                  <IpSelectMultiple
-                    {...field}
-                    options={Obj.keys(Ip.Form.DeploymentStatus).map(_ => {
-                      return {
-                        value: _,
-                        children: m.deploymentStatus_[_],
-                      }
-                    })}
-                    label={m.status}
-                    sx={{ml: 0.5}}
-                  />
-                )}
-              />
-            </Box>
-          </Box>
-
           {filteredForms.map((_: Ip.Form) => (
             <Tooltip
               key={_.id}
@@ -238,7 +111,7 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
               <Link to="/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
                 {({isActive}) => (
                   <SidebarItem
-                    size={'tiny'}
+                    size={formItemSize}
                     sx={{height: 26}}
                     onClick={() => undefined}
                     key={_.id}

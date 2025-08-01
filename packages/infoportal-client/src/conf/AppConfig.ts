@@ -50,6 +50,7 @@ export const appConfig = {
     sector: 'category',
     program: 'book',
     koboForm: 'fact_check',
+    workspace: 'workspaces',
     submission: 'send',
     database: 'data_table',
     donor: 'handshake',
