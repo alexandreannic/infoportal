@@ -64,7 +64,7 @@ export const IpSelectMultiple = <T extends string | number>({
 
   return (
     <FormControl size="small" sx={{width: '100%', ...sx}}>
-      <InputLabel htmlFor={id}>{label}</InputLabel>
+      {label && <InputLabel htmlFor={id}>{label}</InputLabel>}
       <Select
         label={label}
         size="small"

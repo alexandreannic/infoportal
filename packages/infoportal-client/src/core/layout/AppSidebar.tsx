@@ -1,90 +1,97 @@
 import {useI18n} from '@/core/i18n'
 import {Fender, IpBtn, IpIconBtn, Txt} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
-import {Box, BoxProps, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
+import {Box, Icon, InputProps, Skeleton, Tooltip, useTheme} from '@mui/material'
 import Fuse from 'fuse.js'
 import {forwardRef, useMemo} from 'react'
 import {Controller, useForm} from 'react-hook-form'
-import {styleUtils} from '../theme'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
-
-type Form = {
-  id: string
-  name: string
-  archived?: boolean
-}
+import {IpInput} from '@/shared/Input/Input.js'
+import {IpSelectMultiple} from '@/shared/Select/SelectMultiple.js'
+import {mapFor, Obj, Seq, seq} from '@axanc/ts-utils'
+import useFormPersist from 'react-hook-form-persist'
 
 const SearchInput = forwardRef(
-  ({sx, ...props}: React.InputHTMLAttributes<HTMLInputElement> & Pick<BoxProps, 'sx'>, ref) => {
-    const t = useTheme()
-    // return (
-    // <IpInput
-    //   ref={ref}
-    //   InputProps={{
-    //     sx: {...styleUtils(t).color.toolbar.default, border: 'none', borderRadius: t.shape.borderRadius + 'px'},
-    //   }}
-    //   helperText={null}
-    //   startAdornment={
-    //     <Icon color="disabled" sx={{mr: 1}}>
-    //       search
-    //     </Icon>
-    //   }
-    //   {...props}
-    // />
-    // )
+  (
+    {
+      sx,
+      onClear,
+      ...props
+    }: InputProps & {
+      onClear?: () => void
+    },
+    ref,
+  ) => {
     return (
-      <Box
-        display="flex"
-        alignItems="center"
+      <IpInput
         ref={ref}
-        sx={{
-          // m: 1,
-          mb: 0.5,
-          ...styleUtils(t).color.toolbar.default,
-          // borderBottom: '1px solid ' + t.palette.divider,
-          borderRadius: t.shape.borderRadius + 'px',
-          // pl: 1,
-          ...sx,
-        }}
-      >
-        <Icon sx={{ml: 1}}>search</Icon>
-        <Box component="input" {...props} sx={{ml: 1, height: 36, border: 'none', background: 'none', width: '100%'}} />
-      </Box>
+        sx={sx}
+        helperText={null}
+        startAdornment={
+          <Icon color="disabled" sx={{mr: 1}}>
+            search
+          </Icon>
+        }
+        endAdornment={
+          <IpIconBtn onClick={onClear} size="small">
+            clear
+          </IpIconBtn>
+        }
+        {...props}
+      />
     )
+    // return (
+    //   <Box
+    //     display="flex"
+    //     alignItems="center"
+    //     ref={ref}
+    //     sx={{
+    //       // m: 1,
+    //       mb: 0.5,
+    //       ...styleUtils(t).color.toolbar.default,
+    //       // borderBottom: '1px solid ' + t.palette.divider,
+    //       borderRadius: t.shape.borderRadius + 'px',
+    //       // pl: 1,
+    //       ...sx,
+    //     }}
+    //   >
+    //     <Icon sx={{ml: 1}}>search</Icon>
+    //     <Box component="input" {...props} sx={{ml: 1, height: 36, border: 'none', background: 'none', width: '100%'}} />
+    //   </Box>
+    // )
   },
 )
+
+type FilterForm = {
+  name: string
+  category: string[]
+  status: Ip.Form.DeploymentStatus[]
+}
 
 export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
   const {m} = useI18n()
   const t = useTheme()
-  const searchForm = useForm<{name: string}>()
+  const searchForm = useForm<FilterForm>()
+  useFormPersist('storageKey', {
+    watch: searchForm.watch,
+    setValue: searchForm.setValue,
+    storage: window.localStorage,
+  })
+
   const values = searchForm.watch()
   const queryForm = useQueryForm(workspaceId)
 
-  const forms = useMemo(() => {
-    return (
-      queryForm.accessibleForms.data?.map(_ => ({
-        ..._,
-        id: _.id,
-        archived: _.deploymentStatus === 'archived',
-        name: _.name,
-      })) ?? []
-    )
-    // custom: customForms
-    //   .filter(c => ctx.formsAccessible?.some(_ => _.id === c.forms[0]?.id))
-    //   .map(_ => ({
-    //     url: router.database.custom(_.id),
-    //     id: _.id,
-    //     custom: true,
-    //     archived: _.forms.every(fa => {
-    //       const form = ctx.formsAccessible?.find(fa => fa.id === _.id)
-    //       return !form || form.deploymentStatus === 'archived'
-    //     }),
-    //     parsedName: KoboFormSdk.parseFormName(_.name),
-    //   })),
+  const forms: Seq<Ip.Form> = useMemo(() => {
+    if (!queryForm.accessibleForms.data) return seq()
+    return queryForm.accessibleForms.data.map(_ => ({
+      ..._,
+      id: _.id,
+      archived: _.deploymentStatus === 'archived',
+      name: _.name,
+    }))
   }, [queryForm.accessibleForms.data])
 
   const fuse = useMemo(() => {
@@ -96,9 +103,15 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
     })
   }, [forms])
 
+  const formCategories = useMemo(() => {
+    return forms.map(_ => _.category ?? '').distinct(_ => _)
+  }, [forms])
+
   const filteredForms = useMemo(() => {
-    if (!values.name || values.name === '') return forms
-    return fuse.search(values.name).map(res => res.item)
+    const filteredByName = !values.name || values.name === '' ? forms : fuse.search(values.name).map(res => res.item)
+    return filteredByName
+      .filter(_ => (_.category && values.category.includes(_.category)) || values.category.length === 0)
+      .filter(_ => (_.deploymentStatus && values.status.includes(_.deploymentStatus)) || values.status.length === 0)
   }, [values])
 
   return (
@@ -124,6 +137,7 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
       {/*    </SidebarItem>*/}
       {/*  )}*/}
       {/*</Link>*/}
+      <SidebarHr />
       <Link to="/$workspaceId/form/list" params={{workspaceId}}>
         {({isActive}) => (
           <SidebarItem
@@ -144,22 +158,12 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
           </SidebarItem>
         )}
       </Link>
-      <SidebarHr />
       {queryForm.accessibleForms.isLoading ? (
-        <>
+        mapFor(4, () => (
           <SidebarItem size="tiny">
             <Skeleton sx={{width: 160, height: 30}} />
           </SidebarItem>
-          <SidebarItem size="tiny">
-            <Skeleton sx={{width: 160, height: 30}} />
-          </SidebarItem>
-          <SidebarItem size="tiny">
-            <Skeleton sx={{width: 160, height: 30}} />
-          </SidebarItem>
-          <SidebarItem size="tiny">
-            <Skeleton sx={{width: 160, height: 30}} />
-          </SidebarItem>
-        </>
+        ))
       ) : queryForm.accessibleForms.data?.length === 0 ? (
         <Fender
           type="empty"
@@ -173,12 +177,64 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
             <Controller
               name="name"
               control={searchForm.control}
-              render={({field}) => <SearchInput placeholder={m.searchInForms(forms.length) + '...'} {...field} />}
+              render={({field}) => (
+                <SearchInput
+                  onClear={() => {
+                    searchForm.reset({
+                      status: [],
+                      category: [],
+                      name: '',
+                    })
+                  }}
+                  placeholder={m.searchInForms(forms.length) + '...'}
+                  {...field}
+                />
+              )}
             />
+            <Box sx={{mt: 1, display: 'flex'}}>
+              <Controller
+                name="category"
+                control={searchForm.control}
+                render={({field}) => (
+                  <IpSelectMultiple {...field} options={formCategories.get()} label={m.category} sx={{mr: 0.5}} />
+                )}
+              />
+              <Controller
+                name="status"
+                control={searchForm.control}
+                render={({field}) => (
+                  <IpSelectMultiple
+                    {...field}
+                    options={Obj.keys(Ip.Form.DeploymentStatus).map(_ => {
+                      return {
+                        value: _,
+                        children: m.deploymentStatus_[_],
+                      }
+                    })}
+                    label={m.status}
+                    sx={{ml: 0.5}}
+                  />
+                )}
+              />
+            </Box>
           </Box>
 
-          {filteredForms.map((_: Form) => (
-            <Tooltip key={_.id} title={_.name} placement="right-end">
+          {filteredForms.map((_: Ip.Form) => (
+            <Tooltip
+              key={_.id}
+              title={
+                <Box display="flex" alignItems="center">
+                  {_.category}
+                  {_.category && (
+                    <Icon color="disabled" fontSize="small">
+                      chevron_right
+                    </Icon>
+                  )}
+                  <Txt bold>{_.name}</Txt>
+                </Box>
+              }
+              placement="right-end"
+            >
               <Link to="/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
                 {({isActive}) => (
                   <SidebarItem
@@ -194,19 +250,19 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
                             device_hub
                           </Icon>
                         )} */}
-                        {_.archived && (
+                        {_.deploymentStatus !== 'deployed' && (
                           <Icon
                             fontSize="small"
                             color="disabled"
                             sx={{marginLeft: '4px', marginRight: '-4px', verticalAlign: 'middle'}}
                           >
-                            archive
+                            {_.deploymentStatus === 'archived' ? 'archive' : 'stylus_note'}
                           </Icon>
                         )}
                       </>
                     }
                   >
-                    <Txt sx={{color: _.archived ? t.palette.text.disabled : undefined}}>
+                    <Txt sx={{color: _.deploymentStatus !== 'deployed' ? t.palette.text.disabled : undefined}}>
                       {_.name}
                       {/* {_.custom && <span style={{fontWeight: 300}}> ({m._koboDatabase.mergedDb})</span>} */}
                     </Txt>

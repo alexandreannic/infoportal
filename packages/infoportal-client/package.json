@@ -62,6 +62,7 @@
     "react-diff-view": "^3.3.1",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.52.2",
+    "react-hook-form-persist": "^3.0.0",
     "react-json-tree": "^0.19.0",
     "react-persistent-state": "^1.1.13",
     "react-portal": "^4.2.2",

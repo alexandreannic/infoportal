@@ -1,4 +1,5 @@
 import {formatDistance, formatDuration as formatDurationFns} from 'date-fns'
+import {Ip} from 'infoportal-api-sdk'
 
 const invalidDate = ''
 
@@ -100,6 +101,11 @@ export const en = Object.freeze({
     familyUnity: 'Family unity',
     city: 'City',
     no: 'No',
+    deploymentStatus_: {
+      [Ip.Form.DeploymentStatus.draft]: 'Draft',
+      [Ip.Form.DeploymentStatus.archived]: 'Archived',
+      [Ip.Form.DeploymentStatus.deployed]: 'Deployed',
+    },
     open: 'Open',
     submissionsByCategory: 'Submissions by category',
     submissionsByUser: 'Submissions by user',

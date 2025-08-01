@@ -77,7 +77,10 @@ function Form() {
   const queryPermission = useQueryPermission.form({workspaceId, formId})
 
   useEffect(() => {
-    if (queryForm.data) setTitle(m._koboDatabase.title(queryForm.data.name))
+    if (queryForm.data)
+      setTitle(
+        m._koboDatabase.title((queryForm.data.category ? queryForm.data.category + ' > ' : '') + queryForm.data.name),
+      )
     return () => setTitle(m._koboDatabase.title())
   }, [queryForm.data, formId])
 
