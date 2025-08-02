@@ -24,6 +24,7 @@ export const schema = (() => {
     serverId: z.string() as unknown as z.ZodType<Ip.ServerId>,
     formAccessId: z.string() as unknown as z.ZodType<Ip.Form.AccessId>,
     submissionId: z.string() as unknown as z.ZodType<Ip.SubmissionId>,
+    userEmail: z.string() as unknown as z.ZodType<Ip.User.Email>,
     emptyResult: c.type<void>(),
     emptyBody: c.type<void>(),
   }

@@ -1,16 +1,15 @@
-import React, {ReactNode, useEffect} from 'react'
+import React, {ReactNode} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Obj, seq} from '@axanc/ts-utils'
-import {useAppSettings} from '@/core/context/ConfigContext'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {TableIconBtn} from '@/shared/TableIcon'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
-import {useFetcher} from '@/shared/hook/useFetcher'
 import {Txt} from '@/shared/Txt'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
 import {useSession} from '@/core/Session/SessionContext'
+import {useQueryUser} from '@/core/query/useQueryUser.js'
 
 export const AccessTable = ({
   isAdmin,
@@ -25,15 +24,10 @@ export const AccessTable = ({
 }) => {
   const {m, formatDate} = useI18n()
   const {user} = useSession()
-  const {api} = useAppSettings()
-  const drcJobs = useFetcher(api.user.fetchJobs)
+  const queryJobs = useQueryUser.getJobs(workspaceId)
   const queryAccess = useQueryFormAccess.getByFormId({workspaceId, formId})
   const queryAccessUpdate = useQueryFormAccess.update({workspaceId, formId})
   const queryAccessRemove = useQueryFormAccess.remove({workspaceId, formId})
-
-  useEffect(() => {
-    drcJobs.fetch({}, {workspaceId})
-  }, [])
 
   return (
     <Datatable<Ip.Form.Access>
@@ -61,7 +55,7 @@ export const AccessTable = ({
           head: m.job,
           renderQuick: _ => _.job,
           type: 'select_one',
-          options: () => drcJobs.get?.map(job => ({value: job, label: job})) || [],
+          options: () => queryJobs.data?.map(job => ({value: job, label: job})) || [],
         },
         {
           id: 'drcOffice',

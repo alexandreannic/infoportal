@@ -82,11 +82,11 @@ export const AppSidebarFilters = ({
   const {m} = useI18n()
   const searchForm = useForm<FilterForm>()
   const values = searchForm.watch()
-  useFormPersist('appsidebar-form-filters', {
-    watch: searchForm.watch,
-    setValue: searchForm.setValue,
-    storage: window.localStorage,
-  })
+  // useFormPersist('appsidebar-form-filters', {
+  //   watch: searchForm.watch,
+  //   setValue: searchForm.setValue,
+  //   storage: window.localStorage,
+  // })
 
   const fuse = useMemo(() => {
     return new Fuse(forms, {

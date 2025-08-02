@@ -53,7 +53,7 @@ export const workspaceContract = c.router({
   },
 })
 
-export const workspaceClient = (client: TsRestClient) => {
+export const workspaceClient = (client: TsRestClient, baseUrl: string) => {
   return {
     getMine: () =>
       client.workspace

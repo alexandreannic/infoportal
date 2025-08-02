@@ -75,7 +75,7 @@ export const serverContract = c.router({
   },
 })
 
-export const serverClient = (client: TsRestClient) => {
+export const serverClient = (client: TsRestClient, baseUrl: string) => {
   return {
     get: (params: {id: Ip.ServerId; workspaceId: Ip.WorkspaceId}) => {
       return client.server.get({params}).then(map200)

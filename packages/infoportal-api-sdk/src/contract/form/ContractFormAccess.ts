@@ -92,7 +92,7 @@ export const mapFormAccessNullable = (_?: Ip.Form.Access): undefined | Ip.Form.A
   if (_) return mapFormAccess(_)
 }
 
-export const formAccessClient = (client: TsRestClient) => {
+export const formAccessClient = (client: TsRestClient, baseUrl: string) => {
   return {
     create: ({workspaceId, formId, ...body}: Ip.Form.Access.Payload.Create) =>
       client.form.access

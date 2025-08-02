@@ -100,7 +100,7 @@ export const contractFormSubmission = c.router({
   },
 })
 
-export const formSubmissionClient = (client: TsRestClient) => {
+export const formSubmissionClient = (client: TsRestClient, baseUrl: string) => {
   return {
     submit: (params: Ip.Submission.Payload.Submit) =>
       client.submission

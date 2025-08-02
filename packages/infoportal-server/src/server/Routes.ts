@@ -53,7 +53,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const koboApi = new ControllerKoboApi(prisma)
   const session = new ControllerSession(prisma)
   const accessGroup = new ControllerGroup(prisma)
-  const user = new ControllerUser(prisma)
   const proxy = new ControllerProxy(prisma)
   const jsonStore = new ControllerJsonStore(prisma)
   const koboAnswerHistory = new ControllerKoboAnswerHistory(prisma)
@@ -154,6 +153,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const server = new ServerService(prisma)
   const permission = new PermissionService(prisma, undefined, formAccess)
   const metrics = new MetricsService(prisma)
+  const user = UserService.getInstance(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
     const connectedUser = await permission.checkUserConnected(args.req)
@@ -235,6 +235,23 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .catch(handleError),
       },
       access: {},
+    },
+    user: {
+      update: _ =>
+        auth2(_)
+          .then(({params, body}) => user.updateByUserId({...body, ...params}))
+          .then(ok200)
+          .catch(handleError),
+      search: _ =>
+        auth2(_)
+          .then(({params}) => user.getAll(params))
+          .then(ok200)
+          .catch(handleError),
+      getJobs: _ =>
+        auth2(_)
+          .then(({params}) => user.getDistinctDrcJobs(params))
+          .then(ok200)
+          .catch(handleError),
     },
     permission: {
       getMineGlobal: _ =>
@@ -518,11 +535,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.post('/:workspaceId/group/:id', auth({adminOnly: true}), safe(accessGroup.update))
     r.delete('/:workspaceId/group/:id', auth({adminOnly: true}), safe(accessGroup.remove))
 
-    r.get('/user/avatar/:email', auth(), safe(user.avatar))
-    r.post('/:workspaceId/user/me', auth(), safe(user.updateMe))
-    r.get('/:workspaceId/user', auth(), safe(user.search))
-    r.get('/:workspaceId/user/drc-job', auth(), safe(user.getDrcJobs))
-
     r.post('/proxy-request', safe(main.proxy))
 
     r.post('/kobo-api/webhook', safe(koboApi.handleWebhookNewAnswers))
@@ -550,6 +562,8 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.post(`/database-view/:id`, auth(), safe(databaseView.update))
     r.delete(`/database-view/:viewId`, auth(), safe(databaseView.delete))
 
+    r.get('/user/avatar/:email', auth(), safe(new ControllerUser(prisma).avatar))
+
     r.get('/json-store/:key', auth(), safe(jsonStore.get))
     r.put('/json-store', auth(), safe(jsonStore.set))
     r.patch('/json-store', auth(), safe(jsonStore.update))
@@ -557,8 +571,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.get('/cache', cacheController.get)
     r.post('/cache/clear', cacheController.clear)
 
-    // r.get('/legalaid', auth(), safe(legalaid.index))
-    // r.get('/ecrec', auth(), safe(ecrec.index))
     // r.get('/*', safe(ecrec.index))
   } catch (e) {
     if (e instanceof Error) {

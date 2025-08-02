@@ -25,29 +25,31 @@ export class UserService {
   }
 
   readonly getAll = async ({workspaceId}: {workspaceId: UUID}) => {
-    return this.prisma.user.findMany({
-      where: {
-        workspaceAccess: {
-          some: {workspaceId},
+    return this.prisma.user
+      .findMany({
+        where: {
+          workspaceAccess: {
+            some: {workspaceId},
+          },
         },
-      },
-      orderBy: {lastConnectedAt: 'desc'},
-      select: {
-        id: true,
-        accessLevel: true,
-        createdAt: true,
-        drcOffice: true,
-        drcJob: true,
-        email: true,
-        lastConnectedAt: true,
-        name: true,
-        location: true,
-        job: true,
-        accessToken: false,
-        activities: false,
-        avatar: false,
-      },
-    })
+        orderBy: {lastConnectedAt: 'desc'},
+        select: {
+          id: true,
+          accessLevel: true,
+          createdAt: true,
+          drcOffice: true,
+          drcJob: true,
+          email: true,
+          lastConnectedAt: true,
+          name: true,
+          location: true,
+          job: true,
+          accessToken: false,
+          activities: false,
+          avatar: false,
+        },
+      })
+      .then(_ => _.map(PrismaHelper.mapUser))
   }
 
   readonly getUserByEmail = async (email: Ip.User.Email) => {
@@ -58,19 +60,32 @@ export class UserService {
     return this.getByEmail(email).then(_ => (_?.avatar ? Buffer.from(_.avatar) : undefined))
   }
 
-  readonly update = async ({email, drcOffice}: {email: Ip.User.Email; drcOffice?: string}) => {
-    const updatedUser = await this.prisma.user.update({
-      where: {email},
-      data: {drcOffice},
-    })
-    return updatedUser
+  readonly updateByEmail = ({
+    email,
+    ...data
+  }: Omit<Ip.User.Payload.Update, 'id' | 'workspaceId'> & {email: Ip.User.Email}) => {
+    return this.prisma.user
+      .update({
+        where: {email},
+        data: data,
+      })
+      .then(PrismaHelper.mapUser)
   }
 
-  readonly getDistinctDrcJobs = async (): Promise<string[]> => {
+  readonly updateByUserId = ({workspaceId, id, ...data}: Ip.User.Payload.Update) => {
+    return this.prisma.user
+      .update({
+        where: {id},
+        data: data,
+      })
+      .then(PrismaHelper.mapUser)
+  }
+
+  readonly getDistinctDrcJobs = async ({workspaceId}: {workspaceId: Ip.WorkspaceId}): Promise<string[]> => {
     const drcJobs = await this.prisma.user.findMany({
       select: {drcJob: true},
       distinct: ['drcJob'],
-      where: {drcJob: {not: null}},
+      where: {workspaceAccess: {some: {workspaceId}}, drcJob: {not: null}},
     })
     return drcJobs.map(job => job.drcJob!)
   }

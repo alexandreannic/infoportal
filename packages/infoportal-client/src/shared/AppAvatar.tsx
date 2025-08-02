@@ -2,6 +2,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {Box, BoxProps, Icon, useTheme} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import {makeStyles} from 'tss-react/mui'
+import {useEffect} from 'react'
 
 const useStyles = makeStyles<{
   borderColor?: string
@@ -44,13 +45,19 @@ export const AppAvatar = ({
   size: number
   // hideTooltip?: boolean
 } & BoxProps) => {
-  const {api} = useAppSettings()
+  const {apiv2} = useAppSettings()
   const {classes} = useStyles({
     overlap,
     borderColor,
-    url: email ? api.user.avatarUrl({email}) : undefined,
+    url: email ? apiv2.user.getAvatarUrl({email}) : undefined,
     size,
   })
+  // useEffect(() => {
+  //   if (!email) return
+  //   apiv2.user.avatar({email}).then(_ => {
+  //     console.log('loghere', email, _)
+  //   })
+  // }, [])
   const t = useTheme()
   return (
     <Box title={email} className={classes.root} {...props}>

@@ -27,7 +27,7 @@ export const koboContract = c.router({
   },
 })
 
-export const koboClient = (client: TsRestClient) => {
+export const koboClient = (client: TsRestClient, baseUrl: string) => {
   return {
     importFromKobo: ({
       workspaceId,

@@ -52,7 +52,7 @@ const parseQsDate = <T extends {start?: Date; end?: Date}>(_: T): T & {start?: s
   return _ as any
 }
 
-export const metricsClient = (client: TsRestClient) => ({
+export const metricsClient = (client: TsRestClient, baseUrl: string) => ({
   getSubmissionsBy: ({
     workspaceId,
     type,

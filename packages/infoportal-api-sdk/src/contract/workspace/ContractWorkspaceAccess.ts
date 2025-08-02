@@ -13,6 +13,6 @@ export const mapWorkspaceAccess = (u: Ip.Workspace.Access): Ip.Workspace.Access 
   }
 }
 
-export const workspaceAccessClient = (client: TsRestClient) => {
+export const workspaceAccessClient = (client: TsRestClient, baseUrl: string) => {
   return {}
 }

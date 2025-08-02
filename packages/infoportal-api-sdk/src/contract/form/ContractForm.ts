@@ -174,7 +174,7 @@ export const mapFormNullable = (_?: Ip.Form): undefined | Ip.Form => {
   if (_) return mapForm(_)
 }
 
-export const formClient = (client: TsRestClient) => {
+export const formClient = (client: TsRestClient, baseUrl: string) => {
   return {
     refreshAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
       return client.form.refreshAll({params: {workspaceId}, body: undefined}).then(map200)

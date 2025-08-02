@@ -67,7 +67,7 @@ export const workspaceInvitationContract = c.router({
   },
 })
 
-export const workspaceInvitationClient = (client: TsRestClient) => {
+export const workspaceInvitationClient = (client: TsRestClient, baseUrl: string) => {
   return {
     accept: ({id, accept}: {accept: boolean; id: Ip.Workspace.InvitationId}) => {
       return client.workspace.invitation.accept({params: {id}, body: {accept}}).then(map204)

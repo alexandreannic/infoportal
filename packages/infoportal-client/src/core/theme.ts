@@ -107,7 +107,7 @@ export const styleUtils = (t: Theme) => ({
     },
     toolbar: {
       default: {
-        background: t.palette.mode === 'dark' ? darken(t.palette.background.paper, .16) : t.palette.background.default, //'rgb(237, 242, 250)',
+        background: t.palette.mode === 'dark' ? darken(t.palette.background.paper, 0.16) : t.palette.background.default, //'rgb(237, 242, 250)',
       }, //'#e9eef6'
       active: {
         background: alpha(t.palette.primary.main, 0.2),
@@ -657,7 +657,7 @@ const tableTheme = (t: Theme) => ({
     // borderTop: `1px solid ${t.palette.divider}`,
   },
   '.table thead .td, .table thead .th': {
-    backdropFilter: styleUtils(t).backdropFilter,
+    // backdropFilter: styleUtils(t).backdropFilter,
     background: styleUtils(t).color.toolbar.default.background,
   },
   '.td-center': {
@@ -689,7 +689,10 @@ const tableTheme = (t: Theme) => ({
   '.table.borderY td:last-of-type, .table.borderY th:last-of-type': {
     paddingRight: 4,
   },
-  '.table.borderY td:not(:last-of-type), .table.borderY th:not(:last-of-type)': {
+  // '.table.borderY td:not(:last-of-type), .table.borderY th:not(:last-of-type)': {
+  //   borderRight: `1px solid ${t.palette.divider}`,
+  // },
+  '.table.borderY thead td:not(:last-of-type), .table.borderY thead th:not(:last-of-type)': {
     borderRight: `1px solid ${t.palette.divider}`,
   },
   '.table th': {

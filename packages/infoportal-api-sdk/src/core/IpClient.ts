@@ -12,6 +12,7 @@ import {formSubmissionClient} from '../contract/form/ContractFormSubmission.js'
 import {HttpError} from './HttpError.js'
 import {workspaceInvitationClient} from '../contract/workspace/ContractWorkspaceInvitation.js'
 import {metricsClient} from '../contract/ContractMetrics.js'
+import {userClient} from '../contract/ContractUser.js'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -26,20 +27,21 @@ export const buildIpClient = (baseUrl: string) => {
   const client = buildClient(baseUrl)
   return {
     workspace: {
-      ...workspaceClient(client),
-      access: workspaceAccessClient(client),
-      invitation: workspaceInvitationClient(client),
+      ...workspaceClient(client, baseUrl),
+      access: workspaceAccessClient(client, baseUrl),
+      invitation: workspaceInvitationClient(client, baseUrl),
     },
-    permission: permissionClient(client),
-    server: serverClient(client),
-    kobo: koboClient(client),
-    submission: formSubmissionClient(client),
+    permission: permissionClient(client, baseUrl),
+    server: serverClient(client, baseUrl),
+    kobo: koboClient(client, baseUrl),
+    submission: formSubmissionClient(client, baseUrl),
     form: {
-      ...formClient(client),
-      access: formAccessClient(client),
-      version: formVersionClient(client),
+      ...formClient(client, baseUrl),
+      access: formAccessClient(client, baseUrl),
+      version: formVersionClient(client, baseUrl),
     },
-    metrics: metricsClient(client),
+    user: userClient(client, baseUrl),
+    metrics: metricsClient(client, baseUrl),
   }
 }
 

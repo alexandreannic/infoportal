@@ -110,13 +110,30 @@ export namespace Ip {
     drcJob?: string
     /**@deprecated*/
     drcOffice?: string
-    avatar: any
+    avatar?: any
     accessLevel: AccessLevel
     location?: string
     job?: string
   }
+
   export namespace User {
+    export const map = (u: Partial<Record<keyof Ip.User, any>>): Ip.User => {
+      return {
+        ...u,
+        lastConnectedAt: u.lastConnectedAt ? new Date(u.lastConnectedAt) : undefined,
+        createdAt: u.createdAt ? new Date(u.createdAt) : undefined,
+      } as any
+    }
     export type Email = Brand<string, 'email'>
+    export namespace Payload {
+      export type Update = {
+        workspaceId: Ip.WorkspaceId
+        id: Ip.UserId
+        accessLevel?: AccessLevel
+        job?: string
+        location?: string
+      }
+    }
   }
 
   // === Workspace

@@ -1,6 +1,5 @@
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {Session, SessionHelper} from '@/core/sdk/server/session/Session'
-import {User} from '@/core/sdk/server/user/User'
 import {Ip} from 'infoportal-api-sdk'
 
 interface LoginRequest {
@@ -34,6 +33,6 @@ export class SessionSdk {
   }
 
   readonly track = (detail: string) => {
-    return this.client.post<User>(`/session/track`, {body: {detail}})
+    return this.client.post<Ip.User>(`/session/track`, {body: {detail}})
   }
 }

@@ -51,7 +51,7 @@ export namespace PrismaHelper {
       drcOffice: string | null
       location: string | null
       job: string | null
-      avatar: Bytes | null
+      avatar?: Bytes | null
     },
   >(
     _: T,

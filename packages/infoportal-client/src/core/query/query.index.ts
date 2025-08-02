@@ -21,6 +21,7 @@ export const queryKeys = {
   server: (workspaceId?: Ip.WorkspaceId, serverId?: Ip.ServerId) => concat('server', workspaceId, serverId),
   formAccess: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('formAccess', workspaceId, formId),
   user: (workspaceId?: Ip.WorkspaceId) => concat('user', workspaceId),
+  userJob: (workspaceId?: Ip.WorkspaceId) => concat('userJob', workspaceId),
   version: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('version', workspaceId, formId),
   schemaByVersion: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId, versionId?: Ip.Form.VersionId) =>
     concat('schema', workspaceId, formId, versionId),

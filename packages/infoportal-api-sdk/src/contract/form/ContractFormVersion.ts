@@ -90,7 +90,7 @@ export const formVersionContract = c.router({
   },
 })
 
-export const formVersionClient = (client: TsRestClient) => {
+export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
   return {
     validateXlsForm: ({
       workspaceId,

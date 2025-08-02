@@ -39,7 +39,7 @@ export const permissionContract = c.router({
   },
 })
 
-export const permissionClient = (client: TsRestClient) => {
+export const permissionClient = (client: TsRestClient, baseUrl: string) => {
   return {
     getMineGlobal: () => client.permission.getMineGlobal().then(map200),
     getMineByWorkspace: (params: {workspaceId: Ip.WorkspaceId}) =>
