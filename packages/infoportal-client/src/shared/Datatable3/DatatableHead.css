@@ -1,0 +1,22 @@
+.dthead {
+  height: 30px;
+  vertical-align: middle;
+  background: var(--mui-palette-AppBar-defaultBg);
+}
+
+.dtrh {
+  display: grid;
+  grid-template-columns: var(--cols);
+  position: sticky;
+}
+
+.dth {
+  vertical-align: middle;
+  width: 120px;
+  border-right: 1px solid #ddd; /* replace with your palette divider color */
+  text-align: left;
+  padding: 0 0px 0 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

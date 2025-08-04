@@ -11,6 +11,7 @@ import {createRoute} from '@tanstack/react-router'
 import {rootRoute} from '@/Router'
 import {AnimateList} from '@/shared/AnimatedList.js'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {Column, DataTable2} from '@/shared/Datatable2/DataTable2.js'
 
 export const workspacesRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -22,6 +23,43 @@ function Workspaces() {
   const queryWorkspace = useQueryWorkspace.get()
   const queryInvitations = useQueryWorkspaceInvitation.getMine()
   const {m} = useI18n()
+
+  // const exampleData = Array.from({length: 1000}, (_, i) => ({
+  //   id: '' + i,
+  //   name: `Item ${i}`,
+  //   value: Math.floor(Math.random() * 1000),
+  // }))
+
+  // return (
+  //   <DataTable2
+  //     rowKey={_ => _.id + ''}
+  //     data={exampleData}
+  //     columns={[
+  //       {
+  //         id: 'id',
+  //         type: 'id',
+  //         head: 'ID',
+  //         render: _ => {
+  //           return {
+  //             value: _.id,
+  //             label: 'l' + _.id,
+  //           }
+  //         },
+  //         // renderQuick: row => row.id,
+  //       },
+  //       {
+  //         id: 'name',
+  //         head: 'Name',
+  //         renderQuick: row => row.name,
+  //       },
+  //       {
+  //         id: 'value',
+  //         head: 'Value',
+  //         renderQuick: row => row.value,
+  //       },
+  //     ]}
+  //   />
+  // )
 
   const loading = queryInvitations.isLoading || queryWorkspace.isLoading
   return (

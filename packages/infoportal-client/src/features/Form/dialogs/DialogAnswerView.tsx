@@ -254,7 +254,7 @@ const KoboAnswerQuestionView = ({
       return (
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
-          <Datatable columns={columns!} data={row.answers[questionSchema.name] as any[]} id={questionSchema.name} />
+          {/*<Datatable columns={columns!} data={row.answers[questionSchema.name] as any[]} id={questionSchema.name} />*/}
         </>
       )
     }

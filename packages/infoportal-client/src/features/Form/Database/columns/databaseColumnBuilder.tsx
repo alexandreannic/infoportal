@@ -1,5 +1,4 @@
 import {formatDate, formatDateTime, Messages} from '@/core/i18n/localization/en'
-import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import React from 'react'
 import {Kobo} from 'kobo-sdk'
 import {map} from '@axanc/ts-utils'
@@ -91,14 +90,11 @@ function getCommon({
   q,
   translateQuestion,
   onEdit,
-}: CommonProps): Pick<
-  DatatableColumn.Props<any>,
-  'id' | 'groupLabel' | 'group' | 'typeIcon' | 'typeLabel' | 'head' | 'subHeader'
-> {
+}: CommonProps): Pick<Datatable.Column.Props<any>, 'id' | 'group' | 'typeIcon' | 'typeLabel' | 'head' | 'subHeader'> {
   return {
     id: q.name,
     typeLabel: q.type,
-    ...map(q.$xpath.split('/')[0], value => ({groupLabel: translateQuestion(value), group: value})),
+    ...map(q.$xpath.split('/')[0], value => ({group: {label: translateQuestion(value), id: value}})),
     ...(onEdit
       ? {
           subHeader: <TableEditCellBtn onClick={() => onEdit(q.name)} />,
@@ -120,8 +116,8 @@ function byQuestions({
   // | 'choicesIndex'
   // | 'translateChoice'
   'onEdit' | 'getRow' | 'schema' | 'formId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
->): DatatableColumn.Props<Row>[] {
-  const getBy = (q: Question): DatatableColumn.Props<Row> | undefined => {
+>): Datatable.Column.Props<Row>[] {
+  const getBy = (q: Question): Datatable.Column.Props<Row> | undefined => {
     const args = (isReadonly?: boolean) => ({
       q,
       translateQuestion: props.schema.translate.question,
@@ -130,7 +126,7 @@ function byQuestions({
       ...props,
       onEdit: isReadonly ? undefined : props.onEdit,
     })
-    const map: Partial<Record<Kobo.Form.QuestionType, DatatableColumn.Props<Row>>> = {
+    const map: Partial<Record<Kobo.Form.QuestionType, Datatable.Column.Props<Row>>> = {
       // username: text(args()),
       // deviceid: text(args()),
       // end: date(args()),
@@ -168,7 +164,7 @@ function bySchema(
     // | 'translateChoice'
     'onEdit' | 'getRow' | 'schema' | 'formId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
   >,
-): DatatableColumn.Props<Row>[] {
+): Datatable.Column.Props<Row>[] {
   return byQuestions({
     ...props,
     questions: props.schema.schemaFlatAndSanitized.filter(q => !ignoredColType.has(q.type)),
@@ -177,7 +173,7 @@ function bySchema(
 
 function selectOneFromFile(
   props: CommonProps & Pick<BuildFormColumnProps, 'externalFilesIndex'>,
-): DatatableColumn.Props<Row> {
+): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -190,7 +186,7 @@ function selectOneFromFile(
   }
 }
 
-function text(props: CommonProps): DatatableColumn.Props<Row> {
+function text(props: CommonProps): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -199,7 +195,7 @@ function text(props: CommonProps): DatatableColumn.Props<Row> {
   }
 }
 
-function image(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): DatatableColumn.Props<Row> {
+function image(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -222,7 +218,7 @@ function image(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): Datat
   }
 }
 
-function file(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): DatatableColumn.Props<Row> {
+function file(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -250,7 +246,7 @@ function file(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): Datata
   }
 }
 
-function integer(props: CommonProps): DatatableColumn.Props<Row> {
+function integer(props: CommonProps): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'number',
@@ -258,7 +254,7 @@ function integer(props: CommonProps): DatatableColumn.Props<Row> {
   }
 }
 
-function note(props: CommonProps): DatatableColumn.Props<Row> {
+function note(props: CommonProps): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -266,7 +262,7 @@ function note(props: CommonProps): DatatableColumn.Props<Row> {
   }
 }
 
-function date(props: CommonProps): DatatableColumn.Props<Row> {
+function date(props: CommonProps): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'date',
@@ -285,7 +281,7 @@ function date(props: CommonProps): DatatableColumn.Props<Row> {
 
 function selectOne(
   props: CommonProps & Pick<BuildFormColumnProps, 'translateChoice' | 'm'>,
-): DatatableColumn.Props<Row> {
+): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'select_one',
@@ -306,7 +302,7 @@ let lastError: string | undefined
 
 function selectMultiple(
   props: CommonProps & Pick<BuildFormColumnProps, 'choicesIndex' | 'translateChoice'>,
-): DatatableColumn.Props<Row> {
+): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'select_multiple',
@@ -342,7 +338,7 @@ function selectMultiple(
 
 function geopoint(
   props: CommonProps & Pick<BuildFormColumnProps, 'getRow' | 'q' | 'onEdit'>,
-): DatatableColumn.Props<Row> {
+): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -350,7 +346,7 @@ function geopoint(
   }
 }
 
-function unknown(props: BuildFormColumnProps): DatatableColumn.Props<any> {
+function unknown(props: BuildFormColumnProps): Datatable.Column.Props<any> {
   return {
     ...getCommon(props),
     type: 'string',
@@ -360,7 +356,7 @@ function unknown(props: BuildFormColumnProps): DatatableColumn.Props<any> {
 
 function repeatGroup(
   props: CommonProps & Pick<BuildFormColumnProps, 't' | 'onRepeatGroupClick'>,
-): DatatableColumn.Props<Row> {
+): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'number',
@@ -402,7 +398,7 @@ type MetaProps = {
   m: Messages
 }
 
-function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'> = {}): DatatableColumn.Props<Row> {
+function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'> = {}): Datatable.Column.Props<Row> {
   return {
     type: 'id',
     id: 'id' as const,
@@ -440,7 +436,7 @@ function actions({
   canEdit?: boolean
   koboEditEnketoUrl?: DatabaseContext['koboEditEnketoUrl']
   m: Messages
-}): DatatableColumn.Props<Submission> {
+}): Datatable.Column.Props<Submission> {
   return {
     id: 'actions' as const,
     head: '',
@@ -479,7 +475,7 @@ function actions({
   }
 }
 
-function start({m}: {m: Messages}): DatatableColumn.Props<Row> {
+function start({m}: {m: Messages}): Datatable.Column.Props<Row> {
   return date({
     translateQuestion: () => m.start,
     q: {
@@ -491,7 +487,7 @@ function start({m}: {m: Messages}): DatatableColumn.Props<Row> {
   })
 }
 
-function end({m}: {m: Messages}): DatatableColumn.Props<Row> {
+function end({m}: {m: Messages}): Datatable.Column.Props<Row> {
   return date({
     translateQuestion: () => m.end,
     q: {
@@ -503,7 +499,7 @@ function end({m}: {m: Messages}): DatatableColumn.Props<Row> {
   })
 }
 
-function submissionTime({m}: {m: Messages}): DatatableColumn.Props<Row> {
+function submissionTime({m}: {m: Messages}): Datatable.Column.Props<Row> {
   return date({
     translateQuestion: () => m.submissionTime,
     q: {
@@ -527,7 +523,7 @@ function validation({
 }: Pick<
   MetaProps,
   'canEdit' | 'queryUpdate' | 'getRow' | 'formId' | 'workspaceId' | 'm' | 'selectedIds' | 'dialogs'
->): DatatableColumn.Props<Row> {
+>): Datatable.Column.Props<Row> {
   return {
     id: '_validation' as const,
     head: m.validation,
@@ -571,7 +567,7 @@ function validation({
   }
 }
 
-function byMeta(props: MetaProps): DatatableColumn.Props<any>[] {
+function byMeta(props: MetaProps): Datatable.Column.Props<any>[] {
   return [actions(props), validation(props), id(props), submissionTime(props)] as const
 }
 

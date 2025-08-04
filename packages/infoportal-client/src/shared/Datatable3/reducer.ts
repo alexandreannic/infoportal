@@ -1,0 +1,185 @@
+import {Datatable} from '@/shared/Datatable3/types.js'
+import {mapFor} from '@axanc/ts-utils'
+
+export function datatableReducer<T extends Datatable.Row>() {
+  const handlers = createHandlerMap<T>()
+  return (state: Datatable.State<T>, action: Datatable.Event<T>): Datatable.State<T> => {
+    const handler = handlers[action.type] as (
+      state: Datatable.State<T>,
+      action: Datatable.Event<T>,
+    ) => Datatable.State<T>
+    return handler(state, action)
+  }
+}
+
+// export const buildCellKey = (rowId: string, columnId)
+const buildVirtualTable = <T extends Datatable.Row>({
+  data,
+  columns,
+  dataIndexes,
+  getRowKey,
+}: {
+  dataIndexes: number[]
+  getRowKey: Datatable.Props<T>['getRowKey']
+  columns: Datatable.Column.InnerProps<T>[]
+  data: T[]
+}): Datatable.State<T>['virtualTable'] => {
+  const result: Datatable.State<T>['virtualTable'] = {}
+  const classNameTdIndex: Record<string, string> = {}
+  columns.forEach(col => {
+    let className = typeof col.className === 'string' ? col.className : ''
+    if (col.stickyEnd) className += ' td-sticky-end'
+    if (col.type === 'number') className += ' td-right'
+    if (col.align) className += ' td-' + col.align
+    classNameTdIndex[col.id] = className
+  })
+  dataIndexes.forEach(index => {
+    const row = data[index]
+    columns.forEach(col => {
+      const rendered = col.render(row)
+      let rowId
+      try {
+        rowId = getRowKey(row)
+      } catch (e) {
+        console.error('CATCH', col.id, (e as any).message)
+      }
+      if (!rowId) return
+      // const key = Datatable.buildKey({getRowKey, row, colId: col.id})
+      if (!result[rowId]) result[rowId] = {}
+      result[rowId][col.id] = {
+        label: rendered.label,
+        // value: rendered.value,
+        tooltip: rendered.tooltip ?? undefined,
+        style: col.style?.(row),
+        className: classNameTdIndex[col.id] + (typeof col.className === 'function' ? ' ' + col.className(row) : ''),
+      }
+    })
+  })
+  return result
+}
+
+export const initialState = <T extends Datatable.Row>(): Datatable.State<T> => {
+  return {
+    hasRenderedRowId: [],
+    virtualTable: {},
+    rowOrder: [],
+    selected: new Set(),
+    sortBy: undefined,
+    colWidths: {},
+    visibleCols: new Set(),
+  }
+}
+
+type HandlerMap<T extends Datatable.Row> = {
+  [K in Datatable.Event<T>['type']]: (
+    state: Datatable.State<T>,
+    action: Extract<Datatable.Event<T>, {type: K}>,
+  ) => Datatable.State<T>
+}
+
+function createHandlerMap<T extends Datatable.Row>(): HandlerMap<T> {
+  return {
+    INIT_DATA: (state, {limit, data, columns, getRowKey}) => {
+      return {
+        ...state,
+        hasRenderedRowId: [],
+        virtualTable: buildVirtualTable({
+          data,
+          columns,
+          getRowKey,
+          dataIndexes: mapFor(limit, i => i),
+        }),
+      }
+    },
+    SET_DATA: (state, {limit, offset, data, columns, getRowKey}) => {
+      const missingIndexes: number[] = []
+      for (let i = offset; i <= offset + limit; i++) {
+        if (!state.hasRenderedRowId[i]) {
+          state.hasRenderedRowId[i] = true
+          missingIndexes.push(i)
+        }
+      }
+      state.virtualTable = {
+        ...state.virtualTable,
+        ...buildVirtualTable({
+          dataIndexes: missingIndexes,
+          data,
+          columns,
+          getRowKey,
+        }),
+      }
+      return state
+    },
+
+    SORT: (state, action) => {
+      const asc = state.sortBy?.col === action.col ? !state.sortBy.asc : true
+      const rowOrder = [...state.rowOrder].sort((a, b) => {
+        return 1
+        // const va = state.virtualTable[a][action.col as keyof T]
+        // const vb = state.virtualTable[b][action.col as keyof T]
+        // return asc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va))
+      })
+      return {
+        ...state,
+        sortBy: {col: action.col, asc},
+        rowOrder,
+      }
+    },
+
+    FILTER: (state, action) => {
+      return state
+    },
+
+    SELECT_RANGE: (state, action) => {
+      const selected = new Set(state.selected)
+      const [start, end] =
+        action.fromIdx < action.toIdx ? [action.fromIdx, action.toIdx] : [action.toIdx, action.fromIdx]
+
+      for (let i = start; i <= end; i++) {
+        const id = state.rowOrder[i]
+        if (id) selected.add(id)
+      }
+
+      return {
+        ...state,
+        selected,
+      }
+    },
+
+    UPDATE_CELL: (state, action) => {
+      const virtualTable = {
+        ...state.virtualTable,
+        [action.rowId]: {
+          ...state.virtualTable[action.rowId],
+          [action.col]: action.value,
+        },
+      }
+
+      return {
+        ...state,
+        virtualTable,
+      }
+    },
+
+    RESIZE: (state, action) => ({
+      ...state,
+      colWidths: {
+        ...state.colWidths,
+        [action.col]: action.width,
+      },
+    }),
+
+    TOGGLE_COL: (state, action) => {
+      const visibleCols = new Set(state.visibleCols)
+      if (visibleCols.has(action.col)) {
+        visibleCols.delete(action.col)
+      } else {
+        visibleCols.add(action.col)
+      }
+      return {
+        ...state,
+        visibleCols,
+      }
+    },
+  }
+}

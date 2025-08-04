@@ -69,9 +69,9 @@ const lightShadows = Array.from({length: 25}, (_, i) =>
     ? 'none'
     : fadeShadow({
         color: '#000',
-        opacity: 0.08 + i * 0.004,
-        y: 2 + i * 0.5,
-        blur: 5 + i * 0.5,
+        opacity: 0.15 + i * 0.004,
+        y: 1.5 + i * 0.5,
+        blur: 4 + i * 0.5,
       }),
 )
 
@@ -182,6 +182,7 @@ export const muiTheme = ({
   }
 
   return createTheme({
+    cssVariables: true,
     defaultColorScheme: dark ? 'dark' : 'light',
     cssVariables: {
       colorSchemeSelector: 'class',
@@ -290,6 +291,9 @@ export const muiTheme = ({
           },
           b: {
             fontWeight: 'bold',
+          },
+          input: {
+            fontFamily: t.typography.fontFamily,
           },
           html: {
             fontSize: fontSize,
@@ -556,6 +560,9 @@ export const muiTheme = ({
 }
 
 const tableTheme = (t: Theme) => ({
+})
+
+const tableTheme2 = (t: Theme) => ({
   '@keyframes shake': {
     '0%': {transform: 'rotate(0)'},
     '20%': {transform: 'rotate(-25deg)'},
@@ -569,7 +576,7 @@ const tableTheme = (t: Theme) => ({
     width: 'max-content',
     // borderTop: '1px solid ' + t.vars.palette.divider,
     // tableLayout: 'fixed',
-    borderCollapse: 'collapse',
+    borderCollapse: 'separate',
     borderSpacing: 0,
   },
   '.table-head-type-icon': {
@@ -588,30 +595,12 @@ const tableTheme = (t: Theme) => ({
     border: `1px double ${t.vars.palette.primary.main} !important`,
     boxShadow: `inset 0 0 0 1px ${t.vars.palette.primary.main}`,
   },
-  '.table .MuiInputBase-root, .table .MuiFormControl-root': {
-    margin: 0,
-    height: '100%',
-  },
-  '.table .MuiInputBase-input': {
-    paddingTop: '0 !important',
-    paddingBottom: '0 !important',
-  },
-  '.table .MuiOutlinedInput-notchedOutline': {
-    border: 'none',
-    borderRadius: 0,
-  },
   '.table .tr-clickable': {
     cursor: 'pointer',
   },
   '.table tr': {
     whiteSpace: 'nowrap',
   },
-  'table td:has(.MuiOutlinedInput-notchedOutline)': {
-    padding: 0,
-  },
-  // '.table .td-sub-head .MuiButtonBase-root': {
-  //   marginTop: -4,
-  // },
   '.table .td-sub-head': {
     // height: 20,
     textAlign: 'right',
@@ -674,7 +663,7 @@ const tableTheme = (t: Theme) => ({
   '.td-center': {
     textAlign: 'center !important',
   },
-  'td-width0': {
+  '.td-width0': {
     width: 0,
   },
   '.td-right': {
@@ -688,7 +677,7 @@ const tableTheme = (t: Theme) => ({
     padding: 0,
     height: 1,
   },
-  '.table td, .table th': {
+  '.table .td, .table .th': {
     alignItems: 'left',
     textAlign: 'left',
     height: 30,
@@ -736,6 +725,45 @@ const tableTheme = (t: Theme) => ({
   //   borderBottom: `1px solid ${theme.vars.palette.divider}`
   //   // background: 'red',
   // },
+
+  // Inputs
+  // '.table td:has(input)': {
+  //   // transition: t.transitions.create('border-color'),
+  //   padding: '1px !important',
+  //   // borderColor: 'transparent !important',
+  // },
+  // '.table td:has(input:focus)': {
+  //   padding: '0px !important',
+  //   border: '2px solid' + ' !important',
+  //   borderColor: t.palette.primary.main + ' !important',
+  // },
+  // '.table td:has(.table-input), .table td:has(.MuiOutlinedInput-notchedOutline)': {
+  //   padding: 0,
+  // },
+  '.table .MuiInputBase-root, .table .MuiFormControl-root': {
+    margin: 0,
+    height: '100%',
+  },
+  '.table .MuiInputBase-input': {
+    paddingTop: '0 !important',
+    paddingBottom: '0 !important',
+  },
+  '.table .MuiOutlinedInput-notchedOutline': {
+    border: 'none',
+    borderRadius: 0,
+  },
+  '.table .tbody .td-active': {
+    background: alpha(t.palette.primary.main, 0.11) + ' !important',
+    userSelect: 'none',
+    border: '1px solid' + ' !important',
+    borderColor: t.palette.primary.main + ' !important',
+    borderTopWidth: '1px' + ' !important',
+    borderBottomWidth: '1px' + ' !important',
+    // border: '1px solid' + ' !important',
+    // borderColor: t.palette.primary.main + ' !important',
+    // borderTopWidth: '1px' + ' !important',
+    // borderBottomWidth: '1px' + ' !important',
+  },
 })
 
 export const themeLightScrollbar: SxProps<Theme> = {

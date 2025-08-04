@@ -1,6 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
-import {IpBtn, Modal} from '@/shared'
+import {IpBtn, Modal, TableInput} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {IpIconBtn} from '@/shared/IconBtn'
@@ -18,7 +18,7 @@ import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Ip} from 'infoportal-api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
-import {Icon} from '@mui/material'
+import {CircularProgress, Icon} from '@mui/material'
 
 export const settingsUsersRoute = createRoute({
   getParentRoute: () => settingsRoute,
@@ -34,11 +34,13 @@ type Data = Omit<Ip.User, 'id'> & {
 
 function SettingsUsers() {
   const {m, formatDate, formatDateTime} = useI18n()
+  const {user: connectedUser} = useSession()
   const {permission} = useWorkspaceContext()
   const {conf} = useAppSettings()
   const {workspaceId} = settingsUsersRoute.useParams() as {workspaceId: Ip.WorkspaceId}
   const navigate = useNavigate()
   const ctxSession = useSession()
+  const queryUserUpdate = useQueryUser.update(workspaceId)
   const queryUserGet = useQueryUser.getAll(workspaceId)
   const queryInvitation = useQueryWorkspaceInvitation.search({workspaceId})
   const queryInvitationRemove = useQueryWorkspaceInvitation.remove({workspaceId})
@@ -88,7 +90,7 @@ function SettingsUsers() {
                   <AddUserForm workspaceId={workspaceId} existingEmails={emailsLists} onClose={close} />
                 )}
               >
-                <IpBtn icon="person_add" variant="outlined">
+                <IpBtn icon="person_add" variant="outlined" sx={{marginLeft: 'auto'}}>
                   {m.addUser}
                 </IpBtn>
               </Modal>
@@ -114,7 +116,7 @@ function SettingsUsers() {
               align: 'center',
               id: 'avatar',
               head: '',
-              renderQuick: _ => _.status === 'user' && <AppAvatar sx={{my: .5}} size={28} email={_.email} />,
+              renderQuick: _ => _.status === 'user' && <AppAvatar sx={{my: 0.75}} size={28} email={_.email} />,
             },
             {
               type: 'string',
@@ -160,7 +162,12 @@ function SettingsUsers() {
             {
               id: 'job',
               head: m.job,
-              renderQuick: _ => _.drcJob,
+              render: _ => {
+                return {
+                  label: <TableInput value={_.drcJob} onChange={console.log} />,
+                  value: _.drcJob,
+                }
+              },
               type: 'select_one',
               options: () =>
                 seq(queryUserGet.data?.map(_ => _.drcJob))
@@ -184,8 +191,11 @@ function SettingsUsers() {
               render: _ => ({
                 label: (
                   <IpSelectSingle
-                    disabled={!permission.user_canUpdate}
-                    onChange={console.log}
+                    loading={queryUserUpdate.arePending.has(_.userId!)}
+                    disabled={_.email === connectedUser.email || !permission.user_canUpdate || !_.userId}
+                    onChange={res => {
+                      queryUserUpdate.mutateAsync({id: _.userId!, accessLevel: res!})
+                    }}
                     value={_.accessLevel}
                     options={Obj.keys(Ip.AccessLevel)}
                   />

@@ -10,17 +10,13 @@ import {DatabaseTableProps} from '@/features/Form/Database/DatabaseTable'
 import {generateEmptyXlsTemplate} from '@/features/Form/Database/generateEmptyXlsFile'
 import {databaseKoboDisplayBuilder} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {DatabaseViewInput} from '@/features/Form/Database/view/DatabaseViewInput'
-import {getColumnsForRepeatGroup} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {useKoboDialogs, useLangIndex} from '@/core/store/useLangIndex'
-import {Datatable} from '@/shared/Datatable/Datatable'
-import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
-import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
 import {useAsync} from '@/shared/hook/useAsync'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Alert, AlertProps, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from 'infoportal-common'
-import {useMemo, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
@@ -29,6 +25,8 @@ import {Ip} from 'infoportal-api-sdk'
 import {AppAvatar} from '@/shared'
 import {useFormSocket} from '@/features/Form/useFormSocket'
 import {appConfig} from '@/conf/AppConfig.js'
+import {Datatable3} from '@/shared/Datatable3/Datatable3.js'
+import {Datatable} from '@/shared/Datatable3/types'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -119,7 +117,7 @@ export const DatabaseTableContent = ({
     }).transformColumns(schemaColumns)
   }, [ctx.data, ctx.schema.schema, langIndex, selectedIds, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
-  const columns: DatatableColumn.Props<any>[] = useMemo(() => {
+  const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const base = buildDatabaseColumns.meta.all({
       selectedIds,
       queryUpdate: queryUpdate,
@@ -155,50 +153,54 @@ export const DatabaseTableContent = ({
       await generateEmptyXlsTemplate(ctx.schema, ctx.form.name + '_Template')
     }
   }
+  useEffect(() => {
+    console.log('PARENT recompile flatData', flatData?.length)
+  }, [flatData])
 
   return (
     <>
-      <Datatable
-        onResizeColumn={ctx.view.onResizeColumn}
+      <Datatable3
+        onEvent={console.log}
+        // onResizeColumn={ctx.view.onResizeColumn}
         loading={ctx.loading}
-        columnsToggle={{
-          disableAutoSave: true,
-          hidden: ctx.view.hiddenColumns,
-          onHide: ctx.view.setHiddenColumns,
-        }}
+        // columnsToggle={{
+        //   disableAutoSave: true,
+        //   hidden: ctx.view.hiddenColumns,
+        //   onHide: ctx.view.setHiddenColumns,
+        // }}
         contentProps={{sx: {maxHeight: 'calc(100vh - 216px)'}}}
-        showExportBtn
+        // showExportBtn
         rowsPerPageOptions={[20, 50, 100, 200]}
-        onFiltersChange={onFiltersChange}
-        onDataChange={onDataChange}
-        select={
-          ctx.permission.answers_canUpdate
-            ? {
-                onSelect: (_: string[]) => setSelectedIds(_ as Ip.SubmissionId[]),
-                selectActions: selectedHeader,
-                getId: _ => _.id,
-              }
-            : undefined
-        }
-        exportAdditionalSheets={data => {
-          return ctx.schema.helper.group.search().map(group => {
-            const cols = getColumnsForRepeatGroup({
-              formId: ctx.form.id,
-              t,
-              m,
-              schema: ctx.schema,
-              groupName: group.name,
-            })
-            return {
-              sheetName: group.name as string,
-              data: KoboFlattenRepeatedGroup.run({data, path: group.pathArr}),
-              schema: cols.map(DatatableXlsGenerator.columnsToParams),
-            }
-          })
-        }}
+        // onFiltersChange={onFiltersChange}
+        // onDataChange={onDataChange}
+        // select={
+        //   ctx.permission.answers_canUpdate
+        //     ? {
+        //         onSelect: (_: string[]) => setSelectedIds(_ as Ip.SubmissionId[]),
+        //         selectActions: selectedHeader,
+        //         getId: _ => _.id,
+        //       }
+        //     : undefined
+        // }
+        // exportAdditionalSheets={data => {
+        //   return ctx.schema.helper.group.search().map(group => {
+        //     const cols = getColumnsForRepeatGroup({
+        //       formId: ctx.form.id,
+        //       t,
+        //       m,
+        //       schema: ctx.schema,
+        //       groupName: group.name,
+        //     })
+        //     return {
+        //       sheetName: group.name as string,
+        //       data: KoboFlattenRepeatedGroup.run({data, path: group.pathArr}),
+        //       schema: cols.map(DatatableXlsGenerator.columnsToParams),
+        //     }
+        //   })
+        // }}
         title={ctx.form.name}
         id={ctx.form.id}
-        getRenderRowKey={_ => _.id + ((_ as any) /** TODO Make it typesafe?*/._index ?? '')}
+        getRowKey={_ => _.id + ((_ as any) /** TODO Make it typesafe?*/._index ?? '')}
         columns={columns}
         data={flatData}
         header={params => (
