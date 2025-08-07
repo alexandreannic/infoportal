@@ -60,7 +60,7 @@ export const ChartLineByDate = <T, K extends DateKeys<T>>({
         })
         return [date, v] as [string, Record<K, number>]
       })
-      .map(([date, v]) => ({name: date, ...v}))
+      .map(([date, v]) => ({name: date, values: v}))
       .sort((a, b) => a.name.localeCompare(b.name))
   }, [data, curves, end])
 
