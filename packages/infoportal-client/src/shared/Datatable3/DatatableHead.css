@@ -11,7 +11,8 @@
 }
 
 .dth {
-  vertical-align: middle;
+  display: flex;
+  align-items: center;
   width: 120px;
   border-right: 1px solid #ddd; /* replace with your palette divider color */
   text-align: left;

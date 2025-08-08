@@ -6,6 +6,10 @@
   min-width: 100%;
   overflow: auto;
   height: 800px;
+
+  .table .MuiCheckbox-root {
+    padding: 6px;
+  }
 }
 
 .dtr {
@@ -16,11 +20,12 @@
   top: 0;
   left: 0;
   width: 100%;
-  border-bottom: 1px solid #ddd; /* replace with your palette divider color */
 }
 
 .dtd {
-  vertical-align: middle;
+  border-bottom: 1px solid #ddd; /* replace with your palette divider color */
+  display: flex;
+  align-items: center;
   width: 120px;
   border-right: 1px solid #ddd; /* replace with your palette divider color */
   text-align: left;

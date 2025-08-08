@@ -7,19 +7,30 @@ export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
   const [selectionStart, setSelectionStart] = useState<{row: number; col: number} | null>(null)
   const [selectionEnd, setSelectionEnd] = useState<{row: number; col: number} | null>(null)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const anchor = useRef<{row: number; col: number} | null>(null) // last clicked cell for shift
 
   const reset = () => {
     setSelectionStart(null)
     setSelectionEnd(null)
     setAnchorEl(null)
     selecting.current = false
+    anchor.current = null
   }
 
   const handleMouseDown = useCallback((rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
-    selecting.current = true
-    setSelectionStart({row: rowIndex, col: colIndex})
-    setSelectionEnd({row: rowIndex, col: colIndex})
-    setAnchorEl(null)
+    const isShift = event.shiftKey
+
+    if (isShift && anchor.current) {
+      // Shift+click: select rect from anchor to current cell
+      setSelectionStart(anchor.current)
+      setSelectionEnd({row: rowIndex, col: colIndex})
+    } else {
+      // Normal click: start new selection
+      selecting.current = true
+      setSelectionStart({row: rowIndex, col: colIndex})
+      setSelectionEnd({row: rowIndex, col: colIndex})
+      anchor.current = {row: rowIndex, col: colIndex}
+    }
   }, [])
 
   const handleMouseEnter = useCallback(
@@ -44,19 +55,11 @@ export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
     const margin = 10 // distance from edge to trigger scroll
     const scrollSpeed = 15 // pixels per interval
     const scrollIntervalMs = 5
-
     // Clear any previous scroll interval to avoid stacking
     if (scrollInterval.current) {
       clearInterval(scrollInterval.current)
       scrollInterval.current = null
     }
-
-    console.log({
-      Up: e.clientY < rect.top + margin,
-      Down: e.clientY > rect.bottom - margin,
-      Right: e.clientX < rect.left + margin,
-      Left: e.clientX > rect.right - margin,
-    })
     // Vertical auto-scroll
     if (e.clientY < rect.top + margin) {
       scrollInterval.current = setInterval(() => {
@@ -153,6 +156,29 @@ export const SelectedCellPopover = ({
       transformOrigin={{
         vertical: 'top',
         horizontal: 'left',
+      }}
+      slotProps={{
+        root: {
+          disableEnforceFocus: true,
+          disableAutoFocus: true,
+          disableRestoreFocus: true,
+          keepMounted: true,
+          sx: {
+            pointerEvents: 'none', // prevent root modal layer from intercepting
+          },
+        },
+        paper: {
+          sx: {
+            pointerEvents: 'auto', // allow interactions inside popover
+            px: 1,
+            py: 0.5,
+          },
+        },
+        backdrop: {
+          sx: {
+            display: 'none',
+          },
+        },
       }}
     >
       <div style={{padding: 10}}>Selection {selectedCount}</div>
