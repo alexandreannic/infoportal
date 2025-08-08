@@ -4,10 +4,10 @@ import {datatableReducer, initialState} from '@/shared/Datatable3/reducer.js'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType.js'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils.js'
 import {useVirtualizer} from '@tanstack/react-virtual'
-import {Skeleton, styled} from '@mui/material'
+import {Popover, Skeleton, styled} from '@mui/material'
 import './Datatable.css'
 import {DatatableHead} from '@/shared/Datatable3/DatatableHead.js'
-import {useCellSelection} from '@/shared/Datatable3/useCellSelection.js'
+import {SelectedCellPopover, useCellSelection} from '@/shared/Datatable3/useCellSelection.js'
 
 const toInnerColumn = <T extends Datatable.Row>(col: Datatable.Column.Props<T>): Datatable.Column.InnerProps<T> => {
   if (Datatable.Column.isInner(col)) {
@@ -139,11 +139,11 @@ export const DatatableWithData = <T extends Datatable.Row>({
     dispatch({type: 'SET_DATA', data, columns, getRowKey, offset: lastIndex, limit: 22 + overscan})
   }, [rowVirtualizer.getVirtualItems()])
 
-  const {handleMouseDown, handleMouseEnter, isCellSelected, handleMouseUp} = useCellSelection()
+  const cellSelection = useCellSelection(parentRef)
 
   return (
     <div
-      onMouseUp={handleMouseUp}
+      onMouseUp={cellSelection.handleMouseUp}
       style={{
         ['--cols' as any]: cssGridTemplate,
       }}
@@ -173,7 +173,7 @@ export const DatatableWithData = <T extends Datatable.Row>({
                 {columns.map((col, colIndex) => {
                   const key = Datatable.buildKey2({colId: col.id, rowId})
                   const cell = state.virtualTable[rowId]?.[col.id]
-                  const selected = isCellSelected(virtualRow.index, colIndex)
+                  const selected = cellSelection.isSelected(virtualRow.index, colIndex)
 
                   if (!cell)
                     return (
@@ -185,8 +185,8 @@ export const DatatableWithData = <T extends Datatable.Row>({
                     <Cell
                       rowIndex={virtualRow.index}
                       colIndex={colIndex}
-                      handleMouseDown={handleMouseDown}
-                      handleMouseEnter={handleMouseEnter}
+                      handleMouseDown={cellSelection.handleMouseDown}
+                      handleMouseEnter={cellSelection.handleMouseEnter}
                       className={cell.className + (selected ? ' selected' : '')}
                       label={cell.label}
                       tooltip={cell.tooltip as any}
@@ -200,6 +200,7 @@ export const DatatableWithData = <T extends Datatable.Row>({
           })}
         </div>
       </div>
+      <SelectedCellPopover {...cellSelection} />
     </div>
   )
 }
@@ -273,7 +274,7 @@ const Cell = memo(
   }: Datatable.VirtualCell & {
     colIndex: number
     rowIndex: number
-    handleMouseDown: (rowIndex: number, colIndex: number) => void
+    handleMouseDown: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
     handleMouseEnter: (rowIndex: number, colIndex: number) => void
   }) => {
     return (
@@ -281,7 +282,7 @@ const Cell = memo(
         className={'dtd ' + className}
         style={style}
         title={tooltip}
-        onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
+        onMouseDown={e => handleMouseDown(rowIndex, colIndex, e)}
         onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
       >
         {label}
