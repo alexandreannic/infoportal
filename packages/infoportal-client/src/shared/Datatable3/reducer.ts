@@ -27,7 +27,7 @@ const buildVirtualTable = <T extends Datatable.Row>({
   const result: Datatable.State<T>['virtualTable'] = {}
   const classNameTdIndex: Record<string, string> = {}
   columns.forEach(col => {
-    let className = typeof col.className === 'string' ? col.className : ''
+    let className = typeof col.className === 'string' ? col.className : ' '
     if (col.stickyEnd) className += ' td-sticky-end'
     if (col.type === 'number') className += ' td-right'
     if (col.align) className += ' td-' + col.align
@@ -51,7 +51,7 @@ const buildVirtualTable = <T extends Datatable.Row>({
         // value: rendered.value,
         tooltip: rendered.tooltip ?? undefined,
         style: col.style?.(row),
-        className: classNameTdIndex[col.id] + (typeof col.className === 'function' ? ' ' + col.className(row) : ''),
+        className: classNameTdIndex[col.id] + (typeof col.className === 'function' ? ' ' + col.className(row) + ' ' : ''),
       }
     })
   })

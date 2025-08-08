@@ -1,3 +1,7 @@
+.dtbody {
+  user-select: none;
+}
+
 .dt {
   min-width: 100%;
   overflow: auto;
@@ -24,4 +28,11 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.dtd.selected {
+  background-color: color-mix(in srgb, var(--mui-palette-primary-main), transparent 90%);
+  outline: 1px solid var(--mui-palette-primary-main);
+  /*border-top: 1px solid var(--mui-palette-primary-main);*/
+  /*border-left: 1px solid var(--mui-palette-primary-main);*/
 }
