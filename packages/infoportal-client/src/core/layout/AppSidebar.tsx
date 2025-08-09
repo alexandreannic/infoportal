@@ -4,7 +4,7 @@ import {Sidebar, SidebarHeader, SidebarHr, SidebarItem} from '@/shared/Layout/Si
 import {Box, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
 import {useMemo, useState} from 'react'
 import {useQueryForm} from '@/core/query/useQueryForm'
-import {Link} from '@tanstack/react-router'
+import {Link, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
 import {mapFor, Seq, seq} from '@axanc/ts-utils'
@@ -27,6 +27,8 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
       name: _.name,
     }))
   }, [queryForm.accessibleForms.data])
+
+  const navigate = useNavigate()
 
   const [filteredForms, setFilteredForms] = useState<Seq<Ip.Form>>(forms)
 
@@ -56,30 +58,26 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
       {/*  )}*/}
       {/*</Link>*/}
       <SidebarHr />
-      <Link to="/$workspaceId/form/list" params={{workspaceId}}>
-        {({isActive}) => (
-          <SidebarItem
-            sx={{pr: 0}}
-            active={isActive}
-            iconEnd={
-              <Link to="/$workspaceId/new-form" params={{workspaceId}}>
-                {({isActive}) => (
-                  <IpBtn variant={isActive ? 'light' : 'outlined'} sx={{mr: 0}}>
-                    <Icon>add</Icon>
-                  </IpBtn>
-                )}
-              </Link>
-            }
-            icon={appConfig.icons.database}
-          >
-            {m.forms}
-          </SidebarItem>
-        )}
-      </Link>
+      <Box display="flex">
+        <Link style={{flex: 1}} to="/$workspaceId/form/list" params={{workspaceId}}>
+          {({isActive}) => (
+            <SidebarItem sx={{pr: 0}} active={isActive} icon={appConfig.icons.database}>
+              {m.forms}
+            </SidebarItem>
+          )}
+        </Link>
+        <Link to="/$workspaceId/new-form" params={{workspaceId}} style={{paddingLeft: 0, padding: t.spacing(0.5)}}>
+          {({isActive}) => (
+            <IpBtn variant={isActive ? 'light' : 'outlined'} sx={{height: '100%'}}>
+              <Icon>add</Icon>
+            </IpBtn>
+          )}
+        </Link>
+      </Box>
       <AppSidebarFilters forms={forms} onFilterChanges={setFilteredForms} />
       {queryForm.accessibleForms.isLoading ? (
-        mapFor(4, () => (
-          <SidebarItem size={formItemSize}>
+        mapFor(4, i => (
+          <SidebarItem key={i} size={formItemSize}>
             <Skeleton sx={{width: 160, height: 30}} />
           </SidebarItem>
         ))

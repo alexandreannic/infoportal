@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {ReactNode} from 'react'
-import {Box, ButtonBase, ButtonBaseProps, Icon} from '@mui/material'
-import {alpha, useTheme} from '@mui/material/styles'
+import {Box, ButtonBase, ButtonBaseProps, Icon, styled} from '@mui/material'
+import {alpha} from '@mui/material/styles'
 import {fnSwitch} from '@axanc/ts-utils'
 import {makeSx} from '@/core/theme'
 
@@ -16,6 +16,69 @@ const css = makeSx({
     ml: 1.5,
     // mr: -0.5,
   },
+})
+
+const Root = styled(ButtonBase, {
+  shouldForwardProp: prop => prop !== 'isClickable',
+})<
+  Pick<SidebarItemProps, 'size' | 'disabled' | 'large'> & {
+    isClickable?: boolean
+    active?: boolean
+  }
+>(({theme: t, isClickable, disabled, large, active, size}) => {
+  const my =
+    parseInt(t.spacing(1) as string) /
+    fnSwitch(
+      size!,
+      {
+        normal: 2,
+        small: 4,
+        tiny: 8,
+      },
+      () => 2,
+    )
+  return {
+    width: `calc(100% - ${t.spacing(1)})`,
+    transition: t.transitions.create('all'),
+    display: 'flex',
+    alignItems: 'center',
+    textDecoration: 'inherit',
+    minHeight: fnSwitch(
+      size!,
+      {
+        normal: 36,
+        small: 30,
+        tiny: 28,
+      },
+      () => 36,
+    ),
+    overflow: 'hidden',
+    minWidth: 0,
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    textOverflow: 'ellipsis',
+    color: t.palette.text.primary,
+    paddingRight: t.spacing(1),
+    paddingLeft: t.spacing(1.5),
+    marginRight: t.spacing(0.5),
+    marginLeft: t.spacing(0.5),
+    marginTop: my,
+    marginBottom: my,
+    borderRadius: parseInt('' + t.shape.borderRadius) - 2 + 'px',
+    ...(disabled && {
+      opacity: 0.5,
+    }),
+    '&:hover': {
+      background: isClickable ? alpha(t.palette.primary.main, 0.06) : undefined,
+    },
+    ...(large && {
+      minHeight: 38,
+    }),
+    ...(active && {
+      color: t.palette.primary.main,
+      background: alpha(t.palette.primary.main, 0.16),
+    }),
+  }
 })
 
 export interface SidebarItemProps extends ButtonBaseProps {
@@ -41,65 +104,9 @@ export const SidebarItem = ({
   sx,
   ...props
 }: SidebarItemProps) => {
-  const t = useTheme()
+  const isClickable = !!(props.onClick || props.href || active !== undefined)
   return (
-    <ButtonBase
-      disableRipple={!props.onClick && !props.href}
-      sx={{
-        width: `calc(100% - ${t.spacing(1)})`,
-        transition: t => t.transitions.create('all'),
-        display: 'flex',
-        alignItems: 'center',
-        textDecoration: 'inherit',
-        minHeight: fnSwitch(
-          size!,
-          {
-            normal: 36,
-            small: 30,
-            tiny: 28,
-          },
-          () => 36,
-        ),
-        overflow: 'hidden',
-        minWidth: 0,
-        whiteSpace: 'nowrap',
-        textAlign: 'left',
-        textOverflow: 'ellipsis',
-        color: t => t.palette.text.primary,
-        pr: 1,
-        pl: 1.5,
-        mx: 0.5,
-        my:
-          1 /
-          fnSwitch(
-            size!,
-            {
-              normal: 2,
-              small: 4,
-              tiny: 8,
-            },
-            () => 2,
-          ),
-        borderRadius: parseInt('' + t.shape.borderRadius) - 2 + 'px',
-        // borderTopRightRadius: 42,
-        // borderBottomRightRadius: 42,
-        ...(props.disabled && {
-          opacity: 0.5,
-        }),
-        '&:hover': {
-          background: t => alpha(t.palette.primary.main, 0.06),
-        },
-        ...(large && {
-          minHeight: 38,
-        }),
-        ...(active && {
-          color: t => t.palette.primary.main,
-          background: t => alpha(t.palette.primary.main, 0.16),
-        }),
-        ...sx,
-      }}
-      {...props}
-    >
+    <Root component="div" role="link" disableRipple={!isClickable} isClickable={isClickable} sx={sx} {...props}>
       {icon &&
         (typeof icon === 'string' ? (
           <Icon fontSize={size === 'small' ? 'small' : 'medium'} sx={css.iStart}>
@@ -130,6 +137,6 @@ export const SidebarItem = ({
         ) : (
           <Box sx={css.iEnd}>{iconEnd}</Box>
         ))}
-    </ButtonBase>
+    </Root>
   )
 }

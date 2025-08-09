@@ -1,5 +1,5 @@
 import {Checkbox, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SxProps, Theme} from '@mui/material'
-import React, {ReactNode, useMemo, useState} from 'react'
+import React, {forwardRef, ReactNode, useMemo, useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {makeSx} from '@/core/theme'
 
@@ -31,105 +31,102 @@ const style = makeSx({
 
 const IGNORED_VALUE_FOR_SELECT_ALL_ITEM = 'IGNORED_VALUE'
 
-export const IpSelectMultiple = <T extends string | number>({
-  showUndefinedOption,
-  label,
-  id,
-  onChange,
-  sx,
-  value = [],
-  ...props
-}: IpSelectMultipleProps<T>) => {
-  const {m} = useI18n()
-  const [uncontrolledInnerState, setUncontrolledInnerState] = useState<T[]>(props.defaultValue ?? [])
+export const IpSelectMultiple = forwardRef(
+  <T extends string | number>(
+    {showUndefinedOption, label, id, onChange, sx, value = [], ...props}: IpSelectMultipleProps<T>,
+    ref: React.ForwardedRef<any>,
+  ) => {
+    const {m} = useI18n()
+    const [uncontrolledInnerState, setUncontrolledInnerState] = useState<T[]>(props.defaultValue ?? [])
 
-  const innerValue = useMemo(() => {
-    return value ?? uncontrolledInnerState
-  }, [value, uncontrolledInnerState])
+    const innerValue = useMemo(() => {
+      return value ?? uncontrolledInnerState
+    }, [value, uncontrolledInnerState])
 
-  const options = useMemo(() => {
-    const _options = props.options ?? []
-    if (typeof _options[0] === 'string') {
-      return props.options.map(_ => ({value: _, children: _})) as Option<T>[]
+    const options = useMemo(() => {
+      const _options = props.options ?? []
+      if (typeof _options[0] === 'string') {
+        return props.options.map(_ => ({value: _, children: _})) as Option<T>[]
+      }
+      return _options as Option<T>[]
+    }, [props.options])
+
+    const handleSelectAll = (e: any) => {
+      const newValue = innerValue.length === options.length ? [] : options.map(_ => _.value)
+      onChange(newValue, e)
+      setUncontrolledInnerState(newValue)
     }
-    return _options as Option<T>[]
-  }, [props.options])
 
-  const handleSelectAll = (e: any) => {
-    const newValue = innerValue.length === options.length ? [] : options.map(_ => _.value)
-    onChange(newValue, e)
-    setUncontrolledInnerState(newValue)
-  }
+    const allSelected = innerValue.length === options.length
 
-  const allSelected = innerValue.length === options.length
-
-  return (
-    <FormControl size="small" sx={{width: '100%', ...sx}}>
-      {label && <InputLabel htmlFor={id}>{label}</InputLabel>}
-      <Select
-        label={label}
-        size="small"
-        margin="dense"
-        id={id}
-        defaultValue={props.defaultValue}
-        multiple={true}
-        renderValue={(v: T[]) =>
-          options.find(_ => v.includes(_.value))?.children + (v.length > 1 ? ` +${v.length - 1}  selected` : '')
-        }
-        onChange={e => {
-          if (e.target.value.includes(IGNORED_VALUE_FOR_SELECT_ALL_ITEM as any)) return
-          const newValue = e.target.value as T[]
-          onChange(newValue, e)
-          setUncontrolledInnerState(newValue)
-        }}
-        input={
-          <OutlinedInput
-            label={label}
-            // endAdornment={
-            //   <CircularProgress size={24} color="secondary"/>
-          />
-        }
-        value={value}
-        {...props}
-      >
-        {options.length > 5 && (
-          <MenuItem
-            dense
-            value={IGNORED_VALUE_FOR_SELECT_ALL_ITEM}
-            onClick={handleSelectAll}
-            divider
-            sx={{
-              py: 0,
-              fontWeight: t => t.typography.fontWeightBold,
-            }}
-          >
-            <Checkbox
-              size="small"
-              indeterminate={!allSelected && innerValue.length > 0}
-              checked={allSelected}
-              sx={{
-                paddingTop: `8px !important`,
-                paddingBottom: `8px !important`,
-              }}
+    return (
+      <FormControl ref={ref} size="small" sx={{width: '100%', ...sx}}>
+        {label && <InputLabel htmlFor={id}>{label}</InputLabel>}
+        <Select
+          label={label}
+          size="small"
+          margin="dense"
+          id={id}
+          defaultValue={props.defaultValue}
+          multiple={true}
+          renderValue={(v: T[]) =>
+            options.find(_ => v.includes(_.value))?.children + (v.length > 1 ? ` +${v.length - 1}  selected` : '')
+          }
+          onChange={e => {
+            if (e.target.value.includes(IGNORED_VALUE_FOR_SELECT_ALL_ITEM as any)) return
+            const newValue = e.target.value as T[]
+            onChange(newValue, e)
+            setUncontrolledInnerState(newValue)
+          }}
+          input={
+            <OutlinedInput
+              label={label}
+              // endAdornment={
+              //   <CircularProgress size={24} color="secondary"/>
             />
-            {m.selectAll}
-          </MenuItem>
-        )}
-        {showUndefinedOption && <MenuItem dense value={null as any} sx={style.item} />}
-        {options.map((option, i) => (
-          <MenuItem dense key={option.key ?? option.value} value={option.value} sx={style.item}>
-            <Checkbox
-              size="small"
-              checked={innerValue.includes(option.value)}
+          }
+          value={value}
+          {...props}
+        >
+          {options.length > 5 && (
+            <MenuItem
+              dense
+              value={IGNORED_VALUE_FOR_SELECT_ALL_ITEM}
+              onClick={handleSelectAll}
+              divider
               sx={{
-                paddingTop: `8px !important`,
-                paddingBottom: `8px !important`,
+                py: 0,
+                fontWeight: t => t.typography.fontWeightBold,
               }}
-            />
-            {option.children}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  )
-}
+            >
+              <Checkbox
+                size="small"
+                indeterminate={!allSelected && innerValue.length > 0}
+                checked={allSelected}
+                sx={{
+                  paddingTop: `8px !important`,
+                  paddingBottom: `8px !important`,
+                }}
+              />
+              {m.selectAll}
+            </MenuItem>
+          )}
+          {showUndefinedOption && <MenuItem dense value={null as any} sx={style.item} />}
+          {options.map((option, i) => (
+            <MenuItem dense key={option.key ?? option.value} value={option.value} sx={style.item}>
+              <Checkbox
+                size="small"
+                checked={innerValue.includes(option.value)}
+                sx={{
+                  paddingTop: `8px !important`,
+                  paddingBottom: `8px !important`,
+                }}
+              />
+              {option.children}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    )
+  },
+)
