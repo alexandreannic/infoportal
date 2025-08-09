@@ -69,6 +69,7 @@
     "react-persistent-state": "^1.1.13",
     "react-portal": "^4.2.2",
     "react-redux": "^9.2.0",
+    "react-resizable": "^3.0.5",
     "react-router": "^7.6.3",
     "react-router-dom": "^7.6.3",
     "react-syntax-highlighter": "^15.6.1",
@@ -85,6 +86,7 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
+    "@types/react-resizable": "^3.0.8",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/react-window": "^1.8.8",
     "@types/scheduler": "^0.23.0",

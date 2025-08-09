@@ -1,7 +1,3 @@
-.dtbody {
-  user-select: none;
-}
-
 .dt {
   min-width: 100%;
   overflow: auto;
@@ -10,6 +6,10 @@
   .table .MuiCheckbox-root {
     padding: 6px;
   }
+}
+
+.dtbody {
+  user-select: none;
 }
 
 .dtr {
@@ -23,11 +23,11 @@
 }
 
 .dtd {
-  border-bottom: 1px solid #ddd; /* replace with your palette divider color */
+  width: 100%;
+  border-bottom: 1px solid var(--mui-palette-divider);
   display: flex;
   align-items: center;
-  width: 120px;
-  border-right: 1px solid #ddd; /* replace with your palette divider color */
+  border-right: 1px solid var(--mui-palette-divider);
   text-align: left;
   padding: 0 0px 0 4px;
   overflow: hidden;

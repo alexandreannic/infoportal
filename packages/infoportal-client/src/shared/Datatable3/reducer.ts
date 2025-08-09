@@ -1,6 +1,8 @@
 import {Datatable} from '@/shared/Datatable3/types.js'
 import {mapFor} from '@axanc/ts-utils'
 
+export type DatatableDispatch<T extends Datatable.Row> = React.Dispatch<Datatable.Event<T>>
+
 export function datatableReducer<T extends Datatable.Row>() {
   const handlers = createHandlerMap<T>()
   return (state: Datatable.State<T>, action: Datatable.Event<T>): Datatable.State<T> => {
@@ -36,12 +38,13 @@ const buildVirtualTable = <T extends Datatable.Row>({
   dataIndexes.forEach(index => {
     const row = data[index]
     columns.forEach(col => {
-      const rendered = col.render(row)
+      const rendered = row ? col.render(row) : {label: '?', value: '?'}
+      // fix in case
       let rowId
       try {
         rowId = getRowKey(row)
       } catch (e) {
-        console.error('CATCH', col.id, (e as any).message)
+        // console.error('CATCH', col.id, (e as any).message)
       }
       if (!rowId) return
       // const key = Datatable.buildKey({getRowKey, row, colId: col.id})
@@ -51,7 +54,8 @@ const buildVirtualTable = <T extends Datatable.Row>({
         // value: rendered.value,
         tooltip: rendered.tooltip ?? undefined,
         style: col.style?.(row),
-        className: classNameTdIndex[col.id] + (typeof col.className === 'function' ? ' ' + col.className(row) + ' ' : ''),
+        className:
+          classNameTdIndex[col.id] + (typeof col.className === 'function' ? ' ' + col.className(row) + ' ' : ''),
       }
     })
   })
@@ -66,7 +70,7 @@ export const initialState = <T extends Datatable.Row>(): Datatable.State<T> => {
     selected: new Set(),
     sortBy: undefined,
     colWidths: {},
-    visibleCols: new Set(),
+    colVisibility: new Set(),
   }
 }
 
@@ -91,6 +95,7 @@ function createHandlerMap<T extends Datatable.Row>(): HandlerMap<T> {
         }),
       }
     },
+
     SET_DATA: (state, {limit, offset, data, columns, getRowKey}) => {
       const missingIndexes: number[] = []
       for (let i = offset; i <= offset + limit; i++) {
@@ -170,15 +175,15 @@ function createHandlerMap<T extends Datatable.Row>(): HandlerMap<T> {
     }),
 
     TOGGLE_COL: (state, action) => {
-      const visibleCols = new Set(state.visibleCols)
-      if (visibleCols.has(action.col)) {
-        visibleCols.delete(action.col)
+      const colVisibility = new Set(state.colVisibility)
+      if (colVisibility.has(action.col)) {
+        colVisibility.delete(action.col)
       } else {
-        visibleCols.add(action.col)
+        colVisibility.add(action.col)
       }
       return {
         ...state,
-        visibleCols,
+        colVisibility,
       }
     },
   }

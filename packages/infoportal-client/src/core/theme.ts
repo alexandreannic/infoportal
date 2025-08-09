@@ -182,7 +182,7 @@ export const muiTheme = ({
   }
 
   return createTheme({
-    cssVariables: true,
+    // cssVariables: true,
     defaultColorScheme: dark ? 'dark' : 'light',
     cssVariables: {
       colorSchemeSelector: 'class',

@@ -39,14 +39,16 @@ export const ResizableDiv = ({
   style,
   debounceTime = 1200,
   onResize,
+  className,
   ...props
 }: Pick<BoxProps, 'style' | 'children'> & {
+  className: string
   id: string
   debounceTime?: number
   initialWidth?: number
   onResize?: (id: string, newWidth: number) => void
 }) => {
-  const {classes} = useStyles()
+  const {cx, classes} = useStyles()
   const divRef = useRef<HTMLDivElement | null>(null)
   const [isResizing, setIsResizing] = useState(false)
 
@@ -86,7 +88,7 @@ export const ResizableDiv = ({
         width: initialWidth,
         ...style,
       }}
-      className={classes.root}
+      className={cx(classes.root, className)}
       {...props}
     />
   )

@@ -109,7 +109,7 @@ export const DatatableWithData = <T extends Datatable.Row>({
         // .filter(c => state.visibleCols.has(c.id))
         .map(c => (state.colWidths[c.id] ?? 120) + 'px')
         .join(' '),
-    [columns, state.colWidths, state.visibleCols],
+    [columns, state.colWidths, state.colVisibility],
   )
 
   useEffect(() => {
@@ -142,63 +142,62 @@ export const DatatableWithData = <T extends Datatable.Row>({
   const cellSelection = useCellSelection(parentRef)
 
   return (
-    <div
-      onMouseUp={cellSelection.handleMouseUp}
-      style={{
-        ['--cols' as any]: cssGridTemplate,
-      }}
-    >
-      <DatatableHead columns={columns} />
-      <div className="dt" ref={parentRef}>
-        <div
-          className="dtbody"
-          style={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
-            position: 'relative',
-          }}
-        >
-          {rowVirtualizer.getVirtualItems().map(virtualRow => {
-            const row = data[virtualRow.index]
-            const rowId = getRowKey(row)
-            return (
-              <div
-                className="dtr"
-                key={rowId}
-                style={{
-                  height: `${virtualRow.size}px`,
-                  // top: start,
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-              >
-                {columns.map((col, colIndex) => {
-                  const key = Datatable.buildKey2({colId: col.id, rowId})
-                  const cell = state.virtualTable[rowId]?.[col.id]
-                  const selected = cellSelection.isSelected(virtualRow.index, colIndex)
+    <div className="dt" style={{['--cols' as any]: cssGridTemplate}} ref={parentRef}>
+      <DatatableHead
+        dispatch={dispatch}
+        colWidths={state.colWidths}
+        onMouseDown={() => cellSelection.reset()}
+        columns={columns}
+      />
+      <div
+        className="dtbody"
+        onMouseUp={cellSelection.handleMouseUp}
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          position: 'relative',
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map(virtualRow => {
+          const row = data[virtualRow.index]
+          const rowId = getRowKey(row)
+          return (
+            <div
+              className="dtr"
+              key={rowId}
+              style={{
+                height: `${virtualRow.size}px`,
+                // top: start,
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
+            >
+              {columns.map((col, colIndex) => {
+                const key = Datatable.buildKey2({colId: col.id, rowId})
+                const cell = state.virtualTable[rowId]?.[col.id]
+                const selected = cellSelection.isSelected(virtualRow.index, colIndex)
 
-                  if (!cell)
-                    return (
-                      <div key={key} className="dtd">
-                        {rowId}
-                      </div>
-                    )
+                if (!cell)
                   return (
-                    <Cell
-                      rowIndex={virtualRow.index}
-                      colIndex={colIndex}
-                      handleMouseDown={cellSelection.handleMouseDown}
-                      handleMouseEnter={cellSelection.handleMouseEnter}
-                      className={cell.className + (selected ? ' selected' : '')}
-                      label={cell.label}
-                      tooltip={cell.tooltip as any}
-                      style={cell.style}
-                      key={key}
-                    />
+                    <div key={key} className="dtd">
+                      {rowId}
+                    </div>
                   )
-                })}
-              </div>
-            )
-          })}
-        </div>
+                return (
+                  <Cell
+                    rowIndex={virtualRow.index}
+                    colIndex={colIndex}
+                    handleMouseDown={cellSelection.handleMouseDown}
+                    handleMouseEnter={cellSelection.handleMouseEnter}
+                    className={cell.className + (selected ? ' selected' : '')}
+                    label={cell.label}
+                    tooltip={cell.tooltip as any}
+                    style={cell.style}
+                    key={key}
+                  />
+                )
+              })}
+            </div>
+          )
+        })}
       </div>
       <SelectedCellPopover {...cellSelection} />
     </div>

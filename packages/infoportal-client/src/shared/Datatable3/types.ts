@@ -65,7 +65,7 @@ export namespace Datatable {
     sortBy?: {col: string; asc: boolean}
     filters?: any
     colWidths: Record<string, number>
-    visibleCols: Set<string>
+    colVisibility: Set<string>
   }
 
   export type DatatableFilterTypeMapping = {

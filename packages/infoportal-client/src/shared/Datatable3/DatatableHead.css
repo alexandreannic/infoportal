@@ -8,16 +8,36 @@
   display: grid;
   grid-template-columns: var(--cols);
   position: sticky;
+  height: 100%;
 }
 
 .dth {
   display: flex;
   align-items: center;
-  width: 120px;
-  border-right: 1px solid #ddd; /* replace with your palette divider color */
+  width: 100%;
+  min-width: 20px;
+  border-right: 1px solid var(--mui-palette-divider);
   text-align: left;
   padding: 0 0px 0 4px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.react-resizable {
+  position: relative;
+}
+
+.react-resizable-handle-se {
+  background: none;
+  width: 4px;
+  cursor: ew-resize;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+
+  &:hover {
+    background: var(--mui-palette-primary-main);
+  }
 }
