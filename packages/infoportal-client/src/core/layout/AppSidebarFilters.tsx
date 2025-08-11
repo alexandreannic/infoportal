@@ -48,8 +48,8 @@ const SearchInput = forwardRef(
     //       // m: 1,
     //       mb: 0.5,
     //       ...styleUtils(t).color.toolbar.default,
-    //       // borderBottom: '1px solid ' + t.palette.divider,
-    //       borderRadius: t.shape.borderRadius + 'px',
+    //       // borderBottom: '1px solid ' + t.vars.palette.divider,
+    //       borderRadius: t.vars.shape.borderRadius,
     //       // pl: 1,
     //       ...sx,
     //     }}

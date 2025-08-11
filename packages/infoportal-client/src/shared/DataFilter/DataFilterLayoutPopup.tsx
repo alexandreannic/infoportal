@@ -58,7 +58,7 @@ export const DataFilterLayoutPopup = ({
         anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}
         sx={{
-          boxShadow: t => t.shadows[4],
+          boxShadow: t => t.vars.shadows[4],
           overflow: 'hidden',
           // border: 'none',
           // position: 'absolute',

@@ -4,6 +4,7 @@ import {Cell, Pie, PieChart, PieChartProps, PieLabelRenderProps, ResponsiveConta
 import React, {ReactNode} from 'react'
 import {toPercent} from 'infoportal-common'
 import {Obj} from '@axanc/ts-utils'
+import {alphaVar} from '@/core/theme.js'
 
 const RADIAN = Math.PI / 180
 const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index}: any) => {
@@ -95,12 +96,12 @@ const ChartPieSetup = <T extends Record<string, number>>({
             outerRadius={outerRadius}
             innerRadius={innerRadius}
             dataKey="value"
-            fill={theme.palette.primary.main}
+            fill={theme.vars.palette.primary.main}
             label={hideLabel ? false : renderCustomizedLabel}
             {...props}
             // label={renderCustomizedLabel(data)}
           >
-            {colors && Object.keys(colors).map(k => <Cell key={k} fill={colors[k] ?? theme.palette.primary.main} />)}
+            {colors && Object.keys(colors).map(k => <Cell key={k} fill={colors[k] ?? theme.vars.palette.primary.main} />)}
           </Pie>
         </PieChart>
       </ResponsiveContainer>
@@ -125,8 +126,8 @@ export const ChartPie = ({percent = 0, size = 55, color, sx}: {percent?: number;
         rest: 1 - percent,
       }}
       colors={{
-        value: color ?? theme.palette.primary.main,
-        rest: alpha(color ?? theme.palette.primary.main, 0.16),
+        value: color ?? theme.vars.palette.primary.main,
+        rest: alphaVar(color ?? theme.vars.palette.primary.main, 0.16),
       }}
       m={{
         value: 'ukrainian',

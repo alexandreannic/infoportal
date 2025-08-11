@@ -9,19 +9,19 @@ import {makeStyles} from 'tss-react/mui'
 const useStyles = makeStyles<{dense?: boolean}>()((t, {dense}) => ({
   optionSelectAll: {
     display: 'block',
-    borderBottom: `1px solid ${t.palette.divider}`,
+    borderBottom: `1px solid ${t.vars.palette.divider}`,
     height: dense ? 32 : undefined,
   },
   option: {
     whiteSpace: 'nowrap',
-    paddingRight: t.spacing(1),
-    paddingLeft: t.spacing(1),
+    paddingRight: t.vars.spacing,
+    paddingLeft: t.vars.spacing,
     marginRight: 0,
     fontSize: dense ? '.825em' : undefined,
     transition: t.transitions.create('all'),
     height: dense ? 28 : undefined,
     '&:hover': {
-      background: t.palette.action.hover,
+      background: t.vars.palette.action.hover,
     },
   },
 }))

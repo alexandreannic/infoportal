@@ -9,10 +9,10 @@ const useStyles = makeStyles<{url: string; size: number; tooltipSize?: number}>(
     borderRadius: '6px',
   },
   root: {
-    backgroundColor: t.palette.divider,
+    backgroundColor: t.vars.palette.divider,
     '&:hover': {
       transform: 'scale(1.2)',
-      boxShadow: t.shadows[4],
+      boxShadow: t.vars.shadows[4],
     },
     backgroundSize: 'cover',
     verticalAlign: 'middle',

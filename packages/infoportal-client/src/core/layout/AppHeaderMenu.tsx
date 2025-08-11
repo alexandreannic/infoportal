@@ -26,7 +26,7 @@ const Row = ({
         mb: 1.5,
       }}
     >
-      <Icon sx={{mr: 1, color: t => t.palette.text.secondary, ...sxIcon}}>{icon}</Icon>
+      <Icon sx={{mr: 1, color: t => t.vars.palette.text.secondary, ...sxIcon}}>{icon}</Icon>
       <Txt block color="hint" sx={sxText}>
         {children}
       </Txt>

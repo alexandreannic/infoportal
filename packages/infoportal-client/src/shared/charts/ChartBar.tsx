@@ -8,6 +8,7 @@ import {Obj} from '@axanc/ts-utils'
 import {LightTooltip, TooltipRow} from '@/shared/LightTooltip'
 import {toPercent} from 'infoportal-common'
 import {ChartDataVal} from '@/shared/charts/chartHelper'
+import {alphaVar} from '@/core/theme.js'
 
 export interface BarChartData extends ChartDataVal {
   color?: string
@@ -37,7 +38,7 @@ export const ChartBar = <K extends string>(props: Props<K>) => {
       sx={{
         textAlign: 'center',
         mt: 2,
-        color: t => t.palette.text.disabled,
+        color: t => t.vars.palette.text.disabled,
       }}
     >
       <Icon sx={{fontSize: '3em !important'}}>block</Icon>
@@ -123,10 +124,10 @@ export const ChartBarContent = <K extends string>({
                       : {
                           mb: i === values.length - 1 ? 0 : 1,
                           borderBottom:
-                            i === values.length - 1 && !showLastBorder ? 'none' : t => `1px solid ${t.palette.divider}`,
+                            i === values.length - 1 && !showLastBorder ? 'none' : t => `1px solid ${t.vars.palette.divider}`,
                           transition: t => t.transitions.create('background'),
                           '&:hover': {
-                            background: t => alpha(item.color ?? t.palette.primary.main, 0.1),
+                            background: t => alphaVar(item.color ?? t.vars.palette.primary.main, 0.1),
                           },
                         }),
                   }}
@@ -165,7 +166,7 @@ export const ChartBarContent = <K extends string>({
                           sx={{
                             flex: 1,
                             minWidth: 52,
-                            color: t => t.palette.primary.main,
+                            color: t => t.vars.palette.primary.main,
                             fontWeight: t => t.typography.fontWeightBold,
                           }}
                         >
@@ -181,7 +182,7 @@ export const ChartBarContent = <K extends string>({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'flex-end',
-                      borderBottom: t => `${barHeight}px solid ${t.palette.primary.main}`,
+                      borderBottom: t => `${barHeight}px solid ${t.vars.palette.primary.main}`,
                     }}
                     style={{
                       width: appeared ? `calc(${percentOfMax * 0.9}%)` : 0,

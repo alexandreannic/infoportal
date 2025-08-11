@@ -42,20 +42,21 @@ export const SidebarSubSection = ({
         my: 0.5,
         py: margin,
         transition: t.transitions.create('all'),
-        borderRadius: t.shape.borderRadius + 'px',
+        borderRadius: t.vars.shape.borderRadius,
         background: styleUtils(t).color.toolbar.default,
-        color: t.palette.text.secondary,
+        color: t.vars.palette.text.secondary,
         overflow: 'hidden',
         ...(hoverable && {
           cursor: 'pointer',
           '&:hover': {
-            background: t.palette.action.focus,
-            borderRadius: parseInt('' + t.shape.borderRadius) * 1.5 + 'px',
+            background: t.vars.palette.action.focus,
+            borderRadius: `calc(${t.vars.shape.borderRadius} * 1.5)`,
+
           },
         }),
         ...(active && {
-          color: t.palette.primary.main,
-          background: t.palette.action.focus,
+          color: t.vars.palette.primary.main,
+          background: t.vars.palette.action.focus,
         }),
         ...sx,
       }}

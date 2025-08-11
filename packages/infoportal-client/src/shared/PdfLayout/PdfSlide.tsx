@@ -20,7 +20,7 @@ export const PdfSlide = ({
     <Box
       {...props}
       sx={{
-        background: t => t.palette.background.default,
+        background: t => t.vars.palette.background.default,
         p: 0,
         // overflow: 'hidden',
         width,
@@ -31,7 +31,7 @@ export const PdfSlide = ({
           width,
           mb: 16,
           borderRadius: '6px',
-          boxShadow: t => t.shadows[1],
+          boxShadow: t => t.vars.shadows[1],
         },
         // pageBreakAfter: 'always',
         ...props.sx,
@@ -63,7 +63,7 @@ export const SlideTxt = ({children, sx, textAlign = 'justify', ...props}: TxtPro
       size="big"
       textAlign={textAlign}
       sx={{
-        // borderLeft: t => `2px solid ${t.palette.divider}`,
+        // borderLeft: t => `2px solid ${t.vars.palette.divider}`,
         // pl: 1,
         lineHeight: 1.5,
         ...sx,
@@ -134,7 +134,7 @@ export const SlideHeader = ({
       sx={{
         px: 2,
         py: 1,
-        borderBottom: t => `1px solid ${t.palette.divider}`,
+        borderBottom: t => `1px solid ${t.vars.palette.divider}`,
         mb: 0,
         display: 'flex',
         alignItems: 'center',
@@ -233,7 +233,7 @@ export const SlideWidget = ({
       BodyProps={{
         sx: {
           px: 0.25,
-          pb: t => t.spacing(1) + ' !important',
+          pb: t => t.vars.spacing + ' !important',
         },
       }}
       sx={{

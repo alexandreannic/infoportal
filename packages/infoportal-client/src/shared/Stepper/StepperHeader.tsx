@@ -1,7 +1,7 @@
 import React from 'react'
 import {alpha, Box, BoxProps, SxProps, Theme} from '@mui/material'
 import {useWindowWidth} from '@/core/useWindowWidth'
-import {makeSx, styleUtils} from '@/core/theme'
+import {alphaVar, makeSx, styleUtils} from '@/core/theme'
 import {fnSwitch} from '@axanc/ts-utils'
 
 interface StepperHeaderProps extends BoxProps {
@@ -61,10 +61,10 @@ export const StepperHeader = ({
                     right: `calc(50% + ${stepSize / 2 + stepMargin}px)`,
                     ...(state === 'not_done'
                       ? {
-                          borderTop: (t: Theme) => '2px solid ' + t.palette.divider,
+                          borderTop: (t: Theme) => '2px solid ' + t.vars.palette.divider,
                         }
                       : {
-                          borderTop: (t: Theme) => '2px solid ' + t.palette.success.light,
+                          borderTop: (t: Theme) => '2px solid ' + t.vars.palette.success.light,
                         }),
                   }}
                 />
@@ -88,17 +88,17 @@ export const StepperHeader = ({
                     state,
                     makeSx({
                       done: {
-                        background: t => t.palette.success.light,
-                        color: t => t.palette.success.contrastText,
+                        background: t => t.vars.palette.success.light,
+                        color: t => t.vars.palette.success.contrastText,
                       },
                       current: {
-                        boxShadow: t => `0px 0px 0px ${stepSize > 30 ? 4 : 2}px ${alpha(t.palette.primary.main, 0.3)}`,
-                        color: t => t.palette.primary.contrastText,
+                        boxShadow: t => `0px 0px 0px ${stepSize > 30 ? 4 : 2}px ${alphaVar(t.vars.palette.primary.main, 0.3)}`,
+                        color: t => t.vars.palette.primary.contrastText,
                         bgcolor: 'primary.main',
                       },
                       not_done: {
-                        border: t => `2px solid ${t.palette.divider}`,
-                        color: t => t.palette.text.disabled,
+                        border: t => `2px solid ${t.vars.palette.divider}`,
+                        color: t => t.vars.palette.text.disabled,
                       },
                     }),
                   ),
@@ -118,7 +118,7 @@ export const StepperHeader = ({
                           fontWeight: t => t.typography.fontWeightBold,
                         },
                         not_done: {
-                          color: t => t.palette.text.disabled,
+                          color: t => t.vars.palette.text.disabled,
                         },
                       }),
                       () => ({}),

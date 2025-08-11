@@ -27,8 +27,8 @@ const useStyles = makeStyles()(t => ({
     '&:hover:after': {
       top: 0,
       bottom: 0,
-      background: t.palette.primary.main,
-      // boxShadow: `0 0px 3px 1px ${t.palette.primary.main}`,
+      background: t.vars.palette.primary.main,
+      // boxShadow: `0 0px 3px 1px ${t.vars.palette.primary.main}`,
     },
   },
 }))

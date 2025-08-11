@@ -67,8 +67,8 @@ const AppWithConfig = () => {
     <Provide
       providers={[
         _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns} />,
-        _ => <ToastProvider children={_} />,
         _ => <ThemeProvider theme={defaultTheme} children={_} />,
+        _ => <ToastProvider children={_} />,
         _ => <CssBaseline children={_} />,
         _ => <I18nProvider children={_} />,
         _ => <MsalProvider children={_} instance={msal} />,
@@ -98,7 +98,7 @@ const AppWithBaseContext = () => {
       <CenteredContent>
         <Box
           sx={{
-            border: t => `1px solid ${t.palette.divider}`,
+            border: t => `1px solid ${t.vars.palette.divider}`,
             padding: 4,
             borderRadius: '8px',
             display: 'flex',
@@ -113,7 +113,7 @@ const AppWithBaseContext = () => {
           <Txt sx={{mb: 4}} size="big" color="hint" block>
             {m.appInMaintenance}
           </Txt>
-          <Icon sx={{fontSize: '90px !important', color: t => t.palette.text.disabled}}>engineering</Icon>
+          <Icon sx={{fontSize: '90px !important', color: t => t.vars.palette.text.disabled}}>engineering</Icon>
         </Box>
       </CenteredContent>
     )

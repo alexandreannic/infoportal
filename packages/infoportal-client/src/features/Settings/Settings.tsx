@@ -37,7 +37,7 @@ function Settings() {
         scrollButtons="auto"
         value={match.fullPath}
         sx={{
-          borderBottom: t => `1px solid ${t.palette.divider}`,
+          borderBottom: t => `1px solid ${t.vars.palette.divider}`,
         }}
       >
         {permission.user_canRead && (

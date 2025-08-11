@@ -49,10 +49,10 @@ export const DiffView = ({oldStr = '', newStr, sx, hasChanges, ...props}: Props)
   return (
     <Box
       sx={{
-        borderRadius: t.shape.borderRadius + 'px',
+        borderRadius: t.vars.shape.borderRadius,
         overflow: 'hidden',
         border: '1px solid',
-        borderColor: t.palette.divider,
+        borderColor: t.vars.palette.divider,
         '& .d2h-file-wrapper': {
           border: 'none',
           margin: 0,
@@ -66,7 +66,7 @@ export const DiffView = ({oldStr = '', newStr, sx, hasChanges, ...props}: Props)
       }}
       {...props}
     >
-      <Txt bold size="big" block sx={{pl: 2, py: 0.5, borderBottom: '1px solid', borderColor: t.palette.divider}}>
+      <Txt bold size="big" block sx={{pl: 2, py: 0.5, borderBottom: '1px solid', borderColor: t.vars.palette.divider}}>
         {m.differences}
       </Txt>
       <Box dangerouslySetInnerHTML={{__html}} />

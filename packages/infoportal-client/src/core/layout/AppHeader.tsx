@@ -2,7 +2,7 @@ import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
-import {styleUtils} from '@/core/theme'
+import {alphaVar, styleUtils} from '@/core/theme'
 import {Txt} from '@/shared'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
@@ -49,9 +49,9 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
           // top: 0,
           // right: 0,
           // left: 0,
-          // boxShadow: t => t.shadows[3],
-          // background: t => t.palette.background.paper,
-          // borderBottom: t => '1px solid ' + t.palette.divider,
+          // boxShadow: t => t.vars.shadows[3],
+          // background: t => t.vars.palette.background.paper,
+          // borderBottom: t => '1px solid ' + t.vars.palette.divider,
           ...sx,
         }}
         id={id}
@@ -69,11 +69,11 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
               size="small"
               sx={{
                 mr: 1,
-                border: t => `2px solid ${t.palette.primary.main}`,
-                background: t => (sidebarOpen ? 'none' : alpha(t.palette.primary.main, 0.1)),
-                color: t => t.palette.primary.main,
+                border: t => `2px solid ${t.vars.palette.primary.main}`,
+                background: t => (sidebarOpen ? 'none' : alphaVar(t.vars.palette.primary.main, 0.1)),
+                color: t => t.vars.palette.primary.main,
                 '&:hover': {
-                  background: t => alpha(t.palette.primary.main, 0.1),
+                  background: t => alphaVar(t.vars.palette.primary.main, 0.1),
                 },
               }}
               onClick={() => setSidebarOpen(_ => !_)}

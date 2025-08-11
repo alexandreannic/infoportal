@@ -61,8 +61,8 @@ export const databaseKoboDisplayBuilder = ({
                   background: colorRepeatedQuestionHeader(t),
                 }
                 if (i === 0) {
-                  _.styleHead.borderLeft = '3px solid ' + t.palette.divider
-                  _.style = () => ({borderLeft: '3px solid ' + t.palette.divider})
+                  _.styleHead.borderLeft = '3px solid ' + t.vars.palette.divider
+                  _.style = () => ({borderLeft: '3px solid ' + t.vars.palette.divider})
                 }
                 return {..._}
               })

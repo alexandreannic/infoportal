@@ -1,6 +1,5 @@
 import {green, orange, purple, red} from '@mui/material/colors'
-import {alpha, createTheme, darken, SxProps, Theme} from '@mui/material'
-import {lighten} from '@mui/system/colorManipulator'
+import {createTheme, darken, SxProps, Theme} from '@mui/material'
 
 export const combineSx = (...sxs: (SxProps<Theme> | undefined | false)[]): SxProps<Theme> => {
   return sxs.reduce((res, sx) => (sx !== undefined && sx !== false ? {...res, ...sx} : res), {} as any)
@@ -9,21 +8,27 @@ export const combineSx = (...sxs: (SxProps<Theme> | undefined | false)[]): SxPro
 export const makeSx = <T>(_: {[key in keyof T]: SxProps<Theme>}) => _
 export const makeStyle = (_: SxProps<Theme>) => _
 
+export const alphaVar = (color: string, coef: number) => `rgb(from ${color} r g b / ${coef})`
+export const lightenVar = (color: string, coef: number) =>
+  `color-mix(in srgb, ${color} ${(1 - coef) * 100}%, white ${coef * 100}%)`
+export const darkenVar = (color: string, coef: number) =>
+  `color-mix(in srgb, ${color} ${(1 - coef) * 100}%, black ${coef * 100}%)`
+
 export const sxUtils = makeSx({
   fontBig: {
-    fontSize: t => t.typography.fontSize * 1.15,
+    fontSize: t => `calc(${t.typography.fontSize} * 1.15)`,
   },
   fontNormal: {
-    fontSize: t => t.typography.fontSize,
+    fontSize: t => `calc(${t.typography.fontSize})`,
   },
   fontSmall: {
-    fontSize: t => t.typography.fontSize * 0.85,
+    fontSize: t => `calc(${t.typography.fontSize} * 0.85)`,
   },
   fontTitle: {
-    fontSize: t => t.typography.fontSize * 1.3,
+    fontSize: t => `calc(${t.typography.fontSize} * 1.3)`,
   },
   fontBigTitle: {
-    fontSize: t => t.typography.fontSize * 1.6,
+    fontSize: t => `calc(${t.typography.fontSize} * 1.6)`,
   },
   tdActions: {
     textAlign: 'right',
@@ -57,7 +62,7 @@ const fadeShadow = ({
   y?: number
   blur?: number
   spread?: number
-}): string => `0px ${y}px ${blur}px ${spread}px ${alpha(color, opacity)}`
+}): string => `0px ${y}px ${blur}px ${spread}px ${alphaVar(color, opacity)}`
 
 const lightShadows = Array.from({length: 25}, (_, i) =>
   i === 0
@@ -75,7 +80,7 @@ const createDarkShadows = (primaryColor: string): string[] => {
     i === 0
       ? 'none'
       : fadeShadow({
-          color: alpha(primaryColor, 1), // full color
+          color: alphaVar(primaryColor, 1), // full color
           opacity: 0.12 + i * 0.004, // slightly stronger opacity for dark
           y: 2 + i * 0.5,
           blur: 5 + i * 0.5,
@@ -87,46 +92,47 @@ export const styleUtils = (t: Theme) => ({
   backdropFilter: 'blur(10px)',
   gridSpacing: 3 as any,
   fontSize: {
-    big: t.typography.fontSize * 1.15,
-    normal: t.typography.fontSize,
-    small: t.typography.fontSize * 0.85,
-    title: t.typography.fontSize * 1.3,
-    bigTitle: t.typography.fontSize * 1.6,
-  },
-  spacing: (...args: number[]) => {
-    const [top = 0, right = 0, bottom = 0, left = 0] = args ?? [1, 1, 2, 1]
-    return `${t.spacing(top)} ${t.spacing(right)} ${t.spacing(bottom)} ${t.spacing(left)}`
+    big: `calc(${t.typography.fontSize} * 1.15)`,
+    normal: `calc(${t.typography.fontSize})`,
+    small: `calc(${t.typography.fontSize} * 0.85)`,
+    title: `calc(${t.typography.fontSize} * 1.3)`,
+    bigTitle: `calc(${t.typography.fontSize} * 1.6)`,
   },
   color: {
     backgroundActive: {
       background:
         t.palette.mode === 'dark'
-          ? darken(alpha(t.palette.primary.dark, 0.4), 0.7)
-          : lighten(alpha(t.palette.primary.light, 0.9), 0.6),
+          ? `color-mix(in srgb, var(--mui-palette-primary-dark) 40%, white 70%)`
+          : `color-mix(in srgb, var(--mui-palette-primary-light) 90%, white 60%)`,
+      // ? darken(alpha(t.vars.palette.primary.dark, 0.4), 0.7)
+      // : lighten(alpha(t.vars.palette.primary.light, 0.9), 0.6),
       backdropFilter: 'blur(6px)',
     },
     toolbar: {
       default: {
-        background: t.palette.mode === 'dark' ? darken(t.palette.background.paper, 0.16) : t.palette.background.default, //'rgb(237, 242, 250)',
+        background: t.vars.palette.background.default, //'rgb(237, 242, 250)',
+        ...t.applyStyles('dark', {
+          background: darkenVar(t.vars.palette.background.paper, 0.16),
+        }),
       }, //'#e9eef6'
       active: {
-        background: alpha(t.palette.primary.main, 0.2),
+        background: alphaVar(t.vars.palette.primary.main, 0.2),
       },
       hover: {
-        background: alpha(t.palette.primary.main, 0.1),
+        background: alphaVar(t.vars.palette.primary.main, 0.1),
       },
     },
     input: {
       active: {},
       hover: {
         background: 'none',
-        borderColor: t.palette.primary.main,
+        borderColor: t.vars.palette.primary.main,
       },
       default: {
         minHeight: 37,
-        borderRadius: parseInt('' + t.shape.borderRadius) / 2 + 'px',
+        borderRadius: `calc(${t.vars.shape.borderRadius} / 2)`,
         border: '1px solid',
-        borderColor: t.palette.divider,
+        borderColor: t.vars.palette.divider,
         background: 'none',
       },
     },
@@ -171,15 +177,15 @@ export const muiTheme = ({
   // }
   const colorSecondary = {
     main: '#1a73e8',
-    light: lighten('#1a73e8', 0.3),
-    dark: darken('#1a73e8', 0.3),
+    light: lightenVar('#1a73e8', 0.3),
+    dark: darkenVar('#1a73e8', 0.3),
   }
 
   return createTheme({
     defaultColorScheme: dark ? 'dark' : 'light',
-    // cssVariables: {
-    //   colorSchemeSelector: 'class',
-    // },
+    cssVariables: {
+      colorSchemeSelector: 'class',
+    },
     shadows: lightShadows as any,
     spacing,
     colorSchemes: {
@@ -191,7 +197,7 @@ export const muiTheme = ({
           secondary: colorSecondary,
           error: red,
           action: {
-            focus: alpha(mainColor, 0.1),
+            focus: alphaVar(mainColor, 0.1),
             focusOpacity: 0.1,
           },
           background: {
@@ -209,7 +215,7 @@ export const muiTheme = ({
           secondary: colorSecondary,
           error: red,
           action: {
-            focus: alpha(mainColor, 0.1),
+            focus: alphaVar(mainColor, 0.1),
             focusOpacity: 0.1,
           },
           background: {
@@ -259,7 +265,7 @@ export const muiTheme = ({
             src: 'url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format("woff2")',
           },
           // '.Mui-error': {
-          //   color: theme.palette.error.main + ' !important',
+          //   color: theme.vars.palette.error.main + ' !important',
           // },
           '.recharts-surface': {
             overflow: 'visible',
@@ -301,8 +307,13 @@ export const muiTheme = ({
             fontSize: '1rem',
             lineHeight: '1.5',
             boxSizing: 'border-box',
-            background: t.palette.mode === 'dark' ? t.palette.background.default : 'url(/bg2.png)',
+            background: 'url(/bg2.png)',
             backgroundSize: 'cover',
+            ...t.applyStyles('dark', {
+              background: 'var(--mui-palette-background-default)',
+            }),
+            // Dark mode override
+            // '[data-mui-color-scheme="dark"] &': {},
             // background: 'linear-gradient(to bottom, #c8e6f9, #f2f4fb)',
             // '&:before': {
             //   content: t.palette.mode == 'light' ? '" "' : undefined,
@@ -322,7 +333,7 @@ export const muiTheme = ({
             textAlign: 'justify',
           },
           '.link': {
-            color: t.palette.info.main,
+            color: t.vars.palette.info.main,
             textDecoration: 'underline',
           },
           a: {
@@ -334,7 +345,7 @@ export const muiTheme = ({
           },
           '.ip-border': {
             overflow: 'hidden',
-            border: `1px solid ${t.palette.divider}`,
+            border: `1px solid ${t.vars.palette.divider}`,
             borderRadius: defaultRadius,
           },
           ...tableTheme(t),
@@ -354,7 +365,7 @@ export const muiTheme = ({
             // borderRadius: 20,
           },
           outlinedPrimary: ({theme}) => ({
-            borderColor: theme.palette.divider,
+            borderColor: theme.vars.palette.divider,
           }),
         },
       },
@@ -365,7 +376,7 @@ export const muiTheme = ({
         styleOverrides: {
           root: {
             border: 'none',
-            // border: `1px solid ${theme.palette.divider}`,
+            // border: `1px solid ${theme.vars.palette.divider}`,
             //       borderRadius: defaultRadius,
           },
         },
@@ -377,12 +388,12 @@ export const muiTheme = ({
             marginLeft: 2,
             bottom: 2,
             height: 'auto',
-            background: alpha(theme.palette.primary.main, 0.18),
-            borderRadius: parseInt(theme.shape.borderRadius + '') - 2 + 'px',
+            background: alphaVar(theme.vars.palette.primary.main, 0.18),
+            borderRadius: `calc(${theme.vars.shape.borderRadius} - 2)`,
           }),
           root: ({theme}) => ({
-            background: theme.palette.background.paper,
-            borderRadius: theme.shape.borderRadius + 'px',
+            background: theme.vars.palette.background.paper,
+            borderRadius: theme.vars.shape.borderRadius,
             // boxShadow: theme.shadows[1],
             minHeight: 40,
             borderBottom: 'none !important',
@@ -400,7 +411,7 @@ export const muiTheme = ({
         },
         styleOverrides: {
           root: ({theme}) => ({
-            color: theme.palette.text.primary,
+            color: theme.vars.palette.text.primary,
             textTransform: 'none',
             fontWeight: 600,
             minHeight: 40,
@@ -412,7 +423,7 @@ export const muiTheme = ({
         styleOverrides: {
           root: ({theme}) => ({
             backdropFilter: styleUtils(theme).backdropFilter,
-            background: theme.palette.background.paper,
+            background: theme.vars.palette.background.paper,
           }),
         },
       },
@@ -432,7 +443,7 @@ export const muiTheme = ({
       MuiChip: {
         styleOverrides: {
           outlined: ({theme}) => ({
-            borderColor: theme.palette.divider,
+            borderColor: theme.vars.palette.divider,
           }),
         },
       },
@@ -508,7 +519,7 @@ export const muiTheme = ({
       MuiIconButton: {
         styleOverrides: {
           root: ({theme}) => ({
-            color: theme.palette.text.primary,
+            color: theme.vars.palette.text.primary,
             spacing: 6,
           }),
         },
@@ -519,7 +530,7 @@ export const muiTheme = ({
           notchedOutline: ({theme}) => ({
             ...styleUtils(theme).color.input.default,
           }),
-          //   theme.palette.mode === 'light'
+          //   theme.vars.palette.mode === 'light'
           //     ? {
           //         '&:hover fieldset': {
           //           borderColor: alpha(colorPrimary.main, 0.1) + ` !important`,
@@ -527,7 +538,7 @@ export const muiTheme = ({
           //       }
           //     : {},
           // notchedOutline: ({theme}) =>
-          //   theme.palette.mode === 'light'
+          //   theme.vars.palette.mode === 'light'
           //     ? {
           //         transition: 'border-color 140ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
           //         // background: 'rgba(255, 255, 255, .5)',
@@ -556,7 +567,7 @@ const tableTheme = (t: Theme) => ({
   '.table': {
     minWidth: '100%',
     width: 'max-content',
-    // borderTop: '1px solid ' + t.palette.divider,
+    // borderTop: '1px solid ' + t.vars.palette.divider,
     // tableLayout: 'fixed',
     borderCollapse: 'collapse',
     borderSpacing: 0,
@@ -569,13 +580,13 @@ const tableTheme = (t: Theme) => ({
     padding: '6px',
   },
   '.td-id': {
-    color: t.palette.info.main,
+    color: t.vars.palette.info.main,
     fontWeight: 'bold',
     // fontWeight: t.typography.fontWeightBold,
   },
   '.table td:has(.Mui-focused)': {
-    border: `1px double ${t.palette.primary.main} !important`,
-    boxShadow: `inset 0 0 0 1px ${t.palette.primary.main}`,
+    border: `1px double ${t.vars.palette.primary.main} !important`,
+    boxShadow: `inset 0 0 0 1px ${t.vars.palette.primary.main}`,
   },
   '.table .MuiInputBase-root, .table .MuiFormControl-root': {
     margin: 0,
@@ -634,7 +645,7 @@ const tableTheme = (t: Theme) => ({
     position: 'sticky',
     zIndex: 10,
     left: 0,
-    // background: t.palette.background.paper,
+    // background: t.vars.palette.background.paper,
     boxShadow:
       'inset -2px 0 1px -1px rgba(0,0,0,0.2), -1px 0px 1px 0px rgba(0,0,0,0.14), -1px 0px 3px 0px rgba(0,0,0,0.12)',
   },
@@ -647,14 +658,14 @@ const tableTheme = (t: Theme) => ({
     right: 0,
   },
   '.table tbody tr:not(:last-of-type) td': {
-    borderBottom: `1px solid ${t.palette.divider}`,
+    borderBottom: `1px solid ${t.vars.palette.divider}`,
   },
   '.table tbody td': {
-    background: t.palette.background.paper,
+    background: t.vars.palette.background.paper,
     maxWidth: 102,
   },
   '.table thead': {
-    // borderTop: `1px solid ${t.palette.divider}`,
+    // borderTop: `1px solid ${t.vars.palette.divider}`,
   },
   '.table thead .td, .table thead .th': {
     // backdropFilter: styleUtils(t).backdropFilter,
@@ -690,10 +701,10 @@ const tableTheme = (t: Theme) => ({
     paddingRight: 4,
   },
   // '.table.borderY td:not(:last-of-type), .table.borderY th:not(:last-of-type)': {
-  //   borderRight: `1px solid ${t.palette.divider}`,
+  //   borderRight: `1px solid ${t.vars.palette.divider}`,
   // },
   '.table.borderY thead td:not(:last-of-type), .table.borderY thead th:not(:last-of-type)': {
-    borderRight: `1px solid ${t.palette.divider}`,
+    borderRight: `1px solid ${t.vars.palette.divider}`,
   },
   '.table th': {
     height: 34,
@@ -701,13 +712,16 @@ const tableTheme = (t: Theme) => ({
     minWidth: 0,
     width: 0,
     top: 0,
-    paddingTop: t.spacing(0.25),
+    paddingTop: `calc(${t.spacing} * 0.25)`,
     paddingBottom: 0,
     position: 'sticky',
-    color: t.palette.text.secondary,
+    color: t.vars.palette.text.secondary,
   },
   '.table tbody tr:hover td': {
-    background: t.palette.mode === 'dark' ? '#070707' : '#fff',
+    background: '#fff',
+    ...t.applyStyles('dark', {
+      background: '#070707',
+    }),
   },
   //
   // 'table.sheet': {
@@ -719,7 +733,7 @@ const tableTheme = (t: Theme) => ({
   // },
   // '.sheet td': {
   //   padding: '2px',
-  //   borderBottom: `1px solid ${theme.palette.divider}`
+  //   borderBottom: `1px solid ${theme.vars.palette.divider}`
   //   // background: 'red',
   // },
 })
@@ -735,14 +749,14 @@ export const themeLightScrollbar: SxProps<Theme> = {
     height: '10px',
   },
   '&::-webkit-scrollbar-track': {
-    borderTop: t => '1px solid ' + t.palette.divider,
+    borderTop: t => '1px solid ' + t.vars.palette.divider,
     // borderRadius: 40,
   },
   '&::-webkit-scrollbar-thumb': {
     border: '3px solid transparent',
     height: '4px',
     borderRadius: 40,
-    background: t => t.palette.text.disabled,
+    background: t => t.vars.palette.text.disabled,
     backgroundClip: 'content-box',
     // backgroundColor: 'darkgrey',
   },

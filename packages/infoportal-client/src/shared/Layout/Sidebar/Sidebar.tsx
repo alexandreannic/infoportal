@@ -31,7 +31,7 @@ export const Sidebar = ({
       sx={{
         display: 'flex',
         maxHeight: '100%',
-        width: sidebarOpen ? `calc(${sidebarWidth}px + ${t.spacing(1)})` : '0px',
+        width: sidebarOpen ? `calc(${sidebarWidth}px + ${t.vars.spacing})` : '0px',
         transition: t.transitions.create('all') + ' !important',
       }}
       ModalProps={{
@@ -46,14 +46,14 @@ export const Sidebar = ({
       PaperProps={{
         id,
         sx: {
-          boxShadow: t.shadows[5],
+          boxShadow: t.vars.shadows[5],
           width: sidebarOpen ? sidebarWidth : '0px',
           transition: t.transitions.create('all') + ' !important',
           m: 1,
           mr: 0,
           position: 'static',
           background: 'transparent',
-          borderRadius: t.shape.borderRadius + 'px',
+          borderRadius: t.vars.shape.borderRadius,
           border: 'none',
           bottom: 0,
           height: 'auto',
@@ -71,8 +71,8 @@ export const Sidebar = ({
       <Slide direction="right" in={true}>
         <Box
           sx={{
-            borderRadius: t.shape.borderRadius + 'px',
-            background: isTemporary ? t => t.palette.background.default : t.palette.background.paper,
+            borderRadius: t.vars.shape.borderRadius,
+            background: isTemporary ? t => t.vars.palette.background.default : t.vars.palette.background.paper,
             height: '100%',
             overflowY: 'auto',
             display: 'flex',

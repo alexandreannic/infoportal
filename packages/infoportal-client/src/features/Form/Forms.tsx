@@ -73,7 +73,7 @@ function Forms() {
                       </Icon>
                     ),
                     deployed: (
-                      <Icon fontSize="small" sx={{color: t.palette.success.light}} color="success">
+                      <Icon fontSize="small" sx={{color: t.vars.palette.success.light}} color="success">
                         {appConfig.icons.deploymentStatus.deployed}
                       </Icon>
                     ),

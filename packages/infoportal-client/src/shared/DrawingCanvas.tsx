@@ -75,7 +75,7 @@ export const DrawingCanvas = ({width, height, sx}: DrawingProps) => {
       }}
     >
       <canvas
-        style={{border: '1px solid ' + t.palette.divider, borderRadius: t.shape.borderRadius + 'px'}}
+        style={{border: '1px solid ' + t.vars.palette.divider, borderRadius: t.vars.shape.borderRadius}}
         ref={canvasRef}
         width={width}
         height={height}

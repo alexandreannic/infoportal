@@ -24,26 +24,26 @@ export const Panel = forwardRef(
         ref={ref}
         elevation={elevation}
         sx={{
-          // border: t => `1px solid ${t.palette.divider}`,
-          // boxShadow: t => t.shadows[1],
+          // border: t => `1px solid ${t.vars.palette.divider}`,
+          // boxShadow: t => t.vars.shadows[1],
           // boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
 
           position: 'relative',
-          background: t => t.palette.background.paper,
-          borderRadius: t => t.shape.borderRadius + 'px',
+          background: t => t.vars.palette.background.paper,
+          borderRadius: t => t.vars.shape.borderRadius,
           mb: 1,
           ...(hoverable && {
             cursor: 'pointer',
             transition: t => t.transitions.create('all'),
             '&:hover': {
               transform: 'scale(1.01)',
-              boxShadow: t => t.shadows[4],
+              boxShadow: t => t.vars.shadows[4],
             },
           }),
           ...(stretch && {
             display: 'flex',
             flexDirection: 'column',
-            height: t => `calc(100% - ${t.spacing(2)})`,
+            height: t => `calc(100% - ${`calc(${t.vars.spacing} * 2)`})`,
           }),
           ...(elevation &&
             elevation > 0 && {

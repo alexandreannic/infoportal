@@ -1,4 +1,4 @@
-import {createRootRoute, createRouter} from '@tanstack/react-router'
+import {createRootRoute, createRouter, ErrorRouteComponent} from '@tanstack/react-router'
 import {settingsRoute} from './features/Settings/Settings'
 import {settingsUsersRoute} from '@/features/Settings/SettingsUsers'
 import {settingsProxyRoute} from '@/features/Settings/SettingsProxy'
@@ -47,4 +47,12 @@ const tsRoutes = [
 ]
 
 const routeTree = rootRoute.addChildren(tsRoutes)
-export const tsRouter = createRouter({routeTree})
+export const tsRouter = createRouter({
+  routeTree,
+  defaultOnCatch: (e: any, e2: any) => {
+    throw e
+  },
+  defaultErrorComponent: (({error}: any) => {
+    throw error // re-throws the error and bypasses router catch logic
+  }) satisfies ErrorRouteComponent,
+})

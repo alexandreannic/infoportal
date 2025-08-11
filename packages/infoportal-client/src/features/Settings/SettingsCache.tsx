@@ -71,9 +71,9 @@ function SettingsCache() {
                           justifyContent: 'flex-between',
                           alignItems: 'center',
                           px: 1,
-                          borderTopLeftRadius: t.shape.borderRadius + 'px',
-                          borderTopRightRadius: t.shape.borderRadius + 'px',
-                          background: t.palette.background.default,
+                          borderTopLeftRadius: t.vars.shape.borderRadius,
+                          borderTopRightRadius: t.vars.shape.borderRadius,
+                          background: t.vars.palette.background.default,
                           mt: 1,
                         }}
                       >
@@ -93,9 +93,9 @@ function SettingsCache() {
                           overflow: 'hidden',
                           '& > ul': {
                             margin: '0 !important',
-                            padding: `0 ${t.spacing(1)} ${t.spacing(1)} ${t.spacing(1)} !important`,
-                            borderBottomLeftRadius: t.shape.borderRadius + 'px',
-                            borderBottomRightRadius: t.shape.borderRadius + 'px',
+                            padding: `0 ${t.vars.spacing} ${t.vars.spacing} ${t.vars.spacing} !important`,
+                            borderBottomLeftRadius: t.vars.shape.borderRadius,
+                            borderBottomRightRadius: t.vars.shape.borderRadius,
                           },
                         }}
                       >

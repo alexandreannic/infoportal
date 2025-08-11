@@ -90,7 +90,7 @@ export const DataFilterLayout = ({
           alignSelf: 'flex-start',
           display: 'flex',
           alignItems: 'center',
-          mt: 1.25,
+          // mt: 1.25,
         }}
       >
         {!hidePopup && (
@@ -102,7 +102,7 @@ export const DataFilterLayout = ({
             getFilteredOptions={getFilteredOptions}
           />
         )}
-        {onClear && <IpIconBtn children="clear" tooltip={m.clearFilter} onClick={() => onClear()} />}
+        {onClear && <IpIconBtn children="filter_list_off" tooltip={m.clearFilter} onClick={() => onClear()} />}
       </Box>
     </Box>
   )

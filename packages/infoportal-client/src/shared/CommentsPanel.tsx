@@ -31,7 +31,7 @@ export const CommentsPanel = memo(({data, height = 650, pageSize = 5}: CommentsP
             pr: 1,
             '&:not(:last-of-type)': {
               mb: 2,
-              borderBottom: t => `1px solid ${t.palette.divider}`,
+              borderBottom: t => `1px solid ${t.vars.palette.divider}`,
             },
           }}
         >

@@ -237,9 +237,9 @@ export const AccessFormInputGroup = ({
           <Datatable
             sx={{
               mt: 2,
-              border: t => `1px solid ${t.palette.divider}`,
+              border: t => `1px solid ${t.vars.palette.divider}`,
               overflow: 'hidden',
-              borderRadius: t => t.shape.borderRadius + 'px',
+              borderRadius: t => t.vars.shape.borderRadius,
             }}
             id="access"
             defaultLimit={5}

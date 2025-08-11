@@ -19,7 +19,7 @@ export const IpListItem = ({
   const t = useTheme()
   return (
     <Box sx={{display: 'flex', '&:not(:last-of-type)': {mb: 1.5}, ...sx}}>
-      <Icon sx={{mr: 1, mt: 0.25, color: t.palette.text.secondary}}>{icon}</Icon>
+      <Icon sx={{mr: 1, mt: 0.25, color: t.vars.palette.text.secondary}}>{icon}</Icon>
       <Box sx={{flex: 1}}>
         {title && <Txt block>{title}</Txt>}
         {desc && (

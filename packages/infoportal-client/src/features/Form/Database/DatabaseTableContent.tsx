@@ -37,7 +37,7 @@ export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
     <Alert
       color="info"
       icon={<Icon sx={{mr: -1}}>archive</Icon>}
-      sx={{pr: t.spacing(1), pl: t.spacing(0.5), pt: 0, pb: 0, ...sx}}
+      sx={{pr: t.vars.spacing, pl: `calc(${t.vars.spacing} * 0.5)`, pt: 0, pb: 0, ...sx}}
       {...props}
     >
       {m._koboDatabase.isArchived}
@@ -220,7 +220,7 @@ export const DatabaseTableContent = ({
             <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>
               {connectedUsers.length > 1 &&
                 connectedUsers.map(_ => (
-                  <AppAvatar size={36} email={_} overlap borderColor={t.palette.primary.main} key={_} />
+                  <AppAvatar size={36} email={_} overlap borderColor={t.vars.palette.primary.main} key={_} />
                 ))}
               {ctx.form.kobo ? (
                 <IpIconBtn

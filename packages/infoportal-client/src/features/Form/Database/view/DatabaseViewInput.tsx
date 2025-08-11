@@ -84,7 +84,7 @@ export const DatabaseViewInput = ({sx, view: ctx}: {view: UseDatabaseView; sx?: 
         icon="visibility"
         color="inherit"
         variant="input"
-        endIcon={<Icon sx={{color: t.palette.text.secondary}}>arrow_drop_down</Icon>}
+        endIcon={<Icon sx={{color: t.vars.palette.text.secondary}}>arrow_drop_down</Icon>}
         children={ctx.currentView?.name ?? '-'}
         sx={{
           // fontWeight: 400,

@@ -16,7 +16,7 @@ export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
     <ButtonBase
       {...props}
       sx={{
-        borderRadius: t.shape.borderRadius + 'px',
+        borderRadius: t.vars.shape.borderRadius,
         minHeight: 200,
         display: 'flex',
         width: '100%',
@@ -24,15 +24,15 @@ export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
         justifyContent: 'center',
         flexDirection: 'column',
         background: 'none',
-        border: `1px dashed ${t.palette.divider}`,
+        border: `1px dashed ${t.vars.palette.divider}`,
         // transition: t.transitions.create(''),
         // '&:hover': {
-        //   boxShadow: t.shadows[2],
+        //   boxShadow: t.vars.shadows[2],
         // },
         ...sx,
       }}
     >
-      <Icon sx={{mb: 1, fontSize: 60, color: t.palette.text.secondary}}>{appConfig.icons.workspace}</Icon>
+      <Icon sx={{mb: 1, fontSize: 60, color: t.vars.palette.text.secondary}}>{appConfig.icons.workspace}</Icon>
       <Box display="flex" alignItems="center" mt={1}>
         <Icon fontSize="medium">add</Icon>
         <Txt bold size="big">{m.createWorkspace}</Txt>
@@ -56,7 +56,7 @@ export const WorkspaceCard = ({workspace}: {workspace: Ip.Workspace}) => {
           flexDirection: 'column',
           transition: t.transitions.create(''),
           '&:hover': {
-            boxShadow: t.shadows[2],
+            boxShadow: t.vars.shadows[2],
           },
         }}
       >
@@ -93,7 +93,7 @@ export const WorkspaceCardInvitation = ({
       {...props}
       sx={{
         border: '2px solid',
-        borderColor: t.palette.primary.main,
+        borderColor: t.vars.palette.primary.main,
         // ...styleUtils(t).color.backgroundActive,
         display: 'flex',
         flexDirection: 'column',

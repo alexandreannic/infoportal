@@ -9,22 +9,22 @@ const css = makeSx({
     fontWeight: t => t.typography.fontWeightBold,
     display: 'inline-flex',
     alignItems: 'center',
-    background: t => t.palette.background.paper,
-    border: t => `1px solid ${t.palette.divider}`,
+    background: t => t.vars.palette.background.paper,
+    border: t => `1px solid ${t.vars.palette.divider}`,
     borderRadius: 20,
-    color: t => t.palette.text.primary,
+    color: t => t.vars.palette.text.primary,
     transition: t => t.transitions.create('all'),
     '&:active': {
-      boxShadow: t => t.shadows[3],
+      boxShadow: t => t.vars.shadows[3],
     },
     '&:hover': {
-      background: t => t.palette.action.hover,
+      background: t => t.vars.palette.action.hover,
     },
   },
   active: {
-    color: t => t.palette.primary.main,
-    background: t => t.palette.action.focus,
-    // borderColor: t => alpha(t.palette.primary.light, .8),
+    color: t => t.vars.palette.primary.main,
+    background: t => t.vars.palette.action.focus,
+    // borderColor: t => alpha(t.vars.palette.primary.light, .8),
   },
 })
 
@@ -71,7 +71,7 @@ export const DashboardFilterLabel = ({
         anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}
         sx={{
-          boxShadow: t => t.shadows[4],
+          boxShadow: t => t.vars.shadows[4],
           overflow: 'hidden',
           // border: 'none',
           // position: 'absolute',
