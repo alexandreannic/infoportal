@@ -55,8 +55,8 @@ export const CompressedImg = ({url, height, quality, sx, ...props}: BoxProps & P
       {...props}
       sx={{
         m: 0.5,
-        borderRadius: t.shape.borderRadius + 'px',
-        backgroundColor: t.palette.divider,
+        borderRadius: t.vars.shape.borderRadius,
+        backgroundColor: t.vars.palette.divider,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         height: 'auto',

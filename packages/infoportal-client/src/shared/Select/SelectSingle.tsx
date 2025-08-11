@@ -75,7 +75,7 @@ export const ipSelectItem = <T extends any>({
     value,
     children: (
       <Box sx={{display: 'flex', py: 0.5}}>
-        {icon && <Icon sx={{mr: 1, color: t => t.palette.text.secondary}}>{icon}</Icon>}
+        {icon && <Icon sx={{mr: 1, color: t => t.vars.palette.text.secondary}}>{icon}</Icon>}
         <Box>
           <Box>{title}</Box>
           <Txt color="hint" size="small" sx={{lineHeight: 1}}>

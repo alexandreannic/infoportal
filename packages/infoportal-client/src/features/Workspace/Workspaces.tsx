@@ -56,7 +56,7 @@ function Workspaces() {
                     variant="rectangular"
                     sx={theme => ({
                       height: '100%',
-                      borderRadius: theme.shape.borderRadius + 'px',
+                      borderRadius: theme.vars.shape.borderRadius,
                     })}
                   />
                 </Grid>

@@ -35,7 +35,7 @@ export const SelectKoboForm = ({
         <Datatable
           loading={queryKoboForms.isLoading || queryForms.importFromKobo.isPending}
           id="select-kobo-form"
-          sx={{overflow: 'hidden', border: `1px solid ${t.palette.divider}`, borderRadius: t.shape.borderRadius + 'px'}}
+          sx={{overflow: 'hidden', border: `1px solid ${t.vars.palette.divider}`, borderRadius: t.vars.shape.borderRadius}}
           header={null}
           data={queryKoboForms.data}
           columns={[

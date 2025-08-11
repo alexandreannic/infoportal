@@ -1,9 +1,8 @@
 import * as React from 'react'
 import {ReactNode} from 'react'
 import {Box, ButtonBase, ButtonBaseProps, Icon, styled} from '@mui/material'
-import {alpha} from '@mui/material/styles'
 import {fnSwitch} from '@axanc/ts-utils'
-import {makeSx} from '@/core/theme'
+import {alphaVar, makeSx} from '@/core/theme'
 
 const css = makeSx({
   iStart: {
@@ -26,19 +25,18 @@ const Root = styled(ButtonBase, {
     active?: boolean
   }
 >(({theme: t, isClickable, disabled, large, active, size}) => {
-  const my =
-    parseInt(t.spacing(1) as string) /
-    fnSwitch(
-      size!,
-      {
-        normal: 2,
-        small: 4,
-        tiny: 8,
-      },
-      () => 2,
-    )
+  const marginCoef = fnSwitch(
+    size!,
+    {
+      normal: 2,
+      small: 4,
+      tiny: 8,
+    },
+    () => 2,
+  )
+  const my = `calc(${t.vars.spacing} / ${marginCoef})`
   return {
-    width: `calc(100% - ${t.spacing(1)})`,
+    width: `calc(100% - ${t.vars.spacing})`,
     transition: t.transitions.create('all'),
     display: 'flex',
     alignItems: 'center',
@@ -57,26 +55,26 @@ const Root = styled(ButtonBase, {
     whiteSpace: 'nowrap',
     textAlign: 'left',
     textOverflow: 'ellipsis',
-    color: t.palette.text.primary,
-    paddingRight: t.spacing(1),
-    paddingLeft: t.spacing(1.5),
-    marginRight: t.spacing(0.5),
-    marginLeft: t.spacing(0.5),
+    color: t.vars.palette.text.primary,
+    paddingRight: t.vars.spacing,
+    paddingLeft: `calc(${t.vars.spacing} * 1.5)`,
+    marginRight: `calc(${t.vars.spacing} * 0.5)`,
+    marginLeft: `calc(${t.vars.spacing} * 0.5)`,
     marginTop: my,
     marginBottom: my,
-    borderRadius: parseInt('' + t.shape.borderRadius) - 2 + 'px',
+    borderRadius: `calc(${t.vars.shape.borderRadius} - 2px)`,
     ...(disabled && {
       opacity: 0.5,
     }),
     '&:hover': {
-      background: isClickable ? alpha(t.palette.primary.main, 0.06) : undefined,
+      background: isClickable ? alphaVar(t.vars.palette.primary.main, 0.06) : undefined,
     },
     ...(large && {
       minHeight: 38,
     }),
     ...(active && {
-      color: t.palette.primary.main,
-      background: alpha(t.palette.primary.main, 0.16),
+      color: t.vars.palette.primary.main,
+      background: alphaVar(t.vars.palette.primary.main, 0.16),
     }),
   }
 })

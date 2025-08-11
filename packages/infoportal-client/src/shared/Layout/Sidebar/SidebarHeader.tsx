@@ -20,7 +20,7 @@ export const SidebarHeader = ({hidden, children, sx, ...props}: SidebarHeaderPro
         display: 'flex',
         alignItems: 'center',
         px: 2,
-        borderBottom: t => '1px solid ' + t.palette.divider,
+        borderBottom: t => '1px solid ' + t.vars.palette.divider,
         ...(hidden && {
           height: 0,
           p: 0,

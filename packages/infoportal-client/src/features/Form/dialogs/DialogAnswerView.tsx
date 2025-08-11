@@ -82,7 +82,7 @@ function DatabaseAnswerView() {
             >
               {queryForm.data?.name}
               <br />
-              <Txt sx={{color: t => t.palette.info.main}}>{answerId}</Txt>
+              <Txt sx={{color: t => t.vars.palette.info.main}}>{answerId}</Txt>
             </PanelHead>
             <PanelBody>
               <KoboAnswerFormView
@@ -206,7 +206,7 @@ const KoboAnswerQuestionView = ({
   switch (questionSchema.type) {
     case 'begin_group': {
       return (
-        <Box sx={{pt: 1, mt: 2, borderTop: t => `1px solid ${t.palette.divider}`}}>
+        <Box sx={{pt: 1, mt: 2, borderTop: t => `1px solid ${t.vars.palette.divider}`}}>
           <Txt bold block size="title">
             {schema.translate.question(questionSchema.name)}
           </Txt>

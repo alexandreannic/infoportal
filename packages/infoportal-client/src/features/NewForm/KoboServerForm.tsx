@@ -27,21 +27,21 @@ const ConnectionChecker = ({status, err}: {err?: string; status: 'loading' | 'er
   switch (status) {
     case 'loading':
       return (
-        <Box sx={{display: 'flex', alignItems: 'center', color: t.palette.info.main}}>
+        <Box sx={{display: 'flex', alignItems: 'center', color: t.vars.palette.info.main}}>
           <CircularProgress sx={{mr: 1}} size={22} color="info" />
           <Box>{m.loading}...</Box>
         </Box>
       )
     case 'error':
       return (
-        <Box sx={{display: 'flex', alignItems: 'center', color: t.palette.error.main}}>
+        <Box sx={{display: 'flex', alignItems: 'center', color: t.vars.palette.error.main}}>
           <Icon sx={{mr: 1}}>check_circle</Icon>
           <Box>{err}</Box>
         </Box>
       )
     case 'success':
       return (
-        <Box sx={{display: 'flex', alignItems: 'center', color: t.palette.success.main}}>
+        <Box sx={{display: 'flex', alignItems: 'center', color: t.vars.palette.success.main}}>
           <Icon sx={{mr: 1}}>error</Icon>
           <Box sx={{lineHeight: 1}}>{m.connectionSuccessful ?? m.error}</Box>
         </Box>

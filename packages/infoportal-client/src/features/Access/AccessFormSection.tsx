@@ -1,7 +1,6 @@
-import {Box, Icon, useTheme} from '@mui/material'
+import {Box, Icon, SxProps, useTheme} from '@mui/material'
 import {Txt, TxtProps} from '@/shared/Txt'
 import React, {ReactNode} from 'react'
-import {SxProps} from '@mui/system'
 
 export const Label = (props: TxtProps) => {
   return <Txt block uppercase bold color="hint" fontSize="small" {...props} />
@@ -28,11 +27,11 @@ export const AccessFormSection = ({
             alignItems: 'center',
             justifyContent: 'center',
             mr: 1,
-            background: t.palette.divider,
+            background: t.vars.palette.divider,
             borderRadius: '200px',
             height: 26,
             width: 26,
-            color: t.palette.text.secondary,
+            color: t.vars.palette.text.secondary,
             lineHeight: 1,
           }}
         >
@@ -42,7 +41,7 @@ export const AccessFormSection = ({
       </Box>
       <Box
         sx={{
-          borderLeft: `1px solid ${t.palette.divider}`,
+          borderLeft: `1px solid ${t.vars.palette.divider}`,
           ml: '11px',
           pl: 2,
           pb: 2,

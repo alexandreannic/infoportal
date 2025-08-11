@@ -31,7 +31,7 @@ const style = makeSx({
   iconExpand: {
     transition: t => t.transitions.create('all'),
     ml: 1,
-    color: t => t.palette.text.disabled,
+    color: t => t.vars.palette.text.disabled,
   },
   iconExpendShrinked: {
     transform: 'rotate(180deg)',

@@ -14,6 +14,7 @@ import {fnSwitch, map} from '@axanc/ts-utils'
 import {alpha, Icon, useTheme} from '@mui/material'
 import {useEffect} from 'react'
 import {createRoute} from '@tanstack/react-router'
+import {alphaVar} from '@/core/theme.js'
 
 export const databaseHistoryRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -169,7 +170,7 @@ function DatabaseHistory() {
                 return {
                   value: _.property,
                   label: (
-                    <code style={{background: t.palette.background.default, color: t.palette.text.secondary}}>
+                    <code style={{background: t.vars.palette.background.default, color: t.vars.palette.text.secondary}}>
                       {_.property}
                     </code>
                   ),
@@ -190,8 +191,8 @@ function DatabaseHistory() {
                       style={{
                         borderRadius: 4,
                         padding: '0 4px',
-                        background: alpha(t.palette.error.light, 0.16),
-                        color: t.palette.error.main,
+                        background: alphaVar(t.vars.palette.error.light, 0.16),
+                        color: t.vars.palette.error.main,
                       }}
                     >
                       {label}
@@ -222,8 +223,8 @@ function DatabaseHistory() {
                       style={{
                         borderRadius: 4,
                         padding: '0 4px',
-                        background: alpha(t.palette.success.light, 0.16),
-                        color: t.palette.success.main,
+                        background: alphaVar(t.vars.palette.success.light, 0.16),
+                        color: t.vars.palette.success.main,
                       }}
                     >
                       {label}

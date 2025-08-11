@@ -48,7 +48,7 @@ export const DatabaseGroupDisplayInput = (props: IpBtnProps) => {
         variant="input"
         color="inherit"
         children={<Icon sx={{transform: 'rotate(180deg)', marginRight: '-8px'}}>move_up</Icon>}
-        endIcon={<Icon sx={{color: t.palette.text.secondary}}>arrow_drop_down</Icon>}
+        endIcon={<Icon sx={{color: t.vars.palette.text.secondary}}>arrow_drop_down</Icon>}
         {...props}
       />
     </PopoverWrapper>

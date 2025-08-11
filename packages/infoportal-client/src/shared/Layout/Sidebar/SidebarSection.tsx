@@ -25,7 +25,7 @@ export const SidebarSection = ({
         mt: margin,
         pb: margin,
         '&:not(:last-of-type)': {
-          borderBottom: t => `1px solid ${t.palette.divider}`,
+          borderBottom: t => `1px solid ${t.vars.palette.divider}`,
         },
       }}
     >

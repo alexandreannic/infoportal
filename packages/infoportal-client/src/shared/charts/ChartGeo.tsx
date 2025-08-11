@@ -4,7 +4,7 @@ import {Box, useTheme} from '@mui/material'
 import {Panel, PanelHead} from '@/shared/Panel/index.js'
 import {IpIconBtn} from '@/shared/index.js'
 import {useI18n} from '@/core/i18n/index.js'
-import {lighten} from '@mui/system/colorManipulator'
+import {lightenVar} from '@/core/theme.js'
 
 const headers = ['Location', 'Submissions']
 
@@ -47,7 +47,8 @@ export const ChartGeo = ({data}: {data?: {iso: string; count: number}[]}) => {
   const options: ChartWrapperOptions['options'] = useMemo(() => {
     const defaultOptions: ChartWrapperOptions['options'] = {
       backgroundColor: 'transparent',
-      datalessRegionColor: t.palette.mode === 'dark' ? lighten(t.palette.background.default, 0.4) : t.palette.divider,
+      datalessRegionColor:
+        t.palette.mode === 'dark' ? lightenVar(t.vars.palette.background.default, 0.4) : t.vars.palette.divider,
       legend: 'none',
       enableRegionInteractivity: true,
       chartArea: {
@@ -58,7 +59,7 @@ export const ChartGeo = ({data}: {data?: {iso: string; count: number}[]}) => {
         left: 10,
         right: 10,
       },
-      colorAxis: {colors: [t.palette.primary.light, t.palette.primary.dark]},
+      colorAxis: {colors: [t.vars.palette.primary.light, t.vars.palette.primary.dark]},
     }
     if (selectedCountry) {
       defaultOptions.displayMode = 'regions'

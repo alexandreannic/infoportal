@@ -31,10 +31,10 @@ const BtnLogin = ({
     <ButtonBase
       sx={{
         ...sx,
-        background: t.palette.background.default,
+        background: t.vars.palette.background.default,
         // border: '1px solid',
-        borderColor: t.palette.divider,
-        // boxShadow: t.shadows[2],
+        borderColor: t.vars.palette.divider,
+        // boxShadow: t.vars.shadows[2],
         display: 'flex',
         alignItems: 'center',
         // margin: 'auto',
@@ -42,7 +42,7 @@ const BtnLogin = ({
         // height: 80,
         minWidth: 300,
         height: 50,
-        borderRadius: parseInt('' + t.shape.borderRadius) - 2 + 'px',
+        borderRadius: `calc(${t.vars.shape.borderRadius} - 2px)`,
         justifyContent: 'flex-start',
         py: 1,
         px: 2,

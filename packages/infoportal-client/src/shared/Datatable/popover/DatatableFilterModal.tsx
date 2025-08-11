@@ -107,7 +107,7 @@ export const DatatableFilterModal = ({
         </Txt>
       </PanelHead>
       <PanelBody sx={{maxWidth: 500}}>
-        <Box sx={{display: 'flex', alignItems: 'center', borderBottom: t => `1px solid ${t.palette.divider}`, mb: 1}}>
+        <Box sx={{display: 'flex', alignItems: 'center', borderBottom: t => `1px solid ${t.vars.palette.divider}`, mb: 1}}>
           <Txt color="hint" sx={{flex: 1}}>
             {m.sort}
           </Txt>

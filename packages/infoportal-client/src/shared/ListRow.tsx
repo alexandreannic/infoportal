@@ -23,14 +23,14 @@ export const ListRow = ({
         '&:not(:last-of-type) .row-body': {
           pb: 1.5,
           ...(border && {
-            borderBottom: t => `1px solid ${t.palette.divider}`,
+            borderBottom: t => `1px solid ${t.vars.palette.divider}`,
           }),
         },
       }}
     >
       {icon !== undefined && (
         <Box sx={{minWidth: 40, pb: 1.5}}>
-          {icon !== '' && <Icon sx={{color: t => t.palette.text.secondary}}>{icon}</Icon>}
+          {icon !== '' && <Icon sx={{color: t => t.vars.palette.text.secondary}}>{icon}</Icon>}
         </Box>
       )}
       <Box className="row-body" sx={{flex: 1, display: 'flex', alignItems: 'center'}}>

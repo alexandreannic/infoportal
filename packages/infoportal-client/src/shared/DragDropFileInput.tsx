@@ -1,4 +1,4 @@
-import {Alert, Box, BoxProps, Chip, Icon, useTheme} from '@mui/material'
+import {Alert, Box, BoxProps, Chip, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {useCallback, useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
@@ -19,7 +19,9 @@ export function DragDropFileInput({
   onClear?: () => void
   accept?: string
   multiple?: boolean
-} & Pick<BoxProps, 'sx'>) {
+} & {
+  sx: SxProps<Theme>
+}) {
   const t = useTheme()
   const {m} = useI18n()
   const [isDragActive, setIsDragActive] = useState(false)
@@ -49,11 +51,13 @@ export function DragDropFileInput({
   return (
     <Box
       sx={{
-        borderRadius: t.shape.borderRadius + 'px',
+        borderRadius: t.vars.shape.borderRadius,
         p: 3,
         border: '2px dashed',
-        backgroundColor: isDragActive ? t.palette.primary.light : styleUtils(t).color.toolbar.default.background,
-        borderColor: error ? 'primary.error.main' : isDragActive ? 'primary.main' : t.palette.divider,
+        backgroundColor: isDragActive
+          ? t.vars.palette.primary.light
+          : (styleUtils(t).color.toolbar.default.background as string) /** TODO Check typing error*/,
+        borderColor: error ? 'primary.error.main' : isDragActive ? 'primary.main' : t.vars.palette.divider,
         textAlign: 'center',
         cursor: 'pointer',
         transition: '0.2s',
@@ -61,7 +65,7 @@ export function DragDropFileInput({
       }}
       onDragEnter={() => setIsDragActive(true)}
       onDragLeave={() => setIsDragActive(false)}
-      onDragOver={e => {
+      onDragOver={(e: React.DragEvent<any>) => {
         e.preventDefault()
         setIsDragActive(true)
       }}

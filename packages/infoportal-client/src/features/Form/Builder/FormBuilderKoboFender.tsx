@@ -13,8 +13,8 @@ const Button = ({href, label, icon, sx, ...props}: {href: string; label: string;
       sx={{
         minWidth: 200,
         border: '1px solid',
-        borderColor: t.palette.divider,
-        borderRadius: t.shape.borderRadius + 'px',
+        borderColor: t.vars.palette.divider,
+        borderRadius: t.vars.shape.borderRadius,
         p: 3,
         ...sx,
       }}

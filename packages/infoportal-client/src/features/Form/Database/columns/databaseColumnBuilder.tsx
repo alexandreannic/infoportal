@@ -18,6 +18,7 @@ import {SelectStatusBy} from '@/shared/customInput/SelectStatus'
 import {useI18n} from '@/core/i18n'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
 import Submission = Ip.Submission
+import {alphaVar} from '@/core/theme.js'
 
 export const buildDatabaseColumns = {
   type: {
@@ -42,7 +43,7 @@ export const buildDatabaseColumns = {
   },
 }
 
-export const colorRepeatedQuestionHeader = (t: Theme) => alpha(t.palette.info.light, 0.22)
+export const colorRepeatedQuestionHeader = (t: Theme) => alphaVar(t.vars.palette.info.light, 0.22)
 
 const ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['begin_group'])
 

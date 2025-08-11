@@ -127,7 +127,7 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
   return (
     <>
       {originalEmail && (
-        <Box sx={{px: 2, py: 0.25, background: t => t.palette.background.paper}}>
+        <Box sx={{px: 2, py: 0.25, background: t => t.vars.palette.background.paper}}>
           Connected as <b>{user.email}</b>. Go back as <b>{originalEmail}</b>
           <IpBtn
             sx={{ml: 1}}

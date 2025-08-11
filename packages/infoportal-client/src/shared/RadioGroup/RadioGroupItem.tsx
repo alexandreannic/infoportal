@@ -45,7 +45,7 @@ export const ScRadioGroupItem = <T,>({
   ...rest
 }: ScRadioGroupItemProps<T>) => {
   const t = useTheme()
-  const borderColorActive = t.palette.primary.main
+  const borderColorActive = t.vars.palette.primary.main
   const minHeight = dense ? 34 : 50
   return (
     <Box
@@ -110,15 +110,15 @@ export const ScRadioGroupItem = <T,>({
           ...styleUtils(t).color.toolbar.active,
           zIndex: 1,
           border: `1px solid ${borderColorActive} !important`,
-          // background: alpha(t.palette.primary.main, 0.5),
-          color: t.palette.primary.main,
+          // background: alpha(t.vars.palette.primary.main, 0.5),
+          color: t.vars.palette.primary.main,
           boxShadow: `inset 0 0 0 1px ${borderColorActive}`,
         }),
         ...(error && {
           '&$rootSelected': {
-            borderColor: t.palette.error.main + ' !important',
+            borderColor: t.vars.palette.error.main + ' !important',
           },
-          boxShadow: `inset 0 0 0 1px ${t.palette.error.main}`,
+          boxShadow: `inset 0 0 0 1px ${t.vars.palette.error.main}`,
         }),
       }}
       // className={classes(css.root, selected && css.rootSelected, error && css.rootError, className)}
@@ -151,7 +151,7 @@ export const ScRadioGroupItem = <T,>({
           />
         ))}
       {before}
-      {icon && <Icon sx={{color: iconColor ?? t.palette.text.disabled, mr: 1, alignSelf: 'center'}}>{icon}</Icon>}
+      {icon && <Icon sx={{color: iconColor ?? t.vars.palette.text.disabled, mr: 1, alignSelf: 'center'}}>{icon}</Icon>}
       <Box
         sx={{
           alignSelf: 'center',
@@ -169,7 +169,7 @@ export const ScRadioGroupItem = <T,>({
       >
         {title && title}
         {description && (
-          <Box sx={{color: t.palette.text.secondary, fontSize: t.typography.fontSize * 0.9}}>{description}</Box>
+          <Box sx={{color: t.vars.palette.text.secondary, fontSize: t.typography.fontSize * 0.9}}>{description}</Box>
         )}
         {children && children}
       </Box>

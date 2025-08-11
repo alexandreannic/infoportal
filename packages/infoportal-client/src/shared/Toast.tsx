@@ -59,13 +59,13 @@ export const ToastProvider = ({children, vertical = 'bottom', horizontal = 'left
   const renderIcon = (type: ToastType) => {
     switch (type!) {
       case 'error':
-        return <Icon sx={{color: t.palette.error.main}}>error</Icon>
+        return <Icon sx={{color: t.vars.palette.error.main}}>error</Icon>
       case 'success':
-        return <Icon sx={{color: t.palette.success.main}}>check_circle</Icon>
+        return <Icon sx={{color: t.vars.palette.success.main}}>check_circle</Icon>
       case 'warning':
-        return <Icon sx={{color: t.palette.warning.main}}>warning</Icon>
+        return <Icon sx={{color: t.vars.palette.warning.main}}>warning</Icon>
       case 'info':
-        return <Icon sx={{color: t.palette.info.main}}>info</Icon>
+        return <Icon sx={{color: t.vars.palette.info.main}}>info</Icon>
       case 'loading':
         return <CircularProgress size={24} thickness={5} />
       default:

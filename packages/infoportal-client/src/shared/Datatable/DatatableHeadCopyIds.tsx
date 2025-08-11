@@ -5,6 +5,7 @@ import {alpha, Box, Icon, lighten, Popover, useTheme} from '@mui/material'
 import {useState} from 'react'
 import {IpBtn} from '@/shared'
 import {useI18n} from '@/core/i18n'
+import {alphaVar, lightenVar} from '@/core/theme.js'
 
 export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerProps<any>}) => {
   const {formatLargeNumber} = useI18n()
@@ -50,7 +51,7 @@ export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerPro
             py: 1.5,
             px: 2,
             backdropFilter: 'blur(4px)',
-            backgroundColor: alpha(lighten(t.palette.success.light, 0.8), 0.8),
+            backgroundColor: alphaVar(lightenVar(t.vars.palette.success.light, 0.8), 0.8),
           },
         }}
         open={!!anchorEl}
@@ -65,7 +66,7 @@ export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerPro
           <Icon sx={{mr: 1}} color="success">
             check_circle
           </Icon>
-          <span style={{color: t.palette.success.main, fontWeight: t.typography.fontWeightBold}}>
+          <span style={{color: t.vars.palette.success.main, fontWeight: t.typography.fontWeightBold}}>
             <b>{formatLargeNumber(copied)}</b> copied!
           </span>
           <IpBtn

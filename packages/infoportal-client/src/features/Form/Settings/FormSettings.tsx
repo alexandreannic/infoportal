@@ -18,7 +18,7 @@ const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; childr
   return (
     <Box
       display="flex"
-      sx={{'&:not(:last-of-type)': {mb: 2, pb: 2, borderBottom: '1px solid', borderColor: t.palette.divider}}}
+      sx={{'&:not(:last-of-type)': {mb: 2, pb: 2, borderBottom: '1px solid', borderColor: t.vars.palette.divider}}}
     >
       <Box flex={1}>
         <Txt bold block>

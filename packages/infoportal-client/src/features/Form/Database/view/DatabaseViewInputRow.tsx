@@ -7,19 +7,20 @@ import {ipSelectItem, IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {BtnConfirm} from '@/shared/BtnConfirm'
 import React from 'react'
 import {makeStyles} from 'tss-react/mui'
+import {alphaVar} from '@/core/theme.js'
 
 const useStyles = makeStyles<{open?: boolean}>()((t, {open}) => ({
   root: {
-    marginBottm: open ? t.spacing(1) : 0,
+    marginBottm: open ? t.vars.spacing : 0,
     border: '2px solid transparent',
-    borderColor: open ? t.palette.primary.main : undefined,
-    // border: '2px solid + ' open ? alpha(t.palette.primary.main, .08) : undefined,
-    padding: open ? t.spacing(1) : 0,
+    borderColor: open ? t.vars.palette.primary.main : undefined,
+    // border: '2px solid + ' open ? alpha(t.vars.palette.primary.main, .08) : undefined,
+    padding: open ? t.vars.spacing : 0,
     transition: t.transitions.create('all'),
-    borderRadius: t.shape.borderRadius + 'px',
-    boxShadow: open ? t.shadows[1] : undefined,
+    borderRadius: t.vars.shape.borderRadius,
+    boxShadow: open ? t.vars.shadows[1] : undefined,
     ':hover': {
-      background: alpha(t.palette.primary.main, 0.08),
+      background: alphaVar(t.vars.palette.primary.main, 0.08),
     },
   },
   head: {
@@ -27,8 +28,8 @@ const useStyles = makeStyles<{open?: boolean}>()((t, {open}) => ({
     alignItems: 'center',
     paddingRight: 0,
     paddingLeft: 0,
-    borderBottom: open ? `1px solid ${t.palette.divider}` : undefined,
-    marginBottom: open ? t.spacing(1) : 0,
+    borderBottom: open ? `1px solid ${t.vars.palette.divider}` : undefined,
+    marginBottom: open ? t.vars.spacing : 0,
   },
 }))
 

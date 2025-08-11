@@ -4,6 +4,7 @@ import React, {ReactNode} from 'react'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {IpIconBtn} from '@/shared/IconBtn'
+import {alphaVar} from '@/core/theme.js'
 
 export const DashboardHeader = ({
   title,
@@ -28,7 +29,7 @@ export const DashboardHeader = ({
           transition: t => t.transitions.create('all'),
           pl: 2,
           zIndex: 2,
-          background: t => t.palette.background.default,
+          background: t => t.vars.palette.background.default,
           pt: 2,
           width: '100%',
         }}
@@ -42,11 +43,11 @@ export const DashboardHeader = ({
                 sx={{
                   alignSelf: 'start',
                   mr: 2,
-                  border: `2px solid ${t.palette.primary.main}`,
-                  background: sidebarOpen ? 'none' : alpha(t.palette.primary.main, 0.1),
-                  color: t.palette.primary.main,
+                  border: `2px solid ${t.vars.palette.primary.main}`,
+                  background: sidebarOpen ? 'none' : alphaVar(t.vars.palette.primary.main, 0.1),
+                  color: t.vars.palette.primary.main,
                   '&:hover': {
-                    background: alpha(t.palette.primary.main, 0.1),
+                    background: alphaVar(t.vars.palette.primary.main, 0.1),
                   },
                 }}
                 onClick={() => setSidebarOpen(_ => !_)}
@@ -61,7 +62,7 @@ export const DashboardHeader = ({
                 <Box sx={{ml: 'auto', mr: 2}}>{action}</Box>
                 <IpLogo height={24} />
               </Box>
-              <Typography className="header_title_sub" variant="subtitle1" sx={{color: t.palette.text.secondary}}>
+              <Typography className="header_title_sub" variant="subtitle1" sx={{color: t.vars.palette.text.secondary}}>
                 {subTitle}
               </Typography>
             </Box>

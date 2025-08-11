@@ -4,14 +4,14 @@ import {alpha, Button, CircularProgress, Icon, Tooltip} from '@mui/material'
 import {ButtonProps} from '@mui/material/Button'
 import {makeStyles} from 'tss-react/mui'
 import {fnSwitch} from '@axanc/ts-utils'
-import {styleUtils} from '@/core/theme'
+import {alphaVar, styleUtils} from '@/core/theme'
 
 const useStyles = makeStyles<{loading?: boolean; variant?: IpBtnVariant}>()((t, {loading, variant}) => ({
   icon: {
     height: '22px !important',
     lineHeight: '22px !important',
     fontSize: '22px !important',
-    marginRight: t.spacing(1),
+    marginRight: t.vars.spacing
   },
   root: {
     ...fnSwitch(
@@ -20,10 +20,10 @@ const useStyles = makeStyles<{loading?: boolean; variant?: IpBtnVariant}>()((t, 
         light: {
           border: 'none',
           fontWeight: 500,
-          background: alpha(t.palette.primary.main, 0.12),
+          background: alphaVar(t.vars.palette.primary.main, 0.12),
           textTransform: 'inherit',
           '&:hover': {
-            background: alpha(t.palette.primary.main, 0.2),
+            background: alphaVar(t.vars.palette.primary.main, 0.2),
           },
         },
         input: {
@@ -49,12 +49,12 @@ const useStyles = makeStyles<{loading?: boolean; variant?: IpBtnVariant}>()((t, 
     position: 'absolute',
     top: '50%',
     left: '50%',
-    marginTop: t.spacing(-1.5),
-    marginLeft: t.spacing(-1.5),
+    marginTop: `calc(${t.vars.spacing} * 1.5)`,
+    marginLeft: `calc(${t.vars.spacing} * 1.5)`,
   },
   iconEnd: {
     marginRight: 0,
-    marginLeft: t.spacing(1),
+    marginLeft: t.vars.spacing
   },
 }))
 

@@ -84,17 +84,17 @@ export const Fender = ({
             lineHeight: 1,
             ...{
               error: {
-                color: t.palette.error.main,
+                color: t.vars.palette.error.main,
               },
               empty: {
-                color: t.palette.text.disabled,
+                color: t.vars.palette.text.disabled,
               },
               warning: {
-                color: t.palette.warning.main,
+                color: t.vars.palette.warning.main,
               },
               loading: {},
               success: {
-                color: t.palette.success.main,
+                color: t.vars.palette.success.main,
               },
             }[type],
             ...sx,

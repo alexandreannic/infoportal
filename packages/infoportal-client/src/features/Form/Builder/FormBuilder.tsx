@@ -141,7 +141,7 @@ function FormBuilder() {
                     content={
                       <IpInput
                         helperText={null}
-                        slotProps={{input: {sx: {width: 400, color: t.palette.text.secondary}}}}
+                        slotProps={{input: {sx: {width: 400, color: t.vars.palette.text.secondary}}}}
                         readOnly
                         value={window.location.origin + location.href}
                       />

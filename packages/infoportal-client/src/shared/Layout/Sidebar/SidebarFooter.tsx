@@ -9,7 +9,7 @@ export const SidebarFooter = ({children, sx, ...props}: SidebarFooterProps) => {
       sx={{
         py: 1 / 2,
         // pl: 1,
-        borderTop: t => '1px solid ' + t.palette.divider,
+        borderTop: t => '1px solid ' + t.vars.palette.divider,
         ...sx,
       }}
       {...props}

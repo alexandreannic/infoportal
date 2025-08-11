@@ -5,6 +5,7 @@ import {AppAvatar, Txt} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 import {capitalize} from 'infoportal-common'
 import React from 'react'
+import {alphaVar} from '@/core/theme.js'
 
 const borderWidth = 2.5
 const avatarSize = 26
@@ -12,9 +13,9 @@ const avatarSize = 26
 const Logo = ({version, index}: {index?: number; version: Ip.Form.Version}) => {
   const t = useTheme()
   const border = fnSwitch(version.status, {
-    draft: {style: 'dashed', color: t.palette.primary.main},
-    inactive: {style: 'solid', color: t.palette.divider},
-    active: {style: 'solid', color: t.palette.primary.main},
+    draft: {style: 'dashed', color: t.vars.palette.primary.main},
+    inactive: {style: 'solid', color: t.vars.palette.divider},
+    active: {style: 'solid', color: t.vars.palette.primary.main},
   })
   return (
     <Box
@@ -27,7 +28,7 @@ const Logo = ({version, index}: {index?: number; version: Ip.Form.Version}) => {
           height: 5,
           width: borderWidth,
           marginBottom: borderWidth + 'px',
-          background: index === 0 ? undefined : t.palette.divider,
+          background: index === 0 ? undefined : t.vars.palette.divider,
         },
         '&:after': {
           content: '" "',
@@ -35,7 +36,7 @@ const Logo = ({version, index}: {index?: number; version: Ip.Form.Version}) => {
           height: 5,
           width: borderWidth,
           marginTop: borderWidth + 'px',
-          background: t.palette.divider,
+          background: t.vars.palette.divider,
         },
       }}
     >
@@ -69,7 +70,7 @@ export const VersionRowRoot = ({createdAt}: {createdAt: Date}) => {
             height: 10,
             width: borderWidth,
             marginBottom: 0,
-            background: t.palette.divider,
+            background: t.vars.palette.divider,
           },
         }}
       >
@@ -77,7 +78,7 @@ export const VersionRowRoot = ({createdAt}: {createdAt: Date}) => {
           sx={{
             marginLeft: avatarSize / 2 - dotSize / 2 + 'px',
             borderRadius: '100px',
-            background: t.palette.divider,
+            background: t.vars.palette.divider,
             height: dotSize,
             width: dotSize,
             mb: 1,
@@ -95,11 +96,11 @@ export const VersionRowRoot = ({createdAt}: {createdAt: Date}) => {
 const VersionRowContainer = styled('div')(({theme: t}) => ({
   display: 'flex',
   alignItems: 'center',
-  borderRadius: t.shape.borderRadius + 'px',
-  paddingRight: t.spacing(1),
-  paddingLeft: t.spacing(1),
+  borderRadius: t.vars.shape.borderRadius,
+  paddingRight: t.vars.spacing,
+  paddingLeft: t.vars.spacing,
   '&:hover': {
-    background: alpha(t.palette.primary.light, 0.15),
+    background: alphaVar(t.vars.palette.primary.light, 0.15),
   },
 }))
 
@@ -113,12 +114,12 @@ export const VersionRowShowMore = (props: BoxProps) => {
           height: 32,
           marginLeft: avatarSize / 2 - 1 + 'px',
           borderLeft: borderWidth + 'px dashed',
-          borderColor: t.palette.divider,
+          borderColor: t.vars.palette.divider,
           width: avatarSize,
         }}
       />
       <Box sx={{ml: 1, display: 'flex', alignItems: 'center'}}>
-        <Icon sx={{color: t.palette.text.disabled, mr: 1}}>expand</Icon>
+        <Icon sx={{color: t.vars.palette.text.disabled, mr: 1}}>expand</Icon>
         {m.showMore}...
       </Box>
     </VersionRowContainer>

@@ -21,7 +21,7 @@ export const PanelFoot = ({children, alignEnd, border, sx, ...props}: PanelFootP
         }),
         ...(border && {
           pt: 1,
-          borderTop: t => '1px solid ' + t.palette.divider,
+          borderTop: t => '1px solid ' + t.vars.palette.divider,
         }),
         ...sx,
       }}

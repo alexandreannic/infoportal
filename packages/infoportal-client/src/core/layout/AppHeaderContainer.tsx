@@ -1,6 +1,7 @@
 import {alpha, Box, BoxProps, GlobalStyles, useTheme} from '@mui/material'
 import React, {forwardRef, useEffect, useState} from 'react'
 import {map} from '@axanc/ts-utils'
+import {alphaVar} from '@/core/theme.js'
 
 let header$: HTMLElement | null = null
 const headerStickyClass = 'sticky-header'
@@ -38,8 +39,8 @@ export const AppHeaderContainer = forwardRef(({children, sx, ...props}: BoxProps
       <GlobalStyles
         styles={{
           [`.${headerStickyClass}`]: {
-            boxShadow: t.shadows[4],
-            background: alpha(t.palette.background.paper, 0.5),
+            boxShadow: t.vars.shadows[4],
+            background: alphaVar(t.vars.palette.background.paper, 0.5),
           },
         }}
       />
@@ -57,7 +58,7 @@ export const AppHeaderContainer = forwardRef(({children, sx, ...props}: BoxProps
           backdropFilter: 'blur(12px)',
           alignItems: 'center',
           // Because on Windows, sticky-header is not working properly
-          boxShadow: t.shadows[5],
+          boxShadow: t.vars.shadows[5],
           // mb: 2,
           pl: 2,
           ...sx,

@@ -76,8 +76,8 @@ export class DatatableErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
               py: 1,
               mt: 2,
               px: 2,
-              borderRadius: parseInt('' + t.shape.borderRadius) - 1 + 'px',
-              background: t.palette.grey[100],
+              borderRadius: `calc(${t.vars.shape.borderRadius} - 1px)`,
+              background: t.vars.palette.grey[100],
             })}
           >
             {error && (
