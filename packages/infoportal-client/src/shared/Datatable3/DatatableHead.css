@@ -1,14 +1,14 @@
 .dthead {
-  height: 30px;
   vertical-align: middle;
   background: var(--mui-palette-AppBar-defaultBg);
 }
 
 .dtrh {
+  height: 30px;
   display: grid;
   grid-template-columns: var(--cols);
   position: sticky;
-  height: 100%;
+  /*height: 100%;*/
 }
 
 .dth {

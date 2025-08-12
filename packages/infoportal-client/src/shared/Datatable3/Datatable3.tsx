@@ -1,13 +1,18 @@
 import {Datatable} from '@/shared/Datatable3/types.js'
-import React, {memo, useEffect, useMemo, useReducer, useState} from 'react'
-import {datatableReducer, initialState} from '@/shared/Datatable3/reducer.js'
-import {DatatableColumn} from '@/shared/Datatable/util/datatableType.js'
+import React, {memo, useEffect, useMemo} from 'react'
+import {DatatableColumn, DatatableFilterValue} from '@/shared/Datatable/util/datatableType.js'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils.js'
 import {useVirtualizer} from '@tanstack/react-virtual'
-import {Popover, Skeleton, styled} from '@mui/material'
+import {Badge, Skeleton} from '@mui/material'
 import './Datatable.css'
 import {DatatableHead} from '@/shared/Datatable3/DatatableHead.js'
 import {SelectedCellPopover, useCellSelection} from '@/shared/Datatable3/useCellSelection.js'
+import {Datatable3Provider, useDatatable3Context} from '@/shared/Datatable3/DatatableContext.js'
+import {DatatableFilterModal} from '@/shared/Datatable/popover/DatatableFilterModal.js'
+import {IpIconBtn} from '@/shared/index.js'
+import {useMemoFn} from '@axanc/react-hooks'
+import {Obj} from '@axanc/ts-utils'
+import {useI18n} from '@/core/i18n/index.js'
 
 const toInnerColumn = <T extends Datatable.Row>(col: Datatable.Column.Props<T>): Datatable.Column.InnerProps<T> => {
   if (Datatable.Column.isInner(col)) {
@@ -74,9 +79,9 @@ export const Datatable3 = <T extends Datatable.Row>({data, columns: outerColumns
       d.index = i
     })
   }, [data])
-  const columns = useMemo(() => {
+  const columns: Datatable.Column.InnerProps<T>[] = useMemo(() => {
     const x = outerColumns.map(toInnerColumn).map(harmonizeColRenderValue)
-    const indexCol: Datatable.Column.InnerProps<any> = {
+    const rowNumberColumn: Datatable.Column.InnerProps<T> = {
       type: 'string',
       id: 'index',
       head: 'index',
@@ -85,42 +90,49 @@ export const Datatable3 = <T extends Datatable.Row>({data, columns: outerColumns
         label: _?.index,
       }),
     }
-    return [indexCol, ...x]
+    return [rowNumberColumn, ...x]
   }, [outerColumns])
 
   if (!data) return 'Loading...'
-  return <DatatableWithData {...props} data={data} columns={columns} />
+  return (
+    <Datatable3Provider {...props} data={data} columns={columns}>
+      <DatatableWithData />
+    </Datatable3Provider>
+  )
 }
 
-export const DatatableWithData = <T extends Datatable.Row>({
-  defaultLimit = 100,
-  getRowKey,
-  data,
-  columns,
-}: Datatable.Props<T> & {
-  columns: Datatable.Column.InnerProps<T>[]
-  data: T[]
-}) => {
-  const [state, dispatch] = useReducer(datatableReducer<T>(), initialState<T>())
+export const DatatableWithData = <T extends Datatable.Row>() => {
+  const {m} = useI18n()
+  const {
+    columns,
+    columnsIndex,
+    state: {sortBy, filters, colWidths, colVisibility, virtualTable, popup},
+    dispatch,
+    getRowKey,
+    data,
+    dataFilteredAndSorted,
+    dataFilteredExceptBy,
+    getColumnOptions,
+  } = useDatatable3Context(_ => _)
 
   const cssGridTemplate = useMemo(
     () =>
       columns
         // .filter(c => state.visibleCols.has(c.id))
-        .map(c => (state.colWidths[c.id] ?? 120) + 'px')
+        .map(c => (colWidths[c.id] ?? 120) + 'px')
         .join(' '),
-    [columns, state.colWidths, state.colVisibility],
+    [columns, colWidths, colVisibility],
   )
 
   useEffect(() => {
-    dispatch({type: 'INIT_DATA', data, columns, getRowKey, limit: defaultLimit})
+    dispatch({type: 'INIT_DATA', data, columns, getRowKey, limit: 40})
   }, [data])
 
   const parentRef = React.useRef(null)
 
   const overscan = 10
   const rowVirtualizer = useVirtualizer({
-    count: data?.length ?? 0,
+    count: dataFilteredAndSorted?.length ?? 0,
     debug: false,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 32,
@@ -141,14 +153,26 @@ export const DatatableWithData = <T extends Datatable.Row>({
 
   const cellSelection = useCellSelection(parentRef)
 
+  const filterCount = useMemoFn(filters, _ => Obj.keys(_).length)
+
+  console.log(popup)
   return (
     <div className="dt" style={{['--cols' as any]: cssGridTemplate}} ref={parentRef}>
-      <DatatableHead
-        dispatch={dispatch}
-        colWidths={state.colWidths}
-        onMouseDown={() => cellSelection.reset()}
-        columns={columns}
-      />
+      <div>
+        <Badge
+          badgeContent={filterCount}
+          color="primary"
+          overlap="circular"
+          onClick={() => {
+            dispatch({type: 'FILTER_CLEAR'})
+            rowVirtualizer.scrollToIndex(0)
+          }}
+        >
+          <IpIconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
+        </Badge>
+        {data.length} --- {dataFilteredAndSorted.length}
+      </div>
+      <DatatableHead onMouseDown={() => cellSelection.reset()} />
       <div
         className="dtbody"
         onMouseUp={cellSelection.handleMouseUp}
@@ -158,7 +182,7 @@ export const DatatableWithData = <T extends Datatable.Row>({
         }}
       >
         {rowVirtualizer.getVirtualItems().map(virtualRow => {
-          const row = data[virtualRow.index]
+          const row = dataFilteredAndSorted[virtualRow.index]
           const rowId = getRowKey(row)
           return (
             <div
@@ -172,15 +196,10 @@ export const DatatableWithData = <T extends Datatable.Row>({
             >
               {columns.map((col, colIndex) => {
                 const key = Datatable.buildKey2({colId: col.id, rowId})
-                const cell = state.virtualTable[rowId]?.[col.id]
+                const cell = virtualTable[rowId]?.[col.id]
                 const selected = cellSelection.isSelected(virtualRow.index, colIndex)
 
-                if (!cell)
-                  return (
-                    <div key={key} className="dtd">
-                      {rowId}
-                    </div>
-                  )
+                if (!cell) return <CellSkeleton key={key} />
                 return (
                   <Cell
                     rowIndex={virtualRow.index}
@@ -200,6 +219,45 @@ export const DatatableWithData = <T extends Datatable.Row>({
         })}
       </div>
       <SelectedCellPopover {...cellSelection} />
+      {(() => {
+        switch (popup?.name) {
+          case 'FILTER': {
+            const column = columnsIndex[popup.columnId]
+            if (!column.type) {
+              console.error('Missing type in', column)
+              return
+            }
+            return (
+              <DatatableFilterModal
+                data={dataFilteredExceptBy(popup.columnId) ?? []}
+                title={column.head}
+                anchorEl={popup.event.target}
+                columnId={popup.columnId}
+                renderValue={(_: any) => column.render(_).value}
+                options={getColumnOptions(popup.columnId)}
+                type={column.type}
+                sortBy={sortBy}
+                onOrderByChange={_ => dispatch({type: 'SORT', orderBy: _, column: popup.columnId})}
+                value={filters[popup.columnId] as any}
+                filterActive={!!filters[popup.columnId]}
+                onClose={() => dispatch({type: 'CLOSE_POPUP'})}
+                onClear={() => dispatch({type: 'FILTER', value: {[popup.columnId]: undefined}})}
+                onChange={(p: string, v: DatatableFilterValue) => {
+                  dispatch({type: 'FILTER', value: {[p]: v}})
+                  dispatch({type: 'CLOSE_POPUP'})
+                  rowVirtualizer.scrollToIndex(0)
+                  // ctx.data.setFilters(_ => ({..._, [p]: v}))
+                  // ctx.data.setSearch(prev => ({...prev, offset: 0}))
+                  // ctx.modal.filterPopover.close()
+                }}
+              />
+            )
+          }
+          default: {
+            return null
+          }
+        }
+      })()}
     </div>
   )
 }
@@ -245,20 +303,13 @@ export const DatatableWithData = <T extends Datatable.Row>({
 //   },
 // )
 
-const CellSkeletonRoot = styled('div')(({theme}) => ({
-  paddingRight: theme.spacing(2),
-  paddingLeft: theme.spacing(2),
-}))
-
 const CellSkeleton = () => {
   return (
-    <CellSkeletonRoot>
-      <Skeleton />
-    </CellSkeletonRoot>
+    <div className="dtd skeleton">
+      <Skeleton width="100%" />
+    </div>
   )
 }
-
-const CellRoot = styled('div')(({theme}) => ({}))
 
 const Cell = memo(
   ({

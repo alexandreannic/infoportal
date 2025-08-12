@@ -24,10 +24,10 @@ import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shar
 import {seq} from '@axanc/ts-utils'
 import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
 import {endOfDay} from 'date-fns'
+import {Datatable} from '@/shared/Datatable3/types.js'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
-  orderBy?: OrderBy
-  sortBy?: string
+  sortBy?: Datatable.SortBy
   onOrderByChange?: (_?: OrderBy) => void
   onClose?: () => void
   onClear?: () => void
@@ -65,7 +65,6 @@ export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
 
 export const DatatableFilterModal = ({
   data,
-  orderBy,
   sortBy,
   onOrderByChange,
   value,
@@ -107,21 +106,23 @@ export const DatatableFilterModal = ({
         </Txt>
       </PanelHead>
       <PanelBody sx={{maxWidth: 500}}>
-        <Box sx={{display: 'flex', alignItems: 'center', borderBottom: t => `1px solid ${t.vars.palette.divider}`, mb: 1}}>
+        <Box
+          sx={{display: 'flex', alignItems: 'center', borderBottom: t => `1px solid ${t.vars.palette.divider}`, mb: 1}}
+        >
           <Txt color="hint" sx={{flex: 1}}>
             {m.sort}
           </Txt>
-          <MenuItem onClick={() => onOrderByChange?.(orderBy === 'desc' ? undefined : 'desc')}>
+          <MenuItem onClick={() => onOrderByChange?.(sortBy?.orderBy === 'desc' ? undefined : 'desc')}>
             <Icon
               fontSize="small"
-              color={sortBy === columnId && orderBy === 'desc' ? 'primary' : undefined}
+              color={sortBy && sortBy.column === columnId && sortBy.orderBy === 'desc' ? 'primary' : undefined}
               children="south"
             />
           </MenuItem>
-          <MenuItem onClick={() => onOrderByChange?.(orderBy === 'asc' ? undefined : 'asc')}>
+          <MenuItem onClick={() => onOrderByChange?.(sortBy?.orderBy === 'asc' ? undefined : 'asc')}>
             <Icon
               fontSize="small"
-              color={sortBy === columnId && orderBy === 'asc' ? 'primary' : undefined}
+              color={sortBy && sortBy.column === columnId && sortBy.orderBy === 'asc' ? 'primary' : undefined}
               children="north"
             />
           </MenuItem>

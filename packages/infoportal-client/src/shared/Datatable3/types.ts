@@ -1,10 +1,15 @@
 import {BoxProps, SxProps, Theme} from '@mui/material'
 import {CSSProperties, ReactNode} from 'react'
-import {KeyOf} from 'infoportal-common'
+import {KeyOf} from '@axanc/ts-utils'
 import {HeaderParams, OrderBy} from '@/shared/Datatable/util/datatableType.js'
+import {DatatableAction, DatatableState} from '@/shared/Datatable3/reducer.js'
 
 export namespace Datatable {
   export type Row = Record<string, any>
+
+  export type Filters<T extends Row> = Partial<Record<KeyOf<T>, DatatableFilterValue>>
+
+  export type SortBy = {column: string; orderBy: OrderBy}
 
   /** ${colid}_${rowId} */
   export type Key = string
@@ -31,42 +36,9 @@ export namespace Datatable {
     className?: string
   }
 
-  export type Event<T extends Datatable.Row> =
-    | {
-        type: 'INIT_DATA'
-        data: T[]
-        limit: number
-        columns: Datatable.Column.InnerProps<T>[]
-        getRowKey: Datatable.Props<T>['getRowKey']
-      }
-    | {
-        type: 'SET_DATA'
-        data: T[]
-        limit: number
-        offset: number
-        columns: Datatable.Column.InnerProps<T>[]
-        getRowKey: Datatable.Props<T>['getRowKey']
-      }
-    | {type: 'SORT'; col: string}
-    | {type: 'FILTER'; fn: (row: T) => boolean}
-    | {type: 'SELECT_RANGE'; fromIdx: number; toIdx: number}
-    | {type: 'UPDATE_CELL'; rowId: string; col: string; value: any}
-    | {type: 'RESIZE'; col: string; width: number}
-    | {type: 'TOGGLE_COL'; col: string}
+  export type Event<T extends Datatable.Row> = DatatableAction<T>
 
-  export type State<T extends Row> = {
-    hasRenderedRowId: boolean[]
-    // lastIndexRowVirtualized: number
-    // paginate: {limit: number; offset: number}
-    // virtualTable: Record<Key, VirtualCell>
-    virtualTable: Record<string, Record<string, VirtualCell>>
-    rowOrder: string[]
-    selected: Set<string>
-    sortBy?: {col: string; asc: boolean}
-    filters?: any
-    colWidths: Record<string, number>
-    colVisibility: Set<string>
-  }
+  export type State<T extends Row> = DatatableState<T>
 
   export type DatatableFilterTypeMapping = {
     id: string

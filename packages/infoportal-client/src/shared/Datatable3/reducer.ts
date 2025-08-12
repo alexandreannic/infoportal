@@ -1,7 +1,56 @@
 import {Datatable} from '@/shared/Datatable3/types.js'
-import {mapFor} from '@axanc/ts-utils'
+import {KeyOf, mapFor} from '@axanc/ts-utils'
+import DatatableFilterValue = Datatable.DatatableFilterValue
+import {OrderBy} from '@axanc/react-hooks'
 
-export type DatatableDispatch<T extends Datatable.Row> = React.Dispatch<Datatable.Event<T>>
+export enum PopupName {
+  FILTER = 'FILTER',
+  STATS = 'STATS',
+}
+
+export type PopupEvent =
+  | {name: PopupName.FILTER; columnId: string; event: any}
+  | {name: PopupName.STATS; columnId: string; event: any}
+
+export type DatatableAction<T extends Datatable.Row> =
+  | {
+      type: 'INIT_DATA'
+      data: T[]
+      limit: number
+      columns: Datatable.Column.InnerProps<T>[]
+      getRowKey: Datatable.Props<T>['getRowKey']
+    }
+  | {
+      type: 'SET_DATA'
+      data: T[]
+      limit: number
+      offset: number
+      columns: Datatable.Column.InnerProps<T>[]
+      getRowKey: Datatable.Props<T>['getRowKey']
+    }
+  | {type: 'CLOSE_POPUP'}
+  | {type: 'OPEN_POPUP'; event: PopupEvent}
+  | {type: 'SORT'; column: string; orderBy?: OrderBy}
+  | {type: 'FILTER'; value: Record<KeyOf<T>, DatatableFilterValue>}
+  | {type: 'FILTER_CLEAR'}
+  | {type: 'UPDATE_CELL'; rowId: string; col: string; value: any}
+  | {type: 'RESIZE'; col: string; width: number}
+  | {type: 'TOGGLE_COL'; col: string}
+
+export type DatatableState<T extends Datatable.Row> = {
+  popup?: PopupEvent
+  hasRenderedRowId: boolean[]
+  // lastIndexRowVirtualized: number
+  // paginate: {limit: number; offset: number}
+  // virtualTable: Record<Key, VirtualCell>
+  virtualTable: Record<string, Record<string, Datatable.VirtualCell>>
+  // rowOrder: string[]
+  selected: Set<string>
+  sortBy?: Datatable.SortBy
+  filters: Partial<Record<KeyOf<T>, DatatableFilterValue>>
+  colWidths: Record<string, number>
+  colVisibility: Set<string>
+}
 
 export function datatableReducer<T extends Datatable.Row>() {
   const handlers = createHandlerMap<T>()
@@ -66,7 +115,7 @@ export const initialState = <T extends Datatable.Row>(): Datatable.State<T> => {
   return {
     hasRenderedRowId: [],
     virtualTable: {},
-    rowOrder: [],
+    filters: {},
     selected: new Set(),
     sortBy: undefined,
     colWidths: {},
@@ -117,37 +166,72 @@ function createHandlerMap<T extends Datatable.Row>(): HandlerMap<T> {
     },
 
     SORT: (state, action) => {
-      const asc = state.sortBy?.col === action.col ? !state.sortBy.asc : true
-      const rowOrder = [...state.rowOrder].sort((a, b) => {
-        return 1
-        // const va = state.virtualTable[a][action.col as keyof T]
-        // const vb = state.virtualTable[b][action.col as keyof T]
-        // return asc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va))
-      })
+      const orderBy = action.orderBy ?? 'desc'
       return {
         ...state,
-        sortBy: {col: action.col, asc},
-        rowOrder,
+        sortBy: {
+          column: action.column,
+          orderBy,
+        },
       }
+      // const asc = state.sortBy?.col === action.col ? !state.sortBy.asc : true
+      // const rowOrder = [...state.rowOrder].sort((a, b) => {
+      //   return 1
+      //   // const va = state.virtualTable[a][action.col as keyof T]
+      //   // const vb = state.virtualTable[b][action.col as keyof T]
+      //   // return asc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va))
+      // })
+      // return {
+      //   ...state,
+      //   sortBy: {col: action.col, asc},
+      //   rowOrder,
+      // }
     },
 
     FILTER: (state, action) => {
-      return state
-    },
-
-    SELECT_RANGE: (state, action) => {
-      const selected = new Set(state.selected)
-      const [start, end] =
-        action.fromIdx < action.toIdx ? [action.fromIdx, action.toIdx] : [action.toIdx, action.fromIdx]
-
-      for (let i = start; i <= end; i++) {
-        const id = state.rowOrder[i]
-        if (id) selected.add(id)
-      }
-
       return {
         ...state,
-        selected,
+        filters: {
+          ...state.filters,
+          ...action.value,
+        },
+      }
+    },
+
+    FILTER_CLEAR: state => {
+      return {
+        ...state,
+        filters: {},
+      }
+    },
+
+    // SELECT_RANGE: (state, action) => {
+    //   const selected = new Set(state.selected)
+    //   const [start, end] =
+    //     action.fromIdx < action.toIdx ? [action.fromIdx, action.toIdx] : [action.toIdx, action.fromIdx]
+    //
+    //   for (let i = start; i <= end; i++) {
+    //     const id = state.rowOrder[i]
+    //     if (id) selected.add(id)
+    //   }
+    //
+    //   return {
+    //     ...state,
+    //     selected,
+    //   }
+    // },
+
+    CLOSE_POPUP: (state, action) => {
+      return {
+        ...state,
+        popup: undefined,
+      }
+    },
+
+    OPEN_POPUP: (state, action) => {
+      return {
+        ...state,
+        popup: action.event as any,
       }
     },
 

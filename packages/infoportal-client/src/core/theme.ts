@@ -393,7 +393,7 @@ export const muiTheme = ({
             bottom: 2,
             height: 'auto',
             background: alphaVar(theme.vars.palette.primary.main, 0.18),
-            borderRadius: `calc(${theme.vars.shape.borderRadius} - 2)`,
+            borderRadius: `calc(${theme.vars.shape.borderRadius} - 2px)`,
           }),
           root: ({theme}) => ({
             background: theme.vars.palette.background.paper,
@@ -559,159 +559,158 @@ export const muiTheme = ({
   })
 }
 
-const tableTheme = (t: Theme) => ({
-})
+const tableTheme = (t: Theme) => ({})
 
 const tableTheme2 = (t: Theme) => ({
-  '@keyframes shake': {
-    '0%': {transform: 'rotate(0)'},
-    '20%': {transform: 'rotate(-25deg)'},
-    '40%': {transform: 'rotate(25deg)'},
-    '60%': {transform: 'rotate(-12deg)'},
-    '80%': {transform: 'rotate(12deg)'},
-    '100%': {transform: 'rotate(0)'},
-  },
-  '.table': {
-    minWidth: '100%',
-    width: 'max-content',
-    // borderTop: '1px solid ' + t.vars.palette.divider,
-    // tableLayout: 'fixed',
-    borderCollapse: 'separate',
-    borderSpacing: 0,
-  },
-  '.table-head-type-icon': {
-    ml: '2px',
-    marginRight: 'auto',
-  },
-  '.table .MuiCheckbox-root': {
-    padding: '6px',
-  },
-  '.td-id': {
-    color: t.vars.palette.info.main,
-    fontWeight: 'bold',
-    // fontWeight: t.typography.fontWeightBold,
-  },
-  '.table td:has(.Mui-focused)': {
-    border: `1px double ${t.vars.palette.primary.main} !important`,
-    boxShadow: `inset 0 0 0 1px ${t.vars.palette.primary.main}`,
-  },
-  '.table .tr-clickable': {
-    cursor: 'pointer',
-  },
-  '.table tr': {
-    whiteSpace: 'nowrap',
-  },
-  '.table .td-sub-head': {
-    // height: 20,
-    textAlign: 'right',
-    padding: 0,
-  },
-  '.th': {
-    width: 80,
-  },
-  '.table .th.th-width-fit-content': {
-    width: '1%',
-  },
-  '.th-resize': {
-    display: 'flex',
-    overflow: 'hidden',
-    resize: 'horizontal',
-    width: 80,
-    // width: 102,
-    minWidth: '100%',
-    // minWidth: 74,
-  },
-  'td.fw': {
-    width: '100%',
-  },
-  '::-webkit-resizer': {
-    background: 'invisible',
-  },
-  '.table td:first-of-type, .table th:first-of-type': {
-    paddingLeft: 8,
-  },
-  '.table .td-sticky-start': {
-    position: 'sticky',
-    zIndex: 10,
-    left: 0,
-    // background: t.vars.palette.background.paper,
-    boxShadow:
-      'inset -2px 0 1px -1px rgba(0,0,0,0.2), -1px 0px 1px 0px rgba(0,0,0,0.14), -1px 0px 3px 0px rgba(0,0,0,0.12)',
-  },
-  '.table .td-sticky-end': {
-    paddingTop: '1px',
-    boxShadow:
-      'inset 2px 0 1px -1px rgba(0,0,0,0.2), 1px 0px 1px 0px rgba(0,0,0,0.14), 1px 0px 3px 0px rgba(0,0,0,0.12)',
-    position: 'sticky',
-    zIndex: 10,
-    right: 0,
-  },
-  '.table tbody tr:not(:last-of-type) td': {
-    borderBottom: `1px solid ${t.vars.palette.divider}`,
-  },
-  '.table tbody td': {
-    background: t.vars.palette.background.paper,
-    maxWidth: 102,
-  },
-  '.table thead': {
-    // borderTop: `1px solid ${t.vars.palette.divider}`,
-  },
-  '.table thead .td, .table thead .th': {
-    // backdropFilter: styleUtils(t).backdropFilter,
-    background: styleUtils(t).color.toolbar.default.background,
-  },
-  '.td-center': {
-    textAlign: 'center !important',
-  },
-  '.td-width0': {
-    width: 0,
-  },
-  '.td-right': {
-    textAlign: 'right !important',
-  },
-  '.td-loading': {
-    padding: 0,
-    border: 'none',
-  },
-  '.table-loading': {
-    padding: 0,
-    height: 1,
-  },
-  '.table .td, .table .th': {
-    alignItems: 'left',
-    textAlign: 'left',
-    height: 30,
-    padding: '0 0px 0 4px',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-  },
-  '.table.borderY td:last-of-type, .table.borderY th:last-of-type': {
-    paddingRight: 4,
-  },
-  // '.table.borderY td:not(:last-of-type), .table.borderY th:not(:last-of-type)': {
+  // '@keyframes shake': {
+  //   '0%': {transform: 'rotate(0)'},
+  //   '20%': {transform: 'rotate(-25deg)'},
+  //   '40%': {transform: 'rotate(25deg)'},
+  //   '60%': {transform: 'rotate(-12deg)'},
+  //   '80%': {transform: 'rotate(12deg)'},
+  //   '100%': {transform: 'rotate(0)'},
+  // },
+  // '.table': {
+  //   minWidth: '100%',
+  //   width: 'max-content',
+  //   // borderTop: '1px solid ' + t.vars.palette.divider,
+  //   // tableLayout: 'fixed',
+  //   borderCollapse: 'separate',
+  //   borderSpacing: 0,
+  // },
+  // '.table-head-type-icon': {
+  //   ml: '2px',
+  //   marginRight: 'auto',
+  // },
+  // '.table .MuiCheckbox-root': {
+  //   padding: '6px',
+  // },
+  // '.td-id': {
+  //   color: t.vars.palette.info.main,
+  //   fontWeight: 'bold',
+  //   // fontWeight: t.typography.fontWeightBold,
+  // },
+  // '.table td:has(.Mui-focused)': {
+  //   border: `1px double ${t.vars.palette.primary.main} !important`,
+  //   boxShadow: `inset 0 0 0 1px ${t.vars.palette.primary.main}`,
+  // },
+  // '.table .tr-clickable': {
+  //   cursor: 'pointer',
+  // },
+  // '.table tr': {
+  //   whiteSpace: 'nowrap',
+  // },
+  // '.table .td-sub-head': {
+  //   // height: 20,
+  //   textAlign: 'right',
+  //   padding: 0,
+  // },
+  // '.th': {
+  //   width: 80,
+  // },
+  // '.table .th.th-width-fit-content': {
+  //   width: '1%',
+  // },
+  // '.th-resize': {
+  //   display: 'flex',
+  //   overflow: 'hidden',
+  //   resize: 'horizontal',
+  //   width: 80,
+  //   // width: 102,
+  //   minWidth: '100%',
+  //   // minWidth: 74,
+  // },
+  // 'td.fw': {
+  //   width: '100%',
+  // },
+  // '::-webkit-resizer': {
+  //   background: 'invisible',
+  // },
+  // '.table td:first-of-type, .table th:first-of-type': {
+  //   paddingLeft: 8,
+  // },
+  // '.table .td-sticky-start': {
+  //   position: 'sticky',
+  //   zIndex: 10,
+  //   left: 0,
+  //   // background: t.vars.palette.background.paper,
+  //   boxShadow:
+  //     'inset -2px 0 1px -1px rgba(0,0,0,0.2), -1px 0px 1px 0px rgba(0,0,0,0.14), -1px 0px 3px 0px rgba(0,0,0,0.12)',
+  // },
+  // '.table .td-sticky-end': {
+  //   paddingTop: '1px',
+  //   boxShadow:
+  //     'inset 2px 0 1px -1px rgba(0,0,0,0.2), 1px 0px 1px 0px rgba(0,0,0,0.14), 1px 0px 3px 0px rgba(0,0,0,0.12)',
+  //   position: 'sticky',
+  //   zIndex: 10,
+  //   right: 0,
+  // },
+  // '.table tbody tr:not(:last-of-type) td': {
+  //   borderBottom: `1px solid ${t.vars.palette.divider}`,
+  // },
+  // '.table tbody td': {
+  //   background: t.vars.palette.background.paper,
+  //   maxWidth: 102,
+  // },
+  // '.table thead': {
+  //   // borderTop: `1px solid ${t.vars.palette.divider}`,
+  // },
+  // '.table thead .td, .table thead .th': {
+  //   // backdropFilter: styleUtils(t).backdropFilter,
+  //   background: styleUtils(t).color.toolbar.default.background,
+  // },
+  // '.td-center': {
+  //   textAlign: 'center !important',
+  // },
+  // '.td-width0': {
+  //   width: 0,
+  // },
+  // '.td-right': {
+  //   textAlign: 'right !important',
+  // },
+  // '.td-loading': {
+  //   padding: 0,
+  //   border: 'none',
+  // },
+  // '.table-loading': {
+  //   padding: 0,
+  //   height: 1,
+  // },
+  // '.table .td, .table .th': {
+  //   alignItems: 'left',
+  //   textAlign: 'left',
+  //   height: 30,
+  //   padding: '0 0px 0 4px',
+  //   overflow: 'hidden',
+  //   whiteSpace: 'nowrap',
+  //   textOverflow: 'ellipsis',
+  // },
+  // '.table.borderY td:last-of-type, .table.borderY th:last-of-type': {
+  //   paddingRight: 4,
+  // },
+  // // '.table.borderY td:not(:last-of-type), .table.borderY th:not(:last-of-type)': {
+  // //   borderRight: `1px solid ${t.vars.palette.divider}`,
+  // // },
+  // '.table.borderY thead td:not(:last-of-type), .table.borderY thead th:not(:last-of-type)': {
   //   borderRight: `1px solid ${t.vars.palette.divider}`,
   // },
-  '.table.borderY thead td:not(:last-of-type), .table.borderY thead th:not(:last-of-type)': {
-    borderRight: `1px solid ${t.vars.palette.divider}`,
-  },
-  '.table th': {
-    height: 34,
-    zIndex: 2,
-    minWidth: 0,
-    width: 0,
-    top: 0,
-    paddingTop: `calc(${t.spacing} * 0.25)`,
-    paddingBottom: 0,
-    position: 'sticky',
-    color: t.vars.palette.text.secondary,
-  },
-  '.table tbody tr:hover td': {
-    background: '#fff',
-    ...t.applyStyles('dark', {
-      background: '#070707',
-    }),
-  },
+  // '.table th': {
+  //   height: 34,
+  //   zIndex: 2,
+  //   minWidth: 0,
+  //   width: 0,
+  //   top: 0,
+  //   paddingTop: `calc(${t.spacing} * 0.25)`,
+  //   paddingBottom: 0,
+  //   position: 'sticky',
+  //   color: t.vars.palette.text.secondary,
+  // },
+  // '.table tbody tr:hover td': {
+  //   background: '#fff',
+  //   ...t.applyStyles('dark', {
+  //     background: '#070707',
+  //   }),
+  // },
   //
   // 'table.sheet': {
   //   borderCollapse: 'collapse',
@@ -740,30 +739,30 @@ const tableTheme2 = (t: Theme) => ({
   // '.table td:has(.table-input), .table td:has(.MuiOutlinedInput-notchedOutline)': {
   //   padding: 0,
   // },
-  '.table .MuiInputBase-root, .table .MuiFormControl-root': {
-    margin: 0,
-    height: '100%',
-  },
-  '.table .MuiInputBase-input': {
-    paddingTop: '0 !important',
-    paddingBottom: '0 !important',
-  },
-  '.table .MuiOutlinedInput-notchedOutline': {
-    border: 'none',
-    borderRadius: 0,
-  },
-  '.table .tbody .td-active': {
-    background: alpha(t.palette.primary.main, 0.11) + ' !important',
-    userSelect: 'none',
-    border: '1px solid' + ' !important',
-    borderColor: t.palette.primary.main + ' !important',
-    borderTopWidth: '1px' + ' !important',
-    borderBottomWidth: '1px' + ' !important',
-    // border: '1px solid' + ' !important',
-    // borderColor: t.palette.primary.main + ' !important',
-    // borderTopWidth: '1px' + ' !important',
-    // borderBottomWidth: '1px' + ' !important',
-  },
+  // '.table .MuiInputBase-root, .table .MuiFormControl-root': {
+  //   margin: 0,
+  //   height: '100%',
+  // },
+  // '.table .MuiInputBase-input': {
+  //   paddingTop: '0 !important',
+  //   paddingBottom: '0 !important',
+  // },
+  // '.table .MuiOutlinedInput-notchedOutline': {
+  //   border: 'none',
+  //   borderRadius: 0,
+  // },
+  // '.table .tbody .td-active': {
+  //   background: alphaVar(t.palette.primary.main, 0.11) + ' !important',
+  //   userSelect: 'none',
+  //   border: '1px solid' + ' !important',
+  //   borderColor: t.palette.primary.main + ' !important',
+  //   borderTopWidth: '1px' + ' !important',
+  //   borderBottomWidth: '1px' + ' !important',
+  //   // border: '1px solid' + ' !important',
+  //   // borderColor: t.palette.primary.main + ' !important',
+  //   // borderTopWidth: '1px' + ' !important',
+  //   // borderBottomWidth: '1px' + ' !important',
+  // },
 })
 
 export const themeLightScrollbar: SxProps<Theme> = {
