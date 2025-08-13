@@ -1,9 +1,9 @@
 import {useCallback, useMemo} from 'react'
 import {multipleFilters, safeNumber} from 'infoportal-common'
 import {KeyOf, fnSwitch, map, Obj} from '@axanc/ts-utils'
-import {DatatableFilterTypeMapping, DatatableRow} from '@/shared/Datatable/util/datatableType'
-import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
-import {Datatable} from '@/shared/Datatable3/types.js'
+import {DatatableFilterTypeMapping, DatatableRow} from '@/shared/Datatable/util/datatableType.js'
+import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils.js'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
 
 export type UseDatatableData<T extends DatatableRow> = ReturnType<typeof useDatatableData<T>>
 

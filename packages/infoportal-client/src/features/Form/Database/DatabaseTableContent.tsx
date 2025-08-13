@@ -26,7 +26,7 @@ import {AppAvatar} from '@/shared'
 import {useFormSocket} from '@/features/Form/useFormSocket'
 import {appConfig} from '@/conf/AppConfig.js'
 import {Datatable3} from '@/shared/Datatable3/Datatable3.js'
-import {Datatable} from '@/shared/Datatable3/types'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()

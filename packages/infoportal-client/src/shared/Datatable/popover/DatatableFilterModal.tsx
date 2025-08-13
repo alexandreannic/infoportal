@@ -24,7 +24,7 @@ import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shar
 import {seq} from '@axanc/ts-utils'
 import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
 import {endOfDay} from 'date-fns'
-import {Datatable} from '@/shared/Datatable3/types.js'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   sortBy?: Datatable.SortBy

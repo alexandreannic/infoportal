@@ -2,7 +2,7 @@ import {BoxProps, SxProps, Theme} from '@mui/material'
 import {CSSProperties, ReactNode} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {HeaderParams, OrderBy} from '@/shared/Datatable/util/datatableType.js'
-import {DatatableAction, DatatableState} from '@/shared/Datatable3/reducer.js'
+import {DatatableAction, DatatableState} from '@/shared/Datatable3/state/reducer.js'
 
 export namespace Datatable {
   export type Row = Record<string, any>

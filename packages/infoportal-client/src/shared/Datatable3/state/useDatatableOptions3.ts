@@ -1,8 +1,8 @@
-import {DatatableOptions} from '@/shared/Datatable/util/datatableType'
+import {DatatableOptions} from '@/shared/Datatable/util/datatableType.js'
 import {useCallback, useEffect, useMemo} from 'react'
-import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
+import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils.js'
 import {KeyOf, seq} from '@axanc/ts-utils'
-import {Datatable} from '@/shared/Datatable3/types.js'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
 
 export type UseDatatableOptions3<T extends Datatable.Row> = ReturnType<typeof useDatatableOptions3<T>>
 

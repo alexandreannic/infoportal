@@ -1,10 +1,10 @@
-import {Datatable} from '@/shared/Datatable3/types.js'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
 import React, {DetailedReactHTMLElement, HTMLAttributes} from 'react'
 import {Resizable} from 'react-resizable'
 import './DatatableHead.css'
 import {TableIconBtn} from '@/shared/TableIcon.js'
-import {useDatatable3Context} from '@/shared/Datatable3/DatatableContext.js'
-import {PopupName} from '@/shared/Datatable3/reducer.js'
+import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
+import {Popup} from '@/shared/Datatable3/state/reducer.js'
 
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
@@ -45,10 +45,10 @@ export const DatatableHead = (
                 column={c}
                 active={active}
                 onOpenStats={e =>
-                  dispatch({type: 'OPEN_POPUP', event: {name: PopupName.STATS as const, columnId: c.id, event: e}})
+                  dispatch({type: 'OPEN_POPUP', event: {name: Popup.Name.STATS, columnId: c.id, event: e}})
                 }
                 onOpenFilter={e =>
-                  dispatch({type: 'OPEN_POPUP', event: {name: PopupName.FILTER, columnId: c.id, event: e}})
+                  dispatch({type: 'OPEN_POPUP', event: {name: Popup.Name.FILTER, columnId: c.id, event: e}})
                 }
               />
             </div>
@@ -66,8 +66,8 @@ const DatatableHeadTdBody = ({
   onOpenStats,
 }: {
   column: Datatable.Column.InnerProps<any>
-  onOpenFilter: (e: any) => void
-  onOpenStats: (e: any) => void
+  onOpenFilter: (e: React.MouseEvent) => void
+  onOpenStats: (e: React.MouseEvent) => void
   active?: boolean
 }) => {
   return (

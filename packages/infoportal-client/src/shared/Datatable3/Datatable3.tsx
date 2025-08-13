@@ -1,4 +1,4 @@
-import {Datatable} from '@/shared/Datatable3/types.js'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
 import React, {memo, useEffect, useMemo} from 'react'
 import {DatatableColumn, DatatableFilterValue} from '@/shared/Datatable/util/datatableType.js'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils.js'
@@ -6,13 +6,14 @@ import {useVirtualizer} from '@tanstack/react-virtual'
 import {Badge, Skeleton} from '@mui/material'
 import './Datatable.css'
 import {DatatableHead} from '@/shared/Datatable3/DatatableHead.js'
-import {SelectedCellPopover, useCellSelection} from '@/shared/Datatable3/useCellSelection.js'
-import {Datatable3Provider, useDatatable3Context} from '@/shared/Datatable3/DatatableContext.js'
+import {SelectedCellPopover, useCellSelection} from '@/shared/Datatable3/state/useCellSelection.js'
+import {Datatable3Provider, useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
 import {DatatableFilterModal} from '@/shared/Datatable/popover/DatatableFilterModal.js'
 import {IpIconBtn} from '@/shared/index.js'
 import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
 import {useI18n} from '@/core/i18n/index.js'
+import {DatatablePopupStats} from '@/shared/Datatable3/popup/DatatablePopupStats.js'
 
 const toInnerColumn = <T extends Datatable.Row>(col: Datatable.Column.Props<T>): Datatable.Column.InnerProps<T> => {
   if (Datatable.Column.isInner(col)) {
@@ -85,6 +86,7 @@ export const Datatable3 = <T extends Datatable.Row>({data, columns: outerColumns
       type: 'string',
       id: 'index',
       head: 'index',
+      align: 'right',
       render: (_: any) => ({
         value: _?.index,
         label: _?.index,
@@ -221,6 +223,9 @@ export const DatatableWithData = <T extends Datatable.Row>() => {
       <SelectedCellPopover {...cellSelection} />
       {(() => {
         switch (popup?.name) {
+          case 'STATS': {
+            return <DatatablePopupStats event={popup.event} columnId={popup.columnId} />
+          }
           case 'FILTER': {
             const column = columnsIndex[popup.columnId]
             if (!column.type) {

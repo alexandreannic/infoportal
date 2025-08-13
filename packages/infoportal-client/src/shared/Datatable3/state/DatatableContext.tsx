@@ -1,10 +1,10 @@
 import React, {ReactNode, useMemo, useReducer} from 'react'
-import {Datatable} from '@/shared/Datatable3/types.js'
-import {datatableReducer, initialState} from '@/shared/Datatable3/reducer.js'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
+import {datatableReducer, initialState} from '@/shared/Datatable3/state/reducer.js'
 import {KeyOf, seq} from '@axanc/ts-utils'
-import {useDatatableData} from '@/shared/Datatable3/useDatatableData.js'
+import {useDatatableData} from '@/shared/Datatable3/state/useDatatableData.js'
 import {createContext, useContextSelector} from 'use-context-selector'
-import {useDatatableOptions3} from '@/shared/Datatable3/useDatatableOptions3.js'
+import {useDatatableOptions3} from '@/shared/Datatable3/state/useDatatableOptions3.js'
 import {DatatableOptions} from '@/shared/Datatable/util/datatableType.js'
 
 export type DatatableContext<T extends Datatable.Row = any> = {

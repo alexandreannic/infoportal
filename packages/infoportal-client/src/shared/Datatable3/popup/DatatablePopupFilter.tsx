@@ -12,8 +12,8 @@ import {
   DatatableFilterDialogSelect,
   DatatableFilterDialogText,
 } from '@/shared/Datatable/popover/DatatableFilterModal.js'
-import {Datatable} from '@/shared/Datatable3/types.js'
-import {useDatatable3Context} from '@/shared/Datatable3/DatatableContext.js'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
+import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
 import {OrderBy} from '@axanc/react-hooks'
 import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType.js'
 

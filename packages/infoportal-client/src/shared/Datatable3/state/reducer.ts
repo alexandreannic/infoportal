@@ -1,16 +1,20 @@
-import {Datatable} from '@/shared/Datatable3/types.js'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {KeyOf, mapFor} from '@axanc/ts-utils'
 import DatatableFilterValue = Datatable.DatatableFilterValue
 import {OrderBy} from '@axanc/react-hooks'
+import React from 'react'
 
-export enum PopupName {
-  FILTER = 'FILTER',
-  STATS = 'STATS',
+export namespace Popup {
+  export enum Name {
+    FILTER = 'FILTER',
+    STATS = 'STATS',
+  }
+
+  export type FilterAgs = {columnId: string; event: {target: any}}//React.MouseEvent<any>}
+  export type StatsAgs = {columnId: string; event: {target: any}}//React.MouseEvent<any>}
+
+  export type Event = ({name: Name.FILTER} & FilterAgs) | ({name: Name.STATS} & StatsAgs)
 }
-
-export type PopupEvent =
-  | {name: PopupName.FILTER; columnId: string; event: any}
-  | {name: PopupName.STATS; columnId: string; event: any}
 
 export type DatatableAction<T extends Datatable.Row> =
   | {
@@ -29,7 +33,7 @@ export type DatatableAction<T extends Datatable.Row> =
       getRowKey: Datatable.Props<T>['getRowKey']
     }
   | {type: 'CLOSE_POPUP'}
-  | {type: 'OPEN_POPUP'; event: PopupEvent}
+  | {type: 'OPEN_POPUP'; event: Popup.Event}
   | {type: 'SORT'; column: string; orderBy?: OrderBy}
   | {type: 'FILTER'; value: Record<KeyOf<T>, DatatableFilterValue>}
   | {type: 'FILTER_CLEAR'}
@@ -38,7 +42,7 @@ export type DatatableAction<T extends Datatable.Row> =
   | {type: 'TOGGLE_COL'; col: string}
 
 export type DatatableState<T extends Datatable.Row> = {
-  popup?: PopupEvent
+  popup?: Popup.Event
   hasRenderedRowId: boolean[]
   // lastIndexRowVirtualized: number
   // paginate: {limit: number; offset: number}
