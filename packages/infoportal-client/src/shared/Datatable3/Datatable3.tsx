@@ -14,6 +14,7 @@ import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
 import {useI18n} from '@/core/i18n/index.js'
 import {DatatablePopupStats} from '@/shared/Datatable3/popup/DatatablePopupStats.js'
+import {DatatableFilterModal3} from '@/shared/Datatable3/popup/DatatablePopupFilter.js'
 
 const toInnerColumn = <T extends Datatable.Row>(col: Datatable.Column.Props<T>): Datatable.Column.InnerProps<T> => {
   if (Datatable.Column.isInner(col)) {
@@ -157,10 +158,9 @@ export const DatatableWithData = <T extends Datatable.Row>() => {
 
   const filterCount = useMemoFn(filters, _ => Obj.keys(_).length)
 
-  console.log(popup)
   return (
-    <div className="dt" style={{['--cols' as any]: cssGridTemplate}} ref={parentRef}>
-      <div>
+    <div className="dt-container" style={{['--cols' as any]: cssGridTemplate}} ref={parentRef}>
+      <div className="dt-toolbar">
         <Badge
           badgeContent={filterCount}
           color="primary"
@@ -174,95 +174,96 @@ export const DatatableWithData = <T extends Datatable.Row>() => {
         </Badge>
         {data.length} --- {dataFilteredAndSorted.length}
       </div>
-      <DatatableHead onMouseDown={() => cellSelection.reset()} />
-      <div
-        className="dtbody"
-        onMouseUp={cellSelection.handleMouseUp}
-        style={{
-          height: `${rowVirtualizer.getTotalSize()}px`,
-          position: 'relative',
-        }}
-      >
-        {rowVirtualizer.getVirtualItems().map(virtualRow => {
-          const row = dataFilteredAndSorted[virtualRow.index]
-          const rowId = getRowKey(row)
-          return (
-            <div
-              className="dtr"
-              key={rowId}
-              style={{
-                height: `${virtualRow.size}px`,
-                // top: start,
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
-            >
-              {columns.map((col, colIndex) => {
-                const key = Datatable.buildKey2({colId: col.id, rowId})
-                const cell = virtualTable[rowId]?.[col.id]
-                const selected = cellSelection.isSelected(virtualRow.index, colIndex)
-
-                if (!cell) return <CellSkeleton key={key} />
-                return (
-                  <Cell
-                    rowIndex={virtualRow.index}
-                    colIndex={colIndex}
-                    handleMouseDown={cellSelection.handleMouseDown}
-                    handleMouseEnter={cellSelection.handleMouseEnter}
-                    className={cell.className + (selected ? ' selected' : '')}
-                    label={cell.label}
-                    tooltip={cell.tooltip as any}
-                    style={cell.style}
-                    key={key}
-                  />
-                )
-              })}
-            </div>
-          )
-        })}
-      </div>
-      <SelectedCellPopover {...cellSelection} />
-      {(() => {
-        switch (popup?.name) {
-          case 'STATS': {
-            return <DatatablePopupStats event={popup.event} columnId={popup.columnId} />
-          }
-          case 'FILTER': {
-            const column = columnsIndex[popup.columnId]
-            if (!column.type) {
-              console.error('Missing type in', column)
-              return
-            }
+      <div className="dt">
+        <DatatableHead onMouseDown={() => cellSelection.reset()} />
+        <div
+          className="dtbody"
+          onMouseUp={cellSelection.handleMouseUp}
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            position: 'relative',
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map(virtualRow => {
+            const row = dataFilteredAndSorted[virtualRow.index]
+            const rowId = getRowKey(row)
             return (
-              <DatatableFilterModal
-                data={dataFilteredExceptBy(popup.columnId) ?? []}
-                title={column.head}
-                anchorEl={popup.event.target}
-                columnId={popup.columnId}
-                renderValue={(_: any) => column.render(_).value}
-                options={getColumnOptions(popup.columnId)}
-                type={column.type}
-                sortBy={sortBy}
-                onOrderByChange={_ => dispatch({type: 'SORT', orderBy: _, column: popup.columnId})}
-                value={filters[popup.columnId] as any}
-                filterActive={!!filters[popup.columnId]}
-                onClose={() => dispatch({type: 'CLOSE_POPUP'})}
-                onClear={() => dispatch({type: 'FILTER', value: {[popup.columnId]: undefined}})}
-                onChange={(p: string, v: DatatableFilterValue) => {
-                  dispatch({type: 'FILTER', value: {[p]: v}})
-                  dispatch({type: 'CLOSE_POPUP'})
-                  rowVirtualizer.scrollToIndex(0)
-                  // ctx.data.setFilters(_ => ({..._, [p]: v}))
-                  // ctx.data.setSearch(prev => ({...prev, offset: 0}))
-                  // ctx.modal.filterPopover.close()
+              <div
+                className="dtr"
+                key={rowId}
+                style={{
+                  height: `${virtualRow.size}px`,
+                  transform: `translateY(${virtualRow.start}px)`,
                 }}
-              />
+              >
+                {columns.map((col, colIndex) => {
+                  const key = Datatable.buildKey2({colId: col.id, rowId})
+                  const cell = virtualTable[rowId]?.[col.id]
+                  const selected = cellSelection.isSelected(virtualRow.index, colIndex)
+
+                  if (!cell) return <CellSkeleton key={key} />
+                  return (
+                    <Cell
+                      rowIndex={virtualRow.index}
+                      colIndex={colIndex}
+                      handleMouseDown={cellSelection.handleMouseDown}
+                      handleMouseEnter={cellSelection.handleMouseEnter}
+                      className={cell.className + (selected ? ' selected' : '')}
+                      label={cell.label}
+                      tooltip={cell.tooltip as any}
+                      style={cell.style}
+                      key={key}
+                    />
+                  )
+                })}
+              </div>
             )
+          })}
+        </div>
+        <SelectedCellPopover {...cellSelection} />
+        {(() => {
+          switch (popup?.name) {
+            case 'STATS': {
+              return <DatatablePopupStats event={popup.event} columnId={popup.columnId} />
+            }
+            case 'FILTER': {
+              const column = columnsIndex[popup.columnId]
+              if (!column.type) {
+                console.error('Missing type in', column)
+                return
+              }
+              return (
+                <DatatableFilterModal3
+                  data={dataFilteredExceptBy(popup.columnId) ?? []}
+                  title={column.head}
+                  anchorEl={popup.event.target}
+                  columnId={popup.columnId}
+                  renderValue={(_: any) => column.render(_).value}
+                  options={getColumnOptions(popup.columnId)}
+                  type={column.type}
+                  sortBy={sortBy}
+                  onOrderByChange={_ => dispatch({type: 'SORT', orderBy: _, column: popup.columnId})}
+                  value={filters[popup.columnId] as any}
+                  filterActive={!!filters[popup.columnId]}
+                  onClose={() => dispatch({type: 'CLOSE_POPUP'})}
+                  onClear={() => dispatch({type: 'FILTER', value: {[popup.columnId]: undefined}})}
+                  onChange={(p: string, v: DatatableFilterValue) => {
+                    dispatch({type: 'FILTER', value: {[p]: v}})
+                    dispatch({type: 'CLOSE_POPUP'})
+                    rowVirtualizer.scrollToIndex(0)
+                    // ctx.data.setFilters(_ => ({..._, [p]: v}))
+                    // ctx.data.setSearch(prev => ({...prev, offset: 0}))
+                    // ctx.modal.filterPopover.close()
+                  }}
+                />
+              )
+            }
+            default: {
+              return null
+            }
           }
-          default: {
-            return null
-          }
-        }
-      })()}
+        })()}
+      </div>
     </div>
   )
 }

@@ -42,7 +42,7 @@ export const ResizableDiv = ({
   className,
   ...props
 }: Pick<BoxProps, 'style' | 'children'> & {
-  className: string
+  className?: string
   id: string
   debounceTime?: number
   initialWidth?: number

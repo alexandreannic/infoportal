@@ -1,6 +1,5 @@
 .dthead {
   vertical-align: middle;
-  background: var(--mui-palette-AppBar-defaultBg);
 }
 
 .dtrh {
@@ -12,6 +11,7 @@
 }
 
 .dth {
+  background: var(--mui-palette-AppBar-defaultBg);
   display: flex;
   align-items: center;
   width: 100%;

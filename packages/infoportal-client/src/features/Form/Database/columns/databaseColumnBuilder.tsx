@@ -18,6 +18,7 @@ import {useI18n} from '@/core/i18n'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
 import Submission = Ip.Submission
 import {alphaVar} from '@/core/theme.js'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
 
 export const buildDatabaseColumns = {
   type: {

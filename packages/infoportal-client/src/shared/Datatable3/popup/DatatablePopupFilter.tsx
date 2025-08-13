@@ -18,8 +18,7 @@ import {OrderBy} from '@axanc/react-hooks'
 import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType.js'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
-  orderBy?: OrderBy
-  sortBy?: string
+  sortBy?: Datatable.SortBy
   onOrderByChange?: (_?: OrderBy) => void
   onClose?: () => void
   onClear?: () => void
@@ -55,8 +54,8 @@ export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
       }
   )
 
-export const DatatableFilterModal = ({
-  orderBy,
+export const DatatableFilterModal3 = ({
+  data,
   sortBy,
   onOrderByChange,
   value,
@@ -106,17 +105,17 @@ export const DatatableFilterModal = ({
           <Txt color="hint" sx={{flex: 1}}>
             {m.sort}
           </Txt>
-          <MenuItem onClick={() => onOrderByChange?.(orderBy === 'desc' ? undefined : 'desc')}>
+          <MenuItem onClick={() => onOrderByChange?.(sortBy?.orderBy === 'desc' ? undefined : 'desc')}>
             <Icon
               fontSize="small"
-              color={sortBy === columnId && orderBy === 'desc' ? 'primary' : undefined}
+              color={sortBy && sortBy.column === columnId && sortBy.orderBy === 'desc' ? 'primary' : undefined}
               children="south"
             />
           </MenuItem>
-          <MenuItem onClick={() => onOrderByChange?.(orderBy === 'asc' ? undefined : 'asc')}>
+          <MenuItem onClick={() => onOrderByChange?.(sortBy?.orderBy === 'asc' ? undefined : 'asc')}>
             <Icon
               fontSize="small"
-              color={sortBy === columnId && orderBy === 'asc' ? 'primary' : undefined}
+              color={sortBy && sortBy.column === columnId && sortBy.orderBy === 'asc' ? 'primary' : undefined}
               children="north"
             />
           </MenuItem>
