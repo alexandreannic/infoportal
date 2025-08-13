@@ -83,6 +83,8 @@ export type BuildFormColumnProps = {
 
 type CommonProps = Pick<BuildFormColumnProps, 'getRow' | 'q' | 'onEdit' | 'translateQuestion'>
 
+const metaLabel = 'Meta'
+
 function getValue({q, row, getRow = _ => _ as Row}: Pick<BuildFormColumnProps, 'q' | 'getRow'> & {row: Row}): any {
   return getRow(row)[q.name]
 }
@@ -95,7 +97,9 @@ function getCommon({
   return {
     id: q.name,
     typeLabel: q.type,
-    ...map(q.$xpath.split('/')[0], value => ({group: {label: translateQuestion(value), id: value}})),
+    ...map(q.$xpath.split('/')[0], value => ({
+      group: {label: value === 'meta' ? metaLabel : translateQuestion(value), id: value},
+    })),
     ...(onEdit
       ? {
           subHeader: <TableEditCellBtn onClick={() => onEdit(q.name)} />,
@@ -401,6 +405,7 @@ type MetaProps = {
 
 function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'> = {}): Datatable.Column.Props<Row> {
   return {
+    group: {label: metaLabel, id: 'meta'},
     type: 'id',
     id: 'id' as const,
     head: 'ID',
@@ -439,6 +444,7 @@ function actions({
   m: Messages
 }): Datatable.Column.Props<Submission> {
   return {
+    group: {label: metaLabel, id: 'meta'},
     id: 'actions' as const,
     head: '',
     width: 0,
@@ -483,7 +489,7 @@ function start({m}: {m: Messages}): Datatable.Column.Props<Row> {
       type: 'start',
       name: 'submissionTime',
       label: [m.start],
-      $xpath: 'submissionTime',
+      $xpath: 'meta/submissionTime',
     },
   })
 }
@@ -495,7 +501,7 @@ function end({m}: {m: Messages}): Datatable.Column.Props<Row> {
       type: 'end',
       name: 'submissionTime',
       label: [m.end],
-      $xpath: 'submissionTime',
+      $xpath: 'meta/submissionTime',
     },
   })
 }
@@ -507,7 +513,7 @@ function submissionTime({m}: {m: Messages}): Datatable.Column.Props<Row> {
       type: 'date',
       name: 'submissionTime',
       label: [m.submissionTime],
-      $xpath: 'submissionTime',
+      $xpath: 'meta/submissionTime',
     },
   })
 }
@@ -526,6 +532,7 @@ function validation({
   'canEdit' | 'queryUpdate' | 'getRow' | 'formId' | 'workspaceId' | 'm' | 'selectedIds' | 'dialogs'
 >): Datatable.Column.Props<Row> {
   return {
+    group: {label: metaLabel, id: 'meta'},
     id: '_validation' as const,
     head: m.validation,
     subHeader: selectedIds.length > 0 && (
@@ -539,7 +546,7 @@ function validation({
         }
       />
     ),
-    width: 0,
+    width: 60,
     type: 'select_one',
     render: (row: any) => {
       const value = getRow(row).validationStatus

@@ -66,6 +66,7 @@ export const en = Object.freeze({
     noComment: 'No comment',
     answers: 'Answers',
     seeResults: `See results`,
+    meta: 'Meta',
     updating: 'Updating',
     users: 'Users',
     link: 'Link',

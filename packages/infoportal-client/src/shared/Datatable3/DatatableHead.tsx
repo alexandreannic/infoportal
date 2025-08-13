@@ -5,6 +5,8 @@ import './DatatableHead.css'
 import {TableIconBtn} from '@/shared/TableIcon.js'
 import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
 import {Popup} from '@/shared/Datatable3/state/reducer.js'
+import {TableHeadSectionCell} from '@/shared/Datatable/TableHeadSectionCell.js'
+import {DatatableHeadSections} from '@/shared/Datatable3/DatatableHeadSections.js'
 
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
@@ -17,17 +19,18 @@ export const DatatableHead = (
 
   return (
     <div className="dthead" {...props}>
+      <DatatableHeadSections columns={columns} colWidths={colWidths} onHideColumns={console.log} />
       <div className="dtrh">
         {columns.map(col => (
           <Resizable
             key={col.id}
             draggableOpts={{grid: [10, 10]}}
             className="dth"
-            width={colWidths[col.id] ?? 120}
+            width={colWidths[col.id] ?? col.width ?? 120}
             axis="x"
             onResize={(e, s) => dispatch({type: 'RESIZE', col: col.id, width: s.size.width})}
           >
-            <div>{col.head}</div>
+            <div title={col.head}>{col.head}</div>
           </Resizable>
         ))}
       </div>

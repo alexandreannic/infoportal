@@ -85,9 +85,11 @@ export const Datatable3 = <T extends Datatable.Row>({data, columns: outerColumns
     const x = outerColumns.map(toInnerColumn).map(harmonizeColRenderValue)
     const rowNumberColumn: Datatable.Column.InnerProps<T> = {
       type: 'string',
+      group: {label: 'Meta', id: 'meta'},
       id: 'index',
       head: 'index',
       align: 'right',
+      width: 50,
       render: (_: any) => ({
         value: _?.index,
         label: _?.index,
@@ -122,7 +124,7 @@ export const DatatableWithData = <T extends Datatable.Row>() => {
     () =>
       columns
         // .filter(c => state.visibleCols.has(c.id))
-        .map(c => (colWidths[c.id] ?? 120) + 'px')
+        .map(c => (colWidths[c.id] ?? c.width ?? 120) + 'px')
         .join(' '),
     [columns, colWidths, colVisibility],
   )
@@ -251,9 +253,6 @@ export const DatatableWithData = <T extends Datatable.Row>() => {
                     dispatch({type: 'FILTER', value: {[p]: v}})
                     dispatch({type: 'CLOSE_POPUP'})
                     rowVirtualizer.scrollToIndex(0)
-                    // ctx.data.setFilters(_ => ({..._, [p]: v}))
-                    // ctx.data.setSearch(prev => ({...prev, offset: 0}))
-                    // ctx.modal.filterPopover.close()
                   }}
                 />
               )
