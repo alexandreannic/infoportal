@@ -43,6 +43,8 @@ export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   )
 }
 
+const getRowKey = (_: any) => _.id + ((_ as any) /** TODO Make it typesafe?*/._index ?? '')
+
 export const DatabaseTableContent = ({
   workspaceId,
   onFiltersChange,
@@ -200,7 +202,7 @@ export const DatabaseTableContent = ({
         // }}
         title={ctx.form.name}
         id={ctx.form.id}
-        getRowKey={_ => _.id + ((_ as any) /** TODO Make it typesafe?*/._index ?? '')}
+        getRowKey={getRowKey}
         columns={columns}
         data={flatData}
         header={params => (

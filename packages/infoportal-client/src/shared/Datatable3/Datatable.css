@@ -1,9 +1,9 @@
-.dt-container {
+.dt {
   min-width: 100%;
   overflow: auto;
   height: 800px;
 
-  .table .MuiCheckbox-root {
+  .MuiCheckbox-root {
     padding: 6px;
   }
 }
@@ -25,15 +25,16 @@
 
 .dtd {
   width: 100%;
-  border-bottom: 1px solid var(--mui-palette-divider);
   display: flex;
   align-items: center;
+  border-bottom: 1px solid var(--mui-palette-divider);
   border-right: 1px solid var(--mui-palette-divider);
   text-align: left;
   padding: 0 0px 0 4px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  background-color: var(--mui-palette-background-default);
 
   &.td-id {
     color: var(--mui-palette-info-main);
@@ -59,6 +60,11 @@
 .dtd.selected {
   background-color: color-mix(in srgb, var(--mui-palette-primary-main), transparent 90%);
   outline: 1px solid var(--mui-palette-primary-main);
+  border-bottom: 1px solid var(--mui-palette-primary-main);
+  border-right: 1px solid var(--mui-palette-primary-main);
+  /*border: 1px solid var(--mui-palette-primary-main);*/
+  /*box-shadow: 0 0 0 1px var(--mui-palette-primary-main);*/
+
   /*border-top: 1px solid var(--mui-palette-primary-main);*/
   /*border-left: 1px solid var(--mui-palette-primary-main);*/
 }

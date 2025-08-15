@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {Popover} from '@mui/material'
 
+export type UseCellSelection = ReturnType<typeof useCellSelection>
+
 export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
   const selecting = useRef<boolean>(false)
   const scrollInterval = useRef<NodeJS.Timeout | null>(null)
@@ -9,13 +11,32 @@ export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const anchor = useRef<{row: number; col: number} | null>(null) // last clicked cell for shift
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setSelectionStart(null)
     setSelectionEnd(null)
     setAnchorEl(null)
     selecting.current = false
     anchor.current = null
-  }
+  }, [])
+
+  useEffect(
+    function resetSelectOnClickAway() {
+      function onPointerDownCapture(e: PointerEvent) {
+        if (selecting.current) return
+        const target = e.target as Node | null
+        // if clicking inside the table viewport, do nothing
+        if (parentRef?.current && target && parentRef.current.contains(target)) return
+        // if anchorEl exists and the click is inside the popover/anchor, do nothing
+        if (anchorEl && target && anchorEl.contains(target)) return
+        reset()
+      }
+      document.addEventListener('pointerdown', onPointerDownCapture, {capture: true})
+      return () => {
+        document.removeEventListener('pointerdown', onPointerDownCapture, {capture: true} as EventListenerOptions)
+      }
+    },
+    [parentRef, anchorEl, reset],
+  )
 
   const handleMouseDown = useCallback((rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
     const isShift = event.shiftKey
@@ -92,14 +113,28 @@ export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
     }
   }
 
-  const isSelected = (rowIndex: number, colIndex: number) => {
-    if (!selectionStart || !selectionEnd) return false
+  const {rowMin, rowMax, colMin, colMax} = useMemo(() => {
+    if (!selectionStart || !selectionEnd) return {rowMin: -1, rowMax: -1, colMin: -1, colMax: -1}
     const rowMin = Math.min(selectionStart.row, selectionEnd.row)
     const rowMax = Math.max(selectionStart.row, selectionEnd.row)
     const colMin = Math.min(selectionStart.col, selectionEnd.col)
     const colMax = Math.max(selectionStart.col, selectionEnd.col)
-    return rowIndex >= rowMin && rowIndex <= rowMax && colIndex >= colMin && colIndex <= colMax
-  }
+    return {rowMin, rowMax, colMin, colMax}
+  }, [selectionStart, selectionEnd])
+
+  const isRowSelected = useCallback(
+    (rowIndex: number) => {
+      return rowIndex >= rowMin && rowIndex <= rowMax
+    },
+    [rowMin, rowMax],
+  )
+
+  const isSelected = useCallback(
+    (rowIndex: number, colIndex: number) => {
+      return isRowSelected(rowIndex) && colIndex >= colMin && colIndex <= colMax
+    },
+    [rowMin, rowMax, colMin, colMax],
+  )
 
   const selectedCount = useMemo(() => {
     if (!selectionStart || !selectionEnd) return 0
@@ -135,6 +170,7 @@ export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
     handleMouseEnter,
     handleMouseUp,
     isSelected,
+    isRowSelected,
     handleMouseMove,
   }
 }

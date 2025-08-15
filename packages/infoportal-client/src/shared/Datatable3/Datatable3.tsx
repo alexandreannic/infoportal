@@ -1,20 +1,20 @@
 import {Datatable} from '@/shared/Datatable3/state/types.js'
-import React, {memo, useEffect, useMemo} from 'react'
+import React, {useEffect, useMemo} from 'react'
 import {DatatableColumn, DatatableFilterValue} from '@/shared/Datatable/util/datatableType.js'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils.js'
 import {useVirtualizer} from '@tanstack/react-virtual'
-import {Badge, Skeleton} from '@mui/material'
+import {Badge} from '@mui/material'
 import './Datatable.css'
 import {DatatableHead} from '@/shared/Datatable3/DatatableHead.js'
 import {SelectedCellPopover, useCellSelection} from '@/shared/Datatable3/state/useCellSelection.js'
 import {Datatable3Provider, useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
-import {DatatableFilterModal} from '@/shared/Datatable/popover/DatatableFilterModal.js'
 import {IpIconBtn} from '@/shared/index.js'
 import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
 import {useI18n} from '@/core/i18n/index.js'
 import {DatatablePopupStats} from '@/shared/Datatable3/popup/DatatablePopupStats.js'
 import {DatatableFilterModal3} from '@/shared/Datatable3/popup/DatatablePopupFilter.js'
+import {DatatableRow} from '@/shared/Datatable3/DatatableRow.js'
 
 const toInnerColumn = <T extends Datatable.Row>(col: Datatable.Column.Props<T>): Datatable.Column.InnerProps<T> => {
   if (Datatable.Column.isInner(col)) {
@@ -130,8 +130,8 @@ export const DatatableWithData = <T extends Datatable.Row>() => {
   )
 
   useEffect(() => {
-    dispatch({type: 'INIT_DATA', data, columns, getRowKey, limit: 40})
-  }, [data])
+    dispatch({type: 'INIT_DATA', data: dataFilteredAndSorted, columns, getRowKey, limit: 40})
+  }, [dataFilteredAndSorted])
 
   const parentRef = React.useRef(null)
 
@@ -150,18 +150,24 @@ export const DatatableWithData = <T extends Datatable.Row>() => {
     if (!lastIndex) {
       return
     }
-    if (lastIndex >= data.length) {
+    if (lastIndex >= dataFilteredAndSorted.length) {
       return
     }
-    dispatch({type: 'SET_DATA', data, columns, getRowKey, offset: lastIndex, limit: 22 + overscan})
-  }, [rowVirtualizer.getVirtualItems()])
+    dispatch({
+      type: 'SET_DATA',
+      data: dataFilteredAndSorted,
+      columns,
+      getRowKey,
+      offset: lastIndex,
+      limit: 22 + overscan,
+    })
+  }, [dataFilteredAndSorted, rowVirtualizer.getVirtualItems()])
 
   const cellSelection = useCellSelection(parentRef)
-
   const filterCount = useMemoFn(filters, _ => Obj.keys(_).length)
 
   return (
-    <div className="dt-container" style={{['--cols' as any]: cssGridTemplate}} ref={parentRef}>
+    <>
       <div className="dt-toolbar">
         <Badge
           badgeContent={filterCount}
@@ -174,9 +180,9 @@ export const DatatableWithData = <T extends Datatable.Row>() => {
         >
           <IpIconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
         </Badge>
-        {data.length} --- {dataFilteredAndSorted.length}
+        {/*{data.length} --- {dataFilteredAndSorted.length}*/}
       </div>
-      <div className="dt">
+      <div className="dt" ref={parentRef} style={{['--cols' as any]: cssGridTemplate}}>
         <DatatableHead onMouseDown={() => cellSelection.reset()} />
         <div
           className="dtbody"
@@ -186,39 +192,22 @@ export const DatatableWithData = <T extends Datatable.Row>() => {
             position: 'relative',
           }}
         >
-          {rowVirtualizer.getVirtualItems().map(virtualRow => {
-            const row = dataFilteredAndSorted[virtualRow.index]
+          {rowVirtualizer.getVirtualItems().map(virtualItem => {
+            const row = dataFilteredAndSorted[virtualItem.index]
             const rowId = getRowKey(row)
+            const isRowInSelection = cellSelection.isRowSelected(virtualItem.index)
             return (
-              <div
-                className="dtr"
-                key={rowId}
-                style={{
-                  height: `${virtualRow.size}px`,
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-              >
-                {columns.map((col, colIndex) => {
-                  const key = Datatable.buildKey2({colId: col.id, rowId})
-                  const cell = virtualTable[rowId]?.[col.id]
-                  const selected = cellSelection.isSelected(virtualRow.index, colIndex)
-
-                  if (!cell) return <CellSkeleton key={key} />
-                  return (
-                    <Cell
-                      rowIndex={virtualRow.index}
-                      colIndex={colIndex}
-                      handleMouseDown={cellSelection.handleMouseDown}
-                      handleMouseEnter={cellSelection.handleMouseEnter}
-                      className={cell.className + (selected ? ' selected' : '')}
-                      label={cell.label}
-                      tooltip={cell.tooltip as any}
-                      style={cell.style}
-                      key={key}
-                    />
-                  )
-                })}
-              </div>
+              <DatatableRow
+                key={virtualItem.key}
+                columns={columns}
+                rowId={rowId}
+                virtualRow={virtualTable[rowId]}
+                virtualItem={virtualItem}
+                cellSelection_isRowInSelection={isRowInSelection}
+                cellSelection_isSelected={cellSelection.isSelected}
+                cellSelection_handleMouseDown={cellSelection.handleMouseDown}
+                cellSelection_handleMouseEnter={cellSelection.handleMouseEnter}
+              />
             )
           })}
         </div>
@@ -263,85 +252,6 @@ export const DatatableWithData = <T extends Datatable.Row>() => {
           }
         })()}
       </div>
-    </div>
+    </>
   )
 }
-
-// const Row = memo(
-//   ({
-//     row,
-//     rowId,
-//     start,
-//     size,
-//     columns,
-//   }: {
-//     columns: Datatable.Column.InnerProps<any>[]
-//     start: number
-//     size: number
-//     rowId: string
-//     row: any
-//   }) => {
-//     return (
-//       <div
-//         className="dtr"
-//         key={rowId}
-//         style={{
-//           height: `${size}px`,
-//           // top: start,
-//           transform: `translateY(${start}px)`,
-//         }}
-//       >
-//         {columns.map(col => {
-//           const rendered = col.render(row)
-//           return (
-//             <Cell
-//               // className={cell.className}
-//               label={rendered.label}
-//               tooltip={rendered.tooltip as any}
-//               style={col.style?.(row)}
-//               key={rowId + col.id}
-//             />
-//           )
-//         })}
-//       </div>
-//     )
-//   },
-// )
-
-const CellSkeleton = () => {
-  return (
-    <div className="dtd skeleton">
-      <Skeleton width="100%" />
-    </div>
-  )
-}
-
-const Cell = memo(
-  ({
-    handleMouseDown,
-    handleMouseEnter,
-    colIndex,
-    rowIndex,
-    label,
-    tooltip,
-    style,
-    className = 'dtd',
-  }: Datatable.VirtualCell & {
-    colIndex: number
-    rowIndex: number
-    handleMouseDown: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
-    handleMouseEnter: (rowIndex: number, colIndex: number) => void
-  }) => {
-    return (
-      <div
-        className={'dtd ' + className}
-        style={style}
-        title={tooltip}
-        onMouseDown={e => handleMouseDown(rowIndex, colIndex, e)}
-        onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
-      >
-        {label}
-      </div>
-    )
-  },
-)

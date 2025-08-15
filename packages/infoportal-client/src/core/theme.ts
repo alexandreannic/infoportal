@@ -202,7 +202,8 @@ export const muiTheme = ({
             focusOpacity: 0.1,
           },
           background: {
-            default: 'rgba(221, 231, 248, 0.6)',
+            default: '#fff',
+            // default: 'rgba(221, 231, 248, 0.6)',
             // default: 'rgba(255, 255, 255, 0.6)',
             paper: 'rgba(255, 255, 255, 0.7)',
           },
@@ -522,6 +523,10 @@ export const muiTheme = ({
       },
       MuiIconButton: {
         styleOverrides: {
+          colorPrimary: ({theme}) => ({
+            // Hack since it's not working by itself anymore after migrating to CSS VARS system.
+            color: theme.vars.palette.primary.main,
+          }),
           root: ({theme}) => ({
             color: theme.vars.palette.text.primary,
             spacing: 6,
@@ -724,7 +729,6 @@ const tableTheme2 = (t: Theme) => ({
   //   borderBottom: `1px solid ${theme.vars.palette.divider}`
   //   // background: 'red',
   // },
-
   // Inputs
   // '.table td:has(input)': {
   //   // transition: t.transitions.create('border-color'),

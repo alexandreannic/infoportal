@@ -10,8 +10,8 @@ export namespace Popup {
     STATS = 'STATS',
   }
 
-  export type FilterAgs = {columnId: string; event: {target: any}}//React.MouseEvent<any>}
-  export type StatsAgs = {columnId: string; event: {target: any}}//React.MouseEvent<any>}
+  export type FilterAgs = {columnId: string; event: {target: any}} //React.MouseEvent<any>}
+  export type StatsAgs = {columnId: string; event: {target: any}} //React.MouseEvent<any>}
 
   export type Event = ({name: Name.FILTER} & FilterAgs) | ({name: Name.STATS} & StatsAgs)
 }
@@ -178,18 +178,6 @@ function createHandlerMap<T extends Datatable.Row>(): HandlerMap<T> {
           orderBy,
         },
       }
-      // const asc = state.sortBy?.col === action.col ? !state.sortBy.asc : true
-      // const rowOrder = [...state.rowOrder].sort((a, b) => {
-      //   return 1
-      //   // const va = state.virtualTable[a][action.col as keyof T]
-      //   // const vb = state.virtualTable[b][action.col as keyof T]
-      //   // return asc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va))
-      // })
-      // return {
-      //   ...state,
-      //   sortBy: {col: action.col, asc},
-      //   rowOrder,
-      // }
     },
 
     FILTER: (state, action) => {

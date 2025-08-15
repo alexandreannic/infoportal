@@ -1,5 +1,13 @@
 .dthead {
   vertical-align: middle;
+  position: sticky;
+  top: 0;
+  /*background-color: rgba(0, 0, 0, .4);*/
+  z-index: 10;
+  backdrop-filter: blur(30px) saturate(150%);
+  background: rgb(var(--mui-palette-AppBar-defaultBg) / 0.4);
+  box-shadow: var(--mui-shadows-1);
+  width: max-content;
 }
 
 .dtrh {
@@ -11,7 +19,6 @@
 }
 
 .dth {
-  background: var(--mui-palette-AppBar-defaultBg);
   display: flex;
   align-items: center;
   width: 100%;
