@@ -1,40 +1,46 @@
 import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType.js'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils.js'
-import {useMemo} from 'react'
+import {MutableRefObject, useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
 
 export type UseDatatableColumns<T extends Datatable.Row> = ReturnType<typeof useDatatableColumns<T>>
 
 export const useDatatableColumns = <T extends Datatable.Row>({
   baseColumns,
-  showIndex,
+  showRowIndex,
   colWidths,
   colVisibility,
+  // onSelectRowRef,
 }: {
+  // onSelectRowRef: MutableRefObject<undefined | ((rowIndex: number) => void)>
   colWidths: Datatable.State<T>['colWidths']
   colVisibility: Datatable.State<T>['colVisibility']
   baseColumns: Datatable.Column.Props<T>[]
-  showIndex?: boolean
+  showRowIndex?: boolean
 }) => {
+  const mappedColumns = useMemo(() => {
+    return baseColumns.map(toInnerColumn).map(harmonizeColRenderValue)
+  }, [baseColumns])
+
   const all = useMemo(() => {
-    const schemaColumns = baseColumns.map(toInnerColumn).map(harmonizeColRenderValue)
-    if (showIndex)
-      schemaColumns.unshift({
+    if (showRowIndex)
+      mappedColumns.unshift({
         group: {label: 'Meta', id: 'meta'},
         id: 'index',
         className: 'td-index',
-
-        // onClick: (_: T) => cellSelection.selectRow()
-        head: 'index',
+        // onClick: _ => {
+        //   onSelectRowRef.current?.(_.rowIndex)
+        // },
+        head: '#',
         width: 50,
         render: (_: any) => ({
           value: _?.index,
           label: _?.index,
         }),
       })
-    return schemaColumns
-  }, [baseColumns, showIndex])
+    return mappedColumns
+  }, [mappedColumns, showRowIndex])
 
   const visible = useMemo(() => {
     return all.filter(c => !colVisibility.has(c.id))

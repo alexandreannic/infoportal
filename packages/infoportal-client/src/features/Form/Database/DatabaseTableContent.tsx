@@ -201,6 +201,7 @@ export const DatabaseTableContent = ({
         id={ctx.form.id}
         getRowKey={getRowKey}
         columns={columns}
+        showRowIndex={true}
         data={flatData}
         header={params => (
           <>

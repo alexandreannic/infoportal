@@ -447,7 +447,7 @@ function actions({
     group: {label: metaLabel, id: 'meta'},
     id: 'actions' as const,
     head: '',
-    width: 0,
+    width: 70,
     noCsvExport: true,
     render: (_: Submission) => {
       return {
@@ -535,16 +535,29 @@ function validation({
     group: {label: metaLabel, id: 'meta'},
     id: '_validation' as const,
     head: m.validation,
-    subHeader: selectedIds.length > 0 && (
-      <TableEditCellBtn
-        onClick={() =>
+    subHeader: (
+      <SelectStatusBy
+        enum="KoboValidation"
+        compact
+        disabled={!canEdit}
+        value={null}
+        onChange={e => {
           dialogs.openBulkEditValidation({
             formId,
             answerIds: selectedIds,
             workspaceId,
           })
-        }
+        }}
       />
+      // <TableEditCellBtn
+      //   onClick={() =>
+      //     dialogs.openBulkEditValidation({
+      //       formId,
+      //       answerIds: selectedIds,
+      //       workspaceId,
+      //     })
+      //   }
+      // />
     ),
     width: 60,
     type: 'select_one',

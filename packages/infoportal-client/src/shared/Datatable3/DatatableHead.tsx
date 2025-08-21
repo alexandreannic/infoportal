@@ -15,12 +15,13 @@ export const DatatableHead = (
   const colWidths = useDatatable3Context(_ => _.columns.widths)
   const sortBy = useDatatable3Context(_ => _.state.sortBy)
   const filters = useDatatable3Context(_ => _.state.filters)
+  const selectColumn = useDatatable3Context(_ => _.cellSelection.selectColumn)
 
   return (
     <div className="dthead" {...props}>
       <DatatableHeadSections columns={columns} onHideColumns={console.log} />
       <div className="dtrh">
-        {columns.map(c => (
+        {columns.map((c, columnIndex) => (
           <Resizable
             key={c.id}
             draggableOpts={{grid: [10, 10]}}
@@ -29,7 +30,12 @@ export const DatatableHead = (
             axis="x"
             onResize={(e, s) => dispatch({type: 'RESIZE', col: c.id, width: s.size.width})}
           >
-            <div title={c.head} style={{width: colWidths[c.id]}}>
+            <div
+              onClick={() => selectColumn(columnIndex)}
+              title={c.head}
+              style={{width: colWidths[c.id]}}
+              className={typeof c.className === 'string' ? c.className : undefined}
+            >
               {c.head}
             </div>
           </Resizable>

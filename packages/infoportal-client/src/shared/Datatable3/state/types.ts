@@ -1,5 +1,5 @@
 import {BoxProps, SxProps, Theme} from '@mui/material'
-import {CSSProperties, ReactNode} from 'react'
+import React, {CSSProperties, ReactNode} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {HeaderParams, OrderBy} from '@/shared/Datatable/util/datatableType.js'
 import {DatatableAction, DatatableState} from '@/shared/Datatable3/state/reducer.js'
@@ -66,6 +66,7 @@ export namespace Datatable {
     getRowChangeTracker?: (_: T) => string
     onEvent: () => void
     title?: string
+    showRowIndex?: boolean
 
     // Initialization
     /** Find a way to enforce k and v typing*/
@@ -115,7 +116,7 @@ export namespace Datatable {
       noCsvExport?: boolean
       noResize?: boolean
       align?: 'center' | 'right'
-      onClick?: (_: T) => void
+      onClick?: (_: {data: T; rowIndex: number; event: React.MouseEvent<HTMLElement>}) => void
       hidden?: boolean
       style?: (_: T) => CSSProperties
       styleHead?: CSSProperties

@@ -1,4 +1,4 @@
-import {useCallback, useMemo} from 'react'
+import {useCallback, useEffect, useMemo} from 'react'
 import {multipleFilters, safeNumber} from 'infoportal-common'
 import {KeyOf, fnSwitch, map, Obj} from '@axanc/ts-utils'
 import {DatatableFilterTypeMapping, DatatableRow} from '@/shared/Datatable/util/datatableType.js'
@@ -12,12 +12,21 @@ export const useDatatableData = <T extends DatatableRow>({
   filters,
   sortBy,
   colIndex,
+  showRowIndex,
 }: {
+  showRowIndex?: boolean
   data: T[]
   filters: Datatable.Filters<any>
   sortBy?: Datatable.SortBy
   colIndex: Record<string, Datatable.Column.InnerProps<any>>
 }) => {
+  useEffect(() => {
+    if (!showRowIndex) return
+    data?.forEach((d: any, i) => {
+      d.index = i
+    })
+  }, [data])
+
   const filteredData = useMemo(() => {
     return filterBy({data, filters: filters, colIndex: colIndex})
   }, [data, filters])

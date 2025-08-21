@@ -1,11 +1,10 @@
 import {Datatable} from '@/shared/Datatable3/state/types.js'
-import React, {useCallback, useEffect, useMemo} from 'react'
+import React, {useCallback, useEffect} from 'react'
 import {DatatableFilterValue} from '@/shared/Datatable/util/datatableType.js'
 import {useVirtualizer} from '@tanstack/react-virtual'
 import {Badge} from '@mui/material'
 import './Datatable.css'
 import {DatatableHead} from '@/shared/Datatable3/DatatableHead.js'
-import {SelectedCellPopover, useCellSelection} from '@/shared/Datatable3/state/useCellSelection.js'
 import {Datatable3Provider, useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
 import {IpIconBtn, Txt} from '@/shared/index.js'
 import {useMemoFn} from '@axanc/react-hooks'
@@ -14,23 +13,31 @@ import {useI18n} from '@/core/i18n/index.js'
 import {DatatablePopupStats} from '@/shared/Datatable3/popup/DatatablePopupStats.js'
 import {DatatableFilterModal3} from '@/shared/Datatable3/popup/DatatablePopupFilter.js'
 import {DatatableRow} from '@/shared/Datatable3/DatatableRow.js'
+import {SelectedCellPopover} from '@/shared/Datatable3/state/useCellSelectionComputed.js'
 
-export const Datatable3 = <T extends Datatable.Row>({data, columns, header, ...props}: Datatable.Props<T>) => {
-  useEffect(() => {
-    data?.forEach((d: any, i) => {
-      d.index = i
-    })
-  }, [data])
-
+export const Datatable3 = <T extends Datatable.Row>({
+  data,
+  columns,
+  showRowIndex,
+  header,
+  ...props
+}: Datatable.Props<T>) => {
   if (!data) return 'Loading...'
+  const tableRef = React.useRef(null) as unknown as React.MutableRefObject<HTMLDivElement>
   return (
-    <Datatable3Provider {...props} data={data} columns={columns}>
-      <DatatableWithData header={header} />
+    <Datatable3Provider {...props} data={data} columns={columns} showRowIndex={showRowIndex} tableRef={tableRef}>
+      <DatatableWithData header={header} tableRef={tableRef} />
     </Datatable3Provider>
   )
 }
 
-export const DatatableWithData = <T extends Datatable.Row>({header}: {header: Datatable.Props<T>['header']}) => {
+export const DatatableWithData = <T extends Datatable.Row>({
+  header,
+  tableRef,
+}: {
+  tableRef: React.MutableRefObject<HTMLDivElement>
+  header: Datatable.Props<T>['header']
+}) => {
   const {m, formatLargeNumber} = useI18n()
   const {
     columns,
@@ -41,19 +48,18 @@ export const DatatableWithData = <T extends Datatable.Row>({header}: {header: Da
     dataFilteredAndSorted,
     dataFilteredExceptBy,
     getColumnOptions,
+    cellSelection,
   } = useDatatable3Context(_ => _)
 
   useEffect(() => {
     dispatch({type: 'INIT_DATA', data: dataFilteredAndSorted, columns: columns.all, getRowKey, limit: 40})
   }, [dataFilteredAndSorted])
 
-  const parentRef = React.useRef(null)
-
   const overscan = 10
   const rowVirtualizer = useVirtualizer({
     count: dataFilteredAndSorted?.length ?? 0,
     debug: false,
-    getScrollElement: () => parentRef.current,
+    getScrollElement: () => tableRef.current,
     estimateSize: () => 32,
     overscan,
   })
@@ -77,23 +83,16 @@ export const DatatableWithData = <T extends Datatable.Row>({header}: {header: Da
     })
   }, [dataFilteredAndSorted, rowVirtualizer.getVirtualItems()])
 
-  const cellSelection = useCellSelection(parentRef)
   const filterCount = useMemoFn(filters, _ => Obj.keys(_).length)
 
   const onCellClick = useCallback((rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
-    console.log(
-      rowIndex,
-      colIndex,
-      columns.visible[colIndex].id,
-      dataFilteredAndSorted[rowIndex],
-      dataFilteredAndSorted[rowIndex][columns.visible[colIndex].id],
-    )
+    const row = dataFilteredAndSorted[rowIndex]
+    const column = columns.visible[colIndex]
+    if (column.onClick) {
+      column.onClick({data: row, rowIndex, event})
+    }
   }, [])
 
-  console.log(
-    columns.visible.map(_ => _.id),
-    colWidths,
-  )
   return (
     <>
       <div className="dt-toolbar">
@@ -118,11 +117,11 @@ export const DatatableWithData = <T extends Datatable.Row>({header}: {header: Da
           {formatLargeNumber(dataFilteredAndSorted.length)}
         </Txt>
       </div>
-      <div className="dt" ref={parentRef} style={{['--cols' as any]: columns.cssGridTemplate}}>
-        <DatatableHead onMouseDown={() => cellSelection.reset()} />
+      <div className="dt" ref={tableRef} style={{['--cols' as any]: columns.cssGridTemplate}}>
+        <DatatableHead onMouseDown={() => cellSelection.engine.reset()} />
         <div
           className="dtbody"
-          onMouseUp={cellSelection.handleMouseUp}
+          onMouseUp={cellSelection.engine.handleMouseUp}
           style={{
             height: `${rowVirtualizer.getTotalSize()}px`,
             position: 'relative',
@@ -131,7 +130,7 @@ export const DatatableWithData = <T extends Datatable.Row>({header}: {header: Da
           {rowVirtualizer.getVirtualItems().map(virtualItem => {
             const row = dataFilteredAndSorted[virtualItem.index]
             const rowId = getRowKey(row)
-            const isRowInSelection = cellSelection.isRowSelected(virtualItem.index)
+            const isRowInSelection = cellSelection.engine.isRowSelected(virtualItem.index)
             return (
               <DatatableRow
                 row={row}
@@ -142,9 +141,9 @@ export const DatatableWithData = <T extends Datatable.Row>({header}: {header: Da
                 virtualRow={virtualTable[rowId]}
                 virtualItem={virtualItem}
                 cellSelection_isRowInSelection={isRowInSelection}
-                cellSelection_isSelected={cellSelection.isSelected}
-                cellSelection_handleMouseDown={cellSelection.handleMouseDown}
-                cellSelection_handleMouseEnter={cellSelection.handleMouseEnter}
+                cellSelection_isSelected={cellSelection.engine.isSelected}
+                cellSelection_handleMouseDown={cellSelection.engine.handleMouseDown}
+                cellSelection_handleMouseEnter={cellSelection.engine.handleMouseEnter}
               />
             )
           })}

@@ -1,9 +1,9 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
-import {Popover} from '@mui/material'
+import {selectedCellPopoverElementId} from '@/shared/Datatable3/state/useCellSelectionComputed.js'
 
-export type UseCellSelection = ReturnType<typeof useCellSelection>
+export type UseCellSelection = ReturnType<typeof useCellSelectionEngine>
 
-export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
+export const useCellSelectionEngine = ({tableRef}: {tableRef: React.MutableRefObject<HTMLDivElement>}) => {
   const selecting = useRef<boolean>(false)
   const scrollInterval = useRef<NodeJS.Timeout | null>(null)
   const [selectionStart, setSelectionStart] = useState<{row: number; col: number} | null>(null)
@@ -19,24 +19,28 @@ export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
     anchor.current = null
   }, [])
 
-  useEffect(
-    function resetSelectOnClickAway() {
-      function onPointerDownCapture(e: PointerEvent) {
-        if (selecting.current) return
-        const target = e.target as Node | null
-        // if clicking inside the table viewport, do nothing
-        if (parentRef?.current && target && parentRef.current.contains(target)) return
-        // if anchorEl exists and the click is inside the popover/anchor, do nothing
-        if (anchorEl && target && anchorEl.contains(target)) return
-        reset()
-      }
-      document.addEventListener('pointerdown', onPointerDownCapture, {capture: true})
-      return () => {
-        document.removeEventListener('pointerdown', onPointerDownCapture, {capture: true} as EventListenerOptions)
-      }
-    },
-    [parentRef, anchorEl, reset],
-  )
+  // useEffect(
+  //   function resetSelectOnClickAway() {
+  //     function onPointerDownCapture(e: PointerEvent) {
+  //       if (selecting.current) return
+  //       const target = e.target as Node | null
+  //       // if clicking inside the table viewport, do nothing
+  //       if (tableRef?.current && target && tableRef.current.contains(target)) return
+  //       // if anchorEl exists and the click is inside the popover/anchor, do nothing
+  //       console.log(anchorEl, target, anchorEl?.contains(target))
+  //       if (anchorEl && target) {
+  //         const popoverEl = document.getElementById(selectedCellPopoverElementId)
+  //         if (popoverEl?.contains(target)) return
+  //       }
+  //       reset()
+  //     }
+  //     document.addEventListener('pointerdown', onPointerDownCapture, {capture: true})
+  //     return () => {
+  //       document.removeEventListener('pointerdown', onPointerDownCapture, {capture: true} as EventListenerOptions)
+  //     }
+  //   },
+  //   [tableRef, anchorEl, reset],
+  // )
 
   const handleMouseDown = useCallback((rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
     const isShift = event.shiftKey
@@ -70,9 +74,9 @@ export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
   }, [])
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!selecting.current || !parentRef.current) return
+    if (!selecting.current || !tableRef.current) return
 
-    const rect = parentRef.current.getBoundingClientRect()
+    const rect = tableRef.current.getBoundingClientRect()
     const margin = 10 // distance from edge to trigger scroll
     const scrollSpeed = 15 // pixels per interval
     const scrollIntervalMs = 5
@@ -84,30 +88,30 @@ export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
     // Vertical auto-scroll
     if (e.clientY < rect.top + margin) {
       scrollInterval.current = setInterval(() => {
-        if (parentRef.current!.scrollTop > 0) {
-          parentRef.current!.scrollTop = Math.max(0, parentRef.current!.scrollTop - scrollSpeed)
+        if (tableRef.current!.scrollTop > 0) {
+          tableRef.current!.scrollTop = Math.max(0, tableRef.current!.scrollTop - scrollSpeed)
         }
       }, scrollIntervalMs)
     } else if (e.clientY > rect.bottom - margin) {
       scrollInterval.current = setInterval(() => {
-        const maxScrollTop = parentRef.current!.scrollHeight - parentRef.current!.clientHeight
-        if (parentRef.current!.scrollTop < maxScrollTop) {
-          parentRef.current!.scrollTop = Math.min(maxScrollTop, parentRef.current!.scrollTop + scrollSpeed)
+        const maxScrollTop = tableRef.current!.scrollHeight - tableRef.current!.clientHeight
+        if (tableRef.current!.scrollTop < maxScrollTop) {
+          tableRef.current!.scrollTop = Math.min(maxScrollTop, tableRef.current!.scrollTop + scrollSpeed)
         }
       }, scrollIntervalMs)
     }
     // Horizontal auto-scroll
     else if (e.clientX < rect.left + margin) {
       scrollInterval.current = setInterval(() => {
-        if (parentRef.current!.scrollLeft > 0) {
-          parentRef.current!.scrollLeft = Math.max(0, parentRef.current!.scrollLeft - scrollSpeed)
+        if (tableRef.current!.scrollLeft > 0) {
+          tableRef.current!.scrollLeft = Math.max(0, tableRef.current!.scrollLeft - scrollSpeed)
         }
       }, scrollIntervalMs)
     } else if (e.clientX > rect.right - margin) {
       scrollInterval.current = setInterval(() => {
-        const maxScrollLeft = parentRef.current!.scrollWidth - parentRef.current!.clientWidth
-        if (parentRef.current!.scrollLeft < maxScrollLeft) {
-          parentRef.current!.scrollLeft = Math.min(maxScrollLeft, parentRef.current!.scrollLeft + scrollSpeed)
+        const maxScrollLeft = tableRef.current!.scrollWidth - tableRef.current!.clientWidth
+        if (tableRef.current!.scrollLeft < maxScrollLeft) {
+          tableRef.current!.scrollLeft = Math.min(maxScrollLeft, tableRef.current!.scrollLeft + scrollSpeed)
         }
       }, scrollIntervalMs)
     }
@@ -122,24 +126,12 @@ export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
     return {rowMin, rowMax, colMin, colMax}
   }, [selectionStart, selectionEnd])
 
-  const isRowSelected = useCallback(
-    (rowIndex: number) => {
-      return rowIndex >= rowMin && rowIndex <= rowMax
-    },
-    [rowMin, rowMax],
-  )
-
+  const isRowSelected = useCallback((rowIndex: number) => rowIndex >= rowMin && rowIndex <= rowMax, [rowMin, rowMax])
+  const isColumnSelected = useCallback((colIndex: number) => colIndex >= colMin && colIndex <= colMax, [colMin, colMax])
   const isSelected = useCallback(
-    (rowIndex: number, colIndex: number) => {
-      return isRowSelected(rowIndex) && colIndex >= colMin && colIndex <= colMax
-    },
+    (rowIndex: number, colIndex: number) => isRowSelected(rowIndex) && isColumnSelected(colIndex),
     [rowMin, rowMax, colMin, colMax],
   )
-
-  const selectedCount = useMemo(() => {
-    if (!selectionStart || !selectionEnd) return 0
-    return (Math.abs(selectionStart.col - selectionEnd.col) + 1) * (Math.abs(selectionStart.row - selectionEnd.row) + 1)
-  }, [selectionStart, selectionEnd])
 
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove)
@@ -163,61 +155,20 @@ export const useCellSelection = (parentRef: React.MutableRefObject<any>) => {
   }, [])
 
   return {
-    selectedCount,
     reset,
+    state: {
+      selectionStart,
+      selectionEnd,
+      setSelectionStart,
+      setSelectionEnd,
+    },
+    isSelected,
+    isRowSelected,
+    isColumnSelected,
     anchorEl,
     handleMouseDown,
     handleMouseEnter,
     handleMouseUp,
-    isSelected,
-    isRowSelected,
     handleMouseMove,
   }
-}
-
-export const SelectedCellPopover = ({
-  reset,
-  selectedCount,
-  anchorEl,
-}: Pick<ReturnType<typeof useCellSelection>, 'selectedCount' | 'reset' | 'anchorEl'>) => {
-  return (
-    <Popover
-      onClose={reset}
-      open={!!anchorEl && selectedCount > 0}
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
-      }}
-      slotProps={{
-        root: {
-          disableEnforceFocus: true,
-          disableAutoFocus: true,
-          disableRestoreFocus: true,
-          keepMounted: true,
-          sx: {
-            pointerEvents: 'none', // prevent root modal layer from intercepting
-          },
-        },
-        paper: {
-          sx: {
-            pointerEvents: 'auto', // allow interactions inside popover
-            px: 1,
-            py: 0.5,
-          },
-        },
-        backdrop: {
-          sx: {
-            display: 'none',
-          },
-        },
-      }}
-    >
-      <div style={{padding: 10}}>Selection {selectedCount}</div>
-    </Popover>
-  )
 }
