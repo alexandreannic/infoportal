@@ -12,6 +12,14 @@
   user-select: none;
 }
 
+.dtd.td-index {
+  justify-content: center;
+  padding: 0;
+  background: none;
+  color: var(--mui-palette-text-disabled)
+}
+
+
 .dtr {
   display: grid;
   grid-template-columns: var(--cols);
@@ -67,4 +75,10 @@
 
   /*border-top: 1px solid var(--mui-palette-primary-main);*/
   /*border-left: 1px solid var(--mui-palette-primary-main);*/
+}
+
+.dt-toolbar {
+  padding: calc(var(--mui-spacing) / 2);
+  display: flex;
+  align-items: center;
 }

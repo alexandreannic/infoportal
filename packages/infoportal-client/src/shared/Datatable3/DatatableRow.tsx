@@ -10,6 +10,7 @@ export const DatatableRow = memo(DatatableRow_, (prevProps, nextProps) => {
     prevProps.virtualItem === nextProps.virtualItem &&
     prevProps.virtualRow === nextProps.virtualRow &&
     prevProps.columns === nextProps.columns &&
+    prevProps.onCellClick === nextProps.onCellClick &&
     prevProps.cellSelection_handleMouseDown === nextProps.cellSelection_handleMouseDown &&
     prevProps.cellSelection_handleMouseEnter === nextProps.cellSelection_handleMouseEnter &&
     // prevProps.cellSelection_isSelected === nextProps.cellSelection_isSelected
@@ -19,19 +20,22 @@ export const DatatableRow = memo(DatatableRow_, (prevProps, nextProps) => {
     !prevProps.cellSelection_isRowInSelection &&
     !nextProps.cellSelection_isRowInSelection
   )
-})
+}) as typeof DatatableRow_
 
 function DatatableRow_<T extends Datatable.Row>({
   rowId,
   virtualItem,
   virtualRow,
   columns,
+  onCellClick,
   cellSelection_isSelected,
   cellSelection_handleMouseDown,
   cellSelection_handleMouseEnter,
 }: {
+  onCellClick: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
   virtualRow: Record<string, VirtualCell>
   rowId: string
+  row: T
   columns: Datatable.Column.InnerProps<T>[]
   virtualItem: VirtualItem
   cellSelection_isSelected: (rowIndex: number, colIndex: number) => boolean
@@ -61,7 +65,7 @@ function DatatableRow_<T extends Datatable.Row>({
         const key = virtualItem.key + col.id
         if (!cell) {
           return <CellSkeleton key={key} />
-          //   // if (col.id === 'id')
+          // // if (col.id === 'id')
           // cell = data?.[virtualRow.index]
           //   console.log({
           //     count: dataFilteredAndSorted?.length ?? 0,
@@ -73,6 +77,7 @@ function DatatableRow_<T extends Datatable.Row>({
         }
         return (
           <Cell
+            onClick={onCellClick}
             key={key}
             rowIndex={virtualItem.index}
             colIndex={colIndex}
@@ -105,9 +110,11 @@ const Cell = memo(
     rowIndex,
     label,
     tooltip,
+    onClick,
     style,
-    className = 'dtd',
+    className = '',
   }: Datatable.VirtualCell & {
+    onClick?: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
     colIndex: number
     rowIndex: number
     handleMouseDown: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
@@ -117,6 +124,7 @@ const Cell = memo(
       <div
         className={'dtd ' + className}
         style={style}
+        onClick={onClick ? e => onClick(rowIndex, colIndex, e) : undefined}
         title={tooltip}
         onMouseDown={e => handleMouseDown(rowIndex, colIndex, e)}
         onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}

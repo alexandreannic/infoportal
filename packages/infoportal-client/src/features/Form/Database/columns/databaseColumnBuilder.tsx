@@ -13,7 +13,7 @@ import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useKoboDialogs} from '@/core/store/useLangIndex'
 import {TableIcon, TableIconBtn} from '@/shared/TableIcon'
-import {SelectStatusBy} from '@/shared/customInput/SelectStatus'
+import {SelectStatusBy, SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {useI18n} from '@/core/i18n'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
 import Submission = Ip.Submission
@@ -549,27 +549,29 @@ function validation({
     width: 60,
     type: 'select_one',
     render: (row: any) => {
-      const value = getRow(row).validationStatus
+      const value: Ip.Submission.Validation = getRow(row).validationStatus
+      const toGenericStatus = SelectStatusConfig.customStatusToStateStatus.KoboValidation[value]
       return {
         export: value ? (m as any)[value] : DatatableUtils.blank,
         value: value ?? DatatableUtils.blank,
         option: value ? (m as any)[value] : DatatableUtils.blank,
-        label: (
-          <SelectStatusBy
-            enum="KoboValidation"
-            compact
-            disabled={!canEdit}
-            value={value}
-            onChange={e => {
-              queryUpdate.updateValidation.mutate({
-                workspaceId,
-                formId: formId,
-                answerIds: [getRow(row).id],
-                status: e,
-              })
-            }}
-          />
-        ),
+        label: <StateStatusIcon type={toGenericStatus} />,
+        // label: (
+        //   <SelectStatusBy
+        //     enum="KoboValidation"
+        //     compact
+        //     disabled={!canEdit}
+        //     value={value}
+        //     onChange={e => {
+        //       queryUpdate.updateValidation.mutate({
+        //         workspaceId,
+        //         formId: formId,
+        //         answerIds: [getRow(row).id],
+        //         status: e,
+        //       })
+        //     }}
+        //   />
+        // ),
       }
     },
   }

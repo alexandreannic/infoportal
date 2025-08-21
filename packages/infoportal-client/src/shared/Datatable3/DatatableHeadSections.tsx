@@ -5,6 +5,7 @@ import {styleUtils} from '@/core/theme.js'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {memo, useMemo} from 'react'
+import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
 
 const colors = [
   '#2196F3',
@@ -58,12 +59,11 @@ export const DatatableHeadSections = memo(DatatableHeadSections_)
 function DatatableHeadSections_({
   columns,
   onHideColumns,
-  colWidths,
 }: {
-  colWidths: Datatable.State<any>['colWidths']
   columns: Datatable.Column.InnerProps<any>[]
   onHideColumns: (_: string[]) => void
 }) {
+  const colWidths = useDatatable3Context(_ => _.columns.widths)
   const t = useTheme()
   const {classes, cx} = useStyles()
 

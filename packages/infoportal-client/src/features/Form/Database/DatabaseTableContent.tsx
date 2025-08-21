@@ -155,9 +155,6 @@ export const DatabaseTableContent = ({
       await generateEmptyXlsTemplate(ctx.schema, ctx.form.name + '_Template')
     }
   }
-  useEffect(() => {
-    console.log('PARENT recompile flatData', flatData?.length)
-  }, [flatData])
 
   return (
     <>

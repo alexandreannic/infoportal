@@ -12,6 +12,7 @@
 
 .dtrh {
   height: 30px;
+  /*display: flex;*/
   display: grid;
   grid-template-columns: var(--cols);
   position: sticky;

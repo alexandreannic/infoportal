@@ -5,32 +5,33 @@ import './DatatableHead.css'
 import {TableIconBtn} from '@/shared/TableIcon.js'
 import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
 import {Popup} from '@/shared/Datatable3/state/reducer.js'
-import {TableHeadSectionCell} from '@/shared/Datatable/TableHeadSectionCell.js'
 import {DatatableHeadSections} from '@/shared/Datatable3/DatatableHeadSections.js'
 
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
 ) => {
-  const columns = useDatatable3Context(_ => _.columns)
+  const columns = useDatatable3Context(_ => _.columns.visible)
   const dispatch = useDatatable3Context(_ => _.dispatch)
-  const colWidths = useDatatable3Context(_ => _.state.colWidths)
+  const colWidths = useDatatable3Context(_ => _.columns.widths)
   const sortBy = useDatatable3Context(_ => _.state.sortBy)
   const filters = useDatatable3Context(_ => _.state.filters)
 
   return (
     <div className="dthead" {...props}>
-      <DatatableHeadSections columns={columns} colWidths={colWidths} onHideColumns={console.log} />
+      <DatatableHeadSections columns={columns} onHideColumns={console.log} />
       <div className="dtrh">
-        {columns.map(col => (
+        {columns.map(c => (
           <Resizable
-            key={col.id}
+            key={c.id}
             draggableOpts={{grid: [10, 10]}}
             className="dth"
-            width={colWidths[col.id] ?? col.width ?? 120}
+            width={colWidths[c.id]}
             axis="x"
-            onResize={(e, s) => dispatch({type: 'RESIZE', col: col.id, width: s.size.width})}
+            onResize={(e, s) => dispatch({type: 'RESIZE', col: c.id, width: s.size.width})}
           >
-            <div title={col.head}>{col.head}</div>
+            <div title={c.head} style={{width: colWidths[c.id]}}>
+              {c.head}
+            </div>
           </Resizable>
         ))}
       </div>
