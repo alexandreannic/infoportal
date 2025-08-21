@@ -31,7 +31,7 @@ export const DatatableHead = (
             onResize={(e, s) => dispatch({type: 'RESIZE', col: c.id, width: s.size.width})}
           >
             <div
-              onClick={() => selectColumn(columnIndex)}
+              onClick={(e) => selectColumn(columnIndex, e)}
               title={c.head}
               style={{width: colWidths[c.id]}}
               className={typeof c.className === 'string' ? c.className : undefined}

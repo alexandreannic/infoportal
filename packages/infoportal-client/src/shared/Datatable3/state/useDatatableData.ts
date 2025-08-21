@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo} from 'react'
 import {multipleFilters, safeNumber} from 'infoportal-common'
-import {KeyOf, fnSwitch, map, Obj} from '@axanc/ts-utils'
+import {fnSwitch, KeyOf, map, Obj} from '@axanc/ts-utils'
 import {DatatableFilterTypeMapping, DatatableRow} from '@/shared/Datatable/util/datatableType.js'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils.js'
 import {Datatable} from '@/shared/Datatable3/state/types.js'

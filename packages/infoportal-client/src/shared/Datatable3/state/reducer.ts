@@ -1,8 +1,7 @@
 import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {KeyOf, mapFor} from '@axanc/ts-utils'
-import DatatableFilterValue = Datatable.DatatableFilterValue
 import {OrderBy} from '@axanc/react-hooks'
-import React from 'react'
+import DatatableFilterValue = Datatable.DatatableFilterValue
 
 export namespace Popup {
   export enum Name {

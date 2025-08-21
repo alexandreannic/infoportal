@@ -1,7 +1,7 @@
 import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType.js'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils.js'
-import {MutableRefObject, useMemo} from 'react'
+import {useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
 
 export type UseDatatableColumns<T extends Datatable.Row> = ReturnType<typeof useDatatableColumns<T>>

@@ -2,7 +2,7 @@ import {Datatable} from '@/shared/Datatable3/state/types.js'
 import React, {useCallback, useEffect} from 'react'
 import {DatatableFilterValue} from '@/shared/Datatable/util/datatableType.js'
 import {useVirtualizer} from '@tanstack/react-virtual'
-import {Badge} from '@mui/material'
+import {Badge, Box, BoxProps} from '@mui/material'
 import './Datatable.css'
 import {DatatableHead} from '@/shared/Datatable3/DatatableHead.js'
 import {Datatable3Provider, useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
@@ -19,6 +19,7 @@ export const Datatable3 = <T extends Datatable.Row>({
   data,
   columns,
   showRowIndex,
+  contentProps,
   header,
   ...props
 }: Datatable.Props<T>) => {
@@ -26,7 +27,7 @@ export const Datatable3 = <T extends Datatable.Row>({
   const tableRef = React.useRef(null) as unknown as React.MutableRefObject<HTMLDivElement>
   return (
     <Datatable3Provider {...props} data={data} columns={columns} showRowIndex={showRowIndex} tableRef={tableRef}>
-      <DatatableWithData header={header} tableRef={tableRef} />
+      <DatatableWithData header={header} tableRef={tableRef} contentProps={contentProps} />
     </Datatable3Provider>
   )
 }
@@ -34,7 +35,9 @@ export const Datatable3 = <T extends Datatable.Row>({
 export const DatatableWithData = <T extends Datatable.Row>({
   header,
   tableRef,
+  contentProps,
 }: {
+  contentProps?: BoxProps
   tableRef: React.MutableRefObject<HTMLDivElement>
   header: Datatable.Props<T>['header']
 }) => {
@@ -117,7 +120,12 @@ export const DatatableWithData = <T extends Datatable.Row>({
           {formatLargeNumber(dataFilteredAndSorted.length)}
         </Txt>
       </div>
-      <div className="dt" ref={tableRef} style={{['--cols' as any]: columns.cssGridTemplate}}>
+      <Box
+        className="dt"
+        ref={tableRef}
+        style={{['--cols' as any]: columns.cssGridTemplate, ...contentProps.style}}
+        {...contentProps}
+      >
         <DatatableHead onMouseDown={() => cellSelection.engine.reset()} />
         <div
           className="dtbody"
@@ -188,7 +196,7 @@ export const DatatableWithData = <T extends Datatable.Row>({
             }
           }
         })()}
-      </div>
+      </Box>
     </>
   )
 }

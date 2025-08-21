@@ -1,7 +1,7 @@
 .dt {
   min-width: 100%;
   overflow: auto;
-  height: 800px;
+  height: calc(100vh - 150px);
 
   .MuiCheckbox-root {
     padding: 6px;
@@ -48,6 +48,8 @@
   }
 
   &.td-center {
+    padding-left: 0;
+    padding-right: 0;
     justify-content: center;
   }
 

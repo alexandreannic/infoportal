@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
-import {selectedCellPopoverElementId} from '@/shared/Datatable3/state/useCellSelectionComputed.js'
 
 export type UseCellSelection = ReturnType<typeof useCellSelectionEngine>
 
@@ -19,32 +18,9 @@ export const useCellSelectionEngine = ({tableRef}: {tableRef: React.MutableRefOb
     anchor.current = null
   }, [])
 
-  // useEffect(
-  //   function resetSelectOnClickAway() {
-  //     function onPointerDownCapture(e: PointerEvent) {
-  //       if (selecting.current) return
-  //       const target = e.target as Node | null
-  //       // if clicking inside the table viewport, do nothing
-  //       if (tableRef?.current && target && tableRef.current.contains(target)) return
-  //       // if anchorEl exists and the click is inside the popover/anchor, do nothing
-  //       console.log(anchorEl, target, anchorEl?.contains(target))
-  //       if (anchorEl && target) {
-  //         const popoverEl = document.getElementById(selectedCellPopoverElementId)
-  //         if (popoverEl?.contains(target)) return
-  //       }
-  //       reset()
-  //     }
-  //     document.addEventListener('pointerdown', onPointerDownCapture, {capture: true})
-  //     return () => {
-  //       document.removeEventListener('pointerdown', onPointerDownCapture, {capture: true} as EventListenerOptions)
-  //     }
-  //   },
-  //   [tableRef, anchorEl, reset],
-  // )
-
   const handleMouseDown = useCallback((rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
     const isShift = event.shiftKey
-
+    setAnchorEl(null)
     if (isShift && anchor.current) {
       // Shift+click: select rect from anchor to current cell
       setSelectionStart(anchor.current)
@@ -166,6 +142,7 @@ export const useCellSelectionEngine = ({tableRef}: {tableRef: React.MutableRefOb
     isRowSelected,
     isColumnSelected,
     anchorEl,
+    setAnchorEl,
     handleMouseDown,
     handleMouseEnter,
     handleMouseUp,

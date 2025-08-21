@@ -535,6 +535,7 @@ function validation({
     group: {label: metaLabel, id: 'meta'},
     id: '_validation' as const,
     head: m.validation,
+    align: 'center',
     subHeader: (
       <SelectStatusBy
         enum="KoboValidation"

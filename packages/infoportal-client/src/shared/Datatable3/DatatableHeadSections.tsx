@@ -1,5 +1,5 @@
-import {IpBtn, IpIconBtn} from '@/shared/index.js'
-import {Box, Icon, useTheme} from '@mui/material'
+import {IpIconBtn} from '@/shared/index.js'
+import {useTheme} from '@mui/material'
 import {makeStyles} from 'tss-react/mui'
 import {styleUtils} from '@/core/theme.js'
 import {Obj, seq} from '@axanc/ts-utils'

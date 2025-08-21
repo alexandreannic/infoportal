@@ -1,10 +1,10 @@
 import {Datatable} from '@/shared/Datatable3/state/types.js'
-import {UseCellSelection, useCellSelectionEngine} from '@/shared/Datatable3/state/useCellSelectionEngine.js'
+import {UseCellSelection} from '@/shared/Datatable3/state/useCellSelectionEngine.js'
 import React, {useCallback, useEffect, useMemo} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
-import {Popover} from '@mui/material'
+import {Box, Icon, Popover} from '@mui/material'
 import {DatatableContext} from '@/shared/Datatable3/state/DatatableContext.js'
-import {IpBtn, IpIconBtn, Txt} from '@/shared/index.js'
+import {IpBtn, Txt} from '@/shared/index.js'
 
 export type UseCellSelectionComputed = ReturnType<typeof useCellSelectionComputed>
 
@@ -54,9 +54,10 @@ export const useCellSelectionComputed = <T extends Datatable.Row>({
     [selectedColumnsIds],
   )
 
-  const selectColumn = useCallback((columnIndex: number) => {
+  const selectColumn = useCallback((columnIndex: number, event: React.MouseEvent<HTMLDivElement>) => {
     state.setSelectionStart({row: 0, col: columnIndex})
-    state.setSelectionEnd({row: filteredAndSortedData.length, col: columnIndex})
+    cellSelectionEngine.setAnchorEl(event.target as any)
+    state.setSelectionEnd({row: filteredAndSortedData.length - 1, col: columnIndex})
   }, [])
 
   const areAllColumnsSelected = useMemo(() => {
@@ -119,14 +120,27 @@ export const SelectedCellPopover = (props: DatatableContext['cellSelection']) =>
         },
       }}
     >
-      <div style={{padding: 10}}>
-        <IpBtn variant="outlined" icon="clear" onClick={props.engine.reset} color="primary">
+      <Box sx={{p: 1, maxWidth: 400}}>
+        <IpBtn variant="outlined" icon="clear" onClick={props.engine.reset} color="primary" sx={{mb: 1}}>
           {props.selectedCount}
+          <Txt color="hint" fontWeight="400" sx={{ml: 2, display: 'flex', alignItems: 'center'}}>
+            <Icon fontSize="inherit">view_column</Icon>
+            {props.selectedColumnsIds.size}
+            <Box sx={{mx: 0.5}}>×</Box>
+            <Icon fontSize="inherit">table_rows</Icon>
+            {props.selectedRowIds.size}
+          </Txt>
         </IpBtn>
         <Txt block color="hint"></Txt>
-        {props.selectedColumnUniq && props.selectedColumnUniq.subHeader}
+        {props.selectedColumnUniq && (
+          <>
+            <Txt block bold>
+              {props.selectedColumnUniq.head}
+            </Txt>
+          </>
+        )}
         {props.areAllColumnsSelected && 'DELETE'}
-      </div>
+      </Box>
     </Popover>
   )
 }

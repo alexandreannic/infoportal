@@ -1,8 +1,4 @@
-import {
-  DatesPopover,
-  MultipleChoicesPopover,
-  NumberChoicesPopover,
-} from '@/shared/Datatable/popover/DatatablePopover.js'
+import {DatesPopover, MultipleChoicesPopover, NumberChoicesPopover,} from '@/shared/Datatable/popover/DatatablePopover.js'
 import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
 import {Popup} from '@/shared/Datatable3/state/reducer.js'
 import StatsAgs = Popup.StatsAgs
