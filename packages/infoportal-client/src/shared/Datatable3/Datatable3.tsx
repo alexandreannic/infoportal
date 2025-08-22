@@ -44,7 +44,7 @@ export const DatatableWithData = <T extends Datatable.Row>({
   const {m, formatLargeNumber} = useI18n()
   const {
     columns,
-    state: {sortBy, filters, colWidths, colVisibility, virtualTable, popup},
+    state: {sortBy, filters, virtualTable, popup},
     dispatch,
     getRowKey,
     data,
@@ -54,10 +54,6 @@ export const DatatableWithData = <T extends Datatable.Row>({
     cellSelection,
   } = useDatatable3Context(_ => _)
 
-  useEffect(() => {
-    dispatch({type: 'INIT_DATA', data: dataFilteredAndSorted, columns: columns.all, getRowKey, limit: 40})
-  }, [dataFilteredAndSorted])
-
   const overscan = 10
   const rowVirtualizer = useVirtualizer({
     count: dataFilteredAndSorted?.length ?? 0,
@@ -66,6 +62,18 @@ export const DatatableWithData = <T extends Datatable.Row>({
     estimateSize: () => 32,
     overscan,
   })
+
+  useEffect(() => {
+    const items = rowVirtualizer.getVirtualItems()
+    dispatch({
+      type: 'INIT_DATA',
+      data: dataFilteredAndSorted,
+      columns: columns.all,
+      getRowKey,
+      offset: items[0]!.index,
+      limit: items.length + overscan,
+    })
+  }, [columns.all])
 
   useEffect(() => {
     const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse()
@@ -123,7 +131,7 @@ export const DatatableWithData = <T extends Datatable.Row>({
       <Box
         className="dt"
         ref={tableRef}
-        style={{['--cols' as any]: columns.cssGridTemplate, ...contentProps.style}}
+        style={{['--cols' as any]: columns.cssGridTemplate, ...contentProps?.style}}
         {...contentProps}
       >
         <DatatableHead onMouseDown={() => cellSelection.engine.reset()} />

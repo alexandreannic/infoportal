@@ -20,6 +20,7 @@ export type DatatableAction<T extends Datatable.Row> =
       type: 'INIT_DATA'
       data: T[]
       limit: number
+      offset: number
       columns: Datatable.Column.InnerProps<T>[]
       getRowKey: Datatable.Props<T>['getRowKey']
     }
@@ -135,7 +136,7 @@ type HandlerMap<T extends Datatable.Row> = {
 
 function createHandlerMap<T extends Datatable.Row>(): HandlerMap<T> {
   return {
-    INIT_DATA: (state, {limit, data, columns, getRowKey}) => {
+    INIT_DATA: (state, {limit, data, columns, offset, getRowKey}) => {
       return {
         ...state,
         hasRenderedRowId: [],
@@ -143,7 +144,7 @@ function createHandlerMap<T extends Datatable.Row>(): HandlerMap<T> {
           data,
           columns,
           getRowKey,
-          dataIndexes: mapFor(limit, i => i),
+          dataIndexes: mapFor(limit, i => offset + i),
         }),
       }
     },

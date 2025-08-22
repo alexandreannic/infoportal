@@ -11,9 +11,7 @@ export const useDatatableColumns = <T extends Datatable.Row>({
   showRowIndex,
   colWidths,
   colVisibility,
-  // onSelectRowRef,
 }: {
-  // onSelectRowRef: MutableRefObject<undefined | ((rowIndex: number) => void)>
   colWidths: Datatable.State<T>['colWidths']
   colVisibility: Datatable.State<T>['colVisibility']
   baseColumns: Datatable.Column.Props<T>[]
@@ -29,9 +27,6 @@ export const useDatatableColumns = <T extends Datatable.Row>({
         group: {label: 'Meta', id: 'meta'},
         id: 'index',
         className: 'td-index',
-        // onClick: _ => {
-        //   onSelectRowRef.current?.(_.rowIndex)
-        // },
         head: '#',
         width: 50,
         render: (_: any) => ({

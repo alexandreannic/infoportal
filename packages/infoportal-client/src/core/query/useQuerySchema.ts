@@ -4,20 +4,30 @@ import {KoboSchemaHelper} from 'infoportal-common'
 import {useAppSettings} from '../context/ConfigContext'
 import {queryKeys} from './query.index'
 import {Ip} from 'infoportal-api-sdk'
+import {useMemo} from 'react'
 
 export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
   const {apiv2} = useAppSettings()
   const langIndex = useLangIndex(state => state.langIndex)
-  return useQuery({
+
+  const query = useQuery({
     queryKey: queryKeys.schema(workspaceId, formId),
-    queryFn: async () => {
-      const schema = await apiv2.form.getSchema({workspaceId, formId})
-      if (schema) {
-        return KoboSchemaHelper.buildBundle({schema, langIndex})
-      }
-    },
+    queryFn: () => apiv2.form.getSchema({workspaceId, formId}),
     retry: false,
   })
+
+  const bundle = useMemo(() => {
+    if (query.data === undefined) return
+    return KoboSchemaHelper.buildBundle({
+      schema: query.data,
+      langIndex,
+    })
+  }, [query.data, langIndex])
+
+  return {
+    ...query,
+    data: bundle,
+  }
 }
 
 export const getSchema = ({
