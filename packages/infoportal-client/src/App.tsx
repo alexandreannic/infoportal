@@ -10,7 +10,7 @@ import {IpLogo} from '@/shared/logo/logo'
 import {Provide} from '@/shared/Provide'
 import {ToastProvider} from '@/shared/Toast'
 import {MsalProvider} from '@azure/msal-react'
-import {ThemeProvider} from '@mui/material/styles'
+import {CssVarsProvider, ThemeProvider} from '@mui/material/styles'
 import {Box, CssBaseline, Icon} from '@mui/material'
 import {LocalizationProvider} from '@mui/x-date-pickers-pro'
 import {AdapterDateFns} from '@mui/x-date-pickers-pro/AdapterDateFns'
@@ -24,6 +24,7 @@ import {Outlet, useRouterState} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import {duration} from '@axanc/ts-utils'
 import {LicenseInfo} from '@mui/x-license-pro'
+import createCssVarsProvider from '@mui/system/cssVars'
 
 LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 

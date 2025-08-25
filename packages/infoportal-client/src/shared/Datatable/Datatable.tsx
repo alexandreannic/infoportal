@@ -1,4 +1,4 @@
-import {Badge, Box, Icon, LinearProgress, TablePagination, useTheme} from '@mui/material'
+import {Badge, Box, Icon, LinearProgress, Popover, TablePagination} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
@@ -19,6 +19,7 @@ import {format} from 'date-fns'
 import {slugify} from 'infoportal-common'
 import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
 import {DatatableSelectToolbar} from '@/shared/Datatable/DatatableSelectToolbar'
+import {PanelBody} from '../Panel'
 
 export const Datatable = <T extends DatatableRow = DatatableRow>({
   total,
@@ -68,7 +69,7 @@ export const Datatable = <T extends DatatableRow = DatatableRow>({
               rendered.value = [rendered.value as string]
             }
             if (rendered.value.length === 0) rendered.value = [DatatableUtils.blank]
-            rendered.value.map(_ => _ ?? DatatableUtils.blank)
+            // rendered.value = rendered.value.map(_ => _ ?? DatatableUtils.blank)
           } else if (rendered.value === undefined || rendered.value === null) rendered.value = DatatableUtils.blank
           if (!Object.hasOwn(rendered, 'option')) rendered.option = rendered.label
           return rendered as any
@@ -127,7 +128,6 @@ const _Datatable = <T extends DatatableRow>({
   | 'loading'
   | 'sx'
 >) => {
-  const t = useTheme()
   const ctx = useDatatableContext()
   const _generateXLSFromArray = useAsync(DatatableXlsGenerator.download)
   useEffect(() => ctx.select?.onSelect(ctx.selected.toArray), [ctx.selected.toArray])
@@ -150,6 +150,50 @@ const _Datatable = <T extends DatatableRow>({
 
   return (
     <Box {...props}>
+      {JSON.stringify(ctx.selection.popoverPos)}
+      {map(ctx.selection.popoverPos ?? undefined, popoverPos => (
+        <Popover
+          ref={ctx.selection.popoverRef}
+          elevation={3}
+          hideBackdrop={true}
+          open={Boolean(ctx.selection.popoverPos)}
+          disableEnforceFocus
+          disableAutoFocus
+          disableRestoreFocus
+          // disablePortal
+          slotProps={{
+            root: {
+              // no backdrop, no modal behavior
+              disableEnforceFocus: true,
+              disableAutoFocus: true,
+              disableRestoreFocus: true,
+              keepMounted: true,
+              sx: {
+                pointerEvents: 'none', // prevent root modal layer from intercepting
+              },
+            },
+            paper: {
+              sx: {
+                pointerEvents: 'auto', // allow interactions inside popover
+                px: 1,
+                py: 0.5,
+              },
+            },
+            backdrop: {
+              sx: {
+                display: 'none',
+              },
+            },
+          }}
+          anchorReference="anchorPosition"
+          anchorPosition={ctx.selection.popoverPos || {top: 0, left: 0}}
+          // onClose={() => setPopoverPos(null)}
+        >
+          <PanelBody>
+            Copy Ids <IpIconBtn>content_copy</IpIconBtn>
+          </PanelBody>
+        </Popover>
+      ))}
       {header !== null && (
         <Box sx={{p: 1, position: 'relative', display: 'flex', flexWrap: 'wrap', alignItems: 'center', width: '100%'}}>
           <Badge
@@ -165,11 +209,18 @@ const _Datatable = <T extends DatatableRow>({
           </Badge>
           {!ctx.columnsToggle.hideButton && (
             <DatatableColumnToggle
-              sx={{mr: 1}}
               columns={ctx.columns}
               hiddenColumns={ctx.columnsToggle.hiddenColumns}
               onChange={_ => ctx.columnsToggle.setHiddenColumns(_)}
               title={m._datatable.toggleColumns}
+            />
+          )}
+          {showExportBtn && (
+            <IpIconBtn
+              loading={_generateXLSFromArray.loading}
+              onClick={exportToCSV}
+              children="download"
+              tooltip={<div dangerouslySetInnerHTML={{__html: m._koboDatabase.downloadAsXLS}} />}
             />
           )}
           {typeof header === 'function'
@@ -179,14 +230,6 @@ const _Datatable = <T extends DatatableRow>({
                 filteredAndSortedData: (ctx.data.filteredAndSortedData ?? []) as T[],
               })
             : header}
-          {showExportBtn && (
-            <IpIconBtn
-              loading={_generateXLSFromArray.loading}
-              onClick={exportToCSV}
-              children="download"
-              tooltip={<div dangerouslySetInnerHTML={{__html: m._koboDatabase.downloadAsXLS}} />}
-            />
-          )}
           {ctx.selected.size > 0 && (
             <DatatableSelectToolbar>
               <IpIconBtn color="primary" children="clear" onClick={ctx.selected.clear} />
@@ -214,10 +257,18 @@ const _Datatable = <T extends DatatableRow>({
               onOpenFilter={ctx.modal.filterPopover.open}
               onOpenStats={ctx.modal.statsPopover.open}
             />
-            <tbody>
+            <tbody ref={ctx.selection.tbodyRef} onPointerUp={ctx.selection.events.handlePointerUp}>
               {map(ctx.data.filteredSortedAndPaginatedData, data => {
                 return data.data.length > 0 ? (
                   <DatatableBody
+                    // onPointerUp={ctx.selection.events.handlePointerUp}
+                    selectedColumnId={ctx.selection.selectedColumnId}
+                    selectedRowIds={ctx.selection.selectedRowIds}
+                    // selectedRowIdFirst={ctx.selection.selectedRowIdFirst}
+                    handlePointerDown={ctx.selection.events.handlePointerDown}
+                    handlePointerEnter={ctx.selection.events.handlePointerEnter}
+                    // handlePointerUp={ctx.selection.events.handlePointerUp}
+                    // selectedRowIdFirst={ctx.selection.selectedRowInitial}
                     onClickRows={onClickRows}
                     data={data.data}
                     select={ctx.select}

@@ -7,9 +7,14 @@ import {UseDatatableOptions, useDatatableOptions} from '@/shared/Datatable/conte
 import {KeyOf} from 'infoportal-common'
 import {UseDatabaseColVisibility, useDatabaseColVisibility} from '@/shared/Datatable/context/useDatabaseColVisibility'
 import {useSetState, UseSetState} from '@axanc/react-hooks'
+import {
+  UseDatatableCellSelection,
+  useDatatableCellSelection,
+} from '@/shared/Datatable/context/useDatatableCellSelection.js'
 
 export interface DatatableContext<T extends DatatableRow> {
   data: UseDatatableData<T>
+  selection: UseDatatableCellSelection
   columnsIndex: Record<string, DatatableColumn.InnerProps<T>>
   select: DatatableTableProps<T>['select']
   columns: DatatableColumn.InnerProps<T>[]
@@ -96,8 +101,16 @@ export const DatatableProvider = <T extends DatatableRow>({
 
   const modal = useDatatableModal<T>({data})
 
+  const dataIds = useMemo(() => {
+    return data.filteredSortedAndPaginatedData?.data?.map(
+      (_, i) => (getRenderRowKey ? getRenderRowKey(_, i) : i) as string,
+    )
+  }, [data.filteredSortedAndPaginatedData])
+  const selection = useDatatableCellSelection({currentDataIds: dataIds})
+
   const typeSafeContext: DatatableContext<T> = {
     columnsIndex,
+    selection,
     selected,
     data,
     rowStyle,

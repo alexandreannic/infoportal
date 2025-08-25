@@ -38,7 +38,6 @@ export interface DatatableSearch<T = any> {
 
 export type HeaderParams<T extends DatatableRow> = {
   data: T[]
-  filteredData: T[]
   filteredAndSortedData: T[]
 }
 

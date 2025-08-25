@@ -28,8 +28,6 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
     }))
   }, [queryForm.accessibleForms.data])
 
-  const navigate = useNavigate()
-
   const [filteredForms, setFilteredForms] = useState<Seq<Ip.Form>>(forms)
 
   const formItemSize: SidebarItemProps['size'] = forms.length > 19 ? 'tiny' : forms.length > 15 ? 'small' : 'normal'

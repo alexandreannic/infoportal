@@ -9,18 +9,14 @@ import {DatabaseKoboSyncBtn} from '@/features/Form/Database/DatabaseKoboSyncBtn'
 import {DatabaseTableProps} from '@/features/Form/Database/DatabaseTable'
 import {generateEmptyXlsTemplate} from '@/features/Form/Database/generateEmptyXlsFile'
 import {databaseKoboDisplayBuilder} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
-import {DatabaseViewInput} from '@/features/Form/Database/view/DatabaseViewInput'
-import {getColumnsForRepeatGroup} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
+import {DatabaseViewBtn, DatabaseViewEditor} from '@/features/Form/Database/view/DatabaseView'
 import {useKoboDialogs, useLangIndex} from '@/core/store/useLangIndex'
-import {Datatable} from '@/shared/Datatable/Datatable'
-import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
-import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
 import {useAsync} from '@/shared/hook/useAsync'
 import {IpIconBtn} from '@/shared/IconBtn'
 import {IpSelectSingle} from '@/shared/Select/SelectSingle'
-import {Alert, AlertProps, Icon, useTheme} from '@mui/material'
+import {Alert, AlertProps, Box, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from 'infoportal-common'
-import {useMemo, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
@@ -29,6 +25,10 @@ import {Ip} from 'infoportal-api-sdk'
 import {AppAvatar} from '@/shared'
 import {useFormSocket} from '@/features/Form/useFormSocket'
 import {appConfig} from '@/conf/AppConfig.js'
+import {Datatable3} from '@/shared/Datatable3/Datatable3.js'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
+import {Panel} from '@/shared/Panel/index.js'
+import {DatabaseToolbarContainer} from '@/features/Form/Database/DatabaseToolbarContainer.js'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -45,6 +45,8 @@ export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   )
 }
 
+const getRowKey = (_: any) => _.id + ((_ as any) /** TODO Make it typesafe?*/._index ?? '')
+
 export const DatabaseTableContent = ({
   workspaceId,
   onFiltersChange,
@@ -58,6 +60,7 @@ export const DatabaseTableContent = ({
   const ctx = useDatabaseKoboTableContext()
   const dialogs = useKoboDialogs()
   const connectedUsers = useFormSocket({workspaceId, formId: ctx.form.id})
+  const [viewEditorOpen, setViewEditorOpen] = useState(false)
 
   const queryUpdate = useQueryAnswerUpdate()
 
@@ -119,7 +122,7 @@ export const DatabaseTableContent = ({
     }).transformColumns(schemaColumns)
   }, [ctx.data, ctx.schema.schema, langIndex, selectedIds, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
-  const columns: DatatableColumn.Props<any>[] = useMemo(() => {
+  const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const base = buildDatabaseColumns.meta.all({
       selectedIds,
       queryUpdate: queryUpdate,
@@ -157,112 +160,123 @@ export const DatabaseTableContent = ({
   }
 
   return (
-    <>
-      <Datatable
-        onResizeColumn={ctx.view.onResizeColumn}
-        loading={ctx.loading}
-        columnsToggle={{
-          disableAutoSave: true,
-          hidden: ctx.view.hiddenColumns,
-          onHide: ctx.view.setHiddenColumns,
-        }}
-        contentProps={{sx: {maxHeight: 'calc(100vh - 216px)'}}}
-        showExportBtn
-        rowsPerPageOptions={[20, 50, 100, 200]}
-        onFiltersChange={onFiltersChange}
-        onDataChange={onDataChange}
-        select={
-          ctx.permission.answers_canUpdate
-            ? {
-                onSelect: (_: string[]) => setSelectedIds(_ as Ip.SubmissionId[]),
-                selectActions: selectedHeader,
-                getId: _ => _.id,
-              }
-            : undefined
-        }
-        exportAdditionalSheets={data => {
-          return ctx.schema.helper.group.search().map(group => {
-            const cols = getColumnsForRepeatGroup({
-              formId: ctx.form.id,
-              t,
-              m,
-              schema: ctx.schema,
-              groupName: group.name,
-            })
-            return {
-              sheetName: group.name as string,
-              data: KoboFlattenRepeatedGroup.run({data, path: group.pathArr}),
-              schema: cols.map(DatatableXlsGenerator.columnsToParams),
-            }
-          })
-        }}
-        title={ctx.form.name}
-        id={ctx.form.id}
-        getRenderRowKey={_ => _.id + ((_ as any) /** TODO Make it typesafe?*/._index ?? '')}
-        columns={columns}
-        data={flatData}
-        header={params => (
-          <>
-            <DatabaseViewInput sx={{mr: 1}} view={ctx.view} />
-            <IpSelectSingle<number>
-              hideNullOption
-              sx={{maxWidth: 128, mr: 1}}
-              value={langIndex}
-              onChange={setLangIndex}
-              options={[
-                {children: 'XML', value: -1},
-                ...ctx.schema.schemaSanitized.translations.map((_, i) => ({children: _, value: i})),
-              ]}
-            />
-            {ctx.schema.helper.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
-            {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
+    <Box sx={{display: 'flex', maxHeight: 'calc(100vh - 110px)'}}>
+      <DatabaseToolbarContainer width={340} open={viewEditorOpen}>
+        {viewEditorOpen && (
+          <Panel sx={{mr: 1}}>
+            <DatabaseViewEditor view={ctx.view} />
+          </Panel>
+        )}
+      </DatabaseToolbarContainer>
+      <Panel>
+        <Datatable3
+          onEvent={console.log}
+          // onResizeColumn={ctx.view.onResizeColumn}
+          loading={ctx.loading}
+          // columnsToggle={{
+          //   disableAutoSave: true,
+          //   hidden: ctx.view.hiddenColumns,
+          //   onHide: ctx.view.setHiddenColumns,
+          // }}
+          // contentProps={{sx: {maxHeight: 'calc(100vh - 156px)'}}}
+          // showExportBtn
+          rowsPerPageOptions={[20, 50, 100, 200]}
+          // onFiltersChange={onFiltersChange}
+          // onDataChange={onDataChange}
+          // select={
+          //   ctx.permission.answers_canUpdate
+          //     ? {
+          //         onSelect: (_: string[]) => setSelectedIds(_ as Ip.SubmissionId[]),
+          //         selectActions: selectedHeader,
+          //         getId: _ => _.id,
+          //       }
+          //     : undefined
+          // }
+          // exportAdditionalSheets={data => {
+          //   return ctx.schema.helper.group.search().map(group => {
+          //     const cols = getColumnsForRepeatGroup({
+          //       formId: ctx.form.id,
+          //       t,
+          //       m,
+          //       schema: ctx.schema,
+          //       groupName: group.name,
+          //     })
+          //     return {
+          //       sheetName: group.name as string,
+          //       data: KoboFlattenRepeatedGroup.run({data, path: group.pathArr}),
+          //       schema: cols.map(DatatableXlsGenerator.columnsToParams),
+          //     }
+          //   })
+          // }}
+          title={ctx.form.name}
+          id={ctx.form.id}
+          getRowKey={getRowKey}
+          columns={columns}
+          showRowIndex={true}
+          data={flatData}
+          header={params => (
+            <>
+              <DatabaseViewBtn sx={{mr: 1}} view={ctx.view} onClick={() => setViewEditorOpen(_ => !_)} />
+              <IpSelectSingle<number>
+                hideNullOption
+                sx={{maxWidth: 128, mr: 1}}
+                value={langIndex}
+                onChange={setLangIndex}
+                options={[
+                  {children: 'XML', value: -1},
+                  ...ctx.schema.schemaSanitized.translations.map((_, i) => ({children: _, value: i})),
+                ]}
+              />
+              {ctx.schema.helper.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
+              {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 
-            <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>
-              {connectedUsers.length > 1 &&
-                connectedUsers.map(_ => (
-                  <AppAvatar size={36} email={_} overlap borderColor={t.vars.palette.primary.main} key={_} />
-                ))}
-              {ctx.form.kobo ? (
-                <IpIconBtn
-                  disabled={!ctx.form.kobo.enketoUrl || ctx.form.deploymentStatus === 'archived'}
-                  href={ctx.form.kobo.enketoUrl ?? ''}
-                  target="_blank"
-                  children={appConfig.icons.openFormLink}
-                  tooltip={m._koboDatabase.openForm}
-                />
-              ) : (
-                <Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId: ctx.form.id}}>
+              <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>
+                {connectedUsers.length > 1 &&
+                  connectedUsers.map(_ => (
+                    <AppAvatar size={36} email={_} overlap borderColor={t.vars.palette.primary.main} key={_} />
+                  ))}
+                {ctx.form.kobo ? (
                   <IpIconBtn
-                    disabled={ctx.form.deploymentStatus === 'archived'}
+                    disabled={!ctx.form.kobo.enketoUrl || ctx.form.deploymentStatus === 'archived'}
+                    href={ctx.form.kobo.enketoUrl ?? ''}
                     target="_blank"
                     children={appConfig.icons.openFormLink}
                     tooltip={m._koboDatabase.openForm}
                   />
-                </Link>
-              )}
-              {ctx.form.kobo && (
-                <DatabaseKoboSyncBtn
-                  loading={ctx.asyncRefresh.loading}
-                  tooltip={
-                    ctx.form.updatedAt && (
-                      <div dangerouslySetInnerHTML={{__html: m._koboDatabase.pullDataAt(ctx.form.updatedAt)}} />
-                    )
-                  }
-                  onClick={ctx.asyncRefresh.call}
-                />
-              )}
+                ) : (
+                  <Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId: ctx.form.id}}>
+                    <IpIconBtn
+                      disabled={ctx.form.deploymentStatus === 'archived'}
+                      target="_blank"
+                      children={appConfig.icons.openFormLink}
+                      tooltip={m._koboDatabase.openForm}
+                    />
+                  </Link>
+                )}
+                {ctx.form.kobo && (
+                  <DatabaseKoboSyncBtn
+                    loading={ctx.asyncRefresh.loading}
+                    tooltip={
+                      ctx.form.updatedAt && (
+                        <div dangerouslySetInnerHTML={{__html: m._koboDatabase.pullDataAt(ctx.form.updatedAt)}} />
+                      )
+                    }
+                    onClick={ctx.asyncRefresh.call}
+                  />
+                )}
 
-              {ctx.permission.answers_import && (
-                <DatabaseImportBtn
-                  onUploadNewData={file => handleImportData(file, 'create')}
-                  onUpdateExistingData={file => handleImportData(file, 'update')}
-                  onGenerateTemplate={handleGenerateTemplate}
-                />
-              )}
-            </div>
-          </>
-        )}
-      />
-    </>
+                {ctx.permission.answers_import && (
+                  <DatabaseImportBtn
+                    onUploadNewData={file => handleImportData(file, 'create')}
+                    onUpdateExistingData={file => handleImportData(file, 'update')}
+                    onGenerateTemplate={handleGenerateTemplate}
+                  />
+                )}
+              </div>
+            </>
+          )}
+        />
+      </Panel>
+    </Box>
   )
 }

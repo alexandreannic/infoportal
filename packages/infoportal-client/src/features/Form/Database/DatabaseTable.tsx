@@ -44,7 +44,7 @@ export interface DatabaseTableProps {
 function DatabaseTableContainer() {
   const props = useFormContext()
   return (
-    <Page width="full">
+    <Page width="full" sx={{mb: 0}}>
       <DatabaseTable
         permission={props.permission}
         formId={props.form.id}
@@ -82,7 +82,7 @@ const DatabaseTable = ({
     }) > 0
 
   return (
-    <Panel>
+    <>
       {anyLoading && loading && (
         <>
           <Skeleton sx={{mx: 1, height: 54}} />
@@ -110,6 +110,6 @@ const DatabaseTable = ({
           />
         </DatabaseKoboTableProvider>
       ))}
-    </Panel>
+    </>
   )
 }

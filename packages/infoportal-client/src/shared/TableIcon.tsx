@@ -24,10 +24,9 @@ export const TableIcon = ({tooltip, children, sx, ...props}: TableIconProps) => 
   return tooltip ? <Tooltip title={tooltip}>{body}</Tooltip> : body
 }
 
-export const TableIconBtn = ({sx, color, size = 'small', ...props}: IpIconBtnProps) => {
+export const TableIconBtn = ({sx, size = 'small', ...props}: IpIconBtnProps) => {
   return (
     <IpIconBtn
-      color={color}
       size={size}
       sx={{
         verticalAlign: 'middle',

@@ -31,11 +31,11 @@ const style = makeSx({
 
 const IGNORED_VALUE_FOR_SELECT_ALL_ITEM = 'IGNORED_VALUE'
 
-export const IpSelectMultiple = forwardRef(
-  <T extends string | number>(
+export const IpSelectMultiple = forwardRef<HTMLInputElement, IpSelectMultipleProps<string | number>>(
+  function IpSelectMultipleInner<T extends string | number>(
     {showUndefinedOption, label, id, onChange, sx, value = [], ...props}: IpSelectMultipleProps<T>,
-    ref: React.ForwardedRef<any>,
-  ) => {
+    ref: any,
+  ) {
     const {m} = useI18n()
     const [uncontrolledInnerState, setUncontrolledInnerState] = useState<T[]>(props.defaultValue ?? [])
 
@@ -60,7 +60,7 @@ export const IpSelectMultiple = forwardRef(
     const allSelected = innerValue.length === options.length
 
     return (
-      <FormControl ref={ref} size="small" sx={{width: '100%', ...sx}}>
+      <FormControl size="small" sx={{width: '100%', ...sx}}>
         {label && <InputLabel htmlFor={id}>{label}</InputLabel>}
         <Select
           label={label}

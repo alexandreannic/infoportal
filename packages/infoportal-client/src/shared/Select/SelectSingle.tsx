@@ -1,5 +1,6 @@
 import {
   Box,
+  CircularProgress,
   FormControl,
   Icon,
   InputLabel,
@@ -7,12 +8,15 @@ import {
   OutlinedInput,
   Select,
   SelectProps,
+  SvgIconTypeMap,
   SxProps,
   Theme,
 } from '@mui/material'
 import React, {ReactNode, useMemo} from 'react'
 import {makeSx} from '@/core/theme'
 import {Txt} from '@/shared'
+import {OverridableComponent} from '@mui/material/OverridableComponent'
+import {ArrowDropDownIcon} from '@mui/x-date-pickers-pro'
 
 export type IpSelectOption<T extends string | number = string> = {
   value: T
@@ -31,6 +35,7 @@ export type IpSelectSingleBaseProps<T extends TType = string> = {
   sx?: SxProps<Theme>
   defaultValue?: T
   value?: T | null
+  loading?: boolean
   multiple?: false
   hideNullOption?: boolean
   renderValue?: SelectProps<T>['renderValue']
@@ -87,11 +92,26 @@ export const ipSelectItem = <T extends any>({
   }
 }
 
+const LoadingIcon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> = (props: any) => (
+  <CircularProgress
+    {...props}
+    color="primary"
+    size={20}
+    sx={{
+      color: t => t.palette.primary.main + ' !important',
+      marginTop: '-3px',
+      padding: 0,
+    }}
+  />
+)
+
 export const IpSelectSingle = <T extends TType>({
   defaultValue,
   hideNullOption,
   label,
+  disabled,
   id,
+  loading,
   onChange,
   sx,
   value,
@@ -112,6 +132,8 @@ export const IpSelectSingle = <T extends TType>({
       <Select
         label={label}
         size="small"
+        disabled={loading || disabled}
+        IconComponent={loading ? LoadingIcon : ArrowDropDownIcon}
         margin="dense"
         id={id}
         value={value ?? IGNORED_VALUE_EMPTY}

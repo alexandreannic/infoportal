@@ -112,7 +112,7 @@ export const AppSidebarFilters = ({
   }, [forms])
 
   return (
-    <Box sx={{mx: 0.5, mb: 1, mt: 1}}>
+    <Box sx={{mx: 0.5, mb: 1, mt: 0}}>
       <Controller
         name="name"
         control={searchForm.control}

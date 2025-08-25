@@ -19,9 +19,9 @@ export const appConf = {
   disableScheduledTask: e(bool, defaultValue(false))('DISABLED_SCHEDULED_TASK'),
   production: e(_ => _?.toLowerCase() === 'production', defaultValue(true))('NODE_ENV'),
   port: e(int, defaultValue(80))('PORT'),
-  ownerEmail: e(defaultValue('alexandre.annic@drc.ngo'))('OWNER_EMAIL'),
+  ownerEmail: e(defaultValue('alexandre.annic1@gmail.com'))('OWNER_EMAIL'),
   cors: {
-    allowOrigin: e(defaultValue(`http://localhost:3000`))('CORS_ALLOW_ORIGIN'),
+    allowOrigin: e(defaultValue([`http://192.168.1.17:3000`, 'http://localhost:3000']))('CORS_ALLOW_ORIGIN') as string[],
   },
   sentry: {
     dns: e()('SENTRY_DNS'),
