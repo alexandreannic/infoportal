@@ -39,7 +39,7 @@ export type DatatableAction<T extends Datatable.Row> =
   | {type: 'FILTER_CLEAR'}
   | {type: 'UPDATE_CELL'; rowId: string; col: string; value: any}
   | {type: 'RESIZE'; col: string; width: number}
-  | {type: 'TOGGLE_COL'; col: string}
+  | {type: 'SET_HIDDEN_COLUMNS'; hiddenColumns: string[]}
 
 export type DatatableState<T extends Datatable.Row> = {
   popup?: Popup.Event
@@ -53,7 +53,7 @@ export type DatatableState<T extends Datatable.Row> = {
   sortBy?: Datatable.SortBy
   filters: Partial<Record<KeyOf<T>, DatatableFilterValue>>
   colWidths: Record<string, number>
-  colVisibility: Set<string>
+  colHidden: Set<string>
 }
 
 export function datatableReducer<T extends Datatable.Row>() {
@@ -123,7 +123,7 @@ export const initialState = <T extends Datatable.Row>(): Datatable.State<T> => {
     selected: new Set(),
     sortBy: undefined,
     colWidths: {},
-    colVisibility: new Set(),
+    colHidden: new Set(),
   }
 }
 
@@ -250,16 +250,10 @@ function createHandlerMap<T extends Datatable.Row>(): HandlerMap<T> {
       },
     }),
 
-    TOGGLE_COL: (state, action) => {
-      const colVisibility = new Set(state.colVisibility)
-      if (colVisibility.has(action.col)) {
-        colVisibility.delete(action.col)
-      } else {
-        colVisibility.add(action.col)
-      }
+    SET_HIDDEN_COLUMNS: (state, action) => {
       return {
         ...state,
-        colVisibility,
+        colHidden: new Set(action.hiddenColumns),
       }
     },
   }

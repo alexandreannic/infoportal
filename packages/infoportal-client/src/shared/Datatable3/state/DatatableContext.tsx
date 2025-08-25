@@ -57,7 +57,7 @@ export const Datatable3Provider = <T extends Datatable.Row>({
   const [state, dispatch] = useReducer(datatableReducer<T>(), initialState<T>())
 
   const columns = useDatatableColumns({
-    colVisibility: state.colVisibility,
+    colHidden: state.colHidden,
     colWidths: state.colWidths,
     showRowIndex,
     baseColumns: baseColumns,
