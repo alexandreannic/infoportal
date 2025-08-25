@@ -5,6 +5,7 @@ import {KeyOf} from '@axanc/ts-utils'
 import {Box, Icon, Popover} from '@mui/material'
 import {DatatableContext} from '@/shared/Datatable3/state/DatatableContext.js'
 import {IpBtn, Txt} from '@/shared/index.js'
+import {useI18n} from '@/core/i18n/index.js'
 
 export type UseCellSelectionComputed = ReturnType<typeof useCellSelectionComputed>
 
@@ -83,6 +84,7 @@ export const useCellSelectionComputed = <T extends Datatable.Row>({
 }
 
 export const SelectedCellPopover = (props: DatatableContext['cellSelection']) => {
+  const {formatLargeNumber} = useI18n()
   return (
     <Popover
       onClose={props.engine.reset}
@@ -122,13 +124,13 @@ export const SelectedCellPopover = (props: DatatableContext['cellSelection']) =>
     >
       <Box sx={{p: 1, maxWidth: 400}}>
         <IpBtn variant="outlined" icon="clear" onClick={props.engine.reset} color="primary" sx={{mb: 1}}>
-          {props.selectedCount}
+          {formatLargeNumber(props.selectedCount)}
           <Txt color="hint" fontWeight="400" sx={{ml: 2, display: 'flex', alignItems: 'center'}}>
             <Icon fontSize="inherit">view_column</Icon>
-            {props.selectedColumnsIds.size}
+            {formatLargeNumber(props.selectedColumnsIds.size)}
             <Box sx={{mx: 0.5}}>×</Box>
             <Icon fontSize="inherit">table_rows</Icon>
-            {props.selectedRowIds.size}
+            {formatLargeNumber(props.selectedRowIds.size)}
           </Txt>
         </IpBtn>
         <Txt block color="hint"></Txt>

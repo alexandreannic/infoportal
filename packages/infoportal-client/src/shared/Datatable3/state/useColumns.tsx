@@ -10,10 +10,10 @@ export const useDatatableColumns = <T extends Datatable.Row>({
   baseColumns,
   showRowIndex,
   colWidths,
-  colVisibility,
+  colHidden,
 }: {
   colWidths: Datatable.State<T>['colWidths']
-  colVisibility: Datatable.State<T>['colVisibility']
+  colHidden: Datatable.State<T>['colHidden']
   baseColumns: Datatable.Column.Props<T>[]
   showRowIndex?: boolean
 }) => {
@@ -38,8 +38,8 @@ export const useDatatableColumns = <T extends Datatable.Row>({
   }, [mappedColumns, showRowIndex])
 
   const visible = useMemo(() => {
-    return all.filter(c => !colVisibility.has(c.id))
-  }, [all, colVisibility])
+    return all.filter(c => !colHidden.has(c.id))
+  }, [all, colHidden])
 
   const widths = useMemo(() => {
     return seq(visible).reduceObject<Record<string, number>>(c => [

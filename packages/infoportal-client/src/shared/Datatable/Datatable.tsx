@@ -150,50 +150,6 @@ const _Datatable = <T extends DatatableRow>({
 
   return (
     <Box {...props}>
-      {JSON.stringify(ctx.selection.popoverPos)}
-      {map(ctx.selection.popoverPos ?? undefined, popoverPos => (
-        <Popover
-          ref={ctx.selection.popoverRef}
-          elevation={3}
-          hideBackdrop={true}
-          open={Boolean(ctx.selection.popoverPos)}
-          disableEnforceFocus
-          disableAutoFocus
-          disableRestoreFocus
-          // disablePortal
-          slotProps={{
-            root: {
-              // no backdrop, no modal behavior
-              disableEnforceFocus: true,
-              disableAutoFocus: true,
-              disableRestoreFocus: true,
-              keepMounted: true,
-              sx: {
-                pointerEvents: 'none', // prevent root modal layer from intercepting
-              },
-            },
-            paper: {
-              sx: {
-                pointerEvents: 'auto', // allow interactions inside popover
-                px: 1,
-                py: 0.5,
-              },
-            },
-            backdrop: {
-              sx: {
-                display: 'none',
-              },
-            },
-          }}
-          anchorReference="anchorPosition"
-          anchorPosition={ctx.selection.popoverPos || {top: 0, left: 0}}
-          // onClose={() => setPopoverPos(null)}
-        >
-          <PanelBody>
-            Copy Ids <IpIconBtn>content_copy</IpIconBtn>
-          </PanelBody>
-        </Popover>
-      ))}
       {header !== null && (
         <Box sx={{p: 1, position: 'relative', display: 'flex', flexWrap: 'wrap', alignItems: 'center', width: '100%'}}>
           <Badge

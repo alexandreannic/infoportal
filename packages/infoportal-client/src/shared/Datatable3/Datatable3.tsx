@@ -14,6 +14,7 @@ import {DatatablePopupStats} from '@/shared/Datatable3/popup/DatatablePopupStats
 import {DatatableFilterModal3} from '@/shared/Datatable3/popup/DatatablePopupFilter.js'
 import {DatatableRow} from '@/shared/Datatable3/DatatableRow.js'
 import {SelectedCellPopover} from '@/shared/Datatable3/state/useCellSelectionComputed.js'
+import {DatatableColumnToggle3} from '@/shared/Datatable3/DatatableColumnsToggle3.js'
 
 export const Datatable3 = <T extends Datatable.Row>({
   data,
@@ -70,7 +71,7 @@ export const DatatableWithData = <T extends Datatable.Row>({
       data: dataFilteredAndSorted,
       columns: columns.all,
       getRowKey,
-      offset: items[0]!.index,
+      offset: items[0]?.index ?? 0,
       limit: items.length + overscan,
     })
   }, [columns.all])
@@ -105,8 +106,13 @@ export const DatatableWithData = <T extends Datatable.Row>({
   }, [])
 
   return (
-    <>
+    <div>
       <div className="dt-toolbar">
+        <DatatableColumnToggle3
+          columns={columns.all}
+          hiddenColumns={columns.all.map(_ => _.id).filter(_ => !columns.visible.map(_ => _.id).includes(_))}
+          onChange={hiddenColumns => dispatch({type: 'SET_HIDDEN_COLUMNS', hiddenColumns})}
+        />
         <Badge
           badgeContent={filterCount}
           color="primary"
@@ -205,6 +211,6 @@ export const DatatableWithData = <T extends Datatable.Row>({
           }
         })()}
       </Box>
-    </>
+    </div>
   )
 }
