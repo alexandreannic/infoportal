@@ -1,18 +1,17 @@
 import {useI18n} from '@/core/i18n'
 import {Controller, useForm} from 'react-hook-form'
 import {Regexp} from 'infoportal-common'
-import {ScRadioGroup, ScRadioGroupItem} from '../../../../infoportal-client-core/src/RadioGroup'
 import {map, Obj} from '@axanc/ts-utils'
 import {useEffect, useState} from 'react'
 import {useFetcher} from '@axanc/react-hooks'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {Txt} from '@/shared'
 import {Box, CardActions, CircularProgress, Dialog, DialogContent, DialogTitle, Icon, useTheme} from '@mui/material'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {DialogProps} from '@toolpad/core'
 import {useQueryServers} from '@/core/query/useQueryServers'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {Ip} from 'infoportal-api-sdk'
+import {Core} from '@/shared'
 
 const servers = {
   EU: {v1: 'https://kc-eu.kobotoolbox.org', v2: 'https://eu.kobotoolbox.org'},

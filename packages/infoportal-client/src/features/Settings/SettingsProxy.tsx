@@ -1,5 +1,4 @@
 import {Page} from '@/shared/Page'
-import {Panel} from '../../../../infoportal-client-core/src/Panel'
 import {useEffect} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useCrudList} from '@axanc/react-hooks'
@@ -10,7 +9,7 @@ import {NullableFn, Regexp, slugify} from 'infoportal-common'
 import {TableIconBtn} from '@/shared/TableIcon'
 import {Proxy} from '@/core/sdk/server/proxy/Proxy'
 import {endOfDay} from 'date-fns'
-import {Modal} from '@/shared'
+import {Core} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {formatDateTime} from '@/core/i18n/localization/en'
 import {appConfig} from '@/conf/AppConfig'
@@ -61,7 +60,7 @@ function SettingsProxy() {
           id="proxy"
           header={
             permission.proxy_manage && (
-              <Modal
+              <Core.Modal
                 title={m.create}
                 loading={_search.creating}
                 confirmDisabled={!_createForm.formState.isValid}
@@ -143,7 +142,7 @@ function SettingsProxy() {
                 }
               >
                 <Core.IconBtn>add</Core.IconBtn>
-              </Modal>
+              </Core.Modal>
             )
           }
           data={_search.list}

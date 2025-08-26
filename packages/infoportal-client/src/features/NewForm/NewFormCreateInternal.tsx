@@ -1,11 +1,10 @@
 import {Controller, useForm} from 'react-hook-form'
-import {Panel, PanelBody} from '../../../../infoportal-client-core/src/Panel'
 import {useI18n} from '@/core/i18n'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
-import {PanelFoot} from '../../../../infoportal-client-core/src/Panel/PanelFoot'
 import {Autocomplete, Grid} from '@mui/material'
 import {useNavigate} from '@tanstack/react-router'
+import {Core} from '@/shared'
 
 type Form = {
   name: string

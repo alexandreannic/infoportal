@@ -1,6 +1,5 @@
-import {Core, Modal, Page} from '@/shared'
+import {Core, Page} from '@/shared'
 import {Grid, Grow, useTheme} from '@mui/material'
-import {Panel, PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
 import {useI18n} from '@/core/i18n'
 import React, {useMemo, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
@@ -65,7 +64,7 @@ function FormBuilder() {
                     <Core.Panel>
                       <Core.PanelHead
                         action={
-                          <Modal
+                          <Core.Modal
                             loading={queryVersion.deployLast.isPending}
                             title={m.confirm}
                             onConfirm={(event, close) =>
@@ -80,7 +79,7 @@ function FormBuilder() {
                             >
                               {m.deployLastVersion}
                             </Core.Btn>
-                          </Modal>
+                          </Core.Modal>
                         }
                       >
                         {m.versions}
@@ -125,7 +124,7 @@ function FormBuilder() {
                       {m.open}
                     </Core.Btn>
                   </Link>
-                  <Modal
+                  <Core.Modal
                     title={m.copyResponderLink}
                     onConfirm={async () => {
                       try {
@@ -149,7 +148,7 @@ function FormBuilder() {
                     <Core.Btn icon="link" size="large" variant="outlined">
                       {m.copyLink}
                     </Core.Btn>
-                  </Modal>
+                  </Core.Modal>
                 </Core.Panel>
               )}
               {active && showPreview && (

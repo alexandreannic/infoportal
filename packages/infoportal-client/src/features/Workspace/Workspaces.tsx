@@ -1,4 +1,4 @@
-import {Modal, Page} from '@/shared'
+import {Core, Page} from '@/shared'
 import {WorkspaceCard, WorkspaceCardAdd, WorkspaceCardInvitation} from '@/features/Workspace/WorkspaceCard'
 import {Grid, Skeleton} from '@mui/material'
 import {WorkspaceCreate} from '@/features/Workspace/WorkspaceCreate'
@@ -9,7 +9,6 @@ import {Layout} from '@/shared/Layout/Layout'
 import {AppHeader} from '@/core/layout/AppHeader'
 import {createRoute} from '@tanstack/react-router'
 import {rootRoute} from '@/Router'
-import {AnimateList} from '../../../../infoportal-client-core/src/AnimatedList.js'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 
 export const workspacesRoute = createRoute({
@@ -28,16 +27,16 @@ function Workspaces() {
       <Layout header={<AppHeader />}>
         <Page>
           <Grid container spacing={2} sx={{mt: 1}}>
-            <AnimateList delay={50}>
+            <Core.AnimateList delay={50}>
               <Grid size={{xs: 6, sm: 4, md: 3}}>
-                <Modal
+                <Core.Modal
                   title={m.createWorkspace}
                   maxWidth="xs"
                   onClose={null}
                   content={close => <WorkspaceCreate onClose={close} />}
                 >
                   <WorkspaceCardAdd />
-                </Modal>
+                </Core.Modal>
               </Grid>
               {queryInvitations.data?.map(_ => (
                 <Grid size={{xs: 6, sm: 4, md: 3}} key={_.id}>
@@ -60,7 +59,7 @@ function Workspaces() {
                   />
                 </Grid>
               )}
-            </AnimateList>
+            </Core.AnimateList>
           </Grid>
         </Page>
       </Layout>

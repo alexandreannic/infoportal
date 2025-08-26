@@ -4,6 +4,7 @@ import React, {ReactNode} from 'react'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {alphaVar} from '@/core/theme.js'
+import {Core} from '@/shared'
 
 export const DashboardHeader = ({
   title,

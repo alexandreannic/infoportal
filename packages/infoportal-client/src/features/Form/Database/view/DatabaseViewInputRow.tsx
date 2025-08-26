@@ -1,12 +1,11 @@
 import {Box, Collapse, Radio} from '@mui/material'
 import {DatabaseView, DatabaseViewVisibility} from '@/core/sdk/server/databaseView/DatabaseView'
 import {useI18n} from '@/core/i18n'
-import {Txt} from '@/shared'
-import {ipSelectItem} from '../../../../../../infoportal-client-core/src/Select/SelectSingle'
 import {BtnConfirm} from '@/shared/BtnConfirm'
 import React from 'react'
 import {makeStyles} from 'tss-react/mui'
 import {alphaVar} from '@/core/theme.js'
+import {Core} from '@/shared'
 
 const useStyles = makeStyles<{open?: boolean}>()((t, {open}) => ({
   root: {
@@ -87,19 +86,19 @@ export const DatabaseViewInputRow = ({
             renderValue={_ => _}
             hideNullOption
             options={[
-              ipSelectItem({
+              Core.SelectItem({
                 value: DatabaseViewVisibility.Public,
                 icon: 'public',
                 title: m._datatable.viewPublic,
                 desc: m._datatable.viewPublicDesc,
               }),
-              ipSelectItem({
+              Core.SelectItem({
                 value: DatabaseViewVisibility.Sealed,
                 icon: 'lock',
                 title: m._datatable.viewLock,
                 desc: m._datatable.viewLockDesc,
               }),
-              ipSelectItem({
+              Core.SelectItem({
                 value: DatabaseViewVisibility.Private,
                 icon: 'visibility_off',
                 title: m._datatable.viewPrivate,

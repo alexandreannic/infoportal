@@ -1,6 +1,6 @@
 import {KoboSchemaHelper, nullValuesToUndefined} from 'infoportal-common'
 import React, {ReactElement, useCallback, useMemo} from 'react'
-import {Modal, Txt} from '@/shared'
+import {Core} from '@/shared'
 import {Autocomplete, Box, Chip, createFilterOptions, Icon} from '@mui/material'
 import {Controller, useForm} from 'react-hook-form'
 import {map, seq} from '@axanc/ts-utils'
@@ -82,7 +82,7 @@ export const DatabaseAccessForm = ({
   }
 
   return (
-    <Modal
+    <Core.Modal
       loading={queryAccessCreate.isPending}
       confirmDisabled={!accessForm.formState.isValid}
       onConfirm={(_, close) =>
@@ -220,6 +220,6 @@ export const DatabaseAccessForm = ({
       }
     >
       {children}
-    </Modal>
+    </Core.Modal>
   )
 }

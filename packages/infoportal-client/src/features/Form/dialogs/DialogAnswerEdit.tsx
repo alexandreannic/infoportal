@@ -7,6 +7,7 @@ import {useRef} from 'react'
 import {XlsFormFiller, XlsFormFillerHandle} from 'xls-form-filler'
 import {Ip} from 'infoportal-api-sdk'
 import {Link} from '@tanstack/react-router'
+import {Core} from '@/shared'
 
 export const DialogAnswerEdit = ({
   onClose,

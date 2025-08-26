@@ -1,23 +1,25 @@
-import {IpBtn, BtnProps, PopoverWrapper, Txt} from '@/shared'
 import React from 'react'
 import {Box, Icon, useTheme} from '@mui/material'
-import {ScRadioGroup, ScRadioGroupItem} from '../../../../../../infoportal-client-core/src/RadioGroup'
 import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
-import {ipSelectItem} from '../../../../../../infoportal-client-core/src/Select/SelectSingle'
 import {useI18n} from '@/core/i18n'
+import {Core} from '@/shared'
 
 export const DatabaseGroupDisplayInput = (props: Core.BtnProps) => {
   const t = useTheme()
   const {m} = useI18n()
   const {schema, groupDisplay} = useDatabaseKoboTableContext()
   return (
-    <PopoverWrapper
+    <Core.PopoverWrapper
       content={() => (
         <Box sx={{p: 1, minWidth: 120, width: 320}}>
           <Core.Txt color="hint" sx={{mb: 0.5}} fontSize="small" block>
             {m._koboDatabase.repeatAs}
           </Core.Txt>
-          <Core.RadioGroup dense value={groupDisplay.get.repeatAs} onChange={_ => groupDisplay.setProperty('repeatAs', _)}>
+          <Core.RadioGroup
+            dense
+            value={groupDisplay.get.repeatAs}
+            onChange={_ => groupDisplay.setProperty('repeatAs', _)}
+          >
             <Core.RadioGroupItem value={null} title={m._koboDatabase.repeatDont} />
             <Core.RadioGroupItem value="rows" title={m._koboDatabase.repeatAsRows} />
             <Core.RadioGroupItem value="columns" title={m._koboDatabase.repeatAsColumn} />
@@ -32,7 +34,7 @@ export const DatabaseGroupDisplayInput = (props: Core.BtnProps) => {
                 renderValue={_ => schema.translate.question(_)!}
                 onChange={_ => groupDisplay.setProperty('repeatGroupName', _ ?? undefined)}
                 options={schema.helper.group.search({depth: 1}).map(_ =>
-                  ipSelectItem({
+                  Core.SelectItem({
                     value: _.name,
                     title: schema.translate.question(_.name),
                     desc: _.name,
@@ -51,6 +53,6 @@ export const DatabaseGroupDisplayInput = (props: Core.BtnProps) => {
         endIcon={<Icon sx={{color: t.vars.palette.text.secondary}}>arrow_drop_down</Icon>}
         {...props}
       />
-    </PopoverWrapper>
+    </Core.PopoverWrapper>
   )
 }

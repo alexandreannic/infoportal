@@ -1,7 +1,6 @@
 import React, {ReactNode, useEffect, useState} from 'react'
 import {Box, Collapse, LinearProgress, Typography} from '@mui/material'
 import {combineSx, makeSx} from '@/core/theme'
-import {Txt} from '@/shared'
 import {useSetState} from '@axanc/react-hooks'
 import {Layout} from '@/shared/Layout/Layout'
 import {Sidebar, SidebarItem} from '@/shared/Layout/Sidebar'
@@ -10,6 +9,7 @@ import {Page} from '@/shared/Page'
 import {map} from '@axanc/ts-utils'
 import {useI18n} from '@/core/i18n'
 import {appConfig} from '@/conf/AppConfig'
+import {Core} from '@/shared'
 
 const dashboardHeaderId = 'aa-header-id'
 

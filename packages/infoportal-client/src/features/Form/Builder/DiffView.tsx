@@ -5,9 +5,9 @@ import 'react-diff-view/style/index.css'
 import 'diff2html/bundles/css/diff2html.min.css'
 import {Box, BoxProps, useColorScheme, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
-import {Txt} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 import {ColorSchemeType} from 'diff2html/lib/types'
+import {Core} from '@/shared'
 
 type Props = BoxProps & {
   oldStr: string

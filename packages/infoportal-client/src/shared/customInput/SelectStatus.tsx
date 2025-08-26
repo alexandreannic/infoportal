@@ -1,10 +1,10 @@
-import {IpSelectOption} from '../../../../infoportal-client-core/src/Select/SelectSingle'
 import {KeyOf, Obj} from '@axanc/ts-utils'
 import React, {ReactNode, useMemo} from 'react'
 import {StateStatus} from 'infoportal-common'
 import {Box, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
 import {Ip} from 'infoportal-api-sdk'
+import {Core} from '@/shared'
 
 export namespace SelectStatusConfig {
   export const enumStatus = {
@@ -105,7 +105,7 @@ export const SelectStatus = <T extends string>({
   ...props
 }: SelectStatusProps<T>) => {
   const {m} = useI18n()
-  const options: IpSelectOption<any>[] = useMemo(() => {
+  const options: Core.SelectOption<any>[] = useMemo(() => {
     return Obj.keys(status).map(_ => ({
       value: _,
       children: (

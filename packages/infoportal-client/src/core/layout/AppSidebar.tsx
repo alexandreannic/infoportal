@@ -1,5 +1,5 @@
 import {useI18n} from '@/core/i18n'
-import {Core, Fender, IpBtn, Txt} from '@/shared'
+import {Core, Fender} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
 import {Box, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
 import {useMemo, useState} from 'react'
@@ -137,7 +137,9 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
                       </>
                     }
                   >
-                    <Core.Txt sx={{color: _.deploymentStatus !== 'deployed' ? t.vars!.palette.text.disabled : undefined}}>
+                    <Core.Txt
+                      sx={{color: _.deploymentStatus !== 'deployed' ? t.vars!.palette.text.disabled : undefined}}
+                    >
                       {_.name}
                       {/* {_.custom && <span style={{fontWeight: 300}}> ({m._koboDatabase.mergedDb})</span>} */}
                     </Core.Txt>

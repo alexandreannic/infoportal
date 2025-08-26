@@ -5,10 +5,8 @@ import {getMsalInstance} from '@/core/msal'
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {SessionProvider} from '@/core/Session/SessionContext'
-import {CenteredContent, Core, Txt} from '@/shared'
+import {CenteredContent, Core} from '@/shared'
 import {IpLogo} from '@/shared/logo/logo'
-import {Provide} from '../../infoportal-client-core/src/Provide.js'
-import {ToastProvider} from '../../infoportal-client-core/src/Toast.js'
 import {MsalProvider} from '@azure/msal-react'
 import {ThemeProvider} from '@mui/material/styles'
 import {Box, CssBaseline, Icon} from '@mui/material'
@@ -64,11 +62,11 @@ const AppWithConfig = () => {
   const msal = useMemo(() => getMsalInstance(settings.conf), [settings.conf])
 
   return (
-    <Provide
+    <Core.Provide
       providers={[
         _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns} />,
         _ => <ThemeProvider theme={defaultTheme} children={_} />,
-        _ => <ToastProvider children={_} />,
+        _ => <Core.ToastProvider children={_} />,
         _ => <CssBaseline children={_} />,
         _ => <I18nProvider children={_} />,
         _ => <MsalProvider children={_} instance={msal} />,
@@ -85,7 +83,7 @@ const AppWithConfig = () => {
           <ReactQueryDevtools initialIsOpen={false} />
         </>
       )}
-    </Provide>
+    </Core.Provide>
   )
 }
 

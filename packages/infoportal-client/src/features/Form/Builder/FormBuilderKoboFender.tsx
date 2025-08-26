@@ -1,10 +1,9 @@
 import {Alert, AlertTitle, Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
-import {Panel, PanelBody} from '../../../../../infoportal-client-core/src/Panel'
 import {useI18n} from '@/core/i18n'
 import React from 'react'
 import {useQueryServer} from '@/core/query/useQueryServers'
 import {Ip} from 'infoportal-api-sdk'
-import {Txt} from '@/shared'
+import {Core} from '@/shared'
 
 const Button = ({href, label, icon, sx, ...props}: {href: string; label: string; icon: string} & ButtonBaseProps) => {
   const t = useTheme()

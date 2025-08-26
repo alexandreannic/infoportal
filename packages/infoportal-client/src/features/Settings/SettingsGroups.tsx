@@ -2,7 +2,6 @@ import {Page} from '@/shared/Page'
 import React, {useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Box, Chip, Icon} from '@mui/material'
-import {Modal} from '@/shared/Modal'
 import {useForm} from 'react-hook-form'
 import {accessLevelIcon, IAccessForm} from '@/features/Access/AccessForm'
 import {SettingsGroupAccessForm} from '@/features/Settings/SettingsGroupAccessForm'
@@ -51,7 +50,7 @@ function SettingsGroups() {
           id="group"
           header={
             permission.group_canCreate && (
-              <Modal
+              <Core.Modal
                 onOpen={groupForm.reset}
                 onConfirm={(e, close) =>
                   groupForm.handleSubmit(form => {
@@ -69,7 +68,7 @@ function SettingsGroups() {
                 <Core.Btn icon="add" variant="outlined">
                   {m.create}
                 </Core.Btn>
-              </Modal>
+              </Core.Modal>
             )
           }
           columns={[
@@ -151,7 +150,7 @@ function SettingsGroups() {
               align: 'right',
               renderQuick: _ => (
                 <>
-                  <Modal
+                  <Core.Modal
                     onOpen={groupForm.reset}
                     onConfirm={(e, close) =>
                       groupForm.handleSubmit(form => {
@@ -186,7 +185,7 @@ function SettingsGroups() {
                     }
                   >
                     <Core.IconBtn size="small">edit</Core.IconBtn>
-                  </Modal>
+                  </Core.Modal>
                   <Core.IconBtn
                     size="small"
                     tooltip={m.duplicate}

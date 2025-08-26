@@ -65,7 +65,12 @@ export class DatatableErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
           <Core.Btn icon="refresh" onClick={() => this.refreshPage()} color="primary" variant="contained" sx={{mr: 1}}>
             {en.messages.refresh}
           </Core.Btn>
-          <Core.Btn icon="settings_backup_restore" onClick={() => this.refreshPage(true)} color="primary" variant="text">
+          <Core.Btn
+            icon="settings_backup_restore"
+            onClick={() => this.refreshPage(true)}
+            color="primary"
+            variant="text"
+          >
             {en.messages.hardRefresh}
           </Core.Btn>
 

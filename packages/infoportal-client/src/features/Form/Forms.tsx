@@ -1,7 +1,6 @@
 import {useI18n} from '@/core/i18n'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {Page} from '@/shared/Page'
-import {Panel} from '../../../../infoportal-client-core/src/Panel'
 import {fnSwitch, seq} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
 import {useEffect, useMemo} from 'react'
@@ -12,6 +11,7 @@ import {createRoute, Link} from '@tanstack/react-router'
 import {formRootRoute} from '@/features/Form/Form'
 import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
+import {Core} from '@/shared'
 
 export const formsRoute = createRoute({
   getParentRoute: () => formRootRoute,

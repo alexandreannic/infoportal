@@ -1,8 +1,8 @@
+import {Core} from '@/shared'
 import {Box, Icon, SxProps, useTheme} from '@mui/material'
-import {TxtProps} from '../../../../infoportal-client-core/src/Txt.js'
 import React, {ReactNode} from 'react'
 
-export const Label = (props: TxtProps) => {
+export const Label = (props: Core.TxtProps) => {
   return <Core.Txt block uppercase bold color="hint" fontSize="small" {...props} />
 }
 

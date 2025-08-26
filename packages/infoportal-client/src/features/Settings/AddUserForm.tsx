@@ -1,11 +1,10 @@
 import {useI18n} from '@/core/i18n'
-import {PanelFoot} from '../../../../infoportal-client-core/src/Panel/PanelFoot'
-import {ScRadioGroup, ScRadioGroupItem} from '../../../../infoportal-client-core/src/RadioGroup'
 import {Regexp} from 'infoportal-common'
 import {Controller, useForm} from 'react-hook-form'
 import {HttpError, Ip} from 'infoportal-api-sdk'
 import {Collapse} from '@mui/material'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {Core} from '@/shared'
 
 type Form = {
   email: Ip.User.Email
@@ -88,7 +87,12 @@ export const AddUserForm = ({
       </Collapse>
       <Core.PanelFoot sx={{mt: 2, p: 0}} alignEnd>
         {onClose && <Core.Btn onClick={onClose}>{m.close}</Core.Btn>}
-        <Core.Btn variant="outlined" type="submit" disabled={!form.formState.isValid} loading={queryInvitation.isPending}>
+        <Core.Btn
+          variant="outlined"
+          type="submit"
+          disabled={!form.formState.isValid}
+          loading={queryInvitation.isPending}
+        >
           {m.submit}
         </Core.Btn>
       </Core.PanelFoot>

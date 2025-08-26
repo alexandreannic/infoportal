@@ -3,12 +3,12 @@ import {rootRoute} from '@/Router'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {XlsFormFiller} from 'xls-form-filler'
 import {Page} from '@/shared'
-import {Panel, PanelBody, PanelHead} from '../../../../infoportal-client-core/src/Panel'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {useQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useIpToast} from '@/core/useToast'
 import {Ip} from 'infoportal-api-sdk'
 import {useEffect, useState} from 'react'
+import {Core} from '@/shared'
 
 export const collectRoute = createRoute({
   getParentRoute: () => rootRoute,

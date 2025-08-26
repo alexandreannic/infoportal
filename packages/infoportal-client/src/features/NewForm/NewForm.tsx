@@ -1,9 +1,7 @@
 import {Page} from '@/shared'
-import {ScRadioGroup, ScRadioGroupItem} from '../../../../infoportal-client-core/src/RadioGroup'
 import {useI18n} from '@/core/i18n'
 import {Collapse} from '@mui/material'
 import {useEffect, useState} from 'react'
-import {Panel, PanelBody, PanelHead} from '../../../../infoportal-client-core/src/Panel'
 import {useDialogs} from '@toolpad/core'
 import {KoboServerFormDialog} from '@/features/NewForm/KoboServerForm'
 import {SelectKoboForm} from '@/features/NewForm/SelectKoboForm'
@@ -14,6 +12,7 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {createRoute} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
+import {Core} from '@/shared'
 
 export const newFormRoute = createRoute({
   getParentRoute: () => workspaceRoute,

@@ -1,5 +1,4 @@
 import {Controller, UseFormReturn} from 'react-hook-form'
-import {ScRadioGroup, ScRadioGroupItem} from '../../../../infoportal-client-core/src/RadioGroup'
 import {Autocomplete, autocompleteClasses, Box, SxProps, Theme} from '@mui/material'
 import {fnSwitch, map, Obj, seq} from '@axanc/ts-utils'
 import React, {useEffect, useMemo} from 'react'
@@ -9,6 +8,7 @@ import {DrcJobInputMultiple} from '@/shared/customInput/DrcJobInput'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
 import {Ip} from 'infoportal-api-sdk'
+import {Core} from '@/shared'
 
 export interface IAccessForm {
   selectBy?: 'email' | 'job' | 'group' | null

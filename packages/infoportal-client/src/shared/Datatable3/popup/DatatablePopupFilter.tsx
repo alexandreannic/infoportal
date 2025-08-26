@@ -1,12 +1,12 @@
 import {useI18n} from '@/core/i18n/index.js'
 import React, {ReactNode, useEffect, useState} from 'react'
 import {Alert, Box, Icon, MenuItem, Popover, PopoverProps} from '@mui/material'
-import {PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel/index.js'
-import {IpBtn, IpIconBtn, Txt} from '@/shared/index.js'
-import {PeriodPicker} from '../../../../../infoportal-client-core/src/PeriodPicker/PeriodPicker.js'
 import {endOfDay} from 'date-fns'
-import {PanelFoot} from '../../../../../infoportal-client-core/src/Panel/PanelFoot.js'
-import {DatatableFilterDialogNumber, DatatableFilterDialogSelect, DatatableFilterDialogText,} from '@/shared/Datatable/popover/DatatableFilterModal.js'
+import {
+  DatatableFilterDialogNumber,
+  DatatableFilterDialogSelect,
+  DatatableFilterDialogText,
+} from '@/shared/Datatable/popover/DatatableFilterModal.js'
 import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
 import {OrderBy} from '@axanc/react-hooks'
@@ -135,7 +135,7 @@ export const DatatableFilterModal3 = ({
               }
               case 'date':
                 return (
-                  <PeriodPicker
+                  <Core.PeriodPicker
                     value={innerValue}
                     onChange={_ => {
                       if (_[1]) _[1] = endOfDay(_[1])

@@ -1,9 +1,9 @@
 import * as React from 'react'
 import {forwardRef, ReactNode, useState} from 'react'
-import {Alert as MuiAlert, AlertProps} from '@mui/material'
+import {Alert as MuiAlert, AlertProps as MuiAlertProps} from '@mui/material'
 import {usePersistentState} from '@axanc/react-hooks'
 
-export type IpAlertProps = Omit<AlertProps, 'id'> & {
+export type AlertProps = Omit<MuiAlertProps, 'id'> & {
   hidden?: boolean
   action?: ReactNode
 } & (
@@ -17,7 +17,7 @@ export type IpAlertProps = Omit<AlertProps, 'id'> & {
       }
   )
 
-export const Alert = forwardRef(({content, hidden, deletable, sx, onClose, ...props}: IpAlertProps, ref) => {
+export const Alert = forwardRef(({content, hidden, deletable, sx, onClose, ...props}: AlertProps, ref) => {
   const [isPersistentVisible, setPersistentIsVisible] = usePersistentState<boolean>(true, {
     storageKey: props.id!,
   })

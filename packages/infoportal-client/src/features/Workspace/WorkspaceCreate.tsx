@@ -3,9 +3,10 @@ import {Box, CardActions, CircularProgress} from '@mui/material'
 import {useEffect, useState} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Controller, useForm} from 'react-hook-form'
-import {useFetcher} from '../../../../infoportal-client-core/src/hook/useFetcher'
 import {useIpToast} from '@/core/useToast'
 import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {useFetcher} from '@axanc/react-hooks'
+import {Core} from '@/shared'
 
 type Form = {
   slug: string

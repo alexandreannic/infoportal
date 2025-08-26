@@ -2,15 +2,14 @@ import {Page} from '@/shared/Page'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import React, {useEffect} from 'react'
 import {useI18n} from '@/core/i18n'
-import {useFetcher} from '../../../../infoportal-client-core/src/hook/useFetcher'
 import {map} from '@axanc/ts-utils'
 import {JSONTree} from 'react-json-tree'
-import {Panel, PanelBody, PanelHead} from '../../../../infoportal-client-core/src/Panel'
 import {Box, useTheme} from '@mui/material'
 import {addMilliseconds} from 'date-fns'
-import {useAsync} from '../../../../infoportal-client-core/src/hook/useAsync'
 import {settingsRoute} from '@/features/Settings/Settings'
 import {createRoute} from '@tanstack/react-router'
+import {Core} from '@/shared'
+import {useAsync, useFetcher} from '@axanc/react-hooks'
 
 export const settingsCacheRoute = createRoute({
   getParentRoute: () => settingsRoute,

@@ -4,7 +4,6 @@ import React, {useCallback, useEffect, useMemo} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {Box, Icon, Popover} from '@mui/material'
 import {DatatableContext} from '@/shared/Datatable3/state/DatatableContext.js'
-import {IpBtn, Txt} from '@/shared/index.js'
 import {useI18n} from '@/core/i18n/index.js'
 import {Core} from '@/shared'
 

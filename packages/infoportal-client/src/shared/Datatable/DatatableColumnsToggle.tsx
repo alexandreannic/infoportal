@@ -1,6 +1,6 @@
 import {Badge, Chip, Icon, IconButton, IconButtonProps, Switch, Tooltip} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
-import {Core, PopoverWrapper, Txt} from '@/shared'
+import {Core} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
@@ -41,7 +41,7 @@ export const DatatableColumnToggle = ({
   }, [hiddenColumns])
 
   return (
-    <PopoverWrapper
+    <Core.PopoverWrapper
       content={() => (
         <>
           <Core.Alert deletable="permanent" id="datatable-alert-cols-toggle" color="info">
@@ -177,6 +177,6 @@ export const DatatableColumnToggle = ({
           </Badge>
         </IconButton>
       </Tooltip>
-    </PopoverWrapper>
+    </Core.PopoverWrapper>
   )
 }

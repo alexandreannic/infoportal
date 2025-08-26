@@ -1,12 +1,9 @@
-import {AppAvatar, Page, Txt, ViewMoreDiv} from '@/shared'
-import {Panel, PanelBody} from '../../../../infoportal-client-core/src/Panel'
+import {AppAvatar, Core, Page, ViewMoreDiv} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {useQueryMetrics} from '@/core/query/useQueryMetrics.js'
 import {Ip} from 'infoportal-api-sdk'
-import {ChartLine} from '../../../../infoportal-client-core/src/charts/ChartLine.js'
 import {Box, BoxProps, CircularProgress, Grid, Icon, useTheme} from '@mui/material'
-import {BarChartData, ChartBar} from '../../../../infoportal-client-core/src/charts/ChartBar.js'
 import {Obj, seq} from '@axanc/ts-utils'
 import {useQueryForm} from '@/core/query/useQueryForm.js'
 import {useSetState} from '@axanc/react-hooks'
@@ -16,15 +13,10 @@ import {useI18n} from '@/core/i18n/index.js'
 import {useQueryUser} from '@/core/query/useQueryUser.js'
 import {useEffect, useMemo, useState} from 'react'
 import {SelectStatusConfig} from '@/shared/customInput/SelectStatus.js'
-import {ChartPie} from '../../../../infoportal-client-core/src/charts/ChartPie.js'
 import {toPercent} from 'infoportal-common'
-import {ChartPieWidget} from '../../../../infoportal-client-core/src/charts/ChartPieWidget.js'
-import {PanelWBody} from '../../../../infoportal-client-core/src/Panel/PanelWBody.js'
-import {PeriodPicker} from '../../../../infoportal-client-core/src/PeriodPicker/PeriodPicker.js'
 import {addDays, subYears} from 'date-fns'
 import {DataFilterLayout} from '@/shared/DataFilter/DataFilterLayout.js'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext.js'
-import {ChartGeo} from '../../../../infoportal-client-core/src/charts/ChartGeo.js'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -59,7 +51,7 @@ const PieChartStatus = ({
         >
           <Icon sx={{color: style.color(t)}}>{style.icon}</Icon>
         </Box>
-        <ChartPie percent={percent} color={style.color(t)} size={55} sx={{margin: 'auto'}} />
+        <Core.ChartPie percent={percent} color={style.color(t)} size={55} sx={{margin: 'auto'}} />
       </Box>
       <Core.Txt block bold size="big" sx={{mt: 0.5, lineHeight: 1, textAlign: 'center'}}>
         {toPercent(percent)}
@@ -143,7 +135,7 @@ function Dashboard() {
     }
     return (
       <Core.Panel sx={{height: '100%', py: 1, px: 2, display: 'flex', alignItems: 'center'}}>
-        <ChartPieWidget title={m.linkedToKobo} dense showValue showBase value={value} base={base} />
+        <Core.ChartPieWidget title={m.linkedToKobo} dense showValue showBase value={value} base={base} />
       </Core.Panel>
     )
   }, [queryForms.data])
@@ -166,7 +158,12 @@ function Dashboard() {
     </Core.Panel>
   )
 
-  const map = <ChartGeo data={queryUsersByIsoCode.data?.map(_ => ({iso: _.key, count: _.count}))} />
+  const map = (
+    <Core.ChartGeo
+      panelTitle={m.submissionsByLocation}
+      data={queryUsersByIsoCode.data?.map(_ => ({iso: _.key, count: _.count}))}
+    />
+  )
   const submissionByTime = useMemo(() => {
     if (!querySubmissionByMonth.data) return
     const data = querySubmissionByMonth.data?.map(_ => {
@@ -177,7 +174,7 @@ function Dashboard() {
     })
     return (
       <Core.PanelWBody title={m.submissions}>
-        <ChartLine hideLabelToggle hideLegend data={data} />
+        <Core.ChartLine hideLabelToggle hideLegend data={data} />
       </Core.PanelWBody>
     )
   }, [querySubmissionByMonth.data])
@@ -188,7 +185,7 @@ function Dashboard() {
       _ => _.key,
       _ => {
         const formId = _[0]?.key as Ip.FormId
-        const res: BarChartData = {
+        const res: Core.BarChartData = {
           value: _.sum(_ => _.count),
           label: formIndex?.get(formId)?.name ?? formId,
         }
@@ -199,7 +196,7 @@ function Dashboard() {
       <Core.Panel title={m.submissionsByForm}>
         <Core.PanelBody>
           <ViewMoreDiv>
-            <ChartBar
+            <Core.ChartBar
               dense
               data={data}
               checked={selectedFormsSet.toArray}
@@ -221,7 +218,7 @@ function Dashboard() {
     })
     return (
       <Core.PanelWBody title={m.submissionsByCategory}>
-        <ChartBar dense data={data} />
+        <Core.ChartBar dense data={data} />
       </Core.PanelWBody>
     )
   }, [querySubmissionsByCategory.data])
@@ -238,7 +235,7 @@ function Dashboard() {
     })
     return (
       <Core.PanelWBody title={m.users}>
-        <ChartLine hideLabelToggle hideLegend data={data} />
+        <Core.ChartLine hideLabelToggle hideLegend data={data} />
       </Core.PanelWBody>
     )
   }, [getUsersByDate.data])
@@ -273,7 +270,7 @@ function Dashboard() {
           </Core.Alert>
         )}
         <ViewMoreDiv>
-          <ChartBar dense data={data} />
+          <Core.ChartBar dense data={data} />
         </ViewMoreDiv>
       </Core.PanelWBody>
     )
@@ -291,7 +288,7 @@ function Dashboard() {
         shapes={{}}
         after={loading && <CircularProgress size={30} />}
         before={
-          <PeriodPicker
+          <Core.PeriodPicker
             sx={{mt: 0, mb: 0, mr: 1}}
             value={[period.start, period.end]}
             onChange={([start, end]) => {

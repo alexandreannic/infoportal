@@ -2,7 +2,6 @@ import {useI18n} from '@/core/i18n'
 import React, {useEffect} from 'react'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {Controller, UseFormReturn} from 'react-hook-form'
-import {ScRadioGroup, ScRadioGroupItem} from '../../../../infoportal-client-core/src/RadioGroup'
 import {fnSwitch} from '@axanc/ts-utils'
 import {
   AccessFormInputAccessLevel,
@@ -12,6 +11,7 @@ import {
   IAccessForm,
 } from '@/features/Access/AccessForm'
 import {Ip} from 'infoportal-api-sdk'
+import {Core} from '@/shared'
 
 export const SettingsGroupAccessForm = ({
   workspaceId,

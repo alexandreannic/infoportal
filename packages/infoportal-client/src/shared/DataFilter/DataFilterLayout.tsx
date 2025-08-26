@@ -7,6 +7,7 @@ import {DebouncedInput} from '@/shared/DebouncedInput'
 import {DashboardFilterOptions} from '@/shared/DashboardLayout/DashboardFilterOptions'
 import {useI18n} from '@/core/i18n'
 import {DataFilterLayoutPopup} from '@/shared/DataFilter/DataFilterLayoutPopup'
+import {Core} from '@/shared'
 
 export interface FilterLayoutProps extends Pick<BoxProps, 'sx'> {
   readonly onClear?: (name?: string) => void

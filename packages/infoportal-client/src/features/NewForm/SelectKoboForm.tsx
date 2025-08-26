@@ -1,12 +1,12 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {Icon, useTheme} from '@mui/material'
-import {Panel, PanelBody, PanelHead} from '../../../../infoportal-client-core/src/Panel'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {Ip} from 'infoportal-api-sdk'
+import {Core} from '@/shared'
 
 export const SelectKoboForm = ({
   workspaceId,
@@ -34,7 +34,11 @@ export const SelectKoboForm = ({
         <Datatable
           loading={queryKoboForms.isLoading || queryForms.importFromKobo.isPending}
           id="select-kobo-form"
-          sx={{overflow: 'hidden', border: `1px solid ${t.vars.palette.divider}`, borderRadius: t.vars.shape.borderRadius}}
+          sx={{
+            overflow: 'hidden',
+            border: `1px solid ${t.vars.palette.divider}`,
+            borderRadius: t.vars.shape.borderRadius,
+          }}
           header={null}
           data={queryKoboForms.data}
           columns={[

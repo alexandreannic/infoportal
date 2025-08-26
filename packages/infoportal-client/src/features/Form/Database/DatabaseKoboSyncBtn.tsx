@@ -1,6 +1,6 @@
-import {IpBtn, BtnProps} from '../../../../../infoportal-client-core/src/Btn.js'
 import React from 'react'
 import {useI18n} from '@/core/i18n'
+import {Core} from '@/shared'
 
 export const DatabaseKoboSyncBtn = (props: Core.BtnProps) => {
   const {m} = useI18n()

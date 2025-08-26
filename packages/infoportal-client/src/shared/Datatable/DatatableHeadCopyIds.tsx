@@ -3,9 +3,9 @@ import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {Box, Icon, Popover, useTheme} from '@mui/material'
 import {useState} from 'react'
-import {IpBtn} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {alphaVar, lightenVar} from '@/core/theme.js'
+import {Core} from '@/shared'
 
 export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerProps<any>}) => {
   const {formatLargeNumber} = useI18n()

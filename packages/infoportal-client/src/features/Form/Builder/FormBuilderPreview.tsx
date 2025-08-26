@@ -1,9 +1,9 @@
 import {Ip} from 'infoportal-api-sdk'
-import {Panel, PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
 import {XlsFormFiller} from 'xls-form-filler'
 import React from 'react'
 import {useI18n} from '@/core/i18n'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
+import {Core} from '@/shared'
 
 export const FormBuilderPreview = ({
   workspaceId,

@@ -1,10 +1,9 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
-import {Modal, TableInput} from '@/shared'
+import {Core, TableInput} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {Page} from '@/shared/Page'
-import {Panel} from '../../../../infoportal-client-core/src/Panel'
 import {fnSwitch, Obj, seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
 import {AddUserForm} from './AddUserForm'
@@ -80,7 +79,7 @@ function SettingsUsers() {
           // getRenderRowKey={(_, i) => '' + i}
           header={
             permission.user_canCreate && (
-              <Modal
+              <Core.Modal
                 onClose={null}
                 title={m.addUser}
                 content={close => (
@@ -90,7 +89,7 @@ function SettingsUsers() {
                 <Core.Btn icon="person_add" variant="outlined" sx={{marginLeft: 'auto'}}>
                   {m.addUser}
                 </Core.Btn>
-              </Modal>
+              </Core.Modal>
             )
           }
           columns={[

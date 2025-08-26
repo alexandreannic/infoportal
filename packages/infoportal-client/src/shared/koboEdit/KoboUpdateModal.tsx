@@ -120,7 +120,13 @@ export namespace KoboUpdateModal {
                 case 'text':
                 case 'calculate': {
                   return (
-                    <Core.Input multiline maxRows={9} fullWidth value={value} onChange={e => setValue(e.target.value)} />
+                    <Core.Input
+                      multiline
+                      maxRows={9}
+                      fullWidth
+                      value={value}
+                      onChange={e => setValue(e.target.value)}
+                    />
                   )
                 }
                 case 'integer':

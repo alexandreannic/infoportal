@@ -1,10 +1,10 @@
 import React, {useCallback} from 'react'
 import {BoxProps, Checkbox, FormControlLabel, FormGroup} from '@mui/material'
-import {Txt, useMultipleChoices} from '@/shared'
 import {DashboardFilterLabel} from './DashboardFilterLabel'
 import {useI18n} from '@/core/i18n'
 import {DatatableOptions} from '@/shared/Datatable/util/datatableType'
 import {makeStyles} from 'tss-react/mui'
+import {Core} from '@/shared'
 
 const useStyles = makeStyles<{dense?: boolean}>()((t, {dense}) => ({
   optionSelectAll: {
@@ -77,7 +77,7 @@ export const DashboardFilterOptionsContent = ({
 }) => {
   const {classes, cx} = useStyles({dense})
   const {m} = useI18n()
-  const choices = useMultipleChoices({
+  const choices = Core.useMultipleChoices({
     addBlankOption,
     value,
     options: options(),

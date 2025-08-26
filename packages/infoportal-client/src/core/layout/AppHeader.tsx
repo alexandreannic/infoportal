@@ -2,10 +2,8 @@ import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
-import {alphaVar, styleUtils} from '@/core/theme'
 import {Core} from '@/shared'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
-import {PopoverWrapper} from '../../../../infoportal-client-core/src/PopoverWrapper.js'
 import {Obj} from '@axanc/ts-utils'
 import {Badge, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme} from '@mui/material'
 import {Link, useNavigate} from '@tanstack/react-router'
@@ -68,10 +66,10 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
               sx={{
                 mr: 1,
                 border: t => `2px solid ${t.vars.palette.primary.main}`,
-                background: t => (sidebarOpen ? 'none' : alphaVar(t.vars.palette.primary.main, 0.1)),
+                background: t => (sidebarOpen ? 'none' : Core.alphaVar(t.vars.palette.primary.main, 0.1)),
                 color: t => t.vars.palette.primary.main,
                 '&:hover': {
-                  background: t => alphaVar(t.vars.palette.primary.main, 0.1),
+                  background: t => Core.alphaVar(t.vars.palette.primary.main, 0.1),
                 },
               }}
               onClick={() => setSidebarOpen(_ => !_)}
@@ -79,7 +77,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             />
           )}
           <Core.Txt
-            sx={{ml: 1, ...styleUtils(t).truncate}}
+            sx={{ml: 1, ...Core.styleUtils(t).truncate}}
             size="title"
             bold
             dangerouslySetInnerHTML={{__html: title ?? ''}}
@@ -108,7 +106,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             }))}
           />
         )}
-        <PopoverWrapper
+        <Core.PopoverWrapper
           content={close =>
             Obj.entries(lightThemeIcons).map(([theme, icon]) => (
               <MenuItem
@@ -126,7 +124,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
           }
         >
           <Core.IconBtn children={lightThemeIcons[mode ?? 'system']} />
-        </PopoverWrapper>
+        </Core.PopoverWrapper>
         <Link to="/">
           <Badge
             color="error"

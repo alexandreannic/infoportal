@@ -1,7 +1,7 @@
 import {Box, Icon, IconButton, IconButtonProps, Tooltip} from '@mui/material'
 import React, {ReactNode} from 'react'
 
-export interface IpIconBtnProps extends IconButtonProps {
+export interface IconBtnProps extends IconButtonProps {
   loading?: boolean
   icon?: string
   children: string
@@ -10,7 +10,7 @@ export interface IpIconBtnProps extends IconButtonProps {
   target?: '_blank'
 }
 
-export const IconBtn = ({tooltip, size, children, ...props}: IpIconBtnProps) => {
+export const IconBtn = ({tooltip, size, children, ...props}: IconBtnProps) => {
   const content = (
     <IconButton {...props} size={size}>
       <Icon fontSize={size}>{children}</Icon>

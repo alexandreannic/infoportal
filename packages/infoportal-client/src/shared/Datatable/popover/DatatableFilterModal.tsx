@@ -1,11 +1,20 @@
-import {Alert, Box, Checkbox, Divider, FormControlLabel, Icon, MenuItem, Popover, PopoverProps, Slider, Switch,} from '@mui/material'
-import {Core, IpBtn, IpIconBtn, MultipleChoices} from '@/shared'
+import {
+  Alert,
+  Box,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  Icon,
+  MenuItem,
+  Popover,
+  PopoverProps,
+  Slider,
+  Switch,
+} from '@mui/material'
+import {Core} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import React, {Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState} from 'react'
-import {PeriodPicker} from '../../../../../infoportal-client-core/src/PeriodPicker/PeriodPicker'
 import {OrderBy} from '@axanc/react-hooks'
-import {PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
-import {PanelFoot} from '../../../../../infoportal-client-core/src/Panel/PanelFoot'
 import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType'
 import {seq} from '@axanc/ts-utils'
 import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
@@ -132,7 +141,7 @@ export const DatatableFilterModal = ({
               }
               case 'date':
                 return (
-                  <PeriodPicker
+                  <Core.PeriodPicker
                     value={innerValue}
                     onChange={_ => {
                       if (_[1]) _[1] = endOfDay(_[1])
@@ -182,7 +191,7 @@ export const DatatableFilterDialogSelect = ({
   const {m} = useI18n()
   const [filter, setFilter] = useState<string>('')
   return (
-    <MultipleChoices
+    <Core.MultipleChoices
       options={
         options?.filter(
           _ =>
@@ -221,7 +230,7 @@ export const DatatableFilterDialogSelect = ({
           </Box>
         </>
       )}
-    </MultipleChoices>
+    </Core.MultipleChoices>
   )
 }
 

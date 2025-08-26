@@ -1,5 +1,4 @@
-import {Modal, Page, Txt} from '@/shared'
-import {Panel, PanelBody} from '../../../../../infoportal-client-core/src/Panel'
+import {Core, Page} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {ReactNode} from 'react'
 import {Box, useTheme} from '@mui/material'
@@ -44,7 +43,7 @@ function FormSettings() {
         <Core.PanelBody>
           {form.kobo && (
             <Row label={m.connectedToKobo} desc={m.connectedToKoboDesc}>
-              <Modal
+              <Core.Modal
                 loading={queryForm.update.isPending}
                 title={m.disconnectToKobo}
                 content={m.disconnectToKoboDesc}
@@ -54,7 +53,7 @@ function FormSettings() {
                 }}
               >
                 <Core.Btn disabled={queryForm.update.isPending}>{m.disconnect}</Core.Btn>
-              </Modal>
+              </Core.Modal>
             </Row>
           )}
           <Row
@@ -75,7 +74,7 @@ function FormSettings() {
             </Core.Btn>
           </Row>
           <Row label={m.deleteThisProject} desc={m.deleteThisProjectDesc}>
-            <Modal
+            <Core.Modal
               loading={queryForm.remove.isPending}
               title={m.deleteThisProject}
               content={form.name}
@@ -88,7 +87,7 @@ function FormSettings() {
               <Core.Btn color="error" variant="outlined" icon="delete">
                 {m.delete}
               </Core.Btn>
-            </Modal>
+            </Core.Modal>
           </Row>
         </Core.PanelBody>
       </Core.Panel>

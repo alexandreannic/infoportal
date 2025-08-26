@@ -1,8 +1,8 @@
+import {Core} from '@/shared'
 import {appConfig} from '../conf/AppConfig'
-import {useToast} from '../../../infoportal-client-core/src/Toast.js'
 
 export const useIpToast = () => {
-  const toasts = useToast()
+  const toasts = Core.useToast()
   return {
     ...toasts,
     toastHttpError: (e: unknown) => {

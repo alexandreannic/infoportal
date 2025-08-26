@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {Box, BoxProps, useTheme} from '@mui/material'
+import {Core} from '@/shared'
 
 interface DrawingProps extends Pick<BoxProps, 'sx'> {
   width: number

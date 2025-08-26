@@ -1,11 +1,8 @@
 import {Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
-import {AppAvatar, Modal, Txt} from '@/shared'
+import {AppAvatar, Core} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {Panel, PanelBody} from '../../../../infoportal-client-core/src/Panel'
 import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
-import {PanelProps} from '../../../../infoportal-client-core/src/Panel/Panel.js'
-import {PanelFoot} from '../../../../infoportal-client-core/src/Panel/PanelFoot.js'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 import {appConfig} from '@/conf/AppConfig.js'
 
@@ -35,7 +32,9 @@ export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
       <Icon sx={{mb: 1, fontSize: 60, color: t.vars.palette.text.secondary}}>{appConfig.icons.workspace}</Icon>
       <Box display="flex" alignItems="center" mt={1}>
         <Icon fontSize="medium">add</Icon>
-        <Core.Txt bold size="big">{m.createWorkspace}</Core.Txt>
+        <Core.Txt bold size="big">
+          {m.createWorkspace}
+        </Core.Txt>
       </Box>
     </ButtonBase>
   )
@@ -81,7 +80,7 @@ export const WorkspaceCardInvitation = ({
   invitation,
   sx,
   ...props
-}: PanelProps & {
+}: Core.PanelProps & {
   invitation: Ip.Workspace.InvitationW_workspace
 }) => {
   const t = useTheme()
@@ -116,14 +115,14 @@ export const WorkspaceCardInvitation = ({
         </Box>
       </Core.PanelBody>
       <Core.PanelFoot sx={{justifyContent: 'space-between'}}>
-        <Modal
+        <Core.Modal
           disabled={accept.isPending}
           title={m.refuse + ' ?'}
           confirmLabel={m.refuse}
           onConfirm={(e, close) => accept.mutateAsync({id: invitation.id, accept: false}).then(close)}
         >
           <Core.Btn color="error">{m.refuse}</Core.Btn>
-        </Modal>
+        </Core.Modal>
         <Core.Btn
           disabled={accept.isPending}
           onClick={() => accept.mutateAsync({id: invitation.id, accept: true})}

@@ -1,14 +1,9 @@
 import {Box, Popover, PopoverProps} from '@mui/material'
 import React, {ReactNode, useMemo} from 'react'
-import {ChartBar} from '../../../../../infoportal-client-core/src/charts/ChartBar'
-import {PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
 import {useI18n} from '@/core/i18n'
-import {PanelFoot} from '../../../../../infoportal-client-core/src/Panel/PanelFoot'
-import {ChartLineByDate} from '../../../../../infoportal-client-core/src/charts/ChartLineByDate'
 import {DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType'
 import {seq} from '@axanc/ts-utils'
 import {KeyOf} from 'infoportal-common'
-import {ChartHelper} from '../../../../../infoportal-client-core/src/charts/chartHelper'
 import {Core} from '@/shared'
 
 const RenderRow = ({label, value}: {label: ReactNode; value: ReactNode}) => {
@@ -96,10 +91,10 @@ export const MultipleChoicesPopover = <T extends DatatableRow>({
     const chart = (() => {
       if (multiple) {
         const mapped = seq(data).map(getValue).compact()
-        return ChartHelper.multiple({data: mapped})
+        return Core.ChartHelper.multiple({data: mapped})
       } else {
         const mapped = seq(data).map(getValue).compact()
-        return ChartHelper.single({data: mapped})
+        return Core.ChartHelper.single({data: mapped})
       }
     })()
     return chart
@@ -118,7 +113,7 @@ export const MultipleChoicesPopover = <T extends DatatableRow>({
         <Core.Txt truncate>{title}</Core.Txt>
       </Core.PanelHead>
       <Core.PanelBody sx={{maxHeight: '50vh', overflowY: 'auto'}}>
-        <ChartBar data={chart} />
+        <Core.ChartBar data={chart} />
       </Core.PanelBody>
       <Core.PanelFoot alignEnd>
         <Core.Btn color="primary" onClick={onClose as any}>
@@ -156,7 +151,7 @@ export const DatesPopover = <T,>({
     <Popover open={!!anchorEl} anchorEl={anchorEl} onClose={onClose}>
       <Core.PanelHead>{title}</Core.PanelHead>
       <Core.PanelBody sx={{maxHeight: '50vh', overflowY: 'auto'}}>
-        <ChartLineByDate data={data} curves={{[title]: getValue}} sx={{minWidth: 360}} />
+        <Core.ChartLineByDate data={data} curves={{[title]: getValue}} sx={{minWidth: 360}} />
       </Core.PanelBody>
       <Core.PanelFoot alignEnd>
         <Core.Btn color="primary" onClick={onClose as any}>

@@ -18,7 +18,7 @@ import {ArrowDropDownIcon} from '@mui/x-date-pickers-pro'
 import {Txt} from '../Txt.js'
 import {makeSx} from '../../core/theme.js'
 
-export type IpSelectOption<T extends string | number = string> = {
+export type SelectOption<T extends string | number = string> = {
   value: T
   children: ReactNode
   key?: string
@@ -26,12 +26,12 @@ export type IpSelectOption<T extends string | number = string> = {
 
 type TType = string | number
 
-export type IpSelectSingleBaseProps<T extends TType = string> = {
+export type SelectSingleBaseProps<T extends TType = string> = {
   placeholder?: string | undefined
   disabled?: boolean
   id?: string | undefined
   label?: ReactNode
-  options: IpSelectOption<T>[] | string[]
+  options: SelectOption<T>[] | string[]
   sx?: SxProps<Theme>
   defaultValue?: T
   value?: T | null
@@ -42,19 +42,19 @@ export type IpSelectSingleBaseProps<T extends TType = string> = {
   startAdornment?: SelectProps<T>['startAdornment']
 }
 
-export type IpSelectSingleNullableProps<T extends TType = string> = IpSelectSingleBaseProps<T> & {
+export type SelectSingleNullableProps<T extends TType = string> = SelectSingleBaseProps<T> & {
   hideNullOption?: false
   onChange: (t: T | null, e: any) => void
 }
 
-export type IpSelectSingleNonNullableProps<T extends TType = string> = IpSelectSingleBaseProps<T> & {
+export type SelectSingleNonNullableProps<T extends TType = string> = SelectSingleBaseProps<T> & {
   hideNullOption: true
   onChange: (t: T, e: any) => void
 }
 
 export type IpSelectSingleProps<T extends TType = string> =
-  | IpSelectSingleNonNullableProps<T>
-  | IpSelectSingleNullableProps<T>
+  | SelectSingleNonNullableProps<T>
+  | SelectSingleNullableProps<T>
 
 const style = makeSx({
   item: {
@@ -121,9 +121,9 @@ export const SelectSingle = <T extends TType>({
   const options = useMemo(() => {
     const _options = props.options ?? []
     if (typeof _options[0] === 'string') {
-      return props.options.map(_ => ({value: _, children: _})) as IpSelectOption<T>[]
+      return props.options.map(_ => ({value: _, children: _})) as SelectOption<T>[]
     }
-    return _options as IpSelectOption<T>[]
+    return _options as SelectOption<T>[]
   }, [props.options])
 
   return (

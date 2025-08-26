@@ -6,12 +6,8 @@ import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useI18n} from '@/core/i18n'
 import {Alert, AlertTitle, CircularProgress, Icon, Skeleton} from '@mui/material'
 import {DiffView} from '@/features/Form/Builder/DiffView'
-import {Panel, PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
 import {Ip} from 'infoportal-api-sdk'
-import {Stepper, StepperHandle} from '../../../../../infoportal-client-core/src/Stepper/Stepper'
-import {StepperActions} from '../../../../../infoportal-client-core/src/Stepper/StepperActions'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
-import {Utils} from '@infoportal/client-core/src/core/utils.js'
 
 type Form = {
   message?: string
@@ -41,7 +37,7 @@ export const XlsFileUploadForm = ({
   } = useForm<Form>({defaultValues: {message: ''}, mode: 'onChange'})
   const queryVersion = useQueryVersion({workspaceId, formId})
   const [validation, setValidation] = useState<Ip.Form.Schema.Validation>()
-  const stepperRef = useRef<StepperHandle>(null)
+  const stepperRef = useRef<Core.StepperHandle>(null)
   const [schemaHasChanges, setSchemaHasChanges] = useState<boolean>(false)
 
   const querySchema = useQuerySchemaByVersion({formId, workspaceId, versionId: lastSchema?.id})
@@ -79,7 +75,7 @@ export const XlsFileUploadForm = ({
       <Core.Panel>
         <Core.PanelHead>{m.importXlsFile}</Core.PanelHead>
         <Core.PanelBody>
-          <Stepper
+          <Core.Stepper
             ref={stepperRef}
             steps={[
               {
@@ -110,7 +106,7 @@ export const XlsFileUploadForm = ({
                         />
                       )}
                     />
-                    <StepperActions disableNext={!watched.xlsFile} />
+                    <Core.StepperActions disableNext={!watched.xlsFile} />
                   </>
                 ),
               },
@@ -141,7 +137,7 @@ export const XlsFileUploadForm = ({
                             </ul>
                           )}
                         </Alert>
-                        <StepperActions disableNext={validation.status === 'error'} />
+                        <Core.StepperActions disableNext={validation.status === 'error'} />
                       </>
                     )
                   )),
@@ -152,7 +148,7 @@ export const XlsFileUploadForm = ({
                       name: 'check',
                       label: m.checkDiff,
                       component: () => {
-                        const action = <StepperActions disableNext={!schemaHasChanges}>{importButton()}</StepperActions>
+                        const action = <Core.StepperActions disableNext={!schemaHasChanges}>{importButton()}</Core.StepperActions>
                         if (querySchema.isLoading) {
                           return (
                             <>
@@ -204,12 +200,12 @@ export const XlsFileUploadForm = ({
                         />
                       )}
                     />
-                    <StepperActions hideNext>{importButton()}</StepperActions>
+                    <Core.StepperActions hideNext>{importButton()}</Core.StepperActions>
                   </>
                 ),
               },
             ]}
-          ></Stepper>
+          ></Core.Stepper>
         </Core.PanelBody>
       </Core.Panel>
     </form>
