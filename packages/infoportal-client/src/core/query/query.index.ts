@@ -32,8 +32,8 @@ export const queryKeys = {
   answers: (formId?: Ip.FormId) => concat('answers', formId),
   metrics: (
     workspaceId?: Ip.WorkspaceId,
-    ressource?: string,
+    resource?: string,
     aggregation?: string,
     params?: Ip.Metrics.Payload.Filter,
-  ) => [...concat('metrics', workspaceId, ressource, aggregation), params],
+  ) => [...concat('metrics', workspaceId, resource, aggregation), params],
 }

@@ -2,8 +2,8 @@ import * as React from 'react'
 import {ReactNode, useRef, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
 import html2canvas from 'html2canvas'
-import {IpIconBtn} from '../IconBtn.js'
-import {Utils} from '../../core/utils.js'
+import {IconBtn} from '../IconBtn.js'
+import {openCanvasInNewTab} from '../../core/utils.js'
 
 export const PanelFeatures = ({
   children,
@@ -23,7 +23,7 @@ export const PanelFeatures = ({
       allowTaint: true,
       backgroundColor: 'transparent',
       // backgroundColor: t.vars.palette.background.default,
-    }).then(_ => Utils.openCanvasInNewTab(_, 'imaa-tools-static'))
+    }).then(_ => openCanvasInNewTab(_, 'imaa-tools-static'))
   }
 
   return (
@@ -59,18 +59,18 @@ export const PanelFeatures = ({
         }}
       >
         {expendable && (
-          <IpIconBtn
+          <IconBtn
             size="small"
-            sx={{marginLeft: 'auto', p: 0, color: t => t.vars.palette.text.disabled}}
+            sx={{marginLeft: 'auto', p: 0, color: t.vars.palette.text.disabled}}
             onClick={() => setExpended(_ => !_)}
           >
             {expended ? 'fullscreen_exit' : 'fullscreen'}
-          </IpIconBtn>
+          </IconBtn>
         )}
         {savableAsImg && (
-          <IpIconBtn size="small" sx={{ml: 1, p: 0, color: t => t.vars.palette.text.disabled}} onClick={saveAsImg}>
+          <IconBtn size="small" sx={{ml: 1, p: 0, color: t.vars.palette.text.disabled}} onClick={saveAsImg}>
             download
-          </IpIconBtn>
+          </IconBtn>
         )}
       </Box>
     </Box>

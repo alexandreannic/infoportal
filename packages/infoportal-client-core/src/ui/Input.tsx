@@ -6,7 +6,7 @@ export interface IpInputProps extends OutlinedInputProps, Pick<TextFieldProps, '
   helperText?: ReactNode
 }
 
-export const IpInput = React.forwardRef(
+export const Input = React.forwardRef(
   ({size = 'small', label, sx, error, required, InputLabelProps, id, helperText = '', ...props}: IpInputProps, ref) => {
     // const id = useMemo(() => Math.random() + '', [])
     const inputElement = useRef<HTMLInputElement | null>(null)

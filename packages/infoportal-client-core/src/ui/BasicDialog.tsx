@@ -1,7 +1,7 @@
 import {Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, LinearProgress, PaperProps} from '@mui/material'
 import {EventHandler, ReactNode, SyntheticEvent} from 'react'
 import {Txt} from './Txt.js'
-import {IpBtn} from './Btn.js'
+import {Btn} from './Btn.js'
 
 export type BasicDialogProps = Omit<DialogProps, 'children' | 'onClick'> & {
   disabled?: boolean
@@ -55,13 +55,13 @@ export const BasicDialog = ({
           overrideActions
         ) : (
           <>
-            <IpBtn color="primary" onClick={onClose}>
+            <Btn color="primary" onClick={onClose}>
               {cancelLabel || 'Cancel'}
-            </IpBtn>
+            </Btn>
             {onConfirm && (
-              <IpBtn color="primary" onClick={onConfirm} disabled={confirmDisabled}>
+              <Btn color="primary" onClick={onConfirm} disabled={confirmDisabled}>
                 {confirmLabel || 'Confirm'}
-              </IpBtn>
+              </Btn>
             )}
           </>
         )}

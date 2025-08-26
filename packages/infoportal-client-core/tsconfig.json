@@ -6,7 +6,7 @@
     "moduleResolution": "bundler",
     "jsx": "preserve",
     "incremental": true,
-    "outDir": "./lib",
+    "noEmit": true,
     "plugins": [
       {
         "name": "next"

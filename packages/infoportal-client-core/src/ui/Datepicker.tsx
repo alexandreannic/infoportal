@@ -44,7 +44,7 @@ const safeDate2string = (_?: string | Date) => {
   }
 }
 
-export const IpDatepicker = ({
+export const Datepicker = ({
   value,
   min,
   max,

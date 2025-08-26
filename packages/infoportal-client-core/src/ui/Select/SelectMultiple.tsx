@@ -31,7 +31,7 @@ const style = makeSx({
 
 const IGNORED_VALUE_FOR_SELECT_ALL_ITEM = 'IGNORED_VALUE'
 
-export const IpSelectMultiple = forwardRef<HTMLInputElement, IpSelectMultipleProps<string | number>>(
+export const SelectMultiple = forwardRef<HTMLInputElement, IpSelectMultipleProps<string | number>>(
   function IpSelectMultipleInner<T extends string | number>(
     {showUndefinedOption, label, id, onChange, sx, value = [], ...props}: IpSelectMultipleProps<T>,
     ref: any,

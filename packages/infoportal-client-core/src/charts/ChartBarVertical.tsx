@@ -1,7 +1,7 @@
 import React from 'react'
 import {Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 import {Box, BoxProps, Theme, useTheme} from '@mui/material'
-import {chartConfig} from './chartConfig.js'
+import {chartConfig} from './index.js'
 import {commonLegendProps} from './ChartBarStacked.js'
 
 export interface ChartBarVerticalProps extends BoxProps {

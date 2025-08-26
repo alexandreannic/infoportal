@@ -5,10 +5,10 @@ import {ButtonProps} from '@mui/material/Button'
 import {fnSwitch} from '@axanc/ts-utils'
 import {alphaVar, styleUtils} from '../core/theme.js'
 
-export type IpBtnVariant = 'light' | 'input' | 'text' | 'outlined' | 'contained'
+export type BtnVariant = 'light' | 'input' | 'text' | 'outlined' | 'contained'
 
-export interface IpBtnProps extends Omit<ButtonProps, 'variant'> {
-  variant?: IpBtnVariant
+export interface BtnProps extends Omit<ButtonProps, 'variant'> {
+  variant?: BtnVariant
   tooltip?: ReactNode
   loading?: boolean
   icon?: string
@@ -22,12 +22,12 @@ export interface IpBtnProps extends Omit<ButtonProps, 'variant'> {
 const StyledButton = styled(Button, {
   shouldForwardProp: prop => prop !== 'variant',
 })<{
-  variant?: IpBtnVariant
+  variant?: BtnVariant
 }>(({theme, variant}) => {
   return {
     position: 'relative',
     ...fnSwitch(
-      variant as unknown as IpBtnVariant,
+      variant as unknown as BtnVariant,
       {
         light: {
           border: 'none',
@@ -80,7 +80,7 @@ const StyledIconEnd = styled(StyledIcon)(({theme}) => ({
   marginLeft: theme.vars.spacing,
 }))
 
-export const IpBtn = forwardRef<HTMLButtonElement, IpBtnProps>(
+export const Btn = forwardRef<HTMLButtonElement, BtnProps>(
   (
     {tooltip, loading, children, disabled, before, icon, variant, iconAfter, color, className, iconSx, ...props},
     ref,

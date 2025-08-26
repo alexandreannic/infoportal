@@ -2,12 +2,12 @@ import React from 'react'
 
 export type Translation = typeof defaultTranslation
 
-export type TranslationContext = {
+export type TranslationProps = {
   m: typeof defaultTranslation
   formatLargeNumber: (_: number, options?: Intl.NumberFormatOptions) => string
 }
 
-const Context = React.createContext<TranslationContext>({} as any)
+const Context = React.createContext<TranslationProps>({} as any)
 
 const defaultTranslation = {
   select_selectAll: 'selectAll',
@@ -21,7 +21,7 @@ const defaultTranslation = {
 }
 
 export const TranslationProvider: React.FC<
-  Partial<TranslationContext> & {
+  Partial<TranslationProps> & {
     children?: React.ReactNode
   }
 > = ({children, m = defaultTranslation, formatLargeNumber = _ => (_ ? '' + _ : '')}) => {

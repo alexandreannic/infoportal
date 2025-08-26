@@ -2,7 +2,7 @@ import {Chart, ChartWrapperOptions} from 'react-google-charts'
 import {useMemo, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
 import {Panel, PanelHead} from '../ui/Panel/index.js'
-import {IpIconBtn} from '../ui/IconBtn.js'
+import {IconBtn} from '../ui/IconBtn.js'
 import {lightenVar} from '../core/theme.js'
 
 const headers = ['Location', 'Submissions']
@@ -95,13 +95,13 @@ export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: s
           ]}
           // mapsApiKey=""
         />
-        <IpIconBtn
+        <IconBtn
           color="primary"
           onClick={() => setSelectedCountry(null)}
           sx={{visibility: selectedCountry ? undefined : 'hidden', position: 'absolute', top: 12, left: 12}}
         >
           arrow_back
-        </IpIconBtn>
+        </IconBtn>
       </Box>
     </Panel>
   )

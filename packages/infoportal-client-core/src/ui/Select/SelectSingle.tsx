@@ -65,7 +65,7 @@ const style = makeSx({
 
 const IGNORED_VALUE_EMPTY = ''
 
-export const ipSelectItem = <T extends any>({
+export const SelectItem = <T extends any>({
   icon,
   desc,
   value,
@@ -105,7 +105,7 @@ const LoadingIcon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> = (props: any
   />
 )
 
-export const IpSelectSingle = <T extends TType>({
+export const SelectSingle = <T extends TType>({
   defaultValue,
   hideNullOption,
   label,

@@ -2,7 +2,7 @@ import {Box} from '@mui/material'
 import {useStepperContext} from './Stepper.js'
 import {StepperActionsNext} from './StepperActionsNext.js'
 import {ReactNode} from 'react'
-import {IpBtn} from '../Btn.js'
+import {Btn} from '../Btn.js'
 import {useI18n} from '../../core/Translation.js'
 
 interface Props {
@@ -37,7 +37,7 @@ export const StepperActions = ({
   return (
     <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', mt: 3}}>
       {_stepper.currentStep > 0 && !hidePrev && (
-        <IpBtn
+        <Btn
           loading={loadingPrev}
           sx={{marginRight: 'auto'}}
           onClick={prev ? () => prev(_stepper.prev) : _stepper.prev}
@@ -45,7 +45,7 @@ export const StepperActions = ({
           icon="keyboard_arrow_left"
         >
           {previousButtonLabel ?? m.stepper_previous}
-        </IpBtn>
+        </Btn>
       )}
       {children}
       {!hideNext && (

@@ -1,5 +1,5 @@
 import * as ExcelJS from 'exceljs'
-import {Utils} from '@infoportal/client-core/src/core/utils.js'
+import {downloadBufferAsFile} from '@infoportal/client-core/src/core/utils.js'
 import {Kobo} from 'kobo-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
 import Question = Kobo.Form.Question
@@ -49,7 +49,7 @@ export const generateEmptyXlsTemplate = async (
   })
 
   const buffer = await workbook.xlsx.writeBuffer()
-  Utils.downloadBufferAsFile(buffer as any, `${fileName}.xlsx`)
+  downloadBufferAsFile(buffer as any, `${fileName}.xlsx`)
 }
 
 const writeDropdownOptions = (
