@@ -20,7 +20,7 @@ type Form = {
 
 const schemaToString = (schema?: Ip.Form.Schema): string => {
   if (!schema) return '{}'
-  return JSON.stringify(Utils.sortObjectKeysDeep(schema), null, 2)
+  return JSON.stringify(Core.sortObjectKeysDeep(schema), null, 2)
 }
 
 export const XlsFileUploadForm = ({

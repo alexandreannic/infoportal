@@ -1,5 +1,5 @@
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
-import {Utils} from '@infoportal/client-core/src/core/utils.js'
+import {Core} from '@/shared'
 import {Ip} from 'infoportal-api-sdk'
 
 const concat = (...args: (string | undefined)[]) => {
@@ -28,7 +28,7 @@ export const queryKeys = {
   schema: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('schema', workspaceId, formId),
   form: (workspaceId: Ip.WorkspaceId, formId?: Ip.FormId) => concat('form', workspaceId, formId),
   group: (workspaceId?: Ip.WorkspaceId, args?: Omit<ApiSdk['group']['search'], 'workspaceId'>) =>
-    concat('group', workspaceId, args ? Utils.stableStringify(args) : undefined),
+    concat('group', workspaceId, args ? Core.stableStringify(args) : undefined),
   answers: (formId?: Ip.FormId) => concat('answers', formId),
   metrics: (
     workspaceId?: Ip.WorkspaceId,

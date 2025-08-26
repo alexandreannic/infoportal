@@ -1,10 +1,8 @@
 import {Box, BoxProps, Collapse, Icon, useTheme} from '@mui/material'
 import React, {ReactNode} from 'react'
-import {usePersistentState} from '../../../../../infoportal-client-core/src/hook/usePersistantState'
 import {styleUtils} from '@/core/theme'
-import {Utils} from '@infoportal/client-core/src/core/utils.js'
 import {Core} from '@/shared'
-import stopPropagation = Utils.stopPropagation
+import {usePersistentState} from '@axanc/react-hooks'
 
 export const SidebarSubSection = ({
   id,
@@ -75,7 +73,7 @@ export const SidebarSubSection = ({
         </Core.Txt>
         <Box sx={{mr: 1}}>
           {onClear && (
-            <Core.IconBtn onClick={stopPropagation(onClear)} size="small">
+            <Core.IconBtn onClick={Core.stopPropagation(onClear)} size="small">
               clear
             </Core.IconBtn>
           )}

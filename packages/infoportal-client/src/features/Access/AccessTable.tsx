@@ -8,6 +8,7 @@ import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
 import {useSession} from '@/core/Session/SessionContext'
 import {useQueryUser} from '@/core/query/useQueryUser.js'
+import {Core} from '@/shared'
 
 export const AccessTable = ({
   isAdmin,
