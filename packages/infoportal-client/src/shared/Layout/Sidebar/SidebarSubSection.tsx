@@ -1,12 +1,10 @@
-import {Box, BoxProps, Collapse, Icon, SxProps, useTheme} from '@mui/material'
+import {Box, BoxProps, Collapse, Icon, useTheme} from '@mui/material'
 import React, {ReactNode} from 'react'
-import {Txt} from '../../../../../infoportal-client-core/src/Txt.js'
-import {IpIconBtn} from '../../../../../infoportal-client-core/src/IconBtn.js'
 import {usePersistentState} from '../../../../../infoportal-client-core/src/hook/usePersistantState'
 import {styleUtils} from '@/core/theme'
 import {Utils} from '@infoportal/client-core/src/core/utils.js'
-import stopPropagation = Utils.stopPropagation
 import {Core} from '@/shared'
+import stopPropagation = Utils.stopPropagation
 
 export const SidebarSubSection = ({
   id,

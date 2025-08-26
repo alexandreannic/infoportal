@@ -1,6 +1,5 @@
 import {Box, ButtonBase, useTheme} from '@mui/material'
 import {IpLogo} from '@/shared/logo/logo'
-import {Txt} from '../../../../infoportal-client-core/src/Txt.js'
 import {Core} from '@/shared'
 import React, {ReactNode} from 'react'
 import {useMsal} from '@azure/msal-react'

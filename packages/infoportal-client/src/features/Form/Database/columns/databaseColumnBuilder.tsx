@@ -2,13 +2,13 @@ import {formatDate, formatDateTime, Messages} from '@/core/i18n/localization/en'
 import React from 'react'
 import {Kobo} from 'kobo-sdk'
 import {map} from '@axanc/ts-utils'
-import {IpBtn, TableEditCellBtn, Txt} from '@/shared'
+import {TableEditCellBtn, Txt} from '@/shared'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper, removeHtml} from 'infoportal-common'
 import {DatabaseContext, KoboExternalFilesIndex} from '@/features/Form/Database/DatabaseContext'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {Ip} from 'infoportal-api-sdk'
-import {alpha, Theme} from '@mui/material'
+import {Theme} from '@mui/material'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useKoboDialogs} from '@/core/store/useLangIndex'
@@ -16,9 +16,9 @@ import {TableIcon, TableIconBtn} from '@/shared/TableIcon'
 import {SelectStatusBy, SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {useI18n} from '@/core/i18n'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
-import Submission = Ip.Submission
 import {alphaVar} from '@/core/theme.js'
 import {Datatable} from '@/shared/Datatable3/state/types.js'
+import Submission = Ip.Submission
 
 export const buildDatabaseColumns = {
   type: {

@@ -1,5 +1,5 @@
 import {Box, BoxProps, Icon, useTheme} from '@mui/material'
-import {Txt, TxtProps} from '../../../../infoportal-client-core/src/Txt.js'
+import {TxtProps} from '../../../../infoportal-client-core/src/Txt.js'
 import React, {ReactNode, useEffect, useRef} from 'react'
 import {usePdfContext} from './PdfLayout'
 import {Panel, PanelBody} from '../../../../infoportal-client-core/src/Panel'

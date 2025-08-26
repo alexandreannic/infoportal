@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react'
-import {IpBtn, Modal, Txt} from '@/shared'
+import {Modal, Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Ip} from 'infoportal-api-sdk'

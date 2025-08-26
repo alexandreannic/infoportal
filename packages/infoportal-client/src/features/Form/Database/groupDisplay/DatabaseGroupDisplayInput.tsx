@@ -3,7 +3,7 @@ import React from 'react'
 import {Box, Icon, useTheme} from '@mui/material'
 import {ScRadioGroup, ScRadioGroupItem} from '../../../../../../infoportal-client-core/src/RadioGroup'
 import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
-import {ipSelectItem, IpSelectSingle} from '../../../../../../infoportal-client-core/src/Select/SelectSingle'
+import {ipSelectItem} from '../../../../../../infoportal-client-core/src/Select/SelectSingle'
 import {useI18n} from '@/core/i18n'
 
 export const DatabaseGroupDisplayInput = (props: Core.BtnProps) => {

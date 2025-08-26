@@ -1,7 +1,5 @@
 import {useI18n} from '@/core/i18n'
 import {KoboMapper, Submission} from '@/core/sdk/server/kobo/KoboMapper'
-import {IpBtn} from '../../../../../infoportal-client-core/src/Btn.js'
-import {IpIconBtn} from '../../../../../infoportal-client-core/src/IconBtn.js'
 import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from '@mui/material'
 import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper} from 'infoportal-common'

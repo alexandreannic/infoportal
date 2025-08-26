@@ -1,6 +1,6 @@
 import {Ip} from 'infoportal-api-sdk'
 import {useI18n} from '@/core/i18n'
-import {alpha, Box, BoxProps, Chip, Icon, styled, Tooltip, useTheme} from '@mui/material'
+import {Box, BoxProps, Chip, Icon, styled, Tooltip, useTheme} from '@mui/material'
 import {AppAvatar, Txt} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 import {capitalize} from 'infoportal-common'

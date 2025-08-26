@@ -1,15 +1,12 @@
 import {Badge, Chip, Icon, IconButton, IconButtonProps, Switch, Tooltip} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
-import {PopoverWrapper, Txt} from '@/shared'
+import {Core, PopoverWrapper, Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {IpBtn} from '../../../../infoportal-client-core/src/Btn.js'
 import {useSetState} from '@axanc/react-hooks'
-import {IpAlert} from '../../../../infoportal-client-core/src/Alert.js'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
 import {Datatable3} from '@/shared/Datatable3/Datatable3.js'
 import {Datatable} from './state/types'
-import {Core} from '@/shared'
 
 type DatatableColumnToggleProps = Pick<
   Datatable.Column.InnerProps<any>,

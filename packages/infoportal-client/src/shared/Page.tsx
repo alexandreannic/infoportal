@@ -1,9 +1,8 @@
 import * as React from 'react'
 import {ReactNode, useEffect, useState} from 'react'
 import {Box, BoxProps, CircularProgress, Skeleton} from '@mui/material'
-import {CenteredContent, Txt} from '@/shared'
+import {CenteredContent, Core, Txt} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
-import {Core} from '@/shared'
 
 export interface PageProps extends BoxProps {
   width?: number | 'xxs' | 'xs' | 'md' | 'lg' | 'full'

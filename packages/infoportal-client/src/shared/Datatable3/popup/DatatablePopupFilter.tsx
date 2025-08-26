@@ -3,15 +3,10 @@ import React, {ReactNode, useEffect, useState} from 'react'
 import {Alert, Box, Icon, MenuItem, Popover, PopoverProps} from '@mui/material'
 import {PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel/index.js'
 import {IpBtn, IpIconBtn, Txt} from '@/shared/index.js'
-import {IpInput} from '../../../../../infoportal-client-core/src/Input/Input.js'
 import {PeriodPicker} from '../../../../../infoportal-client-core/src/PeriodPicker/PeriodPicker.js'
 import {endOfDay} from 'date-fns'
 import {PanelFoot} from '../../../../../infoportal-client-core/src/Panel/PanelFoot.js'
-import {
-  DatatableFilterDialogNumber,
-  DatatableFilterDialogSelect,
-  DatatableFilterDialogText,
-} from '@/shared/Datatable/popover/DatatableFilterModal.js'
+import {DatatableFilterDialogNumber, DatatableFilterDialogSelect, DatatableFilterDialogText,} from '@/shared/Datatable/popover/DatatableFilterModal.js'
 import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
 import {OrderBy} from '@axanc/react-hooks'

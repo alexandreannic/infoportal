@@ -1,16 +1,14 @@
 import {Box, Icon, SxProps, Theme, useTheme} from '@mui/material'
-import {IpInput} from '../../../../../../infoportal-client-core/src/Input/Input'
-import {IpBtn, Core.BtnProps} from '../../../../../../infoportal-client-core/src/Btn.js'
 import React, {useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {useForm} from 'react-hook-form'
 import {DatabaseViewVisibility} from '@/core/sdk/server/databaseView/DatabaseView'
 import {PanelTitle} from '../../../../../../infoportal-client-core/src/Panel'
-import {IpAlert} from '@/shared'
 import {DatabaseViewInputRow} from '@/features/Form/Database/view/DatabaseViewInputRow'
 import {DatabaseViewDefaultName, UseDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
 import {useSession} from '@/core/Session/SessionContext'
 import {useFormContext} from '@/features/Form/Form'
+import {IpBtn, Core.BtnProps} from '../../../../../../infoportal-client-core/src/Btn.js'
 
 interface FormCreate {
   name: string

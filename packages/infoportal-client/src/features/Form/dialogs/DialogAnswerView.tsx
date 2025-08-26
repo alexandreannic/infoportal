@@ -3,26 +3,12 @@ import {useQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {useLangIndex} from '@/core/store/useLangIndex'
-import {IpBtn} from '../../../../../infoportal-client-core/src/Btn.js'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {IpIconBtn} from '../../../../../infoportal-client-core/src/IconBtn.js'
 import {Page} from '@/shared/Page'
 import {Panel, PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
 import {KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
-import {Txt} from '../../../../../infoportal-client-core/src/Txt.js'
 import {map, seq} from '@axanc/ts-utils'
-import {
-  Alert,
-  Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Icon,
-  Skeleton,
-  Switch,
-  useTheme,
-} from '@mui/material'
+import {Alert, Box, Dialog, DialogActions, DialogContent, DialogTitle, Icon, Skeleton, Switch, useTheme,} from '@mui/material'
 import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'

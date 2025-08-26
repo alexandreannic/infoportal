@@ -1,12 +1,8 @@
 import {Box, Icon, Popover} from '@mui/material'
 import React, {useEffect, useState} from 'react'
-import {IpIconBtn} from '../../../../infoportal-client-core/src/IconBtn.js'
 import {Obj, Seq} from '@axanc/ts-utils'
 import {FilterLayoutProps} from '@/shared/DataFilter/DataFilterLayout'
 import {DataFilter} from '@/shared/DataFilter/DataFilter'
-import {IpSelectMultiple} from '../../../../infoportal-client-core/src/Select/SelectMultiple'
-import {Txt} from '../../../../infoportal-client-core/src/Txt.js'
-import {IpBtn} from '../../../../infoportal-client-core/src/Btn.js'
 import {useI18n} from '@/core/i18n'
 import {Core} from '@/shared'
 

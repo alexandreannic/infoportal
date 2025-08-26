@@ -5,7 +5,6 @@ import {useI18n} from '@/core/i18n'
 import {Core} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Ip} from 'infoportal-api-sdk'
-import {Core} from '@/shared'
 
 const Row = ({
   icon,

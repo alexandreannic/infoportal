@@ -1,5 +1,5 @@
 import {Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
-import {AppAvatar, IpBtn, Modal, Txt} from '@/shared'
+import {AppAvatar, Modal, Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Panel, PanelBody} from '../../../../infoportal-client-core/src/Panel'
 import {Link} from '@tanstack/react-router'

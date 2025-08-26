@@ -1,13 +1,11 @@
 import React from 'react'
 import {useI18n} from '@/core/i18n'
 import {formRoute, useFormContext} from '@/features/Form/Form'
-import {IpBtn} from '../../../../../infoportal-client-core/src/Btn.js'
 import {DatabaseAccessForm} from '@/features/Form/Access/DatabaseAccessForm'
 import {Panel} from '../../../../../infoportal-client-core/src/Panel'
 import {AccessTable} from '@/features/Access/AccessTable'
-import {Page} from '@/shared'
+import {Core, Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
-import {Core} from '@/shared'
 
 export const databaseAccessRoute = createRoute({
   getParentRoute: () => formRoute,

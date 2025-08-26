@@ -1,6 +1,4 @@
 import {useI18n} from '@/core/i18n'
-import {IpAlert, IpBtn} from '@/shared'
-import {IpInput} from '../../../../infoportal-client-core/src/Input/Input'
 import {PanelFoot} from '../../../../infoportal-client-core/src/Panel/PanelFoot'
 import {ScRadioGroup, ScRadioGroupItem} from '../../../../infoportal-client-core/src/RadioGroup'
 import {Regexp} from 'infoportal-common'

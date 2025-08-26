@@ -1,7 +1,5 @@
 import {Box, Collapse} from '@mui/material'
 import {ReactNode} from 'react'
-import {Txt} from '../../../../../infoportal-client-core/src/Txt.js'
-import {IpIconBtn} from '../../../../../infoportal-client-core/src/IconBtn.js'
 import {usePersistentState} from '../../../../../infoportal-client-core/src/hook/usePersistantState'
 import {Core} from '@/shared'
 

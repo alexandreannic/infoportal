@@ -1,7 +1,6 @@
-import {Badge, Box, Icon, LinearProgress, Popover, TablePagination} from '@mui/material'
+import {Badge, Box, Icon, LinearProgress, TablePagination} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
 import {useI18n} from '@/core/i18n'
-import {Txt} from '../../../../infoportal-client-core/src/Txt.js'
 import {map, Obj} from '@axanc/ts-utils'
 import {IpIconBtn} from '@/shared'
 import {useMemoFn} from '@axanc/react-hooks'
@@ -19,7 +18,6 @@ import {format} from 'date-fns'
 import {slugify} from 'infoportal-common'
 import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
 import {DatatableSelectToolbar} from '@/shared/Datatable/DatatableSelectToolbar'
-import {PanelBody} from '../../../../infoportal-client-core/src/Panel'
 
 export const Datatable = <T extends DatatableRow = DatatableRow>({
   total,

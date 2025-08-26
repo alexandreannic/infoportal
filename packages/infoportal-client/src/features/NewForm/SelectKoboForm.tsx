@@ -1,5 +1,4 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {IpBtn} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Icon, useTheme} from '@mui/material'
 import {Panel, PanelBody, PanelHead} from '../../../../infoportal-client-core/src/Panel'

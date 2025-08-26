@@ -1,5 +1,4 @@
 import {Autocomplete, AutocompleteProps, Chip} from '@mui/material'
-import {IpInput} from '../../../../infoportal-client-core/src/Input/Input'
 import React from 'react'
 import {useI18n} from '@/core/i18n'
 import {useAppSettings} from '@/core/context/ConfigContext'

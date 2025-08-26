@@ -8,7 +8,6 @@ import {DatabaseTableContent} from '@/features/Form/Database/DatabaseTableConten
 import {DatatableSkeleton} from '@/shared/Datatable/DatatableSkeleton'
 import {DatatableFilterValue} from '@/shared/Datatable/util/datatableType'
 import {FetchParams} from '../../../../../infoportal-client-core/src/hook/useFetchers'
-import {Panel} from '../../../../../infoportal-client-core/src/Panel'
 import {map} from '@axanc/ts-utils'
 import {Skeleton} from '@mui/material'
 import {useIsFetching} from '@tanstack/react-query'

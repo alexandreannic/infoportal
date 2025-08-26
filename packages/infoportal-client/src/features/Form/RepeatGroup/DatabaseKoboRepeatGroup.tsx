@@ -1,7 +1,7 @@
 import {useI18n} from '@/core/i18n'
 import {useQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {IpBtn, Page} from '@/shared'
+import {Page} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {Panel} from '../../../../../infoportal-client-core/src/Panel'
@@ -13,7 +13,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
-import {buildDatabaseColumns, BuildFormColumnProps} from '@/features/Form/Database/columns/databaseColumnBuilder'
+import {BuildFormColumnProps} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Messages} from '@/core/i18n/localization/en'
 
 export const databaseKoboRepeatRoute = createRoute({

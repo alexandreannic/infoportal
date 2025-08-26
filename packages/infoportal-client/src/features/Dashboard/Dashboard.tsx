@@ -1,4 +1,4 @@
-import {AppAvatar, IpAlert, Page, Txt, ViewMoreDiv} from '@/shared'
+import {AppAvatar, Page, Txt, ViewMoreDiv} from '@/shared'
 import {Panel, PanelBody} from '../../../../infoportal-client-core/src/Panel'
 import {createRoute} from '@tanstack/react-router'
 import {workspaceRoute} from '@/features/Workspace/Workspace'

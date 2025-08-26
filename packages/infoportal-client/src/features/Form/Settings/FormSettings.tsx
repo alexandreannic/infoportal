@@ -1,4 +1,4 @@
-import {IpBtn, Modal, Page, Txt} from '@/shared'
+import {Modal, Page, Txt} from '@/shared'
 import {Panel, PanelBody} from '../../../../../infoportal-client-core/src/Panel'
 import {useI18n} from '@/core/i18n'
 import {ReactNode} from 'react'

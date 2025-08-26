@@ -1,7 +1,6 @@
-import {Alert, Box, BoxProps, Chip, Icon, SxProps, Theme, useTheme} from '@mui/material'
+import {Alert, Box, Chip, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {useCallback, useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {Txt} from '../../../infoportal-client-core/src/Txt.js'
 import {styleUtils} from '@/core/theme'
 import {Core} from '@/shared'
 

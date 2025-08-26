@@ -1,6 +1,6 @@
 import {MenuItem} from '@mui/material'
 import React, {useRef} from 'react'
-import {IpIconBtn, PopoverWrapper} from '@/shared'
+import {PopoverWrapper} from '@/shared'
 import {useI18n} from '@/core/i18n'
 
 interface DatabaseImportBtnProps {

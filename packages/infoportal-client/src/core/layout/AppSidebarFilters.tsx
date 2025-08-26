@@ -1,6 +1,5 @@
 import {Controller, useForm} from 'react-hook-form'
 import {Box, Icon, InputProps} from '@mui/material'
-import {IpSelectMultiple} from '../../../../infoportal-client-core/src/Select/SelectMultiple.js'
 import {Obj, seq, Seq} from '@axanc/ts-utils'
 import {Ip} from 'infoportal-api-sdk'
 import {useI18n} from '@/core/i18n/index.js'

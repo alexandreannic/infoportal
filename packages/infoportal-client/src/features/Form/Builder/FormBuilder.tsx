@@ -1,4 +1,4 @@
-import {Core, IpBtn, Modal, Page} from '@/shared'
+import {Core, Modal, Page} from '@/shared'
 import {Grid, Grow, useTheme} from '@mui/material'
 import {Panel, PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
 import {useI18n} from '@/core/i18n'

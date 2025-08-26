@@ -1,16 +1,15 @@
 import {useI18n} from '@/core/i18n'
-import {Fender, IpBtn, Txt} from '@/shared'
+import {Core, Fender, IpBtn, Txt} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
 import {Box, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
 import {useMemo, useState} from 'react'
 import {useQueryForm} from '@/core/query/useQueryForm'
-import {Link, useNavigate} from '@tanstack/react-router'
+import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
 import {mapFor, Seq, seq} from '@axanc/ts-utils'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
-import {Core} from '@/shared'
 
 export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
   const {m} = useI18n()

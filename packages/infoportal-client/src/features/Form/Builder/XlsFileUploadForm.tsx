@@ -1,10 +1,9 @@
 import {Controller, useForm} from 'react-hook-form'
 import {DragDropFileInput} from '@/shared/DragDropFileInput'
 import React, {useRef, useState} from 'react'
-import {Fender, IpBtn} from '@/shared'
+import {Core, Fender} from '@/shared'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useI18n} from '@/core/i18n'
-import {IpInput} from '../../../../../infoportal-client-core/src/Input/Input'
 import {Alert, AlertTitle, CircularProgress, Icon, Skeleton} from '@mui/material'
 import {DiffView} from '@/features/Form/Builder/DiffView'
 import {Panel, PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
@@ -13,7 +12,6 @@ import {Stepper, StepperHandle} from '../../../../../infoportal-client-core/src/
 import {StepperActions} from '../../../../../infoportal-client-core/src/Stepper/StepperActions'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 import {Utils} from '@infoportal/client-core/src/core/utils.js'
-import {Core} from '@/shared'
 
 type Form = {
   message?: string

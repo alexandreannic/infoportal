@@ -1,22 +1,8 @@
-import {
-  Alert,
-  Box,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  Icon,
-  MenuItem,
-  Popover,
-  PopoverProps,
-  Slider,
-  Switch,
-} from '@mui/material'
-import {IpBtn, IpIconBtn, MultipleChoices} from '@/shared'
+import {Alert, Box, Checkbox, Divider, FormControlLabel, Icon, MenuItem, Popover, PopoverProps, Slider, Switch,} from '@mui/material'
+import {Core, IpBtn, IpIconBtn, MultipleChoices} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import React, {Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState} from 'react'
-import {IpInput} from '../../../../../infoportal-client-core/src/Input/Input'
 import {PeriodPicker} from '../../../../../infoportal-client-core/src/PeriodPicker/PeriodPicker'
-import {Txt} from '../../../../../infoportal-client-core/src/Txt.js'
 import {OrderBy} from '@axanc/react-hooks'
 import {PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
 import {PanelFoot} from '../../../../../infoportal-client-core/src/Panel/PanelFoot'
@@ -25,7 +11,6 @@ import {seq} from '@axanc/ts-utils'
 import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
 import {endOfDay} from 'date-fns'
 import {Datatable} from '@/shared/Datatable3/state/types.js'
-import {Core} from '@/shared'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   sortBy?: Datatable.SortBy
