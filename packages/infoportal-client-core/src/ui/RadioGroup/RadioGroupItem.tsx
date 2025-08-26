@@ -1,6 +1,6 @@
 import {Box, BoxProps, Checkbox, Icon, Radio, useTheme} from '@mui/material'
 import React, {ReactNode} from 'react'
-import {styleUtils} from '../../core/theme.js'
+import {styleUtils} from '../../core/theme'
 
 export interface RadioGroupItemProps<T> extends Omit<BoxProps, 'title'> {
   title?: string | ReactNode

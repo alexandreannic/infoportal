@@ -1,7 +1,7 @@
 import {Checkbox, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SxProps, Theme} from '@mui/material'
 import React, {forwardRef, ReactNode, useMemo, useState} from 'react'
-import {useI18n} from '../../core/Translation.js'
-import {makeSx} from '../../core/theme.js'
+import {useI18n} from '../../core/Translation'
+import {makeSx} from '../../core/theme'
 
 type Option<T extends string | number = string> = {value: T; children: ReactNode; key?: string}
 

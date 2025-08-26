@@ -1,9 +1,9 @@
 import {Box} from '@mui/material'
-import {useStepperContext} from './Stepper.js'
-import {StepperActionsNext} from './StepperActionsNext.js'
+import {useStepperContext} from './Stepper'
+import {StepperActionsNext} from './StepperActionsNext'
 import {ReactNode} from 'react'
-import {Btn} from '../Btn.js'
-import {useI18n} from '../../core/Translation.js'
+import {Btn} from '../Btn'
+import {useI18n} from '../../core/Translation'
 
 interface Props {
   hideNext?: boolean

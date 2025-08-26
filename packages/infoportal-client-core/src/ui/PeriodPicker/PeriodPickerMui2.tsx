@@ -3,8 +3,8 @@ import {DateRange, PickersShortcutsItem, StaticDateRangePicker} from '@mui/x-dat
 import {Box, Popover, TextField} from '@mui/material'
 import {mapFor} from '@axanc/ts-utils'
 import {endOfMonth, format, startOfMonth, subMonths} from 'date-fns'
-import {PeriodPickerProps} from './PeriodPicker.js'
-import {useI18n} from '../../core/Translation.js'
+import {PeriodPickerProps} from './PeriodPicker'
+import {useI18n} from '../../core/Translation'
 
 /** @deprecated Not used, keep it in case I got issue with the native MUI behavior*/
 export const PeriodPickerMui2 = ({min, max, value, onChange, label, fullWidth, sx, ...props}: PeriodPickerProps) => {

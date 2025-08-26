@@ -4,11 +4,11 @@ import {Box, Checkbox, Icon, TooltipProps} from '@mui/material'
 import {useTimeout} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
 import {toPercent} from 'infoportal-common'
-import {Txt} from '../ui/Txt.js'
-import {ChartDataVal} from './chartHelper.js'
-import {useI18n} from '../core/Translation.js'
-import {alphaVar} from '../core/theme.js'
-import {LightTooltip, TooltipRow} from '../ui/LightTooltip.js'
+import {Txt} from '../ui/Txt'
+import {ChartDataVal} from './chartHelper'
+import {useI18n} from '../core/Translation'
+import {alphaVar} from '../core/theme'
+import {LightTooltip, TooltipRow} from '../ui/LightTooltip'
 
 export interface BarChartData extends ChartDataVal {
   color?: string

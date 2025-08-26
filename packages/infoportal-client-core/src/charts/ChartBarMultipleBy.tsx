@@ -2,8 +2,8 @@ import {Obj, seq, Seq} from '@axanc/ts-utils'
 import React, {ReactNode, useMemo} from 'react'
 import {Checkbox} from '@mui/material'
 import {KeyOf} from 'infoportal-common'
-import {ChartHelper} from './chartHelper.js'
-import {ChartBar} from './ChartBar.js'
+import {ChartHelper} from './chartHelper'
+import {ChartBar} from './ChartBar'
 
 export interface ChartBarMultipleByProps<
   D extends Record<string, any>,

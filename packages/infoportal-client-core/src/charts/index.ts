@@ -1,5 +1,5 @@
 import {Theme} from '@mui/material'
-import {alphaVar} from '../core/theme.js'
+import {alphaVar} from '../core/theme'
 
 export const chartConfig = {
   defaultColors: (t: Theme) => [
@@ -19,7 +19,7 @@ export * from './ChartBarStacked.jsx'
 export * from './ChartBarStackedSplit.jsx'
 export * from './ChartBarVertical.jsx'
 export * from './ChartGeo.jsx'
-export * from './chartHelper.js'
+export * from './chartHelper'
 export * from './ChartLine.jsx'
 export * from './ChartLineBy.jsx'
 export * from './ChartLineByDate.jsx'

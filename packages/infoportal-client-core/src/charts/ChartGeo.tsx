@@ -1,9 +1,9 @@
 import {Chart, ChartWrapperOptions} from 'react-google-charts'
 import {useMemo, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
-import {Panel, PanelHead} from '../ui/index.js'
-import {IconBtn} from '../ui/IconBtn.js'
-import {lightenVar} from '../core/theme.js'
+import {Panel, PanelHead} from '../ui/index'
+import {IconBtn} from '../ui/IconBtn'
+import {lightenVar} from '../core/theme'
 
 const headers = ['Location', 'Submissions']
 

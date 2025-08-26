@@ -1,6 +1,6 @@
 import {Box, BoxProps, Icon, useTheme} from '@mui/material'
 import React, {ReactNode} from 'react'
-import {Txt} from './Txt.js'
+import {Txt} from './Txt'
 
 export const ListItem = ({
   title,

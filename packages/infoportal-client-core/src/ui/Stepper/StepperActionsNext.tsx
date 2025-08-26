@@ -1,6 +1,6 @@
 import {Icon} from '@mui/material'
-import {Btn, BtnProps} from '../Btn.js'
-import {useI18n} from '../../core/Translation.js'
+import {Btn, BtnProps} from '../Btn'
+import {useI18n} from '../../core/Translation'
 
 interface Props extends BtnProps {}
 

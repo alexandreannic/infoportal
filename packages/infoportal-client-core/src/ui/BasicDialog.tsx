@@ -1,7 +1,7 @@
 import {Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, LinearProgress, PaperProps} from '@mui/material'
 import {EventHandler, ReactNode, SyntheticEvent} from 'react'
-import {Txt} from './Txt.js'
-import {Btn} from './Btn.js'
+import {Txt} from './Txt'
+import {Btn} from './Btn'
 
 export type BasicDialogProps = Omit<DialogProps, 'children' | 'onClick'> & {
   disabled?: boolean

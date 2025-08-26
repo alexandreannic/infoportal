@@ -1,8 +1,8 @@
 import {seq, Seq} from '@axanc/ts-utils'
 import React, {ReactNode, useMemo} from 'react'
 import {KeyOf} from 'infoportal-common'
-import {ChartData, ChartDataVal, ChartHelper} from './chartHelper.js'
-import {ChartBar} from './ChartBar.js'
+import {ChartData, ChartDataVal, ChartHelper} from './chartHelper'
+import {ChartBar} from './ChartBar'
 
 export const ChartBarSingleBy = <D extends Record<string, any>, K extends string, O extends Record<K, ReactNode>>({
   by,

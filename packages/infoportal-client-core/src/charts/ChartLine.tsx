@@ -3,11 +3,11 @@ import * as React from 'react'
 import {ReactNode, useState} from 'react'
 import {Box, BoxProps, Checkbox, Theme, useTheme} from '@mui/material'
 import {map, Obj} from '@axanc/ts-utils'
-import {styleUtils} from '../core/theme.js'
+import {styleUtils} from '../core/theme'
 import {addMonths, format, isBefore, parse} from 'date-fns'
-import {chartConfig} from './index.js'
-import {commonLegendProps} from './ChartBarStacked.js'
-import {useI18n} from '../core/Translation.js'
+import {chartConfig} from './index'
+import {commonLegendProps} from './ChartBarStacked'
+import {useI18n} from '../core/Translation'
 
 export interface ChartLineProps extends Pick<BoxProps, 'sx'> {
   colorsByKey?: (t: Theme) => Record<string, string>

@@ -3,7 +3,7 @@ import {forwardRef, ReactNode} from 'react'
 import {Button, CircularProgress, Icon, styled, Tooltip} from '@mui/material'
 import {ButtonProps} from '@mui/material/Button'
 import {fnSwitch} from '@axanc/ts-utils'
-import {alphaVar, styleUtils} from '../core/theme.js'
+import {alphaVar, styleUtils} from '../core/theme'
 
 export type BtnVariant = 'light' | 'input' | 'text' | 'outlined' | 'contained'
 

@@ -1,5 +1,5 @@
 import {KeyOfType} from '@axanc/ts-utils'
-import {ChartBarMultipleBy, ChartBarMultipleByProps} from './ChartBarMultipleBy.js'
+import {ChartBarMultipleBy, ChartBarMultipleByProps} from './ChartBarMultipleBy'
 
 export const ChartBarMultipleByKey = <
   D extends Record<string, any>,

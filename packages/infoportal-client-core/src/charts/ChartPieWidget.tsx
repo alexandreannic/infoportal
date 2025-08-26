@@ -1,11 +1,11 @@
 import {Box, Icon, Tooltip} from '@mui/material'
 import React, {ReactNode, useEffect, useRef} from 'react'
 import {toPercent, uppercaseHandlingAcronyms} from 'infoportal-common'
-import {PanelProps} from '../ui/Panel/Panel.js'
-import {LightTooltip, TooltipRow} from '../ui/LightTooltip.js'
-import {Txt, TxtProps} from '../ui/Txt.js'
-import {ChartPie} from './ChartPie.js'
-import {useI18n} from '../core/Translation.js'
+import {PanelProps} from '../ui/Panel/Panel'
+import {LightTooltip, TooltipRow} from '../ui/LightTooltip'
+import {Txt, TxtProps} from '../ui/Txt'
+import {ChartPie} from './ChartPie'
+import {useI18n} from '../core/Translation'
 
 const previousPeriodDeltaDays = 90
 

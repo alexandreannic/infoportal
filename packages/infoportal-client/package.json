@@ -8,7 +8,7 @@
     "start": "vite preview"
   },
   "dependencies": {
-    "@axanc/react-hooks": "^1.14.0",
+    "@axanc/react-hooks": "^1.14.1",
     "@axanc/ts-utils": "2.4.1",
     "@azure/msal-browser": "^4.9.0",
     "@azure/msal-react": "^3.0.8",
@@ -19,7 +19,7 @@
     "@mui/material": "^7.1.2",
     "@mui/system": "7.1.1",
     "@mui/x-date-pickers-pro": "8.6.0",
-    "@mui/x-license-pro": "^6.10.2",
+    "@mui/x-license-pro": "^7.0.0-beta.0",
     "@prisma/client": "*",
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.8.2",
@@ -62,8 +62,8 @@
     "proxy-memoize": "^3.0.1",
     "qs": "^6.11.2",
     "react": "18.3.1",
-    "react-diff-view": "^3.3.1",
     "react-dom": "18.3.1",
+    "react-diff-view": "^3.3.1",
     "react-google-charts": "^5.2.1",
     "react-hook-form": "^7.52.2",
     "react-hook-form-persist": "^3.0.0",

@@ -7,12 +7,11 @@
     "moduleResolution": "bundler",
     "jsx": "preserve",
     "incremental": true,
-    "noEmit": true
+    "outDir": "./lib"
   },
   "include": [
-    "src/index.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ],
   "exclude": [
     "node_modules"

@@ -7,8 +7,6 @@ export type TranslationProps = {
   formatLargeNumber: (_: number, options?: Intl.NumberFormatOptions) => string
 }
 
-const Context = React.createContext<TranslationProps>({} as any)
-
 const defaultTranslation = {
   select_selectAll: 'selectAll',
   select_blankOption: '<i>BLANK</i>',
@@ -20,12 +18,19 @@ const defaultTranslation = {
   chart_comparedToTotalAnswers: 'Compared to total answers',
 }
 
+const defaultFormatLargeNumber = (_: number) => (_ ? '' + _ : '')
+
+const Context = React.createContext<TranslationProps>({
+  m: defaultTranslation,
+  formatLargeNumber: defaultFormatLargeNumber,
+})
+
 export const TranslationProvider: React.FC<
   Partial<TranslationProps> & {
     children?: React.ReactNode
   }
-> = ({children, m = defaultTranslation, formatLargeNumber = _ => (_ ? '' + _ : '')}) => {
+> = ({children, m = defaultTranslation, formatLargeNumber = defaultFormatLargeNumber}) => {
   return <Context.Provider value={{m, formatLargeNumber}}>{children}</Context.Provider>
 }
 
-export const useI18n = () => React.useContext(Context) ?? defaultTranslation
+export const useI18n = () => React.useContext(Context)

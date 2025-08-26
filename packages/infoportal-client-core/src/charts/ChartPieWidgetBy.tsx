@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {ReactNode, useMemo} from 'react'
 import {Seq} from '@axanc/ts-utils'
-import {ChartPieIndicatorProps, ChartPieWidget} from './ChartPieWidget.js'
+import {ChartPieIndicatorProps, ChartPieWidget} from './ChartPieWidget'
 
 export type ChartPieWidgetProps<T> = {
   compare?: {before: Seq<T>; now?: Seq<T>}

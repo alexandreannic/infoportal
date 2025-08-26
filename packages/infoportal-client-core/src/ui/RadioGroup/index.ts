@@ -1,2 +1,2 @@
-export * from './RadioGroup.js'
-export * from './RadioGroupItem.js'
+export * from './RadioGroup'
+export * from './RadioGroupItem'

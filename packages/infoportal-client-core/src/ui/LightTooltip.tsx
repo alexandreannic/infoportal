@@ -1,7 +1,7 @@
 import {styled, Tooltip, tooltipClasses, TooltipProps} from '@mui/material'
 import * as React from 'react'
 import {ReactNode} from 'react'
-import {Txt} from './Txt.js'
+import {Txt} from './Txt'
 
 export const LightTooltip: React.FC<TooltipProps> = styled(({className, ...props}: TooltipProps) => (
   <Tooltip {...props} classes={{popper: className}} />

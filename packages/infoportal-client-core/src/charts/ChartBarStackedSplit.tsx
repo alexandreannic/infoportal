@@ -2,7 +2,7 @@ import {Box, BoxProps, useTheme} from '@mui/material'
 import {seq} from '@axanc/ts-utils'
 import {Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 import React from 'react'
-import {commonLegendProps} from './ChartBarStacked.js'
+import {commonLegendProps} from './ChartBarStacked'
 
 export const ChartBarStackedSplit = ({
   data,

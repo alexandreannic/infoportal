@@ -1,7 +1,7 @@
 import React from 'react'
 import {Box, BoxProps, SxProps, Theme} from '@mui/material'
 import {fnSwitch} from '@axanc/ts-utils'
-import {alphaVar, makeSx, styleUtils} from '../../core/theme.js'
+import {alphaVar, makeSx, styleUtils} from '../../core/theme'
 
 interface StepperHeaderProps extends BoxProps {
   steps: (string | undefined)[]

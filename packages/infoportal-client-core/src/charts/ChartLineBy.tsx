@@ -1,6 +1,6 @@
 import {Obj, seq, Seq} from '@axanc/ts-utils'
 import React, {useMemo} from 'react'
-import {ChartLine, ChartLineData, ChartLineProps} from './ChartLine.js'
+import {ChartLine, ChartLineData, ChartLineProps} from './ChartLine'
 
 export const ChartLineBy = <T extends Record<string, any>>({
   data,

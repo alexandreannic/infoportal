@@ -1,7 +1,7 @@
 import React, {ReactElement, ReactNode, useEffect, useState} from 'react'
-import {RadioGroupItemProps} from './RadioGroupItem.js'
+import {RadioGroupItemProps} from './RadioGroupItem'
 import {Box, FormHelperText, styled, SxProps, Theme} from '@mui/material'
-import {styleUtils} from '../../core/theme.js'
+import {styleUtils} from '../../core/theme'
 
 interface BaseProps<T> {
   dense?: boolean

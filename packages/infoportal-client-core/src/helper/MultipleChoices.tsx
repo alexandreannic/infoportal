@@ -1,6 +1,6 @@
 import React, {ReactNode, useEffect, useMemo, useState} from 'react'
 import {seq} from '@axanc/ts-utils'
-import {useI18n} from '../core/Translation.js'
+import {useI18n} from '../core/Translation'
 
 export type MultipleChoicesChoice<T extends string> = {
   value: T
