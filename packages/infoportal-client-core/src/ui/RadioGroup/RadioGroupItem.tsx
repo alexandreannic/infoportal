@@ -2,9 +2,7 @@ import {Box, BoxProps, Checkbox, Icon, Radio, useTheme} from '@mui/material'
 import React, {ReactNode} from 'react'
 import {styleUtils} from '../../core/theme.js'
 
-const defaultMuiRadioPadding = 9
-
-export interface ScRadioGroupItemProps<T> extends Omit<BoxProps, 'title'> {
+export interface RadioGroupItemProps<T> extends Omit<BoxProps, 'title'> {
   title?: string | ReactNode
   description?: string | ReactNode
   value: T
@@ -23,7 +21,7 @@ export interface ScRadioGroupItemProps<T> extends Omit<BoxProps, 'title'> {
   multiple?: boolean
 }
 
-export const ScRadioGroupItem = <T,>({
+export const RadioGroupItem = <T,>({
   title,
   description,
   error,
@@ -43,7 +41,7 @@ export const ScRadioGroupItem = <T,>({
   endContent,
   sx,
   ...rest
-}: ScRadioGroupItemProps<T>) => {
+}: RadioGroupItemProps<T>) => {
   const t = useTheme()
   const borderColorActive = t.vars.palette.primary.main
   const minHeight = dense ? 34 : 50

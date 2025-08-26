@@ -87,12 +87,12 @@ export const KoboServerForm = ({
   return (
     <>
       <AccessFormSection icon="language" label={m.server} sxContent={{pb: 0}}>
-        <ScRadioGroup dense value={server} onChange={setServer} sx={{mb: 3}}>
+        <Core.RadioGroup dense value={server} onChange={setServer} sx={{mb: 3}}>
           {Obj.keys(servers).map(name => (
-            <ScRadioGroupItem key={name} value={name} title={name} />
+            <Core.RadioGroupItem key={name} value={name} title={name} />
           ))}
-          <ScRadioGroupItem icon="edit" value="custom" title={m.custom} />
-        </ScRadioGroup>
+          <Core.RadioGroupItem icon="edit" value="custom" title={m.custom} />
+        </Core.RadioGroup>
         <Controller
           control={form.control}
           name="urlV1"

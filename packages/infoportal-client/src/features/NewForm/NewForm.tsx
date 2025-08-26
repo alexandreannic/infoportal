@@ -50,10 +50,10 @@ function NewForm() {
       <Core.Panel>
         <Core.PanelHead>{m.source}</Core.PanelHead>
         <Core.PanelBody>
-          <ScRadioGroup value={source} sx={{flex: 1, minWidth: 200}} dense onChange={setSource}>
-            <ScRadioGroupItem icon={icons['kobo']} value="kobo" title={m.formSource['kobo']} />
-            <ScRadioGroupItem icon={icons['internal']} value="internal" title={m.formSource['internal']} />
-          </ScRadioGroup>
+          <Core.RadioGroup value={source} sx={{flex: 1, minWidth: 200}} dense onChange={setSource}>
+            <Core.RadioGroupItem icon={icons['kobo']} value="kobo" title={m.formSource['kobo']} />
+            <Core.RadioGroupItem icon={icons['internal']} value="internal" title={m.formSource['internal']} />
+          </Core.RadioGroup>
         </Core.PanelBody>
       </Core.Panel>
       {source &&
@@ -65,9 +65,9 @@ function NewForm() {
                 <Core.Panel>
                   <Core.PanelHead>{m.selectAccount}</Core.PanelHead>
                   <Core.PanelBody>
-                    <ScRadioGroup sx={{flex: 1, minWidth: 200}} dense onChange={setSelectedServerId}>
+                    <Core.RadioGroup sx={{flex: 1, minWidth: 200}} dense onChange={setSelectedServerId}>
                       {queryServer.getAll.data?.map(_ => (
-                        <ScRadioGroupItem
+                        <Core.RadioGroupItem
                           key={_.id}
                           value={_.id}
                           title={_.name}
@@ -86,8 +86,8 @@ function NewForm() {
                           // }
                         />
                       ))}
-                      <ScRadioGroupItem value={null} title={m.addNewKoboAccount} onClick={handleOpen} icon="add" />
-                    </ScRadioGroup>
+                      <Core.RadioGroupItem value={null} title={m.addNewKoboAccount} onClick={handleOpen} icon="add" />
+                    </Core.RadioGroup>
                   </Core.PanelBody>
                 </Core.Panel>
                 <Collapse in={!!selectedServerId} mountOnEnter unmountOnExit>

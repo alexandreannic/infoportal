@@ -57,15 +57,15 @@ export const Panel = forwardRef(
         {...other}
       >
         {title && (
-          <Core.PanelHead>
+          <PanelHead>
             <Box sx={{display: 'flex', alignItems: 'center'}}>{title}</Box>
-          </Core.PanelHead>
+          </PanelHead>
         )}
         {loading && <LinearProgress sx={{mb: '-4px'}} />}
         {expendable || savableAsImg ? (
-          <Core.PanelFeatures expendable={expendable} savableAsImg={savableAsImg}>
+          <PanelFeatures expendable={expendable} savableAsImg={savableAsImg}>
             {children}
-          </Core.PanelFeatures>
+          </PanelFeatures>
         ) : (
           children
         )}

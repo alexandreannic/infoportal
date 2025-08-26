@@ -24,10 +24,10 @@ export const PanelHead = ({icon, children, action, sx, PanelTitleProps, ...other
         ...sx,
       }}
     >
-      <Core.PanelTitle {...PanelTitleProps}>
+      <PanelTitle {...PanelTitleProps}>
         {icon && <Icon sx={{color: t => t.vars.palette.text.disabled, mr: 1}}>{icon}</Icon>}
         <div style={{flex: 1}}>{children}</div>
-      </Core.PanelTitle>
+      </PanelTitle>
       <Box sx={{marginLeft: 'auto'}}>{action}</Box>
     </Box>
   )

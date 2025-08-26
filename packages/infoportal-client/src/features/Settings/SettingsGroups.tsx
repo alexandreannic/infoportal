@@ -1,19 +1,18 @@
 import {Page} from '@/shared/Page'
 import React, {useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {Panel} from '../../../../infoportal-client-core/src/Panel'
 import {Box, Chip, Icon} from '@mui/material'
 import {Modal} from '@/shared/Modal'
 import {useForm} from 'react-hook-form'
 import {accessLevelIcon, IAccessForm} from '@/features/Access/AccessForm'
 import {SettingsGroupAccessForm} from '@/features/Settings/SettingsGroupAccessForm'
-import {BasicDialog} from '../../../../infoportal-client-core/src/BasicDialog.js'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
 import {createRoute} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
 import {Ip} from 'infoportal-api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
+import {Core} from '@/shared'
 
 interface GoupForm {
   name: string
@@ -209,7 +208,7 @@ function SettingsGroups() {
             },
           ]}
         />
-        <BasicDialog
+        <Core.BasicDialog
           open={!!selectedGroupId}
           loading={query.createItem.isPending}
           onClose={() => setSelectedGroupId(undefined)}
@@ -237,7 +236,7 @@ function SettingsGroups() {
           <Box sx={{width: 400}}>
             <SettingsGroupAccessForm form={accessForm} workspaceId={workspaceId} />
           </Box>
-        </BasicDialog>
+        </Core.BasicDialog>
       </Core.Panel>
     </Page>
   )

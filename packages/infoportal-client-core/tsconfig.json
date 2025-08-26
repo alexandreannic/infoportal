@@ -3,6 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "module": "esnext",
+    "rootDir": "./src",
     "moduleResolution": "bundler",
     "jsx": "preserve",
     "incremental": true,

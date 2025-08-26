@@ -17,11 +17,11 @@ export const DatabaseGroupDisplayInput = (props: Core.BtnProps) => {
           <Core.Txt color="hint" sx={{mb: 0.5}} fontSize="small" block>
             {m._koboDatabase.repeatAs}
           </Core.Txt>
-          <ScRadioGroup dense value={groupDisplay.get.repeatAs} onChange={_ => groupDisplay.setProperty('repeatAs', _)}>
-            <ScRadioGroupItem value={null} title={m._koboDatabase.repeatDont} />
-            <ScRadioGroupItem value="rows" title={m._koboDatabase.repeatAsRows} />
-            <ScRadioGroupItem value="columns" title={m._koboDatabase.repeatAsColumn} />
-          </ScRadioGroup>
+          <Core.RadioGroup dense value={groupDisplay.get.repeatAs} onChange={_ => groupDisplay.setProperty('repeatAs', _)}>
+            <Core.RadioGroupItem value={null} title={m._koboDatabase.repeatDont} />
+            <Core.RadioGroupItem value="rows" title={m._koboDatabase.repeatAsRows} />
+            <Core.RadioGroupItem value="columns" title={m._koboDatabase.repeatAsColumn} />
+          </Core.RadioGroup>
           {groupDisplay.get.repeatAs === 'rows' && (
             <>
               <Core.Txt color="hint" sx={{mt: 1.5, mb: 0.5}} fontSize="small" block>

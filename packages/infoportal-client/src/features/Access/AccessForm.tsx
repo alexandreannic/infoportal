@@ -50,7 +50,7 @@ export const AccessForm = ({workspaceId, form}: {workspaceId: Ip.WorkspaceId; fo
           rules={{required: {value: true, message: m.required}}}
           control={form.control}
           render={({field}) => (
-            <ScRadioGroup
+            <Core.RadioGroup
               sx={{mb: 2}}
               dense
               error={!!form.formState.errors.selectBy}
@@ -63,10 +63,10 @@ export const AccessForm = ({workspaceId, form}: {workspaceId: Ip.WorkspaceId; fo
                 field.onChange(e)
               }}
             >
-              <ScRadioGroupItem value="email" title={m.email} />
-              <ScRadioGroupItem value="job" title={m.Access.jobAndOffice} />
-              <ScRadioGroupItem value="group" title={m.group} />
-            </ScRadioGroup>
+              <Core.RadioGroupItem value="email" title={m.email} />
+              <Core.RadioGroupItem value="job" title={m.Access.jobAndOffice} />
+              <Core.RadioGroupItem value="group" title={m.group} />
+            </Core.RadioGroup>
           )}
         />
         {fnSwitch(
@@ -136,16 +136,16 @@ export const AccessFormInputAccessLevel = ({form}: {form: UseFormReturn<IAccessF
       defaultValue={Ip.AccessLevel.Read}
       control={form.control}
       render={({field}) => (
-        <ScRadioGroup<Ip.AccessLevel>
+        <Core.RadioGroup<Ip.AccessLevel>
           error={!!form.formState.errors.level}
           dense
           {...field}
           // onChange={_ => field.onChange({target: {value: _}} as any)}
         >
           {Obj.values(Ip.AccessLevel).map(level => (
-            <ScRadioGroupItem icon={accessLevelIcon[level]} value={level} key={level} title={level} />
+            <Core.RadioGroupItem icon={accessLevelIcon[level]} value={level} key={level} title={level} />
           ))}
-        </ScRadioGroup>
+        </Core.RadioGroup>
       )}
     />
   )

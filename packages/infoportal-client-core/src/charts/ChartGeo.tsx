@@ -1,7 +1,7 @@
 import {Chart, ChartWrapperOptions} from 'react-google-charts'
 import {useMemo, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
-import {Panel, PanelHead} from '../ui/Panel/index.js'
+import {Panel, PanelHead} from '../ui/index.js'
 import {IconBtn} from '../ui/IconBtn.js'
 import {lightenVar} from '../core/theme.js'
 
@@ -68,8 +68,8 @@ export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: s
   }, [selectedCountry, data])
 
   return (
-    <Core.Panel>
-      <Core.PanelHead>{panelTitle}</Core.PanelHead>
+    <Panel>
+      <PanelHead>{panelTitle}</PanelHead>
       <Box sx={{overflow: 'hidden', position: 'relative'}}>
         <Chart
           style={{marginTop: -40, marginBottom: -40}}
@@ -103,6 +103,6 @@ export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: s
           arrow_back
         </IconBtn>
       </Box>
-    </Core.Panel>
+    </Panel>
   )
 }

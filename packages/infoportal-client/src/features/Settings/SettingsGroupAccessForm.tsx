@@ -41,7 +41,7 @@ export const SettingsGroupAccessForm = ({
           rules={{required: {value: true, message: m.required}}}
           control={form.control}
           render={({field}) => (
-            <ScRadioGroup
+            <Core.RadioGroup
               sx={{mb: 2.5}}
               dense
               error={!!form.formState.errors.selectBy}
@@ -55,9 +55,9 @@ export const SettingsGroupAccessForm = ({
                 field.onChange(e)
               }}
             >
-              <ScRadioGroupItem value="email" title={m.email} />
-              <ScRadioGroupItem value="job" title={m.Access.jobAndOffice} />
-            </ScRadioGroup>
+              <Core.RadioGroupItem value="email" title={m.email} />
+              <Core.RadioGroupItem value="job" title={m.Access.jobAndOffice} />
+            </Core.RadioGroup>
           )}
         />
         {fnSwitch(

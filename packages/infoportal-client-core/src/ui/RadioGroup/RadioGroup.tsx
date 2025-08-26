@@ -1,12 +1,12 @@
 import React, {ReactElement, ReactNode, useEffect, useState} from 'react'
-import {ScRadioGroupItemProps} from './RadioGroupItem.js'
+import {RadioGroupItemProps} from './RadioGroupItem.js'
 import {Box, FormHelperText, styled, SxProps, Theme} from '@mui/material'
 import {styleUtils} from '../../core/theme.js'
 
 interface BaseProps<T> {
   dense?: boolean
   inline?: boolean
-  children: React.ReactNode //ReactElement<ScRadioGroupItemProps>[]
+  children: React.ReactNode //ReactElement<Core.RadioGroupItemProps>[]
   error?: boolean
   className?: string
   sx?: SxProps<Theme>
@@ -29,7 +29,7 @@ interface MultipleProps<T> extends BaseProps<T> {
   multiple: true
 }
 
-export type ScRadioGroupProps<T> = SingleProps<T> | MultipleProps<T>
+export type RadioGroupProps<T> = SingleProps<T> | MultipleProps<T>
 
 const isMultiple = <T,>(multiple: boolean | undefined, t: T | T[]): t is T[] => {
   return !!multiple
@@ -41,7 +41,7 @@ const Label = styled('div')(({theme}) => ({
   marginBottom: theme.spacing(0.5),
 }))
 
-const _ScRadioGroup = <T,>(
+const _RadioGroup = <T,>(
   {
     label,
     inline,
@@ -56,7 +56,7 @@ const _ScRadioGroup = <T,>(
     defaultValue,
     sx,
     ...props
-  }: ScRadioGroupProps<T>,
+  }: RadioGroupProps<T>,
   ref: any,
 ) => {
   const [innerValue, setInnerValue] = useState<T | T[]>()
@@ -84,7 +84,7 @@ const _ScRadioGroup = <T,>(
         }}
       >
         {React.Children.map(
-          children as ReactElement<ScRadioGroupItemProps<T>>[],
+          children as ReactElement<RadioGroupItemProps<T>>[],
           (child, i) =>
             child &&
             React.cloneElement(child, {
@@ -135,6 +135,6 @@ const _ScRadioGroup = <T,>(
 /**
  * Workaround because forwardRef break the generic type of ScSelect.
  */
-export const ScRadioGroup = React.forwardRef(_ScRadioGroup as any) as <T>(
-  props: ScRadioGroupProps<T> & {ref?: React.ForwardedRef<any>},
-) => ReturnType<typeof _ScRadioGroup>
+export const RadioGroup = React.forwardRef(_RadioGroup as any) as <T>(
+  props: RadioGroupProps<T> & {ref?: React.ForwardedRef<any>},
+) => ReturnType<typeof _RadioGroup>

@@ -56,7 +56,7 @@ export namespace KoboUpdateModal {
       )
       const resetOption: KoboEditModalOption = {value: null, label: 'BLANK', desc: ' '}
       return [resetOption, ...(harmonized ?? [])].map(_ => (
-        <ScRadioGroupItem
+        <Core.RadioGroupItem
           dense
           disabled={
             type === 'select_multiple' &&
@@ -74,7 +74,7 @@ export namespace KoboUpdateModal {
 
     const _loading = loading
     return (
-      <BasicDialog
+      <Core.BasicDialog
         maxWidth="xs"
         open={true}
         onClose={() => onClose()}
@@ -100,21 +100,21 @@ export namespace KoboUpdateModal {
               switch (type) {
                 case 'select_one': {
                   return (
-                    <ScRadioGroup
+                    <Core.RadioGroup
                       dense
                       value={value}
                       onChange={setValue}
                       disabled={(value as KoboEditModalOption['value']) === null}
                     >
                       {_options}
-                    </ScRadioGroup>
+                    </Core.RadioGroup>
                   )
                 }
                 case 'select_multiple': {
                   return (
-                    <ScRadioGroup dense multiple value={value ?? []} onChange={_ => setValue(_)}>
+                    <Core.RadioGroup dense multiple value={value ?? []} onChange={_ => setValue(_)}>
                       {_options}
-                    </ScRadioGroup>
+                    </Core.RadioGroup>
                   )
                 }
                 case 'text':
@@ -129,13 +129,13 @@ export namespace KoboUpdateModal {
                 }
                 case 'datetime':
                 case 'date': {
-                  return <IpDatepicker value={value} onChange={setValue} />
+                  return <Core.Datepicker value={value} onChange={setValue} />
                 }
               }
             })()}
           </Box>
         </Collapse>
-      </BasicDialog>
+      </Core.BasicDialog>
     )
   }
 

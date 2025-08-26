@@ -63,7 +63,7 @@ export const AddUserForm = ({
           required: true,
         }}
         render={({field: {onChange, value, ...field}}) => (
-          <ScRadioGroup
+          <Core.RadioGroup
             label={m.accessLevel}
             dense
             {...field}
@@ -71,9 +71,9 @@ export const AddUserForm = ({
             onChange={_ => onChange({target: {value: _}})}
           >
             {Object.keys(Ip.AccessLevel).map(_ => (
-              <ScRadioGroupItem value={_} title={_} />
+              <Core.RadioGroupItem value={_} title={_} />
             ))}
-          </ScRadioGroup>
+          </Core.RadioGroup>
         )}
       />
       <Collapse in={!!queryInvitation.error} mountOnEnter unmountOnExit>
