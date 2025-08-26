@@ -87,10 +87,10 @@ export const AddUserForm = ({
         </Core.Alert>
       </Collapse>
       <PanelFoot sx={{mt: 2, p: 0}} alignEnd>
-        {onClose && <Core.Btn onClick={onClose}>{m.close}</CoreBtn>}
+        {onClose && <Core.Btn onClick={onClose}>{m.close}</Core.Btn>}
         <Core.Btn variant="outlined" type="submit" disabled={!form.formState.isValid} loading={queryInvitation.isPending}>
           {m.submit}
-        </CoreBtn>
+        </Core.Btn>
       </PanelFoot>
     </form>
   )

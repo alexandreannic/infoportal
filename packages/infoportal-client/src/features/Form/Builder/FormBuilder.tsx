@@ -79,7 +79,7 @@ function FormBuilder() {
                               loading={queryVersion.deployLast.isPending}
                             >
                               {m.deployLastVersion}
-                            </CoreBtn>
+                            </Core.Btn>
                           </Modal>
                         }
                       >
@@ -113,7 +113,7 @@ function FormBuilder() {
                     disabled={!active}
                   >
                     {m.preview}
-                  </CoreBtn>
+                  </Core.Btn>
                   <Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId}} target="_blank">
                     <Core.Btn
                       sx={{mr: 1}}
@@ -123,7 +123,7 @@ function FormBuilder() {
                       onClick={() => setShowPreview(true)}
                     >
                       {m.open}
-                    </CoreBtn>
+                    </Core.Btn>
                   </Link>
                   <Modal
                     title={m.copyResponderLink}
@@ -148,7 +148,7 @@ function FormBuilder() {
                   >
                     <Core.Btn icon="link" size="large" variant="outlined">
                       {m.copyLink}
-                    </CoreBtn>
+                    </Core.Btn>
                   </Modal>
                 </Panel>
               )}

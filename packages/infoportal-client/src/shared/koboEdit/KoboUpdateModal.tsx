@@ -92,7 +92,7 @@ export namespace KoboUpdateModal {
         </Core.Txt>
         {error && <Alert color="error">{m.somethingWentWrong}</Alert>}
         {updated && (
-          <Alert color="success" action={<Core.Btn onClick={() => setUpdated(false)}>{m.change}</CoreBtn>}>
+          <Alert color="success" action={<Core.Btn onClick={() => setUpdated(false)}>{m.change}</Core.Btn>}>
             {m.successfullyEdited(-1)}
           </Alert>
         )}

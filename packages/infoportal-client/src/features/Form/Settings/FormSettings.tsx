@@ -53,7 +53,7 @@ function FormSettings() {
                   close()
                 }}
               >
-                <Core.Btn disabled={queryForm.update.isPending}>{m.disconnect}</CoreBtn>
+                <Core.Btn disabled={queryForm.update.isPending}>{m.disconnect}</Core.Btn>
               </Modal>
             </Row>
           )}
@@ -72,7 +72,7 @@ function FormSettings() {
               onClick={() => queryForm.update.mutateAsync({archive: form.deploymentStatus !== 'archived'})}
             >
               {form.deploymentStatus === 'archived' ? m.unarchive : m.archive}
-            </CoreBtn>
+            </Core.Btn>
           </Row>
           <Row label={m.deleteThisProject} desc={m.deleteThisProjectDesc}>
             <Modal
@@ -87,7 +87,7 @@ function FormSettings() {
             >
               <Core.Btn color="error" variant="outlined" icon="delete">
                 {m.delete}
-              </CoreBtn>
+              </Core.Btn>
             </Modal>
           </Row>
         </PanelBody>

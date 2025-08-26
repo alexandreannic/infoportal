@@ -49,7 +49,7 @@ function SettingsCache() {
                     onClick={() => asyncClear.call(key)}
                   >
                     {m.clearAll}
-                  </CoreBtn>
+                  </Core.Btn>
                 }
               >
                 {key}

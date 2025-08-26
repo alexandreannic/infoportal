@@ -20,7 +20,7 @@ export const PageNotFound = () => {
               endIcon={<Icon color="disabled">arrow_right_alt</Icon>}
             >
               {m.home}
-            </CoreBtn>
+            </Core.Btn>
           </Link>
         </Fender>
       </CenteredContent>

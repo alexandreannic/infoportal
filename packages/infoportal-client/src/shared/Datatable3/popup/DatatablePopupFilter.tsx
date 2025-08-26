@@ -164,10 +164,10 @@ export const DatatableFilterModal3 = ({
       <PanelFoot alignEnd>
         <Core.Btn color="primary" onClick={onClose}>
           {m.close}
-        </CoreBtn>
+        </Core.Btn>
         <Core.Btn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
           {m.filter}
-        </CoreBtn>
+        </Core.Btn>
       </PanelFoot>
     </Popover>
   )

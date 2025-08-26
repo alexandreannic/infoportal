@@ -85,7 +85,7 @@ export const DatatableColumnToggle = ({
                 </Core.Txt>
                 <Core.Btn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
                   {m.save}
-                </CoreBtn>
+                </Core.Btn>
               </>
             )}
             contentProps={{sx: {maxHeight: 500}}}

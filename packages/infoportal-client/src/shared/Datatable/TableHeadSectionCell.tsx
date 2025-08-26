@@ -86,7 +86,7 @@ export const TableHeadSectionCell = ({
                   onClick={() => onHideColumns(cols.map(_ => _.id))}
                 >
                   <Icon fontSize="small">visibility_off</Icon>
-                </CoreBtn>
+                </Core.Btn>
               </div>
             </th>
           )),

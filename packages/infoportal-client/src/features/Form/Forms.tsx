@@ -48,7 +48,7 @@ function Forms() {
             <Link to="/$workspaceId/new-form" params={{workspaceId}}>
               <Core.Btn icon="add" variant={'outlined'} sx={{mr: 0}}>
                 {m.add}
-              </CoreBtn>
+              </Core.Btn>
             </Link>
           }
           id="kobo-index"

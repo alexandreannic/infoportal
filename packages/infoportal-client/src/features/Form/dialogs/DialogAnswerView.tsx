@@ -126,7 +126,7 @@ export const DialogAnswerView = ({
         />
       </DialogContent>
       <DialogActions>
-        <Core.Btn onClick={() => onClose()}>{m.close}</CoreBtn>
+        <Core.Btn onClick={() => onClose()}>{m.close}</Core.Btn>
       </DialogActions>
     </Dialog>
   )

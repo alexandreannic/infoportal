@@ -95,7 +95,7 @@ export const SelectKoboForm = ({
                   }
                 >
                   {m.add}
-                </CoreBtn>
+                </Core.Btn>
               ),
             },
           ]}

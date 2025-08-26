@@ -46,10 +46,10 @@ export const DialogAnswerEdit = ({
         />
       </DialogContent>
       <DialogActions>
-        <Core.Btn onClick={() => onClose()}>{m.close}</CoreBtn>
+        <Core.Btn onClick={() => onClose()}>{m.close}</Core.Btn>
         <Core.Btn variant="contained" icon="check" onClick={() => formRef.current?.submit()}>
           {m.save}
-        </CoreBtn>
+        </Core.Btn>
       </DialogActions>
     </Dialog>
   )

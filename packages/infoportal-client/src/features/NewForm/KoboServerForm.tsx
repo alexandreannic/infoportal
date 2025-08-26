@@ -170,7 +170,7 @@ export const KoboServerForm = ({
           sx={{mr: 1, whiteSpace: 'nowrap'}}
         >
           {m.testConnection}
-        </CoreBtn>
+        </Core.Btn>
         <ConnectionChecker
           status={fetcherTest.loading ? 'loading' : fetcherTest.get === true ? 'success' : 'error'}
           err={fetcherTest.get as any}
@@ -179,7 +179,7 @@ export const KoboServerForm = ({
       <CardActions sx={{justifyContent: 'flex-end'}}>
         <Core.Btn color="primary" onClick={onCancel}>
           {m.close}
-        </CoreBtn>
+        </Core.Btn>
         <Core.Btn
           loading={loading}
           variant="contained"
@@ -188,7 +188,7 @@ export const KoboServerForm = ({
           disabled={!form.formState.isValid}
         >
           {m.save}
-        </CoreBtn>
+        </Core.Btn>
       </CardActions>
     </>
   )

@@ -8,7 +8,7 @@ import {DatabaseViewInputRow} from '@/features/Form/Database/view/DatabaseViewIn
 import {DatabaseViewDefaultName, UseDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
 import {useSession} from '@/core/Session/SessionContext'
 import {useFormContext} from '@/features/Form/Form'
-import {IpBtn, Core.BtnProps} from '../../../../../../infoportal-client-core/src/Btn.js'
+import {IpBtn, BtnProps} from '../../../../../../infoportal-client-core/src/Btn.js'
 
 interface FormCreate {
   name: string

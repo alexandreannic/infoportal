@@ -133,7 +133,7 @@ export const SelectedCellPopover = (props: DatatableContext['cellSelection']) =>
             <Icon fontSize="inherit">table_rows</Icon>
             {formatLargeNumber(props.selectedRowIds.size)}
           </Core.Txt>
-        </CoreBtn>
+        </Core.Btn>
         <Core.Txt block color="hint"></Core.Txt>
         {props.selectedColumnUniq && (
           <>

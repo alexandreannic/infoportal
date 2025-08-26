@@ -89,7 +89,7 @@ function SettingsUsers() {
               >
                 <Core.Btn icon="person_add" variant="outlined" sx={{marginLeft: 'auto'}}>
                   {m.addUser}
-                </CoreBtn>
+                </Core.Btn>
               </Modal>
             )
           }

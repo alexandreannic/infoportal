@@ -1,13 +1,13 @@
 import {FormControl, FormHelperText, InputLabel, OutlinedInput, OutlinedInputProps, TextFieldProps} from '@mui/material'
 import React, {ReactNode, useEffect, useRef} from 'react'
 
-export interface IpInputProps extends OutlinedInputProps, Pick<TextFieldProps, 'InputProps' | 'InputLabelProps'> {
+export interface InputProps extends OutlinedInputProps, Pick<TextFieldProps, 'InputProps' | 'InputLabelProps'> {
   label?: string
   helperText?: ReactNode
 }
 
 export const Input = React.forwardRef(
-  ({size = 'small', label, sx, error, required, InputLabelProps, id, helperText = '', ...props}: IpInputProps, ref) => {
+  ({size = 'small', label, sx, error, required, InputLabelProps, id, helperText = '', ...props}: InputProps, ref) => {
     // const id = useMemo(() => Math.random() + '', [])
     const inputElement = useRef<HTMLInputElement | null>(null)
     useEffect(() => {

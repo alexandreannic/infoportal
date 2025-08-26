@@ -143,7 +143,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
         {onClose && (
           <Core.Btn size="large" onClick={onClose}>
             {m.close}
-          </CoreBtn>
+          </Core.Btn>
         )}
         <Core.Btn
           disabled={!form.formState.isValid}
@@ -153,7 +153,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
           type="submit"
         >
           {m.create}
-        </CoreBtn>
+        </Core.Btn>
       </CardActions>
     </form>
   )

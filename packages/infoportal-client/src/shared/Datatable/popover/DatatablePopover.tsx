@@ -60,7 +60,7 @@ export const NumberChoicesPopover = <T,>({
       <PanelFoot alignEnd>
         <Core.Btn color="primary" onClick={onClose as any}>
           {m.close}
-        </CoreBtn>
+        </Core.Btn>
       </PanelFoot>
     </Popover>
   )
@@ -123,7 +123,7 @@ export const MultipleChoicesPopover = <T extends DatatableRow>({
       <PanelFoot alignEnd>
         <Core.Btn color="primary" onClick={onClose as any}>
           {m.close}
-        </CoreBtn>
+        </Core.Btn>
       </PanelFoot>
     </Popover>
   )
@@ -161,7 +161,7 @@ export const DatesPopover = <T,>({
       <PanelFoot alignEnd>
         <Core.Btn color="primary" onClick={onClose as any}>
           {m.close}
-        </CoreBtn>
+        </Core.Btn>
       </PanelFoot>
     </Popover>
   )

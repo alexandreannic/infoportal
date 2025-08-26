@@ -95,13 +95,13 @@ export const DataFilterLayoutPopup = ({
           <Box sx={{display: 'flex', mt: 1}}>
             <Core.Btn color="primary" onClick={() => setInnerFilters({})}>
               {m.reinitialize}
-            </CoreBtn>
+            </Core.Btn>
             <Core.Btn color="primary" onClick={handleClose} sx={{marginLeft: 'auto', mr: 1}}>
               {m.close}
-            </CoreBtn>
+            </Core.Btn>
             <Core.Btn color="primary" variant="contained" onClick={handleSubmit}>
               {m.confirm}
-            </CoreBtn>
+            </Core.Btn>
           </Box>
         </Box>
       </Popover>

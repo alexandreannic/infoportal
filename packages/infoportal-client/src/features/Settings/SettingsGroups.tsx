@@ -69,7 +69,7 @@ function SettingsGroups() {
               >
                 <Core.Btn icon="add" variant="outlined">
                   {m.create}
-                </CoreBtn>
+                </Core.Btn>
               </Modal>
             )
           }

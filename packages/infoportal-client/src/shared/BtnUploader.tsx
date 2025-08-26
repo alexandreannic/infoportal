@@ -127,7 +127,7 @@ export const BtnUploader = ({
               ref={fileInputEl}
               onChange={e => handleChange(e.target.files)}
             />
-          </CoreBtn>
+          </Core.Btn>
         )
       }
     }

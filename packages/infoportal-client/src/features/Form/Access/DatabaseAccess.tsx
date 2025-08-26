@@ -29,7 +29,7 @@ function DatabaseAccess() {
                 <DatabaseAccessForm workspaceId={workspaceId} formId={form.id} form={schema.schema}>
                   <Core.Btn sx={{mr: 1}} variant="outlined" icon="person_add">
                     {m.grantAccess}
-                  </CoreBtn>
+                  </Core.Btn>
                 </DatabaseAccessForm>
               )
             }

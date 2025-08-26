@@ -42,7 +42,7 @@ export const useCustomSelectedHeader = ({
         >
           <Core.Btn variant="contained" icon="delete">
             {m.deleteSelected}
-          </CoreBtn>
+          </Core.Btn>
         </Modal>
       )}
     </>

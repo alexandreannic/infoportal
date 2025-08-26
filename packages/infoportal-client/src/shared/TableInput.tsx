@@ -4,6 +4,7 @@ import {TableIcon} from '@/shared/TableIcon'
 import {StateStatus} from 'infoportal-common'
 import {appConfig} from '@/conf/AppConfig'
 import {styled} from '@mui/system'
+import {Core} from '@/shared'
 
 const Input = styled('input')(({theme: t}) => ({
   height: '100%',

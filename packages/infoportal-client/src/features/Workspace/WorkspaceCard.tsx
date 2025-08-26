@@ -122,7 +122,7 @@ export const WorkspaceCardInvitation = ({
           confirmLabel={m.refuse}
           onConfirm={(e, close) => accept.mutateAsync({id: invitation.id, accept: false}).then(close)}
         >
-          <Core.Btn color="error">{m.refuse}</CoreBtn>
+          <Core.Btn color="error">{m.refuse}</Core.Btn>
         </Modal>
         <Core.Btn
           disabled={accept.isPending}
@@ -131,7 +131,7 @@ export const WorkspaceCardInvitation = ({
           endIcon={<Icon>login</Icon>}
         >
           {m.accept}
-        </CoreBtn>
+        </Core.Btn>
       </PanelFoot>
     </Panel>
   )

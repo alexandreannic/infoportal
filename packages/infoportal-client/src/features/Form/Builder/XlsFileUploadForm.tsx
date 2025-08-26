@@ -60,7 +60,7 @@ export const XlsFileUploadForm = ({
       loading={queryVersion.upload.isPending}
     >
       {label}
-    </CoreBtn>
+    </Core.Btn>
   )
 
   const submit = async (values: Form) => {

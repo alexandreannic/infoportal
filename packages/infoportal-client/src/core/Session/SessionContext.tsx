@@ -116,7 +116,7 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
   //           {/* <Core.Txt>{session.user.email}</Core.Txt> */}
   //           <Core.Btn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
   //             {user.email}
-  //           </CoreBtn>
+  //           </Core.Btn>
   //           <PageTitle>{m.onboardingTitle}</PageTitle>
   //           <WorkspaceCreate />
   //         </div>
@@ -138,7 +138,7 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
             size="small"
           >
             {m.return}
-          </CoreBtn>
+          </Core.Btn>
         </Box>
       )}
       {children}

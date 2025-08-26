@@ -82,7 +82,7 @@ export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerPro
             }}
           >
             Copy All {formatLargeNumber(data.filteredData?.length)}
-          </CoreBtn>
+          </Core.Btn>
         </Box>
       </Popover>
     </>

@@ -58,12 +58,12 @@ export const CommentsPanel = memo(({data, height = 650, pageSize = 5}: CommentsP
             onClick={() => setLimit(_ => _ - pageSize)}
           >
             {m.viewNMore(pageSize)}
-          </CoreBtn>
+          </Core.Btn>
         )}
         {limit < data.length && (
           <Core.Btn icon="add" variant="outlined" color="primary" onClick={() => setLimit(_ => _ + pageSize)}>
             {m.viewNMore(pageSize)}
-          </CoreBtn>
+          </Core.Btn>
         )}
       </Box>
     </Box>

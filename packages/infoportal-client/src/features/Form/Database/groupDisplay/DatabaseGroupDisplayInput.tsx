@@ -1,4 +1,4 @@
-import {IpBtn, Core.BtnProps, PopoverWrapper, Txt} from '@/shared'
+import {IpBtn, BtnProps, PopoverWrapper, Txt} from '@/shared'
 import React from 'react'
 import {Box, Icon, useTheme} from '@mui/material'
 import {ScRadioGroup, ScRadioGroupItem} from '../../../../../../infoportal-client-core/src/RadioGroup'
