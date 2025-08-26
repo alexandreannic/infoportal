@@ -38,9 +38,9 @@ export const FormBuilderKoboFender = ({workspaceId, form}: {workspaceId: Ip.Work
   const queryServer = useQueryServer({workspaceId, serverId: form.kobo!.accountId!}).get
 
   return (
-    <Panel loading={queryServer.isLoading}>
+    <Core.Panel loading={queryServer.isLoading}>
       {queryServer.data && (
-        <PanelBody>
+        <Core.PanelBody>
           <Alert color="info" sx={{mb: 2}}>
             <AlertTitle>
               {m.thisFormIsManagedByKobo}{' '}
@@ -56,8 +56,8 @@ export const FormBuilderKoboFender = ({workspaceId, form}: {workspaceId: Ip.Work
             href={queryServer.data.url + `/#/forms/${form.id}/landing`}
           />
           {form.kobo?.enketoUrl && <Button icon="ballot" href={form.kobo?.enketoUrl} label={m.fillForm} />}
-        </PanelBody>
+        </Core.PanelBody>
       )}
-    </Panel>
+    </Core.Panel>
   )
 }

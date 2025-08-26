@@ -42,17 +42,17 @@ function Collect() {
   return (
     <Page loading={querySchema.isPending} width="xs">
       {querySchema.data && queryForm.data && (
-        <Panel>
-          <PanelHead>{queryForm.data.name}</PanelHead>
-          <PanelBody>
+        <Core.Panel>
+          <Core.PanelHead>{queryForm.data.name}</Core.PanelHead>
+          <Core.PanelBody>
             <XlsFormFiller
               onSubmit={_ =>
                 querySubmit.mutateAsync({formId, workspaceId, geolocation, ..._}).then(() => toastSuccess(''))
               }
               survey={querySchema.data.schema}
             />
-          </PanelBody>
-        </Panel>
+          </Core.PanelBody>
+        </Core.Panel>
       )}
     </Page>
   )

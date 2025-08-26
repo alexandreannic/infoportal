@@ -47,24 +47,24 @@ function NewForm() {
 
   return (
     <Page width="xs">
-      <Panel>
-        <PanelHead>{m.source}</PanelHead>
-        <PanelBody>
+      <Core.Panel>
+        <Core.PanelHead>{m.source}</Core.PanelHead>
+        <Core.PanelBody>
           <ScRadioGroup value={source} sx={{flex: 1, minWidth: 200}} dense onChange={setSource}>
             <ScRadioGroupItem icon={icons['kobo']} value="kobo" title={m.formSource['kobo']} />
             <ScRadioGroupItem icon={icons['internal']} value="internal" title={m.formSource['internal']} />
           </ScRadioGroup>
-        </PanelBody>
-      </Panel>
+        </Core.PanelBody>
+      </Core.Panel>
       {source &&
         fnSwitch(
           source,
           {
             kobo: (
               <>
-                <Panel>
-                  <PanelHead>{m.selectAccount}</PanelHead>
-                  <PanelBody>
+                <Core.Panel>
+                  <Core.PanelHead>{m.selectAccount}</Core.PanelHead>
+                  <Core.PanelBody>
                     <ScRadioGroup sx={{flex: 1, minWidth: 200}} dense onChange={setSelectedServerId}>
                       {queryServer.getAll.data?.map(_ => (
                         <ScRadioGroupItem
@@ -88,8 +88,8 @@ function NewForm() {
                       ))}
                       <ScRadioGroupItem value={null} title={m.addNewKoboAccount} onClick={handleOpen} icon="add" />
                     </ScRadioGroup>
-                  </PanelBody>
-                </Panel>
+                  </Core.PanelBody>
+                </Core.Panel>
                 <Collapse in={!!selectedServerId} mountOnEnter unmountOnExit>
                   <SelectKoboForm
                     workspaceId={workspaceId}

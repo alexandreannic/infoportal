@@ -1,7 +1,7 @@
 import {Box, Collapse} from '@mui/material'
 import {ReactNode} from 'react'
-import {usePersistentState} from '../../../../../infoportal-client-core/src/hook/usePersistantState'
 import {Core} from '@/shared'
+import {usePersistentState} from '@axanc/react-hooks'
 
 export const SidebarSection = ({
   id,

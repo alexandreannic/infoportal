@@ -47,7 +47,7 @@ export const WorkspaceCard = ({workspace}: {workspace: Ip.Workspace}) => {
 
   return (
     <Link to="/$workspaceId/dashboard" params={{workspaceId: workspace.id}}>
-      <Panel
+      <Core.Panel
         sx={{
           mb: 0,
           minHeight: 200,
@@ -72,7 +72,7 @@ export const WorkspaceCard = ({workspace}: {workspace: Ip.Workspace}) => {
         <Core.Txt color="hint" textAlign="right" block sx={{mt: 'auto'}}>
           {formatDate(workspace.createdAt)}
         </Core.Txt>
-      </Panel>
+      </Core.Panel>
     </Link>
   )
 }
@@ -88,7 +88,7 @@ export const WorkspaceCardInvitation = ({
   const {m, formatDateTime} = useI18n()
   const accept = useQueryWorkspaceInvitation.accept()
   return (
-    <Panel
+    <Core.Panel
       loading={accept.isPending}
       {...props}
       sx={{
@@ -102,7 +102,7 @@ export const WorkspaceCardInvitation = ({
         ...sx,
       }}
     >
-      <PanelBody sx={{flex: 1}}>
+      <Core.PanelBody sx={{flex: 1}}>
         <Box sx={{textAlign: 'center'}}>
           <AppAvatar size={40} email={invitation.createdBy} />
           {invitation.createdBy}
@@ -114,8 +114,8 @@ export const WorkspaceCardInvitation = ({
             {invitation.workspace.name}
           </Core.Txt>
         </Box>
-      </PanelBody>
-      <PanelFoot sx={{justifyContent: 'space-between'}}>
+      </Core.PanelBody>
+      <Core.PanelFoot sx={{justifyContent: 'space-between'}}>
         <Modal
           disabled={accept.isPending}
           title={m.refuse + ' ?'}
@@ -132,7 +132,7 @@ export const WorkspaceCardInvitation = ({
         >
           {m.accept}
         </Core.Btn>
-      </PanelFoot>
-    </Panel>
+      </Core.PanelFoot>
+    </Core.Panel>
   )
 }

@@ -40,8 +40,8 @@ function FormSettings() {
   const navigate = useNavigate()
   return (
     <Page width="xs">
-      <Panel>
-        <PanelBody>
+      <Core.Panel>
+        <Core.PanelBody>
           {form.kobo && (
             <Row label={m.connectedToKobo} desc={m.connectedToKoboDesc}>
               <Modal
@@ -90,8 +90,8 @@ function FormSettings() {
               </Core.Btn>
             </Modal>
           </Row>
-        </PanelBody>
-      </Panel>
+        </Core.PanelBody>
+      </Core.Panel>
     </Page>
   )
 }

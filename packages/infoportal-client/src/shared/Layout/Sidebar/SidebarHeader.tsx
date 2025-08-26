@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Box, BoxProps} from '@mui/material'
 import {useLayoutContext} from '../LayoutContext'
+import {Core} from '@/shared'
 
 export interface SidebarHeaderProps extends BoxProps {
   hidden?: boolean

@@ -7,8 +7,8 @@ export type PanelWBodyProps = PanelProps
 
 export const PanelWBody = forwardRef(({children, title, ...other}: PanelWBodyProps, ref: any) => {
   return (
-    <Panel title={title} {...other}>
-      <PanelBody>{children}</PanelBody>
-    </Panel>
+    <Core.Panel title={title} {...other}>
+      <Core.PanelBody>{children}</Core.PanelBody>
+    </Core.Panel>
   )
 })

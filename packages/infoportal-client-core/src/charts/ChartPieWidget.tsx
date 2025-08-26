@@ -9,7 +9,7 @@ import {useI18n} from '../core/Translation.js'
 
 const previousPeriodDeltaDays = 90
 
-export interface ChartPieIndicatorProps extends Omit<PanelProps, 'title'> {
+export interface ChartPieIndicatorProps extends Omit<Core.PanelProps, 'title'> {
   fractionDigits?: number
   dense?: boolean
   noWrap?: boolean

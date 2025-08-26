@@ -45,7 +45,7 @@ function DatabaseKoboRepeatContainer() {
       loading={querySchema.isLoading}
     >
       {map(querySchema.data, schema => (
-        <Panel sx={{mb: 0}}>
+        <Core.Panel sx={{mb: 0}}>
           <DatabaseKoboRepeat
             id={id}
             index={index}
@@ -54,7 +54,7 @@ function DatabaseKoboRepeatContainer() {
             formId={formId}
             workspaceId={workspaceId}
           />
-        </Panel>
+        </Core.Panel>
       ))}
     </Page>
   )

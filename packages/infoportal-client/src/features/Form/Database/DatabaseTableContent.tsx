@@ -161,12 +161,12 @@ export const DatabaseTableContent = ({
     <Box sx={{display: 'flex', maxHeight: 'calc(100vh - 110px)'}}>
       <DatabaseToolbarContainer width={340} open={viewEditorOpen}>
         {viewEditorOpen && (
-          <Panel sx={{mr: 1}}>
+          <Core.Panel sx={{mr: 1}}>
             <DatabaseViewEditor view={ctx.view} />
-          </Panel>
+          </Core.Panel>
         )}
       </DatabaseToolbarContainer>
-      <Panel>
+      <Core.Panel>
         <Datatable3
           onEvent={console.log}
           // onResizeColumn={ctx.view.onResizeColumn}
@@ -274,7 +274,7 @@ export const DatabaseTableContent = ({
             </>
           )}
         />
-      </Panel>
+      </Core.Panel>
     </Box>
   )
 }

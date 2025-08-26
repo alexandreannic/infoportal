@@ -45,7 +45,7 @@ function SettingsGroups() {
 
   return (
     <Page width="full">
-      <Panel>
+      <Core.Panel>
         <Datatable
           data={queryGet.data}
           loading={queryGet.isLoading}
@@ -238,7 +238,7 @@ function SettingsGroups() {
             <SettingsGroupAccessForm form={accessForm} workspaceId={workspaceId} />
           </Box>
         </BasicDialog>
-      </Panel>
+      </Core.Panel>
     </Page>
   )
 }

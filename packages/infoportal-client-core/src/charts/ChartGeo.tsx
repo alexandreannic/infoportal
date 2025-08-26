@@ -68,8 +68,8 @@ export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: s
   }, [selectedCountry, data])
 
   return (
-    <Panel>
-      <PanelHead>{panelTitle}</PanelHead>
+    <Core.Panel>
+      <Core.PanelHead>{panelTitle}</Core.PanelHead>
       <Box sx={{overflow: 'hidden', position: 'relative'}}>
         <Chart
           style={{marginTop: -40, marginBottom: -40}}
@@ -103,6 +103,6 @@ export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: s
           arrow_back
         </IconBtn>
       </Box>
-    </Panel>
+    </Core.Panel>
   )
 }

@@ -40,7 +40,7 @@ function Forms() {
 
   return (
     <Page width="full">
-      <Panel>
+      <Core.Panel>
         <Datatable
           showExportBtn
           defaultLimit={500}
@@ -211,7 +211,7 @@ function Forms() {
             },
           ]}
         />
-      </Panel>
+      </Core.Panel>
     </Page>
   )
 }

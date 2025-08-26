@@ -1,11 +1,7 @@
 import {Box, BoxProps, Icon, useTheme} from '@mui/material'
-import {TxtProps} from '../../../../infoportal-client-core/src/Txt.js'
 import React, {ReactNode, useEffect, useRef} from 'react'
 import {usePdfContext} from './PdfLayout'
-import {Panel, PanelBody} from '../../../../infoportal-client-core/src/Panel'
-import {PanelProps} from '../../../../infoportal-client-core/src/Panel/Panel'
 import {uppercaseHandlingAcronyms} from 'infoportal-common'
-import {PanelBodyProps} from '../../../../infoportal-client-core/src/Panel/PanelBody'
 import {Core} from '@/shared'
 
 export const PdfSlide = ({
@@ -57,7 +53,7 @@ export const SlideH1 = ({children, sx, ...props}: BoxProps) => {
   )
 }
 
-export const SlideTxt = ({children, sx, textAlign = 'justify', ...props}: TxtProps) => {
+export const SlideTxt = ({children, sx, textAlign = 'justify', ...props}: Core.TxtProps) => {
   return (
     <Core.Txt
       {...props}
@@ -161,7 +157,7 @@ export const SlidePanelTitle = ({
   sx,
   children,
   ...props
-}: {icon?: string} & TxtProps) => {
+}: {icon?: string} & Core.TxtProps) => {
   const ref = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -196,9 +192,9 @@ export const SlidePanel = ({
   sx,
   BodyProps,
   ...props
-}: PanelProps & {BodyProps?: Omit<PanelBodyProps, 'ref' | 'children'>}) => {
+}: Core.PanelProps & {BodyProps?: Omit<Core.PanelBodyProps, 'ref' | 'children'>}) => {
   return (
-    <Panel
+    <Core.Panel
       elevation={0}
       {...props}
       savableAsImg={savableAsImg}
@@ -211,8 +207,8 @@ export const SlidePanel = ({
         ...sx,
       }}
     >
-      <PanelBody {...BodyProps}>{children}</PanelBody>
-    </Panel>
+      <Core.PanelBody {...BodyProps}>{children}</Core.PanelBody>
+    </Core.Panel>
   )
 }
 
@@ -222,10 +218,11 @@ export const SlideWidget = ({
   title,
   icon,
   ...props
-}: Omit<PanelProps, 'title' | 'expendable' | 'savableAsImg'> & {
+}: Omit<Core.PanelProps, 'title' | 'expendable' | 'savableAsImg'> & {
   icon?: string | ReactNode
   title: string
 }) => {
+  const t = useTheme()
   return (
     <SlidePanel
       {...props}
@@ -234,7 +231,7 @@ export const SlideWidget = ({
       BodyProps={{
         sx: {
           px: 0.25,
-          pb: t => t.vars.spacing + ' !important',
+          pb: t.vars.spacing + ' !important',
         },
       }}
       sx={{

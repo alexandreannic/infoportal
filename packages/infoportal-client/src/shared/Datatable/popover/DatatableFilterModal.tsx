@@ -73,7 +73,7 @@ export const DatatableFilterModal = ({
 
   return (
     <Popover open={!!anchorEl} anchorEl={anchorEl} onClose={onClose}>
-      <PanelHead
+      <Core.PanelHead
         PanelTitleProps={{overflow: 'hidden'}}
         sx={{maxWidth: 500}}
         action={
@@ -90,8 +90,8 @@ export const DatatableFilterModal = ({
         <Core.Txt block truncate>
           {title}
         </Core.Txt>
-      </PanelHead>
-      <PanelBody sx={{maxWidth: 500}}>
+      </Core.PanelHead>
+      <Core.PanelBody sx={{maxWidth: 500}}>
         <Box
           sx={{display: 'flex', alignItems: 'center', borderBottom: t => `1px solid ${t.vars.palette.divider}`, mb: 1}}
         >
@@ -157,15 +157,15 @@ export const DatatableFilterModal = ({
                 return <DatatableFilterDialogText value={innerValue} onChange={setInnerValue} />
             }
           })()}
-      </PanelBody>
-      <PanelFoot alignEnd>
+      </Core.PanelBody>
+      <Core.PanelFoot alignEnd>
         <Core.Btn color="primary" onClick={onClose}>
           {m.close}
         </Core.Btn>
         <Core.Btn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
           {m.filter}
         </Core.Btn>
-      </PanelFoot>
+      </Core.PanelFoot>
     </Popover>
   )
 }

@@ -1,6 +1,5 @@
 import {Box, BoxProps, Collapse, Icon, useTheme} from '@mui/material'
 import React, {ReactNode} from 'react'
-import {styleUtils} from '@/core/theme'
 import {Core} from '@/shared'
 import {usePersistentState} from '@axanc/react-hooks'
 
@@ -40,7 +39,7 @@ export const SidebarSubSection = ({
         py: margin,
         transition: t.transitions.create('all'),
         borderRadius: t.vars.shape.borderRadius,
-        background: styleUtils(t).color.toolbar.default,
+        background: Core.styleUtils(t).color.toolbar.default,
         color: t.vars.palette.text.secondary,
         overflow: 'hidden',
         ...(hoverable && {

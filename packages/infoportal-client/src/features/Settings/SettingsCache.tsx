@@ -38,8 +38,8 @@ function SettingsCache() {
       {map(fetcherCache.get, cache =>
         Object.entries(cache).map(([key, info]) => {
           return (
-            <Panel key={key}>
-              <PanelHead
+            <Core.Panel key={key}>
+              <Core.PanelHead
                 action={
                   <Core.Btn
                     loading={asyncClear.loading[key]}
@@ -53,8 +53,8 @@ function SettingsCache() {
                 }
               >
                 {key}
-              </PanelHead>
-              <PanelBody>
+              </Core.PanelHead>
+              <Core.PanelBody>
                 <Core.Txt block color="hint" sx={{mb: 1, mt: -1}}>
                   Refreshed {dateFromNow(info.lastUpdate)}, expire{' '}
                   {dateFromNow(addMilliseconds(info.lastUpdate, info.expiration ?? 0))}
@@ -101,8 +101,8 @@ function SettingsCache() {
                     </Box>
                   ))}
                 </Box>
-              </PanelBody>
-            </Panel>
+              </Core.PanelBody>
+            </Core.Panel>
           )
         }),
       )}

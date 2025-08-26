@@ -23,7 +23,7 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
   const formCreate = useForm<FormCreate>()
   return (
     <Box sx={{p: 1}}>
-      <PanelTitle sx={{mb: 0.5}}>{m._datatable.view}</PanelTitle>
+      <Core.PanelTitle sx={{mb: 0.5}}>{m._datatable.view}</Core.PanelTitle>
       <Core.Alert color="info" icon={<Icon>help</Icon>} sx={{mb: 1}} deletable="permanent" id="db-view-info">
         <b>Views</b> save your column visibility and width. They can be shared with other users.
       </Core.Alert>

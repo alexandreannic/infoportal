@@ -71,7 +71,7 @@ function DatabaseHistory() {
 
   return (
     <Page width="lg">
-      <Panel>
+      <Core.Panel>
         <Datatable
           showExportBtn
           loading={fetcher.loading}
@@ -236,7 +236,7 @@ function DatabaseHistory() {
             },
           ]}
         />
-      </Panel>
+      </Core.Panel>
     </Page>
   )
 }

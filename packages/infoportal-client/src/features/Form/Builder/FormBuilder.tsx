@@ -62,8 +62,8 @@ function FormBuilder() {
                 queryVersion.get.data,
                 versions =>
                   versions.length > 0 && (
-                    <Panel>
-                      <PanelHead
+                    <Core.Panel>
+                      <Core.PanelHead
                         action={
                           <Modal
                             loading={queryVersion.deployLast.isPending}
@@ -84,8 +84,8 @@ function FormBuilder() {
                         }
                       >
                         {m.versions}
-                      </PanelHead>
-                      <PanelBody>
+                      </Core.PanelHead>
+                      <Core.PanelBody>
                         {seq(versions ?? [])
                           .sortByNumber(_ => _.version, '9-0')
                           .slice(0, versionVisible)
@@ -96,14 +96,14 @@ function FormBuilder() {
                           <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />
                         )}
                         {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
-                      </PanelBody>
-                    </Panel>
+                      </Core.PanelBody>
+                    </Core.Panel>
                   ),
               )}
             </Grid>
             <Grid size={{xs: 12, md: 6}}>
               {active && (
-                <Panel sx={{p: 1}}>
+                <Core.Panel sx={{p: 1}}>
                   <Core.Btn
                     sx={{mr: 1}}
                     icon="visibility"
@@ -150,7 +150,7 @@ function FormBuilder() {
                       {m.copyLink}
                     </Core.Btn>
                   </Modal>
-                </Panel>
+                </Core.Panel>
               )}
               {active && showPreview && (
                 <Grow in={true}>

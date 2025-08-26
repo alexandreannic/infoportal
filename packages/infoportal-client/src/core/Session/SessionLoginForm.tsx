@@ -118,7 +118,7 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: Ip.User) => void
 
   return (
     <CenteredContent>
-      <Panel
+      <Core.Panel
         sx={{
           padding: 4,
         }}
@@ -144,7 +144,7 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: Ip.User) => void
           onClick={() => googleLogin()}
           sx={{mt: 1}}
         />
-      </Panel>
+      </Core.Panel>
     </CenteredContent>
   )
 }

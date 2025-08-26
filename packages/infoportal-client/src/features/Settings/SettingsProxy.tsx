@@ -56,7 +56,7 @@ function SettingsProxy() {
 
   return (
     <Page width="lg">
-      <Panel>
+      <Core.Panel>
         <Datatable
           id="proxy"
           header={
@@ -244,7 +244,7 @@ function SettingsProxy() {
             },
           ]}
         />
-      </Panel>
+      </Core.Panel>
     </Page>
   )
 }

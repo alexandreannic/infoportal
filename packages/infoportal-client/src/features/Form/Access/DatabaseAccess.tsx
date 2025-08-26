@@ -19,7 +19,7 @@ function DatabaseAccess() {
   return (
     <Page width="full">
       {schema && (
-        <Panel>
+        <Core.Panel>
           <AccessTable
             formId={form.id}
             workspaceId={workspaceId}
@@ -34,7 +34,7 @@ function DatabaseAccess() {
               )
             }
           />
-        </Panel>
+        </Core.Panel>
       )}
     </Page>
   )

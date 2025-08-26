@@ -27,8 +27,8 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceI
         navigate({to: '/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})
       })}
     >
-      <Panel>
-        <PanelBody>
+      <Core.Panel>
+        <Core.PanelBody>
           <Grid container>
             <Grid size={{xs: 12, sm: 6}}>
               <Controller
@@ -72,13 +72,13 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceI
               />
             </Grid>
           </Grid>
-        </PanelBody>
-        <PanelFoot>
+        </Core.PanelBody>
+        <Core.PanelFoot>
           <Core.Btn variant="contained" type="submit" loading={queryForm.create.isPending}>
             {m.create}
           </Core.Btn>
-        </PanelFoot>
-      </Panel>
+        </Core.PanelFoot>
+      </Core.Panel>
     </form>
   )
 }

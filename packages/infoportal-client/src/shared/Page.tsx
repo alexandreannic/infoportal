@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {ReactNode, useEffect, useState} from 'react'
 import {Box, BoxProps, CircularProgress, Skeleton} from '@mui/material'
-import {CenteredContent, Core, Txt} from '@/shared'
+import {CenteredContent, Core} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 
 export interface PageProps extends BoxProps {

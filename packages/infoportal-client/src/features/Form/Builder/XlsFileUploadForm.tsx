@@ -76,9 +76,9 @@ export const XlsFileUploadForm = ({
 
   return (
     <form onSubmit={form.handleSubmit(submit)}>
-      <Panel>
-        <PanelHead>{m.importXlsFile}</PanelHead>
-        <PanelBody>
+      <Core.Panel>
+        <Core.PanelHead>{m.importXlsFile}</Core.PanelHead>
+        <Core.PanelBody>
           <Stepper
             ref={stepperRef}
             steps={[
@@ -210,8 +210,8 @@ export const XlsFileUploadForm = ({
               },
             ]}
           ></Stepper>
-        </PanelBody>
-      </Panel>
+        </Core.PanelBody>
+      </Core.Panel>
     </form>
   )
 }

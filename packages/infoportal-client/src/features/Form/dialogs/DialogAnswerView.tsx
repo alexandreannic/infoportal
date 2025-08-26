@@ -51,8 +51,8 @@ function DatabaseAnswerView() {
         </>
       ) : (
         (map(answer, querySchema.data, (a, schema) => (
-          <Panel>
-            <PanelHead
+          <Core.Panel>
+            <Core.PanelHead
               action={
                 <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
                   <Core.Txt sx={{fontSize: '1em'}} color="hint">
@@ -69,16 +69,16 @@ function DatabaseAnswerView() {
               {queryForm.data?.name}
               <br />
               <Core.Txt sx={{color: t => t.vars.palette.info.main}}>{answerId}</Core.Txt>
-            </PanelHead>
-            <PanelBody>
+            </Core.PanelHead>
+            <Core.PanelBody>
               <KoboAnswerFormView
                 formId={formId}
                 showQuestionWithoutAnswer={showQuestionWithoutAnswer}
                 answer={a}
                 schema={schema}
               />
-            </PanelBody>
-          </Panel>
+            </Core.PanelBody>
+          </Core.Panel>
         )) ?? <Alert color="warning">{m.noDataAtm}</Alert>)
       )}
     </Page>

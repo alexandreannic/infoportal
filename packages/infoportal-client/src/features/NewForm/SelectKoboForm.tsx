@@ -28,9 +28,9 @@ export const SelectKoboForm = ({
   })
 
   return (
-    <Panel>
-      <PanelHead>{m.selectKoboForm}</PanelHead>
-      <PanelBody>
+    <Core.Panel>
+      <Core.PanelHead>{m.selectKoboForm}</Core.PanelHead>
+      <Core.PanelBody>
         <Datatable
           loading={queryKoboForms.isLoading || queryForms.importFromKobo.isPending}
           id="select-kobo-form"
@@ -100,7 +100,7 @@ export const SelectKoboForm = ({
             },
           ]}
         />
-      </PanelBody>
-    </Panel>
+      </Core.PanelBody>
+    </Core.Panel>
   )
 }

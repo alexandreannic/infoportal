@@ -5,6 +5,7 @@ import React from 'react'
 import {useI18n} from '@/core/i18n'
 import {Link} from '@tanstack/react-router'
 import {Icon} from '@mui/material'
+import {Core} from '@/shared'
 
 export const PageNotFound = () => {
   const {m} = useI18n()

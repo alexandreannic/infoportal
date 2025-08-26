@@ -69,7 +69,7 @@ function SettingsUsers() {
 
   return (
     <Page width="full">
-      <Panel>
+      <Core.Panel>
         <Datatable
           loading={queryUserGet.isLoading}
           id="users"
@@ -228,7 +228,7 @@ function SettingsUsers() {
             },
           ]}
         />
-      </Panel>
+      </Core.Panel>
     </Page>
   )
 }

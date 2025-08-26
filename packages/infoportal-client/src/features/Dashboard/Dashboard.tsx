@@ -131,7 +131,7 @@ function Dashboard() {
   )
 
   const formsLinkedToKobo = useMemo(() => {
-    if (!queryForms.data) return <Panel sx={{height: '100%'}} />
+    if (!queryForms.data) return <Core.Panel sx={{height: '100%'}} />
     const value = queryForms.data.count(_ => !!_.kobo) ?? 0
     const base = queryForms.data.length ?? 1
     if (value === 0) {
@@ -142,15 +142,15 @@ function Dashboard() {
       )
     }
     return (
-      <Panel sx={{height: '100%', py: 1, px: 2, display: 'flex', alignItems: 'center'}}>
+      <Core.Panel sx={{height: '100%', py: 1, px: 2, display: 'flex', alignItems: 'center'}}>
         <ChartPieWidget title={m.linkedToKobo} dense showValue showBase value={value} base={base} />
-      </Panel>
+      </Core.Panel>
     )
   }, [queryForms.data])
 
   const pieChartValidation = (
-    <Panel>
-      <PanelBody sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+    <Core.Panel>
+      <Core.PanelBody sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
         {Obj.keys(Ip.Submission.Validation).map(status => (
           <PieChartStatus
             key={status}
@@ -162,8 +162,8 @@ function Dashboard() {
             sx={{flex: 1}}
           />
         ))}
-      </PanelBody>
-    </Panel>
+      </Core.PanelBody>
+    </Core.Panel>
   )
 
   const map = <ChartGeo data={queryUsersByIsoCode.data?.map(_ => ({iso: _.key, count: _.count}))} />
@@ -176,9 +176,9 @@ function Dashboard() {
       }
     })
     return (
-      <PanelWBody title={m.submissions}>
+      <Core.PanelWBody title={m.submissions}>
         <ChartLine hideLabelToggle hideLegend data={data} />
-      </PanelWBody>
+      </Core.PanelWBody>
     )
   }, [querySubmissionByMonth.data])
 
@@ -196,8 +196,8 @@ function Dashboard() {
       },
     )
     return (
-      <Panel title={m.submissionsByForm}>
-        <PanelBody>
+      <Core.Panel title={m.submissionsByForm}>
+        <Core.PanelBody>
           <ViewMoreDiv>
             <ChartBar
               dense
@@ -206,8 +206,8 @@ function Dashboard() {
               onClickData={_ => selectedFormsSet.toggle(_)}
             />
           </ViewMoreDiv>
-        </PanelBody>
-      </Panel>
+        </Core.PanelBody>
+      </Core.Panel>
     )
   }, [querySubmissionsByForm.data, formIndex, selectedFormsSet])
 
@@ -220,9 +220,9 @@ function Dashboard() {
       }
     })
     return (
-      <PanelWBody title={m.submissionsByCategory}>
+      <Core.PanelWBody title={m.submissionsByCategory}>
         <ChartBar dense data={data} />
-      </PanelWBody>
+      </Core.PanelWBody>
     )
   }, [querySubmissionsByCategory.data])
 
@@ -237,9 +237,9 @@ function Dashboard() {
       }
     })
     return (
-      <PanelWBody title={m.users}>
+      <Core.PanelWBody title={m.users}>
         <ChartLine hideLabelToggle hideLegend data={data} />
-      </PanelWBody>
+      </Core.PanelWBody>
     )
   }, [getUsersByDate.data])
 
@@ -266,7 +266,7 @@ function Dashboard() {
       })
       .get()
     return (
-      <PanelWBody title={m.submissionsByUser + ` (${querySubmissionsByUser.data?.length})`}>
+      <Core.PanelWBody title={m.submissionsByUser + ` (${querySubmissionsByUser.data?.length})`}>
         {querySubmissionsByUser.data?.some(_ => _.key && _.key.length > 1 && !_.key.includes('@')) && (
           <Core.Alert sx={{mb: 1}} severity="info">
             {m.includeKoboAccountNames}
@@ -275,7 +275,7 @@ function Dashboard() {
         <ViewMoreDiv>
           <ChartBar dense data={data} />
         </ViewMoreDiv>
-      </PanelWBody>
+      </Core.PanelWBody>
     )
   }, [querySubmissionsByUser.data])
   return (
