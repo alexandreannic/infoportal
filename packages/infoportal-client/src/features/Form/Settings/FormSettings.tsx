@@ -21,12 +21,12 @@ const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; childr
       sx={{'&:not(:last-of-type)': {mb: 2, pb: 2, borderBottom: '1px solid', borderColor: t.vars.palette.divider}}}
     >
       <Box flex={1}>
-        <Txt bold block>
+        <Core.Txt bold block>
           {label}
-        </Txt>
-        <Txt block color="hint">
+        </Core.Txt>
+        <Core.Txt block color="hint">
           {desc}
-        </Txt>
+        </Core.Txt>
       </Box>
       <div>{children}</div>
     </Box>
@@ -53,7 +53,7 @@ function FormSettings() {
                   close()
                 }}
               >
-                <CoreBtn disabled={queryForm.update.isPending}>{m.disconnect}</CoreBtn>
+                <Core.Btn disabled={queryForm.update.isPending}>{m.disconnect}</CoreBtn>
               </Modal>
             </Row>
           )}
@@ -65,7 +65,7 @@ function FormSettings() {
               </>
             }
           >
-            <CoreBtn
+            <Core.Btn
               loading={queryForm.update.isPending}
               icon={form.deploymentStatus === 'archived' ? 'unarchive' : 'archive'}
               variant="outlined"
@@ -85,7 +85,7 @@ function FormSettings() {
                 navigate({to: '/$workspaceId/form/list', params: {workspaceId}})
               }}
             >
-              <CoreBtn color="error" variant="outlined" icon="delete">
+              <Core.Btn color="error" variant="outlined" icon="delete">
                 {m.delete}
               </CoreBtn>
             </Modal>

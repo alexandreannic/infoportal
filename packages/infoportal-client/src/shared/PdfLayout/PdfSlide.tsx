@@ -6,6 +6,7 @@ import {Panel, PanelBody} from '../../../../infoportal-client-core/src/Panel'
 import {PanelProps} from '../../../../infoportal-client-core/src/Panel/Panel'
 import {uppercaseHandlingAcronyms} from 'infoportal-common'
 import {PanelBodyProps} from '../../../../infoportal-client-core/src/Panel/PanelBody'
+import {Core} from '@/shared'
 
 export const PdfSlide = ({
   format = 'horizontal',
@@ -58,7 +59,7 @@ export const SlideH1 = ({children, sx, ...props}: BoxProps) => {
 
 export const SlideTxt = ({children, sx, textAlign = 'justify', ...props}: TxtProps) => {
   return (
-    <Txt
+    <Core.Txt
       {...props}
       size="big"
       textAlign={textAlign}
@@ -70,7 +71,7 @@ export const SlideTxt = ({children, sx, textAlign = 'justify', ...props}: TxtPro
       }}
     >
       {typeof children === 'string' ? <div dangerouslySetInnerHTML={{__html: children}} /> : children}
-    </Txt>
+    </Core.Txt>
   )
 }
 
@@ -140,9 +141,9 @@ export const SlideHeader = ({
         alignItems: 'center',
       }}
     >
-      <Txt bold sx={{fontSize: '1.42em'}}>
+      <Core.Txt bold sx={{fontSize: '1.42em'}}>
         {children}
-      </Txt>
+      </Core.Txt>
       <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>{logo}</Box>
     </Box>
   )
@@ -168,7 +169,7 @@ export const SlidePanelTitle = ({
   }, [children])
 
   return (
-    <Txt
+    <Core.Txt
       block
       // size="big"
       bold
@@ -184,7 +185,7 @@ export const SlidePanelTitle = ({
       <div ref={ref as any}>
         {dangerouslySetInnerHTML ? <div dangerouslySetInnerHTML={dangerouslySetInnerHTML} /> : children}
       </div>
-    </Txt>
+    </Core.Txt>
   )
 }
 
@@ -247,9 +248,9 @@ export const SlideWidget = ({
         ...sx,
       }}
     >
-      <Txt block color="hint" bold sx={{lineHeight: 1, mb: 0.5, mt: -0.5}}>
+      <Core.Txt block color="hint" bold sx={{lineHeight: 1, mb: 0.5, mt: -0.5}}>
         {uppercaseHandlingAcronyms(title)}
-      </Txt>
+      </Core.Txt>
       <Box
         sx={{
           lineHeight: 1,

@@ -61,12 +61,12 @@ const PieChartStatus = ({
         </Box>
         <ChartPie percent={percent} color={style.color(t)} size={55} sx={{margin: 'auto'}} />
       </Box>
-      <Txt block bold size="big" sx={{mt: 0.5, lineHeight: 1, textAlign: 'center'}}>
+      <Core.Txt block bold size="big" sx={{mt: 0.5, lineHeight: 1, textAlign: 'center'}}>
         {toPercent(percent)}
-      </Txt>
-      <Txt block color="hint" size="small" sx={{textAlign: 'center'}}>
+      </Core.Txt>
+      <Core.Txt block color="hint" size="small" sx={{textAlign: 'center'}}>
         {validation ?? m.blank}
-      </Txt>
+      </Core.Txt>
     </Box>
   )
 }
@@ -259,7 +259,7 @@ function Dashboard() {
               ) : (
                 <AppAvatar sx={{mr: 1}} size={24} />
               )}
-              {_.key === '' ? <Txt color="disabled">{m.anonymous}</Txt> : _.key}
+              {_.key === '' ? <Core.Txt color="disabled">{m.anonymous}</Core.Txt> : _.key}
             </Box>
           ),
         }

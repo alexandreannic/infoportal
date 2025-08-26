@@ -10,7 +10,7 @@ import {appConfig} from '@/conf/AppConfig.js'
 import {mapFor, Seq, seq} from '@axanc/ts-utils'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
-import type {} from '@mui/material/themeCssVarsAugmentation'
+import {Core} from '@/shared'
 
 export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
   const {m} = useI18n()
@@ -73,7 +73,7 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
           }}
         >
           {({isActive}) => (
-            <CoreBtn variant={isActive ? 'light' : 'outlined'} sx={{height: '100%'}}>
+            <Core.Btn variant={isActive ? 'light' : 'outlined'} sx={{height: '100%'}}>
               <Icon>add</Icon>
             </CoreBtn>
           )}
@@ -106,7 +106,7 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
                       chevron_right
                     </Icon>
                   )}
-                  <Txt bold>{_.name}</Txt>
+                  <Core.Txt bold>{_.name}</Core.Txt>
                 </Box>
               }
               placement="right-end"
@@ -138,10 +138,10 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
                       </>
                     }
                   >
-                    <Txt sx={{color: _.deploymentStatus !== 'deployed' ? t.vars!.palette.text.disabled : undefined}}>
+                    <Core.Txt sx={{color: _.deploymentStatus !== 'deployed' ? t.vars!.palette.text.disabled : undefined}}>
                       {_.name}
                       {/* {_.custom && <span style={{fontWeight: 300}}> ({m._koboDatabase.mergedDb})</span>} */}
-                    </Txt>
+                    </Core.Txt>
                   </SidebarItem>
                 )}
               </Link>

@@ -1,6 +1,7 @@
 import {Box, ButtonBase, useTheme} from '@mui/material'
 import {IpLogo} from '@/shared/logo/logo'
 import {Txt} from '../../../../infoportal-client-core/src/Txt.js'
+import {Core} from '@/shared'
 import React, {ReactNode} from 'react'
 import {useMsal} from '@azure/msal-react'
 import {useEffectFn} from '@axanc/react-hooks'
@@ -53,12 +54,12 @@ const BtnLogin = ({
         {icon}
       </Box>
       <Box>
-        <Txt block size="big" bold>
+        <Core.Txt block size="big" bold>
           {title}
-        </Txt>
-        {/*<Txt block color="hint">*/}
+        </Core.Txt>
+        {/*<Core.Txt block color="hint">*/}
         {/*  {desc}*/}
-        {/*</Txt>*/}
+        {/*</Core.Txt>*/}
       </Box>
     </ButtonBase>
   )
@@ -124,12 +125,12 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: Ip.User) => void
         }}
       >
         <IpLogo sx={{margin: 'auto', display: 'block', mb: 1}} height={60} />
-        <Txt sx={{textAlign: 'center'}} size="big" color="hint" block>
+        <Core.Txt sx={{textAlign: 'center'}} size="big" color="hint" block>
           {m.subTitle}
-        </Txt>
-        <Txt sx={{textAlign: 'center', mt: 1, mb: 2, fontSize: 40}} block>
+        </Core.Txt>
+        <Core.Txt sx={{textAlign: 'center', mt: 1, mb: 2, fontSize: 40}} block>
           {m.title}
-        </Txt>
+        </Core.Txt>
 
         <BtnLogin
           title={m.signInMicrosoft}

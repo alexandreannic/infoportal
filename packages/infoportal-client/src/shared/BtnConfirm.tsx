@@ -10,7 +10,7 @@ export const BtnConfirm = ({onClick, size, ...props}: BtnConfirmProps) => {
   return (
     <>
       {!showConfirm ? (
-        <CoreBtn
+        <Core.Btn
           {...props}
           size={size}
           onClick={() => {
@@ -19,7 +19,7 @@ export const BtnConfirm = ({onClick, size, ...props}: BtnConfirmProps) => {
         />
       ) : (
         <>
-          <CoreBtn
+          <Core.Btn
             size={size}
             icon="check"
             color="success"
@@ -29,7 +29,7 @@ export const BtnConfirm = ({onClick, size, ...props}: BtnConfirmProps) => {
               setShowConfirm(false)
             }}
           />
-          <CoreBtn size={size} icon="close" color="error" onClick={() => setShowConfirm(false)} children={m.cancel} />
+          <Core.Btn size={size} icon="close" color="error" onClick={() => setShowConfirm(false)} children={m.cancel} />
         </>
       )}
     </>

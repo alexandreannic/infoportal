@@ -5,9 +5,7 @@ import {Obj, seq, Seq} from '@axanc/ts-utils'
 import {Ip} from 'infoportal-api-sdk'
 import {useI18n} from '@/core/i18n/index.js'
 import {forwardRef, useEffect, useMemo} from 'react'
-import {IpInput} from '../../../../infoportal-client-core/src/Input/Input'
-import {IpIconBtn} from '@/shared'
-import useFormPersist from 'react-hook-form-persist'
+import {Core} from '@/shared'
 import Fuse from 'fuse.js'
 
 const SearchInput = forwardRef(
@@ -22,7 +20,7 @@ const SearchInput = forwardRef(
     ref,
   ) => {
     return (
-      <IpInput
+      <Core.Input
         ref={ref}
         sx={sx}
         helperText={null}
@@ -129,14 +127,14 @@ export const AppSidebarFilters = ({
           name="category"
           control={searchForm.control}
           render={({field}) => (
-            <IpSelectMultiple {...field} options={formCategories.get()} label={m.category} sx={{mr: 0.5}} />
+            <Core.SelectMultiple {...field} options={formCategories.get()} label={m.category} sx={{mr: 0.5}} />
           )}
         />
         <Controller
           name="status"
           control={searchForm.control}
           render={({field}) => (
-            <IpSelectMultiple
+            <Core.SelectMultiple
               {...field}
               options={Obj.keys(Ip.Form.DeploymentStatus).map(_ => {
                 return {

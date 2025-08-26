@@ -9,6 +9,7 @@ import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
 import {Datatable3} from '@/shared/Datatable3/Datatable3.js'
 import {Datatable} from './state/types'
+import {Core} from '@/shared'
 
 type DatatableColumnToggleProps = Pick<
   Datatable.Column.InnerProps<any>,
@@ -77,13 +78,13 @@ export const DatatableColumnToggle3 = ({
                   onClick={() => set.add(_.filteredAndSortedData.filter(_ => !set.has(_.id)).map(_ => _.id))}
                   label={m.remove + ' ' + _.filteredAndSortedData.length}
                 />
-                <Txt bold>
-                  <Txt size="big" sx={{fontWeight: 600}}>
+                <Core.Txt bold>
+                  <Core.Txt size="big" sx={{fontWeight: 600}}>
                     {columns.length - set.size}
-                  </Txt>{' '}
+                  </Core.Txt>{' '}
                   / {columns.length} {m._koboDatabase.currentlyDisplayed}
-                </Txt>
-                <CoreBtn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
+                </Core.Txt>
+                <Core.Btn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
                   {m.save}
                 </CoreBtn>
               </>

@@ -3,7 +3,7 @@ import {Txt, TxtProps} from '../../../../infoportal-client-core/src/Txt.js'
 import React, {ReactNode} from 'react'
 
 export const Label = (props: TxtProps) => {
-  return <Txt block uppercase bold color="hint" fontSize="small" {...props} />
+  return <Core.Txt block uppercase bold color="hint" fontSize="small" {...props} />
 }
 
 export const AccessFormSection = ({

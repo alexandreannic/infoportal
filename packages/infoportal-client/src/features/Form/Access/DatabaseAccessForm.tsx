@@ -120,7 +120,7 @@ export const DatabaseAccessForm = ({
                   loading={!questions}
                   options={questions?.map(_ => _.name!) ?? []}
                   renderInput={({InputProps, ...props}) => (
-                    <IpInput
+                    <Core.Input
                       {...InputProps}
                       {...props}
                       label={m.question}
@@ -135,11 +135,11 @@ export const DatabaseAccessForm = ({
                           {koboIconMap[indexQuestion[option].type]}
                         </Icon>
                         <div>
-                          <Txt block>
+                          <Core.Txt block>
                             {KoboSchemaHelper.getLabel(indexQuestion[option], langIndex).replace(/<[^>]+>/g, '') ??
                               option}
-                          </Txt>
-                          <Txt color="disabled">{option}</Txt>
+                          </Core.Txt>
+                          <Core.Txt color="disabled">{option}</Core.Txt>
                         </div>
                       </Box>
                     )
@@ -173,7 +173,7 @@ export const DatabaseAccessForm = ({
                           options={options?.map(_ => _.name) ?? []}
                           // options={options?.map(_ => ({children: KoboSchemaHelper.getLabel(_, langIndex), value: _.name}))}
                           renderInput={({InputProps, ...props}) => (
-                            <IpInput
+                            <Core.Input
                               {...InputProps}
                               {...props}
                               label={m.answer}
@@ -190,13 +190,13 @@ export const DatabaseAccessForm = ({
                           renderOption={(props, option) => (
                             <Box component="li" {...props} key={option}>
                               <div>
-                                <Txt block>
+                                <Core.Txt block>
                                   {KoboSchemaHelper.getLabel(indexOptionsByName[option], langIndex).replace(
                                     /<[^>]+>/g,
                                     '',
                                   ) ?? option}
-                                </Txt>
-                                <Txt color="disabled">{option}</Txt>
+                                </Core.Txt>
+                                <Core.Txt color="disabled">{option}</Core.Txt>
                               </div>
                             </Box>
                           )}
@@ -210,7 +210,7 @@ export const DatabaseAccessForm = ({
                     <Controller
                       name="questionAnswer"
                       control={accessForm.control}
-                      render={({field}) => <IpInput {...field} />}
+                      render={({field}) => <Core.Input {...field} />}
                     />
                   )
                 }

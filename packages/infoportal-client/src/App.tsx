@@ -25,6 +25,7 @@ import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import {duration} from '@axanc/ts-utils'
 import {LicenseInfo} from '@mui/x-license-pro'
 import createCssVarsProvider from '@mui/system/cssVars'
+import {Core} from '@/shared'
 
 LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -108,12 +109,12 @@ const AppWithBaseContext = () => {
           }}
         >
           <IpLogo sx={{display: 'block', mb: 2}} />
-          <Txt size="title" block>
+          <Core.Txt size="title" block>
             {m.title}
-          </Txt>
-          <Txt sx={{mb: 4}} size="big" color="hint" block>
+          </Core.Txt>
+          <Core.Txt sx={{mb: 4}} size="big" color="hint" block>
             {m.appInMaintenance}
-          </Txt>
+          </Core.Txt>
           <Icon sx={{fontSize: '90px !important', color: t => t.vars.palette.text.disabled}}>engineering</Icon>
         </Box>
       </CenteredContent>

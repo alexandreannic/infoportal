@@ -3,6 +3,7 @@ import {useCallback, useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '../../../infoportal-client-core/src/Txt.js'
 import {styleUtils} from '@/core/theme'
+import {Core} from '@/shared'
 
 export function DragDropFileInput({
   onFilesSelected,
@@ -75,10 +76,10 @@ export function DragDropFileInput({
       <Icon sx={{fontSize: 50}} color="action">
         upload_file
       </Icon>
-      <Txt size="big" mt={1} block>
+      <Core.Txt size="big" mt={1} block>
         {m.dragdropTitle}
-      </Txt>
-      <Txt color="hint">{accept}</Txt>
+      </Core.Txt>
+      <Core.Txt color="hint">{accept}</Core.Txt>
 
       <input id="file-input" type="file" hidden accept={accept} multiple={multiple} onChange={handleFileInputChange} />
 

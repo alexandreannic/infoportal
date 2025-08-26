@@ -86,7 +86,7 @@ export const SelectKoboForm = ({
               align: 'right',
               head: '',
               renderQuick: form => (
-                <CoreBtn
+                <Core.Btn
                   size="small"
                   onClick={() => queryForms.importFromKobo.mutateAsync({serverId, uid: form.uid}).then(onAdded)}
                   disabled={

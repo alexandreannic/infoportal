@@ -15,6 +15,7 @@ import {DialogProps} from '@toolpad/core'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
+import {Core} from '@/shared'
 
 export type KoboEditModalOption = {
   value: string | null
@@ -89,12 +90,12 @@ export namespace KoboUpdateModal {
         onConfirm={() => onConfirm(value)}
         title={title}
       >
-        <Txt truncate color="hint" block sx={{mb: 1, maxWidth: 400}}>
+        <Core.Txt truncate color="hint" block sx={{mb: 1, maxWidth: 400}}>
           {subTitle}
-        </Txt>
+        </Core.Txt>
         {error && <Alert color="error">{m.somethingWentWrong}</Alert>}
         {updated && (
-          <Alert color="success" action={<CoreBtn onClick={() => setUpdated(false)}>{m.change}</CoreBtn>}>
+          <Alert color="success" action={<Core.Btn onClick={() => setUpdated(false)}>{m.change}</CoreBtn>}>
             {m.successfullyEdited(-1)}
           </Alert>
         )}
@@ -125,12 +126,12 @@ export namespace KoboUpdateModal {
                 case 'text':
                 case 'calculate': {
                   return (
-                    <IpInput multiline maxRows={9} fullWidth value={value} onChange={e => setValue(e.target.value)} />
+                    <Core.Input multiline maxRows={9} fullWidth value={value} onChange={e => setValue(e.target.value)} />
                   )
                 }
                 case 'integer':
                 case 'decimal': {
-                  return <IpInput type="number" fullWidth value={value} onChange={e => setValue(e.target.value)} />
+                  return <Core.Input type="number" fullWidth value={value} onChange={e => setValue(e.target.value)} />
                 }
                 case 'datetime':
                 case 'date': {

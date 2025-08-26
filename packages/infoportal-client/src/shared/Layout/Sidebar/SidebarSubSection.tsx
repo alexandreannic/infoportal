@@ -6,6 +6,7 @@ import {usePersistentState} from '../../../../../infoportal-client-core/src/hook
 import {styleUtils} from '@/core/theme'
 import {Utils} from '@infoportal/client-core/src/core/utils.js'
 import stopPropagation = Utils.stopPropagation
+import {Core} from '@/shared'
 
 export const SidebarSubSection = ({
   id,
@@ -71,9 +72,9 @@ export const SidebarSubSection = ({
         <Icon fontSize="small" sx={{visibility: icon ? 'inherit' : 'hidden', mr: 1}}>
           {icon}
         </Icon>
-        <Txt bold sx={{fontSize: '.825em', flex: 1}}>
+        <Core.Txt bold sx={{fontSize: '.825em', flex: 1}}>
           {title}
-        </Txt>
+        </Core.Txt>
         <Box sx={{mr: 1}}>
           {onClear && (
             <Core.IconBtn onClick={stopPropagation(onClear)} size="small">

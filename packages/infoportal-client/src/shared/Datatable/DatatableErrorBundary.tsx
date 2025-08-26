@@ -4,6 +4,7 @@ import {Txt} from '../../../../infoportal-client-core/src/Txt.js'
 import {IpBtn} from '../../../../infoportal-client-core/src/Btn.js'
 import {appConfig} from '@/conf/AppConfig'
 import {en} from '@/core/i18n/localization/en'
+import {Core} from '@/shared'
 
 interface ErrorBoundaryProps {
   children: React.ReactNode
@@ -56,17 +57,17 @@ export class DatatableErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
       const error = this.state.error
       return (
         <Box sx={{p: 2}}>
-          <Txt bold size="title" block sx={{mb: 1}}>
+          <Core.Txt bold size="title" block sx={{mb: 1}}>
             {en.messages.somethingWentWrong}
-          </Txt>
+          </Core.Txt>
           <Box sx={{mb: 1}}>
             If the problem persist, please contact <b>{appConfig.contact}</b> and include the snippet below.
           </Box>
 
-          <CoreBtn icon="refresh" onClick={() => this.refreshPage()} color="primary" variant="contained" sx={{mr: 1}}>
+          <Core.Btn icon="refresh" onClick={() => this.refreshPage()} color="primary" variant="contained" sx={{mr: 1}}>
             {en.messages.refresh}
           </CoreBtn>
-          <CoreBtn icon="settings_backup_restore" onClick={() => this.refreshPage(true)} color="primary" variant="text">
+          <Core.Btn icon="settings_backup_restore" onClick={() => this.refreshPage(true)} color="primary" variant="text">
             {en.messages.hardRefresh}
           </CoreBtn>
 
@@ -81,11 +82,11 @@ export class DatatableErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
             })}
           >
             {error && (
-              <Txt bold size="big">
+              <Core.Txt bold size="big">
                 {error.toString()}
-              </Txt>
+              </Core.Txt>
             )}
-            <pre>{error && <Txt>{error.stack}</Txt>}</pre>
+            <pre>{error && <Core.Txt>{error.stack}</Core.Txt>}</pre>
           </Box>
         </Box>
       )

@@ -45,7 +45,7 @@ export const AccessTable = ({
           head: m.createdAt,
           render: _ => {
             return {
-              label: <Txt color="hint">{formatDate(_.createdAt)}</Txt>,
+              label: <Core.Txt color="hint">{formatDate(_.createdAt)}</Core.Txt>,
               value: _.createdAt,
             }
           },
@@ -91,7 +91,7 @@ export const AccessTable = ({
               return {
                 value: row.level,
                 label: (
-                  <IpSelectSingle<keyof typeof Ip.AccessLevel>
+                  <Core.SelectSingle<keyof typeof Ip.AccessLevel>
                     value={row.level}
                     placeholder=""
                     onChange={_ => queryAccessUpdate.mutate({id: row.id, formId, level: _})}

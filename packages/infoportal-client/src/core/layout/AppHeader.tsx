@@ -3,7 +3,7 @@ import {useI18n} from '@/core/i18n'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
 import {alphaVar, styleUtils} from '@/core/theme'
-import {Txt} from '@/shared'
+import {Core} from '@/shared'
 import {IpIconBtn} from '../../../../infoportal-client-core/src/IconBtn.js'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {PopoverWrapper} from '../../../../infoportal-client-core/src/PopoverWrapper.js'
@@ -80,7 +80,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
               children="menu"
             />
           )}
-          <Txt
+          <Core.Txt
             sx={{ml: 1, ...styleUtils(t).truncate}}
             size="title"
             bold
@@ -90,7 +90,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
         </div>
 
         {workspaceId && (
-          <IpSelectSingle
+          <Core.SelectSingle
             startAdornment={
               <Icon color="disabled" sx={{mr: 1}}>
                 {appConfig.icons.workspace}
@@ -104,7 +104,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
               value: _.id,
               children: (
                 <>
-                  <Txt bold>{_.name}</Txt>&nbsp;•&nbsp;<Txt color="hint">{_.slug}</Txt>
+                  <Core.Txt bold>{_.name}</Core.Txt>&nbsp;•&nbsp;<Core.Txt color="hint">{_.slug}</Core.Txt>
                 </>
               ),
             }))}

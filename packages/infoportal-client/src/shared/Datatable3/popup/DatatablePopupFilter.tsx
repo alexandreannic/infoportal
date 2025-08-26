@@ -16,6 +16,7 @@ import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
 import {OrderBy} from '@axanc/react-hooks'
 import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType.js'
+import {Core} from '@/shared'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   sortBy?: Datatable.SortBy
@@ -94,17 +95,17 @@ export const DatatableFilterModal3 = ({
           />
         }
       >
-        <Txt block truncate>
+        <Core.Txt block truncate>
           {title}
-        </Txt>
+        </Core.Txt>
       </PanelHead>
       <PanelBody sx={{maxWidth: 500}}>
         <Box
           sx={{display: 'flex', alignItems: 'center', borderBottom: t => `1px solid ${t.vars.palette.divider}`, mb: 1}}
         >
-          <Txt color="hint" sx={{flex: 1}}>
+          <Core.Txt color="hint" sx={{flex: 1}}>
             {m.sort}
-          </Txt>
+          </Core.Txt>
           <MenuItem onClick={() => onOrderByChange?.(sortBy?.orderBy === 'desc' ? undefined : 'desc')}>
             <Icon
               fontSize="small"
@@ -129,7 +130,7 @@ export const DatatableFilterModal3 = ({
                     <Alert color="info" sx={{py: 0, mb: 1}}>
                       {m._datatable.idFilterInfo}
                     </Alert>
-                    <IpInput
+                    <Core.Input
                       value={innerValue}
                       onChange={e => setInnerValue(e.target.value)}
                       placeholder={m._datatable.idFilterPlaceholder}
@@ -166,10 +167,10 @@ export const DatatableFilterModal3 = ({
           })()}
       </PanelBody>
       <PanelFoot alignEnd>
-        <CoreBtn color="primary" onClick={onClose}>
+        <Core.Btn color="primary" onClick={onClose}>
           {m.close}
         </CoreBtn>
-        <CoreBtn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
+        <Core.Btn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
           {m.filter}
         </CoreBtn>
       </PanelFoot>

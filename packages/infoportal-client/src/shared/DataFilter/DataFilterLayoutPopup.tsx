@@ -8,6 +8,7 @@ import {IpSelectMultiple} from '../../../../infoportal-client-core/src/Select/Se
 import {Txt} from '../../../../infoportal-client-core/src/Txt.js'
 import {IpBtn} from '../../../../infoportal-client-core/src/Btn.js'
 import {useI18n} from '@/core/i18n'
+import {Core} from '@/shared'
 
 export const DataFilterLayoutPopup = ({
   before,
@@ -78,11 +79,11 @@ export const DataFilterLayoutPopup = ({
               <Icon color="disabled" sx={{minWidth: 22}}>
                 {shape.icon}
               </Icon>
-              <Txt truncate sx={{mx: 1, width: 140, maxWidth: 140}}>
+              <Core.Txt truncate sx={{mx: 1, width: 140, maxWidth: 140}}>
                 {shape.label}
-              </Txt>
+              </Core.Txt>
               <Box sx={{flex: 1}}>
-                <IpSelectMultiple
+                <Core.SelectMultiple
                   sx={{maxWidth: 250, width: 250}}
                   value={innerFilters[name] ?? []}
                   onChange={_ => setInnerFilters((prev: any) => ({...prev, [name]: _}))}
@@ -96,13 +97,13 @@ export const DataFilterLayoutPopup = ({
           ))}
           <Box sx={{mt: 1}}>{after}</Box>
           <Box sx={{display: 'flex', mt: 1}}>
-            <CoreBtn color="primary" onClick={() => setInnerFilters({})}>
+            <Core.Btn color="primary" onClick={() => setInnerFilters({})}>
               {m.reinitialize}
             </CoreBtn>
-            <CoreBtn color="primary" onClick={handleClose} sx={{marginLeft: 'auto', mr: 1}}>
+            <Core.Btn color="primary" onClick={handleClose} sx={{marginLeft: 'auto', mr: 1}}>
               {m.close}
             </CoreBtn>
-            <CoreBtn color="primary" variant="contained" onClick={handleSubmit}>
+            <Core.Btn color="primary" variant="contained" onClick={handleSubmit}>
               {m.confirm}
             </CoreBtn>
           </Box>

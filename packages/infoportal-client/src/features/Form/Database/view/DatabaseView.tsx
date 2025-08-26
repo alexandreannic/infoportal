@@ -1,6 +1,6 @@
 import {Box, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {IpInput} from '../../../../../../infoportal-client-core/src/Input/Input'
-import {IpBtn, IpBtnProps} from '../../../../../../infoportal-client-core/src/Btn.js'
+import {IpBtn, Core.BtnProps} from '../../../../../../infoportal-client-core/src/Btn.js'
 import React, {useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {useForm} from 'react-hook-form'
@@ -48,12 +48,12 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
         />
       ))}
       <Box>
-        <IpInput
+        <Core.Input
           sx={{mt: 1, mb: -1}}
           {...formCreate.register('name', {required: true})}
           label={m._datatable.createNewView}
           endAdornment={
-            <CoreBtn
+            <Core.Btn
               size="small"
               variant="text"
               loading={ctx.asyncViewCreate.loading}
@@ -77,11 +77,11 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
   )
 }
 
-export const DatabaseViewBtn = ({view, sx, ...props}: IpBtnProps & {view: UseDatabaseView}) => {
+export const DatabaseViewBtn = ({view, sx, ...props}: Core.BtnProps & {view: UseDatabaseView}) => {
   const t = useTheme()
 
   return (
-    <CoreBtn
+    <Core.Btn
       icon="visibility"
       color="inherit"
       variant="input"

@@ -69,7 +69,7 @@ export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerPro
           <span style={{color: t.vars.palette.success.main, fontWeight: t.typography.fontWeightBold}}>
             <b>{formatLargeNumber(copied)}</b> copied!
           </span>
-          <CoreBtn
+          <Core.Btn
             disabled={copied === data.filteredData?.length}
             variant="outlined"
             icon="content_copy"

@@ -13,6 +13,7 @@ import {Stepper, StepperHandle} from '../../../../../infoportal-client-core/src/
 import {StepperActions} from '../../../../../infoportal-client-core/src/Stepper/StepperActions'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 import {Utils} from '@infoportal/client-core/src/core/utils.js'
+import {Core} from '@/shared'
 
 type Form = {
   message?: string
@@ -52,7 +53,7 @@ export const XlsFileUploadForm = ({
   }
 
   const importButton = (label = m.submit) => (
-    <CoreBtn
+    <Core.Btn
       endIcon={<Icon>keyboard_double_arrow_right</Icon>}
       sx={{mr: 1, marginLeft: 'auto'}}
       disabled={!isValid || !validation || validation.status === 'error' || (lastSchema && !schemaHasChanges)}
@@ -196,7 +197,7 @@ export const XlsFileUploadForm = ({
                       name="message"
                       control={form.control}
                       render={({field, fieldState}) => (
-                        <IpInput
+                        <Core.Input
                           sx={{mt: 1}}
                           label={`${m.message} (${m.optional})`}
                           {...field}

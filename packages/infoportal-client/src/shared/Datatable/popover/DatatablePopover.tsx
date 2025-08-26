@@ -11,16 +11,17 @@ import {DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableT
 import {seq} from '@axanc/ts-utils'
 import {KeyOf} from 'infoportal-common'
 import {ChartHelper} from '../../../../../infoportal-client-core/src/charts/chartHelper'
+import {Core} from '@/shared'
 
 const RenderRow = ({label, value}: {label: ReactNode; value: ReactNode}) => {
   return (
     <Box sx={{display: 'flex', '&:not(:last-of-type)': {mb: 1.5}}}>
-      <Txt color="hint" sx={{flex: 1, mr: 2}}>
+      <Core.Txt color="hint" sx={{flex: 1, mr: 2}}>
         {label}
-      </Txt>
-      <Txt block bold>
+      </Core.Txt>
+      <Core.Txt block bold>
         {value}
-      </Txt>
+      </Core.Txt>
     </Box>
   )
 }
@@ -59,7 +60,7 @@ export const NumberChoicesPopover = <T,>({
         <RenderRow label={m.max} value={formatLargeNumber(chart.max)} />
       </PanelBody>
       <PanelFoot alignEnd>
-        <CoreBtn color="primary" onClick={onClose as any}>
+        <Core.Btn color="primary" onClick={onClose as any}>
           {m.close}
         </CoreBtn>
       </PanelFoot>
@@ -116,13 +117,13 @@ export const MultipleChoicesPopover = <T extends DatatableRow>({
       slotProps={{paper: {sx: {minWidth: 400, maxWidth: 500}}}}
     >
       <PanelHead>
-        <Txt truncate>{title}</Txt>
+        <Core.Txt truncate>{title}</Core.Txt>
       </PanelHead>
       <PanelBody sx={{maxHeight: '50vh', overflowY: 'auto'}}>
         <ChartBar data={chart} />
       </PanelBody>
       <PanelFoot alignEnd>
-        <CoreBtn color="primary" onClick={onClose as any}>
+        <Core.Btn color="primary" onClick={onClose as any}>
           {m.close}
         </CoreBtn>
       </PanelFoot>
@@ -160,7 +161,7 @@ export const DatesPopover = <T,>({
         <ChartLineByDate data={data} curves={{[title]: getValue}} sx={{minWidth: 360}} />
       </PanelBody>
       <PanelFoot alignEnd>
-        <CoreBtn color="primary" onClick={onClose as any}>
+        <Core.Btn color="primary" onClick={onClose as any}>
           {m.close}
         </CoreBtn>
       </PanelFoot>

@@ -49,7 +49,7 @@ function Forms() {
           defaultLimit={500}
           header={
             <Link to="/$workspaceId/new-form" params={{workspaceId}}>
-              <CoreBtn icon="add" variant={'outlined'} sx={{mr: 0}}>
+              <Core.Btn icon="add" variant={'outlined'} sx={{mr: 0}}>
                 {m.add}
               </CoreBtn>
             </Link>
@@ -95,7 +95,7 @@ function Forms() {
               head: m.name,
               render: _ => {
                 return {
-                  label: <Txt bold>{_.name}</Txt>,
+                  label: <Core.Txt bold>{_.name}</Core.Txt>,
                   value: _.name,
                 }
               },
@@ -163,7 +163,7 @@ function Forms() {
               width: 0,
               render: _ => {
                 return {
-                  label: <Txt color="hint">{formatDate(_.createdAt)}</Txt>,
+                  label: <Core.Txt color="hint">{formatDate(_.createdAt)}</Core.Txt>,
                   value: _.createdAt,
                 }
               },
@@ -175,7 +175,7 @@ function Forms() {
               head: m.updatedAt,
               render: _ => {
                 return {
-                  label: _.updatedAt && <Txt color="hint">{formatDate(_.updatedAt)}</Txt>,
+                  label: _.updatedAt && <Core.Txt color="hint">{formatDate(_.updatedAt)}</Core.Txt>,
                   value: _.updatedAt,
                 }
               },

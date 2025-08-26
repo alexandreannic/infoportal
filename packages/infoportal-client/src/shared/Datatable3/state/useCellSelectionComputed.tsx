@@ -6,6 +6,7 @@ import {Box, Icon, Popover} from '@mui/material'
 import {DatatableContext} from '@/shared/Datatable3/state/DatatableContext.js'
 import {IpBtn, Txt} from '@/shared/index.js'
 import {useI18n} from '@/core/i18n/index.js'
+import {Core} from '@/shared'
 
 export type UseCellSelectionComputed = ReturnType<typeof useCellSelectionComputed>
 
@@ -123,22 +124,22 @@ export const SelectedCellPopover = (props: DatatableContext['cellSelection']) =>
       }}
     >
       <Box sx={{p: 1, maxWidth: 400}}>
-        <CoreBtn variant="outlined" icon="clear" onClick={props.engine.reset} color="primary" sx={{mb: 1}}>
+        <Core.Btn variant="outlined" icon="clear" onClick={props.engine.reset} color="primary" sx={{mb: 1}}>
           {formatLargeNumber(props.selectedCount)}
-          <Txt color="hint" fontWeight="400" sx={{ml: 2, display: 'flex', alignItems: 'center'}}>
+          <Core.Txt color="hint" fontWeight="400" sx={{ml: 2, display: 'flex', alignItems: 'center'}}>
             <Icon fontSize="inherit">view_column</Icon>
             {formatLargeNumber(props.selectedColumnsIds.size)}
             <Box sx={{mx: 0.5}}>×</Box>
             <Icon fontSize="inherit">table_rows</Icon>
             {formatLargeNumber(props.selectedRowIds.size)}
-          </Txt>
+          </Core.Txt>
         </CoreBtn>
-        <Txt block color="hint"></Txt>
+        <Core.Txt block color="hint"></Core.Txt>
         {props.selectedColumnUniq && (
           <>
-            <Txt block bold>
+            <Core.Txt block bold>
               {props.selectedColumnUniq.head}
-            </Txt>
+            </Core.Txt>
           </>
         )}
         {props.areAllColumnsSelected && 'DELETE'}

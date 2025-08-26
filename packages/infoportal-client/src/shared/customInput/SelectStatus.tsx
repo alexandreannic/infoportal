@@ -89,7 +89,7 @@ export const StateStatusIcon = ({type, filled, sx}: {type: StateStatus; filled?:
   return <Icon title={type} sx={{color: style.color(t), ...sx}} children={filled ? style.icon : style.iconOutlined} />
 }
 
-type SelectStatusProps<T extends string> = Omit<IpSelectSingleNullableProps<T>, 'hideNullOption' | 'options'> & {
+type SelectStatusProps<T extends string> = Omit<Core.SelectSingleNullableProps<T>, 'hideNullOption' | 'options'> & {
   status: Record<T, string>
   labels: Record<T, StateStatus>
   compact?: boolean
@@ -116,7 +116,7 @@ export const SelectStatus = <T extends string>({
     }))
   }, [labels, status])
   return (
-    <IpSelectSingle
+    <Core.SelectSingle
       renderValue={_ =>
         compact ? (
           <StateStatusIcon filled={iconFilled} type={labels[_]} sx={{display: 'block'}} />

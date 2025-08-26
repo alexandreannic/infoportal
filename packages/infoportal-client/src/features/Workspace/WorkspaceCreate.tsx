@@ -86,7 +86,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
           required: true,
         }}
         name="name"
-        render={({field}) => <IpInput sx={{mt: 2}} required label={m.enterProjectName} size="medium" {...field} />}
+        render={({field}) => <Core.Input sx={{mt: 2}} required label={m.enterProjectName} size="medium" {...field} />}
       />
       <Controller
         control={form.control}
@@ -95,7 +95,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
           required: true,
         }}
         render={({field, fieldState}) => (
-          <IpInput
+          <Core.Input
             sx={{mt: 2}}
             label={m.workspaceId}
             disabled={disableSlug}
@@ -120,7 +120,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
           required: false,
         }}
         render={({field}) => (
-          <IpSelectSingle
+          <Core.SelectSingle
             sx={{mt: 2}}
             label={m.sector}
             options={[
@@ -144,11 +144,11 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
       />
       <CardActions sx={{mt: 3, justifyContent: 'flex-end', pr: 0}}>
         {onClose && (
-          <CoreBtn size="large" onClick={onClose}>
+          <Core.Btn size="large" onClick={onClose}>
             {m.close}
           </CoreBtn>
         )}
-        <CoreBtn
+        <Core.Btn
           disabled={!form.formState.isValid}
           variant="contained"
           size="large"

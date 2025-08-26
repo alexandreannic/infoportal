@@ -2,7 +2,7 @@
 import {useRef, useState} from 'react'
 import {Avatar, Box, ButtonProps, Chip, CircularProgress, Icon} from '@mui/material'
 import {makeSx} from '@/core/theme'
-import {IpBtn} from '../../../infoportal-client-core/src/Btn.js'
+import {Core} from '@/shared'
 
 const sx = makeSx({
   doc_icon: {
@@ -113,7 +113,7 @@ export const BtnUploader = ({
         )
       } else {
         return (
-          <CoreBtn
+          <Core.Btn
             color="primary"
             onClick={openFileSelection}
             icon="file_upload"

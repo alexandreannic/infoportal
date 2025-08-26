@@ -186,13 +186,13 @@ const DatabaseKoboRepeat = ({
               id,
             }}
           >
-            <CoreBtn variant="contained" icon="arrow_back">
+            <Core.Btn variant="contained" icon="arrow_back">
               {m.back}
             </CoreBtn>
           </Link>
         ) : (
           <Link params={{workspaceId, formId}} to="/$workspaceId/form/$formId/answers">
-            <CoreBtn variant="contained" icon="arrow_back">
+            <Core.Btn variant="contained" icon="arrow_back">
               {m.back}
             </CoreBtn>
           </Link>

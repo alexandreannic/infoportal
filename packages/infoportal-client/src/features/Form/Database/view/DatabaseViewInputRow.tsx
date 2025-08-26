@@ -61,7 +61,7 @@ export const DatabaseViewInputRow = ({
       <div className={classes.head} onClick={onClick}>
         <Radio checked={checked} />
         <Box sx={{flex: 1, height: '32px', display: 'flex', alignItems: 'center'}}>
-          {view.name}&nbsp;<Txt color="hint">({view.visibility})</Txt>
+          {view.name}&nbsp;<Core.Txt color="hint">({view.visibility})</Core.Txt>
         </Box>
         <Box sx={{display: 'flex', alignItems: 'center'}} onClick={e => e.stopPropagation()}>
           <Core.IconBtn onClick={onOpen} color={open ? 'primary' : undefined}>
@@ -71,17 +71,17 @@ export const DatabaseViewInputRow = ({
       </div>
       <Collapse in={open}>
         <Core.ListItem icon="notes">
-          <Txt size="small">
+          <Core.Txt size="small">
             <Box>{view.details.length} items</Box>
             {!readOnly && <Box>{m.createdByAt(view.createdBy, formatDateTime(view.createdAt))}</Box>}
             {view.updatedBy && <Box>{m.updatedByAt(view.updatedBy, formatDateTime(view.updatedAt))}</Box>}
-          </Txt>
+          </Core.Txt>
         </Core.ListItem>
         <Core.ListItem icon="public">
-          <Txt size="small" color="hint">
+          <Core.Txt size="small" color="hint">
             {m.visibility}
-          </Txt>
-          <IpSelectSingle<DatabaseViewVisibility>
+          </Core.Txt>
+          <Core.SelectSingle<DatabaseViewVisibility>
             disabled={readOnly}
             value={view.visibility}
             onChange={_ => onUpdate({visibility: _})}

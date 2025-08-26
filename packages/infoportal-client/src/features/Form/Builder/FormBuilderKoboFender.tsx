@@ -26,7 +26,7 @@ const Button = ({href, label, icon, sx, ...props}: {href: string; label: string;
       <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
         <Icon sx={{fontSize: 70}}>{icon}</Icon>
         <Box display="flex" alignItems="center" sx={{mt: 2}}>
-          <Txt size="big">{label}</Txt>
+          <Core.Txt size="big">{label}</Core.Txt>
           <Icon sx={{ml: 1}}>open_in_new</Icon>
         </Box>
       </Box>

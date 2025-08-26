@@ -45,7 +45,7 @@ export const TableInput = ({
   originalValue?: string | null
   value?: string
   debounce?: number
-} & Omit<IpInputProps, 'helperText' | 'onChange' | 'value'>) => {
+} & Omit<Core.InputProps, 'helperText' | 'onChange' | 'value'>) => {
   return (
     <Root className="table-input">
       <DebouncedInput<string>

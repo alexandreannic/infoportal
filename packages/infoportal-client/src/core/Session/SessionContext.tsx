@@ -5,7 +5,7 @@ import {SessionLoginForm} from '@/core/Session/SessionLoginForm'
 import {CenteredContent} from '@/shared/CenteredContent'
 import {GoogleOAuthProvider} from '@react-oauth/google'
 import {appConfig} from '@/conf/AppConfig'
-import {IpBtn} from '@/shared'
+import {Core, IpBtn} from '@/shared'
 import {useQuerySession} from '@/core/query/useQuerySession'
 import {useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
@@ -113,8 +113,8 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
   //     <Page sx={{maxWidth: 400}}>
   //       <CenteredContent>
   //         <div>
-  //           {/* <Txt>{session.user.email}</Txt> */}
-  //           <CoreBtn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
+  //           {/* <Core.Txt>{session.user.email}</Core.Txt> */}
+  //           <Core.Btn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
   //             {user.email}
   //           </CoreBtn>
   //           <PageTitle>{m.onboardingTitle}</PageTitle>
@@ -129,7 +129,7 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
       {originalEmail && (
         <Box sx={{px: 2, py: 0.25, background: t => t.vars.palette.background.paper}}>
           Connected as <b>{user.email}</b>. Go back as <b>{originalEmail}</b>
-          <CoreBtn
+          <Core.Btn
             sx={{ml: 1}}
             loading={revertConnectAs.isPending}
             onClick={() => revertConnectAs.mutate()}

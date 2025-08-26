@@ -9,6 +9,7 @@ import {useSetState} from '@axanc/react-hooks'
 import {IpAlert} from '../../../../infoportal-client-core/src/Alert.js'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
+import {Core} from '@/shared'
 
 interface DatatableColumnToggleProps
   extends Pick<
@@ -79,13 +80,13 @@ export const DatatableColumnToggle = ({
                   onClick={() => set.add(_.filteredAndSortedData.filter(_ => !set.has(_.id)).map(_ => _.id))}
                   label={m.remove + ' ' + _.filteredAndSortedData.length}
                 />
-                <Txt bold>
-                  <Txt size="big" sx={{fontWeight: 600}}>
+                <Core.Txt bold>
+                  <Core.Txt size="big" sx={{fontWeight: 600}}>
                     {columns.length - set.size}
-                  </Txt>{' '}
+                  </Core.Txt>{' '}
                   / {columns.length} {m._koboDatabase.currentlyDisplayed}
-                </Txt>
-                <CoreBtn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
+                </Core.Txt>
+                <Core.Btn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
                   {m.save}
                 </CoreBtn>
               </>

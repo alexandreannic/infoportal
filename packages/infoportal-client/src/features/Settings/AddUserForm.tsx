@@ -35,7 +35,7 @@ export const AddUserForm = ({
     // onClose?.()
   }
 
-  const CloseBtn = <CoreBtn children={m.close} color="inherit" size="small" onClick={queryInvitation.reset} />
+  const CloseBtn = <Core.Btn children={m.close} color="inherit" size="small" onClick={queryInvitation.reset} />
 
   return (
     <form onSubmit={form.handleSubmit(submit)} style={{width: 400}}>
@@ -48,7 +48,7 @@ export const AddUserForm = ({
           pattern: {value: Regexp.get.email, message: m.invalidEmail},
         }}
         render={({field, fieldState}) => (
-          <IpInput
+          <Core.Input
             required
             sx={{minWidth: 260, mb: 1, mt: 1}}
             {...field}
@@ -89,8 +89,8 @@ export const AddUserForm = ({
         </Core.Alert>
       </Collapse>
       <PanelFoot sx={{mt: 2, p: 0}} alignEnd>
-        {onClose && <CoreBtn onClick={onClose}>{m.close}</CoreBtn>}
-        <CoreBtn variant="outlined" type="submit" disabled={!form.formState.isValid} loading={queryInvitation.isPending}>
+        {onClose && <Core.Btn onClick={onClose}>{m.close}</CoreBtn>}
+        <Core.Btn variant="outlined" type="submit" disabled={!form.formState.isValid} loading={queryInvitation.isPending}>
           {m.submit}
         </CoreBtn>
       </PanelFoot>

@@ -1,4 +1,4 @@
-import {IpBtn, IpBtnProps, PopoverWrapper, Txt} from '@/shared'
+import {IpBtn, Core.BtnProps, PopoverWrapper, Txt} from '@/shared'
 import React from 'react'
 import {Box, Icon, useTheme} from '@mui/material'
 import {ScRadioGroup, ScRadioGroupItem} from '../../../../../../infoportal-client-core/src/RadioGroup'
@@ -6,7 +6,7 @@ import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseCont
 import {ipSelectItem, IpSelectSingle} from '../../../../../../infoportal-client-core/src/Select/SelectSingle'
 import {useI18n} from '@/core/i18n'
 
-export const DatabaseGroupDisplayInput = (props: IpBtnProps) => {
+export const DatabaseGroupDisplayInput = (props: Core.BtnProps) => {
   const t = useTheme()
   const {m} = useI18n()
   const {schema, groupDisplay} = useDatabaseKoboTableContext()
@@ -14,9 +14,9 @@ export const DatabaseGroupDisplayInput = (props: IpBtnProps) => {
     <PopoverWrapper
       content={() => (
         <Box sx={{p: 1, minWidth: 120, width: 320}}>
-          <Txt color="hint" sx={{mb: 0.5}} fontSize="small" block>
+          <Core.Txt color="hint" sx={{mb: 0.5}} fontSize="small" block>
             {m._koboDatabase.repeatAs}
-          </Txt>
+          </Core.Txt>
           <ScRadioGroup dense value={groupDisplay.get.repeatAs} onChange={_ => groupDisplay.setProperty('repeatAs', _)}>
             <ScRadioGroupItem value={null} title={m._koboDatabase.repeatDont} />
             <ScRadioGroupItem value="rows" title={m._koboDatabase.repeatAsRows} />
@@ -24,10 +24,10 @@ export const DatabaseGroupDisplayInput = (props: IpBtnProps) => {
           </ScRadioGroup>
           {groupDisplay.get.repeatAs === 'rows' && (
             <>
-              <Txt color="hint" sx={{mt: 1.5, mb: 0.5}} fontSize="small" block>
+              <Core.Txt color="hint" sx={{mt: 1.5, mb: 0.5}} fontSize="small" block>
                 {m._koboDatabase.repeatAsQuestionName}
-              </Txt>
-              <IpSelectSingle
+              </Core.Txt>
+              <Core.SelectSingle
                 value={groupDisplay.get.repeatGroupName}
                 renderValue={_ => schema.translate.question(_)!}
                 onChange={_ => groupDisplay.setProperty('repeatGroupName', _ ?? undefined)}
@@ -44,7 +44,7 @@ export const DatabaseGroupDisplayInput = (props: IpBtnProps) => {
         </Box>
       )}
     >
-      <CoreBtn
+      <Core.Btn
         variant="input"
         color="inherit"
         children={<Icon sx={{transform: 'rotate(180deg)', marginRight: '-8px'}}>move_up</Icon>}

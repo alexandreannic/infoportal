@@ -131,12 +131,12 @@ export const DashboardLayout = ({
             </Box>
           ))}
 
-          <Txt block color="disabled" sx={{mt: 8, fontWeight: 'lighter'}}>
+          <Core.Txt block color="disabled" sx={{mt: 8, fontWeight: 'lighter'}}>
             {m.contactAdmin}&nbsp;
             <Box component="a" href={`mailto:${contact}`} sx={{fontWeight: 'normal'}}>
               {contact}
             </Box>
-          </Txt>
+          </Core.Txt>
         </Page>
       </Layout>
     </>

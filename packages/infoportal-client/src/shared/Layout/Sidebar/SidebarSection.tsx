@@ -3,6 +3,7 @@ import {ReactNode} from 'react'
 import {Txt} from '../../../../../infoportal-client-core/src/Txt.js'
 import {IpIconBtn} from '../../../../../infoportal-client-core/src/IconBtn.js'
 import {usePersistentState} from '../../../../../infoportal-client-core/src/hook/usePersistantState'
+import {Core} from '@/shared'
 
 export const SidebarSection = ({
   id,
@@ -34,9 +35,9 @@ export const SidebarSection = ({
           <Core.IconBtn onClick={() => setOpen(_ => !_)} size="small" sx={{mr: 1}}>
             {open ? 'expand_less' : 'expand_more'}
           </Core.IconBtn>
-          <Txt uppercase bold color="disabled" sx={{fontSize: '.825em', flex: 1}}>
+          <Core.Txt uppercase bold color="disabled" sx={{fontSize: '.825em', flex: 1}}>
             {title}
-          </Txt>
+          </Core.Txt>
         </Box>
       )}
       <Collapse in={open}>{children}</Collapse>

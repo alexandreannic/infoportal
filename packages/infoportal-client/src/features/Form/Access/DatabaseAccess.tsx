@@ -7,6 +7,7 @@ import {Panel} from '../../../../../infoportal-client-core/src/Panel'
 import {AccessTable} from '@/features/Access/AccessTable'
 import {Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
+import {Core} from '@/shared'
 
 export const databaseAccessRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -28,7 +29,7 @@ function DatabaseAccess() {
             header={
               permission.access_canAdd && (
                 <DatabaseAccessForm workspaceId={workspaceId} formId={form.id} form={schema.schema}>
-                  <CoreBtn sx={{mr: 1}} variant="outlined" icon="person_add">
+                  <Core.Btn sx={{mr: 1}} variant="outlined" icon="person_add">
                     {m.grantAccess}
                   </CoreBtn>
                 </DatabaseAccessForm>

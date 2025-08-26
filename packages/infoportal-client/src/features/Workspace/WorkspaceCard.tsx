@@ -35,7 +35,7 @@ export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
       <Icon sx={{mb: 1, fontSize: 60, color: t.vars.palette.text.secondary}}>{appConfig.icons.workspace}</Icon>
       <Box display="flex" alignItems="center" mt={1}>
         <Icon fontSize="medium">add</Icon>
-        <Txt bold size="big">{m.createWorkspace}</Txt>
+        <Core.Txt bold size="big">{m.createWorkspace}</Core.Txt>
       </Box>
     </ButtonBase>
   )
@@ -60,18 +60,18 @@ export const WorkspaceCard = ({workspace}: {workspace: Ip.Workspace}) => {
           },
         }}
       >
-        <Txt size="title" bold block>
+        <Core.Txt size="title" bold block>
           {workspace.name}
-        </Txt>
-        <Txt color="hint" block>
+        </Core.Txt>
+        <Core.Txt color="hint" block>
           {workspace.slug}
-        </Txt>
-        <Txt truncate block>
+        </Core.Txt>
+        <Core.Txt truncate block>
           {workspace.sector}
-        </Txt>
-        <Txt color="hint" textAlign="right" block sx={{mt: 'auto'}}>
+        </Core.Txt>
+        <Core.Txt color="hint" textAlign="right" block sx={{mt: 'auto'}}>
           {formatDate(workspace.createdAt)}
-        </Txt>
+        </Core.Txt>
       </Panel>
     </Link>
   )
@@ -106,13 +106,13 @@ export const WorkspaceCardInvitation = ({
         <Box sx={{textAlign: 'center'}}>
           <AppAvatar size={40} email={invitation.createdBy} />
           {invitation.createdBy}
-          <Txt block size="small" color="hint" sx={{my: 0.5}}>
+          <Core.Txt block size="small" color="hint" sx={{my: 0.5}}>
             Invited you to join
-          </Txt>
+          </Core.Txt>
           {/*{formatDateTime(invitation.createdAt)}*/}
-          <Txt block bold size="big">
+          <Core.Txt block bold size="big">
             {invitation.workspace.name}
-          </Txt>
+          </Core.Txt>
         </Box>
       </PanelBody>
       <PanelFoot sx={{justifyContent: 'space-between'}}>
@@ -122,9 +122,9 @@ export const WorkspaceCardInvitation = ({
           confirmLabel={m.refuse}
           onConfirm={(e, close) => accept.mutateAsync({id: invitation.id, accept: false}).then(close)}
         >
-          <CoreBtn color="error">{m.refuse}</CoreBtn>
+          <Core.Btn color="error">{m.refuse}</CoreBtn>
         </Modal>
-        <CoreBtn
+        <Core.Btn
           disabled={accept.isPending}
           onClick={() => accept.mutateAsync({id: invitation.id, accept: true})}
           color="success"

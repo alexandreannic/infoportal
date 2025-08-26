@@ -66,9 +66,9 @@ export const DiffView = ({oldStr = '', newStr, sx, hasChanges, ...props}: Props)
       }}
       {...props}
     >
-      <Txt bold size="big" block sx={{pl: 2, py: 0.5, borderBottom: '1px solid', borderColor: t.vars.palette.divider}}>
+      <Core.Txt bold size="big" block sx={{pl: 2, py: 0.5, borderBottom: '1px solid', borderColor: t.vars.palette.divider}}>
         {m.differences}
-      </Txt>
+      </Core.Txt>
       <Box dangerouslySetInnerHTML={{__html}} />
     </Box>
   )

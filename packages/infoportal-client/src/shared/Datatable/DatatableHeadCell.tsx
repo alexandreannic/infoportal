@@ -19,7 +19,7 @@ export const DatabaseHeadCell = ({children, onClick}: {onClick: IpIconBtnProps['
       placement="top"
       title={
         <div style={{display: 'flex', alignItems: 'center'}}>
-          <CoreBtn className={classes.btn} size="small" variant="contained" color="primary" onClick={onClick}>
+          <Core.Btn className={classes.btn} size="small" variant="contained" color="primary" onClick={onClick}>
             <Icon fontSize="small">visibility_off</Icon>
           </CoreBtn>
           &nbsp;

@@ -105,7 +105,7 @@ export const AccessFormInputEmail = ({form}: {form: UseFormReturn<IAccessForm>})
   const {m} = useI18n()
   const required = form.watch('selectBy') === 'email'
   return (
-    <IpInput
+    <Core.Input
       label={m.email}
       error={!!form.formState.errors.email}
       helperText={form.formState.errors.email?.message as string}
@@ -125,7 +125,7 @@ export const AccessFormInputLocation = ({form}: {form: UseFormReturn<IAccessForm
       name="location"
       control={form.control}
       render={({field: {onChange, ...field}}) => (
-        <IpSelectSingle<string> {...field} label={m.location} onChange={_ => onChange(_)} options={[]} />
+        <Core.SelectSingle<string> {...field} label={m.location} onChange={_ => onChange(_)} options={[]} />
       )}
     />
   )
@@ -227,7 +227,7 @@ export const AccessFormInputGroup = ({
               </Box>
             )}
             renderInput={({InputProps, ...props}) => (
-              <IpInput helperText={null} label={m.group} {...InputProps} {...props} />
+              <Core.Input helperText={null} label={m.group} {...InputProps} {...props} />
             )}
           />
         )}

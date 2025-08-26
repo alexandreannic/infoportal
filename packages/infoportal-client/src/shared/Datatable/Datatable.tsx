@@ -239,9 +239,9 @@ const _Datatable = <T extends DatatableRow>({
                         <Icon color="disabled" sx={{fontSize: 40, mr: 2}}>
                           block
                         </Icon>
-                        <Txt color="disabled" size="title">
+                        <Core.Txt color="disabled" size="title">
                           {m.noDataAtm}
-                        </Txt>
+                        </Core.Txt>
                       </Box>
                     </td>
                   </tr>

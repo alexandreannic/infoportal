@@ -1,4 +1,4 @@
-import {IpBtn, Modal, Page} from '@/shared'
+import {Core, IpBtn, Modal, Page} from '@/shared'
 import {Grid, Grow, useTheme} from '@mui/material'
 import {Panel, PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
 import {useI18n} from '@/core/i18n'
@@ -12,7 +12,6 @@ import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFend
 import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
 import {createRoute, Link, useRouter} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
-import {IpInput} from '../../../../../infoportal-client-core/src/Input/Input'
 import {useIpToast} from '@/core/useToast'
 import {Ip} from 'infoportal-api-sdk'
 
@@ -73,7 +72,7 @@ function FormBuilder() {
                               queryVersion.deployLast.mutateAsync({workspaceId, formId}).then(close)
                             }
                           >
-                            <CoreBtn
+                            <Core.Btn
                               icon="send"
                               variant="contained"
                               disabled={!draft}
@@ -105,7 +104,7 @@ function FormBuilder() {
             <Grid size={{xs: 12, md: 6}}>
               {active && (
                 <Panel sx={{p: 1}}>
-                  <CoreBtn
+                  <Core.Btn
                     sx={{mr: 1}}
                     icon="visibility"
                     size="large"
@@ -116,7 +115,7 @@ function FormBuilder() {
                     {m.preview}
                   </CoreBtn>
                   <Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId}} target="_blank">
-                    <CoreBtn
+                    <Core.Btn
                       sx={{mr: 1}}
                       icon="open_in_new"
                       size="large"
@@ -139,7 +138,7 @@ function FormBuilder() {
                     confirmLabel={m.copy}
                     cancelLabel={m.close}
                     content={
-                      <IpInput
+                      <Core.Input
                         helperText={null}
                         slotProps={{input: {sx: {width: 400, color: t.vars.palette.text.secondary}}}}
                         readOnly
@@ -147,7 +146,7 @@ function FormBuilder() {
                       />
                     }
                   >
-                    <CoreBtn icon="link" size="large" variant="outlined">
+                    <Core.Btn icon="link" size="large" variant="outlined">
                       {m.copyLink}
                     </CoreBtn>
                   </Modal>

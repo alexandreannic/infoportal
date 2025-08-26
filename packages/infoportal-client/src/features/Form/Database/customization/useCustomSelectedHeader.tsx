@@ -36,11 +36,11 @@ export const useCustomSelectedHeader = ({
           content={
             <>
               {query.remove.error && <Alert color="error">{m.somethingWentWrong}</Alert>}
-              <Txt color="hint">{m.confirmRemoveDesc}</Txt>
+              <Core.Txt color="hint">{m.confirmRemoveDesc}</Core.Txt>
             </>
           }
         >
-          <CoreBtn variant="contained" icon="delete">
+          <Core.Btn variant="contained" icon="delete">
             {m.deleteSelected}
           </CoreBtn>
         </Modal>

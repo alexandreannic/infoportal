@@ -87,7 +87,7 @@ export const VersionRowRoot = ({createdAt}: {createdAt: Date}) => {
       </Box>
       <Box sx={{ml: 1.5}}>{m.creation}</Box>
       <Box sx={{width: '100%', ml: 1, display: 'flex', justifyContent: 'flex-end'}}>
-        <Txt color="hint">{dateFromNow(createdAt)}</Txt>
+        <Core.Txt color="hint">{dateFromNow(createdAt)}</Core.Txt>
       </Box>
     </VersionRowContainer>
   )
@@ -132,12 +132,12 @@ export const VersionRow = ({version, index}: {index?: number; version: Ip.Form.V
     <VersionRowContainer>
       <Logo version={version} index={index} />
       <Box sx={{display: 'flex', width: '100%', justifyContent: 'flex-start', minWidth: 0}}>
-        <Txt bold sx={{flexShrink: 0, ml: 1, mr: 1, width: 26, textAlign: 'left'}}>
+        <Core.Txt bold sx={{flexShrink: 0, ml: 1, mr: 1, width: 26, textAlign: 'left'}}>
           v{version.version}
-        </Txt>
-        <Txt color="hint" truncate sx={{minWidth: 0}}>
+        </Core.Txt>
+        <Core.Txt color="hint" truncate sx={{minWidth: 0}}>
           {version.message}
-        </Txt>
+        </Core.Txt>
         <div style={{marginLeft: 'auto', whiteSpace: 'nowrap', flexShrink: 0, paddingLeft: 1}}>
           {fnSwitch(
             version.status,
@@ -148,9 +148,9 @@ export const VersionRow = ({version, index}: {index?: number; version: Ip.Form.V
             () => undefined,
           )}
           <Tooltip title={formatDateTime(version.createdAt)}>
-            <Txt color="hint" sx={{ml: 1}}>
+            <Core.Txt color="hint" sx={{ml: 1}}>
               {capitalize(dateFromNow(version.createdAt))}
-            </Txt>
+            </Core.Txt>
           </Tooltip>
         </div>
       </Box>

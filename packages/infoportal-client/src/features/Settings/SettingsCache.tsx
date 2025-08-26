@@ -44,7 +44,7 @@ function SettingsCache() {
             <Panel key={key}>
               <PanelHead
                 action={
-                  <CoreBtn
+                  <Core.Btn
                     loading={asyncClear.loading[key]}
                     size="small"
                     variant="outlined"
@@ -58,10 +58,10 @@ function SettingsCache() {
                 {key}
               </PanelHead>
               <PanelBody>
-                <Txt block color="hint" sx={{mb: 1, mt: -1}}>
+                <Core.Txt block color="hint" sx={{mb: 1, mt: -1}}>
                   Refreshed {dateFromNow(info.lastUpdate)}, expire{' '}
                   {dateFromNow(addMilliseconds(info.lastUpdate, info.expiration ?? 0))}
-                </Txt>
+                </Core.Txt>
                 <Box sx={{}}>
                   {Object.entries(info.value).map(([subKey, value]) => (
                     <Box key={key + subKey}>
@@ -77,9 +77,9 @@ function SettingsCache() {
                           mt: 1,
                         }}
                       >
-                        <Txt block bold sx={{width: '100%'}}>
+                        <Core.Txt block bold sx={{width: '100%'}}>
                           {subKey}
-                        </Txt>
+                        </Core.Txt>
                         <Core.IconBtn
                           color="primary"
                           size="small"

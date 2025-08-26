@@ -239,13 +239,13 @@ function file(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): Datata
         export: url,
         value: fileName ?? DatatableUtils.blank,
         label: (
-          <Txt link>
+          <Core.Txt link>
             <a href={url} target="_blank">
               {fileName}
             </a>
-          </Txt>
+          </Core.Txt>
         ),
-        // label: <Txt link><a href={koboImgHelper({fileName, attachments: row.attachments}).fullUrl} target="_blank">{fileName}</a></Txt>
+        // label: <Core.Txt link><a href={koboImgHelper({fileName, attachments: row.attachments}).fullUrl} target="_blank">{fileName}</a></Core.Txt>
       }
     },
   }
@@ -374,7 +374,7 @@ function repeatGroup(
         export: value?.length,
         value: value?.length,
         label: value && (
-          <CoreBtn
+          <Core.Btn
             children={value.length}
             style={{padding: '0 4px'}}
             onClick={event => {

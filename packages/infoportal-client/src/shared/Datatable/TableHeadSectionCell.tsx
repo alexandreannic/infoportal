@@ -78,7 +78,7 @@ export const TableHeadSectionCell = ({
             >
               <div className={cx(classes.content, 'TableHeadSectionCell-content')}>
                 {group}&nbsp;
-                <CoreBtn
+                <Core.Btn
                   className={classes.btn}
                   size="small"
                   variant="contained"

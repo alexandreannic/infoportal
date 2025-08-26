@@ -139,9 +139,9 @@ function DatabaseHistory() {
                   value: _.type,
                   label: fnSwitch(_.type, {
                     delete: (
-                      <Txt color="error" bold>
+                      <Core.Txt color="error" bold>
                         {m._koboDatabase.deleted}
-                      </Txt>
+                      </Core.Txt>
                     ),
                     answer: m._koboDatabase.koboQuestion,
                     tag: m._koboDatabase.customColumn,

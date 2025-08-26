@@ -65,12 +65,12 @@ function SettingsGroups() {
                 title={m._admin.createGroup}
                 content={
                   <>
-                    <IpInput sx={{mt: 2}} label={m.name} autoFocus {...groupForm.register('name')} />
-                    <IpInput multiline minRows={3} maxRows={6} label={m.desc} {...groupForm.register('desc')} />
+                    <Core.Input sx={{mt: 2}} label={m.name} autoFocus {...groupForm.register('name')} />
+                    <Core.Input multiline minRows={3} maxRows={6} label={m.desc} {...groupForm.register('desc')} />
                   </>
                 }
               >
-                <CoreBtn icon="add" variant="outlined">
+                <Core.Btn icon="add" variant="outlined">
                   {m.create}
                 </CoreBtn>
               </Modal>
@@ -171,14 +171,14 @@ function SettingsGroups() {
                     confirmLabel={m.edit}
                     content={
                       <>
-                        <IpInput
+                        <Core.Input
                           sx={{mt: 2}}
                           label={m.name}
                           defaultValue={_.name}
                           autoFocus
                           {...groupForm.register('name')}
                         />
-                        <IpInput
+                        <Core.Input
                           multiline
                           minRows={3}
                           maxRows={6}

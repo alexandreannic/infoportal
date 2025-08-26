@@ -90,7 +90,7 @@ function SettingsUsers() {
                   <AddUserForm workspaceId={workspaceId} existingEmails={emailsLists} onClose={close} />
                 )}
               >
-                <CoreBtn icon="person_add" variant="outlined" sx={{marginLeft: 'auto'}}>
+                <Core.Btn icon="person_add" variant="outlined" sx={{marginLeft: 'auto'}}>
                   {m.addUser}
                 </CoreBtn>
               </Modal>
@@ -129,7 +129,7 @@ function SettingsUsers() {
               head: m.email,
               render: _ => {
                 return {
-                  label: <Txt bold>{_.email}</Txt>,
+                  label: <Core.Txt bold>{_.email}</Core.Txt>,
                   value: _.email,
                 }
               },
@@ -142,7 +142,7 @@ function SettingsUsers() {
               type: 'date',
               render: _ => {
                 return {
-                  label: <Txt color="hint">{formatDate(_.createdAt)}</Txt>,
+                  label: <Core.Txt color="hint">{formatDate(_.createdAt)}</Core.Txt>,
                   value: _.createdAt,
                 }
               },
@@ -154,7 +154,7 @@ function SettingsUsers() {
               head: m.lastConnectedAt,
               render: _ => {
                 return {
-                  label: _.lastConnectedAt && <Txt color="hint">{formatDateTime(_.lastConnectedAt)}</Txt>,
+                  label: _.lastConnectedAt && <Core.Txt color="hint">{formatDateTime(_.lastConnectedAt)}</Core.Txt>,
                   value: _.lastConnectedAt,
                 }
               },
@@ -190,7 +190,7 @@ function SettingsUsers() {
               head: m.admin,
               render: _ => ({
                 label: (
-                  <IpSelectSingle
+                  <Core.SelectSingle
                     loading={queryUserUpdate.arePending.has(_.userId!)}
                     disabled={_.email === connectedUser.email || !permission.user_canUpdate || !_.userId}
                     onChange={res => {

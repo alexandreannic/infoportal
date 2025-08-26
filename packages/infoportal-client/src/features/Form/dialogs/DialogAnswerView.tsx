@@ -69,9 +69,9 @@ function DatabaseAnswerView() {
             <PanelHead
               action={
                 <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
-                  <Txt sx={{fontSize: '1em'}} color="hint">
+                  <Core.Txt sx={{fontSize: '1em'}} color="hint">
                     {m._koboDatabase.showAllQuestions}
-                  </Txt>
+                  </Core.Txt>
                   <Switch
                     size="small"
                     value={showQuestionWithoutAnswer}
@@ -82,7 +82,7 @@ function DatabaseAnswerView() {
             >
               {queryForm.data?.name}
               <br />
-              <Txt sx={{color: t => t.vars.palette.info.main}}>{answerId}</Txt>
+              <Core.Txt sx={{color: t => t.vars.palette.info.main}}>{answerId}</Core.Txt>
             </PanelHead>
             <PanelBody>
               <KoboAnswerFormView
@@ -124,9 +124,9 @@ export const DialogAnswerView = ({
           </Link>
           {answer.id}
           <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
-            <Txt sx={{fontSize: '1rem'}} color="hint">
+            <Core.Txt sx={{fontSize: '1rem'}} color="hint">
               {m._koboDatabase.showAllQuestions}
-            </Txt>
+            </Core.Txt>
             <Switch value={showQuestionWithoutAnswer} onChange={e => setShowQuestionWithoutAnswer(e.target.checked)} />
           </Box>
         </Box>
@@ -140,7 +140,7 @@ export const DialogAnswerView = ({
         />
       </DialogContent>
       <DialogActions>
-        <CoreBtn onClick={() => onClose()}>{m.close}</CoreBtn>
+        <Core.Btn onClick={() => onClose()}>{m.close}</CoreBtn>
       </DialogActions>
     </Dialog>
   )
@@ -207,9 +207,9 @@ const KoboAnswerQuestionView = ({
     case 'begin_group': {
       return (
         <Box sx={{pt: 1, mt: 2, borderTop: t => `1px solid ${t.vars.palette.divider}`}}>
-          <Txt bold block size="title">
+          <Core.Txt bold block size="title">
             {schema.translate.question(questionSchema.name)}
-          </Txt>
+          </Core.Txt>
         </Box>
       )
     }
@@ -218,9 +218,9 @@ const KoboAnswerQuestionView = ({
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <Box>
-            <Txt block size="small" color="hint">
+            <Core.Txt block size="small" color="hint">
               {row.answers[questionSchema.name] as string}
-            </Txt>
+            </Core.Txt>
             <KoboAttachedImg
               formId={formId}
               answerId={row.id}
@@ -323,7 +323,7 @@ const KoboAnswerQuestionView = ({
 }
 
 const KoboQuestionLabelView = ({children}: {children: string}) => {
-  return <Txt bold block sx={{mb: 0.5}} dangerouslySetInnerHTML={{__html: children}} />
+  return <Core.Txt bold block sx={{mb: 0.5}} dangerouslySetInnerHTML={{__html: children}} />
 }
 
 const KoboQuestionAnswerView = ({icon, children}: {icon: string; children: string}) => {
@@ -333,7 +333,7 @@ const KoboQuestionAnswerView = ({icon, children}: {icon: string; children: strin
       <Icon color="disabled" sx={{mr: 1}}>
         {icon}
       </Icon>
-      <Txt color="hint">{children}</Txt>
+      <Core.Txt color="hint">{children}</Core.Txt>
     </Box>
   )
 }

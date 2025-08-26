@@ -92,7 +92,7 @@ function SettingsProxy() {
                         required: {value: true, message: m.required},
                       }}
                       render={({field, fieldState}) => (
-                        <IpInput
+                        <Core.Input
                           {...field}
                           required
                           label={m.name}
@@ -102,7 +102,7 @@ function SettingsProxy() {
                         />
                       )}
                     />
-                    <IpInput
+                    <Core.Input
                       disabled={true}
                       label={m.proxyUrl}
                       value={Proxy.makeUrl({
@@ -120,7 +120,7 @@ function SettingsProxy() {
                         pattern: {value: Regexp.get.url, message: m.invalidUrl},
                       }}
                       render={({field, fieldState}) => (
-                        <IpInput
+                        <Core.Input
                           {...field}
                           label={m.proxyDestinationUrl}
                           error={!!fieldState.error}
@@ -133,7 +133,7 @@ function SettingsProxy() {
                       control={_createForm.control}
                       name="expireAt"
                       render={({field, fieldState}) => (
-                        <IpInput
+                        <Core.Input
                           {...field}
                           label={m.expireAt}
                           type="date"
@@ -167,11 +167,11 @@ function SettingsProxy() {
                 return {
                   value: _.slug,
                   label: (
-                    <Txt link>
+                    <Core.Txt link>
                       <a target="_blank" href={redirectUrl}>
                         {redirectUrl}
                       </a>
-                    </Txt>
+                    </Core.Txt>
                   ),
                 }
               },
@@ -184,11 +184,11 @@ function SettingsProxy() {
                 return {
                   value: _.url,
                   label: (
-                    <Txt link>
+                    <Core.Txt link>
                       <a target="_blank" href={_.url}>
                         {_.url}
                       </a>
-                    </Txt>
+                    </Core.Txt>
                   ),
                 }
               },

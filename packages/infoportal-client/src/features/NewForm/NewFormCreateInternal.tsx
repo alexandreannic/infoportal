@@ -38,7 +38,7 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceI
                 rules={{required: true}}
                 control={form.control}
                 render={({field, fieldState}) => (
-                  <IpInput
+                  <Core.Input
                     required
                     label={m.name}
                     {...field}
@@ -62,7 +62,7 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceI
                     onChange={(e, value) => field.onChange(value)}
                     onInputChange={(_, value) => field.onChange(value)}
                     renderInput={params => (
-                      <IpInput
+                      <Core.Input
                         {...params.InputProps}
                         inputProps={params.inputProps}
                         label={m.category}
@@ -76,7 +76,7 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceI
           </Grid>
         </PanelBody>
         <PanelFoot>
-          <CoreBtn variant="contained" type="submit" loading={queryForm.create.isPending}>
+          <Core.Btn variant="contained" type="submit" loading={queryForm.create.isPending}>
             {m.create}
           </CoreBtn>
         </PanelFoot>

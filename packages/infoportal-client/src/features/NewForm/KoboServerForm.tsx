@@ -103,7 +103,7 @@ export const KoboServerForm = ({
             pattern: Regexp.get.url,
           }}
           render={({field, fieldState}) => (
-            <IpInput {...field} required label={m.serverUrlV1} error={fieldState.invalid} />
+            <Core.Input {...field} required label={m.serverUrlV1} error={fieldState.invalid} />
           )}
         />
         <Controller
@@ -115,12 +115,12 @@ export const KoboServerForm = ({
             pattern: Regexp.get.url,
           }}
           render={({field, fieldState}) => (
-            <IpInput required {...field} label={m.serverUrlV2} error={fieldState.invalid} />
+            <Core.Input required {...field} label={m.serverUrlV2} error={fieldState.invalid} />
           )}
         />
       </AccessFormSection>
       <AccessFormSection icon="key" label={m.access} sxContent={{pb: 0}}>
-        <Txt block color="hint" size="small" gutterBottom>
+        <Core.Txt block color="hint" size="small" gutterBottom>
           <div>Can be found in your account settings.</div>
           {map(form.watch('url'), url => {
             if (url === '') return
@@ -131,7 +131,7 @@ export const KoboServerForm = ({
               </a>
             )
           })}
-        </Txt>
+        </Core.Txt>
         <Controller
           control={form.control}
           name="token"
@@ -140,7 +140,7 @@ export const KoboServerForm = ({
             pattern: new RegExp(/^[0-9a-z]+$/),
           }}
           render={({field, fieldState}) => (
-            <IpInput
+            <Core.Input
               // endAdornment={<Icon>key</Icon>}
               required
               label={m.apiToken}
@@ -158,12 +158,12 @@ export const KoboServerForm = ({
             required: true,
           }}
           render={({field, fieldState}) => (
-            <IpInput required {...field} label={m.accountName} error={fieldState.invalid} />
+            <Core.Input required {...field} label={m.accountName} error={fieldState.invalid} />
           )}
         />
       </AccessFormSection>
       <Box sx={{display: 'flex'}}>
-        <CoreBtn
+        <Core.Btn
           variant="outlined"
           disabled={!form.formState.isValid}
           icon="network_check"
@@ -178,10 +178,10 @@ export const KoboServerForm = ({
         />
       </Box>
       <CardActions sx={{justifyContent: 'flex-end'}}>
-        <CoreBtn color="primary" onClick={onCancel}>
+        <Core.Btn color="primary" onClick={onCancel}>
           {m.close}
         </CoreBtn>
-        <CoreBtn
+        <Core.Btn
           loading={loading}
           variant="contained"
           color="primary"

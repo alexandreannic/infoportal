@@ -217,7 +217,7 @@ export const DatabaseTableContent = ({
           header={params => (
             <>
               <DatabaseViewBtn sx={{mr: 1}} view={ctx.view} onClick={() => setViewEditorOpen(_ => !_)} />
-              <IpSelectSingle<number>
+              <Core.SelectSingle<number>
                 hideNullOption
                 sx={{maxWidth: 128, mr: 1}}
                 value={langIndex}

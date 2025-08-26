@@ -15,6 +15,7 @@ import {DatatableFilterModal3} from '@/shared/Datatable3/popup/DatatablePopupFil
 import {DatatableRow} from '@/shared/Datatable3/DatatableRow.js'
 import {SelectedCellPopover} from '@/shared/Datatable3/state/useCellSelectionComputed.js'
 import {DatatableColumnToggle3} from '@/shared/Datatable3/DatatableColumnsToggle3.js'
+import {Core} from '@/shared'
 
 export const Datatable3 = <T extends Datatable.Row>({
   data,
@@ -130,9 +131,9 @@ export const DatatableWithData = <T extends Datatable.Row>({
               filteredAndSortedData: (dataFilteredAndSorted ?? []) as T[],
             })
           : header}
-        <Txt bold color="hint" sx={{mr: 0.5}}>
+        <Core.Txt bold color="hint" sx={{mr: 0.5}}>
           {formatLargeNumber(dataFilteredAndSorted.length)}
-        </Txt>
+        </Core.Txt>
       </div>
       <Box
         className="dt"
