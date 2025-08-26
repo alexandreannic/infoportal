@@ -1,9 +1,9 @@
 import {Box} from '@mui/material'
-import {useI18n} from 'infoportal-client/src/core/i18n/index.js'
-import {IpBtn} from 'packages/infoportal-client-core/src/Btn.js'
 import {useStepperContext} from './Stepper.js'
 import {StepperActionsNext} from './StepperActionsNext.js'
 import {ReactNode} from 'react'
+import {IpBtn} from '../Btn.js'
+import {useI18n} from '../../core/Translation.js'
 
 interface Props {
   hideNext?: boolean
@@ -11,6 +11,7 @@ interface Props {
   loadingNext?: boolean
   disableNext?: boolean
   loadingPrev?: boolean
+  previousButtonLabel?: string
   nextButtonLabel?: string
   nextIcon?: string
   next?: (next: () => void) => void
@@ -21,6 +22,7 @@ interface Props {
 export const StepperActions = ({
   disableNext,
   nextButtonLabel,
+  previousButtonLabel,
   nextIcon,
   hidePrev,
   children,
@@ -30,8 +32,8 @@ export const StepperActions = ({
   next,
   prev,
 }: Props) => {
-  const {m} = useI18n()
   const _stepper = useStepperContext()
+  const {m} = useI18n()
   return (
     <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', mt: 3}}>
       {_stepper.currentStep > 0 && !hidePrev && (
@@ -42,7 +44,7 @@ export const StepperActions = ({
           color="primary"
           icon="keyboard_arrow_left"
         >
-          {m.previous}
+          {previousButtonLabel ?? m.stepper_previous}
         </IpBtn>
       )}
       {children}
@@ -52,7 +54,7 @@ export const StepperActions = ({
           icon={nextIcon}
           loading={loadingNext}
           onClick={next ? () => next(_stepper.next) : _stepper.next}
-          children={nextButtonLabel}
+          children={nextButtonLabel ?? m.stepper_next}
         />
       )}
     </Box>

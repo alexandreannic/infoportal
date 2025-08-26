@@ -1,7 +1,7 @@
 import {KeyOfType, Obj, Seq} from '@axanc/ts-utils'
 import {format} from 'date-fns'
 import React, {useMemo} from 'react'
-import {ChartLine, ChartLineData} from 'packages/infoportal-client-core/src/charts/ChartLine.js'
+import {ChartLine, ChartLineData} from './ChartLine.js'
 
 export const ChartLineByProperty = <
   T extends Record<string, any>,
@@ -40,6 +40,5 @@ export const ChartLineByProperty = <
       }
     })
   }, [data, property])
-  console.log('chartdata', {data, transform})
   return <ChartLine data={transform} height={height} translation={translations as any} hideLabelToggle />
 }

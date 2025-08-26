@@ -1,10 +1,10 @@
-import {alpha, Box, SxProps, Theme, useTheme} from '@mui/material'
+import {Box, SxProps, Theme, useTheme} from '@mui/material'
 // @ts-ignore
 import {Cell, Pie, PieChart, PieChartProps, PieLabelRenderProps, ResponsiveContainer, Tooltip} from 'recharts'
 import React, {ReactNode} from 'react'
 import {toPercent} from 'infoportal-common'
 import {Obj} from '@axanc/ts-utils'
-import {alphaVar} from 'infoportal-client/src/core/theme.js'
+import {alphaVar} from '../core/theme.js'
 
 const RADIAN = Math.PI / 180
 const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index}: any) => {
@@ -101,7 +101,8 @@ const ChartPieSetup = <T extends Record<string, number>>({
             {...props}
             // label={renderCustomizedLabel(data)}
           >
-            {colors && Object.keys(colors).map(k => <Cell key={k} fill={colors[k] ?? theme.vars.palette.primary.main} />)}
+            {colors &&
+              Object.keys(colors).map(k => <Cell key={k} fill={colors[k] ?? theme.vars.palette.primary.main} />)}
           </Pie>
         </PieChart>
       </ResponsiveContainer>
@@ -109,7 +110,17 @@ const ChartPieSetup = <T extends Record<string, number>>({
   )
 }
 
-export const ChartPie = ({percent = 0, size = 55, color, sx}: {percent?: number; size?: number; color?: string; sx?: SxProps<Theme>}) => {
+export const ChartPie = ({
+  percent = 0,
+  size = 55,
+  color,
+  sx,
+}: {
+  percent?: number
+  size?: number
+  color?: string
+  sx?: SxProps<Theme>
+}) => {
   const theme = useTheme()
   return (
     <ChartPieSetup

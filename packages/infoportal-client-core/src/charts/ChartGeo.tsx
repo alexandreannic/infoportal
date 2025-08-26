@@ -1,16 +1,14 @@
 import {Chart, ChartWrapperOptions} from 'react-google-charts'
 import {useMemo, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
-import {Panel, PanelHead} from 'packages/infoportal-client-core/src/Panel/index.js'
-import {IpIconBtn} from 'infoportal-client/src/shared/index.js'
-import {useI18n} from 'infoportal-client/src/core/i18n/index.js'
 import {lightenVar} from 'infoportal-client/src/core/theme.js'
+import {Panel, PanelHead} from '../ui/Panel/index.js'
+import {IpIconBtn} from '../ui/IconBtn.js'
 
 const headers = ['Location', 'Submissions']
 
-export const ChartGeo = ({data}: {data?: {iso: string; count: number}[]}) => {
+export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: string; count: number}[]}) => {
   const t = useTheme()
-  const {m} = useI18n()
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
 
   const {countries, regions} = useMemo(() => {
@@ -71,7 +69,7 @@ export const ChartGeo = ({data}: {data?: {iso: string; count: number}[]}) => {
 
   return (
     <Panel>
-      <PanelHead>{m.submissionsByLocation}</PanelHead>
+      <PanelHead>{panelTitle}</PanelHead>
       <Box sx={{overflow: 'hidden', position: 'relative'}}>
         <Chart
           style={{marginTop: -40, marginBottom: -40}}

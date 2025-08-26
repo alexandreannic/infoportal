@@ -1,10 +1,10 @@
 import {addDays, subDays} from 'date-fns'
 import React, {useEffect, useState} from 'react'
-import {useI18n} from 'infoportal-client/src/core/i18n/index.js'
 import {Box, BoxProps} from '@mui/material'
-import {IpDatepicker} from '../Datepicker/IpDatepicker.js'
+import {IpDatepicker} from '../Datepicker.js'
+import {useTranslation} from '../../core/Translation.js'
 
-export interface PeriodPickerProps extends Omit<BoxProps, 'defaultValue' | 'onChange'> {
+export interface PeriodPickerNativeProps extends Omit<BoxProps, 'defaultValue' | 'onChange'> {
   min?: Date
   max?: Date
   value?: [Date | undefined, Date | undefined]
@@ -14,10 +14,19 @@ export interface PeriodPickerProps extends Omit<BoxProps, 'defaultValue' | 'onCh
   fullWidth?: boolean
 }
 
-export const PeriodPickerNative = ({min, max, value, onChange, label, fullWidth, sx, ...props}: PeriodPickerProps) => {
+export const PeriodPickerNative = ({
+  min,
+  max,
+  value,
+  onChange,
+  label,
+  fullWidth,
+  sx,
+  ...props
+}: PeriodPickerNativeProps) => {
   const [start, setStart] = useState<Date | undefined>(undefined)
   const [end, setEnd] = useState<Date | undefined>(undefined)
-  const {m} = useI18n()
+  const m = useTranslation()
 
   useEffect(() => {
     if (value) {
@@ -51,7 +60,7 @@ export const PeriodPickerNative = ({min, max, value, onChange, label, fullWidth,
       <IpDatepicker
         min={min}
         max={max}
-        label={label?.[0] ?? m.start}
+        label={label?.[0] ?? m.datepicker_start}
         fullWidth={fullWidth}
         value={start}
         onChange={handleStartChange}
@@ -71,7 +80,7 @@ export const PeriodPickerNative = ({min, max, value, onChange, label, fullWidth,
       <IpDatepicker
         min={min}
         max={max}
-        label={label?.[1] ?? m.end}
+        label={label?.[1] ?? m.datepicker_end}
         fullWidth={fullWidth}
         value={end}
         onChange={handleEndChange}

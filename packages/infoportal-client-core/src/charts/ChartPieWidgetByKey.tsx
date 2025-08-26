@@ -1,7 +1,7 @@
 import {KeyOf} from 'infoportal-common'
 import * as React from 'react'
 import {useMemo} from 'react'
-import {ChartPieWidgetBy, ChartPieWidgetProps} from 'packages/infoportal-client-core/src/charts/ChartPieWidgetBy.js'
+import {ChartPieWidgetBy, ChartPieWidgetProps} from './ChartPieWidgetBy.js'
 
 export const ChartPieWidgetByKey = <T, K extends KeyOf<T>>({
   property,

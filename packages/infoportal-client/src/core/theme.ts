@@ -88,6 +88,7 @@ const createDarkShadows = (primaryColor: string): string[] => {
   )
 }
 
+/** @deprecated Use from core */
 export const styleUtils = (t: Theme) => ({
   backdropFilter: 'blur(10px)',
   gridSpacing: 3 as any,

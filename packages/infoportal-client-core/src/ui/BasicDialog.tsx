@@ -1,7 +1,7 @@
 import {Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, LinearProgress, PaperProps} from '@mui/material'
-import {IpBtn} from 'packages/infoportal-client-core/src/Btn.js'
 import {EventHandler, ReactNode, SyntheticEvent} from 'react'
 import {Txt} from './Txt.js'
+import {IpBtn} from './Btn.js'
 
 export type BasicDialogProps = Omit<DialogProps, 'children' | 'onClick'> & {
   disabled?: boolean

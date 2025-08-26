@@ -1,6 +1,6 @@
 import {Box, BoxProps, Checkbox, Icon, Radio, useTheme} from '@mui/material'
 import React, {ReactNode} from 'react'
-import {styleUtils} from 'infoportal-client/src/core/theme.js'
+import {styleUtils} from '../../core/theme.js'
 
 const defaultMuiRadioPadding = 9
 

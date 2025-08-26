@@ -1,7 +1,7 @@
 import {Checkbox, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SxProps, Theme} from '@mui/material'
 import React, {forwardRef, ReactNode, useMemo, useState} from 'react'
-import {useI18n} from 'infoportal-client/src/core/i18n/index.js'
-import {makeSx} from 'infoportal-client/src/core/theme.js'
+import {useI18n} from '../../core/Translation.js'
+import {makeSx} from '../../core/theme.js'
 
 type Option<T extends string | number = string> = {value: T; children: ReactNode; key?: string}
 
@@ -108,7 +108,7 @@ export const IpSelectMultiple = forwardRef<HTMLInputElement, IpSelectMultiplePro
                   paddingBottom: `8px !important`,
                 }}
               />
-              {m.selectAll}
+              {m.select_selectAll}
             </MenuItem>
           )}
           {showUndefinedOption && <MenuItem dense value={null as any} sx={style.item} />}

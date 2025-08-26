@@ -1,8 +1,8 @@
-import {Txt} from '../../../infoportal-client-core/src/Txt.js'
 import {Box, BoxProps, Icon, useTheme} from '@mui/material'
 import React, {ReactNode} from 'react'
+import {Txt} from './Txt.js'
 
-export const IpListItem = ({
+export const ListItem = ({
   title,
   desc,
   action,

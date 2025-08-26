@@ -2,7 +2,7 @@ import * as React from 'react'
 import {forwardRef, ReactNode} from 'react'
 import {Box, Card, CardProps, LinearProgress} from '@mui/material'
 import {PanelHead} from './PanelHead.js'
-import {PanelFeatures} from 'packages/infoportal-client-core/src/Panel/PanelFeatures.js'
+import {PanelFeatures} from './PanelFeatures.js'
 
 export interface PanelProps extends Omit<CardProps, 'title'> {
   loading?: boolean

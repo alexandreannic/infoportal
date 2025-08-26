@@ -1,64 +1,11 @@
 import * as React from 'react'
 import {forwardRef, ReactNode} from 'react'
-import {alpha, Button, CircularProgress, Icon, Tooltip} from '@mui/material'
+import {Button, CircularProgress, Icon, styled, Tooltip} from '@mui/material'
 import {ButtonProps} from '@mui/material/Button'
-import {makeStyles} from 'tss-react/mui'
 import {fnSwitch} from '@axanc/ts-utils'
-import {alphaVar, styleUtils} from 'infoportal-client/src/core/theme.js'
+import {alphaVar, styleUtils} from '../core/theme.js'
 
-const useStyles = makeStyles<{loading?: boolean; variant?: IpBtnVariant}>()((t, {loading, variant}) => ({
-  icon: {
-    height: '22px !important',
-    lineHeight: '22px !important',
-    fontSize: '22px !important',
-    marginRight: t.vars.spacing
-  },
-  root: {
-    ...fnSwitch(
-      variant!,
-      {
-        light: {
-          border: 'none',
-          fontWeight: 500,
-          background: alphaVar(t.vars.palette.primary.main, 0.12),
-          textTransform: 'inherit',
-          '&:hover': {
-            background: alphaVar(t.vars.palette.primary.main, 0.2),
-          },
-        },
-        input: {
-          fontWeight: 500,
-          ...styleUtils(t).color.input.default,
-          textTransform: 'inherit',
-          '&:hover': {
-            ...styleUtils(t).color.input.hover,
-          },
-        },
-      },
-      () => undefined,
-    ),
-  },
-  content: {
-    display: 'flex',
-    alignItems: 'center',
-    ...(loading && {
-      visibility: 'hidden',
-    }),
-  },
-  progress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: `calc(${t.vars.spacing} * 1.5)`,
-    marginLeft: `calc(${t.vars.spacing} * 1.5)`,
-  },
-  iconEnd: {
-    marginRight: 0,
-    marginLeft: t.vars.spacing
-  },
-}))
-
-export type IpBtnVariant = ButtonProps['variant'] | 'light' | 'input'
+export type IpBtnVariant = 'light' | 'input' | 'text' | 'outlined' | 'contained'
 
 export interface IpBtnProps extends Omit<ButtonProps, 'variant'> {
   variant?: IpBtnVariant
@@ -72,50 +19,98 @@ export interface IpBtnProps extends Omit<ButtonProps, 'variant'> {
   target?: '_blank'
 }
 
-export const IpBtn = forwardRef(
+const StyledButton = styled(Button, {
+  shouldForwardProp: prop => prop !== 'variant',
+})<{
+  variant?: IpBtnVariant
+}>(({theme, variant}) => {
+  return {
+    position: 'relative',
+    ...fnSwitch(
+      variant as unknown as IpBtnVariant,
+      {
+        light: {
+          border: 'none',
+          fontWeight: 500,
+          background: alphaVar(theme.vars.palette.primary.main, 0.12),
+          textTransform: 'inherit',
+          '&:hover': {
+            background: alphaVar(theme.vars.palette.primary.main, 0.2),
+          },
+        },
+        input: {
+          fontWeight: 500,
+          ...styleUtils(theme).color.input.default,
+          textTransform: 'inherit',
+          '&:hover': {
+            ...styleUtils(theme).color.input.hover,
+          },
+        },
+      },
+      () => ({}),
+    ),
+  }
+})
+
+const Content = styled('div')<{loading?: boolean}>(({loading}) => ({
+  display: 'flex',
+  alignItems: 'center',
+  ...(loading && {
+    visibility: 'hidden',
+  }),
+}))
+
+const Progress = styled(CircularProgress)(({theme}) => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  marginTop: `calc(${theme.vars.spacing} * 1.5)`,
+  marginLeft: `calc(${theme.vars.spacing} * 1.5)`,
+}))
+
+const StyledIcon = styled(Icon)(({theme}) => ({
+  height: '22px !important',
+  lineHeight: '22px !important',
+  fontSize: '22px !important',
+  marginRight: theme.vars.spacing,
+}))
+
+const StyledIconEnd = styled(StyledIcon)(({theme}) => ({
+  marginRight: 0,
+  marginLeft: theme.vars.spacing,
+}))
+
+export const IpBtn = forwardRef<HTMLButtonElement, IpBtnProps>(
   (
-    {
-      tooltip,
-      loading,
-      children,
-      disabled,
-      before,
-      icon,
-      variant,
-      iconAfter,
-      color,
-      className,
-      iconSx,
-      ...props
-    }: IpBtnProps,
-    ref: any,
+    {tooltip, loading, children, disabled, before, icon, variant, iconAfter, color, className, iconSx, ...props},
+    ref,
   ) => {
-    const {classes, cx} = useStyles({loading, variant})
     const btn = (
-      <Button
+      <StyledButton
         {...props}
+        ref={ref}
         variant={variant === 'light' || variant === 'input' ? 'outlined' : variant}
         color={color}
         disabled={disabled || loading}
-        ref={ref}
-        className={cx(className, classes.root)}
+        loading={loading}
+        className={className}
       >
-        <div className={classes.content}>
+        <Content loading={loading}>
           {before}
           {icon && (
-            <Icon fontSize={props.size} className={classes.icon} sx={iconSx}>
+            <StyledIcon fontSize={props.size} sx={iconSx}>
               {icon}
-            </Icon>
+            </StyledIcon>
           )}
           {children}
           {iconAfter && (
-            <Icon className={cx(classes.iconEnd, classes.icon)} fontSize={props.size} sx={iconSx}>
+            <StyledIconEnd fontSize={props.size} sx={iconSx}>
               {iconAfter}
-            </Icon>
+            </StyledIconEnd>
           )}
-        </div>
-        {loading && <CircularProgress size={24} className={classes.progress} />}
-      </Button>
+        </Content>
+        {loading && <Progress size={24} />}
+      </StyledButton>
     )
     return tooltip ? <Tooltip title={tooltip}>{btn}</Tooltip> : btn
   },

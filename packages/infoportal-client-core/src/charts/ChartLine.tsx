@@ -3,11 +3,11 @@ import * as React from 'react'
 import {ReactNode, useState} from 'react'
 import {Box, BoxProps, Checkbox, Theme, useTheme} from '@mui/material'
 import {map, Obj} from '@axanc/ts-utils'
-import {styleUtils} from 'infoportal-client/src/core/theme.js'
-import {chartConfig} from 'packages/infoportal-client-core/src/charts/chartConfig.js'
-import {formatLargeNumber} from 'infoportal-client/src/core/i18n/localization/en.js'
-import {commonLegendProps} from 'packages/infoportal-client-core/src/charts/ChartBarStacked.js'
+import {styleUtils} from '../core/theme.js'
 import {addMonths, format, isBefore, parse} from 'date-fns'
+import {chartConfig} from './chartConfig.js'
+import {commonLegendProps} from './ChartBarStacked.js'
+import {useI18n} from '../core/Translation.js'
 
 export interface ChartLineProps extends Pick<BoxProps, 'sx'> {
   colorsByKey?: (t: Theme) => Record<string, string>
@@ -80,6 +80,7 @@ export const ChartLine = ({
   height = 220,
 }: ChartLineProps) => {
   const theme = useTheme()
+  const {formatLargeNumber} = useI18n()
   // const lines = Object.keys(data?.[0] ?? {}).filter(_ => _ !== 'name')
   const lines = Object.keys(data?.[0]?.values ?? {})
   const [showCurves, setShowCurves] = useState<boolean[]>(new Array(lines.length).fill(false))

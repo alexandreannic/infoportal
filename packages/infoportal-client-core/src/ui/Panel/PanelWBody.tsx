@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {forwardRef} from 'react'
 import {PanelBody} from './PanelBody.js'
-import {Panel, PanelProps} from 'packages/infoportal-client-core/src/Panel/Panel.js'
+import {Panel, PanelProps} from './Panel.js'
 
 export type PanelWBodyProps = PanelProps
 

@@ -1,14 +1,14 @@
 import * as React from 'react'
 import {ReactNode, useMemo, useState} from 'react'
-import {alpha, Box, Checkbox, Icon, TooltipProps} from '@mui/material'
+import {Box, Checkbox, Icon, TooltipProps} from '@mui/material'
 import {useTimeout} from '@axanc/react-hooks'
-import {useI18n} from 'infoportal-client/src/core/i18n/index.js'
-import {Txt} from 'packages/infoportal-client-core/src/Txt.js'
 import {Obj} from '@axanc/ts-utils'
-import {LightTooltip, TooltipRow} from 'infoportal-client/src/shared/LightTooltip.js'
 import {toPercent} from 'infoportal-common'
-import {ChartDataVal} from 'packages/infoportal-client-core/src/charts/chartHelper.js'
-import {alphaVar} from 'infoportal-client/src/core/theme.js'
+import {Txt} from '../ui/Txt.js'
+import {ChartDataVal} from './chartHelper.js'
+import {useI18n} from '../core/Translation.js'
+import {alphaVar} from '../core/theme.js'
+import {LightTooltip, TooltipRow} from '../LightTooltip.js'
 
 export interface BarChartData extends ChartDataVal {
   color?: string
@@ -42,7 +42,7 @@ export const ChartBar = <K extends string>(props: Props<K>) => {
       }}
     >
       <Icon sx={{fontSize: '3em !important'}}>block</Icon>
-      <Box>{m.noDataAtm}</Box>
+      <Box>{m.chart_noDataAtm}</Box>
     </Box>
   )
 }
@@ -84,11 +84,10 @@ export const ChartBarContent = <K extends string>({
   // const sumValue = useMemo(() => values.reduce((sum, _) => _.value + sum, 0), [data])
   // const percents = useMemo(() => values.map(_ => _.value / ((base ?? _.base) || sumValue) * 100), [data])
   const maxPercent = useMemo(() => Math.max(...percents), [percents])
-  const {m} = useI18n()
   const [appeared, setAppeared] = useState<boolean>(false)
   useTimeout(() => setAppeared(true), 200)
 
-  const {formatLargeNumber} = useI18n()
+  const {m, formatLargeNumber} = useI18n()
 
   return (
     <Box sx={{overflow: 'hidden'}}>
@@ -98,7 +97,7 @@ export const ChartBarContent = <K extends string>({
             block
           </Icon>
           <Txt block color="disabled">
-            {m.noDataAtm}
+            {m.chart_noDataAtm}
           </Txt>
         </Box>
       )}
@@ -124,7 +123,9 @@ export const ChartBarContent = <K extends string>({
                       : {
                           mb: i === values.length - 1 ? 0 : 1,
                           borderBottom:
-                            i === values.length - 1 && !showLastBorder ? 'none' : t => `1px solid ${t.vars.palette.divider}`,
+                            i === values.length - 1 && !showLastBorder
+                              ? 'none'
+                              : t => `1px solid ${t.vars.palette.divider}`,
                           transition: t => t.transitions.create('background'),
                           '&:hover': {
                             background: t => alphaVar(item.color ?? t.vars.palette.primary.main, 0.1),
@@ -145,7 +146,7 @@ export const ChartBarContent = <K extends string>({
                   >
                     <Txt sx={{p: 0, pr: 0.5, flex: 1}} truncate>
                       <Txt block truncate>
-                        {checked && <Checkbox sx={{padding: .5, mr: 1}} size="small" checked={checked.includes(k)} />}
+                        {checked && <Checkbox sx={{padding: 0.5, mr: 1}} size="small" checked={checked.includes(k)} />}
                         {(labels && labels[k]) ?? item.label ?? k}
                       </Txt>
                       {(item.desc || descs) && (
@@ -211,8 +212,7 @@ const TooltipWrapper = ({
   sumValue: number
   item: BarChartData
 }) => {
-  const {formatLargeNumber} = useI18n()
-  const {m} = useI18n()
+  const {formatLargeNumber, m} = useI18n()
   if (item.disabled) return children
   return (
     <LightTooltip
@@ -239,7 +239,7 @@ const TooltipWrapper = ({
             />
             {base !== sumValue && (
               <TooltipRow
-                label={m.comparedToTotalAnswers}
+                label={m.chart_comparedToTotalAnswers}
                 hint={
                   <>
                     {formatLargeNumber(item.value)} / {formatLargeNumber(sumValue)}

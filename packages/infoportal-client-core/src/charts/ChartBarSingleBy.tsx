@@ -1,9 +1,8 @@
-import {ChartData, ChartDataVal, ChartHelper} from 'packages/infoportal-client-core/src/charts/chartHelper.js'
-import {Obj, seq, Seq} from '@axanc/ts-utils'
+import {seq, Seq} from '@axanc/ts-utils'
 import React, {ReactNode, useMemo} from 'react'
 import {KeyOf} from 'infoportal-common'
-import {ChartBar} from 'packages/infoportal-client-core/src/charts/ChartBar.js'
-import {Checkbox} from '@mui/material'
+import {ChartData, ChartDataVal, ChartHelper} from './chartHelper.js'
+import {ChartBar} from './ChartBar.js'
 
 export const ChartBarSingleBy = <D extends Record<string, any>, K extends string, O extends Record<K, ReactNode>>({
   by,

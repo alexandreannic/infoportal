@@ -1,5 +1,5 @@
-import {ChartBarMultipleBy, ChartBarMultipleByProps} from 'packages/infoportal-client-core/src/charts/ChartBarMultipleBy.js'
 import {KeyOfType} from '@axanc/ts-utils'
+import {ChartBarMultipleBy, ChartBarMultipleByProps} from './ChartBarMultipleBy.js'
 
 export const ChartBarMultipleByKey = <
   D extends Record<string, any>,

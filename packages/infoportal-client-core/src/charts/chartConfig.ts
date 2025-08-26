@@ -1,5 +1,5 @@
-import {alpha, Theme} from '@mui/material'
-import {alphaVar} from 'infoportal-client/src/core/theme.js'
+import {Theme} from '@mui/material'
+import {alphaVar} from '../core/theme.js'
 
 export const chartConfig = {
   defaultColors: (t: Theme) => [

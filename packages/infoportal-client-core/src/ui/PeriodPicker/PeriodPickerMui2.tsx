@@ -3,14 +3,12 @@ import {DateRange, PickersShortcutsItem, StaticDateRangePicker} from '@mui/x-dat
 import {Box, Popover, TextField} from '@mui/material'
 import {mapFor} from '@axanc/ts-utils'
 import {endOfMonth, format, startOfMonth, subMonths} from 'date-fns'
-import {useI18n} from 'infoportal-client/src/core/i18n/index.js'
-import {PeriodPickerProps} from 'packages/infoportal-client-core/src/PeriodPicker/PeriodPicker.js'
+import {PeriodPickerProps} from './PeriodPicker.js'
 
 /** @deprecated Not used, keep it in case I got issue with the native MUI behavior*/
 export const PeriodPickerMui2 = ({min, max, value, onChange, label, fullWidth, sx, ...props}: PeriodPickerProps) => {
   const [start, setStart] = useState<Date | undefined>(undefined)
   const [end, setEnd] = useState<Date | undefined>(undefined)
-  const {m} = useI18n()
   const [open, setOpen] = useState(false)
   const anchor = useRef<HTMLDivElement | null>(null)
   // const [rangePosition, setRangePosition] = useState<'start' | 'end' | undefined>(undefined)
@@ -45,7 +43,7 @@ export const PeriodPickerMui2 = ({min, max, value, onChange, label, fullWidth, s
           fullWidth={fullWidth}
           InputLabelProps={{shrink: true}}
           ref={anchor as any}
-          label={label?.[0] ?? m.start}
+          label={label[0]}
           value={start}
           onClick={() => setOpen(_ => !_)}
           onChange={console.log}
@@ -71,7 +69,7 @@ export const PeriodPickerMui2 = ({min, max, value, onChange, label, fullWidth, s
           fullWidth={fullWidth}
           InputLabelProps={{shrink: true}}
           onClick={() => setOpen(_ => !_)}
-          label={label?.[1] ?? m.end}
+          label={label[1]}
           value={end}
           onChange={console.log}
           InputProps={{

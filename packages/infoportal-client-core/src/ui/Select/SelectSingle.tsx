@@ -13,10 +13,10 @@ import {
   Theme,
 } from '@mui/material'
 import React, {ReactNode, useMemo} from 'react'
-import {makeSx} from 'infoportal-client/src/core/theme.js'
-import {Txt} from 'infoportal-client/src/shared/index.js'
 import {OverridableComponent} from '@mui/material/OverridableComponent'
 import {ArrowDropDownIcon} from '@mui/x-date-pickers-pro'
+import {Txt} from '../Txt.js'
+import {makeSx} from '../../core/theme.js'
 
 export type IpSelectOption<T extends string | number = string> = {
   value: T

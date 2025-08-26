@@ -10,7 +10,7 @@ import {
 import {unstable_useMultiInputRangeField as useMultiInputDateRangeField} from '@mui/x-date-pickers-pro/hooks'
 import {Box, TextField} from '@mui/material'
 import {endOfMonth, format, startOfMonth, subMonths} from 'date-fns'
-import {PeriodPickerProps} from 'packages/infoportal-client-core/src/PeriodPicker/PeriodPickerNative.js'
+import {PeriodPickerProps} from './PeriodPicker.js'
 
 const shortcutsItems: PickersShortcutsItem<DateRange<Date>>[] = (() => {
   const today = new Date()

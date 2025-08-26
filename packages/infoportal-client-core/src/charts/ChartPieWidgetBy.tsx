@@ -1,7 +1,7 @@
-import {ChartPieIndicatorProps, ChartPieWidget} from 'packages/infoportal-client-core/src/charts/ChartPieWidget.js'
 import * as React from 'react'
 import {ReactNode, useMemo} from 'react'
 import {Seq} from '@axanc/ts-utils'
+import {ChartPieIndicatorProps, ChartPieWidget} from './ChartPieWidget.js'
 
 export type ChartPieWidgetProps<T> = {
   compare?: {before: Seq<T>; now?: Seq<T>}

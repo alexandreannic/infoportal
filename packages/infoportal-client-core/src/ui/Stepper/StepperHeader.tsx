@@ -1,8 +1,8 @@
 import React from 'react'
-import {alpha, Box, BoxProps, SxProps, Theme} from '@mui/material'
-import {useWindowWidth} from 'infoportal-client/src/core/useWindowWidth.js'
-import {alphaVar, makeSx, styleUtils} from 'infoportal-client/src/core/theme.js'
+import {Box, BoxProps, SxProps, Theme} from '@mui/material'
 import {fnSwitch} from '@axanc/ts-utils'
+import {useWindowWidth} from 'infoportal-client/src/core/useWindowWidth.js'
+import {alphaVar, makeSx, styleUtils} from '../../core/theme.js'
 
 interface StepperHeaderProps extends BoxProps {
   steps: (string | undefined)[]
@@ -25,7 +25,6 @@ export const StepperHeader = ({
   hideLabel,
 }: StepperHeaderProps) => {
   const isDone = currentStep >= steps.length
-  const {isMobileWidthMax} = useWindowWidth()
   return (
     <Box
       sx={{
@@ -92,7 +91,8 @@ export const StepperHeader = ({
                         color: t => t.vars.palette.success.contrastText,
                       },
                       current: {
-                        boxShadow: t => `0px 0px 0px ${stepSize > 30 ? 4 : 2}px ${alphaVar(t.vars.palette.primary.main, 0.3)}`,
+                        boxShadow: t =>
+                          `0px 0px 0px ${stepSize > 30 ? 4 : 2}px ${alphaVar(t.vars.palette.primary.main, 0.3)}`,
                         color: t => t.vars.palette.primary.contrastText,
                         bgcolor: 'primary.main',
                       },
@@ -106,7 +106,7 @@ export const StepperHeader = ({
               >
                 {i + 1}
               </Box>
-              {!hideLabel && (!isMobileWidthMax || step === 'current') && (
+              {!hideLabel && (
                 <Box
                   sx={{
                     mt: 1,

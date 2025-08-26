@@ -1,12 +1,12 @@
-import {alpha, Box, Icon, Tooltip, useTheme} from '@mui/material'
+import {Box, Icon, Tooltip} from '@mui/material'
 import React, {ReactNode} from 'react'
-import {Txt} from 'packages/infoportal-client-core/src/Txt.js'
-import {ChartPie} from 'packages/infoportal-client-core/src/charts/ChartPie.js'
 import {SlidePanelTitle} from 'infoportal-client/src/shared/PdfLayout/PdfSlide.js'
-import {PanelProps} from '../Panel/Panel.js'
 import {useI18n} from 'infoportal-client/src/core/i18n/index.js'
-import {LightTooltip, TooltipRow} from 'infoportal-client/src/shared/LightTooltip.js'
 import {toPercent} from 'infoportal-common'
+import {PanelProps} from '../ui/Panel/Panel.js'
+import {LightTooltip, TooltipRow} from '../LightTooltip.js'
+import {Txt} from '../ui/Txt.js'
+import {ChartPie} from './ChartPie.js'
 
 const previousPeriodDeltaDays = 90
 
