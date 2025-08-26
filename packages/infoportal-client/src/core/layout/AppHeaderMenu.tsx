@@ -81,9 +81,9 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<Omit<BoxProps, 'borderColo
             </Row>
           </Box>
           <Box sx={{px: 2}}>
-            <IpBtn icon="logout" variant="outlined" onClick={logout} sx={{mb: 2}}>
+            <CoreBtn icon="logout" variant="outlined" onClick={logout} sx={{mb: 2}}>
               {m.logout}
-            </IpBtn>
+            </CoreBtn>
           </Box>
         </Box>
       </Popover>

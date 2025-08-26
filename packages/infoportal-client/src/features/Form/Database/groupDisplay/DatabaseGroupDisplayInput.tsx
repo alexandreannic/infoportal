@@ -44,7 +44,7 @@ export const DatabaseGroupDisplayInput = (props: IpBtnProps) => {
         </Box>
       )}
     >
-      <IpBtn
+      <CoreBtn
         variant="input"
         color="inherit"
         children={<Icon sx={{transform: 'rotate(180deg)', marginRight: '-8px'}}>move_up</Icon>}

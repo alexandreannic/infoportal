@@ -114,9 +114,9 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
   //       <CenteredContent>
   //         <div>
   //           {/* <Txt>{session.user.email}</Txt> */}
-  //           <IpBtn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
+  //           <CoreBtn onClick={logout} icon="arrow_back" sx={{mb: 2}}>
   //             {user.email}
-  //           </IpBtn>
+  //           </CoreBtn>
   //           <PageTitle>{m.onboardingTitle}</PageTitle>
   //           <WorkspaceCreate />
   //         </div>
@@ -129,7 +129,7 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
       {originalEmail && (
         <Box sx={{px: 2, py: 0.25, background: t => t.vars.palette.background.paper}}>
           Connected as <b>{user.email}</b>. Go back as <b>{originalEmail}</b>
-          <IpBtn
+          <CoreBtn
             sx={{ml: 1}}
             loading={revertConnectAs.isPending}
             onClick={() => revertConnectAs.mutate()}
@@ -138,7 +138,7 @@ export const ProtectRoute = ({children}: {children: ReactNode}) => {
             size="small"
           >
             {m.return}
-          </IpBtn>
+          </CoreBtn>
         </Box>
       )}
       {children}

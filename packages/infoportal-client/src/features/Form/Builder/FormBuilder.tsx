@@ -73,14 +73,14 @@ function FormBuilder() {
                               queryVersion.deployLast.mutateAsync({workspaceId, formId}).then(close)
                             }
                           >
-                            <IpBtn
+                            <CoreBtn
                               icon="send"
                               variant="contained"
                               disabled={!draft}
                               loading={queryVersion.deployLast.isPending}
                             >
                               {m.deployLastVersion}
-                            </IpBtn>
+                            </CoreBtn>
                           </Modal>
                         }
                       >
@@ -105,7 +105,7 @@ function FormBuilder() {
             <Grid size={{xs: 12, md: 6}}>
               {active && (
                 <Panel sx={{p: 1}}>
-                  <IpBtn
+                  <CoreBtn
                     sx={{mr: 1}}
                     icon="visibility"
                     size="large"
@@ -114,9 +114,9 @@ function FormBuilder() {
                     disabled={!active}
                   >
                     {m.preview}
-                  </IpBtn>
+                  </CoreBtn>
                   <Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId}} target="_blank">
-                    <IpBtn
+                    <CoreBtn
                       sx={{mr: 1}}
                       icon="open_in_new"
                       size="large"
@@ -124,7 +124,7 @@ function FormBuilder() {
                       onClick={() => setShowPreview(true)}
                     >
                       {m.open}
-                    </IpBtn>
+                    </CoreBtn>
                   </Link>
                   <Modal
                     title={m.copyResponderLink}
@@ -147,9 +147,9 @@ function FormBuilder() {
                       />
                     }
                   >
-                    <IpBtn icon="link" size="large" variant="outlined">
+                    <CoreBtn icon="link" size="large" variant="outlined">
                       {m.copyLink}
-                    </IpBtn>
+                    </CoreBtn>
                   </Modal>
                 </Panel>
               )}

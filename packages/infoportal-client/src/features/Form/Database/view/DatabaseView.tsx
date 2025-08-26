@@ -26,9 +26,9 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
   return (
     <Box sx={{p: 1}}>
       <PanelTitle sx={{mb: 0.5}}>{m._datatable.view}</PanelTitle>
-      <IpAlert color="info" icon={<Icon>help</Icon>} sx={{mb: 1}} deletable="permanent" id="db-view-info">
+      <Core.Alert color="info" icon={<Icon>help</Icon>} sx={{mb: 1}} deletable="permanent" id="db-view-info">
         <b>Views</b> save your column visibility and width. They can be shared with other users.
-      </IpAlert>
+      </Core.Alert>
       {ctx.fetcherViews.get?.map(view => (
         <DatabaseViewInputRow
           key={view.id}
@@ -53,7 +53,7 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
           {...formCreate.register('name', {required: true})}
           label={m._datatable.createNewView}
           endAdornment={
-            <IpBtn
+            <CoreBtn
               size="small"
               variant="text"
               loading={ctx.asyncViewCreate.loading}
@@ -81,7 +81,7 @@ export const DatabaseViewBtn = ({view, sx, ...props}: IpBtnProps & {view: UseDat
   const t = useTheme()
 
   return (
-    <IpBtn
+    <CoreBtn
       icon="visibility"
       color="inherit"
       variant="input"

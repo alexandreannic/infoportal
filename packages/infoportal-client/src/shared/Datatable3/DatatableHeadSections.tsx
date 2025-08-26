@@ -94,7 +94,7 @@ function DatatableHeadSections_({
               className={classes.th}
             >
               <div title={group} className={cx(classes.content, 'TableHeadSectionCell-content')}>
-                <IpIconBtn
+                <Core.IconBtn
                   sx={{
                     mr: 0.5,
                     color: t.palette.getContrastText(colors[i % colors.length]),
@@ -105,7 +105,7 @@ function DatatableHeadSections_({
                   onClick={() => onHideColumns(cols.map(_ => _.id))}
                 >
                   visibility_off
-                </IpIconBtn>
+                </Core.IconBtn>
                 {group}
               </div>
             </div>

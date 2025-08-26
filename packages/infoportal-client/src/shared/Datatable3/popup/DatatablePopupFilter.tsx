@@ -84,7 +84,7 @@ export const DatatableFilterModal3 = ({
         PanelTitleProps={{overflow: 'hidden'}}
         sx={{maxWidth: 500}}
         action={
-          <IpIconBtn
+          <Core.IconBtn
             children="filter_alt_off"
             color={filterActive ? 'primary' : undefined}
             onClick={() => {
@@ -166,12 +166,12 @@ export const DatatableFilterModal3 = ({
           })()}
       </PanelBody>
       <PanelFoot alignEnd>
-        <IpBtn color="primary" onClick={onClose}>
+        <CoreBtn color="primary" onClick={onClose}>
           {m.close}
-        </IpBtn>
-        <IpBtn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
+        </CoreBtn>
+        <CoreBtn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
           {m.filter}
-        </IpBtn>
+        </CoreBtn>
       </PanelFoot>
     </Popover>
   )

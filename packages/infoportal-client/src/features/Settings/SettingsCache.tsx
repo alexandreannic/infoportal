@@ -44,7 +44,7 @@ function SettingsCache() {
             <Panel key={key}>
               <PanelHead
                 action={
-                  <IpBtn
+                  <CoreBtn
                     loading={asyncClear.loading[key]}
                     size="small"
                     variant="outlined"
@@ -52,7 +52,7 @@ function SettingsCache() {
                     onClick={() => asyncClear.call(key)}
                   >
                     {m.clearAll}
-                  </IpBtn>
+                  </CoreBtn>
                 }
               >
                 {key}
@@ -80,7 +80,7 @@ function SettingsCache() {
                         <Txt block bold sx={{width: '100%'}}>
                           {subKey}
                         </Txt>
-                        <IpIconBtn
+                        <Core.IconBtn
                           color="primary"
                           size="small"
                           children="delete"

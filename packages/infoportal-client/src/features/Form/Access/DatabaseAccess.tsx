@@ -28,9 +28,9 @@ function DatabaseAccess() {
             header={
               permission.access_canAdd && (
                 <DatabaseAccessForm workspaceId={workspaceId} formId={form.id} form={schema.schema}>
-                  <IpBtn sx={{mr: 1}} variant="outlined" icon="person_add">
+                  <CoreBtn sx={{mr: 1}} variant="outlined" icon="person_add">
                     {m.grantAccess}
-                  </IpBtn>
+                  </CoreBtn>
                 </DatabaseAccessForm>
               )
             }

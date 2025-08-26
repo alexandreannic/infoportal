@@ -14,9 +14,9 @@ export const PageNotFound = () => {
       <CenteredContent>
         <Fender size="big" title={m.pageNotExists}>
           <Link to="/">
-            <IpBtn variant="contained" icon="home" sx={{mt: 2}} endIcon={<Icon color="disabled">arrow_right_alt</Icon>}>
+            <CoreBtn variant="contained" icon="home" sx={{mt: 2}} endIcon={<Icon color="disabled">arrow_right_alt</Icon>}>
               {m.home}
-            </IpBtn>
+            </CoreBtn>
           </Link>
         </Fender>
       </CenteredContent>

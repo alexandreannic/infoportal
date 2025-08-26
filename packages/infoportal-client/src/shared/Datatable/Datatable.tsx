@@ -161,7 +161,7 @@ const _Datatable = <T extends DatatableRow>({
               ctx.data.resetSearch()
             }}
           >
-            <IpIconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
+            <Core.IconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
           </Badge>
           {!ctx.columnsToggle.hideButton && (
             <DatatableColumnToggle
@@ -172,7 +172,7 @@ const _Datatable = <T extends DatatableRow>({
             />
           )}
           {showExportBtn && (
-            <IpIconBtn
+            <Core.IconBtn
               loading={_generateXLSFromArray.loading}
               onClick={exportToCSV}
               children="download"
@@ -187,7 +187,7 @@ const _Datatable = <T extends DatatableRow>({
             : header}
           {ctx.selected.size > 0 && (
             <DatatableSelectToolbar>
-              <IpIconBtn color="primary" children="clear" onClick={ctx.selected.clear} />
+              <Core.IconBtn color="primary" children="clear" onClick={ctx.selected.clear} />
               <Box sx={{mr: 1, whiteSpace: 'nowrap'}}>
                 <b>{ctx.selected.size}</b> {m.selected}
               </Box>

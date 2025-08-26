@@ -47,7 +47,7 @@ export const DataFilterLayoutPopup = ({
 
   return (
     <Box sx={{position: 'relative', ...sx}}>
-      <IpIconBtn children="tune" onClick={e => setAnchorEl(e.currentTarget)} />
+      <Core.IconBtn children="tune" onClick={e => setAnchorEl(e.currentTarget)} />
       <Popover
         disableScrollLock={true}
         open={open}
@@ -96,15 +96,15 @@ export const DataFilterLayoutPopup = ({
           ))}
           <Box sx={{mt: 1}}>{after}</Box>
           <Box sx={{display: 'flex', mt: 1}}>
-            <IpBtn color="primary" onClick={() => setInnerFilters({})}>
+            <CoreBtn color="primary" onClick={() => setInnerFilters({})}>
               {m.reinitialize}
-            </IpBtn>
-            <IpBtn color="primary" onClick={handleClose} sx={{marginLeft: 'auto', mr: 1}}>
+            </CoreBtn>
+            <CoreBtn color="primary" onClick={handleClose} sx={{marginLeft: 'auto', mr: 1}}>
               {m.close}
-            </IpBtn>
-            <IpBtn color="primary" variant="contained" onClick={handleSubmit}>
+            </CoreBtn>
+            <CoreBtn color="primary" variant="contained" onClick={handleSubmit}>
               {m.confirm}
-            </IpBtn>
+            </CoreBtn>
           </Box>
         </Box>
       </Popover>

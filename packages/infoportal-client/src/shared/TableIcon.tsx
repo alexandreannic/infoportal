@@ -26,7 +26,7 @@ export const TableIcon = ({tooltip, children, sx, ...props}: TableIconProps) => 
 
 export const TableIconBtn = ({sx, size = 'small', ...props}: IpIconBtnProps) => {
   return (
-    <IpIconBtn
+    <Core.IconBtn
       size={size}
       sx={{
         verticalAlign: 'middle',

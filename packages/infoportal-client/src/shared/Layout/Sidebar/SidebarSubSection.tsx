@@ -76,11 +76,11 @@ export const SidebarSubSection = ({
         </Txt>
         <Box sx={{mr: 1}}>
           {onClear && (
-            <IpIconBtn onClick={stopPropagation(onClear)} size="small">
+            <Core.IconBtn onClick={stopPropagation(onClear)} size="small">
               clear
-            </IpIconBtn>
+            </Core.IconBtn>
           )}
-          {hoverable && <IpIconBtn size="small">{open ? 'expand_less' : 'expand_more'}</IpIconBtn>}
+          {hoverable && <Core.IconBtn size="small">{open ? 'expand_less' : 'expand_more'}</Core.IconBtn>}
         </Box>
       </Box>
       {children && <Collapse in={keepOpen || open}>{children}</Collapse>}

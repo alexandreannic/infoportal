@@ -73,7 +73,7 @@ function NewForm() {
                           title={_.name}
                           description={_.url}
                           // endContent={
-                          //   <IpIconBtn
+                          //   <Core.IconBtn
                           //     size="small"
                           //     loading={queryServer.remove.isPending}
                           //     onClick={e => {
@@ -82,7 +82,7 @@ function NewForm() {
                           //     }}
                           //   >
                           //     delete
-                          //   </IpIconBtn>
+                          //   </Core.IconBtn>
                           // }
                         />
                       ))}

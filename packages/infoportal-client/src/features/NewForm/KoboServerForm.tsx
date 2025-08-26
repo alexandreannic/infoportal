@@ -163,7 +163,7 @@ export const KoboServerForm = ({
         />
       </AccessFormSection>
       <Box sx={{display: 'flex'}}>
-        <IpBtn
+        <CoreBtn
           variant="outlined"
           disabled={!form.formState.isValid}
           icon="network_check"
@@ -171,17 +171,17 @@ export const KoboServerForm = ({
           sx={{mr: 1, whiteSpace: 'nowrap'}}
         >
           {m.testConnection}
-        </IpBtn>
+        </CoreBtn>
         <ConnectionChecker
           status={fetcherTest.loading ? 'loading' : fetcherTest.get === true ? 'success' : 'error'}
           err={fetcherTest.get as any}
         />
       </Box>
       <CardActions sx={{justifyContent: 'flex-end'}}>
-        <IpBtn color="primary" onClick={onCancel}>
+        <CoreBtn color="primary" onClick={onCancel}>
           {m.close}
-        </IpBtn>
-        <IpBtn
+        </CoreBtn>
+        <CoreBtn
           loading={loading}
           variant="contained"
           color="primary"
@@ -189,7 +189,7 @@ export const KoboServerForm = ({
           disabled={!form.formState.isValid}
         >
           {m.save}
-        </IpBtn>
+        </CoreBtn>
       </CardActions>
     </>
   )
@@ -208,7 +208,7 @@ export const KoboServerFormDialog = ({
     <Dialog open={open} onClose={() => onClose()}>
       <DialogTitle>{m.addNewKoboAccount}</DialogTitle>
       <DialogContent>
-        {queryCreate.error && <IpAlert color="error" content={queryCreate.error.message} />}
+        {queryCreate.error && <Core.Alert color="error" content={queryCreate.error.message} />}
         <KoboServerForm
           loading={queryCreate.isPending}
           onCancel={onClose}

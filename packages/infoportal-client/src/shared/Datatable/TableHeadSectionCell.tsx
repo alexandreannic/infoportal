@@ -78,7 +78,7 @@ export const TableHeadSectionCell = ({
             >
               <div className={cx(classes.content, 'TableHeadSectionCell-content')}>
                 {group}&nbsp;
-                <IpBtn
+                <CoreBtn
                   className={classes.btn}
                   size="small"
                   variant="contained"
@@ -86,7 +86,7 @@ export const TableHeadSectionCell = ({
                   onClick={() => onHideColumns(cols.map(_ => _.id))}
                 >
                   <Icon fontSize="small">visibility_off</Icon>
-                </IpBtn>
+                </CoreBtn>
               </div>
             </th>
           )),

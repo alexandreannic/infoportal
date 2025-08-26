@@ -65,7 +65,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
           }}
         >
           {showSidebarButton && (
-            <IpIconBtn
+            <Core.IconBtn
               size="small"
               sx={{
                 mr: 1,
@@ -127,7 +127,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             ))
           }
         >
-          <IpIconBtn children={lightThemeIcons[mode ?? 'system']} />
+          <Core.IconBtn children={lightThemeIcons[mode ?? 'system']} />
         </PopoverWrapper>
         <Link to="/">
           <Badge
@@ -135,7 +135,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             overlap="circular"
             badgeContent={queryInvitation.data ? queryInvitation.data.length : undefined}
           >
-            <IpIconBtn children="home" />
+            <Core.IconBtn children="home" />
           </Badge>
         </Link>
         <AppHeaderMenu />

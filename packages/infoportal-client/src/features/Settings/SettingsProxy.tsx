@@ -145,7 +145,7 @@ function SettingsProxy() {
                   </>
                 }
               >
-                <IpIconBtn>add</IpIconBtn>
+                <Core.IconBtn>add</Core.IconBtn>
               </Modal>
             )
           }

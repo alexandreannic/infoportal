@@ -51,7 +51,7 @@ export const CommentsPanel = memo(({data, height = 650, pageSize = 5}: CommentsP
       ))}
       <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         {limit > pageSize && (
-          <IpBtn
+          <CoreBtn
             icon="remove"
             variant="outlined"
             sx={{mr: 1}}
@@ -59,12 +59,12 @@ export const CommentsPanel = memo(({data, height = 650, pageSize = 5}: CommentsP
             onClick={() => setLimit(_ => _ - pageSize)}
           >
             {m.viewNMore(pageSize)}
-          </IpBtn>
+          </CoreBtn>
         )}
         {limit < data.length && (
-          <IpBtn icon="add" variant="outlined" color="primary" onClick={() => setLimit(_ => _ + pageSize)}>
+          <CoreBtn icon="add" variant="outlined" color="primary" onClick={() => setLimit(_ => _ + pageSize)}>
             {m.viewNMore(pageSize)}
-          </IpBtn>
+          </CoreBtn>
         )}
       </Box>
     </Box>

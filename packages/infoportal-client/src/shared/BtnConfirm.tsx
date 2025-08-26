@@ -1,8 +1,8 @@
-import {IpBtn, IpBtnProps} from '../../../infoportal-client-core/src/Btn.js'
 import {useState} from 'react'
 import {useI18n} from '@/core/i18n'
+import {Core} from '@/shared'
 
-export type BtnConfirmProps = IpBtnProps
+export type BtnConfirmProps = Core.BtnProps
 
 export const BtnConfirm = ({onClick, size, ...props}: BtnConfirmProps) => {
   const [showConfirm, setShowConfirm] = useState(false)
@@ -10,7 +10,7 @@ export const BtnConfirm = ({onClick, size, ...props}: BtnConfirmProps) => {
   return (
     <>
       {!showConfirm ? (
-        <IpBtn
+        <CoreBtn
           {...props}
           size={size}
           onClick={() => {
@@ -19,7 +19,7 @@ export const BtnConfirm = ({onClick, size, ...props}: BtnConfirmProps) => {
         />
       ) : (
         <>
-          <IpBtn
+          <CoreBtn
             size={size}
             icon="check"
             color="success"
@@ -29,7 +29,7 @@ export const BtnConfirm = ({onClick, size, ...props}: BtnConfirmProps) => {
               setShowConfirm(false)
             }}
           />
-          <IpBtn size={size} icon="close" color="error" onClick={() => setShowConfirm(false)} children={m.cancel} />
+          <CoreBtn size={size} icon="close" color="error" onClick={() => setShowConfirm(false)} children={m.cancel} />
         </>
       )}
     </>

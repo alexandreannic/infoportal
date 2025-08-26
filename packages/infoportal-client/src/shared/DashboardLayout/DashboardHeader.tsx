@@ -38,7 +38,7 @@ export const DashboardHeader = ({
         <Box className="header_content">
           <Box sx={{display: 'flex', alignItems: 'center', mb: 1}}>
             {showSidebarButton && (
-              <IpIconBtn
+              <Core.IconBtn
                 size="small"
                 sx={{
                   alignSelf: 'start',

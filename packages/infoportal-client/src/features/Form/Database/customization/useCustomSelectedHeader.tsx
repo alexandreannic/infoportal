@@ -40,9 +40,9 @@ export const useCustomSelectedHeader = ({
             </>
           }
         >
-          <IpBtn variant="contained" icon="delete">
+          <CoreBtn variant="contained" icon="delete">
             {m.deleteSelected}
-          </IpBtn>
+          </CoreBtn>
         </Modal>
       )}
     </>

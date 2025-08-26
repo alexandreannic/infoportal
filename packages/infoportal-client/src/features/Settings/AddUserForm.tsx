@@ -35,7 +35,7 @@ export const AddUserForm = ({
     // onClose?.()
   }
 
-  const CloseBtn = <IpBtn children={m.close} color="inherit" size="small" onClick={queryInvitation.reset} />
+  const CloseBtn = <CoreBtn children={m.close} color="inherit" size="small" onClick={queryInvitation.reset} />
 
   return (
     <form onSubmit={form.handleSubmit(submit)} style={{width: 400}}>
@@ -79,20 +79,20 @@ export const AddUserForm = ({
         )}
       />
       <Collapse in={!!queryInvitation.error} mountOnEnter unmountOnExit>
-        <IpAlert sx={{mt: 1}} severity="error" action={CloseBtn}>
+        <Core.Alert sx={{mt: 1}} severity="error" action={CloseBtn}>
           {queryInvitation.error instanceof HttpError.Conflict ? m.userInvitationAlreadySent : m.anErrorOccurred}
-        </IpAlert>
+        </Core.Alert>
       </Collapse>
       <Collapse in={queryInvitation.isSuccess} mountOnEnter unmountOnExit>
-        <IpAlert sx={{mt: 1}} severity="success" action={CloseBtn}>
+        <Core.Alert sx={{mt: 1}} severity="success" action={CloseBtn}>
           {m.userInvitationSent}
-        </IpAlert>
+        </Core.Alert>
       </Collapse>
       <PanelFoot sx={{mt: 2, p: 0}} alignEnd>
-        {onClose && <IpBtn onClick={onClose}>{m.close}</IpBtn>}
-        <IpBtn variant="outlined" type="submit" disabled={!form.formState.isValid} loading={queryInvitation.isPending}>
+        {onClose && <CoreBtn onClick={onClose}>{m.close}</CoreBtn>}
+        <CoreBtn variant="outlined" type="submit" disabled={!form.formState.isValid} loading={queryInvitation.isPending}>
           {m.submit}
-        </IpBtn>
+        </CoreBtn>
       </PanelFoot>
     </form>
   )

@@ -374,7 +374,7 @@ function repeatGroup(
         export: value?.length,
         value: value?.length,
         label: value && (
-          <IpBtn
+          <CoreBtn
             children={value.length}
             style={{padding: '0 4px'}}
             onClick={event => {

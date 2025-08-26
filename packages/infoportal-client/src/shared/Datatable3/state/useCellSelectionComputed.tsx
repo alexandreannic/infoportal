@@ -123,7 +123,7 @@ export const SelectedCellPopover = (props: DatatableContext['cellSelection']) =>
       }}
     >
       <Box sx={{p: 1, maxWidth: 400}}>
-        <IpBtn variant="outlined" icon="clear" onClick={props.engine.reset} color="primary" sx={{mb: 1}}>
+        <CoreBtn variant="outlined" icon="clear" onClick={props.engine.reset} color="primary" sx={{mb: 1}}>
           {formatLargeNumber(props.selectedCount)}
           <Txt color="hint" fontWeight="400" sx={{ml: 2, display: 'flex', alignItems: 'center'}}>
             <Icon fontSize="inherit">view_column</Icon>
@@ -132,7 +132,7 @@ export const SelectedCellPopover = (props: DatatableContext['cellSelection']) =>
             <Icon fontSize="inherit">table_rows</Icon>
             {formatLargeNumber(props.selectedRowIds.size)}
           </Txt>
-        </IpBtn>
+        </CoreBtn>
         <Txt block color="hint"></Txt>
         {props.selectedColumnUniq && (
           <>

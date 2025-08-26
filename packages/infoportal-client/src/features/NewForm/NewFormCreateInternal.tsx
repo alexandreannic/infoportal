@@ -76,9 +76,9 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceI
           </Grid>
         </PanelBody>
         <PanelFoot>
-          <IpBtn variant="contained" type="submit" loading={queryForm.create.isPending}>
+          <CoreBtn variant="contained" type="submit" loading={queryForm.create.isPending}>
             {m.create}
-          </IpBtn>
+          </CoreBtn>
         </PanelFoot>
       </Panel>
     </form>

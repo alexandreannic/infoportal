@@ -121,7 +121,7 @@ export const DashboardLayout = ({
                 sx={combineSx(style.sectionTitle, hiddenSections.has(s.name) && style.sectionShrinked)}
               >
                 {s.title}
-                <IpIconBtn
+                <Core.IconBtn
                   children="expand_less"
                   sx={combineSx(style.iconExpand, hiddenSections.has(s.name) && style.iconExpendShrinked)}
                   onClick={() => hiddenSections.toggle(s.name)}

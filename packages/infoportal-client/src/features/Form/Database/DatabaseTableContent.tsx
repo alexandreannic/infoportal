@@ -236,7 +236,7 @@ export const DatabaseTableContent = ({
                     <AppAvatar size={36} email={_} overlap borderColor={t.vars.palette.primary.main} key={_} />
                   ))}
                 {ctx.form.kobo ? (
-                  <IpIconBtn
+                  <Core.IconBtn
                     disabled={!ctx.form.kobo.enketoUrl || ctx.form.deploymentStatus === 'archived'}
                     href={ctx.form.kobo.enketoUrl ?? ''}
                     target="_blank"
@@ -245,7 +245,7 @@ export const DatabaseTableContent = ({
                   />
                 ) : (
                   <Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId: ctx.form.id}}>
-                    <IpIconBtn
+                    <Core.IconBtn
                       disabled={ctx.form.deploymentStatus === 'archived'}
                       target="_blank"
                       children={appConfig.icons.openFormLink}

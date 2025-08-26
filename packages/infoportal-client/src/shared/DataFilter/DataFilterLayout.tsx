@@ -102,7 +102,7 @@ export const DataFilterLayout = ({
             getFilteredOptions={getFilteredOptions}
           />
         )}
-        {onClear && <IpIconBtn children="filter_list_off" tooltip={m.clearFilter} onClick={() => onClear()} />}
+        {onClear && <Core.IconBtn children="filter_list_off" tooltip={m.clearFilter} onClick={() => onClear()} />}
       </Box>
     </Box>
   )

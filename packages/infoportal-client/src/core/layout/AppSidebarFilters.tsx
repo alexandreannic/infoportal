@@ -32,9 +32,9 @@ const SearchInput = forwardRef(
           </Icon>
         }
         endAdornment={
-          <IpIconBtn onClick={onClear} size="small">
+          <Core.IconBtn onClick={onClear} size="small">
             clear
-          </IpIconBtn>
+          </Core.IconBtn>
         }
         {...props}
       />

@@ -69,12 +69,12 @@ export const ViewMoreDiv: React.FC<ExpandableDivProps> = ({initialHeight = 300, 
       </div>
       {expandedHeight < contentHeight && (
         <Box display="flex" justifyContent="center">
-          <IpBtn icon="expand" size="small" variant="outlined" onClick={handleShowMore}>
+          <CoreBtn icon="expand" size="small" variant="outlined" onClick={handleShowMore}>
             {m.viewMore}
-          </IpBtn>
-          {/*<IpIconBtn onClick={handleShowMore} sx={{mt: 1}}>*/}
+          </CoreBtn>
+          {/*<Core.IconBtn onClick={handleShowMore} sx={{mt: 1}}>*/}
           {/*  expand*/}
-          {/*</IpIconBtn>*/}
+          {/*</Core.IconBtn>*/}
         </Box>
       )}
     </div>

@@ -86,7 +86,7 @@ export const SelectKoboForm = ({
               align: 'right',
               head: '',
               renderQuick: form => (
-                <IpBtn
+                <CoreBtn
                   size="small"
                   onClick={() => queryForms.importFromKobo.mutateAsync({serverId, uid: form.uid}).then(onAdded)}
                   disabled={
@@ -96,7 +96,7 @@ export const SelectKoboForm = ({
                   }
                 >
                   {m.add}
-                </IpBtn>
+                </CoreBtn>
               ),
             },
           ]}

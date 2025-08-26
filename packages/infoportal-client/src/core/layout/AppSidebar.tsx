@@ -73,9 +73,9 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
           }}
         >
           {({isActive}) => (
-            <IpBtn variant={isActive ? 'light' : 'outlined'} sx={{height: '100%'}}>
+            <CoreBtn variant={isActive ? 'light' : 'outlined'} sx={{height: '100%'}}>
               <Icon>add</Icon>
-            </IpBtn>
+            </CoreBtn>
           )}
         </Link>
       </Box>

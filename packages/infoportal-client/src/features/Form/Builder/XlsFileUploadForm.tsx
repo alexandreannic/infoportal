@@ -52,7 +52,7 @@ export const XlsFileUploadForm = ({
   }
 
   const importButton = (label = m.submit) => (
-    <IpBtn
+    <CoreBtn
       endIcon={<Icon>keyboard_double_arrow_right</Icon>}
       sx={{mr: 1, marginLeft: 'auto'}}
       disabled={!isValid || !validation || validation.status === 'error' || (lastSchema && !schemaHasChanges)}
@@ -61,7 +61,7 @@ export const XlsFileUploadForm = ({
       loading={queryVersion.upload.isPending}
     >
       {label}
-    </IpBtn>
+    </CoreBtn>
   )
 
   const submit = async (values: Form) => {

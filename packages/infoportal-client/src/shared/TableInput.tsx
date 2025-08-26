@@ -61,14 +61,14 @@ export const TableInput = ({
         </TableIcon>
       )}
       {value !== originalValue && originalValue !== null && (
-        <IpIconBtn
+        <Core.IconBtn
           disabled={props.disabled}
           size="small"
           sx={{mr: -2, mt: 0.25}}
           onClick={() => onChange(originalValue ?? '')}
         >
           clear
-        </IpIconBtn>
+        </Core.IconBtn>
       )}
     </Root>
   )

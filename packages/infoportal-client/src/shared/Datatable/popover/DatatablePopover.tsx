@@ -59,9 +59,9 @@ export const NumberChoicesPopover = <T,>({
         <RenderRow label={m.max} value={formatLargeNumber(chart.max)} />
       </PanelBody>
       <PanelFoot alignEnd>
-        <IpBtn color="primary" onClick={onClose as any}>
+        <CoreBtn color="primary" onClick={onClose as any}>
           {m.close}
-        </IpBtn>
+        </CoreBtn>
       </PanelFoot>
     </Popover>
   )
@@ -122,9 +122,9 @@ export const MultipleChoicesPopover = <T extends DatatableRow>({
         <ChartBar data={chart} />
       </PanelBody>
       <PanelFoot alignEnd>
-        <IpBtn color="primary" onClick={onClose as any}>
+        <CoreBtn color="primary" onClick={onClose as any}>
           {m.close}
-        </IpBtn>
+        </CoreBtn>
       </PanelFoot>
     </Popover>
   )
@@ -160,9 +160,9 @@ export const DatesPopover = <T,>({
         <ChartLineByDate data={data} curves={{[title]: getValue}} sx={{minWidth: 360}} />
       </PanelBody>
       <PanelFoot alignEnd>
-        <IpBtn color="primary" onClick={onClose as any}>
+        <CoreBtn color="primary" onClick={onClose as any}>
           {m.close}
-        </IpBtn>
+        </CoreBtn>
       </PanelFoot>
     </Popover>
   )

@@ -31,9 +31,9 @@ export const SidebarSection = ({
     >
       {title && (
         <Box sx={{pl: 0.5, mb: 0, display: 'flex', alignItems: 'center'}}>
-          <IpIconBtn onClick={() => setOpen(_ => !_)} size="small" sx={{mr: 1}}>
+          <Core.IconBtn onClick={() => setOpen(_ => !_)} size="small" sx={{mr: 1}}>
             {open ? 'expand_less' : 'expand_more'}
-          </IpIconBtn>
+          </Core.IconBtn>
           <Txt uppercase bold color="disabled" sx={{fontSize: '.825em', flex: 1}}>
             {title}
           </Txt>

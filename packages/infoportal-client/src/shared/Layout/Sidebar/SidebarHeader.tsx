@@ -31,7 +31,7 @@ export const SidebarHeader = ({hidden, children, sx, ...props}: SidebarHeaderPro
       }}
       {...props}
     >
-      <IpIconBtn onClick={() => setSidebarOpen(false)} children="clear" />
+      <Core.IconBtn onClick={() => setSidebarOpen(false)} children="clear" />
     </Box>
   )
 }

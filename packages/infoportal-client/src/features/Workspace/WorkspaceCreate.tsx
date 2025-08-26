@@ -106,7 +106,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
             endAdornment={
               <Box display="flex" justifyContent="center" alignItems="center" height={40}>
                 <CircularProgress sx={{visibility: fetchCheckSlug.loading ? 'visible' : 'hidden'}} size={24} />
-                <IpIconBtn onClick={() => setDisableSlug(_ => !_)}>edit</IpIconBtn>
+                <Core.IconBtn onClick={() => setDisableSlug(_ => !_)}>edit</Core.IconBtn>
               </Box>
             }
             {...field}
@@ -144,11 +144,11 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
       />
       <CardActions sx={{mt: 3, justifyContent: 'flex-end', pr: 0}}>
         {onClose && (
-          <IpBtn size="large" onClick={onClose}>
+          <CoreBtn size="large" onClick={onClose}>
             {m.close}
-          </IpBtn>
+          </CoreBtn>
         )}
-        <IpBtn
+        <CoreBtn
           disabled={!form.formState.isValid}
           variant="contained"
           size="large"
@@ -156,7 +156,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
           type="submit"
         >
           {m.create}
-        </IpBtn>
+        </CoreBtn>
       </CardActions>
     </form>
   )

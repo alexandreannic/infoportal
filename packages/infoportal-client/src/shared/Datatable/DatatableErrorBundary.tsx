@@ -63,12 +63,12 @@ export class DatatableErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
             If the problem persist, please contact <b>{appConfig.contact}</b> and include the snippet below.
           </Box>
 
-          <IpBtn icon="refresh" onClick={() => this.refreshPage()} color="primary" variant="contained" sx={{mr: 1}}>
+          <CoreBtn icon="refresh" onClick={() => this.refreshPage()} color="primary" variant="contained" sx={{mr: 1}}>
             {en.messages.refresh}
-          </IpBtn>
-          <IpBtn icon="settings_backup_restore" onClick={() => this.refreshPage(true)} color="primary" variant="text">
+          </CoreBtn>
+          <CoreBtn icon="settings_backup_restore" onClick={() => this.refreshPage(true)} color="primary" variant="text">
             {en.messages.hardRefresh}
-          </IpBtn>
+          </CoreBtn>
 
           <Box
             sx={t => ({

@@ -122,7 +122,7 @@ export const DatatableWithData = <T extends Datatable.Row>({
             rowVirtualizer.scrollToIndex(0)
           }}
         >
-          <IpIconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
+          <Core.IconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
         </Badge>
         {typeof header === 'function'
           ? header({

@@ -120,7 +120,7 @@ export const DialogAnswerView = ({
             params={{workspaceId, formId, answerId: answer.id}}
             onClick={() => onClose()}
           >
-            <IpIconBtn color="primary">open_in_new</IpIconBtn>
+            <Core.IconBtn color="primary">open_in_new</Core.IconBtn>
           </Link>
           {answer.id}
           <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
@@ -140,7 +140,7 @@ export const DialogAnswerView = ({
         />
       </DialogContent>
       <DialogActions>
-        <IpBtn onClick={() => onClose()}>{m.close}</IpBtn>
+        <CoreBtn onClick={() => onClose()}>{m.close}</CoreBtn>
       </DialogActions>
     </Dialog>
   )

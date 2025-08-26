@@ -53,7 +53,7 @@ function FormSettings() {
                   close()
                 }}
               >
-                <IpBtn disabled={queryForm.update.isPending}>{m.disconnect}</IpBtn>
+                <CoreBtn disabled={queryForm.update.isPending}>{m.disconnect}</CoreBtn>
               </Modal>
             </Row>
           )}
@@ -65,14 +65,14 @@ function FormSettings() {
               </>
             }
           >
-            <IpBtn
+            <CoreBtn
               loading={queryForm.update.isPending}
               icon={form.deploymentStatus === 'archived' ? 'unarchive' : 'archive'}
               variant="outlined"
               onClick={() => queryForm.update.mutateAsync({archive: form.deploymentStatus !== 'archived'})}
             >
               {form.deploymentStatus === 'archived' ? m.unarchive : m.archive}
-            </IpBtn>
+            </CoreBtn>
           </Row>
           <Row label={m.deleteThisProject} desc={m.deleteThisProjectDesc}>
             <Modal
@@ -85,9 +85,9 @@ function FormSettings() {
                 navigate({to: '/$workspaceId/form/list', params: {workspaceId}})
               }}
             >
-              <IpBtn color="error" variant="outlined" icon="delete">
+              <CoreBtn color="error" variant="outlined" icon="delete">
                 {m.delete}
-              </IpBtn>
+              </CoreBtn>
             </Modal>
           </Row>
         </PanelBody>

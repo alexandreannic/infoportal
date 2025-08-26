@@ -70,9 +70,9 @@ function SettingsGroups() {
                   </>
                 }
               >
-                <IpBtn icon="add" variant="outlined">
+                <CoreBtn icon="add" variant="outlined">
                   {m.create}
-                </IpBtn>
+                </CoreBtn>
               </Modal>
             )
           }
@@ -189,24 +189,24 @@ function SettingsGroups() {
                       </>
                     }
                   >
-                    <IpIconBtn size="small">edit</IpIconBtn>
+                    <Core.IconBtn size="small">edit</Core.IconBtn>
                   </Modal>
-                  <IpIconBtn
+                  <Core.IconBtn
                     size="small"
                     tooltip={m.duplicate}
                     onClick={() => query.duplicate.mutate(_)}
                     loading={query.duplicate.isPending}
                   >
                     content_copy
-                  </IpIconBtn>
-                  <IpIconBtn
+                  </Core.IconBtn>
+                  <Core.IconBtn
                     size="small"
                     tooltip={m.remove}
                     onClick={() => query.remove.mutate({id: _.id})}
                     loading={query.remove.isPending}
                   >
                     delete
-                  </IpIconBtn>
+                  </Core.IconBtn>
                 </>
               ),
             },

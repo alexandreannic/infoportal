@@ -64,20 +64,20 @@ export const DatabaseViewInputRow = ({
           {view.name}&nbsp;<Txt color="hint">({view.visibility})</Txt>
         </Box>
         <Box sx={{display: 'flex', alignItems: 'center'}} onClick={e => e.stopPropagation()}>
-          <IpIconBtn onClick={onOpen} color={open ? 'primary' : undefined}>
+          <Core.IconBtn onClick={onOpen} color={open ? 'primary' : undefined}>
             {open ? 'close_fullscreen' : 'settings'}
-          </IpIconBtn>
+          </Core.IconBtn>
         </Box>
       </div>
       <Collapse in={open}>
-        <IpListItem icon="notes">
+        <Core.ListItem icon="notes">
           <Txt size="small">
             <Box>{view.details.length} items</Box>
             {!readOnly && <Box>{m.createdByAt(view.createdBy, formatDateTime(view.createdAt))}</Box>}
             {view.updatedBy && <Box>{m.updatedByAt(view.updatedBy, formatDateTime(view.updatedAt))}</Box>}
           </Txt>
-        </IpListItem>
-        <IpListItem icon="public">
+        </Core.ListItem>
+        <Core.ListItem icon="public">
           <Txt size="small" color="hint">
             {m.visibility}
           </Txt>
@@ -108,13 +108,13 @@ export const DatabaseViewInputRow = ({
               }),
             ]}
           />
-        </IpListItem>
+        </Core.ListItem>
         {!readOnly && (
-          <IpListItem icon="delete">
+          <Core.ListItem icon="delete">
             <BtnConfirm size="small" iconAfter="chevron_right" onClick={onDelete}>
               {m.delete}
             </BtnConfirm>
-          </IpListItem>
+          </Core.ListItem>
         )}
       </Collapse>
     </div>

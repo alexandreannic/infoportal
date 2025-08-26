@@ -268,9 +268,9 @@ function Dashboard() {
     return (
       <PanelWBody title={m.submissionsByUser + ` (${querySubmissionsByUser.data?.length})`}>
         {querySubmissionsByUser.data?.some(_ => _.key && _.key.length > 1 && !_.key.includes('@')) && (
-          <IpAlert sx={{mb: 1}} severity="info">
+          <Core.Alert sx={{mb: 1}} severity="info">
             {m.includeKoboAccountNames}
-          </IpAlert>
+          </Core.Alert>
         )}
         <ViewMoreDiv>
           <ChartBar dense data={data} />

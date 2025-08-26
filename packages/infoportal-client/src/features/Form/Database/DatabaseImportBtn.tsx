@@ -53,7 +53,7 @@ export const DatabaseImportBtn: React.FC<DatabaseImportBtnProps> = ({
           </>
         )}
       >
-        <IpIconBtn loading={loading} children="upload" tooltip="Import Data" />
+        <Core.IconBtn loading={loading} children="upload" tooltip="Import Data" />
       </PopoverWrapper>
       <input type="file" ref={fileInputRef} accept=".xls,.xlsx" style={{display: 'none'}} onChange={handleFileChange} />
     </>

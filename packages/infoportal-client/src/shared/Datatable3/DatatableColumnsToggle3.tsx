@@ -44,7 +44,7 @@ export const DatatableColumnToggle3 = ({
     <PopoverWrapper
       content={() => (
         <>
-          <IpAlert deletable="permanent" id="datatable-alert-cols-toggle" color="info">
+          <Core.Alert deletable="permanent" id="datatable-alert-cols-toggle" color="info">
             Use table filters to quickly toggle bunch of columns. For example, to hide all the <br />
             <code>calculate</code> columns (<DatatableHeadTypeIconByKoboType children="calculate" />
             ), select them from column <b>{m.type}</b> and click on&nbsp;
@@ -56,7 +56,7 @@ export const DatatableColumnToggle3 = ({
               label={m.remove + ' n'}
               disabled={true}
             />
-          </IpAlert>
+          </Core.Alert>
           <Datatable3<DatatableColumnToggleProps>
             onEvent={console.log}
             header={_ => (
@@ -83,9 +83,9 @@ export const DatatableColumnToggle3 = ({
                   </Txt>{' '}
                   / {columns.length} {m._koboDatabase.currentlyDisplayed}
                 </Txt>
-                <IpBtn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
+                <CoreBtn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
                   {m.save}
-                </IpBtn>
+                </CoreBtn>
               </>
             )}
             contentProps={{sx: {maxHeight: 500}}}

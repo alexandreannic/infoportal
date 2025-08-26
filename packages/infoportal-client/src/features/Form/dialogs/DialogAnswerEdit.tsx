@@ -30,7 +30,7 @@ export const DialogAnswerEdit = ({
             params={{workspaceId, formId, answerId: answer.id}}
             onClick={() => onClose()}
           >
-            <IpIconBtn color="primary">open_in_new</IpIconBtn>
+            <Core.IconBtn color="primary">open_in_new</Core.IconBtn>
           </Link>
           {answer.id}
         </Box>
@@ -48,10 +48,10 @@ export const DialogAnswerEdit = ({
         />
       </DialogContent>
       <DialogActions>
-        <IpBtn onClick={() => onClose()}>{m.close}</IpBtn>
-        <IpBtn variant="contained" icon="check" onClick={() => formRef.current?.submit()}>
+        <CoreBtn onClick={() => onClose()}>{m.close}</CoreBtn>
+        <CoreBtn variant="contained" icon="check" onClick={() => formRef.current?.submit()}>
           {m.save}
-        </IpBtn>
+        </CoreBtn>
       </DialogActions>
     </Dialog>
   )

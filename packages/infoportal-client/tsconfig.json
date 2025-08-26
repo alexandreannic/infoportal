@@ -1,23 +1,44 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "skipLibCheck": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "noEmit": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
+      //      "infoportal-api-sdk/*": [
+      //        "../infoportal-api-sdk"
+      //      ],
+      //      "@infoportal/client-core/*": [
+      //        "../infoportal-client-core"
+      //      ],
       "@/*": [
         "./src/*"
       ]
     }
   },
+  //  "references": [
+  //    {
+  //      "path": "../infoportal-api-sdk"
+  //    },
+  //    {
+  //      "path": "../infoportal-common"
+  //    },
+  //    {
+  //      "path": "../infoportal-client-core"
+  //    }
+  //  ],
   "include": [
     "**/*.ts",
-    "**/*.tsx",
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules"

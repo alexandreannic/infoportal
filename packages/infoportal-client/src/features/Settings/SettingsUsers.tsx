@@ -90,9 +90,9 @@ function SettingsUsers() {
                   <AddUserForm workspaceId={workspaceId} existingEmails={emailsLists} onClose={close} />
                 )}
               >
-                <IpBtn icon="person_add" variant="outlined" sx={{marginLeft: 'auto'}}>
+                <CoreBtn icon="person_add" variant="outlined" sx={{marginLeft: 'auto'}}>
                   {m.addUser}
-                </IpBtn>
+                </CoreBtn>
               </Modal>
             )
           }
@@ -210,7 +210,7 @@ function SettingsUsers() {
               renderQuick: _ => (
                 <>
                   {_.status === 'user' && permission.user_canConnectAs && (
-                    <IpIconBtn
+                    <Core.IconBtn
                       disabled={_.email === conf.contact || _.email === ctxSession.user.email}
                       children="visibility"
                       loading={ctxSession.connectAs.isPending}
@@ -219,7 +219,7 @@ function SettingsUsers() {
                     />
                   )}
                   {_.status === 'invitation' && permission.user_canDelete && (
-                    <IpIconBtn
+                    <Core.IconBtn
                       children="delete"
                       loading={queryInvitationRemove.arePending.has(_.invitationId!)}
                       onClick={() => queryInvitationRemove.mutate({id: _.invitationId!})}

@@ -49,9 +49,9 @@ function Forms() {
           defaultLimit={500}
           header={
             <Link to="/$workspaceId/new-form" params={{workspaceId}}>
-              <IpBtn icon="add" variant={'outlined'} sx={{mr: 0}}>
+              <CoreBtn icon="add" variant={'outlined'} sx={{mr: 0}}>
                 {m.add}
-              </IpBtn>
+              </CoreBtn>
             </Link>
           }
           id="kobo-index"
@@ -194,7 +194,7 @@ function Forms() {
                   value: _.kobo.enketoUrl,
                   label: (
                     <a href={_.kobo.enketoUrl} target="_blank" rel="noopener noreferrer">
-                      <IpIconBtn color="primary">{appConfig.icons.openFormLink}</IpIconBtn>
+                      <Core.IconBtn color="primary">{appConfig.icons.openFormLink}</Core.IconBtn>
                     </a>
                   ),
                 }
@@ -208,7 +208,7 @@ function Forms() {
               head: '',
               renderQuick: _ => (
                 <Link to="/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
-                  <IpIconBtn color="primary" children="chevron_right" />
+                  <Core.IconBtn color="primary" children="chevron_right" />
                 </Link>
               ),
             },

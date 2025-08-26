@@ -113,7 +113,7 @@ export const BtnUploader = ({
         )
       } else {
         return (
-          <IpBtn
+          <CoreBtn
             color="primary"
             onClick={openFileSelection}
             icon="file_upload"
@@ -127,7 +127,7 @@ export const BtnUploader = ({
               ref={fileInputEl}
               onChange={e => handleChange(e.target.files)}
             />
-          </IpBtn>
+          </CoreBtn>
         )
       }
     }
