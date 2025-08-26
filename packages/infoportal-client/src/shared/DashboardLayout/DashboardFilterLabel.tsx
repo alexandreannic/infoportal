@@ -1,8 +1,8 @@
 import {Box, BoxProps, Icon, Popover} from '@mui/material'
 import React, {ReactNode} from 'react'
-import {combineSx, makeSx} from '@/core/theme'
+import {Core} from '@/shared'
 
-const css = makeSx({
+const css = Core.makeSx({
   button: {
     py: 0.75,
     px: 1.25,
@@ -48,7 +48,7 @@ export const DashboardFilterLabel = ({
     <Box sx={{position: 'relative', display: 'inline-block', ...sx}}>
       <Box
         component="button"
-        sx={combineSx(css.button, active && css.active)}
+        sx={Core.combineSx(css.button, active && css.active)}
         onClick={e => setAnchorEl(e.currentTarget)}
       >
         {icon && (

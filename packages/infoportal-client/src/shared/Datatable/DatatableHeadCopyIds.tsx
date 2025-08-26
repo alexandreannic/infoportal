@@ -4,7 +4,6 @@ import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {Box, Icon, Popover, useTheme} from '@mui/material'
 import {useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {alphaVar, lightenVar} from '@/core/theme.js'
 import {Core} from '@/shared'
 
 export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerProps<any>}) => {
@@ -51,7 +50,7 @@ export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerPro
             py: 1.5,
             px: 2,
             backdropFilter: 'blur(4px)',
-            backgroundColor: alphaVar(lightenVar(t.vars.palette.success.light, 0.8), 0.8),
+            backgroundColor: Core.alphaVar(Core.lightenVar(t.vars.palette.success.light, 0.8), 0.8),
           },
         }}
         open={!!anchorEl}

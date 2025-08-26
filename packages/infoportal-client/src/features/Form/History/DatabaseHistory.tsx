@@ -11,7 +11,6 @@ import {fnSwitch, map} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
 import {useEffect} from 'react'
 import {createRoute} from '@tanstack/react-router'
-import {alphaVar} from '@/core/theme.js'
 import {Core} from '@/shared'
 import {useFetcher} from '@axanc/react-hooks'
 
@@ -190,7 +189,7 @@ function DatabaseHistory() {
                       style={{
                         borderRadius: 4,
                         padding: '0 4px',
-                        background: alphaVar(t.vars.palette.error.light, 0.16),
+                        background: Core.alphaVar(t.vars.palette.error.light, 0.16),
                         color: t.vars.palette.error.main,
                       }}
                     >
@@ -222,7 +221,7 @@ function DatabaseHistory() {
                       style={{
                         borderRadius: 4,
                         padding: '0 4px',
-                        background: alphaVar(t.vars.palette.success.light, 0.16),
+                        background: Core.alphaVar(t.vars.palette.success.light, 0.16),
                         color: t.vars.palette.success.main,
                       }}
                     >

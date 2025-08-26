@@ -3,7 +3,6 @@ import {IpLogo} from '@/shared/logo/logo'
 import React, {ReactNode} from 'react'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
-import {alphaVar} from '@/core/theme.js'
 import {Core} from '@/shared'
 
 export const DashboardHeader = ({
@@ -44,10 +43,10 @@ export const DashboardHeader = ({
                   alignSelf: 'start',
                   mr: 2,
                   border: `2px solid ${t.vars.palette.primary.main}`,
-                  background: sidebarOpen ? 'none' : alphaVar(t.vars.palette.primary.main, 0.1),
+                  background: sidebarOpen ? 'none' : Core.alphaVar(t.vars.palette.primary.main, 0.1),
                   color: t.vars.palette.primary.main,
                   '&:hover': {
-                    background: alphaVar(t.vars.palette.primary.main, 0.1),
+                    background: Core.alphaVar(t.vars.palette.primary.main, 0.1),
                   },
                 }}
                 onClick={() => setSidebarOpen(_ => !_)}

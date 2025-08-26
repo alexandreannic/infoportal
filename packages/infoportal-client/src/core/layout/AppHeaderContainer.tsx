@@ -1,7 +1,7 @@
 import {Box, BoxProps, GlobalStyles, useTheme} from '@mui/material'
 import React, {forwardRef, useEffect, useState} from 'react'
 import {map} from '@axanc/ts-utils'
-import {alphaVar} from '@/core/theme.js'
+import {Core} from '@/shared'
 
 let header$: HTMLElement | null = null
 const headerStickyClass = 'sticky-header'
@@ -40,7 +40,7 @@ export const AppHeaderContainer = forwardRef(({children, sx, ...props}: BoxProps
         styles={{
           [`.${headerStickyClass}`]: {
             boxShadow: t.vars.shadows[4],
-            background: alphaVar(t.vars.palette.background.paper, 0.5),
+            background: Core.alphaVar(t.vars.palette.background.paper, 0.5),
           },
         }}
       />

@@ -1,10 +1,9 @@
 // import * as React from 'react'
 import {useRef, useState} from 'react'
 import {Avatar, Box, ButtonProps, Chip, CircularProgress, Icon} from '@mui/material'
-import {makeSx} from '@/core/theme'
 import {Core} from '@/shared'
 
-const sx = makeSx({
+const sx = Core.makeSx({
   doc_icon: {
     color: t => t.vars.palette.text.secondary,
     fontSize: t => t.typography.subtitle1.fontSize,

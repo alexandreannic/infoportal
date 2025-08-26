@@ -2,9 +2,9 @@ import * as React from 'react'
 import {ReactNode} from 'react'
 import {Box, ButtonBase, ButtonBaseProps, Icon, styled} from '@mui/material'
 import {fnSwitch} from '@axanc/ts-utils'
-import {alphaVar, makeSx} from '@/core/theme'
+import {Core} from '@/shared'
 
-const css = makeSx({
+const css = Core.makeSx({
   iStart: {
     textAlign: 'center',
     mr: 1.5,
@@ -67,14 +67,14 @@ const Root = styled(ButtonBase, {
       opacity: 0.5,
     }),
     '&:hover': {
-      background: isClickable ? alphaVar(t.vars.palette.primary.main, 0.06) : undefined,
+      background: isClickable ? Core.alphaVar(t.vars.palette.primary.main, 0.06) : undefined,
     },
     ...(large && {
       minHeight: 38,
     }),
     ...(active && {
       color: t.vars.palette.primary.main,
-      background: alphaVar(t.vars.palette.primary.main, 0.16),
+      background: Core.alphaVar(t.vars.palette.primary.main, 0.16),
     }),
   }
 })

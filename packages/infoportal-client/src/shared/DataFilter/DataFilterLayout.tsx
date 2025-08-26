@@ -3,7 +3,6 @@ import React, {Dispatch, ReactNode, SetStateAction, useCallback} from 'react'
 import {Box, BoxProps} from '@mui/material'
 import {DataFilter} from '@/shared/DataFilter/DataFilter'
 import {Obj, Seq, seq} from '@axanc/ts-utils'
-import {DebouncedInput} from '@/shared/DebouncedInput'
 import {DashboardFilterOptions} from '@/shared/DashboardLayout/DashboardFilterOptions'
 import {useI18n} from '@/core/i18n'
 import {DataFilterLayoutPopup} from '@/shared/DataFilter/DataFilterLayoutPopup'
@@ -65,7 +64,7 @@ export const DataFilterLayout = ({
       >
         {before}
         {Obj.entries(shapes).map(([name, shape]) => (
-          <DebouncedInput<string[]>
+          <Core.DebouncedInput<string[]>
             key={name}
             debounce={50}
             value={filters[name]}
@@ -81,7 +80,7 @@ export const DataFilterLayout = ({
                 onChange={onChange}
               />
             )}
-          </DebouncedInput>
+          </Core.DebouncedInput>
         ))}
         {after}
       </Box>

@@ -1,4 +1,3 @@
-import {DebouncedInput} from '@/shared/DebouncedInput'
 import React from 'react'
 import {TableIcon} from '@/shared/TableIcon'
 import {StateStatus} from 'infoportal-common'
@@ -47,13 +46,13 @@ export const TableInput = ({
 } & Omit<Core.InputProps, 'helperText' | 'onChange' | 'value'>) => {
   return (
     <Root className="table-input">
-      <DebouncedInput<string>
+      <Core.DebouncedInput<string>
         debounce={debounce}
         value={value}
         onChange={_ => onChange(_ === '' || _ === originalValue ? undefined : _)}
       >
         {(value, onChange) => <Input value={value} onChange={e => onChange(e.target.value)} />}
-      </DebouncedInput>
+      </Core.DebouncedInput>
       {helper && (
         <TableIcon tooltip={helper.text ?? undefined} color={helper.status}>
           {appConfig.iconStatus[helper.status]}

@@ -1,6 +1,5 @@
 import React, {ReactNode, useEffect, useState} from 'react'
 import {Box, Collapse, LinearProgress, Typography} from '@mui/material'
-import {combineSx, makeSx} from '@/core/theme'
 import {useSetState} from '@axanc/react-hooks'
 import {Layout} from '@/shared/Layout/Layout'
 import {Sidebar, SidebarItem} from '@/shared/Layout/Sidebar'
@@ -13,7 +12,7 @@ import {Core} from '@/shared'
 
 const dashboardHeaderId = 'aa-header-id'
 
-const style = makeSx({
+const style = Core.makeSx({
   sectionTitle: {
     display: 'flex',
     alignItems: 'center',
@@ -117,12 +116,12 @@ export const DashboardLayout = ({
               <Typography
                 id={s.name}
                 variant="h2"
-                sx={combineSx(style.sectionTitle, hiddenSections.has(s.name) && style.sectionShrinked)}
+                sx={Core.combineSx(style.sectionTitle, hiddenSections.has(s.name) && style.sectionShrinked)}
               >
                 {s.title}
                 <Core.IconBtn
                   children="expand_less"
-                  sx={combineSx(style.iconExpand, hiddenSections.has(s.name) && style.iconExpendShrinked)}
+                  sx={Core.combineSx(style.iconExpand, hiddenSections.has(s.name) && style.iconExpendShrinked)}
                   onClick={() => hiddenSections.toggle(s.name)}
                 />
               </Typography>

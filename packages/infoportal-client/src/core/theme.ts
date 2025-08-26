@@ -1,20 +1,8 @@
 import {green, orange, purple, red} from '@mui/material/colors'
 import {createTheme, SxProps, Theme} from '@mui/material'
+import {Core} from '@/shared'
 
-export const combineSx = (...sxs: (SxProps<Theme> | undefined | false)[]): SxProps<Theme> => {
-  return sxs.reduce((res, sx) => (sx !== undefined && sx !== false ? {...res, ...sx} : res), {} as any)
-}
-
-export const makeSx = <T>(_: {[key in keyof T]: SxProps<Theme>}) => _
-export const makeStyle = (_: SxProps<Theme>) => _
-
-export const alphaVar = (color: string, coef: number) => `rgb(from ${color} r g b / ${coef})`
-export const lightenVar = (color: string, coef: number) =>
-  `color-mix(in srgb, ${color} ${(1 - coef) * 100}%, white ${coef * 100}%)`
-export const darkenVar = (color: string, coef: number) =>
-  `color-mix(in srgb, ${color} ${(1 - coef) * 100}%, black ${coef * 100}%)`
-
-export const sxUtils = makeSx({
+export const sxUtils = Core.makeSx({
   fontBig: {
     fontSize: t => `calc(${t.typography.fontSize} * 1.15)`,
   },
@@ -62,7 +50,7 @@ const fadeShadow = ({
   y?: number
   blur?: number
   spread?: number
-}): string => `0px ${y}px ${blur}px ${spread}px ${alphaVar(color, opacity)}`
+}): string => `0px ${y}px ${blur}px ${spread}px ${Core.alphaVar(color, opacity)}`
 
 const lightShadows = Array.from({length: 25}, (_, i) =>
   i === 0
@@ -80,7 +68,7 @@ const createDarkShadows = (primaryColor: string): string[] => {
     i === 0
       ? 'none'
       : fadeShadow({
-          color: alphaVar(primaryColor, 1), // full color
+          color: Core.alphaVar(primaryColor, 1), // full color
           opacity: 0.12 + i * 0.004, // slightly stronger opacity for dark
           y: 2 + i * 0.5,
           blur: 5 + i * 0.5,
@@ -113,14 +101,14 @@ export const styleUtils = (t: Theme) => ({
       default: {
         background: t.vars.palette.background.default, //'rgb(237, 242, 250)',
         ...t.applyStyles('dark', {
-          background: darkenVar(t.vars.palette.background.paper, 0.16),
+          background: Core.darkenVar(t.vars.palette.background.paper, 0.16),
         }),
       }, //'#e9eef6'
       active: {
-        background: alphaVar(t.vars.palette.primary.main, 0.2),
+        background: Core.alphaVar(t.vars.palette.primary.main, 0.2),
       },
       hover: {
-        background: alphaVar(t.vars.palette.primary.main, 0.1),
+        background: Core.alphaVar(t.vars.palette.primary.main, 0.1),
       },
     },
     input: {
@@ -178,8 +166,8 @@ export const muiTheme = ({
   // }
   const colorSecondary = {
     main: '#1a73e8',
-    light: lightenVar('#1a73e8', 0.3),
-    dark: darkenVar('#1a73e8', 0.3),
+    light: Core.lightenVar('#1a73e8', 0.3),
+    dark: Core.darkenVar('#1a73e8', 0.3),
   }
 
   return createTheme({
@@ -199,7 +187,7 @@ export const muiTheme = ({
           secondary: colorSecondary,
           error: red,
           action: {
-            focus: alphaVar(mainColor, 0.1),
+            focus: Core.alphaVar(mainColor, 0.1),
             focusOpacity: 0.1,
           },
           background: {
@@ -218,7 +206,7 @@ export const muiTheme = ({
           secondary: colorSecondary,
           error: red,
           action: {
-            focus: alphaVar(mainColor, 0.1),
+            focus: Core.alphaVar(mainColor, 0.1),
             focusOpacity: 0.1,
           },
           background: {
@@ -394,7 +382,7 @@ export const muiTheme = ({
             marginLeft: 2,
             bottom: 2,
             height: 'auto',
-            background: alphaVar(theme.vars.palette.primary.main, 0.18),
+            background: Core.alphaVar(theme.vars.palette.primary.main, 0.18),
             borderRadius: `calc(${theme.vars.shape.borderRadius} - 2px)`,
           }),
           root: ({theme}) => ({
@@ -757,7 +745,7 @@ const tableTheme2 = (t: Theme) => ({
   //   borderRadius: 0,
   // },
   // '.table .tbody .td-active': {
-  //   background: alphaVar(t.palette.primary.main, 0.11) + ' !important',
+  //   background: Core.alphaVar(t.palette.primary.main, 0.11) + ' !important',
   //   userSelect: 'none',
   //   border: '1px solid' + ' !important',
   //   borderColor: t.palette.primary.main + ' !important',

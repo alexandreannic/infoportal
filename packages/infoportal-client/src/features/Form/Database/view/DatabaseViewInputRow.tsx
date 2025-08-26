@@ -4,7 +4,6 @@ import {useI18n} from '@/core/i18n'
 import {BtnConfirm} from '@/shared/BtnConfirm'
 import React from 'react'
 import {makeStyles} from 'tss-react/mui'
-import {alphaVar} from '@/core/theme.js'
 import {Core} from '@/shared'
 
 const useStyles = makeStyles<{open?: boolean}>()((t, {open}) => ({
@@ -18,7 +17,7 @@ const useStyles = makeStyles<{open?: boolean}>()((t, {open}) => ({
     borderRadius: t.vars.shape.borderRadius,
     boxShadow: open ? t.vars.shadows[1] : undefined,
     ':hover': {
-      background: alphaVar(t.vars.palette.primary.main, 0.08),
+      background: Core.alphaVar(t.vars.palette.primary.main, 0.08),
     },
   },
   head: {

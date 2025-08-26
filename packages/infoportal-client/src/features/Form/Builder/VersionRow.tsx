@@ -5,7 +5,6 @@ import {AppAvatar} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 import {capitalize} from 'infoportal-common'
 import React from 'react'
-import {alphaVar} from '@/core/theme.js'
 import {Core} from '@/shared'
 
 const borderWidth = 2.5
@@ -101,7 +100,7 @@ const VersionRowContainer = styled('div')(({theme: t}) => ({
   paddingRight: t.vars.spacing,
   paddingLeft: t.vars.spacing,
   '&:hover': {
-    background: alphaVar(t.vars.palette.primary.light, 0.15),
+    background: Core.alphaVar(t.vars.palette.primary.light, 0.15),
   },
 }))
 
