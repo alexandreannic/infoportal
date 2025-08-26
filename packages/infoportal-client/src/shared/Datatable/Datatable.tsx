@@ -1,4 +1,4 @@
-import {Badge, Box, Icon, LinearProgress, TablePagination, useTheme} from '@mui/material'
+import {Badge, Box, Icon, LinearProgress, Popover, TablePagination} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Txt} from '@/shared/Txt'
@@ -19,6 +19,7 @@ import {format} from 'date-fns'
 import {slugify} from 'infoportal-common'
 import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
 import {DatatableSelectToolbar} from '@/shared/Datatable/DatatableSelectToolbar'
+import {PanelBody} from '../Panel'
 
 export const Datatable = <T extends DatatableRow = DatatableRow>({
   total,
@@ -68,7 +69,7 @@ export const Datatable = <T extends DatatableRow = DatatableRow>({
               rendered.value = [rendered.value as string]
             }
             if (rendered.value.length === 0) rendered.value = [DatatableUtils.blank]
-            rendered.value.map(_ => _ ?? DatatableUtils.blank)
+            // rendered.value = rendered.value.map(_ => _ ?? DatatableUtils.blank)
           } else if (rendered.value === undefined || rendered.value === null) rendered.value = DatatableUtils.blank
           if (!Object.hasOwn(rendered, 'option')) rendered.option = rendered.label
           return rendered as any
@@ -127,7 +128,6 @@ const _Datatable = <T extends DatatableRow>({
   | 'loading'
   | 'sx'
 >) => {
-  const t = useTheme()
   const ctx = useDatatableContext()
   const _generateXLSFromArray = useAsync(DatatableXlsGenerator.download)
   useEffect(() => ctx.select?.onSelect(ctx.selected.toArray), [ctx.selected.toArray])
@@ -165,20 +165,12 @@ const _Datatable = <T extends DatatableRow>({
           </Badge>
           {!ctx.columnsToggle.hideButton && (
             <DatatableColumnToggle
-              sx={{mr: 1}}
               columns={ctx.columns}
               hiddenColumns={ctx.columnsToggle.hiddenColumns}
               onChange={_ => ctx.columnsToggle.setHiddenColumns(_)}
               title={m._datatable.toggleColumns}
             />
           )}
-          {typeof header === 'function'
-            ? header({
-                data: (ctx.data.data ?? []) as T[],
-                filteredData: (ctx.data.filteredData ?? []) as T[],
-                filteredAndSortedData: (ctx.data.filteredAndSortedData ?? []) as T[],
-              })
-            : header}
           {showExportBtn && (
             <IpIconBtn
               loading={_generateXLSFromArray.loading}
@@ -187,6 +179,12 @@ const _Datatable = <T extends DatatableRow>({
               tooltip={<div dangerouslySetInnerHTML={{__html: m._koboDatabase.downloadAsXLS}} />}
             />
           )}
+          {typeof header === 'function'
+            ? header({
+                data: (ctx.data.data ?? []) as T[],
+                filteredAndSortedData: (ctx.data.filteredAndSortedData ?? []) as T[],
+              })
+            : header}
           {ctx.selected.size > 0 && (
             <DatatableSelectToolbar>
               <IpIconBtn color="primary" children="clear" onClick={ctx.selected.clear} />
@@ -214,10 +212,18 @@ const _Datatable = <T extends DatatableRow>({
               onOpenFilter={ctx.modal.filterPopover.open}
               onOpenStats={ctx.modal.statsPopover.open}
             />
-            <tbody>
+            <tbody ref={ctx.selection.tbodyRef} onPointerUp={ctx.selection.events.handlePointerUp}>
               {map(ctx.data.filteredSortedAndPaginatedData, data => {
                 return data.data.length > 0 ? (
                   <DatatableBody
+                    // onPointerUp={ctx.selection.events.handlePointerUp}
+                    selectedColumnId={ctx.selection.selectedColumnId}
+                    selectedRowIds={ctx.selection.selectedRowIds}
+                    // selectedRowIdFirst={ctx.selection.selectedRowIdFirst}
+                    handlePointerDown={ctx.selection.events.handlePointerDown}
+                    handlePointerEnter={ctx.selection.events.handlePointerEnter}
+                    // handlePointerUp={ctx.selection.events.handlePointerUp}
+                    // selectedRowIdFirst={ctx.selection.selectedRowInitial}
                     onClickRows={onClickRows}
                     data={data.data}
                     select={ctx.select}

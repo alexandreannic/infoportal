@@ -108,7 +108,7 @@ export class Server {
     createExpressEndpoints(ipContract, tsRestRoutes, this.server, {logInitialization: false})
     // this.server.use(Sentry.Handlers.errorHandler())
     this.server.use(this.errorHandler)
-    const httpServer = this.server.listen(this.conf.port, () => {
+    const httpServer = this.server.listen(this.conf.port, /*'0.0.0.0',*/ () => {
       this.log.info(`server start listening on port ${this.conf.port}`)
     })
     const io = new SocketIOServer(httpServer, {

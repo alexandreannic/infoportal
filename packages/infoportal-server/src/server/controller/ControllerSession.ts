@@ -4,20 +4,22 @@ import {PrismaClient} from '@prisma/client'
 import {SessionService} from '../../feature/session/SessionService.js'
 import {HttpError, Ip} from 'infoportal-api-sdk'
 import {isAuthenticated} from '../Routes.js'
+import {appConf} from '../../core/conf/AppConf.js'
 
 export class ControllerSession {
   constructor(
     private prisma: PrismaClient,
     private service = new SessionService(prisma),
+    private conf = appConf,
   ) {}
 
   readonly getMe = async (req: Request, res: Response, next: NextFunction) => {
-    if (!isAuthenticated(req)) throw new HttpError.Forbidden('No access.')
-    // if (this.conf.production && req.hostname === 'localhost') {
+    // if (req.hostname.startsWith('localhost') || req.hostname.startsWith('192')) {
     //   const user = await this.prisma.user.findFirstOrThrow({where: {email: this.conf.ownerEmail}})
-    //   req.session.app = await this.service.get(user)
+    //   req.session.app = {user: user as any}
     // }
-    const profile = await this.service.get(req.session.app.user)
+    // if (!isAuthenticated(req)) throw new HttpError.Forbidden('No access.')
+    const profile = await this.service.get(req.session.app!.user)
     res.send({...profile, ...req.session.app})
   }
 

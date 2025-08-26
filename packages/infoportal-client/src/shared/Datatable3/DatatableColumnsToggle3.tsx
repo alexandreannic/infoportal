@@ -2,30 +2,27 @@ import {Badge, Chip, Icon, IconButton, IconButtonProps, Switch, Tooltip} from '@
 import React, {useEffect, useMemo} from 'react'
 import {PopoverWrapper, Txt} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {Datatable} from '@/shared/Datatable/Datatable'
-import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {IpBtn} from '@/shared/Btn'
 import {useSetState} from '@axanc/react-hooks'
 import {IpAlert} from '@/shared/Alert'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
+import {Datatable3} from '@/shared/Datatable3/Datatable3.js'
+import {Datatable} from './state/types'
 
-interface DatatableColumnToggleProps
-  extends Pick<
-    DatatableColumn.Props<any>,
-    'group' | 'groupLabel' | 'id' | 'typeLabel' | 'typeIcon' | 'type' | 'head'
-  > {}
+type DatatableColumnToggleProps = Pick<
+  Datatable.Column.InnerProps<any>,
+  'group' | 'id' | 'typeLabel' | 'typeIcon' | 'type' | 'head'
+>
 
 interface Props extends Omit<IconButtonProps, 'onChange'> {
-  // Hack because there is no way to make TS understand that the key of an object can
-  // only be a string ({[key: string]: string} does not work...)
   columns: DatatableColumnToggleProps[]
   hiddenColumns: string[]
-  onChange: (_: string[]) => void
+  onChange: (hidden: string[]) => void
   title?: string
 }
 
-export const DatatableColumnToggle = ({
+export const DatatableColumnToggle3 = ({
   className,
   title,
   columns,
@@ -42,6 +39,7 @@ export const DatatableColumnToggle = ({
     set.reset(hiddenColumns)
   }, [hiddenColumns])
 
+  // columns.map(_ => _.)
   return (
     <PopoverWrapper
       content={() => (
@@ -59,8 +57,8 @@ export const DatatableColumnToggle = ({
               disabled={true}
             />
           </IpAlert>
-          <Datatable
-            hidePagination
+          <Datatable3<DatatableColumnToggleProps>
+            onEvent={console.log}
             header={_ => (
               <>
                 <Chip
@@ -93,14 +91,14 @@ export const DatatableColumnToggle = ({
             contentProps={{sx: {maxHeight: 500}}}
             defaultLimit={500}
             id="datatable-column-toggle"
-            hideColumnsToggle
+            getRowKey={_ => _.id}
             data={columns}
             columns={[
               {
                 id: 'action',
                 type: 'select_one',
                 head: '',
-                width: 0,
+                width: 60,
                 render: _ => {
                   return {
                     label: (
@@ -119,7 +117,8 @@ export const DatatableColumnToggle = ({
               },
               {
                 id: 'type',
-                width: 0,
+                width: 60,
+                align: 'center',
                 type: 'select_one',
                 head: m.type,
                 render: _ => {
@@ -143,8 +142,8 @@ export const DatatableColumnToggle = ({
                       width: 150,
                       render: (_: DatatableColumnToggleProps) => {
                         return {
-                          value: _.group,
-                          label: _.groupLabel,
+                          value: _.group?.id,
+                          label: _.group?.label,
                         }
                       },
                     } as const,
@@ -157,6 +156,7 @@ export const DatatableColumnToggle = ({
                 head: m.question,
                 render: _ => {
                   return {
+                    option: _.head,
                     value: _.id,
                     label: _.head,
                     tooltip: _.head,

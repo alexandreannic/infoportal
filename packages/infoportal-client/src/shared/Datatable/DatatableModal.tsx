@@ -22,8 +22,8 @@ export const DatatableModal = () => {
             renderValue={(_: any) => column.render(_).value}
             options={ctx.options(id)}
             type={column.type}
-            orderBy={ctx.data.search.orderBy}
-            sortBy={ctx.data.search.sortBy}
+            // orderBy={ctx.data.search.orderBy as any}
+            sortBy={ctx.data.search.sortBy as any}
             onOrderByChange={_ => ctx.data.onOrderBy(id, _)}
             value={ctx.data.filters[id] as any}
             filterActive={!!ctx.data.filters[id]}

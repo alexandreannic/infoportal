@@ -100,16 +100,16 @@ export const getColumnsForRepeatGroup = ({
       head: '_index',
       renderQuick: _ => '' + _._index,
     },
-    buildDatabaseColumns.meta.id(),
-    buildDatabaseColumns.meta.submissionTime({m}),
-    ...buildDatabaseColumns.type.byQuestions({
-      formId,
-      questions: groupInfo.questions,
-      onRepeatGroupClick,
-      schema,
-      t,
-      m,
-    }),
+    // buildDatabaseColumns.meta.id(),
+    // buildDatabaseColumns.meta.submissionTime({m}),
+    // ...buildDatabaseColumns.type.byQuestions({
+    //   formId,
+    //   questions: groupInfo.questions,
+    //   onRepeatGroupClick,
+    //   schema,
+    //   t,
+    //   m,
+    // }),
   )
   return res
 }

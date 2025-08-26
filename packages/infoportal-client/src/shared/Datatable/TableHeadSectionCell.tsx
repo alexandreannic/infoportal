@@ -63,7 +63,7 @@ export const TableHeadSectionCell = ({
   return (
     <tr className={cx('tr', classes.tr)}>
       {map(
-        Obj.entries(seq(columns).groupBy(_ => _.groupLabel ?? 'None')),
+        Obj.entries(seq(columns).groupBy(_ => _.groupLabel ?? '')),
         groups =>
           groups.length > 1 &&
           groups.map(([group, cols], i) => (

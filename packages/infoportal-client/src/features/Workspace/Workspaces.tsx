@@ -22,7 +22,6 @@ function Workspaces() {
   const queryWorkspace = useQueryWorkspace.get()
   const queryInvitations = useQueryWorkspaceInvitation.getMine()
   const {m} = useI18n()
-
   const loading = queryInvitations.isLoading || queryWorkspace.isLoading
   return (
     <ProtectRoute>

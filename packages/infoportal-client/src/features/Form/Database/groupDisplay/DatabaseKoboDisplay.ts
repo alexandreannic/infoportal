@@ -9,6 +9,7 @@ import {
   BuildFormColumnProps,
   colorRepeatedQuestionHeader,
 } from '@/features/Form/Database/columns/databaseColumnBuilder'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
 
 export type DatabaseDisplay = {
   repeatAs?: 'rows' | 'columns'
@@ -34,7 +35,7 @@ export const databaseKoboDisplayBuilder = ({
   m,
   t,
 }: DatabaseKoboDisplayProps) => {
-  const transformColumns = (columns: DatatableColumn.Props<any>[]): DatatableColumn.Props<any>[] => {
+  const transformColumns = (columns: Datatable.Column.Props<any>[]): Datatable.Column.Props<any>[] => {
     switch (display.repeatAs) {
       case 'columns': {
         const copy = [...columns]
@@ -54,8 +55,10 @@ export const databaseKoboDisplayBuilder = ({
               })
               .map((_, i) => {
                 _.head = `[${repeat}] ${_.head}`
-                _.group = group.name + repeat
-                _.groupLabel = `[${repeat}] ` + schema.translate.question(group.name)
+                _.group = {
+                  id: group.name + repeat,
+                  label: `[${repeat}] ` + schema.translate.question(group.name),
+                }
                 _.id = _.id + 'repeat' + repeat + '+' + i
                 _.styleHead = {
                   background: colorRepeatedQuestionHeader(t),
