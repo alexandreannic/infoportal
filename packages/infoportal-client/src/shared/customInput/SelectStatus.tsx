@@ -1,4 +1,4 @@
-import {IpSelectOption, IpSelectSingle, IpSelectSingleNullableProps} from '@/shared/Select/SelectSingle'
+import {IpSelectOption, IpSelectSingle, IpSelectSingleNullableProps} from '../../../../infoportal-client-core/src/Select/SelectSingle'
 import {KeyOf, Obj} from '@axanc/ts-utils'
 import React, {ReactNode, useMemo} from 'react'
 import {StateStatus} from 'infoportal-common'

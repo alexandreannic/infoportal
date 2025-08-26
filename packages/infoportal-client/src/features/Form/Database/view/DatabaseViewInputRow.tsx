@@ -3,7 +3,7 @@ import {DatabaseView, DatabaseViewVisibility} from '@/core/sdk/server/databaseVi
 import {useI18n} from '@/core/i18n'
 import {IpIconBtn, Txt} from '@/shared'
 import {IpListItem} from '@/shared/IpListItem'
-import {ipSelectItem, IpSelectSingle} from '@/shared/Select/SelectSingle'
+import {ipSelectItem, IpSelectSingle} from '../../../../../../infoportal-client-core/src/Select/SelectSingle'
 import {BtnConfirm} from '@/shared/BtnConfirm'
 import React from 'react'
 import {makeStyles} from 'tss-react/mui'

@@ -3,7 +3,7 @@ import {IpLogo} from '@/shared/logo/logo'
 import React, {ReactNode} from 'react'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
-import {IpIconBtn} from '@/shared/IconBtn'
+import {IpIconBtn} from '../../../../infoportal-client-core/src/IconBtn.js'
 import {alphaVar} from '@/core/theme.js'
 
 export const DashboardHeader = ({

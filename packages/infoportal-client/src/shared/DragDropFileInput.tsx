@@ -1,7 +1,7 @@
 import {Alert, Box, BoxProps, Chip, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {useCallback, useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {Txt} from '@/shared/Txt'
+import {Txt} from '../../../infoportal-client-core/src/Txt.js'
 import {styleUtils} from '@/core/theme'
 
 export function DragDropFileInput({

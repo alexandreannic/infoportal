@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {Box, BoxProps, useTheme} from '@mui/material'
-import {IpIconBtn} from '@/shared/IconBtn'
+import {IpIconBtn} from '../../../infoportal-client-core/src/IconBtn.js'
 
 interface DrawingProps extends Pick<BoxProps, 'sx'> {
   width: number

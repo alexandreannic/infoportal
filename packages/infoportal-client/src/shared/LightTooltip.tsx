@@ -1,7 +1,7 @@
 import {styled, Tooltip, tooltipClasses, TooltipProps} from '@mui/material'
 import * as React from 'react'
 import {ReactNode} from 'react'
-import {Txt} from '@/shared/Txt'
+import {Txt} from '../../../infoportal-client-core/src/Txt.js'
 
 export const LightTooltip = styled(({className, ...props}: TooltipProps) => (
   <Tooltip {...props} classes={{popper: className}} />

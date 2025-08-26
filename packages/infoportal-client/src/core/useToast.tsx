@@ -1,5 +1,5 @@
 import {appConfig} from '../conf/AppConfig'
-import {useToast} from '@/shared/Toast'
+import {useToast} from '../../../infoportal-client-core/src/Toast.js'
 
 export const useIpToast = () => {
   const toasts = useToast()

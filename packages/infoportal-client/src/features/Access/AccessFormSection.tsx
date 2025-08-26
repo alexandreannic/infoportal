@@ -1,5 +1,5 @@
 import {Box, Icon, SxProps, useTheme} from '@mui/material'
-import {Txt, TxtProps} from '@/shared/Txt'
+import {Txt, TxtProps} from '../../../../infoportal-client-core/src/Txt.js'
 import React, {ReactNode} from 'react'
 
 export const Label = (props: TxtProps) => {

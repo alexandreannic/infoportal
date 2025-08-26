@@ -1,9 +1,9 @@
 import {Box} from '@mui/material'
 import React, {useEffect, useRef, useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {Txt} from '@/shared/Txt'
-import {IpIconBtn} from '@/shared/IconBtn.js'
-import {IpBtn} from '@/shared/Btn.js'
+import {Txt} from '../../../infoportal-client-core/src/Txt.js'
+import {IpIconBtn} from '../../../infoportal-client-core/src/IconBtn.js'
+import {IpBtn} from '../../../infoportal-client-core/src/Btn.js'
 
 export const ViewMoreText = ({
   children,

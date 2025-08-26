@@ -1,6 +1,6 @@
 import {Icon, IconProps, Tooltip} from '@mui/material'
 import React, {ReactNode} from 'react'
-import {IpIconBtn, IpIconBtnProps} from '@/shared/IconBtn'
+import {IpIconBtn, IpIconBtnProps} from '../../../infoportal-client-core/src/IconBtn.js'
 
 export interface TableIconProps extends IconProps {
   tooltip?: ReactNode

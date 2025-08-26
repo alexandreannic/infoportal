@@ -1,10 +1,10 @@
 import {Box} from '@mui/material'
-import {Txt} from '@/shared/Txt'
+import {Txt} from '../../../infoportal-client-core/src/Txt.js'
 import {ViewMoreText} from '@/shared/ViewMoreText'
 import {Seq} from '@axanc/ts-utils'
 import React, {memo, ReactNode, useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {IpBtn} from '@/shared/Btn'
+import {IpBtn} from '../../../infoportal-client-core/src/Btn.js'
 
 export interface CommentsPanelProps {
   pageSize?: number

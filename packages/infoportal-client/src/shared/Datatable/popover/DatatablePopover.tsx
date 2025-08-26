@@ -1,16 +1,16 @@
 import {Box, Popover, PopoverProps} from '@mui/material'
 import React, {ReactNode, useMemo} from 'react'
-import {ChartBar} from '@/shared/charts/ChartBar'
-import {PanelBody, PanelHead} from '@/shared/Panel'
-import {IpBtn} from '@/shared/Btn'
+import {ChartBar} from '../../../../../infoportal-client-core/src/charts/ChartBar'
+import {PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
+import {IpBtn} from '../../../../../infoportal-client-core/src/Btn.js'
 import {useI18n} from '@/core/i18n'
-import {PanelFoot} from '@/shared/Panel/PanelFoot'
-import {Txt} from '@/shared/Txt'
-import {ChartLineByDate} from '@/shared/charts/ChartLineByDate'
+import {PanelFoot} from '../../../../../infoportal-client-core/src/Panel/PanelFoot'
+import {Txt} from '../../../../../infoportal-client-core/src/Txt.js'
+import {ChartLineByDate} from '../../../../../infoportal-client-core/src/charts/ChartLineByDate'
 import {DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType'
 import {seq} from '@axanc/ts-utils'
 import {KeyOf} from 'infoportal-common'
-import {ChartHelper} from '@/shared/charts/chartHelper'
+import {ChartHelper} from '../../../../../infoportal-client-core/src/charts/chartHelper'
 
 const RenderRow = ({label, value}: {label: ReactNode; value: ReactNode}) => {
   return (

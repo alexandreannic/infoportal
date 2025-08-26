@@ -9,7 +9,7 @@ import {Layout} from '@/shared/Layout/Layout'
 import {AppHeader} from '@/core/layout/AppHeader'
 import {createRoute} from '@tanstack/react-router'
 import {rootRoute} from '@/Router'
-import {AnimateList} from '@/shared/AnimatedList.js'
+import {AnimateList} from '../../../../infoportal-client-core/src/AnimatedList.js'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 
 export const workspacesRoute = createRoute({

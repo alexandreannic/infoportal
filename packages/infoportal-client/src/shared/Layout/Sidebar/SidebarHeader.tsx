@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Box, BoxProps} from '@mui/material'
 import {useLayoutContext} from '../LayoutContext'
-import {IpIconBtn} from '@/shared/IconBtn'
+import {IpIconBtn} from '../../../../../infoportal-client-core/src/IconBtn.js'
 
 export interface SidebarHeaderProps extends BoxProps {
   hidden?: boolean

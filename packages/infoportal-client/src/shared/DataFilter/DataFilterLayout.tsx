@@ -5,7 +5,7 @@ import {DataFilter} from '@/shared/DataFilter/DataFilter'
 import {Obj, Seq, seq} from '@axanc/ts-utils'
 import {DebouncedInput} from '@/shared/DebouncedInput'
 import {DashboardFilterOptions} from '@/shared/DashboardLayout/DashboardFilterOptions'
-import {IpIconBtn} from '@/shared/IconBtn'
+import {IpIconBtn} from '../../../../infoportal-client-core/src/IconBtn.js'
 import {useI18n} from '@/core/i18n'
 import {DataFilterLayoutPopup} from '@/shared/DataFilter/DataFilterLayoutPopup'
 

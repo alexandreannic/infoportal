@@ -1,12 +1,12 @@
 import {useI18n} from '@/core/i18n/index.js'
 import React, {ReactNode, useEffect, useState} from 'react'
 import {Alert, Box, Icon, MenuItem, Popover, PopoverProps} from '@mui/material'
-import {PanelBody, PanelHead} from '@/shared/Panel/index.js'
+import {PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel/index.js'
 import {IpBtn, IpIconBtn, Txt} from '@/shared/index.js'
-import {IpInput} from '@/shared/Input/Input.js'
-import {PeriodPicker} from '@/shared/PeriodPicker/PeriodPicker.js'
+import {IpInput} from '../../../../../infoportal-client-core/src/Input/Input.js'
+import {PeriodPicker} from '../../../../../infoportal-client-core/src/PeriodPicker/PeriodPicker.js'
 import {endOfDay} from 'date-fns'
-import {PanelFoot} from '@/shared/Panel/PanelFoot.js'
+import {PanelFoot} from '../../../../../infoportal-client-core/src/Panel/PanelFoot.js'
 import {
   DatatableFilterDialogNumber,
   DatatableFilterDialogSelect,

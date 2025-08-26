@@ -1,11 +1,11 @@
 import {Box, BoxProps, Icon, useTheme} from '@mui/material'
-import {Txt, TxtProps} from '@/shared/Txt'
+import {Txt, TxtProps} from '../../../../infoportal-client-core/src/Txt.js'
 import React, {ReactNode, useEffect, useRef} from 'react'
 import {usePdfContext} from './PdfLayout'
-import {Panel, PanelBody} from '../Panel'
-import {PanelProps} from '../Panel/Panel'
+import {Panel, PanelBody} from '../../../../infoportal-client-core/src/Panel'
+import {PanelProps} from '../../../../infoportal-client-core/src/Panel/Panel'
 import {uppercaseHandlingAcronyms} from 'infoportal-common'
-import {PanelBodyProps} from '../Panel/PanelBody'
+import {PanelBodyProps} from '../../../../infoportal-client-core/src/Panel/PanelBody'
 
 export const PdfSlide = ({
   format = 'horizontal',

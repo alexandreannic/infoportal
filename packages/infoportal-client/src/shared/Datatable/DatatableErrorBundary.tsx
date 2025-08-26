@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Box} from '@mui/material'
-import {Txt} from '@/shared/Txt'
-import {IpBtn} from '@/shared/Btn'
+import {Txt} from '../../../../infoportal-client-core/src/Txt.js'
+import {IpBtn} from '../../../../infoportal-client-core/src/Btn.js'
 import {appConfig} from '@/conf/AppConfig'
 import {en} from '@/core/i18n/localization/en'
 

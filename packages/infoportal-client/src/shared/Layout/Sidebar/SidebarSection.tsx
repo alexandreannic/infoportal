@@ -1,8 +1,8 @@
 import {Box, Collapse} from '@mui/material'
 import {ReactNode} from 'react'
-import {Txt} from '@/shared/Txt'
-import {IpIconBtn} from '@/shared/IconBtn'
-import {usePersistentState} from '@/shared/hook/usePersistantState'
+import {Txt} from '../../../../../infoportal-client-core/src/Txt.js'
+import {IpIconBtn} from '../../../../../infoportal-client-core/src/IconBtn.js'
+import {usePersistentState} from '../../../../../infoportal-client-core/src/hook/usePersistantState'
 
 export const SidebarSection = ({
   id,

@@ -2,7 +2,7 @@
 import {useRef, useState} from 'react'
 import {Avatar, Box, ButtonProps, Chip, CircularProgress, Icon} from '@mui/material'
 import {makeSx} from '@/core/theme'
-import {IpBtn} from './Btn'
+import {IpBtn} from '../../../infoportal-client-core/src/Btn.js'
 
 const sx = makeSx({
   doc_icon: {

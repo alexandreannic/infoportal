@@ -1,4 +1,4 @@
-import {IpBtn, IpBtnProps} from '@/shared/Btn'
+import {IpBtn, IpBtnProps} from '../../../../../infoportal-client-core/src/Btn.js'
 import React from 'react'
 import {useI18n} from '@/core/i18n'
 

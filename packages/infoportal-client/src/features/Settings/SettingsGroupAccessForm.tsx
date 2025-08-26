@@ -2,7 +2,7 @@ import {useI18n} from '@/core/i18n'
 import React, {useEffect} from 'react'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {Controller, UseFormReturn} from 'react-hook-form'
-import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
+import {ScRadioGroup, ScRadioGroupItem} from '../../../../infoportal-client-core/src/RadioGroup'
 import {fnSwitch} from '@axanc/ts-utils'
 import {
   AccessFormInputAccessLevel,

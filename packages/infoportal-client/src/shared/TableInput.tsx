@@ -1,5 +1,5 @@
-import {IpInputProps} from '@/shared/Input/Input'
-import {IpIconBtn} from '@/shared/IconBtn'
+import {IpInputProps} from '../../../infoportal-client-core/src/Input/Input'
+import {IpIconBtn} from '../../../infoportal-client-core/src/IconBtn.js'
 import {DebouncedInput} from '@/shared/DebouncedInput'
 import React from 'react'
 import {TableIcon} from '@/shared/TableIcon'

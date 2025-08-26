@@ -1,6 +1,6 @@
 import {IpBtn, Modal, Page} from '@/shared'
 import {Grid, Grow, useTheme} from '@mui/material'
-import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
+import {Panel, PanelBody, PanelHead} from '../../../../../infoportal-client-core/src/Panel'
 import {useI18n} from '@/core/i18n'
 import React, {useMemo, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
@@ -12,7 +12,7 @@ import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFend
 import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
 import {createRoute, Link, useRouter} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
-import {IpInput} from '@/shared/Input/Input'
+import {IpInput} from '../../../../../infoportal-client-core/src/Input/Input'
 import {useIpToast} from '@/core/useToast'
 import {Ip} from 'infoportal-api-sdk'
 

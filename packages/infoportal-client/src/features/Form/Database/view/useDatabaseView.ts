@@ -1,8 +1,8 @@
 import {UUID} from 'infoportal-common'
 import {useCallback, useEffect, useMemo} from 'react'
-import {useFetcher} from '@/shared/hook/useFetcher'
+import {useFetcher} from '../../../../../../infoportal-client-core/src/hook/useFetcher'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useAsync} from '@/shared/hook/useAsync'
+import {useAsync} from '../../../../../../infoportal-client-core/src/hook/useAsync'
 import {Seq, seq} from '@axanc/ts-utils'
 import {
   DatabaseView,
@@ -10,7 +10,7 @@ import {
   DatabaseViewColVisibility,
   DatabaseViewVisibility,
 } from '@/core/sdk/server/databaseView/DatabaseView'
-import {usePersistentState} from '@/shared/hook/usePersistantState'
+import {usePersistentState} from '../../../../../../infoportal-client-core/src/hook/usePersistantState'
 import {useSession} from '@/core/Session/SessionContext'
 import {Ip} from 'infoportal-api-sdk'
 

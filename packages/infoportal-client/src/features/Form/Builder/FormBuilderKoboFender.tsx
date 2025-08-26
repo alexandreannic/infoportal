@@ -1,5 +1,5 @@
 import {Alert, AlertTitle, Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
-import {Panel, PanelBody} from '@/shared/Panel'
+import {Panel, PanelBody} from '../../../../../infoportal-client-core/src/Panel'
 import {useI18n} from '@/core/i18n'
 import React from 'react'
 import {useQueryServer} from '@/core/query/useQueryServers'

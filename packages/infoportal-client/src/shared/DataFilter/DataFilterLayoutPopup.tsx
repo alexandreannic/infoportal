@@ -1,12 +1,12 @@
 import {Box, Icon, Popover} from '@mui/material'
 import React, {useEffect, useState} from 'react'
-import {IpIconBtn} from '@/shared/IconBtn'
+import {IpIconBtn} from '../../../../infoportal-client-core/src/IconBtn.js'
 import {Obj, Seq} from '@axanc/ts-utils'
 import {FilterLayoutProps} from '@/shared/DataFilter/DataFilterLayout'
 import {DataFilter} from '@/shared/DataFilter/DataFilter'
-import {IpSelectMultiple} from '@/shared/Select/SelectMultiple'
-import {Txt} from '@/shared/Txt'
-import {IpBtn} from '@/shared/Btn'
+import {IpSelectMultiple} from '../../../../infoportal-client-core/src/Select/SelectMultiple'
+import {Txt} from '../../../../infoportal-client-core/src/Txt.js'
+import {IpBtn} from '../../../../infoportal-client-core/src/Btn.js'
 import {useI18n} from '@/core/i18n'
 
 export const DataFilterLayoutPopup = ({

@@ -10,7 +10,7 @@ import {
   DatatableTableProps,
 } from '@/shared/Datatable/util/datatableType'
 import {OrderBy} from '@axanc/react-hooks'
-import {usePersistentState} from '@/shared/hook/usePersistantState'
+import {usePersistentState} from '../../../../../infoportal-client-core/src/hook/usePersistantState'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {Paginate} from 'infoportal-api-sdk'
 
