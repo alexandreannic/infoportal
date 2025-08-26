@@ -1,5 +1,5 @@
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
-import {Utils} from '@/utils/utils'
+import {Utils} from '@infoportal/client-core/src/core/utils.js'
 import {Ip} from 'infoportal-api-sdk'
 
 const concat = (...args: (string | undefined)[]) => {

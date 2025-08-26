@@ -2,7 +2,7 @@ import {addDays, subDays} from 'date-fns'
 import React, {useEffect, useState} from 'react'
 import {Box, BoxProps} from '@mui/material'
 import {IpDatepicker} from '../Datepicker.js'
-import {useTranslation} from '../../core/Translation.js'
+import {useI18n} from '../../core/Translation.js'
 
 export interface PeriodPickerNativeProps extends Omit<BoxProps, 'defaultValue' | 'onChange'> {
   min?: Date
@@ -26,7 +26,7 @@ export const PeriodPickerNative = ({
 }: PeriodPickerNativeProps) => {
   const [start, setStart] = useState<Date | undefined>(undefined)
   const [end, setEnd] = useState<Date | undefined>(undefined)
-  const m = useTranslation()
+  const {m} = useI18n()
 
   useEffect(() => {
     if (value) {

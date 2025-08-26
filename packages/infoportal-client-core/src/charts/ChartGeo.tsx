@@ -1,9 +1,9 @@
 import {Chart, ChartWrapperOptions} from 'react-google-charts'
 import {useMemo, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
-import {lightenVar} from 'infoportal-client/src/core/theme.js'
 import {Panel, PanelHead} from '../ui/Panel/index.js'
 import {IpIconBtn} from '../ui/IconBtn.js'
+import {lightenVar} from '../core/theme.js'
 
 const headers = ['Location', 'Submissions']
 

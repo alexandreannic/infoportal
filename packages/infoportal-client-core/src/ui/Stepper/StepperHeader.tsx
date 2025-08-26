@@ -1,7 +1,6 @@
 import React from 'react'
 import {Box, BoxProps, SxProps, Theme} from '@mui/material'
 import {fnSwitch} from '@axanc/ts-utils'
-import {useWindowWidth} from 'infoportal-client/src/core/useWindowWidth.js'
 import {alphaVar, makeSx, styleUtils} from '../../core/theme.js'
 
 interface StepperHeaderProps extends BoxProps {

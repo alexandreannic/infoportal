@@ -11,6 +11,7 @@ const Context = React.createContext<TranslationContext>({} as any)
 
 const defaultTranslation = {
   select_selectAll: 'selectAll',
+  select_blankOption: '<i>BLANK</i>',
   datepicker_start: 'Start',
   datepicker_end: 'End',
   stepper_next: 'Next',

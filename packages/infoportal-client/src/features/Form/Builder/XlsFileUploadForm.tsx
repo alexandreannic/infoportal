@@ -12,7 +12,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {Stepper, StepperHandle} from '../../../../../infoportal-client-core/src/Stepper/Stepper'
 import {StepperActions} from '../../../../../infoportal-client-core/src/Stepper/StepperActions'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
-import {Utils} from '@/utils/utils'
+import {Utils} from '@infoportal/client-core/src/core/utils.js'
 
 type Form = {
   message?: string

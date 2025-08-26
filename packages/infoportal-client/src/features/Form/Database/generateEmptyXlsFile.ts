@@ -1,5 +1,5 @@
 import * as ExcelJS from 'exceljs'
-import {Utils} from '@/utils/utils'
+import {Utils} from '@infoportal/client-core/src/core/utils.js'
 import {Kobo} from 'kobo-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
 import Question = Kobo.Form.Question

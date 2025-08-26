@@ -6,7 +6,7 @@ import {SidebarItem} from './SidebarItem'
 import {SidebarBody} from './SidebarBody'
 import {SidebarHeader} from './SidebarHeader'
 import {useI18n} from '@/core/i18n'
-import {Utils} from '@/utils/utils'
+import {Utils} from '@infoportal/client-core/src/core/utils.js'
 import stopPropagation = Utils.stopPropagation
 
 const sidebarWidth = 270

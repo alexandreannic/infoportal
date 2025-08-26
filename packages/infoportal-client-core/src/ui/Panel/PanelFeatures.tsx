@@ -2,8 +2,8 @@ import * as React from 'react'
 import {ReactNode, useRef, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
 import html2canvas from 'html2canvas'
-import {Utils} from 'infoportal-client/src/utils/utils.js'
 import {IpIconBtn} from '../IconBtn.js'
+import {Utils} from '../../core/utils.js'
 
 export const PanelFeatures = ({
   children,

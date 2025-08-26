@@ -8,7 +8,7 @@ import {Txt} from '../ui/Txt.js'
 import {ChartDataVal} from './chartHelper.js'
 import {useI18n} from '../core/Translation.js'
 import {alphaVar} from '../core/theme.js'
-import {LightTooltip, TooltipRow} from '../LightTooltip.js'
+import {LightTooltip, TooltipRow} from '../ui/LightTooltip.js'
 
 export interface BarChartData extends ChartDataVal {
   color?: string

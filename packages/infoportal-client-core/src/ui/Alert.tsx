@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {forwardRef, ReactNode, useState} from 'react'
 import {Alert, AlertProps} from '@mui/material'
-import {usePersistentState} from './hook/usePersistantState.js'
+import {usePersistentState} from '@axanc/react-hooks'
 
 export type IpAlertProps = Omit<AlertProps, 'id'> & {
   hidden?: boolean

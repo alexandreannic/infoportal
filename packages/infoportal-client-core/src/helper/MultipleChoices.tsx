@@ -1,6 +1,6 @@
 import React, {ReactNode, useEffect, useMemo, useState} from 'react'
 import {seq} from '@axanc/ts-utils'
-import {DatatableUtils} from 'infoportal-client/src/shared/Datatable/util/datatableUtils.js'
+import {useI18n} from '../core/Translation.js'
 
 export type MultipleChoicesChoice<T extends string> = {
   value: T
@@ -43,7 +43,7 @@ export const useMultipleChoices = <T extends string>({
   options = [],
 }: UseMultipleChoicesProps<T>): UseMultipleChoicesRes<T> => {
   const [innerValue, setInnerValue] = useState<T[]>(value ?? initialValue ?? [])
-
+  const {m} = useI18n()
   const allValues = useMemo(() => options.map(_ => _.value), [options])
 
   const someChecked = !!allValues.find(_ => innerValue?.includes(_))
@@ -72,9 +72,7 @@ export const useMultipleChoices = <T extends string>({
     toggleAll,
     onClick,
     options: [
-      ...(addBlankOption
-        ? [{value: DatatableUtils.blank, label: DatatableUtils.blankLabel} as MultipleChoicesChoice<any>]
-        : []),
+      ...(addBlankOption ? [{value: '', label: m.select_blankOption} as MultipleChoicesChoice<any>] : []),
       ...options,
     ].map(_ => ({
       ..._,

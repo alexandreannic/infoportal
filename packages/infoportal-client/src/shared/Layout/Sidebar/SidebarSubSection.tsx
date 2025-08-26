@@ -4,7 +4,7 @@ import {Txt} from '../../../../../infoportal-client-core/src/Txt.js'
 import {IpIconBtn} from '../../../../../infoportal-client-core/src/IconBtn.js'
 import {usePersistentState} from '../../../../../infoportal-client-core/src/hook/usePersistantState'
 import {styleUtils} from '@/core/theme'
-import {Utils} from '@/utils/utils'
+import {Utils} from '@infoportal/client-core/src/core/utils.js'
 import stopPropagation = Utils.stopPropagation
 
 export const SidebarSubSection = ({

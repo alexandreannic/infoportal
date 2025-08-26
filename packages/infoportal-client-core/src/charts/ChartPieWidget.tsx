@@ -1,12 +1,11 @@
 import {Box, Icon, Tooltip} from '@mui/material'
-import React, {ReactNode} from 'react'
-import {SlidePanelTitle} from 'infoportal-client/src/shared/PdfLayout/PdfSlide.js'
-import {useI18n} from 'infoportal-client/src/core/i18n/index.js'
-import {toPercent} from 'infoportal-common'
+import React, {ReactNode, useEffect, useRef} from 'react'
+import {toPercent, uppercaseHandlingAcronyms} from 'infoportal-common'
 import {PanelProps} from '../ui/Panel/Panel.js'
-import {LightTooltip, TooltipRow} from '../LightTooltip.js'
-import {Txt} from '../ui/Txt.js'
+import {LightTooltip, TooltipRow} from '../ui/LightTooltip.js'
+import {Txt, TxtProps} from '../ui/Txt.js'
 import {ChartPie} from './ChartPie.js'
+import {useI18n} from '../core/Translation.js'
 
 const previousPeriodDeltaDays = 90
 
@@ -24,6 +23,41 @@ export interface ChartPieIndicatorProps extends Omit<PanelProps, 'title'> {
   tooltip?: string
   color?: string
   hideIndicatorTooltip?: boolean
+}
+
+export const ChartPieTitle = ({
+  icon,
+  uppercase = true,
+  dangerouslySetInnerHTML,
+  sx,
+  children,
+  ...props
+}: {icon?: string} & TxtProps) => {
+  const ref = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (ref.current) ref.current.innerHTML = uppercaseHandlingAcronyms(ref.current.innerHTML)
+  }, [children])
+
+  return (
+    <Txt
+      block
+      // size="big"
+      bold
+      sx={{display: 'flex', alignItems: 'center', mb: 0.5, fontSize: '1.05em', lineHeight: 1.15, mr: -1, ...sx}}
+      color="hint"
+      {...props}
+    >
+      {icon && (
+        <Icon color="disabled" sx={{mr: 0.5}}>
+          {icon}
+        </Icon>
+      )}
+      <div ref={ref as any}>
+        {dangerouslySetInnerHTML ? <div dangerouslySetInnerHTML={dangerouslySetInnerHTML} /> : children}
+      </div>
+    </Txt>
+  )
 }
 
 export const ChartPieWidget = ({
@@ -44,7 +78,7 @@ export const ChartPieWidget = ({
   color,
   ...props
 }: ChartPieIndicatorProps) => {
-  const {m, formatLargeNumber} = useI18n()
+  const {formatLargeNumber} = useI18n()
   const fontSize = dense ? '1.6em' : '1.7em'
   return (
     <LightTooltip
@@ -75,9 +109,9 @@ export const ChartPieWidget = ({
       >
         <ChartPie percent={value / base} size={dense ? 45 : 50} color={color} />
         <Box sx={{ml: dense ? 1 : 1.5}}>
-          <SlidePanelTitle icon={titleIcon} noWrap={noWrap} sx={{mb: 0}}>
+          <ChartPieTitle icon={titleIcon} noWrap={noWrap} sx={{mb: 0}}>
             {title}
-          </SlidePanelTitle>
+          </ChartPieTitle>
           <Box sx={{display: 'inline-flex', lineHeight: 1, alignItems: 'flex-start'}}>
             <Txt bold sx={{fontSize, letterSpacing: '1px'}}>
               {renderPercent(value / base, true, fractionDigits)}
