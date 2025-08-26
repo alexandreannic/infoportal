@@ -1,0 +1,24 @@
+{
+  "name": "@infoportal/client-datatable",
+  "version": "1.0.0",
+  "main": "dist/index.umd.cjs",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --config vite.config.demo.ts",
+    "preview": "vite preview --config vite.config.demo.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  }
+}
