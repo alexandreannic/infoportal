@@ -1,9 +1,9 @@
+import {Core} from '@/shared'
 import {Box, Icon, SxProps, useTheme} from '@mui/material'
-import {Txt, TxtProps} from '@/shared/Txt'
 import React, {ReactNode} from 'react'
 
-export const Label = (props: TxtProps) => {
-  return <Txt block uppercase bold color="hint" fontSize="small" {...props} />
+export const Label = (props: Core.TxtProps) => {
+  return <Core.Txt block uppercase bold color="hint" fontSize="small" {...props} />
 }
 
 export const AccessFormSection = ({

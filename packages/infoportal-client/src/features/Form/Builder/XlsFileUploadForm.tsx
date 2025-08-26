@@ -1,18 +1,13 @@
 import {Controller, useForm} from 'react-hook-form'
 import {DragDropFileInput} from '@/shared/DragDropFileInput'
 import React, {useRef, useState} from 'react'
-import {Fender, IpBtn} from '@/shared'
+import {Core, Fender} from '@/shared'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useI18n} from '@/core/i18n'
-import {IpInput} from '@/shared/Input/Input'
 import {Alert, AlertTitle, CircularProgress, Icon, Skeleton} from '@mui/material'
 import {DiffView} from '@/features/Form/Builder/DiffView'
-import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {Ip} from 'infoportal-api-sdk'
-import {Stepper, StepperHandle} from '@/shared/Stepper/Stepper'
-import {StepperActions} from '@/shared/Stepper/StepperActions'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
-import {Utils} from '@/utils/utils'
 
 type Form = {
   message?: string
@@ -21,7 +16,7 @@ type Form = {
 
 const schemaToString = (schema?: Ip.Form.Schema): string => {
   if (!schema) return '{}'
-  return JSON.stringify(Utils.sortObjectKeysDeep(schema), null, 2)
+  return JSON.stringify(Core.sortObjectKeysDeep(schema), null, 2)
 }
 
 export const XlsFileUploadForm = ({
@@ -42,7 +37,7 @@ export const XlsFileUploadForm = ({
   } = useForm<Form>({defaultValues: {message: ''}, mode: 'onChange'})
   const queryVersion = useQueryVersion({workspaceId, formId})
   const [validation, setValidation] = useState<Ip.Form.Schema.Validation>()
-  const stepperRef = useRef<StepperHandle>(null)
+  const stepperRef = useRef<Core.StepperHandle>(null)
   const [schemaHasChanges, setSchemaHasChanges] = useState<boolean>(false)
 
   const querySchema = useQuerySchemaByVersion({formId, workspaceId, versionId: lastSchema?.id})
@@ -52,7 +47,7 @@ export const XlsFileUploadForm = ({
   }
 
   const importButton = (label = m.submit) => (
-    <IpBtn
+    <Core.Btn
       endIcon={<Icon>keyboard_double_arrow_right</Icon>}
       sx={{mr: 1, marginLeft: 'auto'}}
       disabled={!isValid || !validation || validation.status === 'error' || (lastSchema && !schemaHasChanges)}
@@ -61,7 +56,7 @@ export const XlsFileUploadForm = ({
       loading={queryVersion.upload.isPending}
     >
       {label}
-    </IpBtn>
+    </Core.Btn>
   )
 
   const submit = async (values: Form) => {
@@ -77,10 +72,10 @@ export const XlsFileUploadForm = ({
 
   return (
     <form onSubmit={form.handleSubmit(submit)}>
-      <Panel>
-        <PanelHead>{m.importXlsFile}</PanelHead>
-        <PanelBody>
-          <Stepper
+      <Core.Panel>
+        <Core.PanelHead>{m.importXlsFile}</Core.PanelHead>
+        <Core.PanelBody>
+          <Core.Stepper
             ref={stepperRef}
             steps={[
               {
@@ -111,7 +106,7 @@ export const XlsFileUploadForm = ({
                         />
                       )}
                     />
-                    <StepperActions disableNext={!watched.xlsFile} />
+                    <Core.StepperActions disableNext={!watched.xlsFile} />
                   </>
                 ),
               },
@@ -142,7 +137,7 @@ export const XlsFileUploadForm = ({
                             </ul>
                           )}
                         </Alert>
-                        <StepperActions disableNext={validation.status === 'error'} />
+                        <Core.StepperActions disableNext={validation.status === 'error'} />
                       </>
                     )
                   )),
@@ -153,7 +148,7 @@ export const XlsFileUploadForm = ({
                       name: 'check',
                       label: m.checkDiff,
                       component: () => {
-                        const action = <StepperActions disableNext={!schemaHasChanges}>{importButton()}</StepperActions>
+                        const action = <Core.StepperActions disableNext={!schemaHasChanges}>{importButton()}</Core.StepperActions>
                         if (querySchema.isLoading) {
                           return (
                             <>
@@ -196,7 +191,7 @@ export const XlsFileUploadForm = ({
                       name="message"
                       control={form.control}
                       render={({field, fieldState}) => (
-                        <IpInput
+                        <Core.Input
                           sx={{mt: 1}}
                           label={`${m.message} (${m.optional})`}
                           {...field}
@@ -205,14 +200,14 @@ export const XlsFileUploadForm = ({
                         />
                       )}
                     />
-                    <StepperActions hideNext>{importButton()}</StepperActions>
+                    <Core.StepperActions hideNext>{importButton()}</Core.StepperActions>
                   </>
                 ),
               },
             ]}
-          ></Stepper>
-        </PanelBody>
-      </Panel>
+          ></Core.Stepper>
+        </Core.PanelBody>
+      </Core.Panel>
     </form>
   )
 }

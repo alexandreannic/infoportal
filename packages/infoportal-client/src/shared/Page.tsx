@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {ReactNode, useEffect, useState} from 'react'
 import {Box, BoxProps, CircularProgress, Skeleton} from '@mui/material'
-import {CenteredContent, Txt} from '@/shared'
+import {CenteredContent, Core} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 
 export interface PageProps extends BoxProps {
@@ -35,9 +35,9 @@ export const PageTitle = ({
         <Box component="h2" sx={{m: 0, p: 0}}>
           {children}
         </Box>
-        <Txt size="big" color="hint">
+        <Core.Txt size="big" color="hint">
           {subTitle}
-        </Txt>
+        </Core.Txt>
       </Box>
       {action && <Box sx={{ml: 'auto'}}>{action}</Box>}
     </Box>

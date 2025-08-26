@@ -1,8 +1,8 @@
 import {TableIconBtn} from '@/shared/TableIcon'
 import React from 'react'
-import {IpIconBtnProps} from '@/shared/IconBtn'
+import {Core} from '@/shared'
 
-export const TableEditCellBtn = (props: Omit<IpIconBtnProps, 'children'>) => {
+export const TableEditCellBtn = (props: Omit<Core.IconBtnProps, 'children'>) => {
   return (
     <TableIconBtn
       size="small"

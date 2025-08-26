@@ -11,15 +11,10 @@ import {
   Slider,
   Switch,
 } from '@mui/material'
-import {IpBtn, IpIconBtn, MultipleChoices} from '@/shared'
+import {Core} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import React, {Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState} from 'react'
-import {IpInput} from '../../Input/Input'
-import {PeriodPicker} from '../../PeriodPicker/PeriodPicker'
-import {Txt} from '@/shared/Txt'
 import {OrderBy} from '@axanc/react-hooks'
-import {PanelBody, PanelHead} from '@/shared/Panel'
-import {PanelFoot} from '@/shared/Panel/PanelFoot'
 import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType'
 import {seq} from '@axanc/ts-utils'
 import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
@@ -87,11 +82,11 @@ export const DatatableFilterModal = ({
 
   return (
     <Popover open={!!anchorEl} anchorEl={anchorEl} onClose={onClose}>
-      <PanelHead
+      <Core.PanelHead
         PanelTitleProps={{overflow: 'hidden'}}
         sx={{maxWidth: 500}}
         action={
-          <IpIconBtn
+          <Core.IconBtn
             children="filter_alt_off"
             color={filterActive ? 'primary' : undefined}
             onClick={() => {
@@ -101,17 +96,17 @@ export const DatatableFilterModal = ({
           />
         }
       >
-        <Txt block truncate>
+        <Core.Txt block truncate>
           {title}
-        </Txt>
-      </PanelHead>
-      <PanelBody sx={{maxWidth: 500}}>
+        </Core.Txt>
+      </Core.PanelHead>
+      <Core.PanelBody sx={{maxWidth: 500}}>
         <Box
           sx={{display: 'flex', alignItems: 'center', borderBottom: t => `1px solid ${t.vars.palette.divider}`, mb: 1}}
         >
-          <Txt color="hint" sx={{flex: 1}}>
+          <Core.Txt color="hint" sx={{flex: 1}}>
             {m.sort}
-          </Txt>
+          </Core.Txt>
           <MenuItem onClick={() => onOrderByChange?.(sortBy?.orderBy === 'desc' ? undefined : 'desc')}>
             <Icon
               fontSize="small"
@@ -136,7 +131,7 @@ export const DatatableFilterModal = ({
                     <Alert color="info" sx={{py: 0, mb: 1}}>
                       {m._datatable.idFilterInfo}
                     </Alert>
-                    <IpInput
+                    <Core.Input
                       value={innerValue}
                       onChange={e => setInnerValue(e.target.value)}
                       placeholder={m._datatable.idFilterPlaceholder}
@@ -146,7 +141,7 @@ export const DatatableFilterModal = ({
               }
               case 'date':
                 return (
-                  <PeriodPicker
+                  <Core.PeriodPicker
                     value={innerValue}
                     onChange={_ => {
                       if (_[1]) _[1] = endOfDay(_[1])
@@ -171,15 +166,15 @@ export const DatatableFilterModal = ({
                 return <DatatableFilterDialogText value={innerValue} onChange={setInnerValue} />
             }
           })()}
-      </PanelBody>
-      <PanelFoot alignEnd>
-        <IpBtn color="primary" onClick={onClose}>
+      </Core.PanelBody>
+      <Core.PanelFoot alignEnd>
+        <Core.Btn color="primary" onClick={onClose}>
           {m.close}
-        </IpBtn>
-        <IpBtn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
+        </Core.Btn>
+        <Core.Btn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
           {m.filter}
-        </IpBtn>
-      </PanelFoot>
+        </Core.Btn>
+      </Core.PanelFoot>
     </Popover>
   )
 }
@@ -196,7 +191,7 @@ export const DatatableFilterDialogSelect = ({
   const {m} = useI18n()
   const [filter, setFilter] = useState<string>('')
   return (
-    <MultipleChoices
+    <Core.MultipleChoices
       options={
         options?.filter(
           _ =>
@@ -215,7 +210,7 @@ export const DatatableFilterDialogSelect = ({
             control={<Checkbox size="small" checked={allChecked} indeterminate={!allChecked && someChecked} />}
             label={m.selectAll}
           />
-          <IpInput
+          <Core.Input
             label={m.filterPlaceholder}
             helperText={null}
             sx={{mb: 1}}
@@ -235,7 +230,7 @@ export const DatatableFilterDialogSelect = ({
           </Box>
         </>
       )}
-    </MultipleChoices>
+    </Core.MultipleChoices>
   )
 }
 
@@ -260,7 +255,7 @@ export const DatatableFilterDialogText = ({
           />
         }
       />
-      <IpInput value={value?.value} onChange={e => onChange(prev => ({...prev, value: e.target.value}))} />
+      <Core.Input value={value?.value} onChange={e => onChange(prev => ({...prev, value: e.target.value}))} />
     </>
   )
 }
@@ -297,13 +292,13 @@ export const DatatableFilterDialogNumber = ({
     <>
       <Slider min={min} max={max} value={mappedValue} onChange={(e, _) => onChange(_ as [number, number])} />
       <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-        <IpInput
+        <Core.Input
           type="number"
           sx={{minWidth: 60, mr: 0.5}}
           value={mappedValue[0]}
           onChange={e => onChange(prev => [+e.target.value, prev?.[1]])}
         />
-        <IpInput
+        <Core.Input
           type="number"
           sx={{minWidth: 60, ml: 0.5}}
           value={mappedValue[1]}

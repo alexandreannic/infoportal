@@ -1,14 +1,12 @@
-import {IpBtn, IpIconBtn} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {IpInput} from '@/shared/Input/Input'
 import {Box, CardActions, CircularProgress} from '@mui/material'
 import {useEffect, useState} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Controller, useForm} from 'react-hook-form'
-import {useFetcher} from '@/shared/hook/useFetcher'
 import {useIpToast} from '@/core/useToast'
 import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {useFetcher} from '@axanc/react-hooks'
+import {Core} from '@/shared'
 
 type Form = {
   slug: string
@@ -86,7 +84,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
           required: true,
         }}
         name="name"
-        render={({field}) => <IpInput sx={{mt: 2}} required label={m.enterProjectName} size="medium" {...field} />}
+        render={({field}) => <Core.Input sx={{mt: 2}} required label={m.enterProjectName} size="medium" {...field} />}
       />
       <Controller
         control={form.control}
@@ -95,7 +93,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
           required: true,
         }}
         render={({field, fieldState}) => (
-          <IpInput
+          <Core.Input
             sx={{mt: 2}}
             label={m.workspaceId}
             disabled={disableSlug}
@@ -106,7 +104,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
             endAdornment={
               <Box display="flex" justifyContent="center" alignItems="center" height={40}>
                 <CircularProgress sx={{visibility: fetchCheckSlug.loading ? 'visible' : 'hidden'}} size={24} />
-                <IpIconBtn onClick={() => setDisableSlug(_ => !_)}>edit</IpIconBtn>
+                <Core.IconBtn onClick={() => setDisableSlug(_ => !_)}>edit</Core.IconBtn>
               </Box>
             }
             {...field}
@@ -120,7 +118,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
           required: false,
         }}
         render={({field}) => (
-          <IpSelectSingle
+          <Core.SelectSingle
             sx={{mt: 2}}
             label={m.sector}
             options={[
@@ -144,11 +142,11 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
       />
       <CardActions sx={{mt: 3, justifyContent: 'flex-end', pr: 0}}>
         {onClose && (
-          <IpBtn size="large" onClick={onClose}>
+          <Core.Btn size="large" onClick={onClose}>
             {m.close}
-          </IpBtn>
+          </Core.Btn>
         )}
-        <IpBtn
+        <Core.Btn
           disabled={!form.formState.isValid}
           variant="contained"
           size="large"
@@ -156,7 +154,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
           type="submit"
         >
           {m.create}
-        </IpBtn>
+        </Core.Btn>
       </CardActions>
     </form>
   )

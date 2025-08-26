@@ -11,24 +11,21 @@ import {generateEmptyXlsTemplate} from '@/features/Form/Database/generateEmptyXl
 import {databaseKoboDisplayBuilder} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {DatabaseViewBtn, DatabaseViewEditor} from '@/features/Form/Database/view/DatabaseView'
 import {useKoboDialogs, useLangIndex} from '@/core/store/useLangIndex'
-import {useAsync} from '@/shared/hook/useAsync'
-import {IpIconBtn} from '@/shared/IconBtn'
-import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Alert, AlertProps, Box, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from 'infoportal-common'
-import {useEffect, useMemo, useState} from 'react'
+import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
 import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Ip} from 'infoportal-api-sdk'
-import {AppAvatar} from '@/shared'
+import {AppAvatar, Core} from '@/shared'
 import {useFormSocket} from '@/features/Form/useFormSocket'
 import {appConfig} from '@/conf/AppConfig.js'
 import {Datatable3} from '@/shared/Datatable3/Datatable3.js'
 import {Datatable} from '@/shared/Datatable3/state/types.js'
-import {Panel} from '@/shared/Panel/index.js'
 import {DatabaseToolbarContainer} from '@/features/Form/Database/DatabaseToolbarContainer.js'
+import {useAsync} from '@axanc/react-hooks'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -163,12 +160,12 @@ export const DatabaseTableContent = ({
     <Box sx={{display: 'flex', maxHeight: 'calc(100vh - 110px)'}}>
       <DatabaseToolbarContainer width={340} open={viewEditorOpen}>
         {viewEditorOpen && (
-          <Panel sx={{mr: 1}}>
+          <Core.Panel sx={{mr: 1}}>
             <DatabaseViewEditor view={ctx.view} />
-          </Panel>
+          </Core.Panel>
         )}
       </DatabaseToolbarContainer>
-      <Panel>
+      <Core.Panel>
         <Datatable3
           onEvent={console.log}
           // onResizeColumn={ctx.view.onResizeColumn}
@@ -217,7 +214,7 @@ export const DatabaseTableContent = ({
           header={params => (
             <>
               <DatabaseViewBtn sx={{mr: 1}} view={ctx.view} onClick={() => setViewEditorOpen(_ => !_)} />
-              <IpSelectSingle<number>
+              <Core.SelectSingle<number>
                 hideNullOption
                 sx={{maxWidth: 128, mr: 1}}
                 value={langIndex}
@@ -236,7 +233,7 @@ export const DatabaseTableContent = ({
                     <AppAvatar size={36} email={_} overlap borderColor={t.vars.palette.primary.main} key={_} />
                   ))}
                 {ctx.form.kobo ? (
-                  <IpIconBtn
+                  <Core.IconBtn
                     disabled={!ctx.form.kobo.enketoUrl || ctx.form.deploymentStatus === 'archived'}
                     href={ctx.form.kobo.enketoUrl ?? ''}
                     target="_blank"
@@ -245,7 +242,7 @@ export const DatabaseTableContent = ({
                   />
                 ) : (
                   <Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId: ctx.form.id}}>
-                    <IpIconBtn
+                    <Core.IconBtn
                       disabled={ctx.form.deploymentStatus === 'archived'}
                       target="_blank"
                       children={appConfig.icons.openFormLink}
@@ -276,7 +273,7 @@ export const DatabaseTableContent = ({
             </>
           )}
         />
-      </Panel>
+      </Core.Panel>
     </Box>
   )
 }

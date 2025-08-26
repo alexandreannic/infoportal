@@ -1,9 +1,6 @@
 import {useI18n} from '@/core/i18n'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {Page} from '@/shared/Page'
-import {Panel} from '@/shared/Panel'
-import {TableIconBtn} from '@/shared/TableIcon'
-import {Txt} from '@/shared/Txt'
 import {fnSwitch, seq} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
 import {useEffect, useMemo} from 'react'
@@ -13,8 +10,8 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRootRoute} from '@/features/Form/Form'
 import {Ip} from 'infoportal-api-sdk'
-import {IpBtn, IpIconBtn} from '@/shared/index.js'
 import {appConfig} from '@/conf/AppConfig.js'
+import {Core} from '@/shared'
 
 export const formsRoute = createRoute({
   getParentRoute: () => formRootRoute,
@@ -43,15 +40,15 @@ function Forms() {
 
   return (
     <Page width="full">
-      <Panel>
+      <Core.Panel>
         <Datatable
           showExportBtn
           defaultLimit={500}
           header={
             <Link to="/$workspaceId/new-form" params={{workspaceId}}>
-              <IpBtn icon="add" variant={'outlined'} sx={{mr: 0}}>
+              <Core.Btn icon="add" variant={'outlined'} sx={{mr: 0}}>
                 {m.add}
-              </IpBtn>
+              </Core.Btn>
             </Link>
           }
           id="kobo-index"
@@ -95,7 +92,7 @@ function Forms() {
               head: m.name,
               render: _ => {
                 return {
-                  label: <Txt bold>{_.name}</Txt>,
+                  label: <Core.Txt bold>{_.name}</Core.Txt>,
                   value: _.name,
                 }
               },
@@ -163,7 +160,7 @@ function Forms() {
               width: 0,
               render: _ => {
                 return {
-                  label: <Txt color="hint">{formatDate(_.createdAt)}</Txt>,
+                  label: <Core.Txt color="hint">{formatDate(_.createdAt)}</Core.Txt>,
                   value: _.createdAt,
                 }
               },
@@ -175,7 +172,7 @@ function Forms() {
               head: m.updatedAt,
               render: _ => {
                 return {
-                  label: _.updatedAt && <Txt color="hint">{formatDate(_.updatedAt)}</Txt>,
+                  label: _.updatedAt && <Core.Txt color="hint">{formatDate(_.updatedAt)}</Core.Txt>,
                   value: _.updatedAt,
                 }
               },
@@ -194,7 +191,7 @@ function Forms() {
                   value: _.kobo.enketoUrl,
                   label: (
                     <a href={_.kobo.enketoUrl} target="_blank" rel="noopener noreferrer">
-                      <IpIconBtn color="primary">{appConfig.icons.openFormLink}</IpIconBtn>
+                      <Core.IconBtn color="primary">{appConfig.icons.openFormLink}</Core.IconBtn>
                     </a>
                   ),
                 }
@@ -208,13 +205,13 @@ function Forms() {
               head: '',
               renderQuick: _ => (
                 <Link to="/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
-                  <IpIconBtn color="primary" children="chevron_right" />
+                  <Core.IconBtn color="primary" children="chevron_right" />
                 </Link>
               ),
             },
           ]}
         />
-      </Panel>
+      </Core.Panel>
     </Page>
   )
 }

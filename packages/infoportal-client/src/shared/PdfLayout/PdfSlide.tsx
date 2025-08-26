@@ -1,11 +1,8 @@
 import {Box, BoxProps, Icon, useTheme} from '@mui/material'
-import {Txt, TxtProps} from '@/shared/Txt'
 import React, {ReactNode, useEffect, useRef} from 'react'
 import {usePdfContext} from './PdfLayout'
-import {Panel, PanelBody} from '../Panel'
-import {PanelProps} from '../Panel/Panel'
 import {uppercaseHandlingAcronyms} from 'infoportal-common'
-import {PanelBodyProps} from '../Panel/PanelBody'
+import {Core} from '@/shared'
 
 export const PdfSlide = ({
   format = 'horizontal',
@@ -56,9 +53,9 @@ export const SlideH1 = ({children, sx, ...props}: BoxProps) => {
   )
 }
 
-export const SlideTxt = ({children, sx, textAlign = 'justify', ...props}: TxtProps) => {
+export const SlideTxt = ({children, sx, textAlign = 'justify', ...props}: Core.TxtProps) => {
   return (
-    <Txt
+    <Core.Txt
       {...props}
       size="big"
       textAlign={textAlign}
@@ -70,7 +67,7 @@ export const SlideTxt = ({children, sx, textAlign = 'justify', ...props}: TxtPro
       }}
     >
       {typeof children === 'string' ? <div dangerouslySetInnerHTML={{__html: children}} /> : children}
-    </Txt>
+    </Core.Txt>
   )
 }
 
@@ -140,9 +137,9 @@ export const SlideHeader = ({
         alignItems: 'center',
       }}
     >
-      <Txt bold sx={{fontSize: '1.42em'}}>
+      <Core.Txt bold sx={{fontSize: '1.42em'}}>
         {children}
-      </Txt>
+      </Core.Txt>
       <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>{logo}</Box>
     </Box>
   )
@@ -160,7 +157,7 @@ export const SlidePanelTitle = ({
   sx,
   children,
   ...props
-}: {icon?: string} & TxtProps) => {
+}: {icon?: string} & Core.TxtProps) => {
   const ref = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -168,7 +165,7 @@ export const SlidePanelTitle = ({
   }, [children])
 
   return (
-    <Txt
+    <Core.Txt
       block
       // size="big"
       bold
@@ -184,7 +181,7 @@ export const SlidePanelTitle = ({
       <div ref={ref as any}>
         {dangerouslySetInnerHTML ? <div dangerouslySetInnerHTML={dangerouslySetInnerHTML} /> : children}
       </div>
-    </Txt>
+    </Core.Txt>
   )
 }
 
@@ -195,9 +192,9 @@ export const SlidePanel = ({
   sx,
   BodyProps,
   ...props
-}: PanelProps & {BodyProps?: Omit<PanelBodyProps, 'ref' | 'children'>}) => {
+}: Core.PanelProps & {BodyProps?: Omit<Core.PanelBodyProps, 'ref' | 'children'>}) => {
   return (
-    <Panel
+    <Core.Panel
       elevation={0}
       {...props}
       savableAsImg={savableAsImg}
@@ -210,8 +207,8 @@ export const SlidePanel = ({
         ...sx,
       }}
     >
-      <PanelBody {...BodyProps}>{children}</PanelBody>
-    </Panel>
+      <Core.PanelBody {...BodyProps}>{children}</Core.PanelBody>
+    </Core.Panel>
   )
 }
 
@@ -221,10 +218,11 @@ export const SlideWidget = ({
   title,
   icon,
   ...props
-}: Omit<PanelProps, 'title' | 'expendable' | 'savableAsImg'> & {
+}: Omit<Core.PanelProps, 'title' | 'expendable' | 'savableAsImg'> & {
   icon?: string | ReactNode
   title: string
 }) => {
+  const t = useTheme()
   return (
     <SlidePanel
       {...props}
@@ -233,7 +231,7 @@ export const SlideWidget = ({
       BodyProps={{
         sx: {
           px: 0.25,
-          pb: t => t.vars.spacing + ' !important',
+          pb: t.vars.spacing + ' !important',
         },
       }}
       sx={{
@@ -247,9 +245,9 @@ export const SlideWidget = ({
         ...sx,
       }}
     >
-      <Txt block color="hint" bold sx={{lineHeight: 1, mb: 0.5, mt: -0.5}}>
+      <Core.Txt block color="hint" bold sx={{lineHeight: 1, mb: 0.5, mt: -0.5}}>
         {uppercaseHandlingAcronyms(title)}
-      </Txt>
+      </Core.Txt>
       <Box
         sx={{
           lineHeight: 1,

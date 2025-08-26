@@ -1,10 +1,10 @@
 import React, {useCallback} from 'react'
 import {BoxProps, Checkbox, FormControlLabel, FormGroup} from '@mui/material'
-import {Txt, useMultipleChoices} from '@/shared'
 import {DashboardFilterLabel} from './DashboardFilterLabel'
 import {useI18n} from '@/core/i18n'
 import {DatatableOptions} from '@/shared/Datatable/util/datatableType'
 import {makeStyles} from 'tss-react/mui'
+import {Core} from '@/shared'
 
 const useStyles = makeStyles<{dense?: boolean}>()((t, {dense}) => ({
   optionSelectAll: {
@@ -77,7 +77,7 @@ export const DashboardFilterOptionsContent = ({
 }) => {
   const {classes, cx} = useStyles({dense})
   const {m} = useI18n()
-  const choices = useMultipleChoices({
+  const choices = Core.useMultipleChoices({
     addBlankOption,
     value,
     options: options(),
@@ -96,9 +96,9 @@ export const DashboardFilterOptionsContent = ({
         }
         label={
           // <Box sx={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-          <Txt bold sx={{mr: 1.5}} fontSize={dense ? 'small' : undefined}>
+          <Core.Txt bold sx={{mr: 1.5}} fontSize={dense ? 'small' : undefined}>
             {m.selectAll}
-          </Txt>
+          </Core.Txt>
           // <AAIconBtn icon="clear" size="small" sx={{ml: 1.5}}/>
           // </Box>
         }
@@ -113,7 +113,7 @@ export const DashboardFilterOptionsContent = ({
           <FormControlLabel
             key={o.value}
             control={<Checkbox size="small" name={o.value ?? undefined} checked={o.checked} />}
-            label={<Txt fontSize={dense ? 'small' : undefined}>{o.label}</Txt>}
+            label={<Core.Txt fontSize={dense ? 'small' : undefined}>{o.label}</Core.Txt>}
             className={classes.option}
           />
         ))}

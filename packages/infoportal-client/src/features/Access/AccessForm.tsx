@@ -1,16 +1,14 @@
 import {Controller, UseFormReturn} from 'react-hook-form'
-import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {Autocomplete, autocompleteClasses, Box, SxProps, Theme} from '@mui/material'
 import {fnSwitch, map, Obj, seq} from '@axanc/ts-utils'
-import {IpInput} from '@/shared/Input/Input'
 import React, {useEffect, useMemo} from 'react'
 import {useI18n} from '@/core/i18n'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
-import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {DrcJobInputMultiple} from '@/shared/customInput/DrcJobInput'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
 import {Ip} from 'infoportal-api-sdk'
+import {Core} from '@/shared'
 
 export interface IAccessForm {
   selectBy?: 'email' | 'job' | 'group' | null
@@ -52,7 +50,7 @@ export const AccessForm = ({workspaceId, form}: {workspaceId: Ip.WorkspaceId; fo
           rules={{required: {value: true, message: m.required}}}
           control={form.control}
           render={({field}) => (
-            <ScRadioGroup
+            <Core.RadioGroup
               sx={{mb: 2}}
               dense
               error={!!form.formState.errors.selectBy}
@@ -65,10 +63,10 @@ export const AccessForm = ({workspaceId, form}: {workspaceId: Ip.WorkspaceId; fo
                 field.onChange(e)
               }}
             >
-              <ScRadioGroupItem value="email" title={m.email} />
-              <ScRadioGroupItem value="job" title={m.Access.jobAndOffice} />
-              <ScRadioGroupItem value="group" title={m.group} />
-            </ScRadioGroup>
+              <Core.RadioGroupItem value="email" title={m.email} />
+              <Core.RadioGroupItem value="job" title={m.Access.jobAndOffice} />
+              <Core.RadioGroupItem value="group" title={m.group} />
+            </Core.RadioGroup>
           )}
         />
         {fnSwitch(
@@ -105,7 +103,7 @@ export const AccessFormInputEmail = ({form}: {form: UseFormReturn<IAccessForm>})
   const {m} = useI18n()
   const required = form.watch('selectBy') === 'email'
   return (
-    <IpInput
+    <Core.Input
       label={m.email}
       error={!!form.formState.errors.email}
       helperText={form.formState.errors.email?.message as string}
@@ -125,7 +123,7 @@ export const AccessFormInputLocation = ({form}: {form: UseFormReturn<IAccessForm
       name="location"
       control={form.control}
       render={({field: {onChange, ...field}}) => (
-        <IpSelectSingle<string> {...field} label={m.location} onChange={_ => onChange(_)} options={[]} />
+        <Core.SelectSingle<string> {...field} label={m.location} onChange={_ => onChange(_)} options={[]} />
       )}
     />
   )
@@ -138,16 +136,16 @@ export const AccessFormInputAccessLevel = ({form}: {form: UseFormReturn<IAccessF
       defaultValue={Ip.AccessLevel.Read}
       control={form.control}
       render={({field}) => (
-        <ScRadioGroup<Ip.AccessLevel>
+        <Core.RadioGroup<Ip.AccessLevel>
           error={!!form.formState.errors.level}
           dense
           {...field}
           // onChange={_ => field.onChange({target: {value: _}} as any)}
         >
           {Obj.values(Ip.AccessLevel).map(level => (
-            <ScRadioGroupItem icon={accessLevelIcon[level]} value={level} key={level} title={level} />
+            <Core.RadioGroupItem icon={accessLevelIcon[level]} value={level} key={level} title={level} />
           ))}
-        </ScRadioGroup>
+        </Core.RadioGroup>
       )}
     />
   )
@@ -227,7 +225,7 @@ export const AccessFormInputGroup = ({
               </Box>
             )}
             renderInput={({InputProps, ...props}) => (
-              <IpInput helperText={null} label={m.group} {...InputProps} {...props} />
+              <Core.Input helperText={null} label={m.group} {...InputProps} {...props} />
             )}
           />
         )}

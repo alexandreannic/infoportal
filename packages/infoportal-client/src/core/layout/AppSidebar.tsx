@@ -1,16 +1,15 @@
 import {useI18n} from '@/core/i18n'
-import {Fender, IpBtn, Txt} from '@/shared'
+import {Core, Fender} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
 import {Box, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
 import {useMemo, useState} from 'react'
 import {useQueryForm} from '@/core/query/useQueryForm'
-import {Link, useNavigate} from '@tanstack/react-router'
+import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
 import {mapFor, Seq, seq} from '@axanc/ts-utils'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
-import type {} from '@mui/material/themeCssVarsAugmentation'
 
 export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
   const {m} = useI18n()
@@ -73,9 +72,9 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
           }}
         >
           {({isActive}) => (
-            <IpBtn variant={isActive ? 'light' : 'outlined'} sx={{height: '100%'}}>
+            <Core.Btn variant={isActive ? 'light' : 'outlined'} sx={{height: '100%'}}>
               <Icon>add</Icon>
-            </IpBtn>
+            </Core.Btn>
           )}
         </Link>
       </Box>
@@ -106,7 +105,7 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
                       chevron_right
                     </Icon>
                   )}
-                  <Txt bold>{_.name}</Txt>
+                  <Core.Txt bold>{_.name}</Core.Txt>
                 </Box>
               }
               placement="right-end"
@@ -138,10 +137,12 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
                       </>
                     }
                   >
-                    <Txt sx={{color: _.deploymentStatus !== 'deployed' ? t.vars!.palette.text.disabled : undefined}}>
+                    <Core.Txt
+                      sx={{color: _.deploymentStatus !== 'deployed' ? t.vars!.palette.text.disabled : undefined}}
+                    >
                       {_.name}
                       {/* {_.custom && <span style={{fontWeight: 300}}> ({m._koboDatabase.mergedDb})</span>} */}
-                    </Txt>
+                    </Core.Txt>
                   </SidebarItem>
                 )}
               </Link>

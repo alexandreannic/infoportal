@@ -1,26 +1,20 @@
 import {Box, Popover, PopoverProps} from '@mui/material'
 import React, {ReactNode, useMemo} from 'react'
-import {ChartBar} from '@/shared/charts/ChartBar'
-import {PanelBody, PanelHead} from '@/shared/Panel'
-import {IpBtn} from '@/shared/Btn'
 import {useI18n} from '@/core/i18n'
-import {PanelFoot} from '@/shared/Panel/PanelFoot'
-import {Txt} from '@/shared/Txt'
-import {ChartLineByDate} from '@/shared/charts/ChartLineByDate'
 import {DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType'
 import {seq} from '@axanc/ts-utils'
 import {KeyOf} from 'infoportal-common'
-import {ChartHelper} from '@/shared/charts/chartHelper'
+import {Core} from '@/shared'
 
 const RenderRow = ({label, value}: {label: ReactNode; value: ReactNode}) => {
   return (
     <Box sx={{display: 'flex', '&:not(:last-of-type)': {mb: 1.5}}}>
-      <Txt color="hint" sx={{flex: 1, mr: 2}}>
+      <Core.Txt color="hint" sx={{flex: 1, mr: 2}}>
         {label}
-      </Txt>
-      <Txt block bold>
+      </Core.Txt>
+      <Core.Txt block bold>
         {value}
-      </Txt>
+      </Core.Txt>
     </Box>
   )
 }
@@ -50,19 +44,19 @@ export const NumberChoicesPopover = <T,>({
   }, [data, question])
   return (
     <Popover open={!!anchorEl} anchorEl={anchorEl} onClose={onClose}>
-      <PanelHead>{question as string}</PanelHead>
-      <PanelBody>
+      <Core.PanelHead>{question as string}</Core.PanelHead>
+      <Core.PanelBody>
         <RenderRow label={m.count} value={formatLargeNumber(chart.mapped.length)} />
         <RenderRow label={m.sum} value={formatLargeNumber(chart.sum)} />
         <RenderRow label={m.average} value={formatLargeNumber(chart.avg, {maximumFractionDigits: 2})} />
         <RenderRow label={m.min} value={formatLargeNumber(chart.min)} />
         <RenderRow label={m.max} value={formatLargeNumber(chart.max)} />
-      </PanelBody>
-      <PanelFoot alignEnd>
-        <IpBtn color="primary" onClick={onClose as any}>
+      </Core.PanelBody>
+      <Core.PanelFoot alignEnd>
+        <Core.Btn color="primary" onClick={onClose as any}>
           {m.close}
-        </IpBtn>
-      </PanelFoot>
+        </Core.Btn>
+      </Core.PanelFoot>
     </Popover>
   )
 }
@@ -97,10 +91,10 @@ export const MultipleChoicesPopover = <T extends DatatableRow>({
     const chart = (() => {
       if (multiple) {
         const mapped = seq(data).map(getValue).compact()
-        return ChartHelper.multiple({data: mapped})
+        return Core.ChartHelper.multiple({data: mapped})
       } else {
         const mapped = seq(data).map(getValue).compact()
-        return ChartHelper.single({data: mapped})
+        return Core.ChartHelper.single({data: mapped})
       }
     })()
     return chart
@@ -115,17 +109,17 @@ export const MultipleChoicesPopover = <T extends DatatableRow>({
       onClose={onClose}
       slotProps={{paper: {sx: {minWidth: 400, maxWidth: 500}}}}
     >
-      <PanelHead>
-        <Txt truncate>{title}</Txt>
-      </PanelHead>
-      <PanelBody sx={{maxHeight: '50vh', overflowY: 'auto'}}>
-        <ChartBar data={chart} />
-      </PanelBody>
-      <PanelFoot alignEnd>
-        <IpBtn color="primary" onClick={onClose as any}>
+      <Core.PanelHead>
+        <Core.Txt truncate>{title}</Core.Txt>
+      </Core.PanelHead>
+      <Core.PanelBody sx={{maxHeight: '50vh', overflowY: 'auto'}}>
+        <Core.ChartBar data={chart} />
+      </Core.PanelBody>
+      <Core.PanelFoot alignEnd>
+        <Core.Btn color="primary" onClick={onClose as any}>
           {m.close}
-        </IpBtn>
-      </PanelFoot>
+        </Core.Btn>
+      </Core.PanelFoot>
     </Popover>
   )
 }
@@ -155,15 +149,15 @@ export const DatesPopover = <T,>({
   // }, [question, data])
   return (
     <Popover open={!!anchorEl} anchorEl={anchorEl} onClose={onClose}>
-      <PanelHead>{title}</PanelHead>
-      <PanelBody sx={{maxHeight: '50vh', overflowY: 'auto'}}>
-        <ChartLineByDate data={data} curves={{[title]: getValue}} sx={{minWidth: 360}} />
-      </PanelBody>
-      <PanelFoot alignEnd>
-        <IpBtn color="primary" onClick={onClose as any}>
+      <Core.PanelHead>{title}</Core.PanelHead>
+      <Core.PanelBody sx={{maxHeight: '50vh', overflowY: 'auto'}}>
+        <Core.ChartLineByDate data={data} curves={{[title]: getValue}} sx={{minWidth: 360}} />
+      </Core.PanelBody>
+      <Core.PanelFoot alignEnd>
+        <Core.Btn color="primary" onClick={onClose as any}>
           {m.close}
-        </IpBtn>
-      </PanelFoot>
+        </Core.Btn>
+      </Core.PanelFoot>
     </Popover>
   )
 }

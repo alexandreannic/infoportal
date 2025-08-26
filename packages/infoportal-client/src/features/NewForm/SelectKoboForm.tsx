@@ -1,13 +1,12 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {IpBtn} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Icon, useTheme} from '@mui/material'
-import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {Ip} from 'infoportal-api-sdk'
+import {Core} from '@/shared'
 
 export const SelectKoboForm = ({
   workspaceId,
@@ -29,13 +28,17 @@ export const SelectKoboForm = ({
   })
 
   return (
-    <Panel>
-      <PanelHead>{m.selectKoboForm}</PanelHead>
-      <PanelBody>
+    <Core.Panel>
+      <Core.PanelHead>{m.selectKoboForm}</Core.PanelHead>
+      <Core.PanelBody>
         <Datatable
           loading={queryKoboForms.isLoading || queryForms.importFromKobo.isPending}
           id="select-kobo-form"
-          sx={{overflow: 'hidden', border: `1px solid ${t.vars.palette.divider}`, borderRadius: t.vars.shape.borderRadius}}
+          sx={{
+            overflow: 'hidden',
+            border: `1px solid ${t.vars.palette.divider}`,
+            borderRadius: t.vars.shape.borderRadius,
+          }}
           header={null}
           data={queryKoboForms.data}
           columns={[
@@ -86,7 +89,7 @@ export const SelectKoboForm = ({
               align: 'right',
               head: '',
               renderQuick: form => (
-                <IpBtn
+                <Core.Btn
                   size="small"
                   onClick={() => queryForms.importFromKobo.mutateAsync({serverId, uid: form.uid}).then(onAdded)}
                   disabled={
@@ -96,12 +99,12 @@ export const SelectKoboForm = ({
                   }
                 >
                   {m.add}
-                </IpBtn>
+                </Core.Btn>
               ),
             },
           ]}
         />
-      </PanelBody>
-    </Panel>
+      </Core.PanelBody>
+    </Core.Panel>
   )
 }

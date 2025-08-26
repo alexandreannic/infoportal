@@ -1,13 +1,10 @@
 import {Controller, useForm} from 'react-hook-form'
-import {IpInput} from '@/shared/Input/Input'
-import {Panel, PanelBody} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
-import {PanelFoot} from '@/shared/Panel/PanelFoot'
-import {IpBtn} from '@/shared'
 import {Autocomplete, Grid} from '@mui/material'
 import {useNavigate} from '@tanstack/react-router'
+import {Core} from '@/shared'
 
 type Form = {
   name: string
@@ -29,8 +26,8 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceI
         navigate({to: '/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})
       })}
     >
-      <Panel>
-        <PanelBody>
+      <Core.Panel>
+        <Core.PanelBody>
           <Grid container>
             <Grid size={{xs: 12, sm: 6}}>
               <Controller
@@ -38,7 +35,7 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceI
                 rules={{required: true}}
                 control={form.control}
                 render={({field, fieldState}) => (
-                  <IpInput
+                  <Core.Input
                     required
                     label={m.name}
                     {...field}
@@ -62,7 +59,7 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceI
                     onChange={(e, value) => field.onChange(value)}
                     onInputChange={(_, value) => field.onChange(value)}
                     renderInput={params => (
-                      <IpInput
+                      <Core.Input
                         {...params.InputProps}
                         inputProps={params.inputProps}
                         label={m.category}
@@ -74,13 +71,13 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceI
               />
             </Grid>
           </Grid>
-        </PanelBody>
-        <PanelFoot>
-          <IpBtn variant="contained" type="submit" loading={queryForm.create.isPending}>
+        </Core.PanelBody>
+        <Core.PanelFoot>
+          <Core.Btn variant="contained" type="submit" loading={queryForm.create.isPending}>
             {m.create}
-          </IpBtn>
-        </PanelFoot>
-      </Panel>
+          </Core.Btn>
+        </Core.PanelFoot>
+      </Core.Panel>
     </form>
   )
 }

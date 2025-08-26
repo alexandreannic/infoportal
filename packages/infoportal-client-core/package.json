@@ -1,0 +1,28 @@
+{
+  "name": "@infoportal/client-core",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "@axanc/react-hooks": "^1.14.1",
+    "@mui/material": "^7.3.1",
+    "date-fns": "^4.1.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-google-charts": "^5.2.1",
+    "recharts": "^2.10.4"
+  }
+}

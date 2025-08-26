@@ -1,11 +1,7 @@
-import {Box, BoxProps, Collapse, Icon, SxProps, useTheme} from '@mui/material'
+import {Box, BoxProps, Collapse, Icon, useTheme} from '@mui/material'
 import React, {ReactNode} from 'react'
-import {Txt} from '@/shared/Txt'
-import {IpIconBtn} from '@/shared/IconBtn'
-import {usePersistentState} from '@/shared/hook/usePersistantState'
-import {styleUtils} from '@/core/theme'
-import {Utils} from '@/utils/utils'
-import stopPropagation = Utils.stopPropagation
+import {Core} from '@/shared'
+import {usePersistentState} from '@axanc/react-hooks'
 
 export const SidebarSubSection = ({
   id,
@@ -43,7 +39,7 @@ export const SidebarSubSection = ({
         py: margin,
         transition: t.transitions.create('all'),
         borderRadius: t.vars.shape.borderRadius,
-        background: styleUtils(t).color.toolbar.default,
+        background: Core.styleUtils(t).color.toolbar.default,
         color: t.vars.palette.text.secondary,
         overflow: 'hidden',
         ...(hoverable && {
@@ -71,16 +67,16 @@ export const SidebarSubSection = ({
         <Icon fontSize="small" sx={{visibility: icon ? 'inherit' : 'hidden', mr: 1}}>
           {icon}
         </Icon>
-        <Txt bold sx={{fontSize: '.825em', flex: 1}}>
+        <Core.Txt bold sx={{fontSize: '.825em', flex: 1}}>
           {title}
-        </Txt>
+        </Core.Txt>
         <Box sx={{mr: 1}}>
           {onClear && (
-            <IpIconBtn onClick={stopPropagation(onClear)} size="small">
+            <Core.IconBtn onClick={Core.stopPropagation(onClear)} size="small">
               clear
-            </IpIconBtn>
+            </Core.IconBtn>
           )}
-          {hoverable && <IpIconBtn size="small">{open ? 'expand_less' : 'expand_more'}</IpIconBtn>}
+          {hoverable && <Core.IconBtn size="small">{open ? 'expand_less' : 'expand_more'}</Core.IconBtn>}
         </Box>
       </Box>
       {children && <Collapse in={keepOpen || open}>{children}</Collapse>}

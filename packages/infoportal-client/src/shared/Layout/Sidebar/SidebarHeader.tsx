@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Box, BoxProps} from '@mui/material'
 import {useLayoutContext} from '../LayoutContext'
-import {IpIconBtn} from '@/shared/IconBtn'
+import {Core} from '@/shared'
 
 export interface SidebarHeaderProps extends BoxProps {
   hidden?: boolean
@@ -31,7 +31,7 @@ export const SidebarHeader = ({hidden, children, sx, ...props}: SidebarHeaderPro
       }}
       {...props}
     >
-      <IpIconBtn onClick={() => setSidebarOpen(false)} children="clear" />
+      <Core.IconBtn onClick={() => setSidebarOpen(false)} children="clear" />
     </Box>
   )
 }

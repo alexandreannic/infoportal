@@ -1,7 +1,7 @@
 import {MenuItem} from '@mui/material'
 import React, {useRef} from 'react'
-import {IpIconBtn, PopoverWrapper} from '@/shared'
 import {useI18n} from '@/core/i18n'
+import {Core} from '@/shared'
 
 interface DatabaseImportBtnProps {
   onUploadNewData: (file: File) => void
@@ -44,7 +44,7 @@ export const DatabaseImportBtn: React.FC<DatabaseImportBtnProps> = ({
 
   return (
     <>
-      <PopoverWrapper
+      <Core.PopoverWrapper
         content={close => (
           <>
             <MenuItem onClick={() => handleMenuClick('create', close)}>{m.importData.create}</MenuItem>
@@ -53,8 +53,8 @@ export const DatabaseImportBtn: React.FC<DatabaseImportBtnProps> = ({
           </>
         )}
       >
-        <IpIconBtn loading={loading} children="upload" tooltip="Import Data" />
-      </PopoverWrapper>
+        <Core.IconBtn loading={loading} children="upload" tooltip="Import Data" />
+      </Core.PopoverWrapper>
       <input type="file" ref={fileInputRef} accept=".xls,.xlsx" style={{display: 'none'}} onChange={handleFileChange} />
     </>
   )

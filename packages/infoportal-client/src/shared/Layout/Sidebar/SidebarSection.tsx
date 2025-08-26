@@ -1,8 +1,7 @@
 import {Box, Collapse} from '@mui/material'
 import {ReactNode} from 'react'
-import {Txt} from '@/shared/Txt'
-import {IpIconBtn} from '@/shared/IconBtn'
-import {usePersistentState} from '@/shared/hook/usePersistantState'
+import {Core} from '@/shared'
+import {usePersistentState} from '@axanc/react-hooks'
 
 export const SidebarSection = ({
   id,
@@ -31,12 +30,12 @@ export const SidebarSection = ({
     >
       {title && (
         <Box sx={{pl: 0.5, mb: 0, display: 'flex', alignItems: 'center'}}>
-          <IpIconBtn onClick={() => setOpen(_ => !_)} size="small" sx={{mr: 1}}>
+          <Core.IconBtn onClick={() => setOpen(_ => !_)} size="small" sx={{mr: 1}}>
             {open ? 'expand_less' : 'expand_more'}
-          </IpIconBtn>
-          <Txt uppercase bold color="disabled" sx={{fontSize: '.825em', flex: 1}}>
+          </Core.IconBtn>
+          <Core.Txt uppercase bold color="disabled" sx={{fontSize: '.825em', flex: 1}}>
             {title}
-          </Txt>
+          </Core.Txt>
         </Box>
       )}
       <Collapse in={open}>{children}</Collapse>

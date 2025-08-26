@@ -44,7 +44,6 @@
     "@types/xlsx-populate": "git+https://github.com/JanLoebel/types-xlsx-populate.git",
     "filehound": "^1.17.6",
     "infoportal-api-sdk": "1.0.0",
-    "infoportal-event": "1.0.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
     "ts-jest": "^29.2.5",

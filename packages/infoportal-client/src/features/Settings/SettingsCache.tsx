@@ -2,18 +2,14 @@ import {Page} from '@/shared/Page'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import React, {useEffect} from 'react'
 import {useI18n} from '@/core/i18n'
-import {useFetcher} from '@/shared/hook/useFetcher'
 import {map} from '@axanc/ts-utils'
 import {JSONTree} from 'react-json-tree'
-import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {Box, useTheme} from '@mui/material'
 import {addMilliseconds} from 'date-fns'
-import {IpBtn} from '@/shared/Btn'
-import {Txt} from '@/shared/Txt'
-import {useAsync} from '@/shared/hook/useAsync'
-import {IpIconBtn} from '@/shared/IconBtn'
 import {settingsRoute} from '@/features/Settings/Settings'
 import {createRoute} from '@tanstack/react-router'
+import {Core} from '@/shared'
+import {useAsync, useFetcher} from '@axanc/react-hooks'
 
 export const settingsCacheRoute = createRoute({
   getParentRoute: () => settingsRoute,
@@ -41,10 +37,10 @@ function SettingsCache() {
       {map(fetcherCache.get, cache =>
         Object.entries(cache).map(([key, info]) => {
           return (
-            <Panel key={key}>
-              <PanelHead
+            <Core.Panel key={key}>
+              <Core.PanelHead
                 action={
-                  <IpBtn
+                  <Core.Btn
                     loading={asyncClear.loading[key]}
                     size="small"
                     variant="outlined"
@@ -52,16 +48,16 @@ function SettingsCache() {
                     onClick={() => asyncClear.call(key)}
                   >
                     {m.clearAll}
-                  </IpBtn>
+                  </Core.Btn>
                 }
               >
                 {key}
-              </PanelHead>
-              <PanelBody>
-                <Txt block color="hint" sx={{mb: 1, mt: -1}}>
+              </Core.PanelHead>
+              <Core.PanelBody>
+                <Core.Txt block color="hint" sx={{mb: 1, mt: -1}}>
                   Refreshed {dateFromNow(info.lastUpdate)}, expire{' '}
                   {dateFromNow(addMilliseconds(info.lastUpdate, info.expiration ?? 0))}
-                </Txt>
+                </Core.Txt>
                 <Box sx={{}}>
                   {Object.entries(info.value).map(([subKey, value]) => (
                     <Box key={key + subKey}>
@@ -77,10 +73,10 @@ function SettingsCache() {
                           mt: 1,
                         }}
                       >
-                        <Txt block bold sx={{width: '100%'}}>
+                        <Core.Txt block bold sx={{width: '100%'}}>
                           {subKey}
-                        </Txt>
-                        <IpIconBtn
+                        </Core.Txt>
+                        <Core.IconBtn
                           color="primary"
                           size="small"
                           children="delete"
@@ -104,8 +100,8 @@ function SettingsCache() {
                     </Box>
                   ))}
                 </Box>
-              </PanelBody>
-            </Panel>
+              </Core.PanelBody>
+            </Core.Panel>
           )
         }),
       )}

@@ -2,13 +2,13 @@ import {formatDate, formatDateTime, Messages} from '@/core/i18n/localization/en'
 import React from 'react'
 import {Kobo} from 'kobo-sdk'
 import {map} from '@axanc/ts-utils'
-import {IpBtn, TableEditCellBtn, Txt} from '@/shared'
+import {TableEditCellBtn} from '@/shared'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper, removeHtml} from 'infoportal-common'
 import {DatabaseContext, KoboExternalFilesIndex} from '@/features/Form/Database/DatabaseContext'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {Ip} from 'infoportal-api-sdk'
-import {alpha, Theme} from '@mui/material'
+import {Theme} from '@mui/material'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useKoboDialogs} from '@/core/store/useLangIndex'
@@ -16,9 +16,10 @@ import {TableIcon, TableIconBtn} from '@/shared/TableIcon'
 import {SelectStatusBy, SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {useI18n} from '@/core/i18n'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
-import Submission = Ip.Submission
 import {alphaVar} from '@/core/theme.js'
 import {Datatable} from '@/shared/Datatable3/state/types.js'
+import Submission = Ip.Submission
+import {Core} from '@/shared'
 
 export const buildDatabaseColumns = {
   type: {
@@ -239,13 +240,13 @@ function file(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): Datata
         export: url,
         value: fileName ?? DatatableUtils.blank,
         label: (
-          <Txt link>
+          <Core.Txt link>
             <a href={url} target="_blank">
               {fileName}
             </a>
-          </Txt>
+          </Core.Txt>
         ),
-        // label: <Txt link><a href={koboImgHelper({fileName, attachments: row.attachments}).fullUrl} target="_blank">{fileName}</a></Txt>
+        // label: <Core.Txt link><a href={koboImgHelper({fileName, attachments: row.attachments}).fullUrl} target="_blank">{fileName}</a></Core.Txt>
       }
     },
   }
@@ -374,7 +375,7 @@ function repeatGroup(
         export: value?.length,
         value: value?.length,
         label: value && (
-          <IpBtn
+          <Core.Btn
             children={value.length}
             style={{padding: '0 4px'}}
             onClick={event => {

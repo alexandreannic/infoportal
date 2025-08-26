@@ -3,13 +3,9 @@ import {useQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {useLangIndex} from '@/core/store/useLangIndex'
-import {IpBtn} from '@/shared/Btn'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {IpIconBtn} from '@/shared/IconBtn'
 import {Page} from '@/shared/Page'
-import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
-import {Txt} from '@/shared/Txt'
 import {map, seq} from '@axanc/ts-utils'
 import {
   Alert,
@@ -32,6 +28,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
 import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
+import {Core} from '@/shared'
 
 export const databaseAnswerViewRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -65,13 +62,13 @@ function DatabaseAnswerView() {
         </>
       ) : (
         (map(answer, querySchema.data, (a, schema) => (
-          <Panel>
-            <PanelHead
+          <Core.Panel>
+            <Core.PanelHead
               action={
                 <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
-                  <Txt sx={{fontSize: '1em'}} color="hint">
+                  <Core.Txt sx={{fontSize: '1em'}} color="hint">
                     {m._koboDatabase.showAllQuestions}
-                  </Txt>
+                  </Core.Txt>
                   <Switch
                     size="small"
                     value={showQuestionWithoutAnswer}
@@ -82,17 +79,17 @@ function DatabaseAnswerView() {
             >
               {queryForm.data?.name}
               <br />
-              <Txt sx={{color: t => t.vars.palette.info.main}}>{answerId}</Txt>
-            </PanelHead>
-            <PanelBody>
+              <Core.Txt sx={{color: t => t.vars.palette.info.main}}>{answerId}</Core.Txt>
+            </Core.PanelHead>
+            <Core.PanelBody>
               <KoboAnswerFormView
                 formId={formId}
                 showQuestionWithoutAnswer={showQuestionWithoutAnswer}
                 answer={a}
                 schema={schema}
               />
-            </PanelBody>
-          </Panel>
+            </Core.PanelBody>
+          </Core.Panel>
         )) ?? <Alert color="warning">{m.noDataAtm}</Alert>)
       )}
     </Page>
@@ -120,13 +117,13 @@ export const DialogAnswerView = ({
             params={{workspaceId, formId, answerId: answer.id}}
             onClick={() => onClose()}
           >
-            <IpIconBtn color="primary">open_in_new</IpIconBtn>
+            <Core.IconBtn color="primary">open_in_new</Core.IconBtn>
           </Link>
           {answer.id}
           <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
-            <Txt sx={{fontSize: '1rem'}} color="hint">
+            <Core.Txt sx={{fontSize: '1rem'}} color="hint">
               {m._koboDatabase.showAllQuestions}
-            </Txt>
+            </Core.Txt>
             <Switch value={showQuestionWithoutAnswer} onChange={e => setShowQuestionWithoutAnswer(e.target.checked)} />
           </Box>
         </Box>
@@ -140,7 +137,7 @@ export const DialogAnswerView = ({
         />
       </DialogContent>
       <DialogActions>
-        <IpBtn onClick={() => onClose()}>{m.close}</IpBtn>
+        <Core.Btn onClick={() => onClose()}>{m.close}</Core.Btn>
       </DialogActions>
     </Dialog>
   )
@@ -207,9 +204,9 @@ const KoboAnswerQuestionView = ({
     case 'begin_group': {
       return (
         <Box sx={{pt: 1, mt: 2, borderTop: t => `1px solid ${t.vars.palette.divider}`}}>
-          <Txt bold block size="title">
+          <Core.Txt bold block size="title">
             {schema.translate.question(questionSchema.name)}
-          </Txt>
+          </Core.Txt>
         </Box>
       )
     }
@@ -218,9 +215,9 @@ const KoboAnswerQuestionView = ({
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <Box>
-            <Txt block size="small" color="hint">
+            <Core.Txt block size="small" color="hint">
               {row.answers[questionSchema.name] as string}
-            </Txt>
+            </Core.Txt>
             <KoboAttachedImg
               formId={formId}
               answerId={row.id}
@@ -323,7 +320,7 @@ const KoboAnswerQuestionView = ({
 }
 
 const KoboQuestionLabelView = ({children}: {children: string}) => {
-  return <Txt bold block sx={{mb: 0.5}} dangerouslySetInnerHTML={{__html: children}} />
+  return <Core.Txt bold block sx={{mb: 0.5}} dangerouslySetInnerHTML={{__html: children}} />
 }
 
 const KoboQuestionAnswerView = ({icon, children}: {icon: string; children: string}) => {
@@ -333,7 +330,7 @@ const KoboQuestionAnswerView = ({icon, children}: {icon: string; children: strin
       <Icon color="disabled" sx={{mr: 1}}>
         {icon}
       </Icon>
-      <Txt color="hint">{children}</Txt>
+      <Core.Txt color="hint">{children}</Core.Txt>
     </Box>
   )
 }

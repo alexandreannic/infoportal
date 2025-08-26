@@ -1,5 +1,4 @@
-import {IpBtn, Modal, Page, Txt} from '@/shared'
-import {Panel, PanelBody} from '@/shared/Panel'
+import {Core, Page} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {ReactNode} from 'react'
 import {Box, useTheme} from '@mui/material'
@@ -21,12 +20,12 @@ const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; childr
       sx={{'&:not(:last-of-type)': {mb: 2, pb: 2, borderBottom: '1px solid', borderColor: t.vars.palette.divider}}}
     >
       <Box flex={1}>
-        <Txt bold block>
+        <Core.Txt bold block>
           {label}
-        </Txt>
-        <Txt block color="hint">
+        </Core.Txt>
+        <Core.Txt block color="hint">
           {desc}
-        </Txt>
+        </Core.Txt>
       </Box>
       <div>{children}</div>
     </Box>
@@ -40,11 +39,11 @@ function FormSettings() {
   const navigate = useNavigate()
   return (
     <Page width="xs">
-      <Panel>
-        <PanelBody>
+      <Core.Panel>
+        <Core.PanelBody>
           {form.kobo && (
             <Row label={m.connectedToKobo} desc={m.connectedToKoboDesc}>
-              <Modal
+              <Core.Modal
                 loading={queryForm.update.isPending}
                 title={m.disconnectToKobo}
                 content={m.disconnectToKoboDesc}
@@ -53,8 +52,8 @@ function FormSettings() {
                   close()
                 }}
               >
-                <IpBtn disabled={queryForm.update.isPending}>{m.disconnect}</IpBtn>
-              </Modal>
+                <Core.Btn disabled={queryForm.update.isPending}>{m.disconnect}</Core.Btn>
+              </Core.Modal>
             </Row>
           )}
           <Row
@@ -65,17 +64,17 @@ function FormSettings() {
               </>
             }
           >
-            <IpBtn
+            <Core.Btn
               loading={queryForm.update.isPending}
               icon={form.deploymentStatus === 'archived' ? 'unarchive' : 'archive'}
               variant="outlined"
               onClick={() => queryForm.update.mutateAsync({archive: form.deploymentStatus !== 'archived'})}
             >
               {form.deploymentStatus === 'archived' ? m.unarchive : m.archive}
-            </IpBtn>
+            </Core.Btn>
           </Row>
           <Row label={m.deleteThisProject} desc={m.deleteThisProjectDesc}>
-            <Modal
+            <Core.Modal
               loading={queryForm.remove.isPending}
               title={m.deleteThisProject}
               content={form.name}
@@ -85,13 +84,13 @@ function FormSettings() {
                 navigate({to: '/$workspaceId/form/list', params: {workspaceId}})
               }}
             >
-              <IpBtn color="error" variant="outlined" icon="delete">
+              <Core.Btn color="error" variant="outlined" icon="delete">
                 {m.delete}
-              </IpBtn>
-            </Modal>
+              </Core.Btn>
+            </Core.Modal>
           </Row>
-        </PanelBody>
-      </Panel>
+        </Core.PanelBody>
+      </Core.Panel>
     </Page>
   )
 }

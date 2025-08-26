@@ -1,4 +1,3 @@
-import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {mapFor} from '@axanc/ts-utils'
 import {Messages} from '@/core/i18n/localization/en'

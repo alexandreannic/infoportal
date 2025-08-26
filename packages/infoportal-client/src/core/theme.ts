@@ -1,5 +1,5 @@
 import {green, orange, purple, red} from '@mui/material/colors'
-import {createTheme, darken, SxProps, Theme} from '@mui/material'
+import {createTheme, SxProps, Theme} from '@mui/material'
 
 export const combineSx = (...sxs: (SxProps<Theme> | undefined | false)[]): SxProps<Theme> => {
   return sxs.reduce((res, sx) => (sx !== undefined && sx !== false ? {...res, ...sx} : res), {} as any)
@@ -88,6 +88,7 @@ const createDarkShadows = (primaryColor: string): string[] => {
   )
 }
 
+/** @deprecated Use from core */
 export const styleUtils = (t: Theme) => ({
   backdropFilter: 'blur(10px)',
   gridSpacing: 3 as any,

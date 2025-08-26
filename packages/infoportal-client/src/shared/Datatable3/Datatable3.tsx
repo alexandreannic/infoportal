@@ -6,7 +6,6 @@ import {Badge, Box, BoxProps} from '@mui/material'
 import './Datatable.css'
 import {DatatableHead} from '@/shared/Datatable3/DatatableHead.js'
 import {Datatable3Provider, useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
-import {IpIconBtn, Txt} from '@/shared/index.js'
 import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
 import {useI18n} from '@/core/i18n/index.js'
@@ -15,6 +14,7 @@ import {DatatableFilterModal3} from '@/shared/Datatable3/popup/DatatablePopupFil
 import {DatatableRow} from '@/shared/Datatable3/DatatableRow.js'
 import {SelectedCellPopover} from '@/shared/Datatable3/state/useCellSelectionComputed.js'
 import {DatatableColumnToggle3} from '@/shared/Datatable3/DatatableColumnsToggle3.js'
+import {Core} from '@/shared'
 
 export const Datatable3 = <T extends Datatable.Row>({
   data,
@@ -122,7 +122,7 @@ export const DatatableWithData = <T extends Datatable.Row>({
             rowVirtualizer.scrollToIndex(0)
           }}
         >
-          <IpIconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
+          <Core.IconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
         </Badge>
         {typeof header === 'function'
           ? header({
@@ -130,9 +130,9 @@ export const DatatableWithData = <T extends Datatable.Row>({
               filteredAndSortedData: (dataFilteredAndSorted ?? []) as T[],
             })
           : header}
-        <Txt bold color="hint" sx={{mr: 0.5}}>
+        <Core.Txt bold color="hint" sx={{mr: 0.5}}>
           {formatLargeNumber(dataFilteredAndSorted.length)}
-        </Txt>
+        </Core.Txt>
       </div>
       <Box
         className="dt"

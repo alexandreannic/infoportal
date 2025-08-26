@@ -1,10 +1,8 @@
-import {Badge, Box, Icon, LinearProgress, Popover, TablePagination} from '@mui/material'
+import {Badge, Box, Icon, LinearProgress, TablePagination} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
 import {useI18n} from '@/core/i18n'
-import {Txt} from '@/shared/Txt'
 import {map, Obj} from '@axanc/ts-utils'
-import {IpIconBtn} from '@/shared'
-import {useMemoFn} from '@axanc/react-hooks'
+import {useAsync, useMemoFn} from '@axanc/react-hooks'
 import {DatatableBody} from './DatatableBody'
 import {DatatableHead} from './DatatableHead'
 import {DatatableColumn, DatatableRow, DatatableTableProps} from '@/shared/Datatable/util/datatableType'
@@ -14,12 +12,11 @@ import {DatatableModal} from '@/shared/Datatable/DatatableModal'
 import {DatatableErrorBoundary} from '@/shared/Datatable/DatatableErrorBundary'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {DatatableSkeleton} from '@/shared/Datatable/DatatableSkeleton'
-import {useAsync} from '@/shared/hook/useAsync'
 import {format} from 'date-fns'
 import {slugify} from 'infoportal-common'
 import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
 import {DatatableSelectToolbar} from '@/shared/Datatable/DatatableSelectToolbar'
-import {PanelBody} from '../Panel'
+import {Core} from '@/shared'
 
 export const Datatable = <T extends DatatableRow = DatatableRow>({
   total,
@@ -161,7 +158,7 @@ const _Datatable = <T extends DatatableRow>({
               ctx.data.resetSearch()
             }}
           >
-            <IpIconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
+            <Core.IconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
           </Badge>
           {!ctx.columnsToggle.hideButton && (
             <DatatableColumnToggle
@@ -172,7 +169,7 @@ const _Datatable = <T extends DatatableRow>({
             />
           )}
           {showExportBtn && (
-            <IpIconBtn
+            <Core.IconBtn
               loading={_generateXLSFromArray.loading}
               onClick={exportToCSV}
               children="download"
@@ -187,7 +184,7 @@ const _Datatable = <T extends DatatableRow>({
             : header}
           {ctx.selected.size > 0 && (
             <DatatableSelectToolbar>
-              <IpIconBtn color="primary" children="clear" onClick={ctx.selected.clear} />
+              <Core.IconBtn color="primary" children="clear" onClick={ctx.selected.clear} />
               <Box sx={{mr: 1, whiteSpace: 'nowrap'}}>
                 <b>{ctx.selected.size}</b> {m.selected}
               </Box>
@@ -239,9 +236,9 @@ const _Datatable = <T extends DatatableRow>({
                         <Icon color="disabled" sx={{fontSize: 40, mr: 2}}>
                           block
                         </Icon>
-                        <Txt color="disabled" size="title">
+                        <Core.Txt color="disabled" size="title">
                           {m.noDataAtm}
-                        </Txt>
+                        </Core.Txt>
                       </Box>
                     </td>
                   </tr>

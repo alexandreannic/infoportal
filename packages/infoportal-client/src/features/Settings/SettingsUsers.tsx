@@ -1,12 +1,9 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
-import {IpBtn, Modal, TableInput} from '@/shared'
+import {Core, TableInput} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Datatable} from '@/shared/Datatable/Datatable'
-import {IpIconBtn} from '@/shared/IconBtn'
 import {Page} from '@/shared/Page'
-import {Panel} from '@/shared/Panel'
-import {Txt} from '@/shared/Txt'
 import {fnSwitch, Obj, seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
 import {AddUserForm} from './AddUserForm'
@@ -14,11 +11,10 @@ import {useQueryUser} from '@/core/query/useQueryUser'
 import {useSession} from '@/core/Session/SessionContext'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
-import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Ip} from 'infoportal-api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
-import {CircularProgress, Icon} from '@mui/material'
+import {Icon} from '@mui/material'
 
 export const settingsUsersRoute = createRoute({
   getParentRoute: () => settingsRoute,
@@ -72,7 +68,7 @@ function SettingsUsers() {
 
   return (
     <Page width="full">
-      <Panel>
+      <Core.Panel>
         <Datatable
           loading={queryUserGet.isLoading}
           id="users"
@@ -83,17 +79,17 @@ function SettingsUsers() {
           // getRenderRowKey={(_, i) => '' + i}
           header={
             permission.user_canCreate && (
-              <Modal
+              <Core.Modal
                 onClose={null}
                 title={m.addUser}
                 content={close => (
                   <AddUserForm workspaceId={workspaceId} existingEmails={emailsLists} onClose={close} />
                 )}
               >
-                <IpBtn icon="person_add" variant="outlined" sx={{marginLeft: 'auto'}}>
+                <Core.Btn icon="person_add" variant="outlined" sx={{marginLeft: 'auto'}}>
                   {m.addUser}
-                </IpBtn>
-              </Modal>
+                </Core.Btn>
+              </Core.Modal>
             )
           }
           columns={[
@@ -129,7 +125,7 @@ function SettingsUsers() {
               head: m.email,
               render: _ => {
                 return {
-                  label: <Txt bold>{_.email}</Txt>,
+                  label: <Core.Txt bold>{_.email}</Core.Txt>,
                   value: _.email,
                 }
               },
@@ -142,7 +138,7 @@ function SettingsUsers() {
               type: 'date',
               render: _ => {
                 return {
-                  label: <Txt color="hint">{formatDate(_.createdAt)}</Txt>,
+                  label: <Core.Txt color="hint">{formatDate(_.createdAt)}</Core.Txt>,
                   value: _.createdAt,
                 }
               },
@@ -154,7 +150,7 @@ function SettingsUsers() {
               head: m.lastConnectedAt,
               render: _ => {
                 return {
-                  label: _.lastConnectedAt && <Txt color="hint">{formatDateTime(_.lastConnectedAt)}</Txt>,
+                  label: _.lastConnectedAt && <Core.Txt color="hint">{formatDateTime(_.lastConnectedAt)}</Core.Txt>,
                   value: _.lastConnectedAt,
                 }
               },
@@ -190,7 +186,7 @@ function SettingsUsers() {
               head: m.admin,
               render: _ => ({
                 label: (
-                  <IpSelectSingle
+                  <Core.SelectSingle
                     loading={queryUserUpdate.arePending.has(_.userId!)}
                     disabled={_.email === connectedUser.email || !permission.user_canUpdate || !_.userId}
                     onChange={res => {
@@ -210,7 +206,7 @@ function SettingsUsers() {
               renderQuick: _ => (
                 <>
                   {_.status === 'user' && permission.user_canConnectAs && (
-                    <IpIconBtn
+                    <Core.IconBtn
                       disabled={_.email === conf.contact || _.email === ctxSession.user.email}
                       children="visibility"
                       loading={ctxSession.connectAs.isPending}
@@ -219,7 +215,7 @@ function SettingsUsers() {
                     />
                   )}
                   {_.status === 'invitation' && permission.user_canDelete && (
-                    <IpIconBtn
+                    <Core.IconBtn
                       children="delete"
                       loading={queryInvitationRemove.arePending.has(_.invitationId!)}
                       onClick={() => queryInvitationRemove.mutate({id: _.invitationId!})}
@@ -231,7 +227,7 @@ function SettingsUsers() {
             },
           ]}
         />
-      </Panel>
+      </Core.Panel>
     </Page>
   )
 }

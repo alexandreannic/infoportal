@@ -49,11 +49,11 @@ export function GoogleChartsLoader() {
 }
 
 // {isStupidMicrosoftBrowser && (
-//   <IpAlert deletable="transient" color="warning" sx={{minHeight: 30, height: 30}}>
+//   <Core.Alert deletable="transient" color="warning" sx={{minHeight: 30, height: 30}}>
 //   This app may not working well on Edge and IE. Please install a
-// <Txt link sx={{textDecoration: 'underline'}}>
+// <Core.Txt link sx={{textDecoration: 'underline'}}>
 //   <a href="https://www.mozilla.org/en-US/firefox/new/">real browser</a>
-// </Txt>
+// </Core.Txt>
 //   , not a Microsoft one.
-// </IpAlert>
+// </Core.Alert>
 // )}

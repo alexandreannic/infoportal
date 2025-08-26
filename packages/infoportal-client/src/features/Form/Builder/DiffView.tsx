@@ -5,9 +5,9 @@ import 'react-diff-view/style/index.css'
 import 'diff2html/bundles/css/diff2html.min.css'
 import {Box, BoxProps, useColorScheme, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
-import {Txt} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 import {ColorSchemeType} from 'diff2html/lib/types'
+import {Core} from '@/shared'
 
 type Props = BoxProps & {
   oldStr: string
@@ -66,9 +66,14 @@ export const DiffView = ({oldStr = '', newStr, sx, hasChanges, ...props}: Props)
       }}
       {...props}
     >
-      <Txt bold size="big" block sx={{pl: 2, py: 0.5, borderBottom: '1px solid', borderColor: t.vars.palette.divider}}>
+      <Core.Txt
+        bold
+        size="big"
+        block
+        sx={{pl: 2, py: 0.5, borderBottom: '1px solid', borderColor: t.vars.palette.divider}}
+      >
         {m.differences}
-      </Txt>
+      </Core.Txt>
       <Box dangerouslySetInnerHTML={{__html}} />
     </Box>
   )

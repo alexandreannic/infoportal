@@ -1,11 +1,8 @@
 import {Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
-import {AppAvatar, IpBtn, Modal, Txt} from '@/shared'
+import {AppAvatar, Core} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {Panel, PanelBody} from '@/shared/Panel'
 import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
-import {PanelProps} from '@/shared/Panel/Panel.js'
-import {PanelFoot} from '@/shared/Panel/PanelFoot.js'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 import {appConfig} from '@/conf/AppConfig.js'
 
@@ -35,7 +32,9 @@ export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
       <Icon sx={{mb: 1, fontSize: 60, color: t.vars.palette.text.secondary}}>{appConfig.icons.workspace}</Icon>
       <Box display="flex" alignItems="center" mt={1}>
         <Icon fontSize="medium">add</Icon>
-        <Txt bold size="big">{m.createWorkspace}</Txt>
+        <Core.Txt bold size="big">
+          {m.createWorkspace}
+        </Core.Txt>
       </Box>
     </ButtonBase>
   )
@@ -47,7 +46,7 @@ export const WorkspaceCard = ({workspace}: {workspace: Ip.Workspace}) => {
 
   return (
     <Link to="/$workspaceId/dashboard" params={{workspaceId: workspace.id}}>
-      <Panel
+      <Core.Panel
         sx={{
           mb: 0,
           minHeight: 200,
@@ -60,19 +59,19 @@ export const WorkspaceCard = ({workspace}: {workspace: Ip.Workspace}) => {
           },
         }}
       >
-        <Txt size="title" bold block>
+        <Core.Txt size="title" bold block>
           {workspace.name}
-        </Txt>
-        <Txt color="hint" block>
+        </Core.Txt>
+        <Core.Txt color="hint" block>
           {workspace.slug}
-        </Txt>
-        <Txt truncate block>
+        </Core.Txt>
+        <Core.Txt truncate block>
           {workspace.sector}
-        </Txt>
-        <Txt color="hint" textAlign="right" block sx={{mt: 'auto'}}>
+        </Core.Txt>
+        <Core.Txt color="hint" textAlign="right" block sx={{mt: 'auto'}}>
           {formatDate(workspace.createdAt)}
-        </Txt>
-      </Panel>
+        </Core.Txt>
+      </Core.Panel>
     </Link>
   )
 }
@@ -81,14 +80,14 @@ export const WorkspaceCardInvitation = ({
   invitation,
   sx,
   ...props
-}: PanelProps & {
+}: Core.PanelProps & {
   invitation: Ip.Workspace.InvitationW_workspace
 }) => {
   const t = useTheme()
   const {m, formatDateTime} = useI18n()
   const accept = useQueryWorkspaceInvitation.accept()
   return (
-    <Panel
+    <Core.Panel
       loading={accept.isPending}
       {...props}
       sx={{
@@ -102,37 +101,37 @@ export const WorkspaceCardInvitation = ({
         ...sx,
       }}
     >
-      <PanelBody sx={{flex: 1}}>
+      <Core.PanelBody sx={{flex: 1}}>
         <Box sx={{textAlign: 'center'}}>
           <AppAvatar size={40} email={invitation.createdBy} />
           {invitation.createdBy}
-          <Txt block size="small" color="hint" sx={{my: 0.5}}>
+          <Core.Txt block size="small" color="hint" sx={{my: 0.5}}>
             Invited you to join
-          </Txt>
+          </Core.Txt>
           {/*{formatDateTime(invitation.createdAt)}*/}
-          <Txt block bold size="big">
+          <Core.Txt block bold size="big">
             {invitation.workspace.name}
-          </Txt>
+          </Core.Txt>
         </Box>
-      </PanelBody>
-      <PanelFoot sx={{justifyContent: 'space-between'}}>
-        <Modal
+      </Core.PanelBody>
+      <Core.PanelFoot sx={{justifyContent: 'space-between'}}>
+        <Core.Modal
           disabled={accept.isPending}
           title={m.refuse + ' ?'}
           confirmLabel={m.refuse}
           onConfirm={(e, close) => accept.mutateAsync({id: invitation.id, accept: false}).then(close)}
         >
-          <IpBtn color="error">{m.refuse}</IpBtn>
-        </Modal>
-        <IpBtn
+          <Core.Btn color="error">{m.refuse}</Core.Btn>
+        </Core.Modal>
+        <Core.Btn
           disabled={accept.isPending}
           onClick={() => accept.mutateAsync({id: invitation.id, accept: true})}
           color="success"
           endIcon={<Icon>login</Icon>}
         >
           {m.accept}
-        </IpBtn>
-      </PanelFoot>
-    </Panel>
+        </Core.Btn>
+      </Core.PanelFoot>
+    </Core.Panel>
   )
 }

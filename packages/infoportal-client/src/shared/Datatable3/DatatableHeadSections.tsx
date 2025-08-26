@@ -1,4 +1,3 @@
-import {IpIconBtn} from '@/shared/index.js'
 import {useTheme} from '@mui/material'
 import {makeStyles} from 'tss-react/mui'
 import {styleUtils} from '@/core/theme.js'
@@ -6,6 +5,7 @@ import {Obj, seq} from '@axanc/ts-utils'
 import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {memo, useMemo} from 'react'
 import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
+import {Core} from '@/shared'
 
 const colors = [
   '#2196F3',
@@ -94,7 +94,7 @@ function DatatableHeadSections_({
               className={classes.th}
             >
               <div title={group} className={cx(classes.content, 'TableHeadSectionCell-content')}>
-                <IpIconBtn
+                <Core.IconBtn
                   sx={{
                     mr: 0.5,
                     color: t.palette.getContrastText(colors[i % colors.length]),
@@ -105,7 +105,7 @@ function DatatableHeadSections_({
                   onClick={() => onHideColumns(cols.map(_ => _.id))}
                 >
                   visibility_off
-                </IpIconBtn>
+                </Core.IconBtn>
                 {group}
               </div>
             </div>

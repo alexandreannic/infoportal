@@ -1,22 +1,17 @@
 import {Page} from '@/shared/Page'
 import React, {useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {IpBtn} from '@/shared/Btn'
-import {Panel} from '@/shared/Panel'
 import {Box, Chip, Icon} from '@mui/material'
-import {Modal} from '@/shared/Modal'
-import {IpInput} from '@/shared/Input/Input'
 import {useForm} from 'react-hook-form'
-import {IpIconBtn} from '@/shared/IconBtn'
 import {accessLevelIcon, IAccessForm} from '@/features/Access/AccessForm'
 import {SettingsGroupAccessForm} from '@/features/Settings/SettingsGroupAccessForm'
-import {BasicDialog} from '@/shared/BasicDialog'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
 import {createRoute} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
 import {Ip} from 'infoportal-api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
+import {Core} from '@/shared'
 
 interface GoupForm {
   name: string
@@ -48,14 +43,14 @@ function SettingsGroups() {
 
   return (
     <Page width="full">
-      <Panel>
+      <Core.Panel>
         <Datatable
           data={queryGet.data}
           loading={queryGet.isLoading}
           id="group"
           header={
             permission.group_canCreate && (
-              <Modal
+              <Core.Modal
                 onOpen={groupForm.reset}
                 onConfirm={(e, close) =>
                   groupForm.handleSubmit(form => {
@@ -65,15 +60,15 @@ function SettingsGroups() {
                 title={m._admin.createGroup}
                 content={
                   <>
-                    <IpInput sx={{mt: 2}} label={m.name} autoFocus {...groupForm.register('name')} />
-                    <IpInput multiline minRows={3} maxRows={6} label={m.desc} {...groupForm.register('desc')} />
+                    <Core.Input sx={{mt: 2}} label={m.name} autoFocus {...groupForm.register('name')} />
+                    <Core.Input multiline minRows={3} maxRows={6} label={m.desc} {...groupForm.register('desc')} />
                   </>
                 }
               >
-                <IpBtn icon="add" variant="outlined">
+                <Core.Btn icon="add" variant="outlined">
                   {m.create}
-                </IpBtn>
-              </Modal>
+                </Core.Btn>
+              </Core.Modal>
             )
           }
           columns={[
@@ -155,7 +150,7 @@ function SettingsGroups() {
               align: 'right',
               renderQuick: _ => (
                 <>
-                  <Modal
+                  <Core.Modal
                     onOpen={groupForm.reset}
                     onConfirm={(e, close) =>
                       groupForm.handleSubmit(form => {
@@ -171,14 +166,14 @@ function SettingsGroups() {
                     confirmLabel={m.edit}
                     content={
                       <>
-                        <IpInput
+                        <Core.Input
                           sx={{mt: 2}}
                           label={m.name}
                           defaultValue={_.name}
                           autoFocus
                           {...groupForm.register('name')}
                         />
-                        <IpInput
+                        <Core.Input
                           multiline
                           minRows={3}
                           maxRows={6}
@@ -189,30 +184,30 @@ function SettingsGroups() {
                       </>
                     }
                   >
-                    <IpIconBtn size="small">edit</IpIconBtn>
-                  </Modal>
-                  <IpIconBtn
+                    <Core.IconBtn size="small">edit</Core.IconBtn>
+                  </Core.Modal>
+                  <Core.IconBtn
                     size="small"
                     tooltip={m.duplicate}
                     onClick={() => query.duplicate.mutate(_)}
                     loading={query.duplicate.isPending}
                   >
                     content_copy
-                  </IpIconBtn>
-                  <IpIconBtn
+                  </Core.IconBtn>
+                  <Core.IconBtn
                     size="small"
                     tooltip={m.remove}
                     onClick={() => query.remove.mutate({id: _.id})}
                     loading={query.remove.isPending}
                   >
                     delete
-                  </IpIconBtn>
+                  </Core.IconBtn>
                 </>
               ),
             },
           ]}
         />
-        <BasicDialog
+        <Core.BasicDialog
           open={!!selectedGroupId}
           loading={query.createItem.isPending}
           onClose={() => setSelectedGroupId(undefined)}
@@ -240,8 +235,8 @@ function SettingsGroups() {
           <Box sx={{width: 400}}>
             <SettingsGroupAccessForm form={accessForm} workspaceId={workspaceId} />
           </Box>
-        </BasicDialog>
-      </Panel>
+        </Core.BasicDialog>
+      </Core.Panel>
     </Page>
   )
 }

@@ -1,10 +1,10 @@
 import {Autocomplete, AutocompleteProps, Chip} from '@mui/material'
-import {IpInput} from '@/shared/Input/Input'
 import React from 'react'
 import {useI18n} from '@/core/i18n'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Ip} from 'infoportal-api-sdk'
 import {useQueryUser} from '@/core/query/useQueryUser.js'
+import {Core} from '@/shared'
 
 export const DrcJobInputMultiple = ({
   workspaceId,
@@ -27,9 +27,9 @@ export const DrcJobInputMultiple = ({
         ))
       }
       value={props.value ?? []}
-      // renderOption={(props, _) => <Txt truncate>{_.label?.[0]?.replace(/<[^>]+>/g, '') ?? _.name}</Txt>}
+      // renderOption={(props, _) => <Core.Txt truncate>{_.label?.[0]?.replace(/<[^>]+>/g, '') ?? _.name}</Core.Txt>}
       renderInput={({InputProps, ...inputProps}) => (
-        <IpInput {...inputProps} {...InputProps} helperText={null} label={m.job} />
+        <Core.Input {...inputProps} {...InputProps} helperText={null} label={m.job} />
       )}
       {...props}
     />
@@ -51,9 +51,9 @@ export const DrcJobInputSingle = ({
       loading={queryJobs.isLoading}
       options={queryJobs.data ?? []}
       value={props.value ?? null}
-      // renderOption={(props, _) => <Txt truncate>{_.label?.[0]?.replace(/<[^>]+>/g, '') ?? _.name}</Txt>}
+      // renderOption={(props, _) => <Core.Txt truncate>{_.label?.[0]?.replace(/<[^>]+>/g, '') ?? _.name}</Core.Txt>}
       renderInput={({InputProps, ...inputProps}) => (
-        <IpInput {...inputProps} {...InputProps} helperText={null} label={m.job} />
+        <Core.Input {...inputProps} {...InputProps} helperText={null} label={m.job} />
       )}
       {...props}
     />

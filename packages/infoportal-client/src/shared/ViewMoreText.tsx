@@ -1,9 +1,7 @@
 import {Box} from '@mui/material'
 import React, {useEffect, useRef, useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {Txt} from '@/shared/Txt'
-import {IpIconBtn} from '@/shared/IconBtn.js'
-import {IpBtn} from '@/shared/Btn.js'
+import {Core} from '@/shared'
 
 export const ViewMoreText = ({
   children,
@@ -21,9 +19,9 @@ export const ViewMoreText = ({
     <Box>
       {open || children.length <= limit ? children : <>{children.substring(0, limit)}...</>}
       {children.length > limit && (
-        <Txt sx={{cursor: 'pointer'}} link bold onClick={() => setOpen(_ => !_)}>
+        <Core.Txt sx={{cursor: 'pointer'}} link bold onClick={() => setOpen(_ => !_)}>
           &nbsp;{open ? m.viewLess : m.viewMore}
-        </Txt>
+        </Core.Txt>
       )}
     </Box>
   )
@@ -69,12 +67,12 @@ export const ViewMoreDiv: React.FC<ExpandableDivProps> = ({initialHeight = 300, 
       </div>
       {expandedHeight < contentHeight && (
         <Box display="flex" justifyContent="center">
-          <IpBtn icon="expand" size="small" variant="outlined" onClick={handleShowMore}>
+          <Core.Btn icon="expand" size="small" variant="outlined" onClick={handleShowMore}>
             {m.viewMore}
-          </IpBtn>
-          {/*<IpIconBtn onClick={handleShowMore} sx={{mt: 1}}>*/}
+          </Core.Btn>
+          {/*<Core.IconBtn onClick={handleShowMore} sx={{mt: 1}}>*/}
           {/*  expand*/}
-          {/*</IpIconBtn>*/}
+          {/*</Core.IconBtn>*/}
         </Box>
       )}
     </div>

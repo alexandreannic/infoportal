@@ -2,14 +2,10 @@ import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
-import {alphaVar, styleUtils} from '@/core/theme'
-import {Txt} from '@/shared'
-import {IpIconBtn} from '@/shared/IconBtn'
+import {Core} from '@/shared'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
-import {PopoverWrapper} from '@/shared/PopoverWrapper'
-import {IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {Obj} from '@axanc/ts-utils'
-import {alpha, Badge, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme} from '@mui/material'
+import {Badge, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme} from '@mui/material'
 import {Link, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
@@ -65,23 +61,23 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
           }}
         >
           {showSidebarButton && (
-            <IpIconBtn
+            <Core.IconBtn
               size="small"
               sx={{
                 mr: 1,
                 border: t => `2px solid ${t.vars.palette.primary.main}`,
-                background: t => (sidebarOpen ? 'none' : alphaVar(t.vars.palette.primary.main, 0.1)),
+                background: t => (sidebarOpen ? 'none' : Core.alphaVar(t.vars.palette.primary.main, 0.1)),
                 color: t => t.vars.palette.primary.main,
                 '&:hover': {
-                  background: t => alphaVar(t.vars.palette.primary.main, 0.1),
+                  background: t => Core.alphaVar(t.vars.palette.primary.main, 0.1),
                 },
               }}
               onClick={() => setSidebarOpen(_ => !_)}
               children="menu"
             />
           )}
-          <Txt
-            sx={{ml: 1, ...styleUtils(t).truncate}}
+          <Core.Txt
+            sx={{ml: 1, ...Core.styleUtils(t).truncate}}
             size="title"
             bold
             dangerouslySetInnerHTML={{__html: title ?? ''}}
@@ -90,7 +86,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
         </div>
 
         {workspaceId && (
-          <IpSelectSingle
+          <Core.SelectSingle
             startAdornment={
               <Icon color="disabled" sx={{mr: 1}}>
                 {appConfig.icons.workspace}
@@ -104,13 +100,13 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
               value: _.id,
               children: (
                 <>
-                  <Txt bold>{_.name}</Txt>&nbsp;•&nbsp;<Txt color="hint">{_.slug}</Txt>
+                  <Core.Txt bold>{_.name}</Core.Txt>&nbsp;•&nbsp;<Core.Txt color="hint">{_.slug}</Core.Txt>
                 </>
               ),
             }))}
           />
         )}
-        <PopoverWrapper
+        <Core.PopoverWrapper
           content={close =>
             Obj.entries(lightThemeIcons).map(([theme, icon]) => (
               <MenuItem
@@ -127,15 +123,15 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             ))
           }
         >
-          <IpIconBtn children={lightThemeIcons[mode ?? 'system']} />
-        </PopoverWrapper>
+          <Core.IconBtn children={lightThemeIcons[mode ?? 'system']} />
+        </Core.PopoverWrapper>
         <Link to="/">
           <Badge
             color="error"
             overlap="circular"
             badgeContent={queryInvitation.data ? queryInvitation.data.length : undefined}
           >
-            <IpIconBtn children="home" />
+            <Core.IconBtn children="home" />
           </Badge>
         </Link>
         <AppHeaderMenu />

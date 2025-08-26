@@ -5,12 +5,10 @@ import {getMsalInstance} from '@/core/msal'
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {SessionProvider} from '@/core/Session/SessionContext'
-import {CenteredContent, Txt} from '@/shared'
+import {CenteredContent, Core} from '@/shared'
 import {IpLogo} from '@/shared/logo/logo'
-import {Provide} from '@/shared/Provide'
-import {ToastProvider} from '@/shared/Toast'
 import {MsalProvider} from '@azure/msal-react'
-import {CssVarsProvider, ThemeProvider} from '@mui/material/styles'
+import {ThemeProvider} from '@mui/material/styles'
 import {Box, CssBaseline, Icon} from '@mui/material'
 import {LocalizationProvider} from '@mui/x-date-pickers-pro'
 import {AdapterDateFns} from '@mui/x-date-pickers-pro/AdapterDateFns'
@@ -24,7 +22,6 @@ import {Outlet, useRouterState} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import {duration} from '@axanc/ts-utils'
 import {LicenseInfo} from '@mui/x-license-pro'
-import createCssVarsProvider from '@mui/system/cssVars'
 
 LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -65,11 +62,11 @@ const AppWithConfig = () => {
   const msal = useMemo(() => getMsalInstance(settings.conf), [settings.conf])
 
   return (
-    <Provide
+    <Core.Provide
       providers={[
         _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns} />,
         _ => <ThemeProvider theme={defaultTheme} children={_} />,
-        _ => <ToastProvider children={_} />,
+        _ => <Core.ToastProvider children={_} />,
         _ => <CssBaseline children={_} />,
         _ => <I18nProvider children={_} />,
         _ => <MsalProvider children={_} instance={msal} />,
@@ -86,7 +83,7 @@ const AppWithConfig = () => {
           <ReactQueryDevtools initialIsOpen={false} />
         </>
       )}
-    </Provide>
+    </Core.Provide>
   )
 }
 
@@ -108,12 +105,12 @@ const AppWithBaseContext = () => {
           }}
         >
           <IpLogo sx={{display: 'block', mb: 2}} />
-          <Txt size="title" block>
+          <Core.Txt size="title" block>
             {m.title}
-          </Txt>
-          <Txt sx={{mb: 4}} size="big" color="hint" block>
+          </Core.Txt>
+          <Core.Txt sx={{mb: 4}} size="big" color="hint" block>
             {m.appInMaintenance}
-          </Txt>
+          </Core.Txt>
           <Icon sx={{fontSize: '90px !important', color: t => t.vars.palette.text.disabled}}>engineering</Icon>
         </Box>
       </CenteredContent>

@@ -6,8 +6,7 @@ import {SidebarItem} from './SidebarItem'
 import {SidebarBody} from './SidebarBody'
 import {SidebarHeader} from './SidebarHeader'
 import {useI18n} from '@/core/i18n'
-import {Utils} from '@/utils/utils'
-import stopPropagation = Utils.stopPropagation
+import {Core} from '@/shared'
 
 const sidebarWidth = 270
 
@@ -87,7 +86,7 @@ export const Sidebar = ({
             {!isMobileWidth && (
               <SidebarItem
                 size="small"
-                onClick={stopPropagation(() => setSidebarPinned(_ => !_))}
+                onClick={Core.stopPropagation(() => setSidebarPinned(_ => !_))}
                 icon="push_pin"
                 sx={{mr: 0, pr: 0}}
               >

@@ -1,6 +1,7 @@
 import {Dispatch, SetStateAction, useMemo, useState} from 'react'
 import {UseDatatableData} from '@/shared/Datatable/context/useDatatableData'
 import {DatatableRow} from '@/shared/Datatable/util/datatableType'
+import {Core} from '@/shared'
 
 interface ModalProps {
   columnId: string

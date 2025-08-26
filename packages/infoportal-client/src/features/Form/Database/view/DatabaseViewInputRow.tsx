@@ -1,13 +1,11 @@
-import {alpha, Box, Collapse, Radio} from '@mui/material'
+import {Box, Collapse, Radio} from '@mui/material'
 import {DatabaseView, DatabaseViewVisibility} from '@/core/sdk/server/databaseView/DatabaseView'
 import {useI18n} from '@/core/i18n'
-import {IpIconBtn, Txt} from '@/shared'
-import {IpListItem} from '@/shared/IpListItem'
-import {ipSelectItem, IpSelectSingle} from '@/shared/Select/SelectSingle'
 import {BtnConfirm} from '@/shared/BtnConfirm'
 import React from 'react'
 import {makeStyles} from 'tss-react/mui'
 import {alphaVar} from '@/core/theme.js'
+import {Core} from '@/shared'
 
 const useStyles = makeStyles<{open?: boolean}>()((t, {open}) => ({
   root: {
@@ -61,46 +59,46 @@ export const DatabaseViewInputRow = ({
       <div className={classes.head} onClick={onClick}>
         <Radio checked={checked} />
         <Box sx={{flex: 1, height: '32px', display: 'flex', alignItems: 'center'}}>
-          {view.name}&nbsp;<Txt color="hint">({view.visibility})</Txt>
+          {view.name}&nbsp;<Core.Txt color="hint">({view.visibility})</Core.Txt>
         </Box>
         <Box sx={{display: 'flex', alignItems: 'center'}} onClick={e => e.stopPropagation()}>
-          <IpIconBtn onClick={onOpen} color={open ? 'primary' : undefined}>
+          <Core.IconBtn onClick={onOpen} color={open ? 'primary' : undefined}>
             {open ? 'close_fullscreen' : 'settings'}
-          </IpIconBtn>
+          </Core.IconBtn>
         </Box>
       </div>
       <Collapse in={open}>
-        <IpListItem icon="notes">
-          <Txt size="small">
+        <Core.ListItem icon="notes">
+          <Core.Txt size="small">
             <Box>{view.details.length} items</Box>
             {!readOnly && <Box>{m.createdByAt(view.createdBy, formatDateTime(view.createdAt))}</Box>}
             {view.updatedBy && <Box>{m.updatedByAt(view.updatedBy, formatDateTime(view.updatedAt))}</Box>}
-          </Txt>
-        </IpListItem>
-        <IpListItem icon="public">
-          <Txt size="small" color="hint">
+          </Core.Txt>
+        </Core.ListItem>
+        <Core.ListItem icon="public">
+          <Core.Txt size="small" color="hint">
             {m.visibility}
-          </Txt>
-          <IpSelectSingle<DatabaseViewVisibility>
+          </Core.Txt>
+          <Core.SelectSingle<DatabaseViewVisibility>
             disabled={readOnly}
             value={view.visibility}
             onChange={_ => onUpdate({visibility: _})}
             renderValue={_ => _}
             hideNullOption
             options={[
-              ipSelectItem({
+              Core.SelectItem({
                 value: DatabaseViewVisibility.Public,
                 icon: 'public',
                 title: m._datatable.viewPublic,
                 desc: m._datatable.viewPublicDesc,
               }),
-              ipSelectItem({
+              Core.SelectItem({
                 value: DatabaseViewVisibility.Sealed,
                 icon: 'lock',
                 title: m._datatable.viewLock,
                 desc: m._datatable.viewLockDesc,
               }),
-              ipSelectItem({
+              Core.SelectItem({
                 value: DatabaseViewVisibility.Private,
                 icon: 'visibility_off',
                 title: m._datatable.viewPrivate,
@@ -108,13 +106,13 @@ export const DatabaseViewInputRow = ({
               }),
             ]}
           />
-        </IpListItem>
+        </Core.ListItem>
         {!readOnly && (
-          <IpListItem icon="delete">
+          <Core.ListItem icon="delete">
             <BtnConfirm size="small" iconAfter="chevron_right" onClick={onDelete}>
               {m.delete}
             </BtnConfirm>
-          </IpListItem>
+          </Core.ListItem>
         )}
       </Collapse>
     </div>

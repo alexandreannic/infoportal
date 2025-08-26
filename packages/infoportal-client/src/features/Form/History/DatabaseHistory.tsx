@@ -2,19 +2,18 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {KoboAnswerHistory} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistory'
 import {formRoute, useFormContext} from '@/features/Form/Form'
-import {Txt} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
-import {useFetcher} from '@/shared/hook/useFetcher'
 import {Page} from '@/shared/Page'
-import {Panel} from '@/shared/Panel'
 import {TableIcon} from '@/shared/TableIcon'
 import {fnSwitch, map} from '@axanc/ts-utils'
-import {alpha, Icon, useTheme} from '@mui/material'
+import {Icon, useTheme} from '@mui/material'
 import {useEffect} from 'react'
 import {createRoute} from '@tanstack/react-router'
 import {alphaVar} from '@/core/theme.js'
+import {Core} from '@/shared'
+import {useFetcher} from '@axanc/react-hooks'
 
 export const databaseHistoryRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -71,7 +70,7 @@ function DatabaseHistory() {
 
   return (
     <Page width="lg">
-      <Panel>
+      <Core.Panel>
         <Datatable
           showExportBtn
           loading={fetcher.loading}
@@ -139,9 +138,9 @@ function DatabaseHistory() {
                   value: _.type,
                   label: fnSwitch(_.type, {
                     delete: (
-                      <Txt color="error" bold>
+                      <Core.Txt color="error" bold>
                         {m._koboDatabase.deleted}
-                      </Txt>
+                      </Core.Txt>
                     ),
                     answer: m._koboDatabase.koboQuestion,
                     tag: m._koboDatabase.customColumn,
@@ -236,7 +235,7 @@ function DatabaseHistory() {
             },
           ]}
         />
-      </Panel>
+      </Core.Panel>
     </Page>
   )
 }

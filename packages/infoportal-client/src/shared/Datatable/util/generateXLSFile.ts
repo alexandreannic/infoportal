@@ -1,5 +1,5 @@
 import * as ExcelJS from 'exceljs'
-import {Utils} from '@/utils/utils'
+import {downloadBufferAsFile, extractInnerText} from '@infoportal/client-core/src/core/utils.js'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {format} from 'date-fns'
 import {isValidElement} from 'react'
@@ -39,7 +39,7 @@ export namespace DatatableXlsGenerator {
         })
       })
     const buffer = await workbook.xlsx.writeBuffer()
-    Utils.downloadBufferAsFile(buffer as any, fileName + '.xlsx')
+    downloadBufferAsFile(buffer as any, fileName + '.xlsx')
   }
 
   export const columnsToParams = (q: DatatableColumn.Props<any>): Params['schema'][0] => {
@@ -58,7 +58,7 @@ export namespace DatatableXlsGenerator {
         if (rendered.value instanceof Date && !isNaN(rendered.value as any))
           return format(rendered.value, 'yyyy-MM-dd hh:mm:ss z')
         let value = rendered.label
-        if (isValidElement(value)) value = Utils.extractInnerText(value)
+        if (isValidElement(value)) value = extractInnerText(value)
         if (q.type !== 'string' && value !== '' && !isNaN(value as any)) value = +(value as number)
         return value as any
       },

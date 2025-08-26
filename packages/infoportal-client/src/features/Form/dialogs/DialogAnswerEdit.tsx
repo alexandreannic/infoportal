@@ -1,7 +1,5 @@
 import {useI18n} from '@/core/i18n'
 import {KoboMapper, Submission} from '@/core/sdk/server/kobo/KoboMapper'
-import {IpBtn} from '@/shared/Btn'
-import {IpIconBtn} from '@/shared/IconBtn'
 import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from '@mui/material'
 import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper} from 'infoportal-common'
@@ -9,6 +7,7 @@ import {useRef} from 'react'
 import {XlsFormFiller, XlsFormFillerHandle} from 'xls-form-filler'
 import {Ip} from 'infoportal-api-sdk'
 import {Link} from '@tanstack/react-router'
+import {Core} from '@/shared'
 
 export const DialogAnswerEdit = ({
   onClose,
@@ -30,7 +29,7 @@ export const DialogAnswerEdit = ({
             params={{workspaceId, formId, answerId: answer.id}}
             onClick={() => onClose()}
           >
-            <IpIconBtn color="primary">open_in_new</IpIconBtn>
+            <Core.IconBtn color="primary">open_in_new</Core.IconBtn>
           </Link>
           {answer.id}
         </Box>
@@ -48,10 +47,10 @@ export const DialogAnswerEdit = ({
         />
       </DialogContent>
       <DialogActions>
-        <IpBtn onClick={() => onClose()}>{m.close}</IpBtn>
-        <IpBtn variant="contained" icon="check" onClick={() => formRef.current?.submit()}>
+        <Core.Btn onClick={() => onClose()}>{m.close}</Core.Btn>
+        <Core.Btn variant="contained" icon="check" onClick={() => formRef.current?.submit()}>
           {m.save}
-        </IpBtn>
+        </Core.Btn>
       </DialogActions>
     </Dialog>
   )

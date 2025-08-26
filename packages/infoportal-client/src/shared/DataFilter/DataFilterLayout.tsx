@@ -5,9 +5,9 @@ import {DataFilter} from '@/shared/DataFilter/DataFilter'
 import {Obj, Seq, seq} from '@axanc/ts-utils'
 import {DebouncedInput} from '@/shared/DebouncedInput'
 import {DashboardFilterOptions} from '@/shared/DashboardLayout/DashboardFilterOptions'
-import {IpIconBtn} from '@/shared/IconBtn'
 import {useI18n} from '@/core/i18n'
 import {DataFilterLayoutPopup} from '@/shared/DataFilter/DataFilterLayoutPopup'
+import {Core} from '@/shared'
 
 export interface FilterLayoutProps extends Pick<BoxProps, 'sx'> {
   readonly onClear?: (name?: string) => void
@@ -102,7 +102,7 @@ export const DataFilterLayout = ({
             getFilteredOptions={getFilteredOptions}
           />
         )}
-        {onClear && <IpIconBtn children="filter_list_off" tooltip={m.clearFilter} onClick={() => onClear()} />}
+        {onClear && <Core.IconBtn children="filter_list_off" tooltip={m.clearFilter} onClick={() => onClear()} />}
       </Box>
     </Box>
   )

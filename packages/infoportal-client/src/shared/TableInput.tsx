@@ -1,11 +1,10 @@
-import {IpInputProps} from '@/shared/Input/Input'
-import {IpIconBtn} from '@/shared/IconBtn'
 import {DebouncedInput} from '@/shared/DebouncedInput'
 import React from 'react'
 import {TableIcon} from '@/shared/TableIcon'
 import {StateStatus} from 'infoportal-common'
 import {appConfig} from '@/conf/AppConfig'
 import {styled} from '@mui/system'
+import {Core} from '@/shared'
 
 const Input = styled('input')(({theme: t}) => ({
   height: '100%',
@@ -45,7 +44,7 @@ export const TableInput = ({
   originalValue?: string | null
   value?: string
   debounce?: number
-} & Omit<IpInputProps, 'helperText' | 'onChange' | 'value'>) => {
+} & Omit<Core.InputProps, 'helperText' | 'onChange' | 'value'>) => {
   return (
     <Root className="table-input">
       <DebouncedInput<string>
@@ -61,14 +60,14 @@ export const TableInput = ({
         </TableIcon>
       )}
       {value !== originalValue && originalValue !== null && (
-        <IpIconBtn
+        <Core.IconBtn
           disabled={props.disabled}
           size="small"
           sx={{mr: -2, mt: 0.25}}
           onClick={() => onChange(originalValue ?? '')}
         >
           clear
-        </IpIconBtn>
+        </Core.IconBtn>
       )}
     </Root>
   )

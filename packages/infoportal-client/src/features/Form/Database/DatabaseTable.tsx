@@ -7,8 +7,6 @@ import {DatabaseKoboTableProvider} from '@/features/Form/Database/DatabaseContex
 import {DatabaseTableContent} from '@/features/Form/Database/DatabaseTableContent'
 import {DatatableSkeleton} from '@/shared/Datatable/DatatableSkeleton'
 import {DatatableFilterValue} from '@/shared/Datatable/util/datatableType'
-import {FetchParams} from '@/shared/hook/useFetchers'
-import {Panel} from '@/shared/Panel'
 import {map} from '@axanc/ts-utils'
 import {Skeleton} from '@mui/material'
 import {useIsFetching} from '@tanstack/react-query'
@@ -18,6 +16,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
+import {FetchParams} from '@axanc/react-hooks'
 
 export const answersRoute = createRoute({
   getParentRoute: () => formRoute,

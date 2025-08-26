@@ -1,8 +1,6 @@
 import React, {ReactNode, useEffect, useState} from 'react'
 import {Box, Collapse, LinearProgress, Typography} from '@mui/material'
 import {combineSx, makeSx} from '@/core/theme'
-import {Txt} from '@/shared'
-import {IpIconBtn} from '@/shared/IconBtn'
 import {useSetState} from '@axanc/react-hooks'
 import {Layout} from '@/shared/Layout/Layout'
 import {Sidebar, SidebarItem} from '@/shared/Layout/Sidebar'
@@ -11,6 +9,7 @@ import {Page} from '@/shared/Page'
 import {map} from '@axanc/ts-utils'
 import {useI18n} from '@/core/i18n'
 import {appConfig} from '@/conf/AppConfig'
+import {Core} from '@/shared'
 
 const dashboardHeaderId = 'aa-header-id'
 
@@ -121,7 +120,7 @@ export const DashboardLayout = ({
                 sx={combineSx(style.sectionTitle, hiddenSections.has(s.name) && style.sectionShrinked)}
               >
                 {s.title}
-                <IpIconBtn
+                <Core.IconBtn
                   children="expand_less"
                   sx={combineSx(style.iconExpand, hiddenSections.has(s.name) && style.iconExpendShrinked)}
                   onClick={() => hiddenSections.toggle(s.name)}
@@ -131,12 +130,12 @@ export const DashboardLayout = ({
             </Box>
           ))}
 
-          <Txt block color="disabled" sx={{mt: 8, fontWeight: 'lighter'}}>
+          <Core.Txt block color="disabled" sx={{mt: 8, fontWeight: 'lighter'}}>
             {m.contactAdmin}&nbsp;
             <Box component="a" href={`mailto:${contact}`} sx={{fontWeight: 'normal'}}>
               {contact}
             </Box>
-          </Txt>
+          </Core.Txt>
         </Page>
       </Layout>
     </>

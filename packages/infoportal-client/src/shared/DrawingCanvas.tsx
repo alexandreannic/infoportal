@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {Box, BoxProps, useTheme} from '@mui/material'
-import {IpIconBtn} from '@/shared/IconBtn'
+import {Core} from '@/shared'
 
 interface DrawingProps extends Pick<BoxProps, 'sx'> {
   width: number
@@ -80,7 +80,7 @@ export const DrawingCanvas = ({width, height, sx}: DrawingProps) => {
         width={width}
         height={height}
       />
-      <IpIconBtn
+      <Core.IconBtn
         size="small"
         className="drawing-canvas-clear"
         sx={{
@@ -92,7 +92,7 @@ export const DrawingCanvas = ({width, height, sx}: DrawingProps) => {
         onClick={clearCanvas}
       >
         clear
-      </IpIconBtn>
+      </Core.IconBtn>
     </Box>
   )
 }

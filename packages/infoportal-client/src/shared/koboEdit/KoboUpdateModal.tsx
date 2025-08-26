@@ -1,13 +1,7 @@
-import {BasicDialog} from '@/shared/BasicDialog'
 import React, {ReactNode, useMemo, useState} from 'react'
-import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {Alert, Box, Collapse} from '@mui/material'
 import {useI18n} from '@/core/i18n'
-import {IpInput} from '@/shared/Input/Input'
-import {IpDatepicker} from '@/shared/Datepicker/IpDatepicker'
-import {IpBtn} from '@/shared/Btn'
 import {useKoboColumnDef} from '@/shared/koboEdit/KoboSchemaWrapper'
-import {Txt} from '@/shared/Txt'
 import {ArrayValues} from 'infoportal-common'
 import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {Obj} from '@axanc/ts-utils'
@@ -15,6 +9,7 @@ import {DialogProps} from '@toolpad/core'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
+import {Core} from '@/shared'
 
 export type KoboEditModalOption = {
   value: string | null
@@ -61,7 +56,7 @@ export namespace KoboUpdateModal {
       )
       const resetOption: KoboEditModalOption = {value: null, label: 'BLANK', desc: ' '}
       return [resetOption, ...(harmonized ?? [])].map(_ => (
-        <ScRadioGroupItem
+        <Core.RadioGroupItem
           dense
           disabled={
             type === 'select_multiple' &&
@@ -79,7 +74,7 @@ export namespace KoboUpdateModal {
 
     const _loading = loading
     return (
-      <BasicDialog
+      <Core.BasicDialog
         maxWidth="xs"
         open={true}
         onClose={() => onClose()}
@@ -89,12 +84,12 @@ export namespace KoboUpdateModal {
         onConfirm={() => onConfirm(value)}
         title={title}
       >
-        <Txt truncate color="hint" block sx={{mb: 1, maxWidth: 400}}>
+        <Core.Txt truncate color="hint" block sx={{mb: 1, maxWidth: 400}}>
           {subTitle}
-        </Txt>
+        </Core.Txt>
         {error && <Alert color="error">{m.somethingWentWrong}</Alert>}
         {updated && (
-          <Alert color="success" action={<IpBtn onClick={() => setUpdated(false)}>{m.change}</IpBtn>}>
+          <Alert color="success" action={<Core.Btn onClick={() => setUpdated(false)}>{m.change}</Core.Btn>}>
             {m.successfullyEdited(-1)}
           </Alert>
         )}
@@ -105,42 +100,48 @@ export namespace KoboUpdateModal {
               switch (type) {
                 case 'select_one': {
                   return (
-                    <ScRadioGroup
+                    <Core.RadioGroup
                       dense
                       value={value}
                       onChange={setValue}
                       disabled={(value as KoboEditModalOption['value']) === null}
                     >
                       {_options}
-                    </ScRadioGroup>
+                    </Core.RadioGroup>
                   )
                 }
                 case 'select_multiple': {
                   return (
-                    <ScRadioGroup dense multiple value={value ?? []} onChange={_ => setValue(_)}>
+                    <Core.RadioGroup dense multiple value={value ?? []} onChange={_ => setValue(_)}>
                       {_options}
-                    </ScRadioGroup>
+                    </Core.RadioGroup>
                   )
                 }
                 case 'text':
                 case 'calculate': {
                   return (
-                    <IpInput multiline maxRows={9} fullWidth value={value} onChange={e => setValue(e.target.value)} />
+                    <Core.Input
+                      multiline
+                      maxRows={9}
+                      fullWidth
+                      value={value}
+                      onChange={e => setValue(e.target.value)}
+                    />
                   )
                 }
                 case 'integer':
                 case 'decimal': {
-                  return <IpInput type="number" fullWidth value={value} onChange={e => setValue(e.target.value)} />
+                  return <Core.Input type="number" fullWidth value={value} onChange={e => setValue(e.target.value)} />
                 }
                 case 'datetime':
                 case 'date': {
-                  return <IpDatepicker value={value} onChange={setValue} />
+                  return <Core.Datepicker value={value} onChange={setValue} />
                 }
               }
             })()}
           </Box>
         </Collapse>
-      </BasicDialog>
+      </Core.BasicDialog>
     )
   }
 

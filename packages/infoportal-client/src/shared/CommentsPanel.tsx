@@ -1,10 +1,9 @@
 import {Box} from '@mui/material'
-import {Txt} from '@/shared/Txt'
 import {ViewMoreText} from '@/shared/ViewMoreText'
 import {Seq} from '@axanc/ts-utils'
 import React, {memo, ReactNode, useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {IpBtn} from '@/shared/Btn'
+import {Core} from '@/shared'
 
 export interface CommentsPanelProps {
   pageSize?: number
@@ -36,22 +35,22 @@ export const CommentsPanel = memo(({data, height = 650, pageSize = 5}: CommentsP
           }}
         >
           <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-            <Txt block bold size="big">
+            <Core.Txt block bold size="big">
               {row.title}
-            </Txt>
-            <Txt color="hint">{formatDateTime(row.date)}</Txt>
+            </Core.Txt>
+            <Core.Txt color="hint">{formatDateTime(row.date)}</Core.Txt>
           </Box>
           {row.desc && (
-            <Txt block color="hint" sx={{mb: 1}}>
+            <Core.Txt block color="hint" sx={{mb: 1}}>
               <ViewMoreText limit={210} children={row.desc} />
-            </Txt>
+            </Core.Txt>
           )}
           {row.children}
         </Box>
       ))}
       <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         {limit > pageSize && (
-          <IpBtn
+          <Core.Btn
             icon="remove"
             variant="outlined"
             sx={{mr: 1}}
@@ -59,12 +58,12 @@ export const CommentsPanel = memo(({data, height = 650, pageSize = 5}: CommentsP
             onClick={() => setLimit(_ => _ - pageSize)}
           >
             {m.viewNMore(pageSize)}
-          </IpBtn>
+          </Core.Btn>
         )}
         {limit < data.length && (
-          <IpBtn icon="add" variant="outlined" color="primary" onClick={() => setLimit(_ => _ + pageSize)}>
+          <Core.Btn icon="add" variant="outlined" color="primary" onClick={() => setLimit(_ => _ + pageSize)}>
             {m.viewNMore(pageSize)}
-          </IpBtn>
+          </Core.Btn>
         )}
       </Box>
     </Box>

@@ -1,9 +1,9 @@
 import {Ip} from 'infoportal-api-sdk'
-import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {XlsFormFiller} from 'xls-form-filler'
 import React from 'react'
 import {useI18n} from '@/core/i18n'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
+import {Core} from '@/shared'
 
 export const FormBuilderPreview = ({
   workspaceId,
@@ -17,9 +17,9 @@ export const FormBuilderPreview = ({
   const {m} = useI18n()
   const querySchema = useQuerySchemaByVersion({workspaceId, formId, versionId})
   return (
-    <Panel loading={querySchema.isLoading}>
-      <PanelHead>{m.preview}</PanelHead>
-      <PanelBody>
+    <Core.Panel loading={querySchema.isLoading}>
+      <Core.PanelHead>{m.preview}</Core.PanelHead>
+      <Core.PanelBody>
         {querySchema.data && (
           <XlsFormFiller
             survey={querySchema.data}
@@ -30,7 +30,7 @@ export const FormBuilderPreview = ({
             }}
           />
         )}
-      </PanelBody>
-    </Panel>
+      </Core.PanelBody>
+    </Core.Panel>
   )
 }

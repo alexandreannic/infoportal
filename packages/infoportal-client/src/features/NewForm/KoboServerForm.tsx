@@ -1,19 +1,17 @@
-import {IpInput} from '@/shared/Input/Input'
 import {useI18n} from '@/core/i18n'
 import {Controller, useForm} from 'react-hook-form'
 import {Regexp} from 'infoportal-common'
-import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {map, Obj} from '@axanc/ts-utils'
 import {useEffect, useState} from 'react'
 import {useFetcher} from '@axanc/react-hooks'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {IpAlert, IpBtn, Txt} from '@/shared'
 import {Box, CardActions, CircularProgress, Dialog, DialogContent, DialogTitle, Icon, useTheme} from '@mui/material'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {DialogProps} from '@toolpad/core'
 import {useQueryServers} from '@/core/query/useQueryServers'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {Ip} from 'infoportal-api-sdk'
+import {Core} from '@/shared'
 
 const servers = {
   EU: {v1: 'https://kc-eu.kobotoolbox.org', v2: 'https://eu.kobotoolbox.org'},
@@ -88,12 +86,12 @@ export const KoboServerForm = ({
   return (
     <>
       <AccessFormSection icon="language" label={m.server} sxContent={{pb: 0}}>
-        <ScRadioGroup dense value={server} onChange={setServer} sx={{mb: 3}}>
+        <Core.RadioGroup dense value={server} onChange={setServer} sx={{mb: 3}}>
           {Obj.keys(servers).map(name => (
-            <ScRadioGroupItem key={name} value={name} title={name} />
+            <Core.RadioGroupItem key={name} value={name} title={name} />
           ))}
-          <ScRadioGroupItem icon="edit" value="custom" title={m.custom} />
-        </ScRadioGroup>
+          <Core.RadioGroupItem icon="edit" value="custom" title={m.custom} />
+        </Core.RadioGroup>
         <Controller
           control={form.control}
           name="urlV1"
@@ -103,7 +101,7 @@ export const KoboServerForm = ({
             pattern: Regexp.get.url,
           }}
           render={({field, fieldState}) => (
-            <IpInput {...field} required label={m.serverUrlV1} error={fieldState.invalid} />
+            <Core.Input {...field} required label={m.serverUrlV1} error={fieldState.invalid} />
           )}
         />
         <Controller
@@ -115,12 +113,12 @@ export const KoboServerForm = ({
             pattern: Regexp.get.url,
           }}
           render={({field, fieldState}) => (
-            <IpInput required {...field} label={m.serverUrlV2} error={fieldState.invalid} />
+            <Core.Input required {...field} label={m.serverUrlV2} error={fieldState.invalid} />
           )}
         />
       </AccessFormSection>
       <AccessFormSection icon="key" label={m.access} sxContent={{pb: 0}}>
-        <Txt block color="hint" size="small" gutterBottom>
+        <Core.Txt block color="hint" size="small" gutterBottom>
           <div>Can be found in your account settings.</div>
           {map(form.watch('url'), url => {
             if (url === '') return
@@ -131,7 +129,7 @@ export const KoboServerForm = ({
               </a>
             )
           })}
-        </Txt>
+        </Core.Txt>
         <Controller
           control={form.control}
           name="token"
@@ -140,7 +138,7 @@ export const KoboServerForm = ({
             pattern: new RegExp(/^[0-9a-z]+$/),
           }}
           render={({field, fieldState}) => (
-            <IpInput
+            <Core.Input
               // endAdornment={<Icon>key</Icon>}
               required
               label={m.apiToken}
@@ -158,12 +156,12 @@ export const KoboServerForm = ({
             required: true,
           }}
           render={({field, fieldState}) => (
-            <IpInput required {...field} label={m.accountName} error={fieldState.invalid} />
+            <Core.Input required {...field} label={m.accountName} error={fieldState.invalid} />
           )}
         />
       </AccessFormSection>
       <Box sx={{display: 'flex'}}>
-        <IpBtn
+        <Core.Btn
           variant="outlined"
           disabled={!form.formState.isValid}
           icon="network_check"
@@ -171,17 +169,17 @@ export const KoboServerForm = ({
           sx={{mr: 1, whiteSpace: 'nowrap'}}
         >
           {m.testConnection}
-        </IpBtn>
+        </Core.Btn>
         <ConnectionChecker
           status={fetcherTest.loading ? 'loading' : fetcherTest.get === true ? 'success' : 'error'}
           err={fetcherTest.get as any}
         />
       </Box>
       <CardActions sx={{justifyContent: 'flex-end'}}>
-        <IpBtn color="primary" onClick={onCancel}>
+        <Core.Btn color="primary" onClick={onCancel}>
           {m.close}
-        </IpBtn>
-        <IpBtn
+        </Core.Btn>
+        <Core.Btn
           loading={loading}
           variant="contained"
           color="primary"
@@ -189,7 +187,7 @@ export const KoboServerForm = ({
           disabled={!form.formState.isValid}
         >
           {m.save}
-        </IpBtn>
+        </Core.Btn>
       </CardActions>
     </>
   )
@@ -208,7 +206,7 @@ export const KoboServerFormDialog = ({
     <Dialog open={open} onClose={() => onClose()}>
       <DialogTitle>{m.addNewKoboAccount}</DialogTitle>
       <DialogContent>
-        {queryCreate.error && <IpAlert color="error" content={queryCreate.error.message} />}
+        {queryCreate.error && <Core.Alert color="error" content={queryCreate.error.message} />}
         <KoboServerForm
           loading={queryCreate.isPending}
           onCancel={onClose}

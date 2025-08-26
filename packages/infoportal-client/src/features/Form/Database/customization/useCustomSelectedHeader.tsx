@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react'
-import {IpBtn, Modal, Txt} from '@/shared'
+import {Core} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Ip} from 'infoportal-api-sdk'
@@ -21,7 +21,7 @@ export const useCustomSelectedHeader = ({
   return (
     <>
       {permission.answers_canDelete && (
-        <Modal
+        <Core.Modal
           loading={query.remove.isPending}
           onConfirm={(event, close) =>
             query.remove
@@ -36,14 +36,14 @@ export const useCustomSelectedHeader = ({
           content={
             <>
               {query.remove.error && <Alert color="error">{m.somethingWentWrong}</Alert>}
-              <Txt color="hint">{m.confirmRemoveDesc}</Txt>
+              <Core.Txt color="hint">{m.confirmRemoveDesc}</Core.Txt>
             </>
           }
         >
-          <IpBtn variant="contained" icon="delete">
+          <Core.Btn variant="contained" icon="delete">
             {m.deleteSelected}
-          </IpBtn>
-        </Modal>
+          </Core.Btn>
+        </Core.Modal>
       )}
     </>
   )

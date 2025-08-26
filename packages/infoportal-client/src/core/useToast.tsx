@@ -1,8 +1,8 @@
+import {Core} from '@/shared'
 import {appConfig} from '../conf/AppConfig'
-import {useToast} from '@/shared/Toast'
 
 export const useIpToast = () => {
-  const toasts = useToast()
+  const toasts = Core.useToast()
   return {
     ...toasts,
     toastHttpError: (e: unknown) => {

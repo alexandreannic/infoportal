@@ -1,11 +1,9 @@
 import React from 'react'
 import {useI18n} from '@/core/i18n'
 import {formRoute, useFormContext} from '@/features/Form/Form'
-import {IpBtn} from '@/shared/Btn'
 import {DatabaseAccessForm} from '@/features/Form/Access/DatabaseAccessForm'
-import {Panel} from '@/shared/Panel'
 import {AccessTable} from '@/features/Access/AccessTable'
-import {Page} from '@/shared'
+import {Core, Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 
 export const databaseAccessRoute = createRoute({
@@ -20,7 +18,7 @@ function DatabaseAccess() {
   return (
     <Page width="full">
       {schema && (
-        <Panel>
+        <Core.Panel>
           <AccessTable
             formId={form.id}
             workspaceId={workspaceId}
@@ -28,14 +26,14 @@ function DatabaseAccess() {
             header={
               permission.access_canAdd && (
                 <DatabaseAccessForm workspaceId={workspaceId} formId={form.id} form={schema.schema}>
-                  <IpBtn sx={{mr: 1}} variant="outlined" icon="person_add">
+                  <Core.Btn sx={{mr: 1}} variant="outlined" icon="person_add">
                     {m.grantAccess}
-                  </IpBtn>
+                  </Core.Btn>
                 </DatabaseAccessForm>
               )
             }
           />
-        </Panel>
+        </Core.Panel>
       )}
     </Page>
   )

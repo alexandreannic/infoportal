@@ -1,16 +1,13 @@
 import {Box, Icon, SxProps, Theme, useTheme} from '@mui/material'
-import {IpInput} from '@/shared/Input/Input'
-import {IpBtn, IpBtnProps} from '@/shared/Btn'
 import React, {useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {useForm} from 'react-hook-form'
 import {DatabaseViewVisibility} from '@/core/sdk/server/databaseView/DatabaseView'
-import {PanelTitle} from '@/shared/Panel'
-import {IpAlert} from '@/shared'
 import {DatabaseViewInputRow} from '@/features/Form/Database/view/DatabaseViewInputRow'
 import {DatabaseViewDefaultName, UseDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
 import {useSession} from '@/core/Session/SessionContext'
 import {useFormContext} from '@/features/Form/Form'
+import {Core} from '@/shared'
 
 interface FormCreate {
   name: string
@@ -25,10 +22,10 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
   const formCreate = useForm<FormCreate>()
   return (
     <Box sx={{p: 1}}>
-      <PanelTitle sx={{mb: 0.5}}>{m._datatable.view}</PanelTitle>
-      <IpAlert color="info" icon={<Icon>help</Icon>} sx={{mb: 1}} deletable="permanent" id="db-view-info">
+      <Core.PanelTitle sx={{mb: 0.5}}>{m._datatable.view}</Core.PanelTitle>
+      <Core.Alert color="info" icon={<Icon>help</Icon>} sx={{mb: 1}} deletable="permanent" id="db-view-info">
         <b>Views</b> save your column visibility and width. They can be shared with other users.
-      </IpAlert>
+      </Core.Alert>
       {ctx.fetcherViews.get?.map(view => (
         <DatabaseViewInputRow
           key={view.id}
@@ -48,12 +45,12 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
         />
       ))}
       <Box>
-        <IpInput
+        <Core.Input
           sx={{mt: 1, mb: -1}}
           {...formCreate.register('name', {required: true})}
           label={m._datatable.createNewView}
           endAdornment={
-            <IpBtn
+            <Core.Btn
               size="small"
               variant="text"
               loading={ctx.asyncViewCreate.loading}
@@ -77,11 +74,11 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
   )
 }
 
-export const DatabaseViewBtn = ({view, sx, ...props}: IpBtnProps & {view: UseDatabaseView}) => {
+export const DatabaseViewBtn = ({view, sx, ...props}: Core.BtnProps & {view: UseDatabaseView}) => {
   const t = useTheme()
 
   return (
-    <IpBtn
+    <Core.Btn
       icon="visibility"
       color="inherit"
       variant="input"

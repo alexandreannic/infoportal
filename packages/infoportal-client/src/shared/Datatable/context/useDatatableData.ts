@@ -9,8 +9,7 @@ import {
   DatatableSearch,
   DatatableTableProps,
 } from '@/shared/Datatable/util/datatableType'
-import {OrderBy} from '@axanc/react-hooks'
-import {usePersistentState} from '@/shared/hook/usePersistantState'
+import {OrderBy, usePersistentState} from '@axanc/react-hooks'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {Paginate} from 'infoportal-api-sdk'
 
@@ -36,7 +35,7 @@ export const useDatatableData = <T extends DatatableRow>({
       offset: 0,
     },
     {
-      transformFromStorage: _ => {
+      transformFromStorage: (_: any) => {
         _.offset = 0
         return _
       },

@@ -1,11 +1,11 @@
 import {TableIconBtn} from '@/shared/TableIcon'
 import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
-import {alpha, Box, Icon, lighten, Popover, useTheme} from '@mui/material'
+import {Box, Icon, Popover, useTheme} from '@mui/material'
 import {useState} from 'react'
-import {IpBtn} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {alphaVar, lightenVar} from '@/core/theme.js'
+import {Core} from '@/shared'
 
 export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerProps<any>}) => {
   const {formatLargeNumber} = useI18n()
@@ -69,7 +69,7 @@ export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerPro
           <span style={{color: t.vars.palette.success.main, fontWeight: t.typography.fontWeightBold}}>
             <b>{formatLargeNumber(copied)}</b> copied!
           </span>
-          <IpBtn
+          <Core.Btn
             disabled={copied === data.filteredData?.length}
             variant="outlined"
             icon="content_copy"
@@ -82,7 +82,7 @@ export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerPro
             }}
           >
             Copy All {formatLargeNumber(data.filteredData?.length)}
-          </IpBtn>
+          </Core.Btn>
         </Box>
       </Popover>
     </>

@@ -1,13 +1,10 @@
 import {useI18n} from '@/core/i18n'
-import {IpAlert, IpBtn} from '@/shared'
-import {IpInput} from '@/shared/Input/Input'
-import {PanelFoot} from '@/shared/Panel/PanelFoot'
-import {ScRadioGroup, ScRadioGroupItem} from '@/shared/RadioGroup'
 import {Regexp} from 'infoportal-common'
 import {Controller, useForm} from 'react-hook-form'
 import {HttpError, Ip} from 'infoportal-api-sdk'
 import {Collapse} from '@mui/material'
 import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {Core} from '@/shared'
 
 type Form = {
   email: Ip.User.Email
@@ -35,7 +32,7 @@ export const AddUserForm = ({
     // onClose?.()
   }
 
-  const CloseBtn = <IpBtn children={m.close} color="inherit" size="small" onClick={queryInvitation.reset} />
+  const CloseBtn = <Core.Btn children={m.close} color="inherit" size="small" onClick={queryInvitation.reset} />
 
   return (
     <form onSubmit={form.handleSubmit(submit)} style={{width: 400}}>
@@ -48,7 +45,7 @@ export const AddUserForm = ({
           pattern: {value: Regexp.get.email, message: m.invalidEmail},
         }}
         render={({field, fieldState}) => (
-          <IpInput
+          <Core.Input
             required
             sx={{minWidth: 260, mb: 1, mt: 1}}
             {...field}
@@ -65,7 +62,7 @@ export const AddUserForm = ({
           required: true,
         }}
         render={({field: {onChange, value, ...field}}) => (
-          <ScRadioGroup
+          <Core.RadioGroup
             label={m.accessLevel}
             dense
             {...field}
@@ -73,27 +70,32 @@ export const AddUserForm = ({
             onChange={_ => onChange({target: {value: _}})}
           >
             {Object.keys(Ip.AccessLevel).map(_ => (
-              <ScRadioGroupItem value={_} title={_} />
+              <Core.RadioGroupItem value={_} title={_} />
             ))}
-          </ScRadioGroup>
+          </Core.RadioGroup>
         )}
       />
       <Collapse in={!!queryInvitation.error} mountOnEnter unmountOnExit>
-        <IpAlert sx={{mt: 1}} severity="error" action={CloseBtn}>
+        <Core.Alert sx={{mt: 1}} severity="error" action={CloseBtn}>
           {queryInvitation.error instanceof HttpError.Conflict ? m.userInvitationAlreadySent : m.anErrorOccurred}
-        </IpAlert>
+        </Core.Alert>
       </Collapse>
       <Collapse in={queryInvitation.isSuccess} mountOnEnter unmountOnExit>
-        <IpAlert sx={{mt: 1}} severity="success" action={CloseBtn}>
+        <Core.Alert sx={{mt: 1}} severity="success" action={CloseBtn}>
           {m.userInvitationSent}
-        </IpAlert>
+        </Core.Alert>
       </Collapse>
-      <PanelFoot sx={{mt: 2, p: 0}} alignEnd>
-        {onClose && <IpBtn onClick={onClose}>{m.close}</IpBtn>}
-        <IpBtn variant="outlined" type="submit" disabled={!form.formState.isValid} loading={queryInvitation.isPending}>
+      <Core.PanelFoot sx={{mt: 2, p: 0}} alignEnd>
+        {onClose && <Core.Btn onClick={onClose}>{m.close}</Core.Btn>}
+        <Core.Btn
+          variant="outlined"
+          type="submit"
+          disabled={!form.formState.isValid}
+          loading={queryInvitation.isPending}
+        >
           {m.submit}
-        </IpBtn>
-      </PanelFoot>
+        </Core.Btn>
+      </Core.PanelFoot>
     </form>
   )
 }

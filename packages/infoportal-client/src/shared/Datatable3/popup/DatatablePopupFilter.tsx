@@ -1,12 +1,7 @@
 import {useI18n} from '@/core/i18n/index.js'
 import React, {ReactNode, useEffect, useState} from 'react'
 import {Alert, Box, Icon, MenuItem, Popover, PopoverProps} from '@mui/material'
-import {PanelBody, PanelHead} from '@/shared/Panel/index.js'
-import {IpBtn, IpIconBtn, Txt} from '@/shared/index.js'
-import {IpInput} from '@/shared/Input/Input.js'
-import {PeriodPicker} from '@/shared/PeriodPicker/PeriodPicker.js'
 import {endOfDay} from 'date-fns'
-import {PanelFoot} from '@/shared/Panel/PanelFoot.js'
 import {
   DatatableFilterDialogNumber,
   DatatableFilterDialogSelect,
@@ -16,6 +11,7 @@ import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
 import {OrderBy} from '@axanc/react-hooks'
 import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType.js'
+import {Core} from '@/shared'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   sortBy?: Datatable.SortBy
@@ -80,11 +76,11 @@ export const DatatableFilterModal3 = ({
 
   return (
     <Popover open={!!anchorEl} anchorEl={anchorEl} onClose={onClose}>
-      <PanelHead
+      <Core.PanelHead
         PanelTitleProps={{overflow: 'hidden'}}
         sx={{maxWidth: 500}}
         action={
-          <IpIconBtn
+          <Core.IconBtn
             children="filter_alt_off"
             color={filterActive ? 'primary' : undefined}
             onClick={() => {
@@ -94,17 +90,17 @@ export const DatatableFilterModal3 = ({
           />
         }
       >
-        <Txt block truncate>
+        <Core.Txt block truncate>
           {title}
-        </Txt>
-      </PanelHead>
-      <PanelBody sx={{maxWidth: 500}}>
+        </Core.Txt>
+      </Core.PanelHead>
+      <Core.PanelBody sx={{maxWidth: 500}}>
         <Box
           sx={{display: 'flex', alignItems: 'center', borderBottom: t => `1px solid ${t.vars.palette.divider}`, mb: 1}}
         >
-          <Txt color="hint" sx={{flex: 1}}>
+          <Core.Txt color="hint" sx={{flex: 1}}>
             {m.sort}
-          </Txt>
+          </Core.Txt>
           <MenuItem onClick={() => onOrderByChange?.(sortBy?.orderBy === 'desc' ? undefined : 'desc')}>
             <Icon
               fontSize="small"
@@ -129,7 +125,7 @@ export const DatatableFilterModal3 = ({
                     <Alert color="info" sx={{py: 0, mb: 1}}>
                       {m._datatable.idFilterInfo}
                     </Alert>
-                    <IpInput
+                    <Core.Input
                       value={innerValue}
                       onChange={e => setInnerValue(e.target.value)}
                       placeholder={m._datatable.idFilterPlaceholder}
@@ -139,7 +135,7 @@ export const DatatableFilterModal3 = ({
               }
               case 'date':
                 return (
-                  <PeriodPicker
+                  <Core.PeriodPicker
                     value={innerValue}
                     onChange={_ => {
                       if (_[1]) _[1] = endOfDay(_[1])
@@ -164,15 +160,15 @@ export const DatatableFilterModal3 = ({
                 return <DatatableFilterDialogText value={innerValue} onChange={setInnerValue} />
             }
           })()}
-      </PanelBody>
-      <PanelFoot alignEnd>
-        <IpBtn color="primary" onClick={onClose}>
+      </Core.PanelBody>
+      <Core.PanelFoot alignEnd>
+        <Core.Btn color="primary" onClick={onClose}>
           {m.close}
-        </IpBtn>
-        <IpBtn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
+        </Core.Btn>
+        <Core.Btn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
           {m.filter}
-        </IpBtn>
-      </PanelFoot>
+        </Core.Btn>
+      </Core.PanelFoot>
     </Popover>
   )
 }

@@ -1,10 +1,10 @@
-import {alpha, Box, BoxProps, Typography, useTheme} from '@mui/material'
+import {Box, BoxProps, Typography, useTheme} from '@mui/material'
 import {IpLogo} from '@/shared/logo/logo'
 import React, {ReactNode} from 'react'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
-import {IpIconBtn} from '@/shared/IconBtn'
 import {alphaVar} from '@/core/theme.js'
+import {Core} from '@/shared'
 
 export const DashboardHeader = ({
   title,
@@ -38,7 +38,7 @@ export const DashboardHeader = ({
         <Box className="header_content">
           <Box sx={{display: 'flex', alignItems: 'center', mb: 1}}>
             {showSidebarButton && (
-              <IpIconBtn
+              <Core.IconBtn
                 size="small"
                 sx={{
                   alignSelf: 'start',

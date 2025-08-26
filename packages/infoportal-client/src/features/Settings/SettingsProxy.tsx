@@ -1,19 +1,15 @@
 import {Page} from '@/shared/Page'
-import {Panel} from '@/shared/Panel'
 import {useEffect} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useCrudList} from '@axanc/react-hooks'
 import {useI18n} from '@/core/i18n'
 import {Switch} from '@mui/material'
-import {IpIconBtn} from '@/shared/IconBtn'
 import {Controller, useForm} from 'react-hook-form'
-import {IpInput} from '@/shared/Input/Input'
 import {NullableFn, Regexp, slugify} from 'infoportal-common'
-import {Txt} from '@/shared/Txt'
 import {TableIconBtn} from '@/shared/TableIcon'
 import {Proxy} from '@/core/sdk/server/proxy/Proxy'
 import {endOfDay} from 'date-fns'
-import {Modal} from '@/shared'
+import {Core} from '@/shared'
 import {Datatable} from '@/shared/Datatable/Datatable'
 import {formatDateTime} from '@/core/i18n/localization/en'
 import {appConfig} from '@/conf/AppConfig'
@@ -59,12 +55,12 @@ function SettingsProxy() {
 
   return (
     <Page width="lg">
-      <Panel>
+      <Core.Panel>
         <Datatable
           id="proxy"
           header={
             permission.proxy_manage && (
-              <Modal
+              <Core.Modal
                 title={m.create}
                 loading={_search.creating}
                 confirmDisabled={!_createForm.formState.isValid}
@@ -92,7 +88,7 @@ function SettingsProxy() {
                         required: {value: true, message: m.required},
                       }}
                       render={({field, fieldState}) => (
-                        <IpInput
+                        <Core.Input
                           {...field}
                           required
                           label={m.name}
@@ -102,7 +98,7 @@ function SettingsProxy() {
                         />
                       )}
                     />
-                    <IpInput
+                    <Core.Input
                       disabled={true}
                       label={m.proxyUrl}
                       value={Proxy.makeUrl({
@@ -120,7 +116,7 @@ function SettingsProxy() {
                         pattern: {value: Regexp.get.url, message: m.invalidUrl},
                       }}
                       render={({field, fieldState}) => (
-                        <IpInput
+                        <Core.Input
                           {...field}
                           label={m.proxyDestinationUrl}
                           error={!!fieldState.error}
@@ -133,7 +129,7 @@ function SettingsProxy() {
                       control={_createForm.control}
                       name="expireAt"
                       render={({field, fieldState}) => (
-                        <IpInput
+                        <Core.Input
                           {...field}
                           label={m.expireAt}
                           type="date"
@@ -145,8 +141,8 @@ function SettingsProxy() {
                   </>
                 }
               >
-                <IpIconBtn>add</IpIconBtn>
-              </Modal>
+                <Core.IconBtn>add</Core.IconBtn>
+              </Core.Modal>
             )
           }
           data={_search.list}
@@ -167,11 +163,11 @@ function SettingsProxy() {
                 return {
                   value: _.slug,
                   label: (
-                    <Txt link>
+                    <Core.Txt link>
                       <a target="_blank" href={redirectUrl}>
                         {redirectUrl}
                       </a>
-                    </Txt>
+                    </Core.Txt>
                   ),
                 }
               },
@@ -184,11 +180,11 @@ function SettingsProxy() {
                 return {
                   value: _.url,
                   label: (
-                    <Txt link>
+                    <Core.Txt link>
                       <a target="_blank" href={_.url}>
                         {_.url}
                       </a>
-                    </Txt>
+                    </Core.Txt>
                   ),
                 }
               },
@@ -247,7 +243,7 @@ function SettingsProxy() {
             },
           ]}
         />
-      </Panel>
+      </Core.Panel>
     </Page>
   )
 }

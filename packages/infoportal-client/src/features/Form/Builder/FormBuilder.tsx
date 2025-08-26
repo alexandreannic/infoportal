@@ -1,6 +1,5 @@
-import {IpBtn, Modal, Page} from '@/shared'
+import {Core, Page} from '@/shared'
 import {Grid, Grow, useTheme} from '@mui/material'
-import {Panel, PanelBody, PanelHead} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
 import React, {useMemo, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
@@ -12,7 +11,6 @@ import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFend
 import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
 import {createRoute, Link, useRouter} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
-import {IpInput} from '@/shared/Input/Input'
 import {useIpToast} from '@/core/useToast'
 import {Ip} from 'infoportal-api-sdk'
 
@@ -63,30 +61,30 @@ function FormBuilder() {
                 queryVersion.get.data,
                 versions =>
                   versions.length > 0 && (
-                    <Panel>
-                      <PanelHead
+                    <Core.Panel>
+                      <Core.PanelHead
                         action={
-                          <Modal
+                          <Core.Modal
                             loading={queryVersion.deployLast.isPending}
                             title={m.confirm}
                             onConfirm={(event, close) =>
                               queryVersion.deployLast.mutateAsync({workspaceId, formId}).then(close)
                             }
                           >
-                            <IpBtn
+                            <Core.Btn
                               icon="send"
                               variant="contained"
                               disabled={!draft}
                               loading={queryVersion.deployLast.isPending}
                             >
                               {m.deployLastVersion}
-                            </IpBtn>
-                          </Modal>
+                            </Core.Btn>
+                          </Core.Modal>
                         }
                       >
                         {m.versions}
-                      </PanelHead>
-                      <PanelBody>
+                      </Core.PanelHead>
+                      <Core.PanelBody>
                         {seq(versions ?? [])
                           .sortByNumber(_ => _.version, '9-0')
                           .slice(0, versionVisible)
@@ -97,15 +95,15 @@ function FormBuilder() {
                           <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />
                         )}
                         {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
-                      </PanelBody>
-                    </Panel>
+                      </Core.PanelBody>
+                    </Core.Panel>
                   ),
               )}
             </Grid>
             <Grid size={{xs: 12, md: 6}}>
               {active && (
-                <Panel sx={{p: 1}}>
-                  <IpBtn
+                <Core.Panel sx={{p: 1}}>
+                  <Core.Btn
                     sx={{mr: 1}}
                     icon="visibility"
                     size="large"
@@ -114,9 +112,9 @@ function FormBuilder() {
                     disabled={!active}
                   >
                     {m.preview}
-                  </IpBtn>
+                  </Core.Btn>
                   <Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId}} target="_blank">
-                    <IpBtn
+                    <Core.Btn
                       sx={{mr: 1}}
                       icon="open_in_new"
                       size="large"
@@ -124,9 +122,9 @@ function FormBuilder() {
                       onClick={() => setShowPreview(true)}
                     >
                       {m.open}
-                    </IpBtn>
+                    </Core.Btn>
                   </Link>
-                  <Modal
+                  <Core.Modal
                     title={m.copyResponderLink}
                     onConfirm={async () => {
                       try {
@@ -139,7 +137,7 @@ function FormBuilder() {
                     confirmLabel={m.copy}
                     cancelLabel={m.close}
                     content={
-                      <IpInput
+                      <Core.Input
                         helperText={null}
                         slotProps={{input: {sx: {width: 400, color: t.vars.palette.text.secondary}}}}
                         readOnly
@@ -147,11 +145,11 @@ function FormBuilder() {
                       />
                     }
                   >
-                    <IpBtn icon="link" size="large" variant="outlined">
+                    <Core.Btn icon="link" size="large" variant="outlined">
                       {m.copyLink}
-                    </IpBtn>
-                  </Modal>
-                </Panel>
+                    </Core.Btn>
+                  </Core.Modal>
+                </Core.Panel>
               )}
               {active && showPreview && (
                 <Grow in={true}>

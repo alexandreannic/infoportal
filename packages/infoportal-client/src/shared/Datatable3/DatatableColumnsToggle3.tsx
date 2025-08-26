@@ -1,10 +1,8 @@
 import {Badge, Chip, Icon, IconButton, IconButtonProps, Switch, Tooltip} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
-import {PopoverWrapper, Txt} from '@/shared'
+import {Core} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {IpBtn} from '@/shared/Btn'
 import {useSetState} from '@axanc/react-hooks'
-import {IpAlert} from '@/shared/Alert'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
 import {Datatable3} from '@/shared/Datatable3/Datatable3.js'
@@ -41,10 +39,10 @@ export const DatatableColumnToggle3 = ({
 
   // columns.map(_ => _.)
   return (
-    <PopoverWrapper
+    <Core.PopoverWrapper
       content={() => (
         <>
-          <IpAlert deletable="permanent" id="datatable-alert-cols-toggle" color="info">
+          <Core.Alert deletable="permanent" id="datatable-alert-cols-toggle" color="info">
             Use table filters to quickly toggle bunch of columns. For example, to hide all the <br />
             <code>calculate</code> columns (<DatatableHeadTypeIconByKoboType children="calculate" />
             ), select them from column <b>{m.type}</b> and click on&nbsp;
@@ -56,7 +54,7 @@ export const DatatableColumnToggle3 = ({
               label={m.remove + ' n'}
               disabled={true}
             />
-          </IpAlert>
+          </Core.Alert>
           <Datatable3<DatatableColumnToggleProps>
             onEvent={console.log}
             header={_ => (
@@ -77,15 +75,15 @@ export const DatatableColumnToggle3 = ({
                   onClick={() => set.add(_.filteredAndSortedData.filter(_ => !set.has(_.id)).map(_ => _.id))}
                   label={m.remove + ' ' + _.filteredAndSortedData.length}
                 />
-                <Txt bold>
-                  <Txt size="big" sx={{fontWeight: 600}}>
+                <Core.Txt bold>
+                  <Core.Txt size="big" sx={{fontWeight: 600}}>
                     {columns.length - set.size}
-                  </Txt>{' '}
+                  </Core.Txt>{' '}
                   / {columns.length} {m._koboDatabase.currentlyDisplayed}
-                </Txt>
-                <IpBtn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
+                </Core.Txt>
+                <Core.Btn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
                   {m.save}
-                </IpBtn>
+                </Core.Btn>
               </>
             )}
             contentProps={{sx: {maxHeight: 500}}}
@@ -179,6 +177,6 @@ export const DatatableColumnToggle3 = ({
           </Badge>
         </IconButton>
       </Tooltip>
-    </PopoverWrapper>
+    </Core.PopoverWrapper>
   )
 }

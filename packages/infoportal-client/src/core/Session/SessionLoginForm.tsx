@@ -1,18 +1,16 @@
 import {Box, ButtonBase, useTheme} from '@mui/material'
 import {IpLogo} from '@/shared/logo/logo'
-import {Txt} from '@/shared/Txt'
+import {Core} from '@/shared'
 import React, {ReactNode} from 'react'
 import {useMsal} from '@azure/msal-react'
-import {useEffectFn} from '@axanc/react-hooks'
+import {useAsync, useEffectFn} from '@axanc/react-hooks'
 import {useI18n} from '@/core/i18n'
 import {useIpToast} from '@/core/useToast'
 import {mapPromise} from '@axanc/ts-utils'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {CenteredContent} from '@/shared/CenteredContent'
-import {useAsync} from '@/shared/hook/useAsync'
 import {useGoogleLogin} from '@react-oauth/google'
 import {ButtonProps} from '@mui/material/Button'
-import {Panel} from '@/shared/Panel'
 import {Ip} from 'infoportal-api-sdk'
 
 const BtnLogin = ({
@@ -53,12 +51,12 @@ const BtnLogin = ({
         {icon}
       </Box>
       <Box>
-        <Txt block size="big" bold>
+        <Core.Txt block size="big" bold>
           {title}
-        </Txt>
-        {/*<Txt block color="hint">*/}
+        </Core.Txt>
+        {/*<Core.Txt block color="hint">*/}
         {/*  {desc}*/}
-        {/*</Txt>*/}
+        {/*</Core.Txt>*/}
       </Box>
     </ButtonBase>
   )
@@ -118,18 +116,18 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: Ip.User) => void
 
   return (
     <CenteredContent>
-      <Panel
+      <Core.Panel
         sx={{
           padding: 4,
         }}
       >
         <IpLogo sx={{margin: 'auto', display: 'block', mb: 1}} height={60} />
-        <Txt sx={{textAlign: 'center'}} size="big" color="hint" block>
+        <Core.Txt sx={{textAlign: 'center'}} size="big" color="hint" block>
           {m.subTitle}
-        </Txt>
-        <Txt sx={{textAlign: 'center', mt: 1, mb: 2, fontSize: 40}} block>
+        </Core.Txt>
+        <Core.Txt sx={{textAlign: 'center', mt: 1, mb: 2, fontSize: 40}} block>
           {m.title}
-        </Txt>
+        </Core.Txt>
 
         <BtnLogin
           title={m.signInMicrosoft}
@@ -144,7 +142,7 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: Ip.User) => void
           onClick={() => googleLogin()}
           sx={{mt: 1}}
         />
-      </Panel>
+      </Core.Panel>
     </CenteredContent>
   )
 }

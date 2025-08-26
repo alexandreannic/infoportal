@@ -1,10 +1,9 @@
 import {Alert, AlertTitle, Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
-import {Panel, PanelBody} from '@/shared/Panel'
 import {useI18n} from '@/core/i18n'
 import React from 'react'
 import {useQueryServer} from '@/core/query/useQueryServers'
 import {Ip} from 'infoportal-api-sdk'
-import {Txt} from '@/shared'
+import {Core} from '@/shared'
 
 const Button = ({href, label, icon, sx, ...props}: {href: string; label: string; icon: string} & ButtonBaseProps) => {
   const t = useTheme()
@@ -26,7 +25,7 @@ const Button = ({href, label, icon, sx, ...props}: {href: string; label: string;
       <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
         <Icon sx={{fontSize: 70}}>{icon}</Icon>
         <Box display="flex" alignItems="center" sx={{mt: 2}}>
-          <Txt size="big">{label}</Txt>
+          <Core.Txt size="big">{label}</Core.Txt>
           <Icon sx={{ml: 1}}>open_in_new</Icon>
         </Box>
       </Box>
@@ -38,9 +37,9 @@ export const FormBuilderKoboFender = ({workspaceId, form}: {workspaceId: Ip.Work
   const queryServer = useQueryServer({workspaceId, serverId: form.kobo!.accountId!}).get
 
   return (
-    <Panel loading={queryServer.isLoading}>
+    <Core.Panel loading={queryServer.isLoading}>
       {queryServer.data && (
-        <PanelBody>
+        <Core.PanelBody>
           <Alert color="info" sx={{mb: 2}}>
             <AlertTitle>
               {m.thisFormIsManagedByKobo}{' '}
@@ -56,8 +55,8 @@ export const FormBuilderKoboFender = ({workspaceId, form}: {workspaceId: Ip.Work
             href={queryServer.data.url + `/#/forms/${form.id}/landing`}
           />
           {form.kobo?.enketoUrl && <Button icon="ballot" href={form.kobo?.enketoUrl} label={m.fillForm} />}
-        </PanelBody>
+        </Core.PanelBody>
       )}
-    </Panel>
+    </Core.Panel>
   )
 }

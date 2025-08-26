@@ -1,9 +1,8 @@
-import {IpBtn} from '@/shared'
 import {Icon, useTheme} from '@mui/material'
 import {makeStyles} from 'tss-react/mui'
-import {styleUtils} from '@/core/theme'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {map, Obj, seq} from '@axanc/ts-utils'
+import {Core} from '@/shared'
 
 const colors = [
   '#2196F3',
@@ -21,7 +20,7 @@ const colors = [
 const useStyles = makeStyles()(t => ({
   tr: {
     cursor: 'pointer',
-    fontSize: styleUtils(t).fontSize.small,
+    fontSize: Core.styleUtils(t).fontSize.small,
     '&:hover .TableHeadSectionCell-content': {
       opacity: 1,
       height: 32,
@@ -78,7 +77,7 @@ export const TableHeadSectionCell = ({
             >
               <div className={cx(classes.content, 'TableHeadSectionCell-content')}>
                 {group}&nbsp;
-                <IpBtn
+                <Core.Btn
                   className={classes.btn}
                   size="small"
                   variant="contained"
@@ -86,7 +85,7 @@ export const TableHeadSectionCell = ({
                   onClick={() => onHideColumns(cols.map(_ => _.id))}
                 >
                   <Icon fontSize="small">visibility_off</Icon>
-                </IpBtn>
+                </Core.Btn>
               </div>
             </th>
           )),

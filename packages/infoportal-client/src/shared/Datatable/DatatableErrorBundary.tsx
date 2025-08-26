@@ -1,9 +1,8 @@
 import React, {Component} from 'react'
 import {Box} from '@mui/material'
-import {Txt} from '@/shared/Txt'
-import {IpBtn} from '@/shared/Btn'
 import {appConfig} from '@/conf/AppConfig'
 import {en} from '@/core/i18n/localization/en'
+import {Core} from '@/shared'
 
 interface ErrorBoundaryProps {
   children: React.ReactNode
@@ -56,19 +55,24 @@ export class DatatableErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
       const error = this.state.error
       return (
         <Box sx={{p: 2}}>
-          <Txt bold size="title" block sx={{mb: 1}}>
+          <Core.Txt bold size="title" block sx={{mb: 1}}>
             {en.messages.somethingWentWrong}
-          </Txt>
+          </Core.Txt>
           <Box sx={{mb: 1}}>
             If the problem persist, please contact <b>{appConfig.contact}</b> and include the snippet below.
           </Box>
 
-          <IpBtn icon="refresh" onClick={() => this.refreshPage()} color="primary" variant="contained" sx={{mr: 1}}>
+          <Core.Btn icon="refresh" onClick={() => this.refreshPage()} color="primary" variant="contained" sx={{mr: 1}}>
             {en.messages.refresh}
-          </IpBtn>
-          <IpBtn icon="settings_backup_restore" onClick={() => this.refreshPage(true)} color="primary" variant="text">
+          </Core.Btn>
+          <Core.Btn
+            icon="settings_backup_restore"
+            onClick={() => this.refreshPage(true)}
+            color="primary"
+            variant="text"
+          >
             {en.messages.hardRefresh}
-          </IpBtn>
+          </Core.Btn>
 
           <Box
             sx={t => ({
@@ -81,11 +85,11 @@ export class DatatableErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
             })}
           >
             {error && (
-              <Txt bold size="big">
+              <Core.Txt bold size="big">
                 {error.toString()}
-              </Txt>
+              </Core.Txt>
             )}
-            <pre>{error && <Txt>{error.stack}</Txt>}</pre>
+            <pre>{error && <Core.Txt>{error.stack}</Core.Txt>}</pre>
           </Box>
         </Box>
       )
