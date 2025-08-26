@@ -6,6 +6,8 @@ declare module '@tanstack/react-router' {
   }
 }
 
+import type {} from '@mui/material/themeCssVarsAugmentation'
+
 // declare module '@mui/material/styles' {
 //   interface Theme {
 //     vars: NonNullable<Theme['vars']>
