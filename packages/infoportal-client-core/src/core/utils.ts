@@ -56,12 +56,13 @@ export const getOverlapMonths = (startDate1: Date, endDate1: Date, startDate2: D
 
 export const downloadBufferAsFile = (buffer: Buffer, filename: string) => {
   const _ = document.createElement('a')
-  const content = new Blob([buffer])
+  const content = new Blob([buffer as any])
   const encodedUri = window.URL.createObjectURL(content)
   const link = document.createElement('a')
   link.setAttribute('href', encodedUri)
   link.setAttribute('download', filename)
   link.click()
+  URL.revokeObjectURL(link.href)
 }
 
 export const downloadStringAsFile = (stringData: string, fileName: string) => {
