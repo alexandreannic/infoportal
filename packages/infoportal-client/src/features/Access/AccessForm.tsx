@@ -5,10 +5,9 @@ import React, {useEffect, useMemo} from 'react'
 import {useI18n} from '@/core/i18n'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {DrcJobInputMultiple} from '@/shared/customInput/DrcJobInput'
-import {Datatable} from '@/shared/Datatable/Datatable'
+import {Core, Datatable} from '@/shared'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
 import {Ip} from 'infoportal-api-sdk'
-import {Core} from '@/shared'
 
 export interface IAccessForm {
   selectBy?: 'email' | 'job' | 'group' | null
@@ -232,7 +231,8 @@ export const AccessFormInputGroup = ({
       />
       {map(form.watch('groupId'), groupId => (
         <>
-          <Datatable
+          <Datatable.Component
+            getRowKey={_ => _.id}
             sx={{
               mt: 2,
               border: t => `1px solid ${t.vars.palette.divider}`,

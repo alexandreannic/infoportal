@@ -1,8 +1,7 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
-import {Core, TableInput} from '@/shared'
+import {Core, Datatable} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
-import {Datatable} from '@/shared/Datatable/Datatable'
 import {Page} from '@/shared/Page'
 import {fnSwitch, Obj, seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
@@ -69,13 +68,13 @@ function SettingsUsers() {
   return (
     <Page width="full">
       <Core.Panel>
-        <Datatable
+        <Datatable.Component
           loading={queryUserGet.isLoading}
           id="users"
-          showExportBtn
+          // showExportBtn
           defaultLimit={100}
           data={data}
-          getRenderRowKey={_ => _.invitationId ?? _.userId!}
+          getRowKey={_ => _.invitationId ?? _.userId!}
           // getRenderRowKey={(_, i) => '' + i}
           header={
             permission.user_canCreate && (
@@ -160,7 +159,7 @@ function SettingsUsers() {
               head: m.job,
               render: _ => {
                 return {
-                  label: <TableInput value={_.drcJob} onChange={console.log} />,
+                  label: <Datatable.Input value={_.drcJob} onChange={console.log} />,
                   value: _.drcJob,
                 }
               },

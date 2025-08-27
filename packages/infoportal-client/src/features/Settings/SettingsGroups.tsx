@@ -5,13 +5,12 @@ import {Box, Chip, Icon} from '@mui/material'
 import {useForm} from 'react-hook-form'
 import {accessLevelIcon, IAccessForm} from '@/features/Access/AccessForm'
 import {SettingsGroupAccessForm} from '@/features/Settings/SettingsGroupAccessForm'
-import {Datatable} from '@/shared/Datatable/Datatable'
+import {Core, Datatable} from '@/shared'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
 import {createRoute} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
 import {Ip} from 'infoportal-api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
-import {Core} from '@/shared'
 
 interface GoupForm {
   name: string
@@ -44,7 +43,8 @@ function SettingsGroups() {
   return (
     <Page width="full">
       <Core.Panel>
-        <Datatable
+        <Datatable.Component
+          getRowKey={_ => _.id}
           data={queryGet.data}
           loading={queryGet.isLoading}
           id="group"

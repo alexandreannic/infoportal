@@ -3,15 +3,13 @@ import {useI18n} from '@/core/i18n'
 import {KoboAnswerHistory} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistory'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {AppAvatar} from '@/shared/AppAvatar'
-import {Datatable} from '@/shared/Datatable/Datatable'
+import {Core, Datatable} from '@/shared'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {Page} from '@/shared/Page'
-import {TableIcon} from '@/shared/TableIcon'
 import {fnSwitch, map} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
 import {useEffect} from 'react'
 import {createRoute} from '@tanstack/react-router'
-import {Core} from '@/shared'
 import {useFetcher} from '@axanc/react-hooks'
 
 export const databaseHistoryRoute = createRoute({
@@ -50,7 +48,7 @@ function DatabaseHistory() {
           return (
             render ?? (
               <span title={value}>
-                <TableIcon
+                <Datatable.Icon
                   color="disabled"
                   tooltip={m._koboDatabase.valueNoLongerInOption}
                   sx={{mr: 1}}
@@ -70,8 +68,9 @@ function DatabaseHistory() {
   return (
     <Page width="lg">
       <Core.Panel>
-        <Datatable
-          showExportBtn
+        <Datatable.Component
+          getRowKey={_ => _.id}
+          // showExportBtn
           loading={fetcher.loading}
           data={fetcher.get?.data}
           id={`kobo-answer-history${form.id}`}

@@ -7,7 +7,6 @@ import {ResizableDiv} from '@/shared/Datatable/ResizableDiv'
 import {DatabaseHeadCell} from '@/shared/Datatable/DatatableHeadCell'
 import {TableHeadSectionCell} from '@/shared/Datatable/TableHeadSectionCell'
 import {DatatableHeadCopyIds} from '@/shared/Datatable/DatatableHeadCopyIds'
-import {TableIcon, TableIconBtn} from '@/shared/TableIcon'
 
 export const DatatableHead = (() => {
   const Component = <T extends DatatableRow>({
@@ -113,7 +112,7 @@ export const DatatableHeadIcon = (
     children: string
   } & Pick<IconProps, 'sx' | 'color'>,
 ) => {
-  return <TableIcon className="table-head-type-icon" fontSize="small" color="disabled" {...props} />
+  return <Icon className="table-head-type-icon" fontSize="small" color="disabled" {...props} />
 }
 
 export const DatatableHeadIconByType = ({
@@ -160,13 +159,17 @@ const DatatableHeadTdBody = ({
           case 'select_multiple':
           case 'date':
           case 'number':
-            return <TableIconBtn children="bar_chart" onClick={e => onOpenStats(e)} />
+            return <Datatable.IconBtn children="bar_chart" onClick={e => onOpenStats(e)} />
           case 'id':
             return <DatatableHeadCopyIds column={column} />
         }
       })()}
       {column.type && (
-        <TableIconBtn color={active ? 'primary' : undefined} children="filter_alt" onClick={e => onOpenFilter(e)} />
+        <Datatable.IconBtn
+          color={active ? 'primary' : undefined}
+          children="filter_alt"
+          onClick={e => onOpenFilter(e)}
+        />
       )}
     </span>
   )

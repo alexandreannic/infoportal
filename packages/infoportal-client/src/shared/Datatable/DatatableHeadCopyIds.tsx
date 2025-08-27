@@ -1,10 +1,9 @@
-import {TableIconBtn} from '@/shared/TableIcon'
 import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {Box, Icon, Popover, useTheme} from '@mui/material'
 import {useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {Core} from '@/shared'
+import {Core, Datatable} from '@/shared'
 
 export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerProps<any>}) => {
   const {formatLargeNumber} = useI18n()
@@ -34,7 +33,7 @@ export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerPro
 
   return (
     <>
-      <TableIconBtn
+      <Datatable.IconBtn
         disabled={!data.filteredData || data.filteredData.length === 0}
         onClick={e => {
           const {currentTarget} = e
@@ -43,7 +42,7 @@ export const DatatableHeadCopyIds = ({column}: {column: DatatableColumn.InnerPro
         }}
       >
         content_copy
-      </TableIconBtn>
+      </Datatable.IconBtn>
       <Popover
         PaperProps={{
           sx: {

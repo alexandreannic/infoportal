@@ -2,7 +2,7 @@ import {formatDate, formatDateTime, Messages} from '@/core/i18n/localization/en'
 import React from 'react'
 import {Kobo} from 'kobo-sdk'
 import {map} from '@axanc/ts-utils'
-import {Datatable, TableEditCellBtn} from '@/shared'
+import {Core, Datatable, TableEditCellBtn} from '@/shared'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper, removeHtml} from 'infoportal-common'
 import {DatabaseContext, KoboExternalFilesIndex} from '@/features/Form/Database/DatabaseContext'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
@@ -12,12 +12,10 @@ import {Theme} from '@mui/material'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useKoboDialogs} from '@/core/store/useLangIndex'
-import {TableIcon, TableIconBtn} from '@/shared/TableIcon'
 import {SelectStatusBy, SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {useI18n} from '@/core/i18n'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
 import Submission = Ip.Submission
-import {Core} from '@/shared'
 
 export const buildDatabaseColumns = {
   type: {
@@ -453,13 +451,13 @@ function actions({
         value: null as any,
         label: (
           <>
-            <TableIconBtn
+            <Datatable.IconBtn
               tooltip={m.view}
               children="visibility"
               onClick={() => dialogs.openView({answer: _, workspaceId, formId: formId})}
             />
             {koboEditEnketoUrl && _.koboSubmissionId ? (
-              <TableIconBtn
+              <Datatable.IconBtn
                 disabled={!canEdit}
                 tooltip={m.editKobo}
                 target="_blank"
@@ -467,7 +465,7 @@ function actions({
                 children="edit_square"
               />
             ) : (
-              <TableIconBtn
+              <Datatable.IconBtn
                 disabled={!canEdit}
                 tooltip={m.editForm}
                 children="edit"
@@ -598,7 +596,7 @@ function MissingOption({value}: {value?: string}) {
   const {m} = useI18n()
   return (
     <span title={value}>
-      <TableIcon color="disabled" tooltip={m._koboDatabase.valueNoLongerInOption} sx={{mr: 1}} children="error" />
+      <Datatable.Icon color="disabled" tooltip={m._koboDatabase.valueNoLongerInOption} sx={{mr: 1}} children="error" />
       {value}
     </span>
   )

@@ -1,5 +1,5 @@
 import {useI18n} from '@/core/i18n'
-import {Datatable} from '@/shared/Datatable/Datatable'
+import {Core, Datatable} from '@/shared'
 import {Page} from '@/shared/Page'
 import {fnSwitch, seq} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
@@ -11,7 +11,6 @@ import {createRoute, Link} from '@tanstack/react-router'
 import {formRootRoute} from '@/features/Form/Form'
 import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
-import {Core} from '@/shared'
 
 export const formsRoute = createRoute({
   getParentRoute: () => formRootRoute,
@@ -41,8 +40,9 @@ function Forms() {
   return (
     <Page width="full">
       <Core.Panel>
-        <Datatable
-          showExportBtn
+        <Datatable.Component
+          getRowKey={_ => _.id}
+          // showExportBtn
           defaultLimit={500}
           header={
             <Link to="/$workspaceId/new-form" params={{workspaceId}}>

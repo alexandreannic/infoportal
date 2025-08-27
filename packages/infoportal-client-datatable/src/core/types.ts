@@ -49,7 +49,7 @@ export interface Props<T extends Row, K extends string = string> {
   loading?: boolean
   getRowKey: (_: T) => string
   getRowChangeTracker?: (_: T) => string
-  onEvent: (_: Action<T>) => void
+  onEvent?: (_: Action<T>) => void
   title?: string
   showRowIndex?: boolean
 
@@ -94,7 +94,7 @@ export namespace Column {
   export interface Base<T extends Row, K extends string = string> {
     id: K
     width?: number
-    head: string
+    head?: string
     group?: {id: string; label: string; color?: string}
     noSort?: boolean
     noCsvExport?: boolean

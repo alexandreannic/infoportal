@@ -1,3 +1,6 @@
+export {Utils} from '@/helper/utils.js'
+export {TableIcon as Icon, TableIconBtn as IconBtn} from '@/ui/TableIcon'
+export {TableInput as Input} from '@/ui/TableInput'
 export {Datatable as Component} from './Datatable'
 export {DatatableConfig as Config} from './DatatableConfig'
 export type {Props, Column, OrderBy, SortBy} from '@/core/types'

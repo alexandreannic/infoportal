@@ -1,8 +1,7 @@
 import {Badge, Chip, Icon, IconButton, IconButtonProps, Switch, Tooltip} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
-import {Core} from '@/shared'
+import {Core, Datatable} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {Datatable} from '@/shared/Datatable/Datatable'
 import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
 import {useSetState} from '@axanc/react-hooks'
 import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
@@ -57,8 +56,9 @@ export const DatatableColumnToggle = ({
               disabled={true}
             />
           </Core.Alert>
-          <Datatable
-            hidePagination
+          <Datatable.Component
+            getRowKey={_ => _.id}
+            // hidePagination
             header={_ => (
               <>
                 <Chip
@@ -91,7 +91,7 @@ export const DatatableColumnToggle = ({
             contentProps={{sx: {maxHeight: 500}}}
             defaultLimit={500}
             id="datatable-column-toggle"
-            hideColumnsToggle
+            // hideColumnsToggle
             data={columns}
             columns={[
               {
@@ -139,7 +139,7 @@ export const DatatableColumnToggle = ({
                       head: m.group,
                       id: 'group',
                       width: 150,
-                      render: (_: DatatableColumnToggleProps) => {
+                      render: (_: any) => {
                         return {
                           value: _.group,
                           label: _.groupLabel,

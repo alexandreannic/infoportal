@@ -1,14 +1,12 @@
 import React, {ReactNode} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Obj, seq} from '@axanc/ts-utils'
-import {TableIconBtn} from '@/shared/TableIcon'
 import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
-import {Datatable} from '@/shared/Datatable/Datatable'
+import {Core, Datatable} from '@/shared'
 import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
 import {useSession} from '@/core/Session/SessionContext'
 import {useQueryUser} from '@/core/query/useQueryUser.js'
-import {Core} from '@/shared'
 
 export const AccessTable = ({
   isAdmin,
@@ -29,10 +27,10 @@ export const AccessTable = ({
   const queryAccessRemove = useQueryFormAccess.remove({workspaceId, formId})
 
   return (
-    <Datatable<Ip.Form.Access>
+    <Datatable.Component<Ip.Form.Access>
       defaultLimit={100}
       id="access"
-      getRenderRowKey={_ => _.id}
+      getRowKey={_ => _.id}
       loading={queryAccess.isLoading || queryAccessUpdate.isPending}
       header={header}
       data={queryAccess.data}
@@ -112,7 +110,7 @@ export const AccessTable = ({
                 align: 'right',
                 renderQuick: (_: Ip.Form.Access) => {
                   return (
-                    <TableIconBtn
+                    <Datatable.IconBtn
                       disabled={_.email === user.email}
                       loading={queryAccessRemove.isPending}
                       onClick={() => queryAccessRemove.mutateAsync({id: _.id})}

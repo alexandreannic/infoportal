@@ -11,7 +11,7 @@ import {
   Slider,
   Switch,
 } from '@mui/material'
-import {Core} from '@/shared'
+import {Core, Datatable} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import React, {Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState} from 'react'
 import {OrderBy} from '@axanc/react-hooks'
@@ -19,7 +19,6 @@ import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shar
 import {seq} from '@axanc/ts-utils'
 import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
 import {endOfDay} from 'date-fns'
-import {Datatable} from '@/shared/Datatable3/state/types.js'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   sortBy?: Datatable.SortBy
