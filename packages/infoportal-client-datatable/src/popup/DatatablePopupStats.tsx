@@ -1,5 +1,5 @@
-import {useDatatable3Context} from '@/state/DatatableContext.js'
-import {Popup} from '@/state/reducer.js'
+import {useDatatable3Context} from '@/core/DatatableContext.js'
+import {Popup} from '@/core/reducer.js'
 import {DatesPopover, MultipleChoicesPopover, NumberChoicesPopover} from './DatatablePopover'
 
 export const DatatablePopupStats = ({columnId, event}: Popup.StatsAgs) => {

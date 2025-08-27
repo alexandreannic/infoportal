@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react'
 import {Obj} from '@axanc/ts-utils'
-import {Column, DatatableBlankValue, DatatableOptions, Row} from '@/state/types.js'
+import {Column, DatatableBlankValue, Option, Row} from '@/core/types.js'
 
 export class Utils {
   static readonly localStorageKey = {
@@ -12,21 +12,21 @@ export class Utils {
 
   static readonly blank: DatatableBlankValue = ''
   static readonly blankLabel = (<i>BLANK</i>)
-  static readonly blankOption: DatatableOptions = {value: Utils.blank, label: Utils.blankLabel}
+  static readonly blankOption: Option = {value: Utils.blank, label: Utils.blankLabel}
 
-  static readonly buildOptions = (opt: string[], addBlank?: boolean): DatatableOptions[] => {
+  static readonly buildOptions = (opt: string[], addBlank?: boolean): Option[] => {
     return [...(addBlank ? [Utils.blankOption] : []), ...opt.map(Utils.buildOption)]
   }
 
-  static readonly buildOption = (_: string): DatatableOptions => {
+  static readonly buildOption = (_: string): Option => {
     return {value: _, label: _}
   }
 
-  static readonly buildOptionByEnum = (_: Record<string, string>): DatatableOptions[] => {
+  static readonly buildOptionByEnum = (_: Record<string, string>): Option[] => {
     return Obj.entries(_).map(([value, label]) => ({value, label}))
   }
 
-  static readonly buildCustomOption = (_: string, label?: ReactNode): DatatableOptions => {
+  static readonly buildCustomOption = (_: string, label?: ReactNode): Option => {
     return {value: _, label: label ?? _}
   }
 }

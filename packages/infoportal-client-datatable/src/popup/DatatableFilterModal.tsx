@@ -11,7 +11,7 @@ import {
   Slider,
   Switch,
 } from '@mui/material'
-import {useI18n} from '@/Translation.js'
+import {useConfig} from '@/DatatableConfig.js'
 import React, {Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState} from 'react'
 import {OrderBy} from '@axanc/react-hooks'
 import {seq} from '@axanc/ts-utils'
@@ -27,8 +27,8 @@ import {
   PeriodPicker,
   Txt,
 } from '@infoportal/client-core'
-import {DatatableFilterTypeMapping, DatatableOptions, Row, SortBy} from '@/state/types.js'
-import {useDatatable3Context} from '@/state/DatatableContext.js'
+import {FilterTypeMapping, Option, Row, SortBy} from '@/core/types.js'
+import {useDatatable3Context} from '@/core/DatatableContext.js'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   sortBy?: SortBy
@@ -39,30 +39,30 @@ export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   filterActive?: boolean
   title: ReactNode
   data: Row[]
-  options?: DatatableOptions[]
+  options?: Option[]
 } & (
     | {
         renderValue: any
-        onChange?: (columnName: string, value: DatatableFilterTypeMapping['number']) => void
-        value: DatatableFilterTypeMapping['number']
+        onChange?: (columnName: string, value: FilterTypeMapping['number']) => void
+        value: FilterTypeMapping['number']
         type: 'number'
       }
     | {
         renderValue: any
-        onChange?: (columnName: string, value: DatatableFilterTypeMapping['date']) => void
-        value: DatatableFilterTypeMapping['date']
+        onChange?: (columnName: string, value: FilterTypeMapping['date']) => void
+        value: FilterTypeMapping['date']
         type: 'date'
       }
     | {
         renderValue: any
-        onChange?: (columnName: string, value: DatatableFilterTypeMapping['select_multiple']) => void
-        value: DatatableFilterTypeMapping['select_multiple']
+        onChange?: (columnName: string, value: FilterTypeMapping['select_multiple']) => void
+        value: FilterTypeMapping['select_multiple']
         type: 'select_one' | 'select_multiple'
       }
     | {
         renderValue: any
-        onChange?: (columnName: string, value: DatatableFilterTypeMapping['string']) => void
-        value: DatatableFilterTypeMapping['string']
+        onChange?: (columnName: string, value: FilterTypeMapping['string']) => void
+        value: FilterTypeMapping['string']
         type: 'string' | 'id'
       }
   )
@@ -83,7 +83,7 @@ export const DatatableFilterModal = ({
   filterActive,
   type,
 }: DatatableFilterDialogProps) => {
-  const {m} = useI18n()
+  const {m} = useConfig()
   const [innerValue, setInnerValue] = useState<any>(value)
   useEffect(() => {
     value && setInnerValue(value)
@@ -193,11 +193,11 @@ export const DatatableFilterDialogSelect = ({
   onChange,
   options,
 }: {
-  value: DatatableFilterTypeMapping['string']
-  onChange: Dispatch<SetStateAction<DatatableFilterTypeMapping['select_multiple']>>
-  options?: DatatableOptions[]
+  value: FilterTypeMapping['string']
+  onChange: Dispatch<SetStateAction<FilterTypeMapping['select_multiple']>>
+  options?: Option[]
 }) => {
-  const {m} = useI18n()
+  const {m} = useConfig()
   const [filter, setFilter] = useState<string>('')
   return (
     <MultipleChoices
@@ -242,10 +242,10 @@ export const DatatableFilterDialogText = ({
   value,
   onChange,
 }: {
-  value: DatatableFilterTypeMapping['string']
-  onChange: Dispatch<SetStateAction<DatatableFilterTypeMapping['string']>>
+  value: FilterTypeMapping['string']
+  onChange: Dispatch<SetStateAction<FilterTypeMapping['string']>>
 }) => {
-  const {m} = useI18n()
+  const {m} = useConfig()
   return (
     <>
       <FormControlLabel
@@ -270,8 +270,8 @@ export const DatatableFilterDialogNumber = ({
   columnId,
   onChange,
 }: Pick<DatatableFilterDialogProps, 'data' | 'columnId'> & {
-  value: DatatableFilterTypeMapping['number']
-  onChange: Dispatch<SetStateAction<DatatableFilterTypeMapping['number']>>
+  value: FilterTypeMapping['number']
+  onChange: Dispatch<SetStateAction<FilterTypeMapping['number']>>
 }) => {
   const columnsIndex = useDatatable3Context(_ => _.columns.indexMap)
   const col = columnsIndex[columnId]

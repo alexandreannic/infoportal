@@ -1,3 +1,4 @@
-export {Datatable} from './Datatable.js'
-export type {DatatableProps} from './state/types.js'
-export type {Action} from './state/reducer.js'
+export {Datatable as Component} from './Datatable.js'
+export {DatatableConfig as Config} from './DatatableConfig.js'
+export type {Props, Column} from '@/core/types.js'
+export type {Action} from '@/core/reducer.js'

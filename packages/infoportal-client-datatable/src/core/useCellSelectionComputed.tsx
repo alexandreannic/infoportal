@@ -1,11 +1,11 @@
-import {UseCellSelection} from '@/state/useCellSelectionEngine.js'
+import {UseCellSelection} from '@/core/useCellSelectionEngine.js'
 import React, {useCallback, useEffect, useMemo} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {Box, Icon, Popover} from '@mui/material'
-import {DatatableContext} from '@/state/DatatableContext.js'
+import {DatatableContext} from '@/core/DatatableContext.js'
 import {Btn, Txt} from '@infoportal/client-core'
-import {useI18n} from '@/Translation.js'
-import {Column, Row} from '@/state/types.js'
+import {useConfig} from '@/DatatableConfig.js'
+import {Column, Row} from '@/core/types.js'
 
 export type UseCellSelectionComputed = ReturnType<typeof useCellSelectionComputed>
 
@@ -84,7 +84,7 @@ export const useCellSelectionComputed = <T extends Row>({
 }
 
 export const SelectedCellPopover = (props: DatatableContext['cellSelection']) => {
-  const {formatLargeNumber} = useI18n()
+  const {formatLargeNumber} = useConfig()
   return (
     <Popover
       onClose={props.engine.reset}

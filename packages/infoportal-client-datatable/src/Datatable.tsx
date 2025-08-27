@@ -1,19 +1,19 @@
 import React, {useCallback, useEffect} from 'react'
 import {useVirtualizer} from '@tanstack/react-virtual'
 import {Badge, Box, BoxProps} from '@mui/material'
-import './Datatable.css'
+import './css/Datatable.css'
 import {DatatableHead} from '@/DatatableHead.js'
-import {Datatable3Provider, useDatatable3Context} from '@/state/DatatableContext.js'
+import {Datatable3Provider, useDatatable3Context} from '@/core/DatatableContext.js'
 import {IconBtn, Txt} from '@infoportal/client-core'
 import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
-import {useI18n} from '@/Translation.js'
+import {useConfig} from '@/DatatableConfig.js'
 import {DatatablePopupStats} from '@/popup/DatatablePopupStats.js'
 import {DatatableFilterModal3} from '@/popup/DatatablePopupFilter.js'
 import {DatatableRow} from '@/DatatableRow.js'
-import {SelectedCellPopover} from '@/state/useCellSelectionComputed.js'
-import {DatatableColumnToggle3} from '@/DatatableColumnsToggle3.js'
-import {DatatableFilterValue, DatatableProps, Row} from '@/state/types.js'
+import {SelectedCellPopover} from '@/core/useCellSelectionComputed.js'
+import {DatatableColumnToggle} from '@/DatatableColumnsToggle.js'
+import {DatatableFilterValue, Props, Row} from '@/core/types.js'
 
 export const Datatable = <T extends Row>({
   data,
@@ -22,7 +22,7 @@ export const Datatable = <T extends Row>({
   contentProps,
   header,
   ...props
-}: DatatableProps<T>) => {
+}: Props<T>) => {
   if (!data) return 'Loading...'
   const tableRef = React.useRef(null) as unknown as React.MutableRefObject<HTMLDivElement>
   return (
@@ -39,9 +39,9 @@ const DatatableWithData = <T extends Row>({
 }: {
   contentProps?: BoxProps
   tableRef: React.MutableRefObject<HTMLDivElement>
-  header: DatatableProps<T>['header']
+  header: Props<T>['header']
 }) => {
-  const {m, formatLargeNumber} = useI18n()
+  const {m, formatLargeNumber} = useConfig()
   const {
     columns,
     state: {sortBy, filters, virtualTable, popup},
@@ -107,7 +107,7 @@ const DatatableWithData = <T extends Row>({
   return (
     <div>
       <div className="dt-toolbar">
-        <DatatableColumnToggle3
+        <DatatableColumnToggle
           columns={columns.all}
           hiddenColumns={columns.all.map(_ => _.id).filter(_ => !columns.visible.map(_ => _.id).includes(_))}
           onChange={hiddenColumns => dispatch({type: 'SET_HIDDEN_COLUMNS', hiddenColumns})}

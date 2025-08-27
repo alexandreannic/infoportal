@@ -1,4 +1,4 @@
-import {useI18n} from '@/Translation.js'
+import {useConfig} from '@/DatatableConfig.js'
 import React, {ReactNode, useEffect, useState} from 'react'
 import {Alert, Box, Icon, MenuItem, Popover, PopoverProps} from '@mui/material'
 import {PanelBody, PanelHead} from '@infoportal/client-core'
@@ -7,9 +7,9 @@ import {Input} from '@infoportal/client-core'
 import {PeriodPicker} from '@infoportal/client-core'
 import {endOfDay} from 'date-fns'
 import {PanelFoot} from '@infoportal/client-core'
-import {useDatatable3Context} from '@/state/DatatableContext.js'
+import {useDatatable3Context} from '@/core/DatatableContext.js'
 import {OrderBy} from '@axanc/react-hooks'
-import {DatatableFilterTypeMapping, DatatableOptions, Row, SortBy} from '@/state/types.js'
+import {FilterTypeMapping, Option, Row, SortBy} from '@/core/types.js'
 import {
   DatatableFilterDialogNumber,
   DatatableFilterDialogSelect,
@@ -25,30 +25,30 @@ export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   filterActive?: boolean
   title: ReactNode
   data: Row[]
-  options?: DatatableOptions[]
+  options?: Option[]
 } & (
     | {
         renderValue: any
-        onChange?: (columnName: string, value: DatatableFilterTypeMapping['number']) => void
-        value: DatatableFilterTypeMapping['number']
+        onChange?: (columnName: string, value: FilterTypeMapping['number']) => void
+        value: FilterTypeMapping['number']
         type: 'number'
       }
     | {
         renderValue: any
-        onChange?: (columnName: string, value: DatatableFilterTypeMapping['date']) => void
-        value: DatatableFilterTypeMapping['date']
+        onChange?: (columnName: string, value: FilterTypeMapping['date']) => void
+        value: FilterTypeMapping['date']
         type: 'date'
       }
     | {
         renderValue: any
-        onChange?: (columnName: string, value: DatatableFilterTypeMapping['select_multiple']) => void
-        value: DatatableFilterTypeMapping['select_multiple']
+        onChange?: (columnName: string, value: FilterTypeMapping['select_multiple']) => void
+        value: FilterTypeMapping['select_multiple']
         type: 'select_one' | 'select_multiple'
       }
     | {
         renderValue: any
-        onChange?: (columnName: string, value: DatatableFilterTypeMapping['string']) => void
-        value: DatatableFilterTypeMapping['string']
+        onChange?: (columnName: string, value: FilterTypeMapping['string']) => void
+        value: FilterTypeMapping['string']
         type: 'string' | 'id'
       }
   )
@@ -69,7 +69,7 @@ export const DatatableFilterModal3 = ({
   filterActive,
   type,
 }: DatatableFilterDialogProps) => {
-  const {m} = useI18n()
+  const {m} = useConfig()
   const dispatch = useDatatable3Context(_ => _.dispatch)
 
   const [innerValue, setInnerValue] = useState<any>(value)

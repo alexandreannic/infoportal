@@ -1,8 +1,8 @@
 import React from 'react'
 
-export type DatatableTranslationProps = typeof defaultContext
+export type DatatableTranslationProps = typeof defaultConfig
 
-const defaultContext = {
+const defaultConfig = {
   m: {
     clearFilter: 'Clear filters',
     type: 'Type',
@@ -38,19 +38,19 @@ const defaultContext = {
   formatLargeNumber: (_: number, options?: Intl.NumberFormatOptions) => (_ ? '' + _ : ''),
 }
 
-const Context = React.createContext<DatatableTranslationProps>(defaultContext)
+const Context = React.createContext<DatatableTranslationProps>(defaultConfig)
 
-export const DatatableTranslationProvider: React.FC<
+export const DatatableConfig: React.FC<
   Partial<DatatableTranslationProps> & {
     children?: React.ReactNode
   }
 > = ({
   children,
-  m = defaultContext.m,
-  muiIcons = defaultContext.muiIcons,
-  formatLargeNumber = defaultContext.formatLargeNumber,
+  m = defaultConfig.m,
+  muiIcons = defaultConfig.muiIcons,
+  formatLargeNumber = defaultConfig.formatLargeNumber,
 }) => {
   return <Context.Provider value={{m, muiIcons, formatLargeNumber}}>{children}</Context.Provider>
 }
 
-export const useI18n = () => React.useContext(Context)
+export const useConfig = () => React.useContext(Context)

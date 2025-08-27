@@ -3,7 +3,7 @@ import {StateStatus} from 'infoportal-common'
 import {styled} from '@mui/system'
 import {DebouncedInput, IconBtn, InputProps} from '@infoportal/client-core'
 import {TableIcon} from '@/ui/TableIcon.js'
-import {useI18n} from '@/Translation.js'
+import {useConfig} from '@/DatatableConfig.js'
 
 const Input = styled('input')(({theme: t}) => ({
   height: '100%',
@@ -44,7 +44,7 @@ export const TableInput = ({
   value?: string
   debounce?: number
 } & Omit<InputProps, 'helperText' | 'onChange' | 'value'>) => {
-  const {muiIcons} = useI18n()
+  const {muiIcons} = useConfig()
   return (
     <Root className="table-input">
       <DebouncedInput<string>

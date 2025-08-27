@@ -11,7 +11,7 @@ export type HeaderParams<T extends Row> = {
   filteredAndSortedData: T[]
 }
 
-export type DatatableFilterValue = DatatableFilterTypeMapping[keyof DatatableFilterTypeMapping]
+export type DatatableFilterValue = FilterTypeMapping[keyof FilterTypeMapping]
 
 export type DatatableBlankValue = ''
 
@@ -19,14 +19,14 @@ export type Filters<T extends Row> = Partial<Record<KeyOf<T>, DatatableFilterVal
 
 export type SortBy = {column: string; orderBy: OrderBy}
 
-export interface DatatableOptions {
+export interface Option {
   value: string
   // label?: string
   // Should be string to filter options in filters popup
   label?: ReactNode
 }
 
-export type DatatableFilterTypeMapping = {
+export type FilterTypeMapping = {
   id: string
   date: [Date | undefined, Date | undefined]
   number: [number | undefined, number | undefined]
@@ -40,7 +40,7 @@ export type DatatableFilterTypeMapping = {
   select_multiple: string[]
 }
 
-export interface DatatableProps<T extends Row, K extends string = string> {
+export interface Props<T extends Row, K extends string = string> {
   // Core
   id: string
   columns: Column.Props<T, K>[]

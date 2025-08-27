@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useMemo} from 'react'
 import {multipleFilters, safeNumber} from 'infoportal-common'
 import {fnSwitch, KeyOf, map, Obj} from '@axanc/ts-utils'
-import {Column, DatatableFilterTypeMapping, Filters, Row, SortBy} from '@/state/types.js'
+import {Column, FilterTypeMapping, Filters, Row, SortBy} from '@/core/types.js'
 import {Utils} from '@/helper/utils.js'
 
 export type UseDatatableData<T extends Row> = ReturnType<typeof useDatatableData<T>>
@@ -104,7 +104,7 @@ const filterBy = <T extends Row>({
       if (col === undefined || filter === undefined) return
       switch (col.type) {
         case 'id': {
-          const typedFilter = filter as DatatableFilterTypeMapping['id']
+          const typedFilter = filter as FilterTypeMapping['id']
           const filteredIds = typedFilter.split(/\s/)
           return row => {
             let v = col.render(row).value as string | undefined
@@ -115,7 +115,7 @@ const filterBy = <T extends Row>({
           }
         }
         case 'date': {
-          const typedFilter = filter as DatatableFilterTypeMapping['date']
+          const typedFilter = filter as FilterTypeMapping['date']
           return row => {
             let v = col.render(row).value as Date | undefined
             if (v === undefined) return false
@@ -129,7 +129,7 @@ const filterBy = <T extends Row>({
           }
         }
         case 'select_one': {
-          const typedFilter = filter as DatatableFilterTypeMapping['select_one']
+          const typedFilter = filter as FilterTypeMapping['select_one']
           return row => {
             const v = col.render(row).value as string
             if (v === undefined) return false
@@ -137,14 +137,14 @@ const filterBy = <T extends Row>({
           }
         }
         case 'select_multiple': {
-          const typedFilter = filter as DatatableFilterTypeMapping['select_multiple']
+          const typedFilter = filter as FilterTypeMapping['select_multiple']
           return row => {
             const v = col.render(row).value as string[]
             return v.some(_ => typedFilter.includes(_))
           }
         }
         case 'number': {
-          const typedFilter = filter as DatatableFilterTypeMapping['number']
+          const typedFilter = filter as FilterTypeMapping['number']
           return row => {
             const v = col.render(row).value as number | undefined
             const min = typedFilter[0] as number | undefined
@@ -154,7 +154,7 @@ const filterBy = <T extends Row>({
         }
         default: {
           if (!col.type) return
-          const typedFilter = filter as DatatableFilterTypeMapping['string']
+          const typedFilter = filter as FilterTypeMapping['string']
           return row => {
             const v = col.render(row).value
             if (v === Utils.blank && typedFilter?.filterBlank !== false) return false

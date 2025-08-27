@@ -1,11 +1,11 @@
 import {Badge, Chip, Icon, IconButton, IconButtonProps, Switch, Tooltip} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
 import {Alert, Btn, PopoverWrapper, Txt} from '@infoportal/client-core'
-import {useI18n} from '@/Translation.js'
+import {useConfig} from '@/DatatableConfig.js'
 import {useSetState} from '@axanc/react-hooks'
 import {Datatable} from '@/Datatable.js'
-import {Column} from '@/state/types.js'
-import {DatatableHeadTypeIconByKoboType} from '@/DatatableHeadTypeIconByFormType.js'
+import {Column} from '@/core/types.js'
+import {DatatableHeadTypeIconByKoboType} from '@/DatatableHeadTypeIconByKoboType.js'
 import {DatatableHeadIconByType} from '@/DatatableHead.js'
 
 type DatatableColumnToggleProps = Pick<
@@ -20,7 +20,7 @@ interface Props extends Omit<IconButtonProps, 'onChange'> {
   title?: string
 }
 
-export const DatatableColumnToggle3 = ({
+export const DatatableColumnToggle = ({
   className,
   title,
   columns,
@@ -29,7 +29,7 @@ export const DatatableColumnToggle3 = ({
   children,
   ...props
 }: Props) => {
-  const {m} = useI18n()
+  const {m} = useConfig()
   const set = useSetState(hiddenColumns)
   const hasGroup = useMemo(() => !!columns.find(_ => _.group), [columns])
 

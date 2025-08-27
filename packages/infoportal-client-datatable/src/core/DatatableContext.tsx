@@ -1,22 +1,22 @@
 import React, {ReactNode, useReducer} from 'react'
-import {Action, datatableReducer, initialState, State} from '@/state/reducer.js'
+import {Action, datatableReducer, initialState, State} from '@/core/reducer.js'
 import {KeyOf} from '@axanc/ts-utils'
-import {useDatatableData} from '@/state/useDatatableData.js'
+import {useDatatableData} from '@/core/useDatatableData.js'
 import {createContext, useContextSelector} from 'use-context-selector'
-import {useDatatableOptions3} from '@/state/useDatatableOptions.js'
-import {UseDatatableColumns, useDatatableColumns} from '@/state/useColumns.js'
-import {UseCellSelection, useCellSelectionEngine} from '@/state/useCellSelectionEngine.js'
-import {UseCellSelectionComputed, useCellSelectionComputed} from '@/state/useCellSelectionComputed.js'
-import {Column, DatatableOptions, DatatableProps, Row} from '@/state/types.js'
+import {useDatatableOptions3} from '@/core/useDatatableOptions.js'
+import {UseDatatableColumns, useDatatableColumns} from '@/core/useColumns.js'
+import {UseCellSelection, useCellSelectionEngine} from '@/core/useCellSelectionEngine.js'
+import {UseCellSelectionComputed, useCellSelectionComputed} from '@/core/useCellSelectionComputed.js'
+import {Column, Option, Props, Row} from '@/core/types.js'
 
 export type DatatableContext<T extends Row = any> = {
-  getColumnOptions: (_: KeyOf<T>) => DatatableOptions[] | undefined
+  getColumnOptions: (_: KeyOf<T>) => Option[] | undefined
   state: State<T>
   dispatch: React.Dispatch<Action<T>>
   columns: UseDatatableColumns<T>
   data: T[]
   dataFilteredAndSorted: T[]
-  getRowKey: DatatableProps<T>['getRowKey']
+  getRowKey: Props<T>['getRowKey']
   dataFilteredExceptBy: (key: KeyOf<T>) => T[]
   cellSelection: UseCellSelectionComputed & {
     engine: Pick<
@@ -48,7 +48,7 @@ export const Datatable3Provider = <T extends Row>({
 }: {
   tableRef: React.MutableRefObject<HTMLDivElement>
   showRowIndex?: boolean
-  getRowKey: DatatableProps<T>['getRowKey']
+  getRowKey: Props<T>['getRowKey']
   columns: Column.Props<T>[]
   children: ReactNode
   data: T[]

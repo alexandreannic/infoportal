@@ -1,4 +1,4 @@
-import {Column, DatatableProps, DatatableFilterValue, Row, SortBy} from '@/state/types.js'
+import {Column, Props, DatatableFilterValue, Row, SortBy} from '@/core/types.js'
 import {KeyOf, mapFor} from '@axanc/ts-utils'
 import {OrderBy} from '@axanc/react-hooks'
 import {CSSProperties, ReactNode} from 'react'
@@ -31,7 +31,7 @@ export type Action<T extends Row> =
       limit: number
       offset: number
       columns: Column.InnerProps<T>[]
-      getRowKey: DatatableProps<T>['getRowKey']
+      getRowKey: Props<T>['getRowKey']
     }
   | {
       type: 'SET_DATA'
@@ -39,7 +39,7 @@ export type Action<T extends Row> =
       limit: number
       offset: number
       columns: Column.InnerProps<T>[]
-      getRowKey: DatatableProps<T>['getRowKey']
+      getRowKey: Props<T>['getRowKey']
     }
   | {type: 'CLOSE_POPUP'}
   | {type: 'OPEN_POPUP'; event: Popup.Event}
@@ -76,7 +76,7 @@ const buildVirtualTable = <T extends Row>({
   getRowKey,
 }: {
   dataIndexes: number[]
-  getRowKey: DatatableProps<T>['getRowKey']
+  getRowKey: Props<T>['getRowKey']
   columns: Column.InnerProps<T>[]
   data: T[]
 }): State<T>['virtualTable'] => {

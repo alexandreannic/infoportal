@@ -2,7 +2,7 @@ import {Box, Popover, PopoverProps} from '@mui/material'
 import React, {ReactNode, useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
 import {KeyOf} from 'infoportal-common'
-import {useI18n} from '@/Translation.js'
+import {useConfig} from '@/DatatableConfig.js'
 import {
   Btn,
   ChartBar,
@@ -13,7 +13,7 @@ import {
   PanelHead,
   Txt,
 } from '@infoportal/client-core'
-import {DatatableOptions, Row} from '@/state/types.js'
+import {Option, Row} from '@/core/types.js'
 
 const RenderRow = ({label, value}: {label: ReactNode; value: ReactNode}) => {
   return (
@@ -39,7 +39,7 @@ export const NumberChoicesPopover = <T,>({
   question: KeyOf<T>
   data: T[]
 } & Pick<PopoverProps, 'anchorEl' | 'onClose'>) => {
-  const {m, formatLargeNumber} = useI18n()
+  const {m, formatLargeNumber} = useConfig()
   const chart = useMemo(() => {
     const mapped = seq(data)
       .map((_, i) => (mapValues ? mapValues(_, i) : _[question]))
@@ -80,7 +80,7 @@ export const MultipleChoicesPopover = <T extends Row>({
   translations,
 }: {
   title?: ReactNode
-  translations?: DatatableOptions[]
+  translations?: Option[]
   // multiple?: boolean
   // getValue: (_: T) => string[] | string
   data: T[]
@@ -95,7 +95,7 @@ export const MultipleChoicesPopover = <T extends Row>({
         getValue: (_: T) => string
       }
   )) => {
-  const {m} = useI18n()
+  const {m} = useConfig()
   const chart = useMemo(() => {
     const chart = (() => {
       if (multiple) {
@@ -144,7 +144,7 @@ export const DatesPopover = <T,>({
   data: T[]
   title: string
 } & Pick<PopoverProps, 'anchorEl' | 'onClose'>) => {
-  const {m} = useI18n()
+  const {m} = useConfig()
   // const chart = useMemo(() => {
   //   const res: Record<string, Record<K, number>> = {}
   //   data.forEach(d => {
