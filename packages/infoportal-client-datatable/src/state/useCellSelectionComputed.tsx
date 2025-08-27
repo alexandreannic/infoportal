@@ -4,7 +4,7 @@ import {KeyOf} from '@axanc/ts-utils'
 import {Box, Icon, Popover} from '@mui/material'
 import {DatatableContext} from '@/state/DatatableContext.js'
 import {Btn, Txt} from '@infoportal/client-core'
-import {useI18n} from '@infoportal/client-core'
+import {useI18n} from '@/Translation.js'
 import {Column, Row} from '@/state/types.js'
 
 export type UseCellSelectionComputed = ReturnType<typeof useCellSelectionComputed>

@@ -1,10 +1,10 @@
 import {Box, Popover, PopoverProps} from '@mui/material'
 import React, {ReactNode, useMemo} from 'react'
-import {useI18n} from '@/core/i18n'
 import {DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType'
 import {seq} from '@axanc/ts-utils'
 import {KeyOf} from 'infoportal-common'
 import {Core} from '@/shared'
+import {useI18n} from '@/Translation.js'
 
 const RenderRow = ({label, value}: {label: ReactNode; value: ReactNode}) => {
   return (

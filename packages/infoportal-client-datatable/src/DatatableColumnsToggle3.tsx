@@ -1,7 +1,7 @@
 import {Badge, Chip, Icon, IconButton, IconButtonProps, Switch, Tooltip} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
 import {PopoverWrapper, Txt} from '@infoportal/client-core'
-import {useI18n} from '@infoportal/client-core'
+import {useI18n} from '@/Translation.js'
 import {Btn} from '../../infoportal-ui-core/src/Btn.js'
 import {useSetState} from '@axanc/react-hooks'
 import {Alert} from '../../infoportal-ui-core/src/Alert.js'

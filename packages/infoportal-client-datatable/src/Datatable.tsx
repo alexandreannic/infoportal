@@ -8,7 +8,7 @@ import {Datatable3Provider, useDatatable3Context} from '@/state/DatatableContext
 import {IconBtn, Txt} from '@infoportal/client-core'
 import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
-import {useI18n} from '@infoportal/client-core'
+import {useI18n} from '@/Translation.js'
 import {DatatablePopupStats} from '@/popup/DatatablePopupStats.js'
 import {DatatableFilterModal3} from '@/popup/DatatablePopupFilter.js'
 import {DatatableRow} from '@/DatatableRow.js'

@@ -1,4 +1,4 @@
-import {useI18n} from '@infoportal/client-core'
+import {useI18n} from '@/Translation.js'
 import React, {ReactNode, useEffect, useState} from 'react'
 import {Alert, Box, Icon, MenuItem, Popover, PopoverProps} from '@mui/material'
 import {PanelBody, PanelHead} from '@infoportal/client-core'
