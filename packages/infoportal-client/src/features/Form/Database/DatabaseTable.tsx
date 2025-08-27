@@ -5,8 +5,6 @@ import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {DatabaseKoboTableProvider} from '@/features/Form/Database/DatabaseContext'
 import {DatabaseTableContent} from '@/features/Form/Database/DatabaseTableContent'
-import {DatatableSkeleton} from '@/shared/Datatable/DatatableSkeleton'
-import {DatatableFilterValue} from '@/shared/Datatable/util/datatableType'
 import {map} from '@axanc/ts-utils'
 import {Skeleton} from '@mui/material'
 import {useIsFetching} from '@tanstack/react-query'
@@ -14,7 +12,7 @@ import {useCallback} from 'react'
 import {useQueryFormById} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {formRoute, useFormContext} from '@/features/Form/Form'
-import {Page} from '@/shared'
+import {Datatable, Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import {FetchParams} from '@axanc/react-hooks'
 
@@ -30,7 +28,7 @@ export interface DatabaseTableProps {
   formId: Ip.FormId
   permission: Ip.Permission.Form
   dataFilter?: (_: Submission) => boolean
-  onFiltersChange?: (_: Record<string, DatatableFilterValue>) => void
+  onFiltersChange?: (_: Record<string, Datatable.FilterValue>) => void
   onDataChange?: (_: {
     data?: Submission[]
     filteredData?: Submission[]
@@ -85,7 +83,7 @@ const DatabaseTable = ({
       {anyLoading && loading && (
         <>
           <Skeleton sx={{mx: 1, height: 54}} />
-          <DatatableSkeleton />
+          <Datatable.Skeleton />
         </>
       )}
       {/*{(ctxSchema.anyLoading || loading) && !ctxAnswers.byId.get(formId) && (*/}

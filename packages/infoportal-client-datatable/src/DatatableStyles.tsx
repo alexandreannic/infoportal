@@ -30,17 +30,17 @@ export const DatatableGlobalStyles = () => (
         width: '100%',
         display: 'flex',
         alignItems: 'center',
-        borderBottom: `1px solid ${theme.palette.divider}`,
-        borderRight: `1px solid ${theme.palette.divider}`,
+        borderBottom: `1px solid ${theme.vars.palette.divider}`,
+        borderRight: `1px solid ${theme.vars.palette.divider}`,
         textAlign: 'left',
         padding: '0 0 0 4px',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: theme.vars.palette.background.paper,
 
         '&.td-id': {
-          color: theme.palette.info.main,
+          color: theme.vars.palette.info.main,
           fontWeight: 'bold',
         },
 
@@ -57,20 +57,20 @@ export const DatatableGlobalStyles = () => (
         },
 
         '&.skeleton': {
-          paddingRight: theme.spacing(2),
-          paddingLeft: theme.spacing(2),
+          paddingRight: `calc(${theme.vars.spacing} * 2)`,
+          paddingLeft: `calc(${theme.vars.spacing} * 2)`,
         },
       },
 
       '.dtd.selected': {
-        backgroundColor: `color-mix(in srgb, ${theme.palette.primary.main}, transparent 90%)`,
-        outline: `1px solid ${theme.palette.primary.main}`,
-        borderBottom: `1px solid ${theme.palette.primary.main}`,
-        borderRight: `1px solid ${theme.palette.primary.main}`,
+        backgroundColor: `color-mix(in srgb, ${theme.vars.palette.primary.main}, transparent 90%)`,
+        outline: `1px solid ${theme.vars.palette.primary.main}`,
+        borderBottom: `1px solid ${theme.vars.palette.primary.main}`,
+        borderRight: `1px solid ${theme.vars.palette.primary.main}`,
       },
 
       '.dt-toolbar': {
-        padding: theme.spacing(0.5),
+        padding: `calc(${theme.vars.spacing} * 0.5)`,
         display: 'flex',
         alignItems: 'center',
       },
@@ -79,12 +79,12 @@ export const DatatableGlobalStyles = () => (
         justifyContent: 'center',
         padding: 0,
         background: 'none',
-        color: theme.palette.text.disabled,
+        color: theme.vars.palette.text.disabled,
 
         '&.selected': {
           border: 'none',
-          backgroundColor: `color-mix(in srgb, ${theme.palette.primary.main}, transparent 70%)`,
-          color: theme.palette.primary.main,
+          backgroundColor: `color-mix(in srgb, ${theme.vars.palette.primary.main}, transparent 70%)`,
+          color: theme.vars.palette.primary.main,
         },
       },
 
@@ -95,8 +95,8 @@ export const DatatableGlobalStyles = () => (
         top: 0,
         zIndex: 10,
         backdropFilter: 'blur(30px) saturate(150%)',
-        background: `rgb(${theme.vars ? theme.vars.palette.AppBar?.defaultBg : '0 0 0'} / 0.4)`, // fallback for vars
-        boxShadow: theme.shadows[1],
+        background: `rgb(${theme.vars.palette.AppBar?.defaultBg} / 0.4)`,
+        boxShadow: theme.vars.shadows[1],
         width: 'max-content',
       },
 
@@ -112,7 +112,7 @@ export const DatatableGlobalStyles = () => (
         alignItems: 'center',
         width: '100%',
         minWidth: 20,
-        borderRight: `1px solid ${theme.palette.divider}`,
+        borderRight: `1px solid ${theme.vars.palette.divider}`,
         textAlign: 'left',
         padding: '0 0 0 4px',
         overflow: 'hidden',
@@ -134,7 +134,7 @@ export const DatatableGlobalStyles = () => (
         right: 0,
 
         '&:hover': {
-          background: theme.palette.primary.main,
+          background: theme.vars.palette.primary.main,
         },
       },
     })}

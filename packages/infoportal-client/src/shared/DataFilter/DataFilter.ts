@@ -1,7 +1,7 @@
 import {multipleFilters} from 'infoportal-common'
 import {Obj, Seq} from '@axanc/ts-utils'
-import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {ReactNode} from 'react'
+import {Datatable} from '@/shared'
 
 export namespace DataFilter {
   export type Filter = Record<string, string[] | undefined>
@@ -21,8 +21,8 @@ export namespace DataFilter {
     skipOption?: string[]
   }
 
-  export const blank = DatatableUtils.blank
-  export const blankOption = DatatableUtils.blankOption
+  export const blank = Datatable.Utils.blank
+  export const blankOption = Datatable.Utils.blankOption
 
   export interface ShapeMultiple<TData, TOption extends string = string> extends ShapeBase<TData, TOption> {
     multiple: true

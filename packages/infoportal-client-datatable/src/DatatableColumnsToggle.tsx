@@ -5,8 +5,7 @@ import {useConfig} from '@/DatatableConfig'
 import {useSetState} from '@axanc/react-hooks'
 import {Datatable} from '@/Datatable'
 import {Column} from '@/core/types'
-import {DatatableHeadTypeIconByKoboType} from '@/head/DatatableHeadTypeIconByKoboType'
-import {DatatableHeadIconByType} from '@/head/DatatableHead'
+import {DatatableHeadIcon, DatatableHeadIconByType} from '@/head/DatatableHead'
 
 type DatatableColumnToggleProps = Pick<
   Column.InnerProps<any>,
@@ -44,7 +43,7 @@ export const DatatableColumnToggle = ({
         <>
           <Alert deletable="permanent" id="datatable-alert-cols-toggle" color="info">
             Use table filters to quickly toggle bunch of columns. For example, to hide all the <br />
-            <code>calculate</code> columns (<DatatableHeadTypeIconByKoboType children="calculate" />
+            <code>calculate</code> columns (<DatatableHeadIcon children="short_text" />
             ), select them from column <b>{m.type}</b> and click on&nbsp;
             <Chip
               sx={{mr: 1, fontWeight: 'bold'}}

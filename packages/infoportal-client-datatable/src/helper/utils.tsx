@@ -30,8 +30,3 @@ export class Utils {
     return {value: _, label: label ?? _}
   }
 }
-
-type SchemaItem = Readonly<{
-  readonly id: string
-  readonly type: string
-}>

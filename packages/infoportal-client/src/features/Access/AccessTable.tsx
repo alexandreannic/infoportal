@@ -1,7 +1,6 @@
 import React, {ReactNode} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Obj, seq} from '@axanc/ts-utils'
-import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {Core, Datatable} from '@/shared'
 import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
@@ -74,7 +73,7 @@ export const AccessTable = ({
           id: 'group',
           type: 'select_one',
           head: m.group,
-          renderQuick: _ => _.groupName ?? DatatableUtils.blank,
+          renderQuick: _ => _.groupName ?? Datatable.Utils.blank,
         },
         {
           width: 90,

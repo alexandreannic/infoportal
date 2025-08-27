@@ -6,16 +6,14 @@ import {Core, Datatable, TableEditCellBtn} from '@/shared'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper, removeHtml} from 'infoportal-common'
 import {DatabaseContext, KoboExternalFilesIndex} from '@/features/Form/Database/DatabaseContext'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
-import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {Ip} from 'infoportal-api-sdk'
 import {Theme} from '@mui/material'
-import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useKoboDialogs} from '@/core/store/useLangIndex'
 import {SelectStatusBy, SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {useI18n} from '@/core/i18n'
-import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
 import Submission = Ip.Submission
+import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByKoboType'
 
 export const buildDatabaseColumns = {
   type: {
@@ -234,7 +232,7 @@ function file(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): Datata
       })
       return {
         export: url,
-        value: fileName ?? DatatableUtils.blank,
+        value: fileName ?? Datatable.Utils.blank,
         label: (
           <Core.Txt link>
             <a href={url} target="_blank">
@@ -406,7 +404,7 @@ function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'> = {}): Datatable
     type: 'id',
     id: 'id' as const,
     head: 'ID',
-    typeIcon: <DatatableHeadIconByType type="id" />,
+    typeIcon: <Datatable.HeadIconByType type="id" />,
     className: 'td-id',
     style: (row: any) => {
       const data = getRow(row)
@@ -563,9 +561,9 @@ function validation({
       const value: Ip.Submission.Validation = getRow(row).validationStatus
       const toGenericStatus = SelectStatusConfig.customStatusToStateStatus.KoboValidation[value]
       return {
-        export: value ? (m as any)[value] : DatatableUtils.blank,
-        value: value ?? DatatableUtils.blank,
-        option: value ? (m as any)[value] : DatatableUtils.blank,
+        export: value ? (m as any)[value] : Datatable.Utils.blank,
+        value: value ?? Datatable.Utils.blank,
+        option: value ? (m as any)[value] : Datatable.Utils.blank,
         label: <StateStatusIcon type={toGenericStatus} />,
         // label: (
         //   <SelectStatusBy

@@ -22,7 +22,6 @@ import {Outlet, useRouterState} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import {duration} from '@axanc/ts-utils'
 import {LicenseInfo} from '@mui/x-license-pro'
-import {DatatableConfig} from '@infoportal/client-datatable/lib/DatatableConfig.js'
 
 LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 

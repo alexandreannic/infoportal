@@ -8,7 +8,7 @@ import {
   BuildFormColumnProps,
   colorRepeatedQuestionHeader,
 } from '@/features/Form/Database/columns/databaseColumnBuilder'
-import {Datatable} from '@/shared/Datatable3/state/types.js'
+import {Datatable} from '@/shared'
 
 export type DatabaseDisplay = {
   repeatAs?: 'rows' | 'columns'

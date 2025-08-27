@@ -1,6 +1,6 @@
 import {fnSwitch} from '@axanc/ts-utils'
 import React from 'react'
-import {DatatableHeadIcon} from '@/shared/Datatable/DatatableHead'
+import {Datatable} from '@/shared'
 import {IconProps} from '@mui/material'
 import {Kobo} from 'kobo-sdk'
 
@@ -11,7 +11,7 @@ export const DatatableHeadTypeIconByKoboType = ({
   children: Kobo.Form.QuestionType
 } & Pick<IconProps, 'sx' | 'color'>) => {
   return (
-    <DatatableHeadIcon children={fnSwitch(children, koboIconMap, () => 'short_text')} tooltip={children} {...props} />
+    <Datatable.HeadIcon children={fnSwitch(children, koboIconMap, () => 'short_text')} tooltip={children} {...props} />
   )
 }
 

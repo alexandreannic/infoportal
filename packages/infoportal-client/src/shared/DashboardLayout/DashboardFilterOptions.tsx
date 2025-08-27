@@ -2,9 +2,8 @@ import React, {useCallback} from 'react'
 import {BoxProps, Checkbox, FormControlLabel, FormGroup} from '@mui/material'
 import {DashboardFilterLabel} from './DashboardFilterLabel'
 import {useI18n} from '@/core/i18n'
-import {DatatableOptions} from '@/shared/Datatable/util/datatableType'
 import {makeStyles} from 'tss-react/mui'
-import {Core} from '@/shared'
+import {Core, Datatable} from '@/shared'
 
 const useStyles = makeStyles<{dense?: boolean}>()((t, {dense}) => ({
   optionSelectAll: {
@@ -30,7 +29,7 @@ type SelectProps = {
   onChange: (_: string[]) => void
   value: string[]
   addBlankOption?: boolean
-  options: () => undefined | DatatableOptions[]
+  options: () => undefined | Datatable.Option[]
 }
 
 export const DashboardFilterOptions = ({

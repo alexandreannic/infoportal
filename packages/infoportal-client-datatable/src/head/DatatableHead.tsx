@@ -105,7 +105,7 @@ const DatatableHeadTdBody = ({
 
 export const DatatableHeadIcon = (
   props: {
-    tooltip: string
+    tooltip?: string
     children: string
   } & Pick<IconProps, 'sx' | 'color'>,
 ) => {

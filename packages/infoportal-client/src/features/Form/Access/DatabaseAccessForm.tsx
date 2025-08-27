@@ -9,7 +9,7 @@ import {AccessForm, IAccessForm} from '@/features/Access/AccessForm'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
-import {koboIconMap} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
+import {koboIconMap} from '@/features/Form/Database/columns/DatatableHeadTypeIconByKoboType'
 
 interface Form extends IAccessForm {
   question?: string

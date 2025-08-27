@@ -4,7 +4,6 @@ import {KoboAnswerHistory} from '@/core/sdk/server/kobo/answerHistory/KoboAnswer
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Core, Datatable} from '@/shared'
-import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {Page} from '@/shared/Page'
 import {fnSwitch, map} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
@@ -104,7 +103,7 @@ function DatabaseHistory() {
             {
               type: 'string',
               id: 'answerId',
-              typeIcon: <DatatableHeadIconByType type="id" />,
+              typeIcon: <Datatable.HeadIconByType type="id" />,
               className: 'td-id',
               width: 80,
               head: m.id,
