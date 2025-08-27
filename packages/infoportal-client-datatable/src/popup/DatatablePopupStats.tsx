@@ -1,13 +1,12 @@
-import {DatesPopover, MultipleChoicesPopover, NumberChoicesPopover,} from 'infoportal-client/src/shared/Datatable/popover/DatatablePopover.js'
 import {useDatatable3Context} from '@/state/DatatableContext.js'
 import {Popup} from '@/state/reducer.js'
-import StatsAgs = Popup.StatsAgs
+import {DatesPopover, MultipleChoicesPopover, NumberChoicesPopover} from './DatatablePopover'
 
-export const DatatablePopupStats = ({columnId, event}: StatsAgs) => {
+export const DatatablePopupStats = ({columnId, event}: Popup.StatsAgs) => {
   const dispatch = useDatatable3Context(_ => _.dispatch)
   const getColumnOptions = useDatatable3Context(_ => _.getColumnOptions)
   const dataFilteredAndSorted = useDatatable3Context(_ => _.dataFilteredAndSorted)
-  const columnsIndex = useDatatable3Context(_ => _.columnsIndex)
+  const columnsIndex = useDatatable3Context(_ => _.columns.indexMap)
   const column = columnsIndex[columnId]
   const close = () => dispatch({type: 'CLOSE_POPUP'})
 

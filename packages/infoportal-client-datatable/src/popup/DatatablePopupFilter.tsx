@@ -1,25 +1,20 @@
-import {useI18n} from 'infoportal-client/src/core/i18n/index.js'
+import {useI18n} from '@infoportal/client-core'
 import React, {ReactNode, useEffect, useState} from 'react'
 import {Alert, Box, Icon, MenuItem, Popover, PopoverProps} from '@mui/material'
-import {PanelBody, PanelHead} from 'infoportal-client/src/shared/Panel/index.js'
-import {IpBtn, IpIconBtn, Txt} from 'infoportal-client/src/shared/index.js'
-import {IpInput} from 'infoportal-client/src/shared/Input/Input.js'
-import {PeriodPicker} from 'infoportal-client/src/shared/PeriodPicker/PeriodPicker.js'
+import {PanelBody, PanelHead} from '@infoportal/client-core'
+import {Btn, IconBtn, Txt} from '@infoportal/client-core'
+import {Input} from '@infoportal/client-core'
+import {PeriodPicker} from '@infoportal/client-core'
 import {endOfDay} from 'date-fns'
-import {PanelFoot} from 'infoportal-client/src/shared/Panel/PanelFoot.js'
+import {PanelFoot} from '@infoportal/client-core'
+import {useDatatable3Context} from '@/state/DatatableContext.js'
+import {OrderBy} from '@axanc/react-hooks'
+import {DatatableFilterTypeMapping, DatatableOptions, Row, SortBy} from '@/state/types.js'
 import {
   DatatableFilterDialogNumber,
   DatatableFilterDialogSelect,
   DatatableFilterDialogText,
-} from 'infoportal-client/src/shared/Datatable/popover/DatatableFilterModal.js'
-import {useDatatable3Context} from '@/state/DatatableContext.js'
-import {OrderBy} from '@axanc/react-hooks'
-import {
-  DatatableFilterTypeMapping,
-  DatatableOptions,
-  DatatableRow,
-} from 'infoportal-client/src/shared/Datatable/util/datatableType.js'
-import {SortBy} from '@/state/types.js'
+} from './DatatableFilterModal'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   sortBy?: SortBy
@@ -29,7 +24,7 @@ export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   columnId: string
   filterActive?: boolean
   title: ReactNode
-  data: DatatableRow[]
+  data: Row[]
   options?: DatatableOptions[]
 } & (
     | {
@@ -88,7 +83,7 @@ export const DatatableFilterModal3 = ({
         PanelTitleProps={{overflow: 'hidden'}}
         sx={{maxWidth: 500}}
         action={
-          <IpIconBtn
+          <IconBtn
             children="filter_alt_off"
             color={filterActive ? 'primary' : undefined}
             onClick={() => {
@@ -133,7 +128,7 @@ export const DatatableFilterModal3 = ({
                     <Alert color="info" sx={{py: 0, mb: 1}}>
                       {m._datatable.idFilterInfo}
                     </Alert>
-                    <IpInput
+                    <Input
                       value={innerValue}
                       onChange={e => setInnerValue(e.target.value)}
                       placeholder={m._datatable.idFilterPlaceholder}
@@ -170,12 +165,12 @@ export const DatatableFilterModal3 = ({
           })()}
       </PanelBody>
       <PanelFoot alignEnd>
-        <IpBtn color="primary" onClick={onClose}>
+        <Btn color="primary" onClick={onClose}>
           {m.close}
-        </IpBtn>
-        <IpBtn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
+        </Btn>
+        <Btn color="primary" onClick={() => onChange && onChange(columnId, innerValue)}>
           {m.filter}
-        </IpBtn>
+        </Btn>
       </PanelFoot>
     </Popover>
   )

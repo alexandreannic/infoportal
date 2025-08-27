@@ -1,13 +1,27 @@
 import {BoxProps, SxProps, Theme} from '@mui/material'
 import React, {CSSProperties, ReactNode} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
-import {HeaderParams, OrderBy} from 'infoportal-client/src/shared/Datatable/util/datatableType.js'
+import {DatatableRow} from 'infoportal-client/src/shared/Datatable/util/datatableType.js'
+
+export type OrderBy = 'asc' | 'desc'
 
 export type Row = Record<string, any>
+
+export type HeaderParams<T extends DatatableRow> = {
+  data: T[]
+  filteredAndSortedData: T[]
+}
 
 export type Filters<T extends Row> = Partial<Record<KeyOf<T>, DatatableFilterValue>>
 
 export type SortBy = {column: string; orderBy: OrderBy}
+
+export interface DatatableOptions {
+  value: string
+  // label?: string
+  // Should be string to filter options in filters popup
+  label?: ReactNode
+}
 
 export type DatatableFilterTypeMapping = {
   id: string
@@ -22,8 +36,6 @@ export type DatatableFilterTypeMapping = {
   select_one: string
   select_multiple: string[]
 }
-
-export type DatatableFilterValue = DatatableFilterTypeMapping[keyof DatatableFilterTypeMapping]
 
 export interface DatatableProps<T extends Row, K extends string = string> {
   // Core

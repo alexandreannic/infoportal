@@ -1,9 +1,8 @@
-import {DatatableColumn} from 'infoportal-client/src/shared/Datatable/util/datatableType.js'
-import {DatatableUtils} from 'infoportal-client/src/shared/Datatable/util/datatableUtils.js'
 import {useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
 import {State} from '@/state/reducer.js'
 import {Column, Row} from '@/state/types.js'
+import {Utils} from '@/helper/utils.js'
 
 export type UseDatatableColumns<T extends Row> = ReturnType<typeof useDatatableColumns<T>>
 
@@ -72,12 +71,12 @@ function toInnerColumn<T extends Row>(col: Column.Props<T>): Column.InnerProps<T
   if (Column.isQuick(col)) {
     if (col.type === undefined) {
       ;(col as unknown as DatatableColumn.InnerProps<T>).render = (_: T) => {
-        const value = col.renderQuick(_) ?? (DatatableUtils.blank as any)
+        const value = col.renderQuick(_) ?? (Utils.blank as any)
         return {label: value, value: undefined}
       }
     } else {
       ;(col as unknown as DatatableColumn.InnerProps<T>).render = (_: T) => {
-        const value = col.renderQuick(_) ?? (DatatableUtils.blank as any)
+        const value = col.renderQuick(_) ?? (Utils.blank as any)
         return {
           label: value,
           tooltip: value,
@@ -103,11 +102,11 @@ function harmonizeColRenderValue<T extends Row>(col: Column.InnerProps<T>): Colu
         value = [value as string]
       }
       if (value.length === 0) {
-        value = [DatatableUtils.blank]
+        value = [Utils.blank]
       }
-      value = value.map(v => v ?? DatatableUtils.blank)
+      value = value.map(v => v ?? Utils.blank)
     } else if (value === undefined || value === null) {
-      value = DatatableUtils.blank
+      value = Utils.blank
     }
     return {
       ...rendered,

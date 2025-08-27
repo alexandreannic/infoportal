@@ -1,17 +1,25 @@
-import {useI18n} from '@/core/i18n/index.js'
-import React, {ReactNode, useEffect, useState} from 'react'
-import {Alert, Box, Icon, MenuItem, Popover, PopoverProps} from '@mui/material'
-import {endOfDay} from 'date-fns'
 import {
-  DatatableFilterDialogNumber,
-  DatatableFilterDialogSelect,
-  DatatableFilterDialogText,
-} from '@/shared/Datatable/popover/DatatableFilterModal.js'
-import {Datatable} from '@/shared/Datatable3/state/types.js'
-import {useDatatable3Context} from '@/shared/Datatable3/state/DatatableContext.js'
-import {OrderBy} from '@axanc/react-hooks'
-import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType.js'
+  Alert,
+  Box,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  Icon,
+  MenuItem,
+  Popover,
+  PopoverProps,
+  Slider,
+  Switch,
+} from '@mui/material'
 import {Core} from '@/shared'
+import {useI18n} from '@/core/i18n'
+import React, {Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState} from 'react'
+import {OrderBy} from '@axanc/react-hooks'
+import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType'
+import {seq} from '@axanc/ts-utils'
+import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
+import {endOfDay} from 'date-fns'
+import {Datatable} from '@/shared/Datatable3/state/types.js'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   sortBy?: Datatable.SortBy
@@ -50,7 +58,7 @@ export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
       }
   )
 
-export const DatatableFilterModal3 = ({
+export const DatatableFilterModal = ({
   data,
   sortBy,
   onOrderByChange,
@@ -67,8 +75,6 @@ export const DatatableFilterModal3 = ({
   type,
 }: DatatableFilterDialogProps) => {
   const {m} = useI18n()
-  const dispatch = useDatatable3Context(_ => _.dispatch)
-
   const [innerValue, setInnerValue] = useState<any>(value)
   useEffect(() => {
     value && setInnerValue(value)
@@ -170,5 +176,135 @@ export const DatatableFilterModal3 = ({
         </Core.Btn>
       </Core.PanelFoot>
     </Popover>
+  )
+}
+
+export const DatatableFilterDialogSelect = ({
+  value,
+  onChange,
+  options,
+}: {
+  value: DatatableFilterTypeMapping['string']
+  onChange: Dispatch<SetStateAction<DatatableFilterTypeMapping['select_multiple']>>
+  options?: DatatableOptions[]
+}) => {
+  const {m} = useI18n()
+  const [filter, setFilter] = useState<string>('')
+  return (
+    <Core.MultipleChoices
+      options={
+        options?.filter(
+          _ =>
+            filter === '' ||
+            ((typeof _.label === 'string' ? _.label : _.value).toLowerCase() ?? '').includes(filter.toLowerCase()),
+        ) ?? []
+      }
+      value={value as any}
+      onChange={onChange}
+    >
+      {({options, toggleAll, allChecked, someChecked}) => (
+        <>
+          <FormControlLabel
+            sx={{display: 'block', fontWeight: t => t.typography.fontWeightBold}}
+            onClick={toggleAll}
+            control={<Checkbox size="small" checked={allChecked} indeterminate={!allChecked && someChecked} />}
+            label={m.selectAll}
+          />
+          <Core.Input
+            label={m.filterPlaceholder}
+            helperText={null}
+            sx={{mb: 1}}
+            onChange={e => setFilter(e.target.value)}
+          />
+          <Divider />
+          <Box sx={{maxHeight: 350, overflowY: 'auto'}}>
+            {options.map(o => (
+              <FormControlLabel
+                title={'' + o.label}
+                sx={{display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}
+                key={o.key}
+                control={<Checkbox size="small" name={o.value} checked={o.checked} onChange={o.onChange} />}
+                label={o.label}
+              />
+            ))}
+          </Box>
+        </>
+      )}
+    </Core.MultipleChoices>
+  )
+}
+
+export const DatatableFilterDialogText = ({
+  value,
+  onChange,
+}: {
+  value: DatatableFilterTypeMapping['string']
+  onChange: Dispatch<SetStateAction<DatatableFilterTypeMapping['string']>>
+}) => {
+  const {m} = useI18n()
+  return (
+    <>
+      <FormControlLabel
+        sx={{mb: 1}}
+        label={m.filterBlanks}
+        value={value?.filterBlank}
+        control={
+          <Switch
+            checked={value?.filterBlank}
+            onChange={e => onChange(prev => ({...prev, filterBlank: e.target.checked}))}
+          />
+        }
+      />
+      <Core.Input value={value?.value} onChange={e => onChange(prev => ({...prev, value: e.target.value}))} />
+    </>
+  )
+}
+
+export const DatatableFilterDialogNumber = ({
+  value,
+  data,
+  columnId,
+  onChange,
+}: Pick<DatatableFilterDialogProps, 'data' | 'columnId'> & {
+  value: DatatableFilterTypeMapping['number']
+  onChange: Dispatch<SetStateAction<DatatableFilterTypeMapping['number']>>
+}) => {
+  const ctx = useDatatableContext()
+  const col = ctx.columnsIndex[columnId]
+  if (!col.type) return
+  const {min, max} = useMemo(() => {
+    const values = seq(data)
+      .map(_ => col.render(_).value as number | undefined)
+      .compact()
+    return {
+      min: Math.min(...values),
+      max: Math.max(...values),
+    }
+  }, [col.type, data])
+
+  const mappedValue = [value?.[0] ?? min, value?.[1] ?? max]
+
+  useEffect(() => {
+    onChange(value)
+  }, [value])
+
+  return (
+    <>
+      <Slider min={min} max={max} value={mappedValue} onChange={(e, _) => onChange(_ as [number, number])} />
+      <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+        <Core.Input
+          type="number"
+          sx={{minWidth: 60, mr: 0.5}}
+          value={mappedValue[0]}
+          onChange={e => onChange(prev => [+e.target.value, prev?.[1]])}
+        />
+        <Core.Input
+          type="number"
+          sx={{minWidth: 60, ml: 0.5}}
+          value={mappedValue[1]}
+          onChange={e => onChange(prev => [prev?.[0], +e.target.value])}
+        />
+      </Box>
+    </>
   )
 }

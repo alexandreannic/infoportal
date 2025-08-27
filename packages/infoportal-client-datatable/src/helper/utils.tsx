@@ -1,0 +1,38 @@
+import React, {ReactNode} from 'react'
+import {Obj} from '@axanc/ts-utils'
+import {DatatableOptions, Row} from '@/state/types.js'
+import {Datatable} from 'infoportal-client/src/shared/Datatable3/state/types.js'
+
+export class Utils {
+  static readonly localStorageKey = {
+    column: 'database-columns-',
+    filters: 'datatable-filters-',
+  }
+  // static readonly FILTER_BLANK_TEXT = 'FILTER_BLANK_TEXT_someRandomTextToAvoidCollision_9fa3'
+  static readonly buildColumns = <T extends Row = Row>(_: Datatable.Column.Props<T>[]) => _
+
+  static readonly blank: Datatable.DatatableBlankValue = ''
+  static readonly blankLabel = (<i>BLANK</i>)
+  static readonly blankOption: DatatableOptions = {value: Utils.blank, label: Utils.blankLabel}
+
+  static readonly buildOptions = (opt: string[], addBlank?: boolean): DatatableOptions[] => {
+    return [...(addBlank ? [Utils.blankOption] : []), ...opt.map(Utils.buildOption)]
+  }
+
+  static readonly buildOption = (_: string): DatatableOptions => {
+    return {value: _, label: _}
+  }
+
+  static readonly buildOptionByEnum = (_: Record<string, string>): DatatableOptions[] => {
+    return Obj.entries(_).map(([value, label]) => ({value, label}))
+  }
+
+  static readonly buildCustomOption = (_: string, label?: ReactNode): DatatableOptions => {
+    return {value: _, label: label ?? _}
+  }
+}
+
+type SchemaItem = Readonly<{
+  readonly id: string
+  readonly type: string
+}>

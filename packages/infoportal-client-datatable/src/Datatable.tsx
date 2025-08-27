@@ -1,14 +1,14 @@
 import React, {useCallback, useEffect} from 'react'
-import {DatatableFilterValue} from 'infoportal-client/src/shared/Datatable/util/datatableType.js'
+import {DatatableFilterValue} from '@infoportal/client-core'
 import {useVirtualizer} from '@tanstack/react-virtual'
 import {Badge, Box, BoxProps} from '@mui/material'
 import './Datatable.css'
 import {DatatableHead} from '@/DatatableHead.js'
 import {Datatable3Provider, useDatatable3Context} from '@/state/DatatableContext.js'
-import {IpIconBtn, Txt} from 'infoportal-client/src/shared/index.js'
+import {IconBtn, Txt} from '@infoportal/client-core'
 import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
-import {useI18n} from 'infoportal-client/src/core/i18n/index.js'
+import {useI18n} from '@infoportal/client-core'
 import {DatatablePopupStats} from '@/popup/DatatablePopupStats.js'
 import {DatatableFilterModal3} from '@/popup/DatatablePopupFilter.js'
 import {DatatableRow} from '@/DatatableRow.js'
@@ -122,7 +122,7 @@ const DatatableWithData = <T extends Row>({
             rowVirtualizer.scrollToIndex(0)
           }}
         >
-          <IpIconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
+          <IconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
         </Badge>
         {typeof header === 'function'
           ? header({

@@ -1,11 +1,10 @@
-import {IpIconBtn} from 'infoportal-client/src/shared/index.js'
+import {IconBtn, styleUtils} from '@infoportal/client-core'
 import {useTheme} from '@mui/material'
 import {makeStyles} from 'tss-react/mui'
-import {styleUtils} from 'infoportal-client/src/core/theme.js'
 import {Obj, seq} from '@axanc/ts-utils'
-import {T} from '@/state/types.js'
 import {memo, useMemo} from 'react'
 import {useDatatable3Context} from '@/state/DatatableContext.js'
+import {Column} from './state/types'
 
 const colors = [
   '#2196F3',
@@ -94,7 +93,7 @@ function DatatableHeadSections_({
               className={classes.th}
             >
               <div title={group} className={cx(classes.content, 'TableHeadSectionCell-content')}>
-                <IpIconBtn
+                <IconBtn
                   sx={{
                     mr: 0.5,
                     color: t.palette.getContrastText(colors[i % colors.length]),
@@ -105,7 +104,7 @@ function DatatableHeadSections_({
                   onClick={() => onHideColumns(cols.map(_ => _.id))}
                 >
                   visibility_off
-                </IpIconBtn>
+                </IconBtn>
                 {group}
               </div>
             </div>

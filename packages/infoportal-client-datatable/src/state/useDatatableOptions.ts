@@ -1,8 +1,6 @@
-import {DatatableOptions} from 'infoportal-client/src/shared/Datatable/util/datatableType.js'
 import {useCallback, useEffect, useMemo} from 'react'
-import {DatatableUtils} from 'infoportal-client/src/shared/Datatable/util/datatableUtils.js'
 import {KeyOf, seq} from '@axanc/ts-utils'
-import {Column, Row} from '@/state/types.js'
+import {Column, DatatableOptions, Row} from '@/state/types.js'
 import {State} from '@/state/reducer.js'
 
 export type UseDatatableOptions<T extends Row> = ReturnType<typeof useDatatableOptions3<T>>

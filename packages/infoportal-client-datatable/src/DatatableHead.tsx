@@ -1,11 +1,11 @@
-import {T} from '@/state/types.js'
 import React, {DetailedReactHTMLElement, HTMLAttributes} from 'react'
 import {Resizable} from 'react-resizable'
 import './DatatableHead.css'
-import {TableIconBtn} from 'infoportal-client/src/shared/TableIcon.js'
 import {useDatatable3Context} from '@/state/DatatableContext.js'
 import {Popup} from '@/state/reducer.js'
 import {DatatableHeadSections} from '@/DatatableHeadSections.js'
+import {Column} from './state/types'
+import {TableIconBtn} from './ui/TableIcon'
 
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
@@ -31,7 +31,7 @@ export const DatatableHead = (
             onResize={(e, s) => dispatch({type: 'RESIZE', col: c.id, width: s.size.width})}
           >
             <div
-              onClick={(e) => selectColumn(columnIndex, e)}
+              onClick={e => selectColumn(columnIndex, e)}
               title={c.head}
               style={{width: colWidths[c.id]}}
               className={typeof c.className === 'string' ? c.className : undefined}

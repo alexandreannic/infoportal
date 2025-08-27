@@ -1,13 +1,12 @@
 import {useCallback, useEffect, useMemo} from 'react'
 import {multipleFilters, safeNumber} from 'infoportal-common'
 import {fnSwitch, KeyOf, map, Obj} from '@axanc/ts-utils'
-import {DatatableFilterTypeMapping, DatatableRow} from 'infoportal-client/src/shared/Datatable/util/datatableType.js'
-import {DatatableUtils} from 'infoportal-client/src/shared/Datatable/util/datatableUtils.js'
-import {T} from '@/state/types.js'
+import {Column, DatatableFilterTypeMapping, Filters, Row, SortBy} from '@/state/types.js'
+import {Utils} from '@/helper/utils.js'
 
-export type UseDatatableData<T extends DatatableRow> = ReturnType<typeof useDatatableData<T>>
+export type UseDatatableData<T extends Row> = ReturnType<typeof useDatatableData<T>>
 
-export const useDatatableData = <T extends DatatableRow>({
+export const useDatatableData = <T extends Row>({
   data,
   filters,
   sortBy,
@@ -88,7 +87,7 @@ export const useDatatableData = <T extends DatatableRow>({
   }
 }
 
-const filterBy = <T extends DatatableRow>({
+const filterBy = <T extends Row>({
   data,
   filters,
   colIndex,
@@ -158,7 +157,7 @@ const filterBy = <T extends DatatableRow>({
           const typedFilter = filter as DatatableFilterTypeMapping['string']
           return row => {
             const v = col.render(row).value
-            if (v === DatatableUtils.blank && typedFilter?.filterBlank !== false) return false
+            if (v === Utils.blank && typedFilter?.filterBlank !== false) return false
             if (typedFilter?.value === undefined) return true
             if (typeof v !== 'string' && typeof v !== 'number') {
               console.warn('Value of ${String(k)} is', v)
