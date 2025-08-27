@@ -1,5 +1,5 @@
-import {useDatatableContext} from '@/core/DatatableContext.js'
-import {Popup} from '@/core/reducer.js'
+import {useDatatableContext} from '@/core/DatatableContext'
+import {Popup} from '@/core/reducer'
 import React, {ReactNode, useMemo} from 'react'
 import {Box, Popover, PopoverProps} from '@mui/material'
 import {
@@ -13,9 +13,9 @@ import {
   Txt,
 } from '@infoportal/client-core'
 import {KeyOf} from 'infoportal-common'
-import {useConfig} from '@/DatatableConfig.js'
+import {useConfig} from '@/DatatableConfig'
 import {seq} from '@axanc/ts-utils'
-import {Option, Row} from '@/core/types.js'
+import {Option, Row} from '@/core/types'
 
 export const PopupStats = ({columnId, event}: Popup.StatsAgs) => {
   const dispatch = useDatatableContext(_ => _.dispatch)

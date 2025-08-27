@@ -1,8 +1,8 @@
 import {useCallback, useEffect, useMemo} from 'react'
 import {KeyOf, seq} from '@axanc/ts-utils'
-import {Column, Option, Row} from '@/core/types.js'
-import {State} from '@/core/reducer.js'
-import {Utils} from '@/helper/utils.js'
+import {Column, Option, Row} from '@/core/types'
+import {State} from '@/core/reducer'
+import {Utils} from '@/helper/utils'
 
 export type UseDatatableOptions<T extends Row> = ReturnType<typeof useDatatableOptions<T>>
 

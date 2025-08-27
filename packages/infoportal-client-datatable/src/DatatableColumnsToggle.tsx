@@ -1,12 +1,12 @@
 import {Badge, Chip, Icon, IconButton, IconButtonProps, Switch, Tooltip} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
 import {Alert, Btn, PopoverWrapper, Txt} from '@infoportal/client-core'
-import {useConfig} from '@/DatatableConfig.js'
+import {useConfig} from '@/DatatableConfig'
 import {useSetState} from '@axanc/react-hooks'
-import {Datatable} from '@/Datatable.js'
-import {Column} from '@/core/types.js'
-import {DatatableHeadTypeIconByKoboType} from '@/DatatableHeadTypeIconByKoboType.js'
-import {DatatableHeadIconByType} from '@/DatatableHead.js'
+import {Datatable} from '@/Datatable'
+import {Column} from '@/core/types'
+import {DatatableHeadTypeIconByKoboType} from '@/DatatableHeadTypeIconByKoboType'
+import {DatatableHeadIconByType} from '@/DatatableHead'
 
 type DatatableColumnToggleProps = Pick<
   Column.InnerProps<any>,

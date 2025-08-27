@@ -1,13 +1,13 @@
 import React, {ReactNode, useReducer} from 'react'
-import {Action, datatableReducer, initialState, State} from '@/core/reducer.js'
+import {Action, datatableReducer, initialState, State} from '@/core/reducer'
 import {KeyOf} from '@axanc/ts-utils'
-import {useDatatableData} from '@/core/useDatatableData.js'
+import {useDatatableData} from '@/core/useDatatableData'
 import {createContext, useContextSelector} from 'use-context-selector'
-import {useDatatableOptions} from '@/core/useDatatableOptions.js'
-import {UseDatatableColumns, useDatatableColumns} from '@/core/useColumns.js'
-import {UseCellSelection, useCellSelectionEngine} from '@/core/useCellSelectionEngine.js'
-import {UseCellSelectionComputed, useCellSelectionComputed} from '@/core/useCellSelectionComputed.js'
-import {Column, Option, Props, Row} from '@/core/types.js'
+import {useDatatableOptions} from '@/core/useDatatableOptions'
+import {UseDatatableColumns, useDatatableColumns} from '@/core/useColumns'
+import {UseCellSelection, useCellSelectionEngine} from '@/core/useCellSelectionEngine'
+import {UseCellSelectionComputed, useCellSelectionComputed} from '@/core/useCellSelectionComputed'
+import {Column, Option, Props, Row} from '@/core/types'
 
 export type DatatableContext<T extends Row = any> = {
   getColumnOptions: (_: KeyOf<T>) => Option[] | undefined

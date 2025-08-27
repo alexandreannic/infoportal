@@ -1,4 +1,4 @@
-import {useConfig} from '@/DatatableConfig.js'
+import {useConfig} from '@/DatatableConfig'
 import React, {Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState} from 'react'
 import {
   Alert,
@@ -25,9 +25,9 @@ import {
   Txt,
 } from '@infoportal/client-core'
 import {endOfDay} from 'date-fns'
-import {useDatatableContext} from '@/core/DatatableContext.js'
+import {useDatatableContext} from '@/core/DatatableContext'
 import {OrderBy} from '@axanc/react-hooks'
-import {FilterTypeMapping, Option, Row, SortBy} from '@/core/types.js'
+import {FilterTypeMapping, Option, Row, SortBy} from '@/core/types'
 import {seq} from '@axanc/ts-utils'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {

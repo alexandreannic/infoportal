@@ -1,8 +1,8 @@
 import {useCallback, useEffect, useMemo} from 'react'
 import {multipleFilters, safeNumber} from 'infoportal-common'
 import {fnSwitch, KeyOf, map, Obj} from '@axanc/ts-utils'
-import {Column, Filters, FilterTypeMapping, Row, SortBy} from '@/core/types.js'
-import {Utils} from '@/helper/utils.js'
+import {Column, Filters, FilterTypeMapping, Row, SortBy} from '@/core/types'
+import {Utils} from '@/helper/utils'
 
 export type UseDatatableData<T extends Row> = ReturnType<typeof useDatatableData<T>>
 

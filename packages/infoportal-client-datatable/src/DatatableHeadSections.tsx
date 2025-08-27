@@ -3,7 +3,7 @@ import {useTheme} from '@mui/material'
 import {makeStyles} from 'tss-react/mui'
 import {Obj, seq} from '@axanc/ts-utils'
 import {memo, useMemo} from 'react'
-import {useDatatableContext} from '@/core/DatatableContext.js'
+import {useDatatableContext} from '@/core/DatatableContext'
 import {Column} from '@/core/types'
 
 const colors = [

@@ -1,7 +1,7 @@
 import {BoxProps, SxProps, Theme} from '@mui/material'
 import React, {CSSProperties, ReactNode} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
-import {Action} from '@/core/reducer.js'
+import {Action} from '@/core/reducer'
 
 export type OrderBy = 'asc' | 'desc'
 

@@ -2,8 +2,8 @@ import React from 'react'
 import {StateStatus} from 'infoportal-common'
 import {styled} from '@mui/system'
 import {DebouncedInput, IconBtn, InputProps} from '@infoportal/client-core'
-import {TableIcon} from '@/ui/TableIcon.js'
-import {useConfig} from '@/DatatableConfig.js'
+import {TableIcon} from '@/ui/TableIcon'
+import {useConfig} from '@/DatatableConfig'
 
 const Input = styled('input')(({theme: t}) => ({
   height: '100%',

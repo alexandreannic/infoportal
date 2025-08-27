@@ -1,5 +1,5 @@
-import {DatatableContext} from '@/core/DatatableContext.js'
-import {useConfig} from '@/DatatableConfig.js'
+import {DatatableContext} from '@/core/DatatableContext'
+import {useConfig} from '@/DatatableConfig'
 import {Box, Icon, Popover} from '@mui/material'
 import {Btn, Txt} from '@infoportal/client-core'
 import React from 'react'
