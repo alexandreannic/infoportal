@@ -1,4 +1,4 @@
-export {Utils} from '@/helper/utils.js'
+export {Utils} from '@/helper/utils'
 export {TableIcon as Icon, TableIconBtn as IconBtn} from '@/ui/TableIcon'
 export {TableInput as Input} from '@/ui/TableInput'
 export {Datatable as Component} from './Datatable'

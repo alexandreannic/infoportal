@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Box} from '@mui/material'
 import {Btn, Txt} from '@infoportal/client-core'
-import {useConfig} from '@/DatatableConfig.js'
+import {useConfig} from '@/DatatableConfig'
 
 interface ErrorBoundaryProps {
   children: React.ReactNode

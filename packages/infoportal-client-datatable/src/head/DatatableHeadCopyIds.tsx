@@ -1,10 +1,10 @@
 import {Box, Icon, Popover, useTheme} from '@mui/material'
 import {useState} from 'react'
-import {useConfig} from '@/DatatableConfig.js'
-import {Column} from '@/core/types.js'
-import {TableIconBtn} from '@/ui/TableIcon.js'
+import {useConfig} from '@/DatatableConfig'
+import {Column} from '@/core/types'
+import {TableIconBtn} from '@/ui/TableIcon'
 import {alphaVar, lightenVar} from '@infoportal/client-core'
-import {useDatatableContext} from '@/core/DatatableContext.js'
+import {useDatatableContext} from '@/core/DatatableContext'
 
 export const DatatableHeadCopyIds = ({column}: {column: Column.InnerProps<any>}) => {
   const {formatLargeNumber} = useConfig()

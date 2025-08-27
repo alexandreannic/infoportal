@@ -2,7 +2,7 @@ import {fnSwitch} from '@axanc/ts-utils'
 import React from 'react'
 import {IconProps} from '@mui/material'
 import {Kobo} from 'kobo-sdk'
-import {DatatableHeadIcon} from '@/head/DatatableHead.js'
+import {DatatableHeadIcon} from '@/head/DatatableHead'
 
 export const DatatableHeadTypeIconByKoboType = ({
   children,

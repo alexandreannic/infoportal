@@ -1,12 +1,12 @@
 import React, {DetailedReactHTMLElement, HTMLAttributes} from 'react'
 import {Resizable} from 'react-resizable'
-import {useDatatableContext} from '@/core/DatatableContext.js'
-import {Popup} from '@/core/reducer.js'
-import {DatatableHeadSections} from '@/head/DatatableHeadSections.js'
-import {Column} from '@/core/types.js'
-import {TableIcon, TableIconBtn} from '../ui/TableIcon.js'
+import {useDatatableContext} from '@/core/DatatableContext'
+import {Popup} from '@/core/reducer'
+import {DatatableHeadSections} from '@/head/DatatableHeadSections'
+import {Column} from '@/core/types'
+import {TableIcon, TableIconBtn} from '../ui/TableIcon'
 import {IconProps} from '@mui/material'
-import {DatatableHeadCopyIds} from '@/head/DatatableHeadCopyIds.js'
+import {DatatableHeadCopyIds} from '@/head/DatatableHeadCopyIds'
 
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],

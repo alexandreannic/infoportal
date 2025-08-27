@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect} from 'react'
 import {useVirtualizer} from '@tanstack/react-virtual'
 import {Badge, Box, BoxProps, LinearProgress} from '@mui/material'
-import {DatatableHead} from '@/head/DatatableHead.js'
+import {DatatableHead} from '@/head/DatatableHead'
 import {DatatableProvider, useDatatableContext} from '@/core/DatatableContext'
 import {IconBtn, Txt} from '@infoportal/client-core'
 import {useMemoFn} from '@axanc/react-hooks'
