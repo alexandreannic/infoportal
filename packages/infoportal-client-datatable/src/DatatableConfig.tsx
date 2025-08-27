@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {ReactNode} from 'react'
 import {DatatableGlobalStyles} from '@/DatatableStyles'
 
 export type DatatableTranslationProps = typeof defaultConfig
@@ -28,6 +28,8 @@ const defaultConfig = {
     max: 'Max',
     currentlyDisplayed: 'columns displayed',
     filter: 'Filter',
+    refresh: 'Refresh',
+    hardRefresh: 'Hard refresh',
   },
   muiIcons: {
     error: 'error',
@@ -37,6 +39,7 @@ const defaultConfig = {
     disabled: 'disabled',
   },
   formatLargeNumber: (_: number, options?: Intl.NumberFormatOptions) => (_ ? '' + _ : ''),
+  globalErrorMessage: `If the problem persist, please contact support and include the snippet below.` as ReactNode,
 }
 
 const Context = React.createContext<DatatableTranslationProps>(defaultConfig)
@@ -47,12 +50,13 @@ export const DatatableConfig: React.FC<
   }
 > = ({
   children,
+  globalErrorMessage = defaultConfig.globalErrorMessage,
   m = defaultConfig.m,
   muiIcons = defaultConfig.muiIcons,
   formatLargeNumber = defaultConfig.formatLargeNumber,
 }) => {
   return (
-    <Context.Provider value={{m, muiIcons, formatLargeNumber}}>
+    <Context.Provider value={{m, globalErrorMessage, muiIcons, formatLargeNumber}}>
       <DatatableGlobalStyles />
       {children}
     </Context.Provider>

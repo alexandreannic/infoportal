@@ -5,8 +5,8 @@ import {useConfig} from '@/DatatableConfig'
 import {useSetState} from '@axanc/react-hooks'
 import {Datatable} from '@/Datatable'
 import {Column} from '@/core/types'
-import {DatatableHeadTypeIconByKoboType} from '@/DatatableHeadTypeIconByKoboType'
-import {DatatableHeadIconByType} from '@/DatatableHead'
+import {DatatableHeadTypeIconByKoboType} from '@/head/DatatableHeadTypeIconByKoboType.js'
+import {DatatableHeadIconByType} from '@/head/DatatableHead.js'
 
 type DatatableColumnToggleProps = Pick<
   Column.InnerProps<any>,

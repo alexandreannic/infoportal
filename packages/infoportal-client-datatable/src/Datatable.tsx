@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect} from 'react'
 import {useVirtualizer} from '@tanstack/react-virtual'
-import {Badge, Box, BoxProps} from '@mui/material'
-import {DatatableHead} from '@/DatatableHead'
+import {Badge, Box, BoxProps, LinearProgress} from '@mui/material'
+import {DatatableHead} from '@/head/DatatableHead.js'
 import {DatatableProvider, useDatatableContext} from '@/core/DatatableContext'
 import {IconBtn, Txt} from '@infoportal/client-core'
 import {useMemoFn} from '@axanc/react-hooks'
@@ -13,14 +13,25 @@ import {DatatableRow} from '@/DatatableRow'
 import {DatatableColumnToggle} from '@/DatatableColumnsToggle'
 import {FilterValue, Props, Row} from '@/core/types'
 import {PopupSelectedCell} from '@/popup/PopupSelectedCell'
+import {DatatableErrorBoundary} from '@/DatatableErrorBundary'
+import {DatatableSkeleton} from '@/DatatableSkeleton'
 
 export const Datatable = <T extends Row>({data, columns, showRowIndex, contentProps, header, ...props}: Props<T>) => {
-  if (!data) return 'Loading...'
+  if (!data) return <DatatableSkeleton columns={columns.length} />
   const tableRef = React.useRef(null) as unknown as React.MutableRefObject<HTMLDivElement>
+  // {loading &&
+  // (ctx.data.data ? (
+  //   <LinearProgress sx={{position: 'absolute', left: 0, right: 0, top: 0}} />
+  // ) : (
+  //   <DatatableSkeleton columns={ctx.columns.length} />
+  // ))}
+
   return (
-    <DatatableProvider {...props} data={data} columns={columns} showRowIndex={showRowIndex} tableRef={tableRef}>
-      <DatatableWithData header={header} tableRef={tableRef} contentProps={contentProps} />
-    </DatatableProvider>
+    <DatatableErrorBoundary>
+      <DatatableProvider {...props} data={data} columns={columns} showRowIndex={showRowIndex} tableRef={tableRef}>
+        <DatatableWithData header={header} tableRef={tableRef} contentProps={contentProps} />
+      </DatatableProvider>
+    </DatatableErrorBoundary>
   )
 }
 

@@ -1,11 +1,12 @@
 import React, {DetailedReactHTMLElement, HTMLAttributes} from 'react'
 import {Resizable} from 'react-resizable'
-import {useDatatableContext} from '@/core/DatatableContext'
-import {Popup} from '@/core/reducer'
-import {DatatableHeadSections} from '@/DatatableHeadSections'
-import {Column} from '@/core/types'
-import {TableIcon, TableIconBtn} from './ui/TableIcon'
+import {useDatatableContext} from '@/core/DatatableContext.js'
+import {Popup} from '@/core/reducer.js'
+import {DatatableHeadSections} from '@/head/DatatableHeadSections.js'
+import {Column} from '@/core/types.js'
+import {TableIcon, TableIconBtn} from '../ui/TableIcon.js'
 import {IconProps} from '@mui/material'
+import {DatatableHeadCopyIds} from '@/head/DatatableHeadCopyIds.js'
 
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
@@ -92,7 +93,7 @@ const DatatableHeadTdBody = ({
           case 'number':
             return <TableIconBtn children="bar_chart" onClick={e => onOpenStats(e)} />
           case 'id':
-          // return <DatatableHeadCopyIds column={column} />
+            return <DatatableHeadCopyIds column={column} />
         }
       })()}
       {column.type && (

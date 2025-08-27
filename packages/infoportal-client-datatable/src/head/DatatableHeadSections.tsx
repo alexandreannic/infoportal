@@ -3,8 +3,8 @@ import {useTheme} from '@mui/material'
 import {makeStyles} from 'tss-react/mui'
 import {Obj, seq} from '@axanc/ts-utils'
 import {memo, useMemo} from 'react'
-import {useDatatableContext} from '@/core/DatatableContext'
-import {Column} from '@/core/types'
+import {useDatatableContext} from '@/core/DatatableContext.js'
+import {Column} from '@/core/types.js'
 
 const colors = [
   '#2196F3',
