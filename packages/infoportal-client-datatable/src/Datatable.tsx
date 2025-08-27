@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect} from 'react'
 import {useVirtualizer} from '@tanstack/react-virtual'
 import {Badge, Box, BoxProps} from '@mui/material'
-import './css/Datatable.css'
 import {DatatableHead} from '@/DatatableHead'
 import {DatatableProvider, useDatatableContext} from '@/core/DatatableContext'
 import {IconBtn, Txt} from '@infoportal/client-core'

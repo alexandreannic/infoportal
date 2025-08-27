@@ -1,6 +1,5 @@
 import React, {DetailedReactHTMLElement, HTMLAttributes} from 'react'
 import {Resizable} from 'react-resizable'
-import './css/DatatableHead.css'
 import {useDatatableContext} from '@/core/DatatableContext'
 import {Popup} from '@/core/reducer'
 import {DatatableHeadSections} from '@/DatatableHeadSections'

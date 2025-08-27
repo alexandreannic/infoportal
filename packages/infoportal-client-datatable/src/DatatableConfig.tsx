@@ -1,4 +1,5 @@
 import React from 'react'
+import {DatatableGlobalStyles} from '@/DatatableStyles'
 
 export type DatatableTranslationProps = typeof defaultConfig
 
@@ -50,7 +51,12 @@ export const DatatableConfig: React.FC<
   muiIcons = defaultConfig.muiIcons,
   formatLargeNumber = defaultConfig.formatLargeNumber,
 }) => {
-  return <Context.Provider value={{m, muiIcons, formatLargeNumber}}>{children}</Context.Provider>
+  return (
+    <Context.Provider value={{m, muiIcons, formatLargeNumber}}>
+      <DatatableGlobalStyles />
+      {children}
+    </Context.Provider>
+  )
 }
 
 export const useConfig = () => React.useContext(Context)

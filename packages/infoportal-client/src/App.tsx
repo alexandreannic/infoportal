@@ -5,7 +5,7 @@ import {getMsalInstance} from '@/core/msal'
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {SessionProvider} from '@/core/Session/SessionContext'
-import {CenteredContent, Core} from '@/shared'
+import {CenteredContent, Core, Datatable} from '@/shared'
 import {IpLogo} from '@/shared/logo/logo'
 import {MsalProvider} from '@azure/msal-react'
 import {ThemeProvider} from '@mui/material/styles'
@@ -22,6 +22,7 @@ import {Outlet, useRouterState} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import {duration} from '@axanc/ts-utils'
 import {LicenseInfo} from '@mui/x-license-pro'
+import {DatatableConfig} from '@infoportal/client-datatable/lib/DatatableConfig.js'
 
 LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -73,6 +74,7 @@ const AppWithConfig = () => {
         _ => <QueryClientProvider client={queryClient} children={_} />,
         _ => <DialogsProvider children={_} />,
         _ => <SessionProvider children={_} />,
+        _ => <Datatable.Config children={_} />,
       ]}
     >
       <TrackLocation />
