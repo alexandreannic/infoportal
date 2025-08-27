@@ -5,7 +5,8 @@ import {useDatatable3Context} from '@/state/DatatableContext.js'
 import {Popup} from '@/state/reducer.js'
 import {DatatableHeadSections} from '@/DatatableHeadSections.js'
 import {Column} from './state/types'
-import {TableIconBtn} from './ui/TableIcon'
+import {TableIcon, TableIconBtn} from './ui/TableIcon'
+import {IconProps} from '@mui/material'
 
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
@@ -100,4 +101,36 @@ const DatatableHeadTdBody = ({
       )}
     </span>
   )
+}
+
+export const DatatableHeadIcon = (
+  props: {
+    tooltip: string
+    children: string
+  } & Pick<IconProps, 'sx' | 'color'>,
+) => {
+  return <TableIcon className="table-head-type-icon" fontSize="small" color="disabled" {...props} />
+}
+
+export const DatatableHeadIconByType = ({
+  type,
+}: {
+  type: Column.Props<any>['type']
+} & Pick<IconProps, 'sx' | 'color'>) => {
+  switch (type) {
+    case 'date':
+      return <DatatableHeadIcon children="event" tooltip={type} />
+    case 'select_multiple':
+      return <DatatableHeadIcon children="check_box" tooltip={type} />
+    case 'select_one':
+      return <DatatableHeadIcon children="radio_button_checked" tooltip={type} />
+    case 'number':
+      return <DatatableHeadIcon children="tag" tooltip={type} />
+    case 'id':
+      return <DatatableHeadIcon children="key" tooltip={type} color="info" />
+    case 'string':
+      return <DatatableHeadIcon children="short_text" tooltip={type} />
+    default:
+      return
+  }
 }

@@ -4,11 +4,10 @@ import {KeyOf} from '@axanc/ts-utils'
 import {useDatatableData} from '@/state/useDatatableData.js'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {useDatatableOptions3} from '@/state/useDatatableOptions.js'
-import {DatatableOptions} from '@infoportal/client-core'
 import {UseDatatableColumns, useDatatableColumns} from '@/state/useColumns.js'
 import {UseCellSelection, useCellSelectionEngine} from '@/state/useCellSelectionEngine.js'
 import {UseCellSelectionComputed, useCellSelectionComputed} from '@/state/useCellSelectionComputed.js'
-import {Column, DatatableProps, Row} from '@/state/types.js'
+import {Column, DatatableOptions, DatatableProps, Row} from '@/state/types.js'
 
 export type DatatableContext<T extends Row = any> = {
   getColumnOptions: (_: KeyOf<T>) => DatatableOptions[] | undefined

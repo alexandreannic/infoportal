@@ -1,5 +1,6 @@
 import {IconBtnProps} from '@infoportal/client-core'
 import React from 'react'
+import {TableIconBtn} from '@/ui/TableIcon.js'
 
 export const TableEditCellBtn = (props: Omit<IconBtnProps, 'children'>) => {
   return (

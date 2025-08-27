@@ -126,12 +126,12 @@ export const DatatableFilterModal3 = ({
                 return (
                   <>
                     <Alert color="info" sx={{py: 0, mb: 1}}>
-                      {m._datatable.idFilterInfo}
+                      {m.idFilterInfo}
                     </Alert>
                     <Input
                       value={innerValue}
                       onChange={e => setInnerValue(e.target.value)}
-                      placeholder={m._datatable.idFilterPlaceholder}
+                      placeholder={m.idFilterPlaceholder}
                     />
                   </>
                 )

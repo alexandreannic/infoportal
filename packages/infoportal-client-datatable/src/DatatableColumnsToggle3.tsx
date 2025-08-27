@@ -1,14 +1,12 @@
 import {Badge, Chip, Icon, IconButton, IconButtonProps, Switch, Tooltip} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
-import {PopoverWrapper, Txt} from '@infoportal/client-core'
+import {Alert, Btn, PopoverWrapper, Txt} from '@infoportal/client-core'
 import {useI18n} from '@/Translation.js'
-import {Btn} from '../../infoportal-ui-core/src/Btn.js'
 import {useSetState} from '@axanc/react-hooks'
-import {Alert} from '../../infoportal-ui-core/src/Alert.js'
-import {DatatableHeadIconByType} from '@infoportal/client-core'
-import {DatatableHeadTypeIconByKoboType} from '@infoportal/client-core'
 import {Datatable} from '@/Datatable.js'
 import {Column} from '@/state/types.js'
+import {DatatableHeadTypeIconByKoboType} from '@/DatatableHeadTypeIconByFormType.js'
+import {DatatableHeadIconByType} from '@/DatatableHead.js'
 
 type DatatableColumnToggleProps = Pick<
   Column.InnerProps<any>,
@@ -81,7 +79,7 @@ export const DatatableColumnToggle3 = ({
                   <Txt size="big" sx={{fontWeight: 600}}>
                     {columns.length - set.size}
                   </Txt>{' '}
-                  / {columns.length} {m._koboDatabase.currentlyDisplayed}
+                  / {columns.length} {m.currentlyDisplayed}
                 </Txt>
                 <Btn variant="contained" sx={{marginLeft: 'auto'}} onClick={() => onChange(set.toArray)}>
                   {m.save}

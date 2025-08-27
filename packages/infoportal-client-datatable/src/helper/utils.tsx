@@ -1,7 +1,6 @@
 import React, {ReactNode} from 'react'
 import {Obj} from '@axanc/ts-utils'
-import {DatatableOptions, Row} from '@/state/types.js'
-import {Datatable} from 'infoportal-client/src/shared/Datatable3/state/types.js'
+import {Column, DatatableBlankValue, DatatableOptions, Row} from '@/state/types.js'
 
 export class Utils {
   static readonly localStorageKey = {
@@ -9,9 +8,9 @@ export class Utils {
     filters: 'datatable-filters-',
   }
   // static readonly FILTER_BLANK_TEXT = 'FILTER_BLANK_TEXT_someRandomTextToAvoidCollision_9fa3'
-  static readonly buildColumns = <T extends Row = Row>(_: Datatable.Column.Props<T>[]) => _
+  static readonly buildColumns = <T extends Row = Row>(_: Column.Props<T>[]) => _
 
-  static readonly blank: Datatable.DatatableBlankValue = ''
+  static readonly blank: DatatableBlankValue = ''
   static readonly blankLabel = (<i>BLANK</i>)
   static readonly blankOption: DatatableOptions = {value: Utils.blank, label: Utils.blankLabel}
 

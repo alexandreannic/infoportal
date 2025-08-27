@@ -14,11 +14,8 @@ import {
 import {useI18n} from '@/Translation.js'
 import React, {Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState} from 'react'
 import {OrderBy} from '@axanc/react-hooks'
-import {DatatableFilterTypeMapping, DatatableOptions, DatatableRow} from '@/shared/Datatable/util/datatableType'
 import {seq} from '@axanc/ts-utils'
-import {useDatatableContext} from '@/shared/Datatable/context/DatatableContext'
 import {endOfDay} from 'date-fns'
-import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {
   Btn,
   IconBtn,
@@ -30,16 +27,18 @@ import {
   PeriodPicker,
   Txt,
 } from '@infoportal/client-core'
+import {DatatableFilterTypeMapping, DatatableOptions, Row, SortBy} from '@/state/types.js'
+import {useDatatable3Context} from '@/state/DatatableContext.js'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
-  sortBy?: Datatable.SortBy
+  sortBy?: SortBy
   onOrderByChange?: (_?: OrderBy) => void
   onClose?: () => void
   onClear?: () => void
   columnId: string
   filterActive?: boolean
   title: ReactNode
-  data: DatatableRow[]
+  data: Row[]
   options?: DatatableOptions[]
 } & (
     | {
@@ -220,12 +219,7 @@ export const DatatableFilterDialogSelect = ({
             control={<Checkbox size="small" checked={allChecked} indeterminate={!allChecked && someChecked} />}
             label={m.selectAll}
           />
-          <Input
-            label={m.filterPlaceholder}
-            helperText={null}
-            sx={{mb: 1}}
-            onChange={e => setFilter(e.target.value)}
-          />
+          <Input label={m.filterPlaceholder} helperText={null} sx={{mb: 1}} onChange={e => setFilter(e.target.value)} />
           <Divider />
           <Box sx={{maxHeight: 350, overflowY: 'auto'}}>
             {options.map(o => (
@@ -279,8 +273,8 @@ export const DatatableFilterDialogNumber = ({
   value: DatatableFilterTypeMapping['number']
   onChange: Dispatch<SetStateAction<DatatableFilterTypeMapping['number']>>
 }) => {
-  const ctx = useDatatableContext()
-  const col = ctx.columnsIndex[columnId]
+  const columnsIndex = useDatatable3Context(_ => _.columns.indexMap)
+  const col = columnsIndex[columnId]
   if (!col.type) return
   const {min, max} = useMemo(() => {
     const values = seq(data)

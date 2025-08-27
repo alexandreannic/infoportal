@@ -2,7 +2,7 @@ import React, {CSSProperties, ReactNode} from 'react'
 import {BoxProps} from '@mui/material'
 import {KeyOf} from 'infoportal-common'
 import {ApiPaginate} from '@/core/sdk/server/_core/ApiSdkUtils'
-import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile'
+import {DatatableXlsGenerator} from '@/shared/Datatable/util/generateXLSFile.js'
 
 export type DatatableFilterTypeMapping = {
   id: string

@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect} from 'react'
-import {DatatableFilterValue} from '@infoportal/client-core'
 import {useVirtualizer} from '@tanstack/react-virtual'
 import {Badge, Box, BoxProps} from '@mui/material'
 import './Datatable.css'
@@ -14,7 +13,7 @@ import {DatatableFilterModal3} from '@/popup/DatatablePopupFilter.js'
 import {DatatableRow} from '@/DatatableRow.js'
 import {SelectedCellPopover} from '@/state/useCellSelectionComputed.js'
 import {DatatableColumnToggle3} from '@/DatatableColumnsToggle3.js'
-import {DatatableProps, Row} from '@/state/types.js'
+import {DatatableFilterValue, DatatableProps, Row} from '@/state/types.js'
 
 export const Datatable = <T extends Row>({
   data,

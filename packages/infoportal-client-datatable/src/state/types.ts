@@ -1,16 +1,19 @@
 import {BoxProps, SxProps, Theme} from '@mui/material'
 import React, {CSSProperties, ReactNode} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
-import {DatatableRow} from 'infoportal-client/src/shared/Datatable/util/datatableType.js'
 
 export type OrderBy = 'asc' | 'desc'
 
 export type Row = Record<string, any>
 
-export type HeaderParams<T extends DatatableRow> = {
+export type HeaderParams<T extends Row> = {
   data: T[]
   filteredAndSortedData: T[]
 }
+
+export type DatatableFilterValue = DatatableFilterTypeMapping[keyof DatatableFilterTypeMapping]
+
+export type DatatableBlankValue = ''
 
 export type Filters<T extends Row> = Partial<Record<KeyOf<T>, DatatableFilterValue>>
 

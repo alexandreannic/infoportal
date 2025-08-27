@@ -2,6 +2,7 @@ import {useCallback, useEffect, useMemo} from 'react'
 import {KeyOf, seq} from '@axanc/ts-utils'
 import {Column, DatatableOptions, Row} from '@/state/types.js'
 import {State} from '@/state/reducer.js'
+import {Utils} from '@/helper/utils.js'
 
 export type UseDatatableOptions<T extends Row> = ReturnType<typeof useDatatableOptions3<T>>
 
@@ -48,7 +49,7 @@ export const useDatatableOptions3 = <T extends Row>({
                 ?.map(col.render)
                 .distinct(_ => _.value)
                 .sort((a, b) => (b.value ?? '').localeCompare(a.value ?? ''))
-                .map(_ => DatatableUtils.buildCustomOption(_.value as string, _.option as string)),
+                .map(_ => Utils.buildCustomOption(_.value as string, _.option as string)),
             )
           } else if (col.type === 'select_multiple') {
             throw new Error(`options not implemented for ${columnId}.`)

@@ -1,8 +1,8 @@
-import {T} from '@/state/types.js'
 import {VirtualItem} from '@tanstack/react-virtual'
 import {Skeleton} from '@mui/material'
 import React, {memo} from 'react'
-import VirtualCell = VirtualCell
+import {Column, Row} from '@/state/types.js'
+import {VirtualCell} from '@/state/reducer.js'
 
 export const DatatableRow = memo(DatatableRow_, (prevProps, nextProps) => {
   return (
