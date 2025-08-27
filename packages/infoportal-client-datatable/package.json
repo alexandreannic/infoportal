@@ -1,23 +1,22 @@
 {
   "name": "@infoportal/client-datatable",
   "version": "1.0.0",
-  "main": "dist/index.umd.cjs",
-  "module": "dist/index.es.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "vite build",
+    "build": "tsc && tsc-alias",
+    "dev": "tsc --watch",
     "preview": "vite preview --config vite.config.demo.ts"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "vite": "^7.1.3",
-    "@vitejs/plugin-react": "^5.0.1",
-    "vite-plugin-dts": "^4.5.4"
+    "tsc-alias": "^1.8.16"
   },
   "dependencies": {
     "@axanc/react-hooks": "^1.14.1",
