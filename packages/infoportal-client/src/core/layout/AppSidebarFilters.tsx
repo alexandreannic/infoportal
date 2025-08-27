@@ -1,4 +1,4 @@
-import {Controller, useForm} from 'react-hook-form'
+import {Controller, useForm, useWatch} from 'react-hook-form'
 import {Box, Icon, InputProps} from '@mui/material'
 import {Obj, seq, Seq} from '@axanc/ts-utils'
 import {Ip} from 'infoportal-api-sdk'
@@ -69,6 +69,7 @@ const defaultFormValues: FilterForm = {
   category: [],
   status: [],
 }
+
 export const AppSidebarFilters = ({
   forms,
   onFilterChanges,
@@ -78,7 +79,7 @@ export const AppSidebarFilters = ({
 }) => {
   const {m} = useI18n()
   const searchForm = useForm<FilterForm>()
-  const values = searchForm.watch()
+  const values = useWatch({control: searchForm.control})
   // useFormPersist('appsidebar-form-filters', {
   //   watch: searchForm.watch,
   //   setValue: searchForm.setValue,
@@ -95,14 +96,16 @@ export const AppSidebarFilters = ({
   }, [forms])
 
   useEffect(() => {
-    const filteredByName = !values.name || values.name === '' ? forms : fuse.search(values.name).map(res => res.item)
-    if (!values.category) values.category = []
-    if (!values.status) values.status = []
+    const filteredByName = !values?.name ? forms : fuse.search(values.name).map(res => res.item)
+    const categories = values?.category ?? []
+    const statuses = values?.status ?? []
+
     const filteredForms = seq(filteredByName)
-      .filter(_ => (_.category && values.category.includes(_.category)) || values.category.length === 0)
-      .filter(_ => (_.deploymentStatus && values.status.includes(_.deploymentStatus)) || values.status.length === 0)
+      .filter(_ => (_.category && categories.includes(_.category)) || categories.length === 0)
+      .filter(_ => (_.deploymentStatus && statuses.includes(_.deploymentStatus)) || statuses.length === 0)
+
     onFilterChanges(filteredForms)
-  }, [values])
+  }, [values, forms, fuse, onFilterChanges])
 
   const formCategories = useMemo(() => {
     return forms.map(_ => _.category ?? '').distinct(_ => _)

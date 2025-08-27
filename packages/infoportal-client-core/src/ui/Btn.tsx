@@ -20,14 +20,14 @@ export interface BtnProps extends Omit<ButtonProps, 'variant'> {
 }
 
 const StyledButton = styled(Button, {
-  shouldForwardProp: prop => prop !== 'variant',
+  shouldForwardProp: prop => prop !== 'innerVariant',
 })<{
-  variant?: BtnVariant
-}>(({theme, variant}) => {
+  innerVariant?: BtnVariant
+}>(({theme, innerVariant}) => {
   return {
     position: 'relative',
     ...fnSwitch(
-      variant as unknown as BtnVariant,
+      innerVariant!,
       {
         light: {
           border: 'none',
@@ -89,6 +89,7 @@ export const Btn = forwardRef<HTMLButtonElement, BtnProps>(
       <StyledButton
         {...props}
         ref={ref}
+        innerVariant={variant}
         variant={variant === 'light' || variant === 'input' ? 'outlined' : variant}
         color={color}
         disabled={disabled || loading}
