@@ -19,11 +19,9 @@ import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
 import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Ip} from 'infoportal-api-sdk'
-import {AppAvatar, Core} from '@/shared'
+import {AppAvatar, Core, Datatable} from '@/shared'
 import {useFormSocket} from '@/features/Form/useFormSocket'
 import {appConfig} from '@/conf/AppConfig.js'
-import {Datatable3} from '@/shared/Datatable3/Datatable3.js'
-import {Datatable} from '@/shared/Datatable3/state/types.js'
 import {DatabaseToolbarContainer} from '@/features/Form/Database/DatabaseToolbarContainer.js'
 import {useAsync} from '@axanc/react-hooks'
 
@@ -166,8 +164,8 @@ export const DatabaseTableContent = ({
         )}
       </DatabaseToolbarContainer>
       <Core.Panel>
-        <Datatable3
-          onEvent={console.log}
+        <Datatable.Component
+          onEvent={_ => console.log}
           // onResizeColumn={ctx.view.onResizeColumn}
           loading={ctx.loading}
           // columnsToggle={{
@@ -177,7 +175,6 @@ export const DatabaseTableContent = ({
           // }}
           // contentProps={{sx: {maxHeight: 'calc(100vh - 156px)'}}}
           // showExportBtn
-          rowsPerPageOptions={[20, 50, 100, 200]}
           // onFiltersChange={onFiltersChange}
           // onDataChange={onDataChange}
           // select={

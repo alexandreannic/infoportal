@@ -4,11 +4,11 @@ import {Column, Option, Row} from '@/core/types.js'
 import {State} from '@/core/reducer.js'
 import {Utils} from '@/helper/utils.js'
 
-export type UseDatatableOptions<T extends Row> = ReturnType<typeof useDatatableOptions3<T>>
+export type UseDatatableOptions<T extends Row> = ReturnType<typeof useDatatableOptions<T>>
 
 const optionsRef = new Map<string, Option[] | undefined>()
 
-export const useDatatableOptions3 = <T extends Row>({
+export const useDatatableOptions = <T extends Row>({
   columns,
   columnsIndex,
   dataFilteredAndSorted,

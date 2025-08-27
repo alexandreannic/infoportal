@@ -1,7 +1,7 @@
 import React, {DetailedReactHTMLElement, HTMLAttributes} from 'react'
 import {Resizable} from 'react-resizable'
 import './css/DatatableHead.css'
-import {useDatatable3Context} from '@/core/DatatableContext.js'
+import {useDatatableContext} from '@/core/DatatableContext.js'
 import {Popup} from '@/core/reducer.js'
 import {DatatableHeadSections} from '@/DatatableHeadSections.js'
 import {Column} from '@/core/types'
@@ -11,12 +11,12 @@ import {IconProps} from '@mui/material'
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
 ) => {
-  const columns = useDatatable3Context(_ => _.columns.visible)
-  const dispatch = useDatatable3Context(_ => _.dispatch)
-  const colWidths = useDatatable3Context(_ => _.columns.widths)
-  const sortBy = useDatatable3Context(_ => _.state.sortBy)
-  const filters = useDatatable3Context(_ => _.state.filters)
-  const selectColumn = useDatatable3Context(_ => _.cellSelection.selectColumn)
+  const columns = useDatatableContext(_ => _.columns.visible)
+  const dispatch = useDatatableContext(_ => _.dispatch)
+  const colWidths = useDatatableContext(_ => _.columns.widths)
+  const sortBy = useDatatableContext(_ => _.state.sortBy)
+  const filters = useDatatableContext(_ => _.state.filters)
+  const selectColumn = useDatatableContext(_ => _.cellSelection.selectColumn)
 
   return (
     <div className="dthead" {...props}>

@@ -1,6 +1,7 @@
 import {BoxProps, SxProps, Theme} from '@mui/material'
 import React, {CSSProperties, ReactNode} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
+import {Action} from '@/core/reducer.js'
 
 export type OrderBy = 'asc' | 'desc'
 
@@ -11,11 +12,11 @@ export type HeaderParams<T extends Row> = {
   filteredAndSortedData: T[]
 }
 
-export type DatatableFilterValue = FilterTypeMapping[keyof FilterTypeMapping]
+export type FilterValue = FilterTypeMapping[keyof FilterTypeMapping]
 
-export type DatatableBlankValue = ''
+export type BlankValue = ''
 
-export type Filters<T extends Row> = Partial<Record<KeyOf<T>, DatatableFilterValue>>
+export type Filters<T extends Row> = Partial<Record<KeyOf<T>, FilterValue>>
 
 export type SortBy = {column: string; orderBy: OrderBy}
 
@@ -48,16 +49,15 @@ export interface Props<T extends Row, K extends string = string> {
   loading?: boolean
   getRowKey: (_: T) => string
   getRowChangeTracker?: (_: T) => string
-  onEvent: () => void
+  onEvent: (_: Action<T>) => void
   title?: string
   showRowIndex?: boolean
 
   // Initialization
   /** Find a way to enforce k and v typing*/
-  defaultFilters?: Record<K, DatatableFilterValue>
+  defaultFilters?: Record<K, FilterValue>
   defaultLimit?: number
   defaultSort?: {byColumn: KeyOf<T>; order: OrderBy}
-  rowsPerPageOptions?: number[]
 
   // Layout
   rowStyle?: (_: T) => CSSProperties

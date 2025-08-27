@@ -3,7 +3,7 @@ import {Action, datatableReducer, initialState, State} from '@/core/reducer.js'
 import {KeyOf} from '@axanc/ts-utils'
 import {useDatatableData} from '@/core/useDatatableData.js'
 import {createContext, useContextSelector} from 'use-context-selector'
-import {useDatatableOptions3} from '@/core/useDatatableOptions.js'
+import {useDatatableOptions} from '@/core/useDatatableOptions.js'
 import {UseDatatableColumns, useDatatableColumns} from '@/core/useColumns.js'
 import {UseCellSelection, useCellSelectionEngine} from '@/core/useCellSelectionEngine.js'
 import {UseCellSelectionComputed, useCellSelectionComputed} from '@/core/useCellSelectionComputed.js'
@@ -34,11 +34,11 @@ export type DatatableContext<T extends Row = any> = {
 }
 const Context = createContext<DatatableContext>({} as any)
 
-export const useDatatable3Context = <Selected extends any>(selector: (_: DatatableContext) => Selected): Selected => {
+export const useDatatableContext = <Selected extends any>(selector: (_: DatatableContext) => Selected): Selected => {
   return useContextSelector(Context, selector)
 }
 
-export const Datatable3Provider = <T extends Row>({
+export const DatatableProvider = <T extends Row>({
   data,
   children,
   columns: baseColumns,
@@ -70,7 +70,7 @@ export const Datatable3Provider = <T extends Row>({
     showRowIndex,
   })
 
-  const getColumnOptions: any /** TODO */ = useDatatableOptions3<T>({
+  const getColumnOptions: any /** TODO */ = useDatatableOptions<T>({
     dataFilteredAndSorted: filteredAndSortedData,
     dataFilteredExceptBy: filterExceptBy as any, //TODO
     columns: columns.visible,

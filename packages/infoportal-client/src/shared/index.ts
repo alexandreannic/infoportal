@@ -1,4 +1,5 @@
 export * as Core from '@infoportal/client-core'
+export * as Datatable from '@infoportal/client-datatable'
 export * from './BtnUploader'
 export * from './CompressedImg'
 export * from './NoFeatureAccessPage'

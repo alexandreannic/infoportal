@@ -1,4 +1,4 @@
-import {Column, DatatableFilterValue, Props, Row, SortBy} from '@/core/types.js'
+import {Column, FilterValue, Props, Row, SortBy} from '@/core/types.js'
 import {KeyOf, mapFor} from '@axanc/ts-utils'
 import {OrderBy} from '@axanc/react-hooks'
 import {CSSProperties, ReactNode} from 'react'
@@ -44,7 +44,7 @@ export type Action<T extends Row> =
   | {type: 'CLOSE_POPUP'}
   | {type: 'OPEN_POPUP'; event: Popup.Event}
   | {type: 'SORT'; column: string; orderBy?: OrderBy}
-  | {type: 'FILTER'; value: Record<KeyOf<T>, DatatableFilterValue>}
+  | {type: 'FILTER'; value: Record<KeyOf<T>, FilterValue>}
   | {type: 'FILTER_CLEAR'}
   | {type: 'UPDATE_CELL'; rowId: string; col: string; value: any}
   | {type: 'RESIZE'; col: string; width: number}
@@ -56,7 +56,7 @@ export type DatatableState<T extends Row> = {
   virtualTable: Record<string, Record<string, VirtualCell>>
   selected: Set<string>
   sortBy?: SortBy
-  filters: Partial<Record<KeyOf<T>, DatatableFilterValue>>
+  filters: Partial<Record<KeyOf<T>, FilterValue>>
   colWidths: Record<string, number>
   colHidden: Set<string>
 }

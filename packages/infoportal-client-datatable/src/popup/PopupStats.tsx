@@ -1,4 +1,4 @@
-import {useDatatable3Context} from '@/core/DatatableContext.js'
+import {useDatatableContext} from '@/core/DatatableContext.js'
 import {Popup} from '@/core/reducer.js'
 import React, {ReactNode, useMemo} from 'react'
 import {Box, Popover, PopoverProps} from '@mui/material'
@@ -18,10 +18,10 @@ import {seq} from '@axanc/ts-utils'
 import {Option, Row} from '@/core/types.js'
 
 export const PopupStats = ({columnId, event}: Popup.StatsAgs) => {
-  const dispatch = useDatatable3Context(_ => _.dispatch)
-  const getColumnOptions = useDatatable3Context(_ => _.getColumnOptions)
-  const dataFilteredAndSorted = useDatatable3Context(_ => _.dataFilteredAndSorted)
-  const columnsIndex = useDatatable3Context(_ => _.columns.indexMap)
+  const dispatch = useDatatableContext(_ => _.dispatch)
+  const getColumnOptions = useDatatableContext(_ => _.getColumnOptions)
+  const dataFilteredAndSorted = useDatatableContext(_ => _.dataFilteredAndSorted)
+  const columnsIndex = useDatatableContext(_ => _.columns.indexMap)
   const column = columnsIndex[columnId]
   const close = () => dispatch({type: 'CLOSE_POPUP'})
 

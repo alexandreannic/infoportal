@@ -1,11 +1,34 @@
 import {useConfig} from '@/DatatableConfig.js'
-import React, {ReactNode, useEffect, useState} from 'react'
-import {Alert, Box, Icon, MenuItem, Popover, PopoverProps} from '@mui/material'
-import {Btn, IconBtn, Input, PanelBody, PanelFoot, PanelHead, PeriodPicker, Txt} from '@infoportal/client-core'
+import React, {Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState} from 'react'
+import {
+  Alert,
+  Box,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  Icon,
+  MenuItem,
+  Popover,
+  PopoverProps,
+  Slider,
+  Switch,
+} from '@mui/material'
+import {
+  Btn,
+  IconBtn,
+  Input,
+  MultipleChoices,
+  PanelBody,
+  PanelFoot,
+  PanelHead,
+  PeriodPicker,
+  Txt,
+} from '@infoportal/client-core'
 import {endOfDay} from 'date-fns'
-import {useDatatable3Context} from '@/core/DatatableContext.js'
+import {useDatatableContext} from '@/core/DatatableContext.js'
 import {OrderBy} from '@axanc/react-hooks'
 import {FilterTypeMapping, Option, Row, SortBy} from '@/core/types.js'
+import {seq} from '@axanc/ts-utils'
 
 export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
   sortBy?: SortBy
@@ -44,7 +67,7 @@ export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
       }
   )
 
-export const DatatableFilterModal3 = ({
+export const DatatableFilterModal = ({
   data,
   sortBy,
   onOrderByChange,
@@ -61,7 +84,7 @@ export const DatatableFilterModal3 = ({
   type,
 }: DatatableFilterDialogProps) => {
   const {m} = useConfig()
-  const dispatch = useDatatable3Context(_ => _.dispatch)
+  const dispatch = useDatatableContext(_ => _.dispatch)
 
   const [innerValue, setInnerValue] = useState<any>(value)
   useEffect(() => {
@@ -252,7 +275,7 @@ export const DatatableFilterDialogNumber = ({
   value: FilterTypeMapping['number']
   onChange: Dispatch<SetStateAction<FilterTypeMapping['number']>>
 }) => {
-  const columnsIndex = useDatatable3Context(_ => _.columns.indexMap)
+  const columnsIndex = useDatatableContext(_ => _.columns.indexMap)
   const col = columnsIndex[columnId]
   if (!col.type) return
   const {min, max} = useMemo(() => {

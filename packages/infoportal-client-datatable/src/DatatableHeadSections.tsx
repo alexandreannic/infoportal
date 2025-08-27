@@ -3,7 +3,7 @@ import {useTheme} from '@mui/material'
 import {makeStyles} from 'tss-react/mui'
 import {Obj, seq} from '@axanc/ts-utils'
 import {memo, useMemo} from 'react'
-import {useDatatable3Context} from '@/core/DatatableContext.js'
+import {useDatatableContext} from '@/core/DatatableContext.js'
 import {Column} from '@/core/types'
 
 const colors = [
@@ -62,7 +62,7 @@ function DatatableHeadSections_({
   columns: Column.InnerProps<any>[]
   onHideColumns: (_: string[]) => void
 }) {
-  const colWidths = useDatatable3Context(_ => _.columns.widths)
+  const colWidths = useDatatableContext(_ => _.columns.widths)
   const t = useTheme()
   const {classes, cx} = useStyles()
 

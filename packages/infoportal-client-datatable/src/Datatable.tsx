@@ -3,25 +3,25 @@ import {useVirtualizer} from '@tanstack/react-virtual'
 import {Badge, Box, BoxProps} from '@mui/material'
 import './css/Datatable.css'
 import {DatatableHead} from '@/DatatableHead.js'
-import {Datatable3Provider, useDatatable3Context} from '@/core/DatatableContext.js'
+import {DatatableProvider, useDatatableContext} from '@/core/DatatableContext.js'
 import {IconBtn, Txt} from '@infoportal/client-core'
 import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
 import {useConfig} from '@/DatatableConfig.js'
 import {PopupStats} from '@/popup/PopupStats.js'
-import {DatatableFilterModal3} from '@/popup/PopupFilter.js'
+import {DatatableFilterModal} from '@/popup/PopupFilter.js'
 import {DatatableRow} from '@/DatatableRow.js'
 import {DatatableColumnToggle} from '@/DatatableColumnsToggle.js'
-import {DatatableFilterValue, Props, Row} from '@/core/types.js'
+import {FilterValue, Props, Row} from '@/core/types.js'
 import {PopupSelectedCell} from '@/popup/PopupSelectedCell.js'
 
 export const Datatable = <T extends Row>({data, columns, showRowIndex, contentProps, header, ...props}: Props<T>) => {
   if (!data) return 'Loading...'
   const tableRef = React.useRef(null) as unknown as React.MutableRefObject<HTMLDivElement>
   return (
-    <Datatable3Provider {...props} data={data} columns={columns} showRowIndex={showRowIndex} tableRef={tableRef}>
+    <DatatableProvider {...props} data={data} columns={columns} showRowIndex={showRowIndex} tableRef={tableRef}>
       <DatatableWithData header={header} tableRef={tableRef} contentProps={contentProps} />
-    </Datatable3Provider>
+    </DatatableProvider>
   )
 }
 
@@ -45,7 +45,7 @@ const DatatableWithData = <T extends Row>({
     dataFilteredExceptBy,
     getColumnOptions,
     cellSelection,
-  } = useDatatable3Context(_ => _)
+  } = useDatatableContext(_ => _)
 
   const overscan = 10
   const rowVirtualizer = useVirtualizer({
@@ -175,7 +175,7 @@ const DatatableWithData = <T extends Row>({
                 return
               }
               return (
-                <DatatableFilterModal3
+                <DatatableFilterModal
                   data={dataFilteredExceptBy(popup.columnId) ?? []}
                   title={column.head}
                   anchorEl={popup.event.target}
@@ -189,7 +189,7 @@ const DatatableWithData = <T extends Row>({
                   filterActive={!!filters[popup.columnId]}
                   onClose={() => dispatch({type: 'CLOSE_POPUP'})}
                   onClear={() => dispatch({type: 'FILTER', value: {[popup.columnId]: undefined}})}
-                  onChange={(p: string, v: DatatableFilterValue) => {
+                  onChange={(p: string, v: FilterValue) => {
                     dispatch({type: 'FILTER', value: {[p]: v}})
                     dispatch({type: 'CLOSE_POPUP'})
                     rowVirtualizer.scrollToIndex(0)

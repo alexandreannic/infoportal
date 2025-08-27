@@ -1,14 +1,14 @@
 {
   "name": "@infoportal/client-datatable",
   "version": "1.0.0",
-  "main": "dist/index.umd.cjs",
-  "module": "dist/index.es.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "dev": "tsc --watch",
     "preview": "vite preview --config vite.config.demo.ts"
   },
@@ -16,10 +16,13 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "tsc-alias": "^1.8.16"
   },
   "dependencies": {
+    "@axanc/react-hooks": "^1.14.1",
+    "@axanc/ts-utils": "2.4.1",
     "@infoportal/client-core": "1.0.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   }
 }
