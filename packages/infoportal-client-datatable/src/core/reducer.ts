@@ -1,4 +1,4 @@
-import {Column, Props, DatatableFilterValue, Row, SortBy} from '@/core/types.js'
+import {Column, DatatableFilterValue, Props, Row, SortBy} from '@/core/types.js'
 import {KeyOf, mapFor} from '@axanc/ts-utils'
 import {OrderBy} from '@axanc/react-hooks'
 import {CSSProperties, ReactNode} from 'react'

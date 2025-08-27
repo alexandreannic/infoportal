@@ -1,8 +1,7 @@
-import {Box, Popover, PopoverProps} from '@mui/material'
+import {useDatatable3Context} from '@/core/DatatableContext.js'
+import {Popup} from '@/core/reducer.js'
 import React, {ReactNode, useMemo} from 'react'
-import {seq} from '@axanc/ts-utils'
-import {KeyOf} from 'infoportal-common'
-import {useConfig} from '@/DatatableConfig.js'
+import {Box, Popover, PopoverProps} from '@mui/material'
 import {
   Btn,
   ChartBar,
@@ -13,7 +12,57 @@ import {
   PanelHead,
   Txt,
 } from '@infoportal/client-core'
+import {KeyOf} from 'infoportal-common'
+import {useConfig} from '@/DatatableConfig.js'
+import {seq} from '@axanc/ts-utils'
 import {Option, Row} from '@/core/types.js'
+
+export const PopupStats = ({columnId, event}: Popup.StatsAgs) => {
+  const dispatch = useDatatable3Context(_ => _.dispatch)
+  const getColumnOptions = useDatatable3Context(_ => _.getColumnOptions)
+  const dataFilteredAndSorted = useDatatable3Context(_ => _.dataFilteredAndSorted)
+  const columnsIndex = useDatatable3Context(_ => _.columns.indexMap)
+  const column = columnsIndex[columnId]
+  const close = () => dispatch({type: 'CLOSE_POPUP'})
+
+  switch (column.type) {
+    case 'number':
+      return (
+        <NumberChoicesPopover
+          anchorEl={event.target}
+          question={columnId}
+          mapValues={(_: any) => column.render(_).value as any}
+          data={dataFilteredAndSorted ?? []}
+          onClose={close}
+        />
+      )
+    case 'date': {
+      return (
+        <DatesPopover
+          anchorEl={event.target}
+          title={column.head ?? columnId}
+          getValue={(_: any) => column.render(_).value as any}
+          data={dataFilteredAndSorted ?? []}
+          onClose={close}
+        />
+      )
+    }
+    case 'select_multiple':
+    case 'select_one': {
+      return (
+        <MultipleChoicesPopover
+          translations={getColumnOptions(columnId)}
+          anchorEl={event.target}
+          multiple={column.type === 'select_multiple'}
+          getValue={(_: any) => column.render(_).value as any}
+          title={column.head}
+          data={dataFilteredAndSorted ?? []}
+          onClose={close}
+        />
+      )
+    }
+  }
+}
 
 const RenderRow = ({label, value}: {label: ReactNode; value: ReactNode}) => {
   return (
@@ -70,7 +119,7 @@ export const NumberChoicesPopover = <T,>({
   )
 }
 
-export const MultipleChoicesPopover = <T extends Row>({
+const MultipleChoicesPopover = <T extends Row>({
   getValue,
   title,
   data,
@@ -133,7 +182,7 @@ export const MultipleChoicesPopover = <T extends Row>({
   )
 }
 
-export const DatesPopover = <T,>({
+const DatesPopover = <T,>({
   getValue,
   data,
   anchorEl,

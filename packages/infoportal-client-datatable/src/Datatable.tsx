@@ -8,21 +8,14 @@ import {IconBtn, Txt} from '@infoportal/client-core'
 import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
 import {useConfig} from '@/DatatableConfig.js'
-import {DatatablePopupStats} from '@/popup/DatatablePopupStats.js'
-import {DatatableFilterModal3} from '@/popup/DatatablePopupFilter.js'
+import {PopupStats} from '@/popup/PopupStats.js'
+import {DatatableFilterModal3} from '@/popup/PopupFilter.js'
 import {DatatableRow} from '@/DatatableRow.js'
-import {SelectedCellPopover} from '@/core/useCellSelectionComputed.js'
 import {DatatableColumnToggle} from '@/DatatableColumnsToggle.js'
 import {DatatableFilterValue, Props, Row} from '@/core/types.js'
+import {PopupSelectedCell} from '@/popup/PopupSelectedCell.js'
 
-export const Datatable = <T extends Row>({
-  data,
-  columns,
-  showRowIndex,
-  contentProps,
-  header,
-  ...props
-}: Props<T>) => {
+export const Datatable = <T extends Row>({data, columns, showRowIndex, contentProps, header, ...props}: Props<T>) => {
   if (!data) return 'Loading...'
   const tableRef = React.useRef(null) as unknown as React.MutableRefObject<HTMLDivElement>
   return (
@@ -169,11 +162,11 @@ const DatatableWithData = <T extends Row>({
             )
           })}
         </div>
-        <SelectedCellPopover {...cellSelection} />
+        <PopupSelectedCell {...cellSelection} />
         {(() => {
           switch (popup?.name) {
             case 'STATS': {
-              return <DatatablePopupStats event={popup.event} columnId={popup.columnId} />
+              return <PopupStats event={popup.event} columnId={popup.columnId} />
             }
             case 'FILTER': {
               const column = columns.indexMap[popup.columnId]
