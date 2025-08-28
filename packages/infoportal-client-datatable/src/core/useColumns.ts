@@ -1,10 +1,14 @@
 import {useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
 import {State} from '@/core/reducer'
-import {Column, Row} from '@/core/types'
+import {Column, Props, Row} from '@/core/types'
 import {Utils} from '@/helper/utils'
 
 export type UseDatatableColumns<T extends Row> = ReturnType<typeof useDatatableColumns<T>>
+
+type ColumnWidth = string | number
+
+const minWidth = 20
 
 export const useDatatableColumns = <T extends Row>({
   baseColumns,
@@ -20,6 +24,20 @@ export const useDatatableColumns = <T extends Row>({
   const mappedColumns = useMemo(() => {
     return baseColumns.map(toInnerColumn).map(harmonizeColRenderValue)
   }, [baseColumns])
+
+  const defaultWidth = '1fr'
+
+  const parseColumnWidth = (w: ColumnWidth) => {
+    if (!isNaN(w as any)) {
+      return Math.max(w as number, minWidth)
+    }
+    if (typeof w === 'string') {
+      if (w.includes('fr')) {
+        return `minmax(${minWidth}px, ${w})`
+      }
+    }
+    return defaultWidth
+  }
 
   const all = useMemo(() => {
     if (showRowIndex)
@@ -42,16 +60,18 @@ export const useDatatableColumns = <T extends Row>({
   }, [all, colHidden])
 
   const widths = useMemo(() => {
-    return seq(visible).reduceObject<Record<string, number>>(c => [
-      c.id,
-      Math.max(colWidths[c.id] ?? c.width ?? 120, 20),
-    ])
+    return seq(visible).reduceObject<Record<string, any>>(c => [c.id, parseColumnWidth(colWidths[c.id] ?? c.width)])
   }, [colWidths, visible])
 
   const indexMap = useMemo(() => seq(all).reduceObject<Record<string, Column.InnerProps<T>>>(_ => [_.id, _]), [all])
 
   const cssGridTemplate = useMemo(
-    () => visible.map(c => (widths[c.id] ?? c.width ?? 120) + 'px').join(' '),
+    () =>
+      visible
+        .map(c => {
+          return isNaN(widths[c.id]) ? widths[c.id] : widths[c.id] + 'px'
+        })
+        .join(' '),
     [visible, widths],
   )
 
@@ -61,6 +81,7 @@ export const useDatatableColumns = <T extends Row>({
     indexMap,
     cssGridTemplate,
     visible,
+    defaultWidth,
   }
 }
 

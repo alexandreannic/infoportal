@@ -68,8 +68,16 @@ export interface Props<T extends Row, K extends string = string> {
 
   modules?: {
     export?: boolean
-    columnsToggle?: boolean
-    pagination?: boolean
+    columnsToggle?: {
+      enabled?: boolean
+      disableAutoSave?: boolean
+      hidden: string[]
+      onHide: (_: string[]) => void
+    }
+    columnsResize?: {
+      enabled: boolean
+      onResize: () => void
+    }
   }
 }
 

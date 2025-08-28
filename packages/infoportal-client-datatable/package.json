@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "tsc && tsc-alias",
+    "dev": "tsc --watch & tsc-alias --watch",
     "preview": "vite preview --config vite.config.demo.ts"
   },
   "author": "",

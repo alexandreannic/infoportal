@@ -4,7 +4,7 @@ import React, {memo} from 'react'
 
 export const DatatableSkeleton = memo(({rows = 20, columns = 10}: {rows?: number; columns?: number}) => {
   return (
-    <table className="table borderY">
+    <table className="table borderY" style={{width: '100%'}}>
       <tbody>
         {mapFor(rows, i => (
           <tr className="tr" key={i}>

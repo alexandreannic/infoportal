@@ -7,16 +7,16 @@ import {useDatatableOptions} from '@/core/useDatatableOptions'
 import {UseDatatableColumns, useDatatableColumns} from '@/core/useColumns'
 import {UseCellSelection, useCellSelectionEngine} from '@/core/useCellSelectionEngine'
 import {UseCellSelectionComputed, useCellSelectionComputed} from '@/core/useCellSelectionComputed'
-import {Column, Option, Props, Row} from '@/core/types'
+import {Option, Props, Row} from '@/core/types'
 
-export type DatatableContext<T extends Row = any> = {
+export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'data' | 'columns'> & {
+  tableRef: React.MutableRefObject<HTMLDivElement>
   getColumnOptions: (_: KeyOf<T>) => Option[] | undefined
   state: State<T>
   dispatch: React.Dispatch<Action<T>>
   columns: UseDatatableColumns<T>
   data: T[]
   dataFilteredAndSorted: T[]
-  getRowKey: Props<T>['getRowKey']
   dataFilteredExceptBy: (key: KeyOf<T>) => T[]
   cellSelection: UseCellSelectionComputed & {
     engine: Pick<
@@ -32,42 +32,35 @@ export type DatatableContext<T extends Row = any> = {
     >
   }
 }
+
 const Context = createContext<DatatableContext>({} as any)
 
 export const useDatatableContext = <Selected extends any>(selector: (_: DatatableContext) => Selected): Selected => {
   return useContextSelector(Context, selector)
 }
 
-export const DatatableProvider = <T extends Row>({
-  data,
-  children,
-  columns: baseColumns,
-  getRowKey,
-  showRowIndex,
-  tableRef,
-}: {
-  tableRef: React.MutableRefObject<HTMLDivElement>
-  showRowIndex?: boolean
-  getRowKey: Props<T>['getRowKey']
-  columns: Column.Props<T>[]
-  children: ReactNode
-  data: T[]
-}) => {
+export const DatatableProvider = <T extends Row>(
+  props: Omit<Props<T>, 'data'> & {
+    data: T[]
+    children: ReactNode
+    tableRef: React.MutableRefObject<HTMLDivElement>
+  },
+) => {
   const [state, dispatch] = useReducer(datatableReducer<T>(), initialState<T>())
 
   const columns = useDatatableColumns({
     colHidden: state.colHidden,
     colWidths: state.colWidths,
-    showRowIndex,
-    baseColumns: baseColumns,
+    showRowIndex: props.showRowIndex,
+    baseColumns: props.columns,
   })
 
   const {filteredAndSortedData, filterExceptBy} = useDatatableData<T>({
-    data,
+    data: props.data,
     filters: state.filters,
     sortBy: state.sortBy,
     colIndex: columns.indexMap,
-    showRowIndex,
+    showRowIndex: props.showRowIndex,
   })
 
   const getColumnOptions: any /** TODO */ = useDatatableOptions<T>({
@@ -78,7 +71,7 @@ export const DatatableProvider = <T extends Row>({
     filters: state.filters,
   })
 
-  const cellSelectionEngine = useCellSelectionEngine({tableRef})
+  const cellSelectionEngine = useCellSelectionEngine({tableRef: props.tableRef})
   const cellSectionComputed = useCellSelectionComputed({
     filteredAndSortedData,
     columnsIndex: columns.indexMap,
@@ -89,8 +82,7 @@ export const DatatableProvider = <T extends Row>({
   return (
     <Context.Provider
       value={{
-        data,
-        getRowKey,
+        ...props,
         columns,
         getColumnOptions,
         dataFilteredAndSorted: filteredAndSortedData,
@@ -117,7 +109,7 @@ export const DatatableProvider = <T extends Row>({
         },
       }}
     >
-      {children}
+      {props.children}
     </Context.Provider>
   )
 }

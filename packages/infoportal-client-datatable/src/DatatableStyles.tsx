@@ -4,6 +4,8 @@ export const DatatableGlobalStyles = () => (
   <GlobalStyles
     styles={theme => ({
       '.dt': {
+        display: 'grid',
+        gridTemplateRows: 'auto 1fr',
         minWidth: '100%',
         overflow: 'auto',
         height: 'calc(100vh - 150px)',
@@ -13,12 +15,13 @@ export const DatatableGlobalStyles = () => (
       },
 
       '.dtbody': {
+        // gridAutoRows: 'minmax(40px, auto)',
         userSelect: 'none',
       },
 
       '.dtr': {
         display: 'grid',
-        gridTemplateColumns: 'var(--cols)', // keep dynamic cols
+        gridTemplateColumns: 'var(--cols)',
         willChange: 'transform',
         position: 'absolute',
         top: 0,
@@ -27,6 +30,7 @@ export const DatatableGlobalStyles = () => (
       },
 
       '.dtd': {
+        height: 30,
         width: '100%',
         display: 'flex',
         alignItems: 'center',
@@ -88,8 +92,10 @@ export const DatatableGlobalStyles = () => (
         },
       },
 
-      // Thead
+      // Thead -----
       '.dthead': {
+        display: 'grid',
+        gridTemplateColumns: 'var(--cols)',
         verticalAlign: 'middle',
         position: 'sticky',
         top: 0,
@@ -97,17 +103,17 @@ export const DatatableGlobalStyles = () => (
         backdropFilter: 'blur(30px) saturate(150%)',
         background: `rgb(${theme.vars.palette.AppBar?.defaultBg} / 0.4)`,
         boxShadow: theme.vars.shadows[1],
-        width: 'max-content',
+        // width: 'max-content',
+        width: '100%',
       },
 
       '.dtrh': {
-        height: 30,
-        display: 'grid',
-        gridTemplateColumns: 'var(--cols)', // dynamic from JS
+        display: 'contents',
         position: 'sticky',
       },
 
       '.dth': {
+        height: 30,
         display: 'flex',
         alignItems: 'center',
         width: '100%',

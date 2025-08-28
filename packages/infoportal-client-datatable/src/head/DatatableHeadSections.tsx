@@ -1,9 +1,7 @@
 import {IconBtn, styleUtils} from '@infoportal/client-core'
-import {useTheme} from '@mui/material'
-import {makeStyles} from 'tss-react/mui'
+import {styled, useTheme} from '@mui/material'
 import {Obj, seq} from '@axanc/ts-utils'
 import {memo, useMemo} from 'react'
-import {useDatatableContext} from '@/core/DatatableContext'
 import {Column} from '@/core/types'
 
 const colors = [
@@ -19,40 +17,43 @@ const colors = [
   '#E91E63',
 ]
 
-const useStyles = makeStyles()(t => ({
-  tr: {
-    width: 'max-content',
-    display: 'grid',
-    transition: t.transitions.create('all'),
-    cursor: 'pointer',
-    fontSize: styleUtils(t).fontSize.small,
-    height: 6,
-    '&:hover ': {
-      height: 32,
-    },
-    '&:hover .TableHeadSectionCell-content': {
-      opacity: 1,
-    },
+const Th = styled('div', {label: 'DatatableHeadSection-th', slot: 'TH'})(({theme}) => ({
+  height: 6,
+  transition: theme.transitions.create('all'),
+  minHeight: '100%',
+  padding: '0 !important',
+  display: 'flex',
+  alignItems: 'center',
+  position: 'sticky',
+  left: 0,
+  ...styleUtils(theme).truncate,
+}))
+
+const Content = styled('div')(({theme}) => ({
+  display: 'flex',
+  alignItems: 'center',
+  transition: theme.transitions.create('all'),
+  opacity: 0,
+}))
+
+const BtnHide = styled(IconBtn)(({theme}) => ({
+  minWidth: 30,
+}))
+
+const Tr = styled('div')(({theme}) => ({
+  display: 'contents',
+  cursor: 'pointer',
+  fontSize: styleUtils(theme).fontSize.small,
+
+  '&:hover .DtHeadSectionCell-Th': {
+    height: 32,
   },
-  th: {
-    minHeight: '100%',
-    padding: '0 !important',
-    display: 'flex',
-    alignItems: 'center',
-    position: 'sticky',
-    left: 0,
-    ...styleUtils(t).truncate,
-  },
-  content: {
-    display: 'flex',
-    alignItems: 'center',
-    transition: t.transitions.create('all'),
-    opacity: 0,
-  },
-  btn: {
-    minWidth: 30,
+
+  '&:hover .DtHeadSectionCell-Content': {
+    opacity: 1,
   },
 }))
+
 export const DatatableHeadSections = memo(DatatableHeadSections_)
 
 function DatatableHeadSections_({
@@ -62,54 +63,49 @@ function DatatableHeadSections_({
   columns: Column.InnerProps<any>[]
   onHideColumns: (_: string[]) => void
 }) {
-  const colWidths = useDatatableContext(_ => _.columns.widths)
   const t = useTheme()
-  const {classes, cx} = useStyles()
 
-  const {groups, cssGridTemplate} = useMemo(() => {
+  const {groups, groupSpans} = useMemo(() => {
     const groups = Obj.entries(seq(columns).groupBy(_ => _.group?.label ?? ''))
-    const cssGridTemplate =
-      groups
-        .map(([group, cols]) => {
-          return seq(cols)
-            .map(_ => colWidths[_.id] ?? _.width ?? 120)
-            .sum(_ => _)
-        })
-        .join('px ') + 'px'
-    return {groups, cssGridTemplate}
-  }, [columns, colWidths])
+    const groupSpans: string[] = []
+    let offset = 1
+    groups.forEach(([g, cols], i) => {
+      groupSpans[i] = `${offset} / span ${cols.length}`
+      offset += cols.length
+    })
+    return {groups, groupSpans}
+  }, [columns])
 
   return (
-    <div className={classes.tr} style={{gridTemplateColumns: cssGridTemplate}}>
+    <Tr>
       {groups.length > 1 &&
-        groups.map(([group, cols], i) => {
-          return (
-            <div
-              key={group}
-              style={{
-                color: t.palette.getContrastText(colors[i % colors.length]),
-                background: colors[i % colors.length],
-              }}
-              className={classes.th}
-            >
-              <div title={group} className={cx(classes.content, 'TableHeadSectionCell-content')}>
-                <IconBtn
-                  sx={{
-                    mr: 0.5,
-                    color: t.palette.getContrastText(colors[i % colors.length]),
-                  }}
-                  className={classes.btn}
-                  size="small"
-                  color="primary"
-                  onClick={() => onHideColumns(cols.map(_ => _.id))}
-                >
-                  visibility_off
-                </IconBtn>
-                {group}
-              </div>
-            </div>
-          )
-        })}
-    </div>
+        groups.map(([group, cols], i) => (
+          <Th
+            className="DtHeadSectionCell-Th"
+            key={group}
+            style={{
+              gridColumn: groupSpans[i],
+              // i !== groups.length - 1 ? `${prevSpan ? prevSpan + 1 : 1} / span ${cols.length}` : undefined,
+              color: t.palette.getContrastText(colors[i % colors.length]),
+              background: colors[i % colors.length],
+            }}
+          >
+            <Content title={group} className="DtHeadSectionCell-Content">
+              <BtnHide
+                sx={{
+                  mr: 0.5,
+                  color: t.palette.getContrastText(colors[i % colors.length]),
+                }}
+                size="small"
+                color="primary"
+                onClick={() => onHideColumns(cols.map(_ => _.id))}
+              >
+                visibility_off
+              </BtnHide>
+              {group}
+            </Content>
+          </Th>
+        ))}
+    </Tr>
   )
 }

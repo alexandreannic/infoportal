@@ -1,36 +1,35 @@
-import React, {DetailedReactHTMLElement, HTMLAttributes} from 'react'
+import React, {DetailedReactHTMLElement, HTMLAttributes, ReactNode, useCallback, useMemo, useState} from 'react'
 import {Resizable} from 'react-resizable'
 import {useDatatableContext} from '@/core/DatatableContext'
 import {Popup} from '@/core/reducer'
 import {DatatableHeadSections} from '@/head/DatatableHeadSections'
 import {Column} from '@/core/types'
-import {TableIcon, TableIconBtn} from '../ui/TableIcon'
+import {TableIcon, TableIconBtn} from '@/ui/TableIcon'
 import {IconProps} from '@mui/material'
 import {DatatableHeadCopyIds} from '@/head/DatatableHeadCopyIds'
 
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
 ) => {
-  const columns = useDatatableContext(_ => _.columns.visible)
   const dispatch = useDatatableContext(_ => _.dispatch)
+  const columns = useDatatableContext(_ => _.columns.visible)
+  const modulesColumnsToggle = useDatatableContext(_ => _.modules?.columnsToggle ?? {enabled: true})
   const colWidths = useDatatableContext(_ => _.columns.widths)
   const sortBy = useDatatableContext(_ => _.state.sortBy)
   const filters = useDatatableContext(_ => _.state.filters)
   const selectColumn = useDatatableContext(_ => _.cellSelection.selectColumn)
+
+  const Cell = useMemo(() => {
+    if (modulesColumnsToggle?.enabled) return ResizableCell
+    return ({children}: any) => <div className="dth">{children}</div>
+  }, [])
 
   return (
     <div className="dthead" {...props}>
       <DatatableHeadSections columns={columns} onHideColumns={console.log} />
       <div className="dtrh">
         {columns.map((c, columnIndex) => (
-          <Resizable
-            key={c.id}
-            draggableOpts={{grid: [10, 10]}}
-            className="dth"
-            width={colWidths[c.id]}
-            axis="x"
-            onResize={(e, s) => dispatch({type: 'RESIZE', col: c.id, width: s.size.width})}
-          >
+          <Cell key={c.id} width={colWidths[c.id]} onResize={width => dispatch({type: 'RESIZE', col: c.id, width})}>
             <div
               onClick={e => selectColumn(columnIndex, e)}
               title={c.head}
@@ -39,7 +38,7 @@ export const DatatableHead = (
             >
               {c.head}
             </div>
-          </Resizable>
+          </Cell>
         ))}
       </div>
       <div className="dtrh">
@@ -133,4 +132,28 @@ export const DatatableHeadIconByType = ({
     default:
       return
   }
+}
+
+const ResizableCell = ({
+  onResize,
+  width,
+  children,
+}: {
+  width: number
+  onResize: (_: number) => void
+  children: ReactNode
+}) => {
+  return (
+    <Resizable
+      draggableOpts={{grid: [10, 10]}}
+      className="dth"
+      width={isNaN(width) ? 120 : width}
+      axis="x"
+      onResize={(e, s) => {
+        onResize(s.size.width)
+      }}
+    >
+      {children}
+    </Resizable>
+  )
 }

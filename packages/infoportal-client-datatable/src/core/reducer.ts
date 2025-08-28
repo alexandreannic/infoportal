@@ -224,13 +224,15 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
       }
     },
 
-    RESIZE: (state, action) => ({
-      ...state,
-      colWidths: {
-        ...state.colWidths,
-        [action.col]: action.width,
-      },
-    }),
+    RESIZE: (state, action) => {
+      return {
+        ...state,
+        colWidths: {
+          ...state.colWidths,
+          [action.col]: action.width,
+        },
+      }
+    },
 
     SET_HIDDEN_COLUMNS: (state, action) => {
       return {

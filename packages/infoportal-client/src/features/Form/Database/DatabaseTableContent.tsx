@@ -163,7 +163,7 @@ export const DatabaseTableContent = ({
           </Core.Panel>
         )}
       </DatabaseToolbarContainer>
-      <Core.Panel>
+      <Core.Panel sx={{width: '100%'}}>
         <Datatable.Component
           onEvent={_ => console.log}
           // onResizeColumn={ctx.view.onResizeColumn}

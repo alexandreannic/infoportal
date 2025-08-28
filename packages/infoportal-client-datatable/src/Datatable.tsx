@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react'
 import {useVirtualizer} from '@tanstack/react-virtual'
-import {Badge, Box, BoxProps, LinearProgress} from '@mui/material'
+import {Badge, Box} from '@mui/material'
 import {DatatableHead} from '@/head/DatatableHead'
 import {DatatableProvider, useDatatableContext} from '@/core/DatatableContext'
 import {IconBtn, Txt} from '@infoportal/client-core'
@@ -16,8 +16,8 @@ import {PopupSelectedCell} from '@/popup/PopupSelectedCell'
 import {DatatableErrorBoundary} from '@/DatatableErrorBundary'
 import {DatatableSkeleton} from '@/DatatableSkeleton'
 
-export const Datatable = <T extends Row>({data, columns, showRowIndex, contentProps, header, ...props}: Props<T>) => {
-  if (!data) return <DatatableSkeleton columns={columns.length} />
+export const Datatable = <T extends Row>({data, ...props}: Props<T>) => {
+  if (!data) return <DatatableSkeleton columns={props.columns.length} />
   const tableRef = React.useRef(null) as unknown as React.MutableRefObject<HTMLDivElement>
   // {loading &&
   // (ctx.data.data ? (
@@ -28,22 +28,14 @@ export const Datatable = <T extends Row>({data, columns, showRowIndex, contentPr
 
   return (
     <DatatableErrorBoundary>
-      <DatatableProvider {...props} data={data} columns={columns} showRowIndex={showRowIndex} tableRef={tableRef}>
-        <DatatableWithData header={header} tableRef={tableRef} contentProps={contentProps} />
+      <DatatableProvider {...props} data={data} tableRef={tableRef}>
+        <DatatableWithData />
       </DatatableProvider>
     </DatatableErrorBoundary>
   )
 }
 
-const DatatableWithData = <T extends Row>({
-  header,
-  tableRef,
-  contentProps,
-}: {
-  contentProps?: BoxProps
-  tableRef: React.MutableRefObject<HTMLDivElement>
-  header: Props<T>['header']
-}) => {
+const DatatableWithData = <T extends Row>() => {
   const {m, formatLargeNumber} = useConfig()
   const {
     columns,
@@ -55,6 +47,9 @@ const DatatableWithData = <T extends Row>({
     dataFilteredExceptBy,
     getColumnOptions,
     cellSelection,
+    tableRef,
+    header,
+    contentProps,
   } = useDatatableContext(_ => _)
 
   const overscan = 10
@@ -139,8 +134,8 @@ const DatatableWithData = <T extends Row>({
       <Box
         className="dt"
         ref={tableRef}
-        style={{['--cols' as any]: columns.cssGridTemplate, ...contentProps?.style}}
         {...contentProps}
+        style={{['--cols' as any]: columns.cssGridTemplate, ...contentProps?.style}}
       >
         <DatatableHead onMouseDown={() => cellSelection.engine.reset()} />
         <div
