@@ -3,7 +3,7 @@ import {useQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {useLangIndex} from '@/core/store/useLangIndex'
-import {Datatable} from '@/shared/Datatable/Datatable'
+import {Core} from '@/shared'
 import {Page} from '@/shared/Page'
 import {KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {map, seq} from '@axanc/ts-utils'
@@ -28,7 +28,6 @@ import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
 import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
-import {Core} from '@/shared'
 
 export const databaseAnswerViewRoute = createRoute({
   getParentRoute: () => formRoute,

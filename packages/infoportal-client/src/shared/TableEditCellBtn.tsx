@@ -1,10 +1,9 @@
-import {TableIconBtn} from '@/shared/TableIcon'
 import React from 'react'
-import {Core} from '@/shared'
+import {Core, Datatable} from '@/shared'
 
 export const TableEditCellBtn = (props: Omit<Core.IconBtnProps, 'children'>) => {
   return (
-    <TableIconBtn
+    <Datatable.IconBtn
       size="small"
       color="primary"
       style={{
@@ -13,6 +12,6 @@ export const TableEditCellBtn = (props: Omit<Core.IconBtnProps, 'children'>) => 
       {...props}
     >
       edit
-    </TableIconBtn>
+    </Datatable.IconBtn>
   )
 }

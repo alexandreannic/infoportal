@@ -1,0 +1,136 @@
+import React, {DetailedReactHTMLElement, HTMLAttributes} from 'react'
+import {Resizable} from 'react-resizable'
+import {useDatatableContext} from '@/core/DatatableContext'
+import {Popup} from '@/core/reducer'
+import {DatatableHeadSections} from '@/head/DatatableHeadSections'
+import {Column} from '@/core/types'
+import {TableIcon, TableIconBtn} from '../ui/TableIcon'
+import {IconProps} from '@mui/material'
+import {DatatableHeadCopyIds} from '@/head/DatatableHeadCopyIds'
+
+export const DatatableHead = (
+  props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
+) => {
+  const columns = useDatatableContext(_ => _.columns.visible)
+  const dispatch = useDatatableContext(_ => _.dispatch)
+  const colWidths = useDatatableContext(_ => _.columns.widths)
+  const sortBy = useDatatableContext(_ => _.state.sortBy)
+  const filters = useDatatableContext(_ => _.state.filters)
+  const selectColumn = useDatatableContext(_ => _.cellSelection.selectColumn)
+
+  return (
+    <div className="dthead" {...props}>
+      <DatatableHeadSections columns={columns} onHideColumns={console.log} />
+      <div className="dtrh">
+        {columns.map((c, columnIndex) => (
+          <Resizable
+            key={c.id}
+            draggableOpts={{grid: [10, 10]}}
+            className="dth"
+            width={colWidths[c.id]}
+            axis="x"
+            onResize={(e, s) => dispatch({type: 'RESIZE', col: c.id, width: s.size.width})}
+          >
+            <div
+              onClick={e => selectColumn(columnIndex, e)}
+              title={c.head}
+              style={{width: colWidths[c.id]}}
+              className={typeof c.className === 'string' ? c.className : undefined}
+            >
+              {c.head}
+            </div>
+          </Resizable>
+        ))}
+      </div>
+      <div className="dtrh">
+        {columns.map(c => {
+          const sortedByThis = sortBy?.column === c.id
+          const active = sortedByThis || !!filters[c.id]
+          return (
+            <div
+              key={c.id}
+              style={c.styleHead}
+              className={['dth', 'td-sub-head', c.stickyEnd ? 'td-sticky-end' : ''].join(' ')}
+            >
+              <DatatableHeadTdBody
+                column={c}
+                active={active}
+                onOpenStats={e =>
+                  dispatch({type: 'OPEN_POPUP', event: {name: Popup.Name.STATS, columnId: c.id, event: e}})
+                }
+                onOpenFilter={e =>
+                  dispatch({type: 'OPEN_POPUP', event: {name: Popup.Name.FILTER, columnId: c.id, event: e}})
+                }
+              />
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+const DatatableHeadTdBody = ({
+  active,
+  column,
+  onOpenFilter,
+  onOpenStats,
+}: {
+  column: Column.InnerProps<any>
+  onOpenFilter: (e: React.MouseEvent) => void
+  onOpenStats: (e: React.MouseEvent) => void
+  active?: boolean
+}) => {
+  return (
+    <span style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
+      {column.typeIcon}
+      {column.subHeader}
+      {(() => {
+        switch (column.type) {
+          case 'select_one':
+          case 'select_multiple':
+          case 'date':
+          case 'number':
+            return <TableIconBtn children="bar_chart" onClick={e => onOpenStats(e)} />
+          case 'id':
+            return <DatatableHeadCopyIds column={column} />
+        }
+      })()}
+      {column.type && (
+        <TableIconBtn color={active ? 'primary' : undefined} children="filter_alt" onClick={e => onOpenFilter(e)} />
+      )}
+    </span>
+  )
+}
+
+export const DatatableHeadIcon = (
+  props: {
+    tooltip?: string
+    children: string
+  } & Pick<IconProps, 'sx' | 'color'>,
+) => {
+  return <TableIcon className="table-head-type-icon" fontSize="small" color="disabled" {...props} />
+}
+
+export const DatatableHeadIconByType = ({
+  type,
+}: {
+  type: Column.Props<any>['type']
+} & Pick<IconProps, 'sx' | 'color'>) => {
+  switch (type) {
+    case 'date':
+      return <DatatableHeadIcon children="event" tooltip={type} />
+    case 'select_multiple':
+      return <DatatableHeadIcon children="check_box" tooltip={type} />
+    case 'select_one':
+      return <DatatableHeadIcon children="radio_button_checked" tooltip={type} />
+    case 'number':
+      return <DatatableHeadIcon children="tag" tooltip={type} />
+    case 'id':
+      return <DatatableHeadIcon children="key" tooltip={type} color="info" />
+    case 'string':
+      return <DatatableHeadIcon children="short_text" tooltip={type} />
+    default:
+      return
+  }
+}

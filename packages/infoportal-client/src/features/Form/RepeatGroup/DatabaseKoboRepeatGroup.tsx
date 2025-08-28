@@ -1,9 +1,7 @@
 import {useI18n} from '@/core/i18n'
 import {useQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {Page} from '@/shared'
-import {Datatable} from '@/shared/Datatable/Datatable'
-import {DatatableColumn} from '@/shared/Datatable/util/datatableType'
+import {Core, Datatable, Page} from '@/shared'
 import {map} from '@axanc/ts-utils'
 import {Theme, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from 'infoportal-common'
@@ -14,7 +12,6 @@ import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
 import {BuildFormColumnProps} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Messages} from '@/core/i18n/localization/en'
-import {Core} from '@/shared'
 
 export const databaseKoboRepeatRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -76,7 +73,7 @@ export const getColumnsForRepeatGroup = ({
   t: Theme
 }) => {
   const groupInfo = schema.helper.group.getByName(groupName)!
-  const res: DatatableColumn.Props<KoboFlattenRepeatedGroup.Data>[] = []
+  const res: Datatable.Column.Props<KoboFlattenRepeatedGroup.Data>[] = []
   if (groupInfo.depth > 1) {
     res.push(
       {
@@ -173,7 +170,8 @@ const DatabaseKoboRepeat = ({
   }, [data, groupInfo])
 
   return (
-    <Datatable
+    <Datatable.Component
+      getRowKey={_ => _.id}
       defaultFilters={{
         id,
       }}

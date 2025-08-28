@@ -1,0 +1,27 @@
+{
+  "name": "@infoportal/client-datatable",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "preview": "vite preview --config vite.config.demo.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "tsc-alias": "^1.8.16"
+  },
+  "dependencies": {
+    "@axanc/react-hooks": "^1.14.1",
+    "@axanc/ts-utils": "2.4.1",
+    "@infoportal/client-core": "1.0.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
+}

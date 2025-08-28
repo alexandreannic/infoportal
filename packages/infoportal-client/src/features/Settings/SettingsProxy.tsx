@@ -6,11 +6,9 @@ import {useI18n} from '@/core/i18n'
 import {Switch} from '@mui/material'
 import {Controller, useForm} from 'react-hook-form'
 import {NullableFn, Regexp, slugify} from 'infoportal-common'
-import {TableIconBtn} from '@/shared/TableIcon'
 import {Proxy} from '@/core/sdk/server/proxy/Proxy'
 import {endOfDay} from 'date-fns'
-import {Core} from '@/shared'
-import {Datatable} from '@/shared/Datatable/Datatable'
+import {Core, Datatable} from '@/shared'
 import {formatDateTime} from '@/core/i18n/localization/en'
 import {appConfig} from '@/conf/AppConfig'
 import {createRoute} from '@tanstack/react-router'
@@ -56,7 +54,8 @@ function SettingsProxy() {
   return (
     <Page width="lg">
       <Core.Panel>
-        <Datatable
+        <Datatable.Component
+          getRowKey={_ => _.id}
           id="proxy"
           header={
             permission.proxy_manage && (
@@ -236,9 +235,9 @@ function SettingsProxy() {
               width: 0,
               align: 'right',
               renderQuick: _ => (
-                <TableIconBtn onClick={() => _search.remove(_.id)} loading={_search.removing(_.id)}>
+                <Datatable.IconBtn onClick={() => _search.remove(_.id)} loading={_search.removing(_.id)}>
                   delete
-                </TableIconBtn>
+                </Datatable.IconBtn>
               ),
             },
           ]}

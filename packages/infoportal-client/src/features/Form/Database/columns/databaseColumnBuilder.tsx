@@ -2,23 +2,18 @@ import {formatDate, formatDateTime, Messages} from '@/core/i18n/localization/en'
 import React from 'react'
 import {Kobo} from 'kobo-sdk'
 import {map} from '@axanc/ts-utils'
-import {TableEditCellBtn} from '@/shared'
+import {Core, Datatable, TableEditCellBtn} from '@/shared'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper, removeHtml} from 'infoportal-common'
 import {DatabaseContext, KoboExternalFilesIndex} from '@/features/Form/Database/DatabaseContext'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
-import {DatatableUtils} from '@/shared/Datatable/util/datatableUtils'
 import {Ip} from 'infoportal-api-sdk'
 import {Theme} from '@mui/material'
-import {DatatableHeadIconByType} from '@/shared/Datatable/DatatableHead'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useKoboDialogs} from '@/core/store/useLangIndex'
-import {TableIcon, TableIconBtn} from '@/shared/TableIcon'
 import {SelectStatusBy, SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {useI18n} from '@/core/i18n'
-import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByFormType'
-import {Datatable} from '@/shared/Datatable3/state/types.js'
 import Submission = Ip.Submission
-import {Core} from '@/shared'
+import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByKoboType'
 
 export const buildDatabaseColumns = {
   type: {
@@ -237,7 +232,7 @@ function file(props: CommonProps & Pick<BuildFormColumnProps, 'formId'>): Datata
       })
       return {
         export: url,
-        value: fileName ?? DatatableUtils.blank,
+        value: fileName ?? Datatable.Utils.blank,
         label: (
           <Core.Txt link>
             <a href={url} target="_blank">
@@ -409,7 +404,7 @@ function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'> = {}): Datatable
     type: 'id',
     id: 'id' as const,
     head: 'ID',
-    typeIcon: <DatatableHeadIconByType type="id" />,
+    typeIcon: <Datatable.HeadIconByType type="id" />,
     className: 'td-id',
     style: (row: any) => {
       const data = getRow(row)
@@ -454,13 +449,13 @@ function actions({
         value: null as any,
         label: (
           <>
-            <TableIconBtn
+            <Datatable.IconBtn
               tooltip={m.view}
               children="visibility"
               onClick={() => dialogs.openView({answer: _, workspaceId, formId: formId})}
             />
             {koboEditEnketoUrl && _.koboSubmissionId ? (
-              <TableIconBtn
+              <Datatable.IconBtn
                 disabled={!canEdit}
                 tooltip={m.editKobo}
                 target="_blank"
@@ -468,7 +463,7 @@ function actions({
                 children="edit_square"
               />
             ) : (
-              <TableIconBtn
+              <Datatable.IconBtn
                 disabled={!canEdit}
                 tooltip={m.editForm}
                 children="edit"
@@ -566,9 +561,9 @@ function validation({
       const value: Ip.Submission.Validation = getRow(row).validationStatus
       const toGenericStatus = SelectStatusConfig.customStatusToStateStatus.KoboValidation[value]
       return {
-        export: value ? (m as any)[value] : DatatableUtils.blank,
-        value: value ?? DatatableUtils.blank,
-        option: value ? (m as any)[value] : DatatableUtils.blank,
+        export: value ? (m as any)[value] : Datatable.Utils.blank,
+        value: value ?? Datatable.Utils.blank,
+        option: value ? (m as any)[value] : Datatable.Utils.blank,
         label: <StateStatusIcon type={toGenericStatus} />,
         // label: (
         //   <SelectStatusBy
@@ -599,7 +594,7 @@ function MissingOption({value}: {value?: string}) {
   const {m} = useI18n()
   return (
     <span title={value}>
-      <TableIcon color="disabled" tooltip={m._koboDatabase.valueNoLongerInOption} sx={{mr: 1}} children="error" />
+      <Datatable.Icon color="disabled" tooltip={m._koboDatabase.valueNoLongerInOption} sx={{mr: 1}} children="error" />
       {value}
     </span>
   )
