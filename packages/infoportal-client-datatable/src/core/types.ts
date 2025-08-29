@@ -66,17 +66,19 @@ export interface Props<T extends Row, K extends string = string> {
   renderEmptyState?: ReactNode
   sx?: SxProps<Theme>
 
-  modules?: {
+  module?: {
     export?: boolean
     columnsToggle?: {
-      enabled?: boolean
+      enabled: boolean
       disableAutoSave?: boolean
       hidden: string[]
-      onHide: (_: string[]) => void
+    }
+    cellSelection?: {
+      enabled: true
+      mode: 'cell' | 'col' | 'free' | 'row' | 'row-or-cell'
     }
     columnsResize?: {
       enabled: boolean
-      onResize: () => void
     }
   }
 }

@@ -97,7 +97,7 @@ export const Page = ({children, sx, loading, animation = 'default', animationDep
             default: 'scale(.90)',
           }),
           maxWidth: 932,
-          my: 1,
+          mt: 1,
           width: '100%',
           ...((!animation || appeared) && {
             opacity: 1,

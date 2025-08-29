@@ -93,7 +93,7 @@ function SettingsUsers() {
           }
           columns={[
             {
-              width: 0,
+              width: 60,
               id: 'status',
               type: 'select_one',
               head: m.status,
@@ -107,7 +107,7 @@ function SettingsUsers() {
               },
             },
             {
-              width: 0,
+              width: 50,
               align: 'center',
               id: 'avatar',
               head: '',
@@ -180,7 +180,7 @@ function SettingsUsers() {
             {
               type: 'select_one',
               id: 'admin',
-              width: 10,
+              width: 80,
               align: 'center',
               head: m.admin,
               render: _ => ({

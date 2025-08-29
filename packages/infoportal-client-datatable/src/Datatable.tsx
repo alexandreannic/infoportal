@@ -50,6 +50,7 @@ const DatatableWithData = <T extends Row>() => {
     tableRef,
     header,
     contentProps,
+    module,
   } = useDatatableContext(_ => _)
 
   const overscan = 10
@@ -142,6 +143,7 @@ const DatatableWithData = <T extends Row>() => {
           className="dtbody"
           onMouseUp={cellSelection.engine.handleMouseUp}
           style={{
+            userSelect: module?.cellSelection?.enabled ? 'none' : undefined,
             height: `${rowVirtualizer.getTotalSize()}px`,
             position: 'relative',
           }}

@@ -11,6 +11,7 @@ import {
 import {useSession} from '@/core/Session/SessionContext'
 import {Ip} from 'infoportal-api-sdk'
 import {useAsync, useFetcher, usePersistentState} from '@axanc/react-hooks'
+import {debounce} from '@mui/material'
 
 export type UseDatabaseView = ReturnType<typeof useDatabaseView>
 
@@ -92,13 +93,12 @@ export const useDatabaseView = (formId: Ip.FormId) => {
     return seq(currentView?.details ?? []).groupByFirst(_ => _.name)
   }, [currentView])
 
-  const onResizeColumn = useCallback(
-    (columnId: string, width: number) => {
+  const onResizeColumn = useMemo(() => {
+    return debounce((columnId: string, width: number) => {
       if (!currentView) return
       asyncColUpdate(currentView, {name: columnId, width})
-    },
-    [currentView],
-  )
+    }, 400)
+  }, [currentView, asyncColUpdate])
 
   const setHiddenColumns = useCallback(
     (columns: string[]) => {

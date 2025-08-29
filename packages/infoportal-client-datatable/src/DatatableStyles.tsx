@@ -1,4 +1,5 @@
 import {GlobalStyles} from '@mui/material'
+import {memo} from 'react'
 
 export const DatatableGlobalStyles = () => (
   <GlobalStyles
@@ -8,7 +9,7 @@ export const DatatableGlobalStyles = () => (
         gridTemplateRows: 'auto 1fr',
         minWidth: '100%',
         overflow: 'auto',
-        height: 'calc(100vh - 150px)',
+        height: 'calc(100vh - 156px)',
         '.MuiCheckbox-root': {
           padding: 6,
         },
@@ -16,7 +17,7 @@ export const DatatableGlobalStyles = () => (
 
       '.dtbody': {
         // gridAutoRows: 'minmax(40px, auto)',
-        userSelect: 'none',
+        // userSelect: blockUserSelection ? 'none' : undefined,
       },
 
       '.dtr': {
@@ -30,7 +31,7 @@ export const DatatableGlobalStyles = () => (
       },
 
       '.dtd': {
-        height: 30,
+        height: 32,
         width: '100%',
         display: 'flex',
         alignItems: 'center',
@@ -41,7 +42,7 @@ export const DatatableGlobalStyles = () => (
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
-        backgroundColor: theme.vars.palette.background.paper,
+        backgroundColor: `rgb(from ${theme.vars.palette.background.paper} r g b)`,
 
         '&.td-id': {
           color: theme.vars.palette.info.main,
@@ -113,7 +114,7 @@ export const DatatableGlobalStyles = () => (
       },
 
       '.dth': {
-        height: 30,
+        height: 32,
         display: 'flex',
         alignItems: 'center',
         width: '100%',
@@ -138,6 +139,8 @@ export const DatatableGlobalStyles = () => (
         top: 0,
         bottom: 0,
         right: 0,
+        // borderLeft: '1px dashed',
+        // borderColor: theme.vars.palette.divider,
 
         '&:hover': {
           background: theme.vars.palette.primary.main,

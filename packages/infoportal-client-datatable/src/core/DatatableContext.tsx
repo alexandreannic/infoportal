@@ -1,4 +1,4 @@
-import React, {ReactNode, useReducer} from 'react'
+import React, {ReactNode, useEffect, useReducer} from 'react'
 import {Action, datatableReducer, initialState, State} from '@/core/reducer'
 import {KeyOf} from '@axanc/ts-utils'
 import {useDatatableData} from '@/core/useDatatableData'
@@ -8,6 +8,7 @@ import {UseDatatableColumns, useDatatableColumns} from '@/core/useColumns'
 import {UseCellSelection, useCellSelectionEngine} from '@/core/useCellSelectionEngine'
 import {UseCellSelectionComputed, useCellSelectionComputed} from '@/core/useCellSelectionComputed'
 import {Option, Props, Row} from '@/core/types'
+import {useEffectFn} from '@axanc/react-hooks'
 
 export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'data' | 'columns'> & {
   tableRef: React.MutableRefObject<HTMLDivElement>
@@ -46,7 +47,17 @@ export const DatatableProvider = <T extends Row>(
     tableRef: React.MutableRefObject<HTMLDivElement>
   },
 ) => {
-  const [state, dispatch] = useReducer(datatableReducer<T>(), initialState<T>())
+  const {module} = props
+  const [state, _dispatch] = useReducer(datatableReducer<T>(), initialState<T>())
+
+  useEffectFn(module?.columnsToggle?.hidden, hiddenColumns => {
+    _dispatch({type: 'SET_HIDDEN_COLUMNS', hiddenColumns})
+  })
+
+  const dispatch: React.Dispatch<Action<T>> = _ => {
+    _dispatch(_)
+    props.onEvent?.(_)
+  }
 
   const columns = useDatatableColumns({
     colHidden: state.colHidden,
@@ -71,7 +82,10 @@ export const DatatableProvider = <T extends Row>(
     filters: state.filters,
   })
 
-  const cellSelectionEngine = useCellSelectionEngine({tableRef: props.tableRef})
+  const cellSelectionEngine = useCellSelectionEngine({
+    tableRef: props.tableRef,
+    disabled: module?.cellSelection?.enabled !== true,
+  })
   const cellSectionComputed = useCellSelectionComputed({
     filteredAndSortedData,
     columnsIndex: columns.indexMap,

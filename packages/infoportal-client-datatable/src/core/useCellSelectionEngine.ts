@@ -2,7 +2,15 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 
 export type UseCellSelection = ReturnType<typeof useCellSelectionEngine>
 
-export const useCellSelectionEngine = ({tableRef}: {tableRef: React.MutableRefObject<HTMLDivElement>}) => {
+const voidFn = () => void 0
+
+export const useCellSelectionEngine = ({
+  tableRef,
+  disabled,
+}: {
+  disabled?: boolean
+  tableRef: React.MutableRefObject<HTMLDivElement>
+}) => {
   const selecting = useRef<boolean>(false)
   const scrollInterval = useRef<NodeJS.Timeout | null>(null)
   const [selectionStart, setSelectionStart] = useState<{row: number; col: number} | null>(null)
@@ -135,17 +143,17 @@ export const useCellSelectionEngine = ({tableRef}: {tableRef: React.MutableRefOb
     state: {
       selectionStart,
       selectionEnd,
-      setSelectionStart,
-      setSelectionEnd,
+      setSelectionStart: disabled ? voidFn : setSelectionStart,
+      setSelectionEnd: disabled ? voidFn : setSelectionEnd,
     },
     isSelected,
     isRowSelected,
     isColumnSelected,
     anchorEl,
     setAnchorEl,
-    handleMouseDown,
-    handleMouseEnter,
-    handleMouseUp,
-    handleMouseMove,
+    handleMouseDown: disabled ? voidFn : handleMouseDown,
+    handleMouseEnter: disabled ? voidFn : handleMouseEnter,
+    handleMouseUp: disabled ? voidFn : handleMouseUp,
+    handleMouseMove: disabled ? voidFn : handleMouseMove,
   }
 }

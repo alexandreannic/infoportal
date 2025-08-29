@@ -1,4 +1,4 @@
-import React, {DetailedReactHTMLElement, HTMLAttributes, ReactNode, useCallback, useMemo, useState} from 'react'
+import React, {DetailedReactHTMLElement, HTMLAttributes, ReactNode, useCallback, useMemo, useRef, useState} from 'react'
 import {Resizable} from 'react-resizable'
 import {useDatatableContext} from '@/core/DatatableContext'
 import {Popup} from '@/core/reducer'
@@ -13,14 +13,14 @@ export const DatatableHead = (
 ) => {
   const dispatch = useDatatableContext(_ => _.dispatch)
   const columns = useDatatableContext(_ => _.columns.visible)
-  const modulesColumnsToggle = useDatatableContext(_ => _.modules?.columnsToggle ?? {enabled: true})
+  const moduleColumnsToggle = useDatatableContext(_ => _.module?.columnsToggle ?? {enabled: true})
   const colWidths = useDatatableContext(_ => _.columns.widths)
   const sortBy = useDatatableContext(_ => _.state.sortBy)
   const filters = useDatatableContext(_ => _.state.filters)
   const selectColumn = useDatatableContext(_ => _.cellSelection.selectColumn)
 
   const Cell = useMemo(() => {
-    if (modulesColumnsToggle?.enabled) return ResizableCell
+    if (moduleColumnsToggle?.enabled) return ResizableCell
     return ({children}: any) => <div className="dth">{children}</div>
   }, [])
 
@@ -143,17 +143,36 @@ const ResizableCell = ({
   onResize: (_: number) => void
   children: ReactNode
 }) => {
+  const resizingRef = useRef(false)
   return (
     <Resizable
-      draggableOpts={{grid: [10, 10]}}
+      draggableOpts={{grid: [15, 15]}}
       className="dth"
       width={isNaN(width) ? 120 : width}
       axis="x"
+      onResizeStart={() => {
+        resizingRef.current = true
+      }}
+      onResizeStop={() => {
+        // clear after the click event would normally fire to prevent cell click
+        setTimeout(() => {
+          resizingRef.current = false
+        }, 0)
+      }}
       onResize={(e, s) => {
         onResize(s.size.width)
       }}
     >
-      {children}
+      <div
+        onClick={e => {
+          if (resizingRef.current) {
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        }}
+      >
+        {children}
+      </div>
     </Resizable>
   )
 }

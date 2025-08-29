@@ -165,12 +165,33 @@ export const DatabaseTableContent = ({
       </DatabaseToolbarContainer>
       <Core.Panel sx={{width: '100%'}}>
         <Datatable.Component
-          onEvent={_ => console.log}
-          // onResizeColumn={ctx.view.onResizeColumn}
+          onEvent={_ => {
+            switch (_.type) {
+              case 'RESIZE': {
+                ctx.view.onResizeColumn(_.col, _.width)
+                break
+              }
+              case 'SET_HIDDEN_COLUMNS': {
+                ctx.view.setHiddenColumns(_.hiddenColumns)
+              }
+            }
+          }}
+          module={{
+            columnsResize: {
+              enabled: true,
+            },
+            cellSelection: {
+              enabled: true,
+              mode: 'free',
+            },
+            columnsToggle: {
+              enabled: true,
+              disableAutoSave: true,
+              hidden: ctx.view.hiddenColumns,
+            },
+          }}
           loading={ctx.loading}
           // columnsToggle={{
-          //   disableAutoSave: true,
-          //   hidden: ctx.view.hiddenColumns,
           //   onHide: ctx.view.setHiddenColumns,
           // }}
           // contentProps={{sx: {maxHeight: 'calc(100vh - 156px)'}}}

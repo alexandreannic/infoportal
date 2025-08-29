@@ -1,7 +1,7 @@
 import {useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
 import {State} from '@/core/reducer'
-import {Column, Props, Row} from '@/core/types'
+import {Column, Row} from '@/core/types'
 import {Utils} from '@/helper/utils'
 
 export type UseDatatableColumns<T extends Row> = ReturnType<typeof useDatatableColumns<T>>
@@ -9,6 +9,18 @@ export type UseDatatableColumns<T extends Row> = ReturnType<typeof useDatatableC
 type ColumnWidth = string | number
 
 const minWidth = 20
+
+const parseColumnWidth = (w: ColumnWidth) => {
+  if (!isNaN(w as any)) {
+    return Math.max(w as number, minWidth)
+  }
+  if (typeof w === 'string') {
+    if (w.includes('fr')) {
+      return `minmax(${minWidth}px, ${w})`
+    }
+  }
+  return '1fr'
+}
 
 export const useDatatableColumns = <T extends Row>({
   baseColumns,
@@ -24,20 +36,6 @@ export const useDatatableColumns = <T extends Row>({
   const mappedColumns = useMemo(() => {
     return baseColumns.map(toInnerColumn).map(harmonizeColRenderValue)
   }, [baseColumns])
-
-  const defaultWidth = '1fr'
-
-  const parseColumnWidth = (w: ColumnWidth) => {
-    if (!isNaN(w as any)) {
-      return Math.max(w as number, minWidth)
-    }
-    if (typeof w === 'string') {
-      if (w.includes('fr')) {
-        return `minmax(${minWidth}px, ${w})`
-      }
-    }
-    return defaultWidth
-  }
 
   const all = useMemo(() => {
     if (showRowIndex)
@@ -81,7 +79,6 @@ export const useDatatableColumns = <T extends Row>({
     indexMap,
     cssGridTemplate,
     visible,
-    defaultWidth,
   }
 }
 
