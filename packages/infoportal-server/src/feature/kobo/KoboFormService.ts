@@ -76,7 +76,7 @@ export class KoboFormService {
   }
 
   readonly deleteHookIfExists = async ({formId, sdk}: {formId: Kobo.FormId; sdk?: KoboClient}) => {
-    if (!sdk) sdk = await this.koboSdk.getBy.formId(formId)
+    if (!sdk) sdk = await this.koboSdk.getBy.koboFormId(formId)
     await sdk.v2.hook.deleteByName({formId, name: KoboFormService.HOOK_NAME}).catch(() => {})
   }
 
@@ -86,7 +86,7 @@ export class KoboFormService {
       .then(_ => _?.kobo?.koboId)
     if (!koboFormId) return
 
-    const sdk = await this.koboSdk.getBy.formId(koboFormId)
+    const sdk = await this.koboSdk.getBy.koboFormId(koboFormId)
 
     const queries: Promise<any>[] = []
 
@@ -102,7 +102,7 @@ export class KoboFormService {
   }
 
   readonly createHookIfNotExists = async ({sdk, koboFormId}: {koboFormId: Kobo.FormId; sdk?: KoboClient}) => {
-    if (!sdk) sdk = await this.koboSdk.getBy.formId(koboFormId)
+    if (!sdk) sdk = await this.koboSdk.getBy.koboFormId(koboFormId)
     const hooks = await sdk.v2.hook.get({formId: koboFormId})
     if (hooks.results.find(_ => _.name === KoboFormService.HOOK_NAME)) return
     return sdk.v2.hook.create({

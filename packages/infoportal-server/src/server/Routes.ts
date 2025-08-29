@@ -346,7 +346,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       remove: _ =>
         auth2(_)
           .then(({req, params, body}) =>
-            formSubmission.deleteAnswers({...body, ...params, authorEmail: req.session.app?.user.email!}),
+            formSubmission.remove({...body, ...params, authorEmail: req.session.app?.user.email!}),
           )
           .then(ok204)
           .catch(handleError),

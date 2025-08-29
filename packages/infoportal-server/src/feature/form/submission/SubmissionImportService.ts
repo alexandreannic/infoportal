@@ -15,7 +15,7 @@ export class SubmissionImportService {
   ) {}
 
   readonly processData = async (formId: Kobo.FormId, filePath: string, action: 'create' | 'update') => {
-    const sdk = await this.koboSdkGenerator.getBy.formId(formId)
+    const sdk = await this.koboSdkGenerator.getBy.koboFormId(formId)
     const schema = await sdk.v2.form.get({formId, use$autonameAsName: true})
     const schemaHelper = KoboSchemaHelper.buildBundle({schema: schema.content})
 

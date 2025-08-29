@@ -8,7 +8,7 @@
   "scripts": {
     "test": "jest",
     "dev": "tsc -w",
-    "build": "tsc --build"
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",

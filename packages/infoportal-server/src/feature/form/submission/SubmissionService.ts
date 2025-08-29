@@ -252,7 +252,7 @@ export class SubmissionService {
 
   static readonly genId = (): Ip.SubmissionId => nanoid(10)
 
-  readonly deleteAnswers = async ({
+  readonly remove = async ({
     answerIds,
     formId,
     authorEmail = 'system' as Ip.User.Email,
@@ -278,7 +278,7 @@ export class SubmissionService {
           return this.sdkGenerator.getBy.formId(formId)
         })
         .then(sdk => {
-          sdk?.v2.submission.delete({formId, submissionIds: answerIds})
+          return sdk?.v2.submission.delete({formId, submissionIds: answerIds})
         }),
     ])
     this.history.create({
@@ -306,7 +306,7 @@ export class SubmissionService {
     answerIds: Ip.SubmissionId[]
     question: string
     answer?: string
-  }) => {
+  }): Promise<Ip.BulkResponse<Ip.SubmissionId>> => {
     answer = Array.isArray(answer) ? answer.join(' ') : answer
     await Promise.all([
       this.history.create({
@@ -334,6 +334,7 @@ export class SubmissionService {
         }),
     ])
     this.event.emit(IpEvent.SUBMISSION_EDITED, {formId, submissionIds: answerIds, question, answer})
+    return answerIds.map(id => ({id, status: 'success'}))
   }
 
   readonly updateValidation = async ({
@@ -346,7 +347,7 @@ export class SubmissionService {
     answerIds: Ip.SubmissionId[]
     status: Ip.Submission.Validation
     authorEmail: Ip.User.Email
-  }) => {
+  }): Promise<Ip.BulkResponse<Ip.SubmissionId>> => {
     const mappedValidation = KoboMapper.mapValidation.toKobo(status)
     const validationKey: keyof Ip.Submission.Meta = 'validationStatus'
     const [sqlRes] = await Promise.all([
@@ -404,5 +405,6 @@ export class SubmissionService {
       }),
     ])
     this.event.emit(IpEvent.SUBMISSION_EDITED_VALIDATION, {formId, submissionIds: answerIds, status})
+    return answerIds.map(id => ({id, status: 'success'}))
   }
 }

@@ -13,9 +13,7 @@
     "checkJs": false,
     "rootDir": "./src",
     "composite": true,
-    "skipLibCheck": true,
-    "traceResolution": true,
-    "preserveWatchOutput": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*"

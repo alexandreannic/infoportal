@@ -12,6 +12,8 @@ type Brand<K, T> = K & {
 }
 
 export namespace Ip {
+  export type BulkResponse<ID extends string> = {id: ID; status: 'success'}[]
+
   export type Uuid = Brand<string, 'Uuid'>
 
   export type Geolocation = [number, number]

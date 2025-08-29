@@ -5,6 +5,7 @@ import {KoboSdkGenerator} from '../../../feature/kobo/KoboSdkGenerator.js'
 import {KoboSyncServer} from '../../../feature/kobo/KoboSyncServer.js'
 import axios, {AxiosError} from 'axios'
 import {KoboFormService} from '../../../feature/kobo/KoboFormService.js'
+import {Ip} from 'infoportal-api-sdk'
 
 export class ControllerKoboApi {
   constructor(
@@ -27,7 +28,7 @@ export class ControllerKoboApi {
         serverId: yup.string().required(),
       })
       .validate(req.body)
-    const sdk = await this.koboSdkGenerator.getBy.accountId(serverId)
+    const sdk = await this.koboSdkGenerator.getBy.accountId(serverId as Ip.ServerId)
     const forms = await sdk.v2.form.getAll()
     res.send(forms)
   }
@@ -52,7 +53,7 @@ export class ControllerKoboApi {
   readonly edit = async (req: Request, res: Response, next: NextFunction) => {
     const {formId} = await this.extractParams(req)
     const answerId = await yup.string().required().validate(req.params.answerId)
-    const sdk = await this.koboSdkGenerator.getBy.formId(formId)
+    const sdk = await this.koboSdkGenerator.getBy.koboFormId(formId)
     const link = await sdk.v2.submission.getEditLinkUrl({formId, submissionId: answerId})
 
     //   res.send(`
@@ -96,7 +97,7 @@ export class ControllerKoboApi {
         })
         .validate(req.params)
       const fileName = req.query.fileName
-      const sdk = await this.koboSdkGenerator.getBy.formId(params.formId)
+      const sdk = await this.koboSdkGenerator.getBy.koboFormId(params.formId)
       const img = await sdk.v2.submission.getAttachement(params)
       if (!fileName) {
         res.set('Content-Type', 'image/jpeg')

@@ -48,7 +48,7 @@ export class FormService {
     genIndex: _ => _.koboFormId,
     ttlMs: duration(2, 'day').toMs,
     fn: async ({koboFormId}: {koboFormId: Kobo.FormId}): Promise<Kobo.Form> => {
-      const sdk = await this.koboSdk.getBy.formId(koboFormId)
+      const sdk = await this.koboSdk.getBy.koboFormId(koboFormId)
       return sdk.v2.form.get({formId: koboFormId, use$autonameAsName: true})
     },
   })
@@ -191,5 +191,9 @@ export class FormService {
         },
       })
       .then(_ => _.map(PrismaHelper.mapForm))
+  }
+
+  readonly getKoboIdByFormId = (formId: Ip.FormId): Promise<Kobo.FormId | undefined> => {
+    return this.prisma.formKoboInfo.findFirst({select: {koboId: true}, where: {formId}}).then(_ => _?.koboId)
   }
 }

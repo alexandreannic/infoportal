@@ -35,7 +35,7 @@ export const contractFormSubmission = c.router({
       answer: z.any().nullable(),
     }),
     responses: {
-      204: schema.emptyResult,
+      200: c.type<Ip.BulkResponse<Ip.SubmissionId>>(),
     },
     metadata: makeMeta({
       access: {
@@ -55,7 +55,7 @@ export const contractFormSubmission = c.router({
       status: z.enum(Obj.keys(Ip.Submission.Validation) as [Ip.Submission.Validation, ...Ip.Submission.Validation[]]),
     }),
     responses: {
-      204: schema.emptyResult,
+      200: c.type<Ip.BulkResponse<Ip.SubmissionId>>(),
     },
     metadata: makeMeta({
       access: {
@@ -153,7 +153,7 @@ export const formSubmissionClient = (client: TsRestClient, baseUrl: string) => {
             status,
           },
         })
-        .then(map204)
+        .then(map200)
     },
 
     updateAnswers: <T extends Record<string, any>, K extends KeyOf<T>>({
@@ -172,7 +172,7 @@ export const formSubmissionClient = (client: TsRestClient, baseUrl: string) => {
             answer,
           },
         })
-        .then(map204)
+        .then(map200)
     },
   }
 }

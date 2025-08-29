@@ -169,7 +169,7 @@ export class KoboSyncServer {
   }
 
   private readonly syncApiFormInfo = async ({formId, koboFormId}: {koboFormId: Kobo.FormId; formId: Ip.FormId}) => {
-    const sdk = await this.koboSdkGenerator.getBy.formId(koboFormId)
+    const sdk = await this.koboSdkGenerator.getBy.koboFormId(koboFormId)
     const schema = await sdk.v2.form.get({formId: koboFormId, use$autonameAsName: true})
     await Promise.all([
       this.prisma.form.updateMany({
@@ -197,7 +197,7 @@ export class KoboSyncServer {
     formId: Ip.FormId
     koboFormId: Kobo.FormId
   }): Promise<KoboSyncServerResult> => {
-    const sdk = await this.koboSdkGenerator.getBy.formId(koboFormId)
+    const sdk = await this.koboSdkGenerator.getBy.koboFormId(koboFormId)
 
     this.debug(koboFormId, `Fetch remote answers...`)
     const remoteAnswers = await sdk.v2.submission

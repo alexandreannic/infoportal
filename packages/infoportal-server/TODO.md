@@ -1,3 +1,4 @@
+- Rename Server -> Account
 - Archive form should move kobo ref to deleteKobo column to keep track?  
 - Right now 3 requests are trigger to check loggin.
   It should be merged to avoid hitting the server for nothing especially when 403.
