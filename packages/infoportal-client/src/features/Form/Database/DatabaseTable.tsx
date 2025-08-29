@@ -29,12 +29,7 @@ export interface DatabaseTableProps {
   permission: Ip.Permission.Form
   dataFilter?: (_: Submission) => boolean
   onFiltersChange?: (_: Record<string, Datatable.FilterValue>) => void
-  onDataChange?: (_: {
-    data?: Submission[]
-    filteredData?: Submission[]
-    filteredAndSortedData?: Submission[]
-    filteredSortedAndPaginatedData?: ApiPaginate<Submission>
-  }) => void
+  onDataChange?: (_: {data?: Submission[]; filteredAndSortedData?: Submission[]}) => void
   overrideEditAccess?: boolean
 }
 

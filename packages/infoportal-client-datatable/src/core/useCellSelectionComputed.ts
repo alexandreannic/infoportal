@@ -1,7 +1,7 @@
 import {UseCellSelection} from '@/core/useCellSelectionEngine'
 import React, {useCallback, useEffect, useMemo} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
-import {Column, Row} from '@/core/types'
+import {Column, Props, Row} from '@/core/types'
 
 export type UseCellSelectionComputed = ReturnType<typeof useCellSelectionComputed>
 
@@ -10,7 +10,9 @@ export const useCellSelectionComputed = <T extends Row>({
   cellSelectionEngine,
   visibleColumns,
   columnsIndex,
+  getRowKey,
 }: {
+  getRowKey: Props<T>['getRowKey']
   columnsIndex: Record<KeyOf<T>, Column.InnerProps<any>>
   visibleColumns: Column.InnerProps<T>[]
   cellSelectionEngine: UseCellSelection
@@ -19,9 +21,9 @@ export const useCellSelectionComputed = <T extends Row>({
   const {state, isRowSelected, isSelected, isColumnSelected} = cellSelectionEngine
 
   const selectedRowIds = useMemo(() => {
-    const selectedRowIds = new Set()
+    const selectedRowIds = new Set<string>()
     filteredAndSortedData.forEach((_, index) => {
-      if (isRowSelected(index)) selectedRowIds.add(_)
+      if (isRowSelected(index)) selectedRowIds.add(getRowKey(_))
     })
     return selectedRowIds
   }, [filteredAndSortedData, isRowSelected])

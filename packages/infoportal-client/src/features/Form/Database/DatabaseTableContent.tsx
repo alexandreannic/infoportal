@@ -2,7 +2,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {useIpToast} from '@/core/useToast'
-import {useCustomSelectedHeader} from '@/features/Form/Database/customization/useCustomSelectedHeader'
+import {DatabaseSelectedRowsAction} from '@/features/Form/Database/DatabaseSelectedRowsAction'
 import {DatabaseImportBtn} from '@/features/Form/Database/DatabaseImportBtn'
 import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
 import {DatabaseKoboSyncBtn} from '@/features/Form/Database/DatabaseKoboSyncBtn'
@@ -135,12 +135,6 @@ export const DatabaseTableContent = ({
   }, [schemaColumns, ctx.view.currentView])
 
   const {api} = useAppSettings()
-  const selectedHeader = useCustomSelectedHeader({
-    workspaceId,
-    permission: ctx.permission,
-    formId: ctx.form.id,
-    selectedIds,
-  })
   const _importFromXLS = useAsync(api.importData.importFromXLSFile)
   const {toastHttpError} = useIpToast()
 
@@ -173,8 +167,14 @@ export const DatabaseTableContent = ({
               }
               case 'SET_HIDDEN_COLUMNS': {
                 ctx.view.setHiddenColumns(_.hiddenColumns)
+                break
+              }
+              case 'FILTER': {
+                onFiltersChange?.(_.value)
+                break
               }
             }
+            // onDataChange({})
           }}
           module={{
             columnsResize: {
@@ -183,6 +183,14 @@ export const DatabaseTableContent = ({
             cellSelection: {
               enabled: true,
               mode: 'free',
+              renderComponentOnRowSelected: _ => (
+                <DatabaseSelectedRowsAction
+                  selectedIds={_.rowIds as Ip.SubmissionId[]}
+                  workspaceId={workspaceId}
+                  permission={ctx.permission}
+                  formId={ctx.form.id}
+                />
+              ),
             },
             columnsToggle: {
               enabled: true,
@@ -191,13 +199,8 @@ export const DatabaseTableContent = ({
             },
           }}
           loading={ctx.loading}
-          // columnsToggle={{
-          //   onHide: ctx.view.setHiddenColumns,
-          // }}
-          // contentProps={{sx: {maxHeight: 'calc(100vh - 156px)'}}}
+          contentProps={{sx: {maxHeight: 'calc(100vh - 156px)'}}}
           // showExportBtn
-          // onFiltersChange={onFiltersChange}
-          // onDataChange={onDataChange}
           // select={
           //   ctx.permission.answers_canUpdate
           //     ? {

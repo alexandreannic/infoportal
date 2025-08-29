@@ -36,7 +36,6 @@ export const DatatableColumnToggle = ({
     set.reset(hiddenColumns)
   }, [hiddenColumns])
 
-  // columns.map(_ => _.)
   return (
     <PopoverWrapper
       content={() => (

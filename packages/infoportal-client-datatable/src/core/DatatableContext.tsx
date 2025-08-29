@@ -87,6 +87,7 @@ export const DatatableProvider = <T extends Row>(
     disabled: module?.cellSelection?.enabled !== true,
   })
   const cellSectionComputed = useCellSelectionComputed({
+    getRowKey: props.getRowKey,
     filteredAndSortedData,
     columnsIndex: columns.indexMap,
     visibleColumns: columns.visible,

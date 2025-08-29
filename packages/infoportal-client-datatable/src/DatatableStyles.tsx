@@ -74,12 +74,6 @@ export const DatatableGlobalStyles = () => (
         borderRight: `1px solid ${theme.vars.palette.primary.main}`,
       },
 
-      '.dt-toolbar': {
-        padding: `calc(${theme.vars.spacing} * 0.5)`,
-        display: 'flex',
-        alignItems: 'center',
-      },
-
       '.td-index': {
         justifyContent: 'center',
         padding: 0,

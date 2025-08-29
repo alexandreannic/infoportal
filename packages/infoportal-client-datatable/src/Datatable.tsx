@@ -15,6 +15,7 @@ import {FilterValue, Props, Row} from '@/core/types'
 import {PopupSelectedCell} from '@/popup/PopupSelectedCell'
 import {DatatableErrorBoundary} from '@/DatatableErrorBundary'
 import {DatatableSkeleton} from '@/DatatableSkeleton'
+import {DatatableToolbar} from '@/DatatableToolbar'
 
 export const Datatable = <T extends Row>({data, ...props}: Props<T>) => {
   if (!data) return <DatatableSkeleton columns={props.columns.length} />
@@ -48,7 +49,6 @@ const DatatableWithData = <T extends Row>() => {
     getColumnOptions,
     cellSelection,
     tableRef,
-    header,
     contentProps,
     module,
   } = useDatatableContext(_ => _)
@@ -93,8 +93,6 @@ const DatatableWithData = <T extends Row>() => {
     })
   }, [dataFilteredAndSorted, rowVirtualizer.getVirtualItems()])
 
-  const filterCount = useMemoFn(filters, _ => Obj.keys(_).length)
-
   const onCellClick = useCallback((rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
     const row = dataFilteredAndSorted[rowIndex]
     const column = columns.visible[colIndex]
@@ -105,33 +103,7 @@ const DatatableWithData = <T extends Row>() => {
 
   return (
     <div>
-      <div className="dt-toolbar">
-        <DatatableColumnToggle
-          columns={columns.all}
-          hiddenColumns={columns.all.map(_ => _.id).filter(_ => !columns.visible.map(_ => _.id).includes(_))}
-          onChange={hiddenColumns => dispatch({type: 'SET_HIDDEN_COLUMNS', hiddenColumns})}
-        />
-        <Badge
-          badgeContent={filterCount}
-          color="primary"
-          overlap="circular"
-          onClick={() => {
-            dispatch({type: 'FILTER_CLEAR'})
-            rowVirtualizer.scrollToIndex(0)
-          }}
-        >
-          <IconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
-        </Badge>
-        {typeof header === 'function'
-          ? header({
-              data: (data ?? []) as T[],
-              filteredAndSortedData: (dataFilteredAndSorted ?? []) as T[],
-            })
-          : header}
-        <Txt bold color="hint" sx={{mr: 0.5}}>
-          {formatLargeNumber(dataFilteredAndSorted.length)}
-        </Txt>
-      </div>
+      <DatatableToolbar rowVirtualizer={rowVirtualizer} />
       <Box
         className="dt"
         ref={tableRef}
@@ -169,7 +141,7 @@ const DatatableWithData = <T extends Row>() => {
             )
           })}
         </div>
-        <PopupSelectedCell {...cellSelection} />
+        <PopupSelectedCell />
         {(() => {
           switch (popup?.name) {
             case 'STATS': {
