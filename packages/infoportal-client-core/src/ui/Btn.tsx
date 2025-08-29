@@ -1,11 +1,64 @@
 import * as React from 'react'
 import {forwardRef, ReactNode} from 'react'
-import {Button, CircularProgress, Icon, styled, Tooltip} from '@mui/material'
+import {alpha, Button, CircularProgress, Icon, Tooltip} from '@mui/material'
 import {ButtonProps} from '@mui/material/Button'
+import {makeStyles} from 'tss-react/mui'
 import {fnSwitch} from '@axanc/ts-utils'
-import {alphaVar, styleUtils} from '../core/theme'
+import {styleUtils} from '../core'
 
-export type BtnVariant = 'light' | 'input' | 'text' | 'outlined' | 'contained'
+const useStyles = makeStyles<{loading?: boolean; variant?: BtnVariant}>()((t, {loading, variant}) => ({
+  icon: {
+    height: '22px !important',
+    lineHeight: '22px !important',
+    fontSize: '22px !important',
+    marginRight: t.spacing(1),
+  },
+  root: {
+    ...fnSwitch(
+      variant!,
+      {
+        light: {
+          border: 'none',
+          fontWeight: 500,
+          background: alpha(t.palette.primary.main, 0.12),
+          textTransform: 'inherit',
+          '&:hover': {
+            background: alpha(t.palette.primary.main, 0.2),
+          },
+        },
+        input: {
+          fontWeight: 500,
+          ...styleUtils(t).color.input.default,
+          textTransform: 'inherit',
+          '&:hover': {
+            ...styleUtils(t).color.input.hover,
+          },
+        },
+      },
+      () => undefined,
+    ),
+  },
+  content: {
+    display: 'flex',
+    alignItems: 'center',
+    ...(loading && {
+      visibility: 'hidden',
+    }),
+  },
+  progress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: t.spacing(-1.5),
+    marginLeft: t.spacing(-1.5),
+  },
+  iconEnd: {
+    marginRight: 0,
+    marginLeft: t.spacing(1),
+  },
+}))
+
+export type BtnVariant = ButtonProps['variant'] | 'light' | 'input'
 
 export interface BtnProps extends Omit<ButtonProps, 'variant'> {
   variant?: BtnVariant
@@ -19,99 +72,50 @@ export interface BtnProps extends Omit<ButtonProps, 'variant'> {
   target?: '_blank'
 }
 
-const StyledButton = styled(Button, {
-  shouldForwardProp: prop => prop !== 'innerVariant',
-})<{
-  innerVariant?: BtnVariant
-}>(({theme, innerVariant}) => {
-  return {
-    position: 'relative',
-    ...fnSwitch(
-      innerVariant!,
-      {
-        light: {
-          border: 'none',
-          fontWeight: 500,
-          background: alphaVar(theme.vars.palette.primary.main, 0.12),
-          textTransform: 'inherit',
-          '&:hover': {
-            background: alphaVar(theme.vars.palette.primary.main, 0.2),
-          },
-        },
-        input: {
-          fontWeight: 500,
-          ...styleUtils(theme).color.input.default,
-          textTransform: 'inherit',
-          '&:hover': {
-            ...styleUtils(theme).color.input.hover,
-          },
-        },
-      },
-      () => ({}),
-    ),
-  }
-})
-
-const Content = styled('div')<{loading?: boolean}>(({loading}) => ({
-  display: 'flex',
-  alignItems: 'center',
-  ...(loading && {
-    visibility: 'hidden',
-  }),
-}))
-
-const Progress = styled(CircularProgress)(({theme}) => ({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  marginTop: `calc(${theme.vars.spacing} * 1.5)`,
-  marginLeft: `calc(${theme.vars.spacing} * 1.5)`,
-}))
-
-const StyledIcon = styled(Icon)(({theme}) => ({
-  height: '22px !important',
-  lineHeight: '22px !important',
-  fontSize: '22px !important',
-  marginRight: theme.vars.spacing,
-}))
-
-const StyledIconEnd = styled(StyledIcon)(({theme}) => ({
-  marginRight: 0,
-  marginLeft: theme.vars.spacing,
-}))
-
-export const Btn = forwardRef<HTMLButtonElement, BtnProps>(
+export const Btn = forwardRef(
   (
-    {tooltip, loading, children, disabled, before, icon, variant, iconAfter, color, className, iconSx, ...props},
-    ref,
+    {
+      tooltip,
+      loading,
+      children,
+      disabled,
+      before,
+      icon,
+      variant,
+      iconAfter,
+      color,
+      className,
+      iconSx,
+      ...props
+    }: BtnProps,
+    ref: any,
   ) => {
+    const {classes, cx} = useStyles({loading, variant})
     const btn = (
-      <StyledButton
+      <Button
         {...props}
-        ref={ref}
-        innerVariant={variant}
         variant={variant === 'light' || variant === 'input' ? 'outlined' : variant}
         color={color}
         disabled={disabled || loading}
-        loading={loading}
-        className={className}
+        ref={ref}
+        className={cx(className, classes.root)}
       >
-        <Content loading={loading}>
+        <div className={classes.content}>
           {before}
           {icon && (
-            <StyledIcon fontSize={props.size} sx={iconSx}>
+            <Icon fontSize={props.size} className={classes.icon} sx={iconSx}>
               {icon}
-            </StyledIcon>
+            </Icon>
           )}
           {children}
           {iconAfter && (
-            <StyledIconEnd fontSize={props.size} sx={iconSx}>
+            <Icon className={cx(classes.iconEnd, classes.icon)} fontSize={props.size} sx={iconSx}>
               {iconAfter}
-            </StyledIconEnd>
+            </Icon>
           )}
-        </Content>
-        {loading && <Progress size={24} />}
-      </StyledButton>
+        </div>
+        {loading && <CircularProgress size={24} className={classes.progress} />}
+      </Button>
     )
     return tooltip ? <Tooltip title={tooltip}>{btn}</Tooltip> : btn
   },
