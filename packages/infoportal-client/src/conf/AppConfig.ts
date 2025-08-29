@@ -49,6 +49,7 @@ export const appConfig = {
   icons: {
     sector: 'category',
     program: 'book',
+    koboAppLogo: 'select_check_box',
     koboForm: 'fact_check',
     workspace: 'workspaces',
     submission: 'send',

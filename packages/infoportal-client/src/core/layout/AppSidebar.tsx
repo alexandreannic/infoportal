@@ -1,7 +1,7 @@
 import {useI18n} from '@/core/i18n'
 import {Core, Fender} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
-import {Box, Icon, Skeleton, Tooltip, useTheme} from '@mui/material'
+import {Box, Icon, IconProps, Skeleton, Tooltip, useTheme} from '@mui/material'
 import {useMemo, useState} from 'react'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {Link} from '@tanstack/react-router'
@@ -10,6 +10,7 @@ import {appConfig} from '@/conf/AppConfig.js'
 import {mapFor, Seq, seq} from '@axanc/ts-utils'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
+import {capitalize} from 'infoportal-common'
 
 export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
   const {m} = useI18n()
@@ -19,12 +20,7 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
 
   const forms: Seq<Ip.Form> = useMemo(() => {
     if (!queryForm.accessibleForms.data) return seq()
-    return queryForm.accessibleForms.data.map(_ => ({
-      ..._,
-      id: _.id,
-      archived: _.deploymentStatus === 'archived',
-      name: _.name,
-    }))
+    return queryForm.accessibleForms.data
   }, [queryForm.accessibleForms.data])
 
   const [filteredForms, setFilteredForms] = useState<Seq<Ip.Form>>(forms)
@@ -98,14 +94,34 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
             <Tooltip
               key={_.id}
               title={
-                <Box display="flex" alignItems="center">
-                  {_.category}
-                  {_.category && (
-                    <Icon color="disabled" fontSize="small">
-                      chevron_right
-                    </Icon>
+                <Box>
+                  <Box display="flex" alignItems="center">
+                    {_.category}
+                    {_.category && (
+                      <Icon color="inherit" fontSize="small">
+                        chevron_right
+                      </Icon>
+                    )}
+                    <Core.Txt bold noWrap>
+                      {_.name}
+                    </Core.Txt>
+                  </Box>
+                  {_.deploymentStatus !== 'deployed' && (
+                    <Box>
+                      <IconDeploymentStatus
+                        status={_.deploymentStatus}
+                        fontSize="medium"
+                        sx={{width: 35, m: 0}}
+                        color="inherit"
+                      />
+                      <Core.Txt bold>{capitalize(_.deploymentStatus ?? '')}</Core.Txt>
+                    </Box>
                   )}
-                  <Core.Txt bold>{_.name}</Core.Txt>
+                  {_.kobo && (
+                    <Box>
+                      <IconLinkedToKobo color="inherit" fontSize="medium" sx={{width: 35, m: 0}} /> {m.linkedToKobo}
+                    </Box>
+                  )}
                 </Box>
               }
               placement="right-end"
@@ -126,14 +142,12 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
                           </Icon>
                         )} */}
                         {_.deploymentStatus !== 'deployed' && (
-                          <Icon
-                            fontSize="small"
-                            color="disabled"
-                            sx={{marginLeft: '4px', marginRight: '-4px', verticalAlign: 'middle'}}
-                          >
-                            {appConfig.icons.deploymentStatus[_.deploymentStatus!]}
-                          </Icon>
+                          <IconDeploymentStatus
+                            status={_.deploymentStatus}
+                            sx={{marginLeft: '4px', marginRight: '-4px'}}
+                          />
                         )}
+                        {_.kobo && <IconLinkedToKobo sx={{marginLeft: '4px', marginRight: '-4px'}} />}
                       </>
                     }
                   >
@@ -151,5 +165,26 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
         </>
       )}
     </Sidebar>
+  )
+}
+
+function IconDeploymentStatus({status, sx, ...props}: IconProps & {status?: null | Ip.Form.DeploymentStatus}) {
+  return (
+    <Icon
+      fontSize="small"
+      color="disabled"
+      sx={{marginLeft: '4px', marginRight: '-4px', verticalAlign: 'middle', ...sx}}
+      {...props}
+    >
+      {appConfig.icons.deploymentStatus[status!]}
+    </Icon>
+  )
+}
+
+function IconLinkedToKobo({sx, ...props}: IconProps) {
+  return (
+    <Icon fontSize="small" color="info" sx={{verticalAlign: 'middle', textAlign: 'center', ...sx}} {...props}>
+      plug_connect
+    </Icon>
   )
 }

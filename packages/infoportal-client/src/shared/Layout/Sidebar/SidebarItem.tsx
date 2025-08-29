@@ -104,7 +104,15 @@ export const SidebarItem = ({
 }: SidebarItemProps) => {
   const isClickable = !!(props.onClick || props.href || active !== undefined)
   return (
-    <Root component="div" role="link" disableRipple={!isClickable} isClickable={isClickable} sx={sx} {...props}>
+    <Root
+      active={active}
+      component="div"
+      role="link"
+      disableRipple={!isClickable}
+      isClickable={isClickable}
+      sx={sx}
+      {...props}
+    >
       {icon &&
         (typeof icon === 'string' ? (
           <Icon fontSize={size === 'small' ? 'small' : 'medium'} sx={css.iStart}>
