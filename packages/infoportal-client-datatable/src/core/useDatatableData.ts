@@ -7,7 +7,7 @@ import {Utils} from '@/helper/utils'
 export type UseDatatableData<T extends Row> = ReturnType<typeof useDatatableData<T>>
 
 export const useDatatableData = <T extends Row>({
-  data,
+  data: _data,
   filters,
   sortBy,
   colIndex,
@@ -19,12 +19,14 @@ export const useDatatableData = <T extends Row>({
   sortBy?: SortBy
   colIndex: Record<string, Column.InnerProps<any>>
 }) => {
-  useEffect(() => {
-    if (!showRowIndex) return
-    data?.forEach((d: any, i) => {
-      d.index = i
+  const data = useMemo(() => {
+    if (!showRowIndex) return _data
+    return _data?.map((d: any, i) => {
+      const cpy = {...d}
+      cpy.index = i
+      return cpy
     })
-  }, [data])
+  }, [_data])
 
   const filteredData = useMemo(() => {
     return filterBy({data, filters: filters, colIndex: colIndex})

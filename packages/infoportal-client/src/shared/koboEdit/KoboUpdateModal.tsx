@@ -32,21 +32,24 @@ export const editableColumnType = [
 export type KoboUpdateModalType = ArrayValues<typeof editableColumnType>
 
 export namespace KoboUpdateModal {
-  const Custom = ({
-    payload,
-    onClose,
-  }: DialogProps<{
+  const Base = ({
+    type,
+    subTitle,
+    title,
+    onConfirm,
+    error,
+    options,
+    loading,
+  }: {
     type?: KoboUpdateModalType
     subTitle?: string
     title?: string
-    onConfirm: (_: any) => void
+    onConfirm: (_: any) => Promise<any>
     error?: string
     options?: string[] | KoboEditModalOption[]
     loading?: boolean
-  }>) => {
+  }) => {
     const {m} = useI18n()
-    const {title, error, onConfirm, loading, type, options, subTitle} = payload
-
     const [value, setValue] = useState<any>()
     const [updated, setUpdated] = useState(false)
 
@@ -72,29 +75,20 @@ export namespace KoboUpdateModal {
       ))
     }, [options, value])
 
-    const _loading = loading
     return (
-      <Core.BasicDialog
-        maxWidth="xs"
-        open={true}
-        onClose={() => onClose()}
-        loading={_loading}
-        cancelLabel={m.close}
-        confirmDisabled={_loading || updated}
-        onConfirm={() => onConfirm(value)}
-        title={title}
-      >
-        <Core.Txt truncate color="hint" block sx={{mb: 1, maxWidth: 400}}>
-          {subTitle}
-        </Core.Txt>
+      <>
         {error && <Alert color="error">{m.somethingWentWrong}</Alert>}
         {updated && (
-          <Alert color="success" action={<Core.Btn onClick={() => setUpdated(false)}>{m.change}</Core.Btn>}>
+          <Alert
+            color="success"
+            sx={{mb: 1}}
+            action={<Core.Btn onClick={() => setUpdated(false)}>{m.change}</Core.Btn>}
+          >
             {m.successfullyEdited(-1)}
           </Alert>
         )}
         <Collapse in={!updated}>
-          <Box sx={{minWidth: 340}}>
+          <Box sx={{minWidth: 340, maxHeight: 400, overflowY: 'auto'}}>
             {/*<Checkbox/>Delete answer and set as BLANK*/}
             {(() => {
               switch (type) {
@@ -141,90 +135,96 @@ export namespace KoboUpdateModal {
             })()}
           </Box>
         </Collapse>
-      </Core.BasicDialog>
+        {/*onClose={() => onClose()}*/}
+        {/*loading={_loading}*/}
+        {/*cancelLabel={m.close}*/}
+        {/*confirmDisabled={_loading || updated}*/}
+        {/*onConfirm={() => onConfirm(value)}*/}
+        <Core.Btn
+          variant="outlined"
+          loading={loading}
+          disabled={updated}
+          onClick={() => onConfirm(value).then(() => setUpdated(true))}
+          sx={{mt: 1}}
+        >
+          {m.confirm}
+        </Core.Btn>
+      </>
     )
   }
 
-  export const Answer = ({
-    payload,
-    ...props
-  }: DialogProps<{
+  export const Answer = (props: {
     workspaceId: Ip.WorkspaceId
     formId: Ip.FormId
     columnName: string
     answerIds: Ip.SubmissionId[]
     onUpdated?: (params: Ip.Submission.Payload.Update) => void
-  }>) => {
-    const {workspaceId, formId, columnName, answerIds, onUpdated} = payload
+  }) => {
+    const {workspaceId, formId, columnName, answerIds, onUpdated} = props
     const {m} = useI18n()
     const queryForm = useQueryFormById({workspaceId, formId}).get
     const {columnDef, schema, loading: loadingSchema} = useKoboColumnDef({workspaceId, formId, columnName})
     const queryUpdate = useQueryAnswerUpdate().update
 
     return (
-      <Custom
+      <Base
         {...props}
-        payload={{
-          loading: loadingSchema || queryUpdate.isPending,
-          error: queryUpdate.error?.message,
-          onConfirm: value => {
-            queryUpdate.mutate({workspaceId, formId, answerIds, question: columnName, answer: value})
-          },
-          title: `${m.edit} (${answerIds.length}) - ${queryForm.data?.name}`,
-          subTitle: schema?.translate.question(columnName),
-          type: columnDef?.type as any,
-          options: columnDef
+        loading={loadingSchema || queryUpdate.isPending}
+        error={queryUpdate.error?.message}
+        onConfirm={value =>
+          queryUpdate.mutateAsync({workspaceId, formId, answerIds, question: columnName, answer: value})
+        }
+        title={`${m.edit} (${answerIds.length}) - ${queryForm.data?.name}`}
+        subTitle={schema?.translate.question(columnName)}
+        type={columnDef?.type as any}
+        options={
+          columnDef
             ? schema?.helper.choicesIndex[columnDef.select_from_list_name!]?.map(_ => ({
                 value: _.name,
                 desc: _.name,
                 label: schema.translate.choice(columnName, _.name),
               }))
-            : undefined,
-        }}
+            : undefined
+        }
       />
     )
   }
 
-  export const Validation = ({
-    payload,
-    ...props
-  }: DialogProps<{
+  export const Validation = (props: {
     workspaceId: Ip.WorkspaceId
     formId: Ip.FormId
     answerIds: Ip.SubmissionId[]
     onUpdated?: (params: Ip.Submission.Payload.UpdateValidation) => void
-  }>) => {
-    const {workspaceId, formId, answerIds, onUpdated} = payload
+  }) => {
+    const {workspaceId, formId, answerIds, onUpdated} = props
     const {m} = useI18n()
     const queryUpdate = useQueryAnswerUpdate().updateValidation
 
     return (
-      <Custom
+      <Base
         {...props}
-        payload={{
-          loading: queryUpdate.isPending,
-          error: queryUpdate.error?.message,
-          onConfirm: value => {
-            queryUpdate.mutate({
-              formId,
-              status: value,
-              answerIds,
-              workspaceId,
-            })
-          },
-          title: `${m.edit} (${answerIds.length}) - ${m.validation}`,
-          type: 'select_one',
-          options: Obj.values(Ip.Submission.Validation).map(_ => ({
-            value: _,
-            label: _,
-            before: (
-              <StateStatusIcon
-                sx={{alignSelf: 'center', mr: 1}}
-                type={SelectStatusConfig.customStatusToStateStatus.KoboValidation[_]}
-              />
-            ),
-          })),
-        }}
+        loading={queryUpdate.isPending}
+        error={queryUpdate.error?.message}
+        onConfirm={value =>
+          queryUpdate.mutateAsync({
+            formId,
+            status: value,
+            answerIds,
+            workspaceId,
+          })
+        }
+        title={`${m.edit} (${answerIds.length}) - ${m.validation}`}
+        type="select_one"
+        options={Obj.values(Ip.Submission.Validation).map(_ => ({
+          value: _,
+          label: _,
+          before: (
+            <StateStatusIcon
+              sx={{alignSelf: 'center', mr: 1}}
+              type={SelectStatusConfig.customStatusToStateStatus.KoboValidation[_]}
+            />
+          ),
+        }))}
       />
     )
   }

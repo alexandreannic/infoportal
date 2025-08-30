@@ -76,6 +76,7 @@ export interface Props<T extends Row, K extends string = string> {
     cellSelection?: {
       enabled: true
       mode: 'cell' | 'col' | 'free' | 'row' | 'row-or-cell'
+      renderComponentOnRowSelected?: ({rowIds}: {rowIds: string[]}) => ReactNode
     }
     columnsResize?: {
       enabled: boolean
@@ -114,6 +115,7 @@ export namespace Column {
     hidden?: boolean
     style?: (_: T) => CSSProperties
     styleHead?: CSSProperties
+    actionOnSelected?: ({rowIds}: {rowIds: string[]}) => ReactNode
     classHead?: string
     typeIcon?: ReactNode
     typeLabel?: string

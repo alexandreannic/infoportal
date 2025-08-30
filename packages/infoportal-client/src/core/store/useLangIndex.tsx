@@ -49,23 +49,6 @@ export const useKoboDialogs = () => {
   const queryClient = useQueryClient()
 
   return {
-    openBulkEditAnswers: (params: KoboUpdateAnswers) => {
-      dialogs.open(KoboUpdateModal.Answer, {
-        workspaceId: params.workspaceId,
-        formId: params.formId,
-        columnName: params.question,
-        answerIds: params.answerIds,
-        onUpdated: params.onSuccess,
-      })
-    },
-    openBulkEditValidation: (params: KoboUpdateValidation) => {
-      dialogs.open(KoboUpdateModal.Validation, {
-        workspaceId: params.workspaceId,
-        formId: params.formId,
-        answerIds: params.answerIds,
-        onUpdated: params.onSuccess,
-      })
-    },
     openView: (params: OpenModalProps) => {
       const schema = getSchema({queryClient, ...params})
       if (!schema) {

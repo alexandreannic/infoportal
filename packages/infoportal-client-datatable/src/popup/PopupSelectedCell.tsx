@@ -5,14 +5,17 @@ import {Btn, Txt} from '@infoportal/client-core'
 import React from 'react'
 
 export const PopupSelectedCell = () => {
-  const cellSelection = useDatatableContext(_ => _.cellSelection)
+  const {engine, selectedCount, areAllColumnsSelected, selectedColumnsIds, selectedRowIds, selectedColumnUniq} =
+    useDatatableContext(_ => _.cellSelection)
   const renderComponentOnRowSelected = useDatatableContext(_ => _.module?.cellSelection?.renderComponentOnRowSelected)
   const {formatLargeNumber} = useConfig()
+
+  const rowIds = [...selectedRowIds]
   return (
     <Popover
-      onClose={cellSelection.engine.reset}
-      open={!!cellSelection.engine.anchorEl && cellSelection.selectedCount > 0}
-      anchorEl={cellSelection.engine.anchorEl}
+      onClose={engine.reset}
+      open={!!engine.anchorEl && selectedCount > 0}
+      anchorEl={engine.anchorEl}
       anchorOrigin={{
         vertical: 'bottom',
         horizontal: 'left',
@@ -46,27 +49,28 @@ export const PopupSelectedCell = () => {
       }}
     >
       <Box sx={{p: 1, maxWidth: 400}}>
-        <Btn variant="outlined" icon="clear" onClick={cellSelection.engine.reset} color="primary" sx={{mb: 1}}>
-          {formatLargeNumber(cellSelection.selectedCount)}
+
+        <Btn variant="outlined" icon="clear" onClick={engine.reset} color="primary" sx={{mb: 1}}>
+          {formatLargeNumber(selectedCount)}
           <Txt color="hint" fontWeight="400" sx={{ml: 2, display: 'flex', alignItems: 'center'}}>
             <Icon fontSize="inherit">view_column</Icon>
-            {formatLargeNumber(cellSelection.selectedColumnsIds.size)}
+            {formatLargeNumber(selectedColumnsIds.size)}
             <Box sx={{mx: 0.5}}>×</Box>
             <Icon fontSize="inherit">table_rows</Icon>
-            {formatLargeNumber(cellSelection.selectedRowIds.size)}
+            {formatLargeNumber(selectedRowIds.size)}
           </Txt>
         </Btn>
+
         <Txt block color="hint"></Txt>
-        {cellSelection.selectedColumnUniq && (
-          <>
-            <Txt block bold>
-              {cellSelection.selectedColumnUniq.head}
+        {selectedColumnUniq && (
+          <Box sx={{mt: 1}}>
+            <Txt block bold sx={{mb: 1}}>
+              {selectedColumnUniq.head}
             </Txt>
-          </>
+            {selectedColumnUniq.actionOnSelected?.({rowIds})}
+          </Box>
         )}
-        {cellSelection.areAllColumnsSelected &&
-          renderComponentOnRowSelected &&
-          renderComponentOnRowSelected({rowIds: [...cellSelection.selectedRowIds]})}
+        {areAllColumnsSelected && renderComponentOnRowSelected && renderComponentOnRowSelected({rowIds})}
       </Box>
     </Popover>
   )

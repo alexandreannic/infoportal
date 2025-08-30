@@ -2,18 +2,18 @@ import {formatDate, formatDateTime, Messages} from '@/core/i18n/localization/en'
 import React from 'react'
 import {Kobo} from 'kobo-sdk'
 import {map} from '@axanc/ts-utils'
-import {Core, Datatable, TableEditCellBtn} from '@/shared'
+import {Core, Datatable} from '@/shared'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper, removeHtml} from 'infoportal-common'
 import {DatabaseContext, KoboExternalFilesIndex} from '@/features/Form/Database/DatabaseContext'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {Ip} from 'infoportal-api-sdk'
-import {Theme} from '@mui/material'
+import {Box, Icon, Theme, useTheme} from '@mui/material'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useKoboDialogs} from '@/core/store/useLangIndex'
-import {SelectStatusBy, SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
+import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {useI18n} from '@/core/i18n'
-import Submission = Ip.Submission
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByKoboType'
+import {KoboUpdateModal} from '@/shared/koboEdit/KoboUpdateModal'
 
 export const buildDatabaseColumns = {
   type: {
@@ -62,9 +62,10 @@ type Question = Pick<
 >
 
 export type BuildFormColumnProps = {
+  workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   q: Question
-  onEdit?: (name: string) => void
+  isReadonly?: boolean
   getRow?: (_: any) => Data
   schema: KoboSchemaHelper.Bundle
   choicesIndex: KoboSchemaHelper.Helper['choicesIndex']
@@ -76,7 +77,10 @@ export type BuildFormColumnProps = {
   m: Messages
 }
 
-type CommonProps = Pick<BuildFormColumnProps, 'getRow' | 'q' | 'onEdit' | 'translateQuestion'>
+type CommonProps = Pick<
+  BuildFormColumnProps,
+  'isReadonly' | 'formId' | 'workspaceId' | 'getRow' | 'q' | 'translateQuestion' | 'm'
+>
 
 const metaLabel = 'Meta'
 
@@ -86,28 +90,41 @@ function getValue({q, row, getRow = _ => _ as Row}: Pick<BuildFormColumnProps, '
 
 function getCommon({
   q,
+  m,
+  workspaceId,
+  formId,
+  isReadonly,
   translateQuestion,
-  onEdit,
-}: CommonProps): Pick<Datatable.Column.Props<any>, 'id' | 'group' | 'typeIcon' | 'typeLabel' | 'head' | 'subHeader'> {
+}: CommonProps): Pick<
+  Datatable.Column.Props<any>,
+  'actionOnSelected' | 'id' | 'group' | 'typeIcon' | 'typeLabel' | 'head' | 'subHeader'
+> {
   return {
     id: q.name,
     typeLabel: q.type,
+    actionOnSelected: isReadonly
+      ? () => <ReadonlyAction />
+      : ({rowIds}: {rowIds: string[]}) => (
+          <KoboUpdateModal.Answer
+            columnName={q.name}
+            answerIds={rowIds as Ip.SubmissionId[]}
+            workspaceId={workspaceId}
+            formId={formId}
+            onUpdated={console.log}
+          />
+        ),
     ...map(q.$xpath.split('/')[0], value => ({
       group: {label: value === 'meta' ? metaLabel : translateQuestion(value), id: value},
     })),
-    ...(onEdit
-      ? {
-          subHeader: <TableEditCellBtn onClick={() => onEdit(q.name)} />,
-        }
-      : {
-          typeIcon: <DatatableHeadTypeIconByKoboType children={q.type} />,
-        }),
+    typeIcon: <DatatableHeadTypeIconByKoboType children={q.type} />,
     head: removeHtml(translateQuestion(q.name)?.replace(/^#*/, '')),
   }
 }
 
 function byQuestions({
   questions,
+  formId,
+  workspaceId,
   ...props
 }: {questions: Kobo.Form.Question[]} & Pick<
   BuildFormColumnProps,
@@ -115,16 +132,18 @@ function byQuestions({
   // | 'q'
   // | 'choicesIndex'
   // | 'translateChoice'
-  'onEdit' | 'getRow' | 'schema' | 'formId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
+  'workspaceId' | 'getRow' | 'schema' | 'formId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
 >): Datatable.Column.Props<Row>[] {
   const getBy = (q: Question): Datatable.Column.Props<Row> | undefined => {
     const args = (isReadonly?: boolean) => ({
       q,
+      formId,
+      workspaceId,
+      isReadonly,
       translateQuestion: props.schema.translate.question,
       translateChoice: props.schema.translate.choice,
       choicesIndex: props.schema.helper.choicesIndex,
       ...props,
-      onEdit: isReadonly ? undefined : props.onEdit,
     })
     const map: Partial<Record<Kobo.Form.QuestionType, Datatable.Column.Props<Row>>> = {
       // username: text(args()),
@@ -162,7 +181,7 @@ function bySchema(
     // | 'q'
     // | 'choicesIndex'
     // | 'translateChoice'
-    'onEdit' | 'getRow' | 'schema' | 'formId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
+    'getRow' | 'schema' | 'formId' | 'workspaceId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
   >,
 ): Datatable.Column.Props<Row>[] {
   return byQuestions({
@@ -337,7 +356,7 @@ function selectMultiple(
 }
 
 function geopoint(
-  props: CommonProps & Pick<BuildFormColumnProps, 'getRow' | 'q' | 'onEdit'>,
+  props: CommonProps & Pick<BuildFormColumnProps, 'getRow' | 'q' | 'isReadonly'>,
 ): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
@@ -403,6 +422,7 @@ function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'> = {}): Datatable
     group: {label: metaLabel, id: 'meta'},
     type: 'id',
     id: 'id' as const,
+    actionOnSelected: () => <ReadonlyAction />,
     head: 'ID',
     typeIcon: <Datatable.HeadIconByType type="id" />,
     className: 'td-id',
@@ -437,14 +457,14 @@ function actions({
   canEdit?: boolean
   koboEditEnketoUrl?: DatabaseContext['koboEditEnketoUrl']
   m: Messages
-}): Datatable.Column.Props<Submission> {
+}): Datatable.Column.Props<Ip.Submission> {
   return {
     group: {label: metaLabel, id: 'meta'},
     id: 'actions' as const,
     head: '',
     width: 70,
     noCsvExport: true,
-    render: (_: Submission) => {
+    render: (_: Ip.Submission) => {
       return {
         value: null as any,
         label: (
@@ -477,8 +497,19 @@ function actions({
   }
 }
 
-function start({m}: {m: Messages}): Datatable.Column.Props<Row> {
+function start({
+  m,
+  workspaceId,
+  formId,
+}: {
+  workspaceId: Ip.WorkspaceId
+  formId: Ip.FormId
+  m: Messages
+}): Datatable.Column.Props<Row> {
   return date({
+    m,
+    workspaceId,
+    formId,
     translateQuestion: () => m.start,
     q: {
       type: 'start',
@@ -489,8 +520,19 @@ function start({m}: {m: Messages}): Datatable.Column.Props<Row> {
   })
 }
 
-function end({m}: {m: Messages}): Datatable.Column.Props<Row> {
+function end({
+  m,
+  workspaceId,
+  formId,
+}: {
+  workspaceId: Ip.WorkspaceId
+  formId: Ip.FormId
+  m: Messages
+}): Datatable.Column.Props<Row> {
   return date({
+    m,
+    workspaceId,
+    formId,
     translateQuestion: () => m.end,
     q: {
       type: 'end',
@@ -501,8 +543,20 @@ function end({m}: {m: Messages}): Datatable.Column.Props<Row> {
   })
 }
 
-function submissionTime({m}: {m: Messages}): Datatable.Column.Props<Row> {
+function submissionTime({
+  m,
+  workspaceId,
+  formId,
+}: {
+  workspaceId: Ip.WorkspaceId
+  formId: Ip.FormId
+  m: Messages
+}): Datatable.Column.Props<Row> {
   return date({
+    m,
+    isReadonly: true,
+    workspaceId,
+    formId,
     translateQuestion: () => m.submissionTime,
     q: {
       type: 'date',
@@ -531,32 +585,11 @@ function validation({
     id: '_validation' as const,
     head: m.validation,
     align: 'center',
-    subHeader: (
-      <SelectStatusBy
-        enum="KoboValidation"
-        compact
-        disabled={!canEdit}
-        value={null}
-        onChange={e => {
-          dialogs.openBulkEditValidation({
-            formId,
-            answerIds: selectedIds,
-            workspaceId,
-          })
-        }}
-      />
-      // <TableEditCellBtn
-      //   onClick={() =>
-      //     dialogs.openBulkEditValidation({
-      //       formId,
-      //       answerIds: selectedIds,
-      //       workspaceId,
-      //     })
-      //   }
-      // />
-    ),
     width: 60,
     type: 'select_one',
+    actionOnSelected: ({rowIds}: {rowIds: string[]}) => (
+      <KoboUpdateModal.Validation formId={formId} workspaceId={workspaceId} answerIds={rowIds as Ip.SubmissionId[]} />
+    ),
     render: (row: any) => {
       const value: Ip.Submission.Validation = getRow(row).validationStatus
       const toGenericStatus = SelectStatusConfig.customStatusToStateStatus.KoboValidation[value]
@@ -565,22 +598,6 @@ function validation({
         value: value ?? Datatable.Utils.blank,
         option: value ? (m as any)[value] : Datatable.Utils.blank,
         label: <StateStatusIcon type={toGenericStatus} />,
-        // label: (
-        //   <SelectStatusBy
-        //     enum="KoboValidation"
-        //     compact
-        //     disabled={!canEdit}
-        //     value={value}
-        //     onChange={e => {
-        //       queryUpdate.updateValidation.mutate({
-        //         workspaceId,
-        //         formId: formId,
-        //         answerIds: [getRow(row).id],
-        //         status: e,
-        //       })
-        //     }}
-        //   />
-        // ),
       }
     },
   }
@@ -597,5 +614,16 @@ function MissingOption({value}: {value?: string}) {
       <Datatable.Icon color="disabled" tooltip={m._koboDatabase.valueNoLongerInOption} sx={{mr: 1}} children="error" />
       {value}
     </span>
+  )
+}
+
+function ReadonlyAction() {
+  const {m} = useI18n()
+  const t = useTheme()
+  return (
+    <Box display="flex" alignItems="center" sx={{color: t.palette.text.disabled}}>
+      <Icon sx={{mr: 1}}>lock</Icon>
+      {m.readonly}
+    </Box>
   )
 }

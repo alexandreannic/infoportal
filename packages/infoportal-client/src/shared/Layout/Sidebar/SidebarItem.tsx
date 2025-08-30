@@ -18,7 +18,7 @@ const css = Core.makeSx({
 })
 
 const Root = styled(ButtonBase, {
-  shouldForwardProp: prop => prop !== 'isClickable',
+  shouldForwardProp: prop => prop !== 'isClickable' && prop !== 'active',
 })<
   Pick<SidebarItemProps, 'size' | 'disabled' | 'large'> & {
     isClickable?: boolean

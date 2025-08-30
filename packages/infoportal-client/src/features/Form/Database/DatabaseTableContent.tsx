@@ -72,6 +72,7 @@ export const DatabaseTableContent = ({
 
   const schemaColumns = useMemo(() => {
     const schemaColumns = buildDatabaseColumns.type.bySchema({
+      workspaceId: workspaceId,
       getRow: (_: Submission) => _.answers,
       formId: ctx.form.id,
       schema: ctx.schema,
@@ -85,18 +86,8 @@ export const DatabaseTableContent = ({
             index: _.row._index,
           },
         }),
-      onEdit:
-        selectedIds.length > 0
-          ? questionName =>
-              dialogs.openBulkEditAnswers({
-                workspaceId,
-                formId: ctx.form.id,
-                question: questionName,
-                answerIds: selectedIds,
-              })
-          : undefined,
-      m,
       t,
+      m,
     })
     return databaseKoboDisplayBuilder({
       data: ctx.data ?? [],
@@ -230,7 +221,7 @@ export const DatabaseTableContent = ({
           id={ctx.form.id}
           getRowKey={getRowKey}
           columns={columns}
-          showRowIndex={true}
+          showRowIndex
           data={flatData}
           header={params => (
             <>

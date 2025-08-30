@@ -96,6 +96,7 @@ export const en = Object.freeze({
     paidOn: 'Paid on',
     lastStatusUpdate: 'Last status update',
     save: 'Save',
+    readonly: 'Read only',
     somethingWentWrong: 'Something went wrong',
     yes: 'Yes',
     influencingFactors: 'Influencing factors',
