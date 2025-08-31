@@ -73,7 +73,6 @@ const AppWithConfig = () => {
         _ => <QueryClientProvider client={queryClient} children={_} />,
         _ => <DialogsProvider children={_} />,
         _ => <SessionProvider children={_} />,
-        _ => <Datatable.Config children={_} />,
       ]}
     >
       <TrackLocation />
@@ -90,7 +89,7 @@ const AppWithConfig = () => {
 
 const AppWithBaseContext = () => {
   const settings = useAppSettings()
-  const {m} = useI18n()
+  const {formatLargeNumber, m} = useI18n()
   // useWebsocket()
   if (settings.conf.appOff) {
     return (
@@ -118,5 +117,46 @@ const AppWithBaseContext = () => {
     )
   }
 
-  return <Outlet />
+  return (
+    <Core.Provide
+      providers={[
+        _ => (
+          <Datatable.Config
+            children={_}
+            formatLargeNumber={formatLargeNumber}
+            m={{
+              clearFilter: m.clearFilter,
+              type: m.type,
+              remove: m.remove,
+              add: m.add,
+              save: m.save,
+              hidden: m.hidden,
+              visible: m.visible,
+              copied: m.copied,
+              group: m.group,
+              question: m.question,
+              sort: m.sort,
+              idFilterInfo: m._datatable.idFilterInfo,
+              idFilterPlaceholder: m._datatable.idFilterPlaceholder,
+              selectAll: m.selectAll,
+              close: m.close,
+              filterPlaceholder: m.filterPlaceholder,
+              filterBlanks: m.filterBlanks,
+              count: m.count,
+              sum: m.sum,
+              average: m.average,
+              min: m.min,
+              max: m.max,
+              currentlyDisplayed: m._datatable.currentlyDisplayed,
+              filter: m.filter,
+              refresh: m.refresh,
+              hardRefresh: m.hardRefresh,
+            }}
+          />
+        ),
+      ]}
+    >
+      <Outlet />
+    </Core.Provide>
+  )
 }

@@ -72,7 +72,7 @@ const DatatableWithData = <T extends Row>() => {
       offset: items[0]?.index ?? 0,
       limit: items.length + overscan,
     })
-  }, [columns.all])
+  }, [dataFilteredAndSorted, columns.all])
 
   useEffect(() => {
     const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse()

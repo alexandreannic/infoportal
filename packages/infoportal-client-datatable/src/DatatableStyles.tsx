@@ -76,6 +76,7 @@ export const DatatableGlobalStyles = () => (
 
       '.td-index': {
         justifyContent: 'center',
+        textAlign: 'center',
         padding: 0,
         background: 'none',
         color: theme.vars.palette.text.disabled,

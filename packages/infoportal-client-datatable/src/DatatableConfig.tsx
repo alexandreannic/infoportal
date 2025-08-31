@@ -12,6 +12,7 @@ const defaultConfig = {
     save: 'Save',
     hidden: 'Hidden',
     visible: 'Visible',
+    copied: 'Copied',
     group: 'Group',
     question: 'Question',
     sort: 'Sort',

@@ -90,7 +90,7 @@ function toInnerColumn<T extends Row>(col: Column.Props<T>): Column.InnerProps<T
     if (col.type === undefined) {
       ;(col as unknown as Column.InnerProps<T>).render = (_: T) => {
         const value = col.renderQuick(_) ?? (Utils.blank as any)
-        return {label: value, value: undefined}
+        return {label: value, export: value, value: undefined}
       }
     } else {
       ;(col as unknown as Column.InnerProps<T>).render = (_: T) => {
@@ -99,6 +99,7 @@ function toInnerColumn<T extends Row>(col: Column.Props<T>): Column.InnerProps<T
           label: value,
           tooltip: value,
           option: value,
+          export: value,
           value,
         }
       }

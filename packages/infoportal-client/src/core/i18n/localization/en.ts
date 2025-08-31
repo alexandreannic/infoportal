@@ -119,6 +119,7 @@ export const en = Object.freeze({
     copyLink: 'Copy link',
     copyResponderLink: 'Copy responder link',
     copiedToClipboard: 'Copied to clipboard',
+    copied: 'Copied',
     copy: 'Copy',
     forms: 'Forms',
     contactAdmin: 'Contact:',
@@ -212,6 +213,7 @@ export const en = Object.freeze({
     live: 'Live',
     details: 'Details',
     _datatable: {
+      currentlyDisplayed: `columns displayed`,
       view: 'Views',
       createNewView: 'New view name...',
       viewPublic: 'Public',
@@ -438,7 +440,6 @@ export const en = Object.freeze({
       koboQuestion: 'Kobo question',
       deleted: 'Deleted',
       customColumn: 'Custom column',
-      currentlyDisplayed: `columns displayed`,
       tagNotUpdated: 'Failed to update tag. Reloading clean data set...',
       downloadAsXLS: 'Download <b>filtered data</b> as XLS',
       importFromXLS: 'Import from XLS',
