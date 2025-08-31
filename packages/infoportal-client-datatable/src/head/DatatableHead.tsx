@@ -1,6 +1,6 @@
 import React, {DetailedReactHTMLElement, HTMLAttributes, ReactNode, useCallback, useMemo, useRef, useState} from 'react'
 import {Resizable} from 'react-resizable'
-import {useDatatableContext} from '@/core/DatatableContext'
+import {useCtx} from '@/core/DatatableContext'
 import {Popup} from '@/core/reducer'
 import {DatatableHeadSections} from '@/head/DatatableHeadSections'
 import {Column} from '@/core/types'
@@ -11,13 +11,13 @@ import {DatatableHeadCopyIds} from '@/head/DatatableHeadCopyIds'
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
 ) => {
-  const dispatch = useDatatableContext(_ => _.dispatch)
-  const columns = useDatatableContext(_ => _.columns.visible)
-  const moduleColumnsToggle = useDatatableContext(_ => _.module?.columnsToggle ?? {enabled: true})
-  const colWidths = useDatatableContext(_ => _.columns.widths)
-  const sortBy = useDatatableContext(_ => _.state.sortBy)
-  const filters = useDatatableContext(_ => _.state.filters)
-  const selectColumn = useDatatableContext(_ => _.cellSelection.selectColumn)
+  const dispatch = useCtx(_ => _.dispatch)
+  const columns = useCtx(_ => _.columns.visible)
+  const moduleColumnsToggle = useCtx(_ => _.module?.columnsToggle ?? {enabled: true})
+  const colWidths = useCtx(_ => _.columns.widths)
+  const sortBy = useCtx(_ => _.state.sortBy)
+  const filters = useCtx(_ => _.state.filters)
+  const selectColumn = useCtx(_ => _.cellSelection.selectColumn)
 
   const Cell = useMemo(() => {
     if (moduleColumnsToggle?.enabled) return ResizableCell

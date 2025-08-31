@@ -1,13 +1,14 @@
-import {DatatableContext, useDatatableContext} from '@/core/DatatableContext'
+import {DatatableContext, useCtx} from '@/core/DatatableContext'
 import {useConfig} from '@/DatatableConfig'
 import {Box, Icon, Popover} from '@mui/material'
 import {Btn, Txt} from '@infoportal/client-core'
 import React from 'react'
 
 export const PopupSelectedCell = () => {
-  const {engine, selectedCount, areAllColumnsSelected, selectedColumnsIds, selectedRowIds, selectedColumnUniq} =
-    useDatatableContext(_ => _.cellSelection)
-  const renderComponentOnRowSelected = useDatatableContext(_ => _.module?.cellSelection?.renderComponentOnRowSelected)
+  const {engine, selectedCount, areAllColumnsSelected, selectedColumnsIds, selectedRowIds, selectedColumnUniq} = useCtx(
+    _ => _.cellSelection,
+  )
+  const renderComponentOnRowSelected = useCtx(_ => _.module?.cellSelection?.renderComponentOnRowSelected)
   const {formatLargeNumber} = useConfig()
 
   const rowIds = [...selectedRowIds]
@@ -49,7 +50,6 @@ export const PopupSelectedCell = () => {
       }}
     >
       <Box sx={{p: 1, maxWidth: 400}}>
-
         <Btn variant="outlined" icon="clear" onClick={engine.reset} color="primary" sx={{mb: 1}}>
           {formatLargeNumber(selectedCount)}
           <Txt color="hint" fontWeight="400" sx={{ml: 2, display: 'flex', alignItems: 'center'}}>

@@ -2,7 +2,7 @@ import React, {useCallback, useEffect} from 'react'
 import {useVirtualizer} from '@tanstack/react-virtual'
 import {Badge, Box} from '@mui/material'
 import {DatatableHead} from '@/head/DatatableHead'
-import {DatatableProvider, useDatatableContext} from '@/core/DatatableContext'
+import {Provider, useCtx} from '@/core/DatatableContext'
 import {IconBtn, Txt} from '@infoportal/client-core'
 import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
@@ -29,9 +29,9 @@ export const Datatable = <T extends Row>({data, ...props}: Props<T>) => {
 
   return (
     <DatatableErrorBoundary>
-      <DatatableProvider {...props} data={data} tableRef={tableRef}>
+      <Provider {...props} data={data} tableRef={tableRef}>
         <DatatableWithData />
-      </DatatableProvider>
+      </Provider>
     </DatatableErrorBoundary>
   )
 }
@@ -51,7 +51,7 @@ const DatatableWithData = <T extends Row>() => {
     tableRef,
     contentProps,
     module,
-  } = useDatatableContext(_ => _)
+  } = useCtx(_ => _)
 
   const overscan = 10
   const rowVirtualizer = useVirtualizer({

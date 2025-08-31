@@ -4,14 +4,14 @@ import {useConfig} from '@/DatatableConfig'
 import {Column} from '@/core/types'
 import {TableIconBtn} from '@/ui/TableIcon'
 import {alphaVar, lightenVar} from '@infoportal/client-core'
-import {useDatatableContext} from '@/core/DatatableContext'
+import {useCtx} from '@/core/DatatableContext'
 
 export const DatatableHeadCopyIds = ({column}: {column: Column.InnerProps<any>}) => {
   const {formatLargeNumber} = useConfig()
   const t = useTheme()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [copied, setCopied] = useState(0)
-  const data = useDatatableContext(_ => _.data)
+  const data = useCtx(_ => _.data)
 
   const copy = async (data: any[] = []) => {
     await navigator.clipboard.writeText(data.join('\n'))

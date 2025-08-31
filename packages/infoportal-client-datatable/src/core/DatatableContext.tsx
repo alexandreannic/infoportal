@@ -36,11 +36,11 @@ export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'data' | 'col
 
 const Context = createContext<DatatableContext>({} as any)
 
-export const useDatatableContext = <Selected extends any>(selector: (_: DatatableContext) => Selected): Selected => {
+export const useCtx = <Selected extends any>(selector: (_: DatatableContext) => Selected): Selected => {
   return useContextSelector(Context, selector)
 }
 
-export const DatatableProvider = <T extends Row>(
+export const Provider = <T extends Row>(
   props: Omit<Props<T>, 'data'> & {
     data: T[]
     children: ReactNode

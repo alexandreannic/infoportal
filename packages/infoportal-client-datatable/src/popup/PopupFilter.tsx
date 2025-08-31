@@ -25,7 +25,7 @@ import {
   Txt,
 } from '@infoportal/client-core'
 import {endOfDay} from 'date-fns'
-import {useDatatableContext} from '@/core/DatatableContext'
+import {useCtx} from '@/core/DatatableContext'
 import {OrderBy} from '@axanc/react-hooks'
 import {FilterTypeMapping, Option, Row, SortBy} from '@/core/types'
 import {seq} from '@axanc/ts-utils'
@@ -84,7 +84,7 @@ export const DatatableFilterModal = ({
   type,
 }: DatatableFilterDialogProps) => {
   const {m} = useConfig()
-  const dispatch = useDatatableContext(_ => _.dispatch)
+  const dispatch = useCtx(_ => _.dispatch)
 
   const [innerValue, setInnerValue] = useState<any>(value)
   useEffect(() => {
@@ -275,7 +275,7 @@ export const DatatableFilterDialogNumber = ({
   value: FilterTypeMapping['number']
   onChange: Dispatch<SetStateAction<FilterTypeMapping['number']>>
 }) => {
-  const columnsIndex = useDatatableContext(_ => _.columns.indexMap)
+  const columnsIndex = useCtx(_ => _.columns.indexMap)
   const col = columnsIndex[columnId]
   if (!col.type) return
   const {min, max} = useMemo(() => {

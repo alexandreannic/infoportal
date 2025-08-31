@@ -2,7 +2,7 @@ import {DatatableColumnToggle} from '@/DatatableColumnsToggle'
 import {Badge, Box, useTheme} from '@mui/material'
 import {IconBtn, Txt} from '@infoportal/client-core'
 import React from 'react'
-import {useDatatableContext} from '@/core/DatatableContext'
+import {useCtx} from '@/core/DatatableContext'
 import {useConfig} from '@/DatatableConfig'
 import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
@@ -12,12 +12,12 @@ export const DatatableToolbar = ({rowVirtualizer}: {rowVirtualizer: Virtualizer<
   const {m, formatLargeNumber} = useConfig()
   const t = useTheme()
 
-  const header = useDatatableContext(_ => _.header)
-  const columns = useDatatableContext(_ => _.columns)
-  const dispatch = useDatatableContext(_ => _.dispatch)
-  const filters = useDatatableContext(_ => _.state.filters)
-  const data = useDatatableContext(_ => _.data)
-  const dataFilteredAndSorted = useDatatableContext(_ => _.dataFilteredAndSorted)
+  const header = useCtx(_ => _.header)
+  const columns = useCtx(_ => _.columns)
+  const dispatch = useCtx(_ => _.dispatch)
+  const filters = useCtx(_ => _.state.filters)
+  const data = useCtx(_ => _.data)
+  const dataFilteredAndSorted = useCtx(_ => _.dataFilteredAndSorted)
   const filterCount = useMemoFn(filters, _ => Obj.keys(_).length)
 
   return (
