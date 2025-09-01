@@ -14,9 +14,6 @@ export const PopupSelectedCell = () => {
   const {formatLargeNumber} = useConfig()
   const rowIds = useMemo(() => [...selectedRowIds], [selectedRowIds])
 
-  useEffect(() => {
-    console.log('anchorEl?', engine.anchorEl)
-  }, [engine.anchorEl])
   return (
     <Popover
       onClose={engine.reset}
@@ -60,14 +57,14 @@ export const PopupSelectedCell = () => {
             {selectedColumnUniq.head}
           </Txt>
         )}
-        <Txt color="hint" fontWeight="400" sx={{mb: 1, display: 'flex', alignItems: 'center'}}>
+        <Txt color="disabled" fontWeight="400" sx={{mb: 1, display: 'flex', alignItems: 'center'}}>
           <Icon fontSize="inherit">view_column</Icon>
           {formatLargeNumber(selectedColumnsIds.size)}
           <Box sx={{mx: 0.5}}>×</Box>
           <Icon fontSize="inherit">table_rows</Icon>
           {formatLargeNumber(selectedRowIds.size)}
           <Box sx={{mx: 0.5}}>=</Box>
-          <Txt bold color={selectedCount > dangerThreshold ? 'error' : 'default'}>
+          <Txt bold color={selectedCount > dangerThreshold ? 'error' : undefined}>
             {formatLargeNumber(selectedCount)}
           </Txt>
         </Txt>

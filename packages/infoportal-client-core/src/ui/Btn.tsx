@@ -4,7 +4,7 @@ import {alpha, Button, CircularProgress, Icon, Tooltip} from '@mui/material'
 import {ButtonProps} from '@mui/material/Button'
 import {makeStyles} from 'tss-react/mui'
 import {fnSwitch} from '@axanc/ts-utils'
-import {styleUtils} from '../core'
+import {alphaVar, styleUtils} from '../core'
 
 const useStyles = makeStyles<{loading?: boolean; variant?: BtnVariant}>()((t, {loading, variant}) => ({
   icon: {
@@ -20,10 +20,10 @@ const useStyles = makeStyles<{loading?: boolean; variant?: BtnVariant}>()((t, {l
         light: {
           border: 'none',
           fontWeight: 500,
-          background: alpha(t.palette.primary.main, 0.12),
+          background: alphaVar(t.vars.palette.primary.main, 0.12),
           textTransform: 'inherit',
           '&:hover': {
-            background: alpha(t.palette.primary.main, 0.2),
+            background: alphaVar(t.vars.palette.primary.main, 0.2),
           },
         },
         input: {

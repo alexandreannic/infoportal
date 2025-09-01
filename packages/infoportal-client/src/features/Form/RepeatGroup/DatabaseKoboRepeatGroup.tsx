@@ -201,7 +201,9 @@ export function getColumnsForRepeatGroup({
   }
   res.push(
     {
+      width: 50,
       type: 'string',
+      align: 'center',
       id: '_index',
       head: '_index',
       renderQuick: _ => '' + _._index,

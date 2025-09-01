@@ -97,10 +97,11 @@ function getCommon({
   translateQuestion,
 }: CommonProps): Pick<
   Datatable.Column.Props<any>,
-  'actionOnSelected' | 'id' | 'group' | 'typeIcon' | 'typeLabel' | 'head' | 'subHeader'
+  'actionOnSelected' | 'id' | 'width' | 'group' | 'typeIcon' | 'typeLabel' | 'head' | 'subHeader'
 > {
   return {
     id: q.name,
+    width: 120,
     typeLabel: q.type,
     actionOnSelected: isReadonly
       ? () => <ReadonlyAction />
@@ -208,7 +209,7 @@ function text(props: CommonProps): Datatable.Column.Props<Row> {
   return {
     ...getCommon(props),
     type: 'string',
-    width: props.q.appearance === 'multiline' ? 240 : undefined,
+    width: props.q.appearance === 'multiline' ? 240 : 120,
     renderQuick: (row: Row) => getValue({row, getRow: props.getRow, q: props.q}) as string,
   }
 }
@@ -391,6 +392,7 @@ function repeatGroup(
             children={value.length}
             style={{padding: '0 4px'}}
             onClick={event => {
+              event.stopPropagation()
               props.onRepeatGroupClick?.({
                 name: props.q.name,
                 row,
@@ -422,6 +424,7 @@ function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'> = {}): Datatable
     id: 'id' as const,
     actionOnSelected: () => <ReadonlyAction />,
     head: 'ID',
+    width: 110,
     typeIcon: <Datatable.HeadIconByType type="id" />,
     className: 'td-id',
     style: (row: any) => {
@@ -617,7 +620,7 @@ function ReadonlyAction() {
   const {m} = useI18n()
   const t = useTheme()
   return (
-    <Box display="flex" alignItems="center" sx={{color: t.palette.text.disabled}}>
+    <Box display="flex" alignItems="center" sx={{color: t.vars.palette.text.disabled}}>
       <Icon sx={{mr: 1}}>lock</Icon>
       {m.readonly}
     </Box>

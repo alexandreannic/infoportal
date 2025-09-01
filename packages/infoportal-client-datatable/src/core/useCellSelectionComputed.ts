@@ -65,10 +65,7 @@ export const useCellSelectionComputed = <T extends Row>({
 
   const selectedCount = useMemo(() => {
     if (!state.selectionStart || !state.selectionEnd) return 0
-    return (
-      (Math.abs(state.selectionStart.col - state.selectionEnd.col) + 1) *
-      (Math.abs(state.selectionStart.row - state.selectionEnd.row) + 1)
-    )
+    return selectedColumnsIds.size * selectedRowIds.size
   }, [isSelected])
 
   return {

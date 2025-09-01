@@ -5,7 +5,7 @@ import {Popup} from '@/core/reducer'
 import {DatatableHeadSections} from '@/head/DatatableHeadSections'
 import {Column} from '@/core/types'
 import {TableIcon, TableIconBtn} from '@/ui/TableIcon'
-import {IconProps} from '@mui/material'
+import {IconButton, IconProps} from '@mui/material'
 
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
@@ -80,7 +80,7 @@ const DatatableHeadTdBody = ({
   active?: boolean
 }) => {
   return (
-    <span style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
+    <span style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
       {column.typeIcon}
       {column.subHeader}
       {(() => {
