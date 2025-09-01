@@ -4,7 +4,6 @@ import {useQueryClient} from '@tanstack/react-query'
 import {useDialogs} from '@toolpad/core'
 import {create} from 'zustand'
 import {getSchema} from '../query/useQuerySchema'
-import {KoboUpdateModal} from '@/shared/koboEdit/KoboUpdateModal'
 import {Ip} from 'infoportal-api-sdk'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 
@@ -25,23 +24,6 @@ export interface OpenModalProps {
   workspaceId: Ip.WorkspaceId
   answer: Submission
   formId: Ip.FormId
-}
-
-export type KoboUpdateValidation = {
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
-  answerIds: Ip.SubmissionId[]
-  // status: KoboValidation | null
-  onSuccess?: () => void
-}
-
-export type KoboUpdateAnswers = {
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
-  answerIds: Ip.SubmissionId[]
-  question: string
-  // answer: any | null
-  onSuccess?: () => void
 }
 
 export const useKoboDialogs = () => {

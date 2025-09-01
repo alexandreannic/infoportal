@@ -13,7 +13,7 @@ import {DatabaseViewBtn, DatabaseViewEditor} from '@/features/Form/Database/view
 import {useKoboDialogs, useLangIndex} from '@/core/store/useLangIndex'
 import {Alert, AlertProps, Box, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from 'infoportal-common'
-import {useMemo, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
@@ -58,8 +58,6 @@ export const DatabaseTableContent = ({
   const [viewEditorOpen, setViewEditorOpen] = useState(false)
 
   const queryUpdate = useQueryAnswerUpdate()
-
-  const [selectedIds, setSelectedIds] = useState<Ip.SubmissionId[]>([])
 
   const flatData: Submission[] | undefined = useMemo(() => {
     if (ctx.groupDisplay.get.repeatAs !== 'rows' || ctx.groupDisplay.get.repeatGroupName === undefined) return ctx.data
@@ -106,11 +104,10 @@ export const DatabaseTableContent = ({
       m,
       t,
     }).transformColumns(schemaColumns)
-  }, [ctx.data, ctx.schema.schema, langIndex, selectedIds, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
+  }, [ctx.data, ctx.schema.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const base = buildDatabaseColumns.meta.all({
-      selectedIds,
       queryUpdate: queryUpdate,
       workspaceId,
       formId: ctx.form.id,

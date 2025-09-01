@@ -13,7 +13,7 @@ import {useKoboDialogs} from '@/core/store/useLangIndex'
 import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {useI18n} from '@/core/i18n'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByKoboType'
-import {KoboUpdateModal} from '@/shared/koboEdit/KoboUpdateModal'
+import {KoboBulkUpdate} from '@/shared/koboEdit/KoboBulkUpdate'
 
 export const buildDatabaseColumns = {
   type: {
@@ -105,12 +105,11 @@ function getCommon({
     actionOnSelected: isReadonly
       ? () => <ReadonlyAction />
       : ({rowIds}: {rowIds: string[]}) => (
-          <KoboUpdateModal.Answer
-            columnName={q.name}
+          <KoboBulkUpdate.Answer
+            question={q.name}
             answerIds={rowIds as Ip.SubmissionId[]}
             workspaceId={workspaceId}
             formId={formId}
-            onUpdated={console.log}
           />
         ),
     ...map(q.$xpath.split('/')[0], value => ({
@@ -411,7 +410,6 @@ type MetaProps = {
   getRow?: (_: any) => Row
   dialogs: ReturnType<typeof useKoboDialogs>
   formId: Ip.FormId
-  selectedIds: Ip.SubmissionId[]
   koboEditEnketoUrl?: DatabaseContext['koboEditEnketoUrl']
   canEdit?: boolean
   m: Messages
@@ -430,7 +428,7 @@ function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'> = {}): Datatable
       const data = getRow(row)
       if (data[KoboFlattenRepeatedGroup.INDEX_COL]! > 0) {
         return {
-          opacity: '.5',
+          opacity: '.6',
         }
       }
       return {}
@@ -571,14 +569,12 @@ function validation({
   workspaceId,
   formId,
   getRow = _ => _ as any,
-  dialogs,
-  selectedIds,
   canEdit,
   queryUpdate,
   m,
 }: Pick<
   MetaProps,
-  'canEdit' | 'queryUpdate' | 'getRow' | 'formId' | 'workspaceId' | 'm' | 'selectedIds' | 'dialogs'
+  'canEdit' | 'queryUpdate' | 'getRow' | 'formId' | 'workspaceId' | 'm'
 >): Datatable.Column.Props<Row> {
   return {
     group: {label: metaLabel, id: 'meta'},
@@ -588,7 +584,7 @@ function validation({
     width: 60,
     type: 'select_one',
     actionOnSelected: ({rowIds}: {rowIds: string[]}) => (
-      <KoboUpdateModal.Validation formId={formId} workspaceId={workspaceId} answerIds={rowIds as Ip.SubmissionId[]} />
+      <KoboBulkUpdate.Validation formId={formId} workspaceId={workspaceId} answerIds={rowIds as Ip.SubmissionId[]} />
     ),
     render: (row: any) => {
       const value: Ip.Submission.Validation = getRow(row).validationStatus

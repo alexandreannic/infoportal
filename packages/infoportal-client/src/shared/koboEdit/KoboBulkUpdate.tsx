@@ -5,9 +5,7 @@ import {useKoboColumnDef} from '@/shared/koboEdit/KoboSchemaWrapper'
 import {ArrayValues} from 'infoportal-common'
 import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {Obj} from '@axanc/ts-utils'
-import {DialogProps} from '@toolpad/core'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
-import {useQueryFormById} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
 
@@ -29,29 +27,27 @@ export const editableColumnType = [
   'datetime',
 ]
 
-export type KoboUpdateModalType = ArrayValues<typeof editableColumnType>
+export type KoboBulkUpdateType = ArrayValues<typeof editableColumnType>
 
-export namespace KoboUpdateModal {
+export namespace KoboBulkUpdate {
   const Base = ({
     type,
-    subTitle,
-    title,
     onConfirm,
     error,
     options,
     loading,
+    answerIds,
   }: {
-    type?: KoboUpdateModalType
-    subTitle?: string
-    title?: string
-    onConfirm: (_: any) => Promise<any>
+    answerIds: Ip.SubmissionId[]
+    type?: KoboBulkUpdateType
+    onConfirm: (_: any) => Promise<{editedCount: number}>
     error?: string
     options?: string[] | KoboEditModalOption[]
     loading?: boolean
   }) => {
     const {m} = useI18n()
     const [value, setValue] = useState<any>()
-    const [updated, setUpdated] = useState(false)
+    const [updatedCount, setUpdatedCount] = useState<null | number>(null)
 
     const _options = useMemo(() => {
       const harmonized: KoboEditModalOption[] | undefined = options?.map(o =>
@@ -78,16 +74,16 @@ export namespace KoboUpdateModal {
     return (
       <>
         {error && <Alert color="error">{m.somethingWentWrong}</Alert>}
-        {updated && (
+        {updatedCount && (
           <Alert
             color="success"
             sx={{mb: 1}}
-            action={<Core.Btn onClick={() => setUpdated(false)}>{m.change}</Core.Btn>}
+            action={<Core.Btn onClick={() => setUpdatedCount(null)}>{m.change}</Core.Btn>}
           >
-            {m.successfullyEdited(-1)}
+            {m.successfullyEdited(updatedCount)}
           </Alert>
         )}
-        <Collapse in={!updated}>
+        <Collapse in={!updatedCount}>
           <Box sx={{minWidth: 340, maxHeight: 400, overflowY: 'auto'}}>
             {/*<Checkbox/>Delete answer and set as BLANK*/}
             {(() => {
@@ -143,8 +139,8 @@ export namespace KoboUpdateModal {
         <Core.Btn
           variant="outlined"
           loading={loading}
-          disabled={updated}
-          onClick={() => onConfirm(value).then(() => setUpdated(true))}
+          disabled={!!updatedCount}
+          onClick={() => onConfirm(value).then(_ => setUpdatedCount(_.editedCount))}
           sx={{mt: 1}}
         >
           {m.confirm}
@@ -156,14 +152,12 @@ export namespace KoboUpdateModal {
   export const Answer = (props: {
     workspaceId: Ip.WorkspaceId
     formId: Ip.FormId
-    columnName: string
+    question: string
     answerIds: Ip.SubmissionId[]
     onUpdated?: (params: Ip.Submission.Payload.Update) => void
   }) => {
-    const {workspaceId, formId, columnName, answerIds, onUpdated} = props
-    const {m} = useI18n()
-    const queryForm = useQueryFormById({workspaceId, formId}).get
-    const {columnDef, schema, loading: loadingSchema} = useKoboColumnDef({workspaceId, formId, columnName})
+    const {workspaceId, formId, question, answerIds, onUpdated} = props
+    const {columnDef, schema, loading: loadingSchema} = useKoboColumnDef({workspaceId, formId, question})
     const queryUpdate = useQueryAnswerUpdate().update
 
     return (
@@ -171,18 +165,19 @@ export namespace KoboUpdateModal {
         {...props}
         loading={loadingSchema || queryUpdate.isPending}
         error={queryUpdate.error?.message}
-        onConfirm={value =>
-          queryUpdate.mutateAsync({workspaceId, formId, answerIds, question: columnName, answer: value})
-        }
-        title={`${m.edit} (${answerIds.length}) - ${queryForm.data?.name}`}
-        subTitle={schema?.translate.question(columnName)}
+        onConfirm={answer => {
+          return queryUpdate.mutateAsync({workspaceId, formId, answerIds, question, answer}).then(() => {
+            onUpdated?.({answerIds, workspaceId, formId, answer, question})
+            return {editedCount: answerIds.length}
+          })
+        }}
         type={columnDef?.type as any}
         options={
           columnDef
             ? schema?.helper.choicesIndex[columnDef.select_from_list_name!]?.map(_ => ({
                 value: _.name,
                 desc: _.name,
-                label: schema.translate.choice(columnName, _.name),
+                label: schema.translate.choice(question, _.name),
               }))
             : undefined
         }
@@ -197,7 +192,6 @@ export namespace KoboUpdateModal {
     onUpdated?: (params: Ip.Submission.Payload.UpdateValidation) => void
   }) => {
     const {workspaceId, formId, answerIds, onUpdated} = props
-    const {m} = useI18n()
     const queryUpdate = useQueryAnswerUpdate().updateValidation
 
     return (
@@ -205,15 +199,19 @@ export namespace KoboUpdateModal {
         {...props}
         loading={queryUpdate.isPending}
         error={queryUpdate.error?.message}
-        onConfirm={value =>
-          queryUpdate.mutateAsync({
-            formId,
-            status: value,
-            answerIds,
-            workspaceId,
-          })
+        onConfirm={status =>
+          queryUpdate
+            .mutateAsync({
+              formId,
+              status,
+              answerIds,
+              workspaceId,
+            })
+            .then(() => {
+              onUpdated?.({answerIds, workspaceId, formId, status})
+              return {editedCount: answerIds.length}
+            })
         }
-        title={`${m.edit} (${answerIds.length}) - ${m.validation}`}
         type="select_one"
         options={Obj.values(Ip.Submission.Validation).map(_ => ({
           value: _,

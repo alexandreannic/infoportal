@@ -54,6 +54,10 @@ export const Provider = <T extends Row>(
     _dispatch({type: 'SET_HIDDEN_COLUMNS', hiddenColumns})
   })
 
+  useEffectFn(props.defaultFilters, _ => {
+    if (_) _dispatch({type: 'FILTER', value: _})
+  })
+
   const dispatch: React.Dispatch<Action<T>> = _ => {
     _dispatch(_)
     props.onEvent?.(_)

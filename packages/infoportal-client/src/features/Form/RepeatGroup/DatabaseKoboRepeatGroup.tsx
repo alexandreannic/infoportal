@@ -10,7 +10,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
-import {BuildFormColumnProps} from '@/features/Form/Database/columns/databaseColumnBuilder'
+import {buildDatabaseColumns, BuildFormColumnProps} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Messages} from '@/core/i18n/localization/en'
 
 export const databaseKoboRepeatRoute = createRoute({
@@ -57,60 +57,6 @@ function DatabaseKoboRepeatContainer() {
   )
 }
 
-export const getColumnsForRepeatGroup = ({
-  groupName,
-  formId,
-  schema,
-  onRepeatGroupClick,
-  m,
-  t,
-}: {
-  groupName: string
-  formId: Ip.FormId
-  schema: KoboSchemaHelper.Bundle
-  onRepeatGroupClick?: BuildFormColumnProps['onRepeatGroupClick']
-  m: Messages
-  t: Theme
-}) => {
-  const groupInfo = schema.helper.group.getByName(groupName)!
-  const res: Datatable.Column.Props<KoboFlattenRepeatedGroup.Data>[] = []
-  if (groupInfo.depth > 1) {
-    res.push(
-      {
-        type: 'select_one',
-        id: '_parent_table_name',
-        head: '_parent_table_name',
-        renderQuick: (_: KoboFlattenRepeatedGroup.Data) => _._parent_table_name,
-      },
-      {
-        type: 'string',
-        id: '_parent_index',
-        head: '_parent_index',
-        renderQuick: (_: KoboFlattenRepeatedGroup.Data) => '' + _._parent_index,
-      },
-    )
-  }
-  res.push(
-    {
-      type: 'string',
-      id: '_index',
-      head: '_index',
-      renderQuick: _ => '' + _._index,
-    },
-    // buildDatabaseColumns.meta.id(),
-    // buildDatabaseColumns.meta.submissionTime({m}),
-    // ...buildDatabaseColumns.type.byQuestions({
-    //   formId,
-    //   questions: groupInfo.questions,
-    //   onRepeatGroupClick,
-    //   schema,
-    //   t,
-    //   m,
-    // }),
-  )
-  return res
-}
-
 const DatabaseKoboRepeat = ({
   schema,
   id,
@@ -140,6 +86,7 @@ const DatabaseKoboRepeat = ({
     const res = getColumnsForRepeatGroup({
       formId,
       schema,
+      workspaceId,
       t,
       m,
       onRepeatGroupClick: _ =>
@@ -169,11 +116,25 @@ const DatabaseKoboRepeat = ({
     })
   }, [data, groupInfo])
 
+  const defaultFilters = useMemo(() => {
+    return {id}
+  }, [id])
+
   return (
     <Datatable.Component
       getRowKey={_ => _.id}
-      defaultFilters={{
-        id,
+      defaultFilters={defaultFilters}
+      module={{
+        cellSelection: {
+          mode: 'free',
+          enabled: true,
+        },
+        columnsResize: {
+          enabled: true,
+        },
+        export: {
+          enabled: true,
+        },
       }}
       header={
         groupInfo.depth > 1 ? (
@@ -201,4 +162,61 @@ const DatabaseKoboRepeat = ({
       data={flat}
     />
   )
+}
+
+export function getColumnsForRepeatGroup({
+  groupName,
+  formId,
+  schema,
+  workspaceId,
+  onRepeatGroupClick,
+  m,
+  t,
+}: {
+  workspaceId: Ip.WorkspaceId
+  groupName: string
+  formId: Ip.FormId
+  schema: KoboSchemaHelper.Bundle
+  onRepeatGroupClick?: BuildFormColumnProps['onRepeatGroupClick']
+  m: Messages
+  t: Theme
+}) {
+  const groupInfo = schema.helper.group.getByName(groupName)!
+  const res: Datatable.Column.Props<KoboFlattenRepeatedGroup.Data>[] = []
+  if (groupInfo.depth > 1) {
+    res.push(
+      {
+        type: 'select_one',
+        id: '_parent_table_name',
+        head: '_parent_table_name',
+        renderQuick: (_: KoboFlattenRepeatedGroup.Data) => _._parent_table_name,
+      },
+      {
+        type: 'string',
+        id: '_parent_index',
+        head: '_parent_index',
+        renderQuick: (_: KoboFlattenRepeatedGroup.Data) => '' + _._parent_index,
+      },
+    )
+  }
+  res.push(
+    {
+      type: 'string',
+      id: '_index',
+      head: '_index',
+      renderQuick: _ => '' + _._index,
+    },
+    buildDatabaseColumns.meta.id(),
+    buildDatabaseColumns.meta.submissionTime({workspaceId, formId, m}),
+    ...buildDatabaseColumns.type.byQuestions({
+      workspaceId,
+      formId,
+      questions: groupInfo.questions,
+      onRepeatGroupClick,
+      schema,
+      t,
+      m,
+    }),
+  )
+  return res
 }

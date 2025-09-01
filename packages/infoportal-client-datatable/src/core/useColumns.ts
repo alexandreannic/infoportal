@@ -48,6 +48,7 @@ export const useDatatableColumns = <T extends Row>({
         render: (_: any) => ({
           value: _?.index,
           label: _?.index,
+          export: _?.index,
         }),
       })
     return mappedColumns

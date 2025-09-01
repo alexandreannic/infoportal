@@ -315,6 +315,7 @@ export const en = Object.freeze({
     apiToken: 'API Token',
     lastName: 'Last name',
     change: 'Change',
+    includeColumns: `Include column's name`,
     successfullyEdited: (n: number) => `Successfully edited ${n} rows.`,
     table: 'Table',
     comparedToTotalAnswers: 'Based on total answers:',

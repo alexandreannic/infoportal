@@ -1,5 +1,5 @@
 import {BoxProps, SxProps, Theme} from '@mui/material'
-import React, {CSSProperties, ReactNode} from 'react'
+import React, {CSSProperties, ReactElement, ReactNode} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {Action} from '@/core/reducer'
 
@@ -67,7 +67,9 @@ export interface Props<T extends Row, K extends string = string> {
   sx?: SxProps<Theme>
 
   module?: {
-    export?: boolean
+    export?: {
+      enabled: boolean,
+    },
     columnsToggle?: {
       enabled: boolean
       disableAutoSave?: boolean
@@ -115,7 +117,7 @@ export namespace Column {
     hidden?: boolean
     style?: (_: T) => CSSProperties
     styleHead?: CSSProperties
-    actionOnSelected?: ({rowIds}: {rowIds: string[]}) => ReactNode
+    actionOnSelected?: ({rowIds}: {rowIds: string[]}) => ReactElement
     classHead?: string
     typeIcon?: ReactNode
     typeLabel?: string

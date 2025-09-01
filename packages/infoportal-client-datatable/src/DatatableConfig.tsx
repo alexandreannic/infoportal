@@ -20,6 +20,7 @@ const defaultConfig = {
     idFilterPlaceholder: 'ID1 ID2 ID3 [...]',
     selectAll: 'Select all',
     close: 'Close',
+    includeColumns: `Include column's name`,
     filterPlaceholder: 'Filter...',
     filterBlanks: 'Filter blanks',
     count: 'Count',

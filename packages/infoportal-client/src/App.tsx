@@ -143,6 +143,7 @@ const AppWithBaseContext = () => {
               filterPlaceholder: m.filterPlaceholder,
               filterBlanks: m.filterBlanks,
               count: m.count,
+              includeColumns: m.includeColumns,
               sum: m.sum,
               average: m.average,
               min: m.min,

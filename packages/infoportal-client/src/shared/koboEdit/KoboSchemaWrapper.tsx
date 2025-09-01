@@ -6,11 +6,11 @@ import {Ip} from 'infoportal-api-sdk'
 export const useKoboColumnDef = <T extends Record<string, any>>({
   workspaceId,
   formId,
-  columnName,
+  question,
 }: {
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
-  columnName: KeyOf<T>
+  question: KeyOf<T>
 }) => {
   const querySchema = useQuerySchema({workspaceId, formId})
 
@@ -19,7 +19,7 @@ export const useKoboColumnDef = <T extends Record<string, any>>({
     return {
       loading: querySchema.isLoading,
       schema,
-      columnDef: schema?.helper.questionIndex[columnName as string],
+      columnDef: schema?.helper.questionIndex[question as string],
     }
-  }, [formId, columnName])
+  }, [formId, question])
 }

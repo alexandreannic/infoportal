@@ -1,8 +1,10 @@
-import {DatatableContext, useCtx} from '@/core/DatatableContext'
+import {useCtx} from '@/core/DatatableContext'
 import {useConfig} from '@/DatatableConfig'
 import {Box, Icon, Popover, Switch, useTheme} from '@mui/material'
 import {Btn, lightenVar, Txt} from '@infoportal/client-core'
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
+
+const dangerThreshold = 200
 
 export const PopupSelectedCell = () => {
   const {engine, selectedCount, areAllColumnsSelected, selectedColumnsIds, selectedRowIds, selectedColumnUniq} = useCtx(
@@ -10,8 +12,11 @@ export const PopupSelectedCell = () => {
   )
   const renderComponentOnRowSelected = useCtx(_ => _.module?.cellSelection?.renderComponentOnRowSelected)
   const {formatLargeNumber} = useConfig()
+  const rowIds = useMemo(() => [...selectedRowIds], [selectedRowIds])
 
-  const rowIds = [...selectedRowIds]
+  useEffect(() => {
+    console.log('anchorEl?', engine.anchorEl)
+  }, [engine.anchorEl])
   return (
     <Popover
       onClose={engine.reset}
@@ -62,7 +67,9 @@ export const PopupSelectedCell = () => {
           <Icon fontSize="inherit">table_rows</Icon>
           {formatLargeNumber(selectedRowIds.size)}
           <Box sx={{mx: 0.5}}>=</Box>
-          <Txt bold>{formatLargeNumber(selectedCount)}</Txt>
+          <Txt bold color={selectedCount > dangerThreshold ? 'error' : 'default'}>
+            {formatLargeNumber(selectedCount)}
+          </Txt>
         </Txt>
         <Box sx={{display: 'flex', mb: 1}}>
           <Btn size="small" variant="outlined" onClick={engine.reset} color="primary" sx={{mr: 1, minWidth: 0}}>
@@ -71,7 +78,9 @@ export const PopupSelectedCell = () => {
           <BtnCopyCells />
         </Box>
 
-        {selectedColumnUniq && selectedColumnUniq.actionOnSelected?.({rowIds})}
+        {selectedColumnUniq &&
+          selectedColumnUniq.actionOnSelected &&
+          React.cloneElement(selectedColumnUniq.actionOnSelected?.({rowIds}), {key: rowIds.join(',')})}
         {areAllColumnsSelected && renderComponentOnRowSelected && renderComponentOnRowSelected({rowIds})}
       </Box>
     </Popover>
@@ -157,7 +166,7 @@ const BtnCopyCells = () => {
       <Btn size="small" variant="outlined" onClick={copy} sx={{minWidth: 0}}>
         <Icon>content_copy</Icon>
         <Txt textTransform="none" fontWeight="400" color="hint" sx={{ml: 1}}>
-          With column name
+          {m.includeColumns}
         </Txt>
         <Switch
           size="small"
