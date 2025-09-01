@@ -1,9 +1,8 @@
 import {Chart, ChartWrapperOptions} from 'react-google-charts'
 import {useMemo, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
-import {Panel, PanelHead} from '../ui/index'
-import {IconBtn} from '../ui/IconBtn'
-import {lightenVar} from '../core/theme'
+import {IconBtn, Panel, PanelHead} from '../ui'
+import {lightenVar} from '../core'
 
 const headers = ['Location', 'Submissions']
 
@@ -36,7 +35,8 @@ export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: s
   const formattedData = useMemo(() => {
     if (!data) return
     if (selectedCountry) {
-      const regionsData = regions.get(selectedCountry)!
+      const regionsData = regions.get(selectedCountry)
+      if (!regionsData) return [headers]
       return [headers, ...regionsData.entries()]
     }
     return [headers, ...countries.entries()]
@@ -46,7 +46,7 @@ export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: s
     const defaultOptions: ChartWrapperOptions['options'] = {
       backgroundColor: 'transparent',
       datalessRegionColor:
-        t.palette.mode === 'dark' ? lightenVar(t.vars.palette.background.default, 0.4) : t.vars.palette.divider,
+        t.palette.mode === 'dark' ? lightenVar(t.palette.background.default, 0.4) : t.palette.divider,
       legend: 'none',
       enableRegionInteractivity: true,
       chartArea: {
@@ -57,7 +57,7 @@ export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: s
         left: 10,
         right: 10,
       },
-      colorAxis: {colors: [t.vars.palette.primary.light, t.vars.palette.primary.dark]},
+      colorAxis: {colors: [t.palette.primary.light, t.palette.primary.dark]},
     }
     if (selectedCountry) {
       defaultOptions.displayMode = 'regions'
