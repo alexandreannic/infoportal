@@ -88,6 +88,7 @@ export const DatabaseTableContent = ({
       m,
     })
     return databaseKoboDisplayBuilder({
+      workspaceId,
       data: ctx.data ?? [],
       formId: ctx.form.id,
       schema: ctx.schema,
@@ -137,7 +138,7 @@ export const DatabaseTableContent = ({
   }
 
   return (
-    <Box sx={{display: 'flex', maxHeight: 'calc(100vh - 110px)'}}>
+    <Box sx={{display: 'flex'}}>
       <DatabaseToolbarContainer width={340} open={viewEditorOpen}>
         {viewEditorOpen && (
           <Core.Panel sx={{mr: 1}}>

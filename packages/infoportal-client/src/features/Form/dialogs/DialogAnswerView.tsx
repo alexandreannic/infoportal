@@ -82,6 +82,7 @@ function DatabaseAnswerView() {
             </Core.PanelHead>
             <Core.PanelBody>
               <KoboAnswerFormView
+                workspaceId={workspaceId}
                 formId={formId}
                 showQuestionWithoutAnswer={showQuestionWithoutAnswer}
                 answer={a}
@@ -129,6 +130,7 @@ export const DialogAnswerView = ({
       </DialogTitle>
       <DialogContent>
         <KoboAnswerFormView
+          workspaceId={workspaceId}
           schema={schema}
           formId={formId}
           showQuestionWithoutAnswer={showQuestionWithoutAnswer}
@@ -143,11 +145,13 @@ export const DialogAnswerView = ({
 }
 
 const KoboAnswerFormView = ({
+  workspaceId,
   answer,
   formId,
   schema,
   showQuestionWithoutAnswer,
 }: {
+  workspaceId: Ip.WorkspaceId
   schema: KoboSchemaHelper.Bundle
   showQuestionWithoutAnswer?: boolean
   answer: Submission
@@ -165,7 +169,13 @@ const KoboAnswerFormView = ({
         )
         .map(q => (
           <Box key={q.name} sx={{mb: 1.5}}>
-            <KoboAnswerQuestionView formId={formId} schema={schema} answer={answer} questionSchema={q} />
+            <KoboAnswerQuestionView
+              workspaceId={workspaceId}
+              formId={formId}
+              schema={schema}
+              answer={answer}
+              questionSchema={q}
+            />
           </Box>
         ))}
     </Box>
@@ -177,7 +187,9 @@ const KoboAnswerQuestionView = ({
   questionSchema,
   answer: row,
   formId,
+  workspaceId,
 }: {
+  workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   schema: KoboSchemaHelper.Bundle
   questionSchema: NonNullableKey<Kobo.Form.Question, 'name'>
@@ -193,6 +205,7 @@ const KoboAnswerQuestionView = ({
     if (!group) return
     return buildDatabaseColumns.type.byQuestions({
       questions: group.questions,
+      workspaceId,
       schema,
       formId,
       m,

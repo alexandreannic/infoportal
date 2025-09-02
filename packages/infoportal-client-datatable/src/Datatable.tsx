@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react'
 import {useVirtualizer} from '@tanstack/react-virtual'
-import {Badge, Box} from '@mui/material'
+import {Badge, LinearProgress, Box} from '@mui/material'
 import {DatatableHead} from '@/head/DatatableHead'
 import {Provider, useCtx} from '@/core/DatatableContext'
 import {IconBtn, Txt} from '@infoportal/client-core'
@@ -18,18 +18,13 @@ import {DatatableSkeleton} from '@/DatatableSkeleton'
 import {DatatableToolbar} from '@/DatatableToolbar'
 
 export const Datatable = <T extends Row>({data, ...props}: Props<T>) => {
-  if (!data) return <DatatableSkeleton columns={props.columns.length} />
+  if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} />
   const tableRef = React.useRef(null) as unknown as React.MutableRefObject<HTMLDivElement>
-  // {loading &&
-  // (ctx.data.data ? (
-  //   <LinearProgress sx={{position: 'absolute', left: 0, right: 0, top: 0}} />
-  // ) : (
-  //   <DatatableSkeleton columns={ctx.columns.length} />
-  // ))}
 
   return (
     <DatatableErrorBoundary>
       <Provider {...props} data={data} tableRef={tableRef}>
+        {props.loading && <LinearProgress sx={{position: 'absolute', top: 0, right: 0, left: 0, height: 3}} />}
         <DatatableWithData />
       </Provider>
     </DatatableErrorBoundary>
@@ -37,7 +32,6 @@ export const Datatable = <T extends Row>({data, ...props}: Props<T>) => {
 }
 
 const DatatableWithData = <T extends Row>() => {
-  const {m, formatLargeNumber} = useConfig()
   const {
     columns,
     state: {sortBy, filters, virtualTable, popup},

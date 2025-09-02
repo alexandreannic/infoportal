@@ -1,6 +1,7 @@
 import {green, orange, purple, red} from '@mui/material/colors'
 import {createTheme, SxProps, Theme} from '@mui/material'
 import {Core} from '@/shared'
+import {lightShadows} from '@infoportal/client-core'
 
 export const sxUtils = Core.makeSx({
   fontBig: {
@@ -38,43 +39,6 @@ export const sxUtils = Core.makeSx({
   },
 } as const)
 
-const fadeShadow = ({
-  color = '#000',
-  opacity = 0.1,
-  y = 1,
-  blur = 4,
-  spread = 0,
-}: {
-  color?: string
-  opacity?: number
-  y?: number
-  blur?: number
-  spread?: number
-}): string => `0px ${y}px ${blur}px ${spread}px ${Core.alphaVar(color, opacity)}`
-
-const lightShadows = Array.from({length: 25}, (_, i) =>
-  i === 0
-    ? 'none'
-    : fadeShadow({
-        color: '#000',
-        opacity: 0.15 + i * 0.004,
-        y: 1.5 + i * 0.5,
-        blur: 4 + i * 0.5,
-      }),
-)
-
-const createDarkShadows = (primaryColor: string): string[] => {
-  return Array.from({length: 25}, (_, i) =>
-    i === 0
-      ? 'none'
-      : fadeShadow({
-          color: Core.alphaVar(primaryColor, 1), // full color
-          opacity: 0.12 + i * 0.004, // slightly stronger opacity for dark
-          y: 2 + i * 0.5,
-          blur: 5 + i * 0.5,
-        }),
-  )
-}
 
 /** @deprecated Use from core */
 export const styleUtils = (t: Theme) => ({

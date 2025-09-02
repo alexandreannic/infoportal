@@ -20,6 +20,7 @@ type DatabaseKoboDisplayProps = {
   display: DatabaseDisplay
   schema: KoboSchemaHelper.Bundle
   formId: Ip.FormId
+  workspaceId: Ip.WorkspaceId
   onRepeatGroupClick?: BuildFormColumnProps['onRepeatGroupClick']
   m: Messages
   t: Theme
@@ -30,6 +31,7 @@ export const databaseKoboDisplayBuilder = ({
   display,
   schema,
   formId,
+  workspaceId,
   onRepeatGroupClick,
   m,
   t,
@@ -44,6 +46,7 @@ export const databaseKoboDisplayBuilder = ({
           mapFor(groupSize, repeat => {
             const newCols = buildDatabaseColumns.type
               .byQuestions({
+                workspaceId,
                 questions: group.questions,
                 schema,
                 onRepeatGroupClick,
@@ -79,6 +82,7 @@ export const databaseKoboDisplayBuilder = ({
         if (!group || group.depth > 1) return columns
         const repeatGroupColumns = buildDatabaseColumns.type
           .byQuestions({
+            workspaceId,
             questions: group.questions,
             schema,
             onRepeatGroupClick,

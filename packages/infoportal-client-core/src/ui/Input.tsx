@@ -15,16 +15,16 @@ export const Input = React.forwardRef(
     }, [])
 
     if (label) label = label + (label && required ? ' *' : '')
+    const notch = !!props.value
 
     return (
       <FormControl size={size} sx={{width: '100%', ...sx}} error={error}>
         {label && (
-          <InputLabel {...InputLabelProps} htmlFor={id} shrink={props.notched}>
+          <InputLabel {...InputLabelProps} htmlFor={id} shrink={notch}>
             {label}
           </InputLabel>
         )}
         <OutlinedInput
-          slotProps={{}}
           error={error}
           label={label}
           inputRef={inputElement}
@@ -32,6 +32,7 @@ export const Input = React.forwardRef(
           required={required}
           ref={ref}
           size={size}
+          notched={notch}
           margin="dense"
           {...props}
         />

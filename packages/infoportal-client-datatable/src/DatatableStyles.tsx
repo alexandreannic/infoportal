@@ -7,9 +7,8 @@ export const DatatableGlobalStyles = () => (
       '.dt': {
         display: 'grid',
         gridTemplateRows: 'auto 1fr',
-        minWidth: '100%',
+        // minWidth: '100%',
         overflow: 'auto',
-        height: 'calc(100vh - 156px)',
         '.MuiCheckbox-root': {
           padding: 6,
         },

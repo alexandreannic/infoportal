@@ -20,7 +20,7 @@ export const databaseHistoryRoute = createRoute({
 function DatabaseHistory() {
   const {schema, workspaceId, form} = useFormContext()
   const t = useTheme()
-  const {m, formatDateTime, formatDate} = useI18n()
+  const {m, formatDateTime, formatLargeNumber, formatDate} = useI18n()
   const {api} = useAppSettings()
   const fetcher = useFetcher(() => api.kobo.answerHistory.search({formId: form.id}))
 
@@ -72,6 +72,7 @@ function DatabaseHistory() {
           // showExportBtn
           loading={fetcher.loading}
           data={fetcher.get?.data}
+          contentProps={{sx: {maxHeight: 'calc(100vh - 156px)'}}}
           id={`kobo-answer-history${form.id}`}
           columns={[
             // {
@@ -96,23 +97,29 @@ function DatabaseHistory() {
             {
               type: 'number',
               id: 'answerIdCount',
-              width: 0,
-              head: m.id + ' #',
-              renderQuick: _ => _.answerIds.length,
+              width: 40,
+              head: '#',
+              align: 'right',
+              render: _ => {
+                return {
+                  label: formatLargeNumber(_.answerIds.length),
+                  value: _.answerIds.length,
+                }
+              },
             },
             {
               type: 'string',
               id: 'answerId',
               typeIcon: <Datatable.HeadIconByType type="id" />,
               className: 'td-id',
-              width: 80,
+              width: 140,
               head: m.id,
               renderQuick: _ => _.answerIds?.join(' '),
             },
             {
               type: 'select_one',
               id: 'author',
-              width: 0,
+              width: 140,
               head: m.by,
               render: _ => {
                 return {
@@ -126,30 +133,30 @@ function DatabaseHistory() {
                 }
               },
             },
-            {
-              type: 'select_one',
-              id: 'type',
-              head: m.type,
-              render: _ => {
-                return {
-                  value: _.type,
-                  label: fnSwitch(_.type, {
-                    delete: (
-                      <Core.Txt color="error" bold>
-                        {m._koboDatabase.deleted}
-                      </Core.Txt>
-                    ),
-                    answer: m._koboDatabase.koboQuestion,
-                    tag: m._koboDatabase.customColumn,
-                  }),
-                }
-              },
-            },
+            // {
+            //   type: 'select_one',
+            //   id: 'type',
+            //   head: m.type,
+            //   render: _ => {
+            //     return {
+            //       value: _.type,
+            //       label: fnSwitch(_.type, {
+            //         delete: (
+            //           <Core.Txt color="error" bold>
+            //             {m._koboDatabase.deleted}
+            //           </Core.Txt>
+            //         ),
+            //         answer: m._koboDatabase.koboQuestion,
+            //         tag: m._koboDatabase.customColumn,
+            //       }),
+            //     }
+            //   },
+            // },
             {
               type: 'select_one',
               id: 'question',
               head: m.column,
-              width: 250,
+              width: 150,
               render: _ => {
                 return {
                   value: _.property,

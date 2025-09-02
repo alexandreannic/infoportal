@@ -13,6 +13,44 @@ export const lightenVar = (color: string, coef: number) =>
 export const darkenVar = (color: string, coef: number) =>
   `color-mix(in srgb, ${color} ${(1 - coef) * 100}%, black ${coef * 100}%)`
 
+const fadeShadow = ({
+  color = '#000',
+  opacity = 0.1,
+  y = 1,
+  blur = 4,
+  spread = 0,
+}: {
+  color?: string
+  opacity?: number
+  y?: number
+  blur?: number
+  spread?: number
+}): string => `0px ${y}px ${blur}px ${spread}px ${alphaVar(color, opacity)}`
+
+export const lightShadows = Array.from({length: 25}, (_, i) =>
+  i === 0
+    ? 'none'
+    : fadeShadow({
+        color: '#000',
+        opacity: 0.15 + i * 0.004,
+        y: 1.5 + i * 0.5,
+        blur: 4 + i * 0.5,
+      }),
+)
+
+export const createDarkShadows = (primaryColor: string): string[] => {
+  return Array.from({length: 25}, (_, i) =>
+    i === 0
+      ? 'none'
+      : fadeShadow({
+          color: alphaVar(primaryColor, 1), // full color
+          opacity: 0.12 + i * 0.004, // slightly stronger opacity for dark
+          y: 2 + i * 0.5,
+          blur: 5 + i * 0.5,
+        }),
+  )
+}
+
 export const styleUtils = (t: Theme) => ({
   backdropFilter: 'blur(10px)',
   gridSpacing: 3 as any,
