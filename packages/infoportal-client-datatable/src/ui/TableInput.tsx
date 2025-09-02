@@ -1,6 +1,6 @@
 import React from 'react'
 import {StateStatus} from 'infoportal-common'
-import {styled} from '@mui/system'
+import {styled} from '@mui/material'
 import {DebouncedInput, IconBtn, InputProps} from '@infoportal/client-core'
 import {TableIcon} from '@/ui/TableIcon'
 import {useConfig} from '@/DatatableConfig'

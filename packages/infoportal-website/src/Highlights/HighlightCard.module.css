@@ -1,0 +1,25 @@
+.root {
+  background: var(--mui-palette-background-paper);
+  border-radius: var(--mui-shape-borderRadius);
+  padding: var(--mui-spacing);
+  height: 100%;
+  box-shadow: var(--card-shadows);
+}
+
+.icon {
+  display: block !important;
+  margin: auto;
+  margin-bottom: calc(var(--mui-spacing) / 4);
+  font-size: 3em !important;
+}
+
+.title {
+  text-align: center;
+  font-size: 1.15em;
+  font-weight: 500;
+  margin-bottom: calc(var(--mui-spacing) / 4);
+}
+
+.desc {
+  color: var(--mui-palette-text-secondary);
+}

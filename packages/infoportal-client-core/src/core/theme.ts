@@ -1,4 +1,5 @@
 import {SxProps, Theme} from '@mui/material'
+import {blue, purple} from '@mui/material/colors'
 
 export const combineSx = (...sxs: (SxProps<Theme> | undefined | false)[]): SxProps<Theme> => {
   return sxs.reduce((res, sx) => (sx !== undefined && sx !== false ? {...res, ...sx} : res), {} as any)
@@ -12,6 +13,8 @@ export const lightenVar = (color: string, coef: number) =>
   `color-mix(in srgb, ${color} ${(1 - coef) * 100}%, white ${coef * 100}%)`
 export const darkenVar = (color: string, coef: number) =>
   `color-mix(in srgb, ${color} ${(1 - coef) * 100}%, black ${coef * 100}%)`
+
+export const colorPrimary = blue
 
 const fadeShadow = ({
   color = '#000',

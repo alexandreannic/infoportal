@@ -1,0 +1,9 @@
+.section {
+  padding: calc(var(--mui-spacing) * 1);
+}
+
+.sectionAlt {
+  padding: calc(var(--mui-spacing) * 1);
+  background: var(--mui-palette-background-paper);
+  /*background: var(--mui-palette-background-default);*/
+}

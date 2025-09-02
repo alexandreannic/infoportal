@@ -1,7 +1,7 @@
 import {green, orange, purple, red} from '@mui/material/colors'
 import {createTheme, SxProps, Theme} from '@mui/material'
 import {Core} from '@/shared'
-import {lightShadows} from '@infoportal/client-core'
+import {colorPrimary} from '@infoportal/client-core'
 
 export const sxUtils = Core.makeSx({
   fontBig: {
@@ -38,7 +38,6 @@ export const sxUtils = Core.makeSx({
     mb: 2,
   },
 } as const)
-
 
 /** @deprecated Use from core */
 export const styleUtils = (t: Theme) => ({
@@ -112,22 +111,14 @@ export type AppThemeParams = {
 }
 
 export const muiTheme = ({
+  // mainColor = '#0073e6', // '#c9000a',
   dark,
-  mainColor = '#0073e6',
-  // mainColor = '#c9000a',
   cardElevation,
   spacing = defaultSpacing,
   fontSize = 14,
 }: AppThemeParams = {}): Theme => {
   const defaultRadius = 12
   const fontFamily = '"Open Sans", sans-serif'
-  // const mainColor = '#af161e'
-  const colorPrimary = purple
-  // {
-  //   main: mainColor,
-  //   light: alpha(mainColor, 0.4),
-  //   dark: darken(mainColor, 0.4),
-  // }
   const colorSecondary = {
     main: '#1a73e8',
     light: Core.lightenVar('#1a73e8', 0.3),
@@ -135,12 +126,11 @@ export const muiTheme = ({
   }
 
   return createTheme({
-    // cssVariables: true,
     defaultColorScheme: dark ? 'dark' : 'light',
     cssVariables: {
       colorSchemeSelector: 'class',
     },
-    shadows: lightShadows as any,
+    shadows: Core.lightShadows as any,
     spacing,
     colorSchemes: {
       light: {
@@ -151,7 +141,7 @@ export const muiTheme = ({
           secondary: colorSecondary,
           error: red,
           action: {
-            focus: Core.alphaVar(mainColor, 0.1),
+            focus: Core.alphaVar(colorPrimary['500'], 0.1),
             focusOpacity: 0.1,
           },
           background: {
@@ -166,11 +156,11 @@ export const muiTheme = ({
         palette: {
           warning: orange,
           success: green,
-          primary: colorPrimary,
+          primary: Core.colorPrimary,
           secondary: colorSecondary,
           error: red,
           action: {
-            focus: Core.alphaVar(mainColor, 0.1),
+            focus: Core.alphaVar(Core.colorPrimary['500'], 0.1),
             focusOpacity: 0.1,
           },
           background: {
