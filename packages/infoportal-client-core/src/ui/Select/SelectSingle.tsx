@@ -27,6 +27,7 @@ export type SelectOption<T extends string | number = string> = {
 type TType = string | number
 
 export type SelectSingleBaseProps<T extends TType = string> = {
+  slotProps?: SelectProps['slotProps']
   placeholder?: string | undefined
   disabled?: boolean
   id?: string | undefined

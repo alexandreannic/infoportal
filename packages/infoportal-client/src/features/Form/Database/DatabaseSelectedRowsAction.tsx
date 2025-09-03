@@ -4,6 +4,7 @@ import {useI18n} from '@/core/i18n'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Ip} from 'infoportal-api-sdk'
 import {Alert} from '@mui/material'
+import {BtnConfirm} from '@/shared/BtnConfirm'
 
 export const DatabaseSelectedRowsAction = ({
   formId,
@@ -16,7 +17,7 @@ export const DatabaseSelectedRowsAction = ({
   formId: Ip.FormId
   selectedIds: Ip.SubmissionId[]
 }) => {
-  const {m} = useI18n()
+  const {formatLargeNumber, m} = useI18n()
   const query = useQueryAnswerUpdate()
   return (
     <>
@@ -41,7 +42,7 @@ export const DatabaseSelectedRowsAction = ({
           }
         >
           <Core.Btn variant="outlined" color="error" icon="delete">
-            {m.deleteSelected}
+            {m.deleteNRows(formatLargeNumber(selectedIds.length))}
           </Core.Btn>
         </Core.Modal>
       )}

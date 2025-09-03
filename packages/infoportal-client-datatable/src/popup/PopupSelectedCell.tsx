@@ -14,6 +14,7 @@ export const PopupSelectedCell = () => {
   const {formatLargeNumber} = useConfig()
   const rowIds = useMemo(() => [...selectedRowIds], [selectedRowIds])
 
+  if (selectedColumnUniq?.actionOnSelected === 'none') return
   return (
     <Popover
       onClose={engine.reset}

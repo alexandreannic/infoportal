@@ -25,7 +25,10 @@ export const DatatableHead = (
 
   return (
     <div className="dthead" {...props}>
-      <DatatableHeadSections columns={columns} onHideColumns={console.log} />
+      <DatatableHeadSections
+        columns={columns}
+        onHideColumns={_ => dispatch({type: 'SET_HIDDEN_COLUMNS', hiddenColumns: _})}
+      />
       <div className="dtrh">
         {columns.map((c, columnIndex) => (
           <Cell key={c.id} width={colWidths[c.id]} onResize={width => dispatch({type: 'RESIZE', col: c.id, width})}>

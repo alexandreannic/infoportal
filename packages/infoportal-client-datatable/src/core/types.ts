@@ -68,8 +68,8 @@ export interface Props<T extends Row, K extends string = string> {
 
   module?: {
     export?: {
-      enabled: boolean,
-    },
+      enabled: boolean
+    }
     columnsToggle?: {
       enabled: boolean
       disableAutoSave?: boolean
@@ -77,7 +77,7 @@ export interface Props<T extends Row, K extends string = string> {
     }
     cellSelection?: {
       enabled: true
-      mode: 'cell' | 'col' | 'free' | 'row' | 'row-or-cell'
+      mode?: 'cell' | 'col' | 'free' | 'row' | 'row-or-cell'
       renderComponentOnRowSelected?: ({rowIds}: {rowIds: string[]}) => ReactNode
     }
     columnsResize?: {
@@ -117,7 +117,7 @@ export namespace Column {
     hidden?: boolean
     style?: (_: T) => CSSProperties
     styleHead?: CSSProperties
-    actionOnSelected?: ({rowIds}: {rowIds: string[]}) => ReactElement
+    actionOnSelected?: 'none' | (({rowIds}: {rowIds: string[]}) => ReactElement)
     classHead?: string
     typeIcon?: ReactNode
     typeLabel?: string

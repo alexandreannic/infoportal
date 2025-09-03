@@ -1,5 +1,5 @@
 import {SxProps, Theme} from '@mui/material'
-import {blue, purple} from '@mui/material/colors'
+import {blue} from '@mui/material/colors'
 
 export const combineSx = (...sxs: (SxProps<Theme> | undefined | false)[]): SxProps<Theme> => {
   return sxs.reduce((res, sx) => (sx !== undefined && sx !== false ? {...res, ...sx} : res), {} as any)

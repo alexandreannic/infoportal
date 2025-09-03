@@ -71,11 +71,12 @@ function SettingsUsers() {
         <Datatable.Component
           loading={queryUserGet.isLoading}
           id="users"
-          // showExportBtn
+          module={{
+            // cellSelection: {enabled: true},
+          }}
           defaultLimit={100}
           data={data}
           getRowKey={_ => _.invitationId ?? _.userId!}
-          // getRenderRowKey={(_, i) => '' + i}
           header={
             permission.user_canCreate && (
               <Core.Modal
@@ -180,12 +181,17 @@ function SettingsUsers() {
             {
               type: 'select_one',
               id: 'admin',
-              width: 80,
+              width: 100,
               align: 'center',
               head: m.admin,
+              actionOnSelected: 'none',
               render: _ => ({
                 label: (
                   <Core.SelectSingle
+                    hideNullOption
+                    slotProps={{
+                      notchedOutline: {sx: {border: 'none'}},
+                    }}
                     loading={queryUserUpdate.arePending.has(_.userId!)}
                     disabled={_.email === connectedUser.email || !permission.user_canUpdate || !_.userId}
                     onChange={res => {

@@ -50,9 +50,9 @@ export const DatatableToolbar = ({rowVirtualizer}: {rowVirtualizer: Virtualizer<
             filteredAndSortedData: dataFilteredAndSorted ?? [],
           })
         : header}
-      <Txt bold color="hint" sx={{mr: 0.5}}>
-        {formatLargeNumber(dataFilteredAndSorted.length)}
-      </Txt>
+      {/*<Txt bold color="hint" sx={{mr: 0.5}}>*/}
+      {/*  {formatLargeNumber(dataFilteredAndSorted.length)}*/}
+      {/*</Txt>*/}
     </Box>
   )
 }
