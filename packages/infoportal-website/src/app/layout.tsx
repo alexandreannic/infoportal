@@ -1,16 +1,17 @@
 import type {Metadata} from 'next'
 import {AppRouterCacheProvider} from '@mui/material-nextjs/v15-appRouter'
-import {CssBaseline, ThemeProvider} from '@mui/material'
+import {CssBaseline, StyledEngineProvider, ThemeProvider} from '@mui/material'
 import {openSansFont, theme} from '@/app/theme'
 import {m} from '@/i18n'
 import './layout.css'
+import {Header} from '@/shared/Header/Header'
 
 export const metadata: Metadata = {
   title: m.title,
   description: m.desc,
   icons: {
-    icon: '/favicon.svg'
-  }
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({
@@ -21,12 +22,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={openSansFont.variable}>
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            {children}
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        <StyledEngineProvider injectFirst>
+          <AppRouterCacheProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <Header/>
+              {children}
+            </ThemeProvider>
+          </AppRouterCacheProvider>
+        </StyledEngineProvider>
       </body>
     </html>
   )

@@ -1,0 +1,13 @@
+.cover {
+  height: auto;
+}
+
+.root {
+  max-width: 600px;
+  margin: auto;
+
+  img {
+    width: 100%;
+    border-radius: var(--mui-shape-borderRadius);
+  }
+}

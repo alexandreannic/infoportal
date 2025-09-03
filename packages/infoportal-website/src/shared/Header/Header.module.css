@@ -1,0 +1,24 @@
+.root {
+  padding: var(--mui-spacing) var(--section-padding);
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  font-weight: bold;
+  margin-left: var(--mui-spacing);
+  font-family: monospace;
+}
+
+.rootLink {
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav {
+  margin-left: auto;
+
+  & > * {
+    margin-left: calc(var(--mui-spacing) / 2) !important;
+  }
+}

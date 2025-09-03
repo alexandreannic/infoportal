@@ -40,7 +40,7 @@ export const Pulse = ({
   return React.cloneElement(children, {
     sx: {
       opacity: 0,
-      animation: `${fadeInSlide} 0.5s ease-out forwards, ${pulse(t)} 1.5s 2`,
+      animation: `${fadeInSlide} 0.5s ease-out forwards, ${pulse(t)} 1.5s 1`,
       animationDelay: `${animationDelay}, ${animationDelay}`,
       transition: 'transform 0.2s, background-color 0.2s',
     },

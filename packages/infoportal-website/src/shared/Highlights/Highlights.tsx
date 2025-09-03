@@ -1,7 +1,7 @@
 'use client'
 import {m} from '@/i18n'
 import {Obj} from '@axanc/ts-utils'
-import {HighlightCard} from '@/Highlights/HighlightCard'
+import {HighlightCard} from '@/shared/Highlights/HighlightCard'
 import {Grid} from '@mui/material'
 import style from './Highlights.module.css'
 import Hub from '@mui/icons-material/HubTwoTone'

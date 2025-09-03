@@ -3,6 +3,7 @@ export const m = {
   title: 'InfoPortal',
   desc: 'The next generation of data collection & management software.',
   cta: 'Try for free',
+  blog: 'Blog',
   highlights: {
     centralized: {
       title: 'All-in-One Platform',
