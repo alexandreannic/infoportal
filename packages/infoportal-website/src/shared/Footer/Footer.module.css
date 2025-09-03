@@ -1,0 +1,7 @@
+.root {
+  max-width: 700px;
+  color: var(--mui-palette-text-disabled);
+  margin: auto;
+  font-size: 0.874em;
+  margin-bottom: var(--mui-spacing);
+}

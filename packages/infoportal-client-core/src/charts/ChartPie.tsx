@@ -4,7 +4,7 @@ import {Cell, Pie, PieChart, PieChartProps, PieLabelRenderProps, ResponsiveConta
 import React, {ReactNode} from 'react'
 import {toPercent} from 'infoportal-common'
 import {Obj} from '@axanc/ts-utils'
-import {alphaVar} from '../core/theme'
+import {alphaVar} from '../core'
 
 const RADIAN = Math.PI / 180
 const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index}: any) => {
@@ -18,14 +18,6 @@ const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, perc
   return (
     <text x={x} y={y} fill="white" fontWeight="bold" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
       {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  )
-}
-
-const CustomizedLabel = ({x, y, fill, value, percent, textAnchor}: PieLabelRenderProps) => {
-  return (
-    <text x={x} y={y} fontSize="16" fontFamily="sans-serif" fill={fill} textAnchor={textAnchor}>
-      {(percent! * 100).toFixed(1)}%
     </text>
   )
 }

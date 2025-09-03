@@ -7,13 +7,11 @@ export const blogListItemHeight = 140
 
 export const BlogListItem = ({
   post,
-  animate,
   onClick,
   sx,
 }: {
   sx?: SxProps
   onClick?: (e: any) => void
-  animate?: boolean
   post: Post
 }) => {
   const t = useTheme()
@@ -22,6 +20,8 @@ export const BlogListItem = ({
       component="li"
       sx={{
         margin: 0,
+        overflow: 'hidden',
+        borderRadius: t.vars.shape.borderRadius,
         padding: 0,
         listStyle: 'none',
         ...sx,
@@ -35,16 +35,9 @@ export const BlogListItem = ({
             position: 'relative',
             background: `url(${post.frontmatter.coverPath})`,
             backgroundSize: 'cover',
-            borderRadius: t.vars.shape.borderRadius,
             overflow: 'hidden',
             color: 'white',
             transition: t.transitions.create('all'),
-            '&:hover': animate
-              ? {
-                  transform: 'scale(1.02)',
-                  boxShadow: t.shadows[4],
-                }
-              : {},
           }}
         >
           <Box

@@ -13,7 +13,7 @@ export const openSansFont = Open_Sans({
 
 export const theme = createTheme({
   cssVariables: true,
-  shadows: lightShadows as any,
+  // shadows: lightShadows as any,
   // defaultColorScheme: 'light',
   spacing: 16,
   shape: {

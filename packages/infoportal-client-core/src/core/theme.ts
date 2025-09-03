@@ -35,9 +35,9 @@ export const lightShadows = Array.from({length: 25}, (_, i) =>
     ? 'none'
     : fadeShadow({
         color: '#000',
-        opacity: 0.15 + i * 0.004,
-        y: 1.5 + i * 0.5,
-        blur: 4 + i * 0.5,
+        opacity: 0.2 + i * 0.01,
+        y: 1.5 + i * 0.6,
+        blur: 3 + i * 0.3,
       }),
 )
 

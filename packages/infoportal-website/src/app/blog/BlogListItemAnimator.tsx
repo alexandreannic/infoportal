@@ -1,11 +1,26 @@
 'use client'
 import React, {ReactElement, useEffect, useState} from 'react'
-import {SxProps, useTheme} from '@mui/material'
+import {keyframes, SxProps, useTheme} from '@mui/material'
 import {blogListItemHeight} from '@/app/blog/BlogListItem'
 
 let ignore = false
-const animationDuration = 180
+const animationDuration = 190
 const offset = 70
+
+const pulse = keyframes`
+  0% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+  50% {
+    transform: scale(1.07);
+    box-shadow: var(--mui-shadows-7);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+`
 
 export const BlogListItemAnimator = ({
   children,
@@ -34,8 +49,13 @@ export const BlogListItemAnimator = ({
       transition: t.transitions.create('all', {duration}),
       top: appeared ? top : top + 100,
       blogListItemHeight,
+      '&:hover': {
+        transform: 'scale(1.02)',
+        boxShadow: t.shadows[3],
+      },
       ...(isRedirecting
         ? {
+            animation: `${pulse} ${animationDuration}ms ease-in-out`,
             top: 0,
           }
         : {}),
