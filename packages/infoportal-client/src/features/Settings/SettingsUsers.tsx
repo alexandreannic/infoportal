@@ -160,23 +160,23 @@ function SettingsUsers() {
               head: m.job,
               render: _ => {
                 return {
-                  label: <Datatable.Input value={_.drcJob} onChange={console.log} />,
-                  value: _.drcJob,
+                  label: <Datatable.Input value={_.job} onChange={console.log} />,
+                  value: _.job,
                 }
               },
               type: 'select_one',
               options: () =>
-                seq(queryUserGet.data?.map(_ => _.drcJob))
+                seq(queryUserGet.data?.map(_ => _.job))
                   .distinct(_ => _)
                   .compact()
                   .map(_ => ({value: _, label: _})),
             },
             {
-              id: 'drcOffice',
+              id: 'location',
               type: 'select_one',
               head: m.location,
-              renderQuick: _ => _.drcOffice,
-              // options: () => seq(ctxUser.fetchSearch.get?.map(_ => _.drcOffice)).distinct(_ => _).compact().map(_ => ({value: _, label: _}))
+              renderQuick: _ => _.location,
+              // options: () => seq(ctxUser.fetchSearch.get?.map(_ => _.location)).distinct(_ => _).compact().map(_ => ({value: _, label: _}))
             },
             {
               type: 'select_one',

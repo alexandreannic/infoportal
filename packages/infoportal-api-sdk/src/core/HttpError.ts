@@ -12,7 +12,7 @@ export namespace HttpError {
   export type StatusCode = 200 | 301 | 302 | 400 | 401 | 403 | 404 | 409 | 500 | 504
 
   export const throwNotFoundIfUndefined =
-    (message: string) =>
+    (message: string = 'Resource not found') =>
     <T>(t: T | undefined): T => {
       if (t) return t
       throw new NotFound(message)

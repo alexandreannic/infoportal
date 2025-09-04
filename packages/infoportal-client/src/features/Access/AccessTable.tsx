@@ -54,7 +54,7 @@ export const AccessTable = ({
           options: () => queryJobs.data?.map(job => ({value: job, label: job})) || [],
         },
         {
-          id: 'drcOffice',
+          id: 'location',
           head: m.location,
           renderQuick: _ => _.location,
           type: 'select_one',

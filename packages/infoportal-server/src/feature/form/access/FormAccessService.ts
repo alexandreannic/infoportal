@@ -30,7 +30,7 @@ export class FormAccessService {
                 {
                   OR: [
                     {email: {equals: user.email, mode: 'insensitive' as const}},
-                    {job: {equals: user.drcJob, mode: 'insensitive' as const}},
+                    {job: {equals: user.job, mode: 'insensitive' as const}},
                   ],
                 },
               ]
@@ -65,9 +65,9 @@ export class FormAccessService {
                   OR: [
                     {email: {equals: user.email, mode: 'insensitive' as const}},
                     {
-                      OR: [{drcOffice: user.drcOffice}, {drcOffice: null}, {drcOffice: ''}],
-                      drcJob: {
-                        equals: user.drcJob,
+                      OR: [{location: user.location}, {location: null}, {location: ''}],
+                      job: {
+                        equals: user.job,
                         mode: 'insensitive' as const,
                       },
                     },

@@ -47,8 +47,6 @@ export namespace PrismaHelper {
       email: string
       lastConnectedAt: Date | null
       name: string | null
-      drcJob: string | null
-      drcOffice: string | null
       location: string | null
       job: string | null
       avatar?: Bytes | null
@@ -60,11 +58,19 @@ export namespace PrismaHelper {
     email: Ip.User.Email
     lastConnectedAt?: Date
     name?: string
-    drcJob?: string
-    drcOffice?: string
     location?: string
     job?: string
     avatar?: Bytes
+  } => _ as any
+
+  export const mapGroupItem = <T extends Record<keyof Ip.Group.Item, any>>(_: T): Ip.Group.Item => _ as any
+
+  export const mapGroup = <T extends Record<keyof Ip.Group, any>>(
+    _: T,
+  ): Ip.Group & {
+    workspaceId: Ip.WorkspaceId
+    id: Ip.GroupId
+    items: Ip.Group.Item[]
   } => _ as any
 
   export const mapServer = <T extends {id: string; workspaceId: string}>(

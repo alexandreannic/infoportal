@@ -24,22 +24,22 @@ export class DbInit {
     return this.upsertUsers([
       {
         email: 'prot.man.hrk@dummy',
-        drcJob: 'Protection Manager',
-        drcOffice: 'Kharkiv',
+        job: 'Protection Manager',
+        location: 'Kharkiv',
       },
       {
         email: 'mpca.assist.hrk@dummy',
-        drcJob: 'MPCA/NFI Assistant',
-        drcOffice: 'Kharkiv',
+        job: 'MPCA/NFI Assistant',
+        location: 'Kharkiv',
       },
       {
         email: 'prot.officer.dnp@dummy',
-        drcJob: 'Protection Officer',
-        drcOffice: 'Dnipro',
+        job: 'Protection Officer',
+        location: 'Dnipro',
       },
       {
         email: 'prot.co@dummy',
-        drcJob: 'Protection Coordinator',
+        job: 'Protection Coordinator',
       },
       {
         email: 'noaccess@dummy',

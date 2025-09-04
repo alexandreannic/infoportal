@@ -1,61 +1,49 @@
 import {PrismaClient} from '@prisma/client'
-import {yup} from '../../helper/Utils.js'
-import {Obj} from '@axanc/ts-utils'
-import {UUID} from 'infoportal-common'
-import {InferType} from 'yup'
 import {Ip} from 'infoportal-api-sdk'
-
-export type GroupItemCreateParams = InferType<typeof GroupItemService.schema.create>
-export type GroupItemUpdateParams = InferType<typeof GroupItemService.schema.update>
+import {PrismaHelper} from '../../core/PrismaHelper.js'
 
 export class GroupItemService {
   constructor(private prisma: PrismaClient) {}
 
-  static readonly schema = {
-    create: yup.object({
-      level: yup.mixed<Ip.AccessLevel>().oneOf(Obj.values(Ip.AccessLevel)).required(),
-      job: yup.array().of(yup.string()).nullable(),
-      location: yup.string().nullable(),
-      email: yup.string().nullable(),
-    }),
-
-    update: yup.object({
-      level: yup.mixed<Ip.AccessLevel>().oneOf(Obj.values(Ip.AccessLevel)),
-      job: yup.string().optional().nullable(),
-      location: yup.string().optional().nullable(),
-      email: yup.string().optional().nullable(),
-    }),
-  }
-
-  readonly create = (groupId: UUID, body: GroupItemCreateParams) => {
+  readonly create = ({
+    groupId,
+    email,
+    location,
+    jobs,
+    level,
+  }: Ip.Group.Payload.ItemCreate): Promise<Ip.Group.Item[]> => {
     return Promise.all(
-      (body.job ?? [undefined]).map(drcJob =>
+      (jobs ?? [undefined]).map(job =>
         this.prisma.groupItem.create({
           data: {
-            level: body.level,
-            drcJob,
-            drcOffice: body.location,
-            email: body.email,
+            level: level,
+            job: job,
+            location: location,
+            email: email,
             groupId,
           },
         }),
       ),
-    )
+    ).then(_ => _.map(PrismaHelper.mapGroupItem))
   }
 
-  readonly update = (id: UUID, body: GroupItemUpdateParams) => {
-    return this.prisma.groupItem.update({
-      where: {id},
-      data: {
-        level: body.level,
-        drcOffice: body.location,
-        drcJob: body.job,
-        email: body.email,
-      },
-    })
+  readonly update = async ({job, email, location, id, level}: Ip.Group.Payload.ItemUpdate) => {
+    const exists = await this.prisma.groupItem.findFirst({select: {id: true}, where: {id}})
+    if (!exists) return
+    return this.prisma.groupItem
+      .update({
+        where: {id},
+        data: {
+          level: level,
+          location: location,
+          job: job,
+          email: email,
+        },
+      })
+      .then(PrismaHelper.mapGroupItem)
   }
 
-  readonly remove = (id: UUID) => {
+  readonly remove = ({id}: {id: Ip.Group.ItemId}) => {
     return this.prisma.groupItem.delete({
       where: {
         id,
@@ -63,7 +51,7 @@ export class GroupItemService {
     })
   }
 
-  readonly getAll = ({groupId}: {groupId: UUID}) => {
+  readonly getAll = ({groupId}: {groupId: Ip.GroupId}) => {
     return this.prisma.groupItem.findMany({
       where: {
         groupId,

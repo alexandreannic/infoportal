@@ -108,10 +108,6 @@ export namespace Ip {
     createdAt: Date
     lastConnectedAt?: Date
     name?: string
-    /**@deprecated*/
-    drcJob?: string
-    /**@deprecated*/
-    drcOffice?: string
     avatar?: any
     accessLevel: AccessLevel
     location?: string
@@ -407,8 +403,8 @@ export namespace Ip {
       id: ItemId
       level: AccessLevel
       email?: string
-      drcJob?: string
-      drcOffice?: string
+      job?: string
+      location?: string
     }
 
     export namespace Payload {
@@ -416,21 +412,28 @@ export namespace Ip {
 
       export type Update = Pick<Group, 'id' | 'workspaceId' | 'name' | 'desc'>
 
+      export type Search = {
+        workspaceId: WorkspaceId
+        name?: string
+        user?: Ip.User
+        featureId?: Uuid
+      }
+
       export type ItemCreate = {
         workspaceId: WorkspaceId
         groupId: GroupId
         email?: string | null
         level: AccessLevel
-        drcOffice?: string | null
-        drcJob?: string[] | null
+        location?: string | null
+        jobs?: string[] | null
       }
       export type ItemUpdate = {
-        itemId: ItemId
+        id: ItemId
         workspaceId: WorkspaceId
         email?: string | null
         level: AccessLevel
-        drcOffice?: string | null
-        drcJob?: string | null
+        location?: string | null
+        job?: string | null
       }
     }
   }

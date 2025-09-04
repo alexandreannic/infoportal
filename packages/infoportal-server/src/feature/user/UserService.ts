@@ -37,8 +37,6 @@ export class UserService {
           id: true,
           accessLevel: true,
           createdAt: true,
-          drcOffice: true,
-          drcJob: true,
           email: true,
           lastConnectedAt: true,
           name: true,
@@ -81,13 +79,13 @@ export class UserService {
       .then(PrismaHelper.mapUser)
   }
 
-  readonly getDistinctDrcJobs = async ({workspaceId}: {workspaceId: Ip.WorkspaceId}): Promise<string[]> => {
-    const drcJobs = await this.prisma.user.findMany({
-      select: {drcJob: true},
-      distinct: ['drcJob'],
-      where: {workspaceAccess: {some: {workspaceId}}, drcJob: {not: null}},
+  readonly getDistinctJobs = async ({workspaceId}: {workspaceId: Ip.WorkspaceId}): Promise<string[]> => {
+    const jobs = await this.prisma.user.findMany({
+      select: {job: true},
+      distinct: ['job'],
+      where: {workspaceAccess: {some: {workspaceId}}, job: {not: null}},
     })
-    return drcJobs.map(job => job.drcJob!)
+    return jobs.map(job => job.job!)
   }
 
   readonly getByEmail = (email: Ip.User.Email): Promise<Ip.User | undefined> => {

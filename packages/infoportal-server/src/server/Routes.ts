@@ -7,7 +7,6 @@ import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerUser} from './controller/ControllerUser.js'
 import {HttpError, Ip, ipContract, Meta} from 'infoportal-api-sdk'
 import {ControllerProxy} from './controller/ControllerProxy.js'
-import {ControllerGroup} from './controller/ControllerGroup.js'
 import {ControllerJsonStore} from './controller/ControllerJsonStore.js'
 import {ControllerKoboAnswerHistory} from './controller/kobo/ControllerKoboAnswerHistory.js'
 import {ControllerCache} from './controller/ControllerCache.js'
@@ -29,6 +28,8 @@ import {WorkspaceAccessService} from '../feature/workspace/WorkspaceAccessServic
 import {SubmissionService} from '../feature/form/submission/SubmissionService.js'
 import {WorkspaceInvitationService} from '../feature/workspace/WorkspaceInvitationService.js'
 import {MetricsService} from '../feature/MetricsService.js'
+import {GroupService} from '../feature/group/GroupService.js'
+import {GroupItemService} from '../feature/group/GroupItemService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -52,7 +53,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const main = new ControllerMain()
   const koboApi = new ControllerKoboApi(prisma)
   const session = new ControllerSession(prisma)
-  const accessGroup = new ControllerGroup(prisma)
   const proxy = new ControllerProxy(prisma)
   const jsonStore = new ControllerJsonStore(prisma)
   const koboAnswerHistory = new ControllerKoboAnswerHistory(prisma)
@@ -151,6 +151,8 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const formAccess = new FormAccessService(prisma)
   const formSubmission = new SubmissionService(prisma)
   const server = new ServerService(prisma)
+  const group = new GroupService(prisma)
+  const groupItem = new GroupItemService(prisma)
   const permission = new PermissionService(prisma, undefined, formAccess)
   const metrics = new MetricsService(prisma)
   const user = UserService.getInstance(prisma)
@@ -236,6 +238,45 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       },
       access: {},
     },
+    group: {
+      create: _ =>
+        auth2(_)
+          .then(({params, body}) => group.create({...body, ...params}))
+          .then(ok200)
+          .catch(handleError),
+      update: _ =>
+        auth2(_)
+          .then(({params, body}) => group.update({...body, ...params}))
+          .then(HttpError.throwNotFoundIfUndefined())
+          .then(ok200)
+          .catch(handleError),
+      search: _ =>
+        auth2(_)
+          .then(({params, body}) => group.search({...body, ...params}))
+          .then(ok200)
+          .catch(handleError),
+      remove: _ =>
+        auth2(_)
+          .then(({params}) => group.remove(params))
+          .then(ok204)
+          .catch(handleError),
+      createItem: _ =>
+        auth2(_)
+          .then(({body, params}) => groupItem.create({...body, ...params}))
+          .then(ok200)
+          .catch(handleError),
+      deleteItem: _ =>
+        auth2(_)
+          .then(({params}) => groupItem.remove(params))
+          .then(ok204)
+          .catch(handleError),
+      updateItem: _ =>
+        auth2(_)
+          .then(({params, body}) => groupItem.update({...body, ...params}))
+          .then(HttpError.throwNotFoundIfUndefined())
+          .then(ok200)
+          .catch(handleError),
+    },
     user: {
       update: _ =>
         auth2(_)
@@ -249,7 +290,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .catch(handleError),
       getJobs: _ =>
         auth2(_)
-          .then(({params}) => user.getDistinctDrcJobs(params))
+          .then(({params}) => user.getDistinctJobs(params))
           .then(ok200)
           .catch(handleError),
     },
@@ -526,15 +567,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.delete('/proxy/:id', auth({adminOnly: true}), safe(proxy.delete))
     r.get('/proxy', safe(proxy.search))
 
-    r.get('/:workspaceId/group/item', auth({adminOnly: true}), safe(accessGroup.getItems))
-    r.post('/:workspaceId/group/item/:id', auth({adminOnly: true}), safe(accessGroup.updateItem))
-    r.delete('/:workspaceId/group/item/:id', auth({adminOnly: true}), safe(accessGroup.removeItem))
-    r.put('/:workspaceId/group/:id/item', auth({adminOnly: true}), safe(accessGroup.createItem))
-    r.post('/:workspaceId/group', auth({adminOnly: true}), safe(accessGroup.searchWithItems))
-    r.put('/:workspaceId/group', auth({adminOnly: true}), safe(accessGroup.create))
-    r.post('/:workspaceId/group/:id', auth({adminOnly: true}), safe(accessGroup.update))
-    r.delete('/:workspaceId/group/:id', auth({adminOnly: true}), safe(accessGroup.remove))
-
     r.post('/proxy-request', safe(main.proxy))
 
     r.post('/kobo-api/webhook', safe(koboApi.handleWebhookNewAnswers))
@@ -570,8 +602,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
 
     r.get('/cache', cacheController.get)
     r.post('/cache/clear', cacheController.clear)
-
-    // r.get('/*', safe(ecrec.index))
   } catch (e) {
     if (e instanceof Error) {
       log.error(e.toString())

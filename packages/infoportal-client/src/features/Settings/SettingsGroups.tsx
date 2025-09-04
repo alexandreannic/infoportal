@@ -74,7 +74,7 @@ function SettingsGroups() {
           columns={[
             {
               type: 'select_one',
-              id: 'drcJob',
+              id: 'name',
               width: 150,
               head: m.name,
               renderQuick: _ => _.name,
@@ -111,7 +111,7 @@ function SettingsGroups() {
                           ? () => {
                               accessForm.reset({
                                 ...item,
-                                job: item.drcJob ? [item.drcJob] : undefined,
+                                job: item.job ? [item.job] : undefined,
                               })
                               setSelectedGroupId({groupId: _.id, itemId: item.id})
                             }
@@ -124,8 +124,8 @@ function SettingsGroups() {
                       key={item.id}
                       label={
                         <>
-                          {item.drcJob ?? item.email}
-                          {item.drcOffice ? ` (${item.drcOffice})` : ''}
+                          {item.job ?? item.email}
+                          {item.location ? ` (${item.location})` : ''}
                         </>
                       }
                     />
@@ -217,12 +217,13 @@ function SettingsGroups() {
               if (selectedGroupId?.itemId) {
                 query.updateItem.mutate({
                   ...f,
-                  drcJob: f.job?.[0] ?? null,
-                  itemId: selectedGroupId?.itemId,
+                  job: f.job?.[0] ?? null,
+                  id: selectedGroupId?.itemId,
                 })
               } else if (selectedGroupId?.groupId) {
                 query.createItem.mutate({
                   ...f,
+                  jobs: f.job,
                   groupId: selectedGroupId?.groupId!,
                 })
               } else {

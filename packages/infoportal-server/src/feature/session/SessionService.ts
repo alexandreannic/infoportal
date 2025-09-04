@@ -74,7 +74,7 @@ export class SessionService {
       email,
       accessToken: userBody.accessToken,
       name,
-      // drcJob: jobTitle,
+      // job: jobTitle,
       avatar,
     })
 
@@ -121,7 +121,7 @@ export class SessionService {
     }
     const connectedUser = await this.syncUserInDb({
       email: msUser.mail as Ip.User.Email,
-      drcJob: msUser.jobTitle?.trim().replace(/\s+/g, ' '),
+      job: msUser.jobTitle?.trim().replace(/\s+/g, ' '),
       accessToken: userBody.accessToken,
       name: userBody.name,
       avatar: avatar ? Buffer.from(avatar) : undefined,
@@ -132,7 +132,7 @@ export class SessionService {
 
   readonly syncUserInDb = async ({
     email,
-    drcJob,
+    job,
     accessToken,
     avatar,
     name,
@@ -141,7 +141,7 @@ export class SessionService {
     avatar?: Buffer
     name: string
     email: Ip.User.Email
-    drcJob?: string
+    job?: string
   }): Promise<User> => {
     const user = await this.prisma.user.findFirst({where: {email}})
     if (!user) {
@@ -151,7 +151,7 @@ export class SessionService {
           email: email.trim().toLowerCase(),
           name,
           accessToken,
-          drcJob: drcJob,
+          job: job,
           avatar,
           lastConnectedAt: new Date(),
         },
@@ -163,7 +163,7 @@ export class SessionService {
           accessToken,
           name,
           avatar,
-          drcJob: drcJob,
+          job: job,
           lastConnectedAt: new Date(),
         },
       })

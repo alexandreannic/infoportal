@@ -13,6 +13,7 @@ import {HttpError} from './HttpError.js'
 import {workspaceInvitationClient} from '../contract/workspace/ContractWorkspaceInvitation.js'
 import {metricsClient} from '../contract/ContractMetrics.js'
 import {userClient} from '../contract/ContractUser.js'
+import {groupClient} from '../contract/ContractGroup.js'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -26,6 +27,7 @@ const buildClient = (baseUrl: string) =>
 export const buildIpClient = (baseUrl: string) => {
   const client = buildClient(baseUrl)
   return {
+    group: groupClient(client, baseUrl),
     workspace: {
       ...workspaceClient(client, baseUrl),
       access: workspaceAccessClient(client, baseUrl),

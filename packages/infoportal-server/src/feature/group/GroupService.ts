@@ -1,53 +1,39 @@
 import {PrismaClient} from '@prisma/client'
-import {idParamsSchema, yup} from '../../helper/Utils.js'
-import {InferType} from 'yup'
-import {UUID} from 'infoportal-common'
 import {format} from 'date-fns'
 import {Ip} from 'infoportal-api-sdk'
-
-export type GroupCreateParams = InferType<typeof GroupService.schema.create>
-export type GroupUpdateParams = InferType<typeof GroupService.schema.update>
+import {PrismaHelper} from '../../core/PrismaHelper.js'
 
 export class GroupService {
   constructor(private prisma: PrismaClient) {}
 
-  static readonly schema = {
-    create: yup.object({
-      workspaceId: yup.string().required(),
-      name: yup.string().optional(),
-      desc: yup.string().optional(),
-    }),
-    update: yup.object({
-      name: yup.string().required(),
-    }),
-    search: yup.object({
-      workspaceId: yup.string().required(),
-      name: yup.string().optional(),
-      featureId: yup.string().optional(),
-    }),
-    id: idParamsSchema,
+  readonly create = (body: Ip.Group.Payload.Create): Promise<Ip.Group> => {
+    return this.prisma.group
+      .create({
+        include: {items: true},
+        data: {
+          workspaceId: body.workspaceId,
+          name: body.name ?? `New group ${format(new Date(), 'yyyy-MM-dd')}`,
+          desc: body.desc,
+        },
+      })
+      .then(PrismaHelper.mapGroup)
   }
 
-  readonly create = (body: GroupCreateParams) => {
-    return this.prisma.group.create({
-      data: {
-        workspaceId: body.workspaceId,
-        name: body.name ?? `New group ${format(new Date(), 'yyyy-MM-dd')}`,
-        desc: body.desc,
-      },
-    })
+  readonly update = async ({id, ...data}: Ip.Group.Payload.Update): Promise<Ip.Group | undefined> => {
+    const exists = await this.prisma.group.findFirst({select: {id: true}, where: {id}})
+    if (!exists) return
+    return this.prisma.group
+      .update({
+        include: {items: true},
+        where: {
+          id,
+        },
+        data,
+      })
+      .then(PrismaHelper.mapGroup)
   }
 
-  readonly update = (id: UUID, body: GroupUpdateParams) => {
-    return this.prisma.group.update({
-      where: {
-        id,
-      },
-      data: body,
-    })
-  }
-
-  readonly remove = (id: UUID) => {
+  readonly remove = ({id}: {id: Ip.GroupId}) => {
     return this.prisma.group.delete({
       where: {
         id,
@@ -55,44 +41,36 @@ export class GroupService {
     })
   }
 
-  readonly search = ({
-    featureId,
-    workspaceId,
-    name,
-    user,
-  }: {
-    workspaceId: UUID
-    user?: Ip.User
-    name?: string
-    featureId?: UUID
-  }) => {
-    return this.prisma.group.findMany({
-      include: {
-        items: true,
-      },
-      where: {
-        name,
-        workspaceId,
-        ...(user
-          ? {
-              items: {
-                some: {
-                  OR: [
-                    {email: {equals: user.email, mode: 'insensitive' as const}},
-                    {
-                      OR: [{drcOffice: user.drcOffice}, {drcOffice: null}, {drcOffice: ''}],
-                      drcJob: {
-                        equals: user.drcJob,
-                        mode: 'insensitive' as const,
+  readonly search = ({featureId, workspaceId, name, user}: Ip.Group.Payload.Search) => {
+    return this.prisma.group
+      .findMany({
+        include: {
+          items: true,
+        },
+        where: {
+          name,
+          workspaceId,
+          ...(user
+            ? {
+                items: {
+                  some: {
+                    OR: [
+                      {email: {equals: user.email, mode: 'insensitive' as const}},
+                      {
+                        OR: [{location: user.location}, {location: null}, {location: ''}],
+                        job: {
+                          equals: user.job,
+                          mode: 'insensitive' as const,
+                        },
                       },
-                    },
-                  ],
+                    ],
+                  },
                 },
-              },
-            }
-          : {}),
-      },
-      orderBy: {createdAt: 'desc'},
-    })
+              }
+            : {}),
+        },
+        orderBy: {createdAt: 'desc'},
+      })
+      .then(_ => _.map(PrismaHelper.mapGroup))
   }
 }

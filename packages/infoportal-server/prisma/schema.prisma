@@ -201,12 +201,10 @@ model User {
   lastConnectedAt DateTime?
   accessToken     String?
   name            String?
-  drcJob          String?
-  drcOffice       String?
+  job             String?
+  location        String?
   avatar          Bytes?            @db.ByteA
   accessLevel     AccessLevel       @default(Read)
-  location        String?
-  job             String?
   activities      UserActivity[]
   workspaceAccess WorkspaceAccess[]
   provider        UserProvider?     @default(google)
@@ -261,8 +259,8 @@ model Group {
 model GroupItem {
   id        String      @id @default(uuid()) @db.Uuid
   createdAt DateTime    @default(now())
-  drcJob    String?
-  drcOffice String?
+  job       String?
+  location  String?
   email     String?
   level     AccessLevel
   group     Group?      @relation(fields: [groupId], references: [id])

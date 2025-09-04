@@ -250,16 +250,16 @@ export const AccessFormInputGroup = ({
                 renderQuick: _ => _.email,
               },
               {
-                id: 'drcJob',
+                id: 'job',
                 head: m.job,
                 type: 'select_one',
-                renderQuick: _ => _.drcJob,
+                renderQuick: _ => _.job,
               },
               {
-                id: 'drcOffice',
+                id: 'location',
                 head: m.location,
                 type: 'select_one',
-                renderQuick: _ => _.drcOffice,
+                renderQuick: _ => _.location,
               },
               {
                 id: 'level',

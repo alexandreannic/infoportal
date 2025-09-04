@@ -2,13 +2,10 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {queryKeys} from './query.index'
-import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {Ip} from 'infoportal-api-sdk'
 
-type Params<T extends keyof ApiSdk['group']> = Parameters<ApiSdk['group'][T]>[0]
-
 export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
-  const {api} = useAppSettings()
+  const {apiv2: api} = useAppSettings()
   const {toastHttpError, toastAndThrowHttpError} = useIpToast()
   const queryClient = useQueryClient()
 
@@ -20,7 +17,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const create = useMutation({
-    mutationFn: async (args: Omit<Params<'create'>, 'workspaceId'>) => {
+    mutationFn: async (args: Omit<Ip.Group.Payload.Create, 'workspaceId'>) => {
       return api.group.create({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -36,7 +33,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const remove = useMutation({
-    mutationFn: async (args: Omit<Params<'remove'>, 'workspaceId'>) => {
+    mutationFn: async (args: {id: Ip.GroupId}) => {
       return api.group.remove({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -44,7 +41,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const createItem = useMutation({
-    mutationFn: async (args: Omit<Params<'createItem'>, 'workspaceId'>) => {
+    mutationFn: async (args: Omit<Ip.Group.Payload.ItemCreate, 'workspaceId'>) => {
       return api.group.createItem({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -52,7 +49,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const deleteItem = useMutation({
-    mutationFn: async (args: Omit<Params<'deleteItem'>, 'workspaceId'>) => {
+    mutationFn: async (args: {id: Ip.Group.ItemId}) => {
       return api.group.deleteItem({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -60,7 +57,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const updateItem = useMutation({
-    mutationFn: async (args: Omit<Params<'updateItem'>, 'workspaceId'>) => {
+    mutationFn: async (args: Omit<Ip.Group.Payload.ItemUpdate, 'workspaceId'>) => {
       return api.group.updateItem({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -79,7 +76,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
           return createItem.mutateAsync({
             groupId: newGroup.id,
             ...item,
-            drcJob: item.drcJob ? [item.drcJob] : undefined,
+            jobs: item.job ? [item.job] : undefined,
           })
         }),
       )
@@ -98,17 +95,4 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
     updateItem,
     duplicate,
   }
-}
-
-export const useQueryGroupSearch = (params: Params<'search'>) => {
-  const {workspaceId, ...args} = params
-  const {api} = useAppSettings()
-  const {toastHttpError, toastAndThrowHttpError} = useIpToast()
-  return useQuery({
-    refetchOnWindowFocus: false,
-    queryKey: queryKeys.group(workspaceId, args),
-    queryFn: () => {
-      return api.group.search(params).catch(toastAndThrowHttpError)
-    },
-  })
 }

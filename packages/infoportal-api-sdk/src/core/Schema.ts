@@ -21,6 +21,8 @@ export const schema = (() => {
     uuid: z.string() as unknown as z.ZodType<Ip.Uuid>,
     formId: z.string() as unknown as z.ZodType<Ip.FormId>,
     versionId: z.string() as unknown as z.ZodType<Ip.Form.VersionId>,
+    groupId: z.string() as unknown as z.ZodType<Ip.GroupId>,
+    groupItemId: z.string() as unknown as z.ZodType<Ip.Group.ItemId>,
     serverId: z.string() as unknown as z.ZodType<Ip.ServerId>,
     formAccessId: z.string() as unknown as z.ZodType<Ip.Form.AccessId>,
     submissionId: z.string() as unknown as z.ZodType<Ip.SubmissionId>,

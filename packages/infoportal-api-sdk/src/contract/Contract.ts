@@ -11,11 +11,13 @@ import {contractFormSubmission} from './form/ContractFormSubmission.js'
 import {workspaceInvitationContract} from './workspace/ContractWorkspaceInvitation.js'
 import {metricsContract} from './ContractMetrics.js'
 import {userContract} from './ContractUser.js'
+import {groupContract} from './ContractGroup.js'
 
 export const ipContract = initContract().router({
   permission: permissionContract,
   server: serverContract,
   kobo: koboContract,
+  group: groupContract,
   workspace: {
     ...workspaceContract,
     invitation: workspaceInvitationContract,
