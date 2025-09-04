@@ -26,6 +26,7 @@ export const DatatableToolbar = ({rowVirtualizer}: {rowVirtualizer: Virtualizer<
         padding: `calc(${t.vars.spacing} * 0.5)`,
         display: 'flex',
         alignItems: 'center',
+        // borderBottom: `1px solid ${t.vars.palette.divider}`,
       }}
     >
       <DatatableColumnToggle

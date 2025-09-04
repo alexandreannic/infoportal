@@ -1,43 +1,40 @@
 import React, {useCallback, useEffect} from 'react'
 import {useVirtualizer} from '@tanstack/react-virtual'
-import {Badge, LinearProgress, Box} from '@mui/material'
+import {Box, LinearProgress, SxProps, Theme} from '@mui/material'
 import {DatatableHead} from '@/head/DatatableHead'
 import {Provider, useCtx} from '@/core/DatatableContext'
-import {IconBtn, Txt} from '@infoportal/client-core'
-import {useMemoFn} from '@axanc/react-hooks'
-import {Obj} from '@axanc/ts-utils'
-import {useConfig} from '@/DatatableConfig'
 import {PopupStats} from '@/popup/PopupStats'
 import {DatatableFilterModal} from '@/popup/PopupFilter'
 import {DatatableRow} from '@/DatatableRow'
-import {DatatableColumnToggle} from '@/DatatableColumnsToggle'
 import {FilterValue, Props, Row} from '@/core/types'
 import {PopupSelectedCell} from '@/popup/PopupSelectedCell'
 import {DatatableErrorBoundary} from '@/DatatableErrorBundary'
 import {DatatableSkeleton} from '@/DatatableSkeleton'
 import {DatatableToolbar} from '@/DatatableToolbar'
+import {useConfig} from '@/DatatableConfig'
 
-export const Datatable = <T extends Row>({data, ...props}: Props<T>) => {
+export const Datatable = <T extends Row>({data, sx, ...props}: Props<T>) => {
   if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} />
-  const tableRef = React.useRef(null) as unknown as React.MutableRefObject<HTMLDivElement>
-
+  const tableRef = React.useRef(null) as unknown as React.RefObject<HTMLDivElement>
+  const defaultProps = useConfig().defaultProps
   return (
     <DatatableErrorBoundary>
-      <Provider {...props} data={data} tableRef={tableRef}>
+      <Provider {...{...defaultProps, ...props}} data={data} tableRef={tableRef}>
         {props.loading && <LinearProgress sx={{position: 'absolute', top: 0, right: 0, left: 0, height: 3}} />}
-        <DatatableWithData />
+        <DatatableWithData sx={sx} />
       </Provider>
     </DatatableErrorBoundary>
   )
 }
 
-const DatatableWithData = <T extends Row>() => {
+const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
   const {
     columns,
     state: {sortBy, filters, virtualTable, popup},
     dispatch,
     getRowKey,
     data,
+    rowHeight = 32,
     dataFilteredAndSorted,
     dataFilteredExceptBy,
     getColumnOptions,
@@ -52,7 +49,7 @@ const DatatableWithData = <T extends Row>() => {
     count: dataFilteredAndSorted?.length ?? 0,
     debug: false,
     getScrollElement: () => tableRef.current,
-    estimateSize: () => 32,
+    estimateSize: () => rowHeight,
     overscan,
   })
 
@@ -96,13 +93,17 @@ const DatatableWithData = <T extends Row>() => {
   }, [])
 
   return (
-    <div>
+    <Box sx={sx}>
       <DatatableToolbar rowVirtualizer={rowVirtualizer} />
       <Box
         className="dt"
         ref={tableRef}
         {...contentProps}
-        style={{['--cols' as any]: columns.cssGridTemplate, ...contentProps?.style}}
+        style={{
+          ['--cols' as any]: columns.cssGridTemplate,
+          ['--dt-row-height' as any]: rowHeight + 'px',
+          ...contentProps?.style,
+        }}
       >
         <DatatableHead onMouseDown={() => cellSelection.engine.reset()} />
         <div
@@ -176,6 +177,6 @@ const DatatableWithData = <T extends Row>() => {
           }
         })()}
       </Box>
-    </div>
+    </Box>
   )
 }

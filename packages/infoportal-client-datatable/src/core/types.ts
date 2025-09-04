@@ -56,10 +56,10 @@ export interface Props<T extends Row, K extends string = string> {
   // Initialization
   /** Find a way to enforce k and v typing*/
   defaultFilters?: Record<K, FilterValue>
-  defaultLimit?: number
   defaultSort?: {byColumn: KeyOf<T>; order: OrderBy}
 
   // Layout
+  rowHeight?: number
   rowStyle?: (_: T) => CSSProperties
   header?: ReactNode | ((_: HeaderParams<T>) => ReactNode)
   contentProps?: BoxProps

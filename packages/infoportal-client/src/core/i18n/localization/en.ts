@@ -297,6 +297,7 @@ export const en = Object.freeze({
     finance: 'Finance',
     admin: 'Admin',
     inPerson: 'In person',
+    globalError: `If the problem persist, please contact support and include the snippet below.`,
     online: 'Online',
     age: 'Age',
     submitAll: 'Submit all',

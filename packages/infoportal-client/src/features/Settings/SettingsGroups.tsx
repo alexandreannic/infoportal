@@ -1,7 +1,7 @@
 import {Page} from '@/shared/Page'
 import React, {useState} from 'react'
 import {useI18n} from '@/core/i18n'
-import {Box, Chip, Icon} from '@mui/material'
+import {Box, Chip, Icon, useTheme} from '@mui/material'
 import {useForm} from 'react-hook-form'
 import {accessLevelIcon, IAccessForm} from '@/features/Access/AccessForm'
 import {SettingsGroupAccessForm} from '@/features/Settings/SettingsGroupAccessForm'
@@ -28,7 +28,6 @@ function SettingsGroups() {
   const {permission, workspace, workspaceId} = useWorkspaceContext()
   const groupForm = useForm<GoupForm>()
   const accessForm = useForm<IAccessForm>()
-
   const query = useQueryGroup(workspaceId)
   const queryGet = query.getAll
 
@@ -44,6 +43,7 @@ function SettingsGroups() {
     <Page width="full">
       <Core.Panel>
         <Datatable.Component
+          rowHeight={36}
           getRowKey={_ => _.id}
           data={queryGet.data}
           loading={queryGet.isLoading}

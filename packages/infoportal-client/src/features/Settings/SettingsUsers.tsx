@@ -69,11 +69,14 @@ function SettingsUsers() {
     <Page width="full">
       <Core.Panel>
         <Datatable.Component
+          rowHeight={36}
           loading={queryUserGet.isLoading}
           id="users"
-          module={{
-            // cellSelection: {enabled: true},
-          }}
+          module={
+            {
+              // cellSelection: {enabled: true},
+            }
+          }
           defaultLimit={100}
           data={data}
           getRowKey={_ => _.invitationId ?? _.userId!}

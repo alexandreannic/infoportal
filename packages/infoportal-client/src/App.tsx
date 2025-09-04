@@ -125,6 +125,7 @@ const AppWithBaseContext = () => {
             children={_}
             formatLargeNumber={formatLargeNumber}
             m={{
+              globalError: m.globalError,
               clearFilter: m.clearFilter,
               type: m.type,
               remove: m.remove,

@@ -30,7 +30,7 @@ export const DatatableGlobalStyles = () => (
       },
 
       '.dtd': {
-        height: 32,
+        height: 'var(--dt-row-height)',
         width: '100%',
         display: 'flex',
         alignItems: 'center',
@@ -108,7 +108,7 @@ export const DatatableGlobalStyles = () => (
       },
 
       '.dth': {
-        height: 32,
+        height: 'var(--dt-row-height)',
         display: 'flex',
         alignItems: 'center',
         width: '100%',

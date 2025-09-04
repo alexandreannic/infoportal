@@ -135,6 +135,9 @@ export const muiTheme = ({
     colorSchemes: {
       light: {
         palette: {
+          AppBar: {
+            defaultBg: 'rgba(245, 245, 247, 1)',
+          },
           warning: orange,
           success: green,
           primary: colorPrimary,
@@ -148,7 +151,7 @@ export const muiTheme = ({
             default: '#fff',
             // default: 'rgba(221, 231, 248, 0.6)',
             // default: 'rgba(255, 255, 255, 0.6)',
-            paper: 'rgba(255, 255, 255, 0.7)',
+            paper: 'rgba(255, 255, 255, 0.65)',
           },
         },
       },

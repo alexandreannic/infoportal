@@ -3,12 +3,27 @@ import {mapFor} from '@axanc/ts-utils'
 import React, {memo, useMemo} from 'react'
 
 export const DatatableSkeleton = memo(
-  ({rows = 20, columns = 10, style, className, ...props}: BoxProps & {rows?: number; columns?: number}) => {
+  ({
+    rows = 20,
+    columns = 10,
+    style,
+    rowHeight = 32,
+    className,
+    ...props
+  }: BoxProps & {rowHeight?: number; rows?: number; columns?: number}) => {
     const cols = useMemo(() => {
       return mapFor(Math.min(columns, 14), _ => '1fr').join(' ')
     }, [columns])
     return (
-      <Box {...props} className={'dt ' + (className ?? '')} style={{['--cols' as any]: cols, ...style}}>
+      <Box
+        {...props}
+        className={'dt ' + (className ?? '')}
+        style={{
+          ['--cols' as any]: cols,
+          ['--dt-row-height' as any]: rowHeight + 'px',
+          ...style,
+        }}
+      >
         <div className="dtbody">
           {mapFor(rows, i => (
             <div className="dth" key={i}>
