@@ -12,8 +12,12 @@ import {workspaceInvitationContract} from './workspace/ContractWorkspaceInvitati
 import {metricsContract} from './ContractMetrics.js'
 import {userContract} from './ContractUser.js'
 import {groupContract} from './ContractGroup.js'
+import {smartDbContract} from './smartDb/ContractSmartDb.js'
 
 export const ipContract = initContract().router({
+  smartDb: {
+    ...smartDbContract,
+  },
   permission: permissionContract,
   server: serverContract,
   kobo: koboContract,

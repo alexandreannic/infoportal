@@ -19,6 +19,7 @@ import {workspacesRoute} from '@/features/Workspace/Workspaces'
 import {newFormRoute} from '@/features/NewForm/NewForm'
 import {databaseAnswerViewRoute} from '@/features/Form/dialogs/DialogAnswerView'
 import {settingsGroupsRoute} from '@/features/Settings/SettingsGroups'
+import {smartDbRoute} from '@/features/SmartDb/SmartDb'
 
 export const rootRoute = createRootRoute({
   component: App,
@@ -32,6 +33,7 @@ const tsRoutes = [
     newFormRoute,
     formRootRoute.addChildren([
       formsRoute,
+      smartDbRoute,
       formRoute.addChildren([
         databaseAccessRoute,
         formBuilderRoute,

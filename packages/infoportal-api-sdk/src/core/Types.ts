@@ -452,4 +452,15 @@ export namespace Ip {
     export type CountBy<K extends string> = Array<Record<K, string> & {count: number}>
     export type CountByKey = CountBy<'key'>
   }
+
+  export type SmartDb = Prisma.SmartDb
+  export namespace SmartDb {
+    export namespace Payload {
+      export type Create = {
+        workspaceId: WorkspaceId
+        name: string
+        category?: string
+      }
+    }
+  }
 }

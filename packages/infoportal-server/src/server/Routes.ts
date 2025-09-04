@@ -30,6 +30,7 @@ import {WorkspaceInvitationService} from '../feature/workspace/WorkspaceInvitati
 import {MetricsService} from '../feature/MetricsService.js'
 import {GroupService} from '../feature/group/GroupService.js'
 import {GroupItemService} from '../feature/group/GroupItemService.js'
+import {SmartDbService} from '../feature/smartDb/SmartDbService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -156,6 +157,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const permission = new PermissionService(prisma, undefined, formAccess)
   const metrics = new MetricsService(prisma)
   const user = UserService.getInstance(prisma)
+  const smartDb = new SmartDbService(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
     const connectedUser = await permission.checkUserConnected(args.req)
@@ -537,6 +539,23 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({req, params, query}) =>
             metrics.submissionsBy({...params, user: req.session.app.user, ...parseMetricsQs(query)}),
           )
+          .then(ok200)
+          .catch(handleError),
+    },
+    smartDb: {
+      // delete: _ =>
+      //   auth2(_)
+      //     .then(({params}) => server.delete({id: params.id}))
+      //     .then(ok204)
+      //     .catch(handleError),
+      create: _ =>
+        auth2(_)
+          .then(({params, body}) => smartDb.create({workspaceId: params.workspaceId, ...body}))
+          .then(ok200)
+          .catch(handleError),
+      getAll: _ =>
+        auth2(_)
+          .then(({params}) => smartDb.getAll(params))
           .then(ok200)
           .catch(handleError),
     },

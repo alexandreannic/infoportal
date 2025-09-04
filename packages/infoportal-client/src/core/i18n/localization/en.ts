@@ -304,8 +304,9 @@ export const en = Object.freeze({
     submit: 'Submit',
     newForm: 'New form',
     formSource: {
+      smart: 'Smart database',
       kobo: 'Import from KoboToolbox',
-      internal: 'Create new form',
+      internal: 'Raw form',
     },
     changeAccount: 'Change account',
     addNewKoboAccount: 'Add new Kobo account',

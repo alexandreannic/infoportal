@@ -65,7 +65,7 @@ export const RadioGroupItem = <T,>({
           ? {
               borderRightColor: 'transparent',
               '&:last-of-type': {
-                borderRight: '2px solid ' + 'transparent',
+                borderRight: '1px solid ' + t.vars.palette.divider,
                 borderBottomRightRadius: styleUtils(t).color.input.default.borderRadius,
                 borderTopRightRadius: styleUtils(t).color.input.default.borderRadius,
               },

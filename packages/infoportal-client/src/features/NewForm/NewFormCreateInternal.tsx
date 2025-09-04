@@ -3,7 +3,6 @@ import {useI18n} from '@/core/i18n'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {Autocomplete, Grid} from '@mui/material'
-import {useNavigate} from '@tanstack/react-router'
 import {Core} from '@/shared'
 
 type Form = {
@@ -11,19 +10,28 @@ type Form = {
   category?: string
 }
 
-export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+export const NewFormCreateInternal = ({
+  workspaceId,
+  onSubmit,
+  loading,
+  btnLabel,
+}: {
+  btnLabel?: string
+  loading?: boolean
+  onSubmit: (_: Form) => void
+  workspaceId: Ip.WorkspaceId
+}) => {
   const {m} = useI18n()
-  const navigate = useNavigate()
   const form = useForm<Form>({
     defaultValues: {name: '', category: ''},
   })
   const queryForm = useQueryForm(workspaceId)
+
   return (
     <form
       onSubmit={form.handleSubmit(async _ => {
-        const newForm = await queryForm.create.mutateAsync(_)
+        onSubmit(_)
         form.reset()
-        navigate({to: '/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})
       })}
     >
       <Core.Panel>
@@ -73,8 +81,8 @@ export const NewFormCreateInternal = ({workspaceId}: {workspaceId: Ip.WorkspaceI
           </Grid>
         </Core.PanelBody>
         <Core.PanelFoot>
-          <Core.Btn variant="contained" type="submit" loading={queryForm.create.isPending}>
-            {m.create}
+          <Core.Btn variant="contained" type="submit" loading={loading}>
+            {btnLabel ?? m.create}
           </Core.Btn>
         </Core.PanelFoot>
       </Core.Panel>
