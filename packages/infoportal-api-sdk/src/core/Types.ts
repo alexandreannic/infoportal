@@ -295,6 +295,8 @@ export namespace Ip {
   export type Form = Prisma.Form & {
     id: FormId
     kobo?: Form.KoboInfo
+    category?: string
+    deploymentStatus?: string
   }
   export namespace Form {
     export type DeploymentStatus = Prisma.DeploymentStatus
@@ -453,7 +455,9 @@ export namespace Ip {
     export type CountByKey = CountBy<'key'>
   }
 
-  export type SmartDb = Prisma.SmartDb
+  export type SmartDb = Prisma.SmartDb & {
+    category?: string
+  }
   export namespace SmartDb {
     export namespace Payload {
       export type Create = {

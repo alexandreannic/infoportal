@@ -15,6 +15,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {UseQuerySmartDb} from '@/core/query/useQuerySmartDb'
+import {Asset} from '@/shared/Asset.js'
 
 export const newFormRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -31,24 +32,6 @@ const OptionBody = ({icon, color, label}: {color: string; icon: string; label: s
   )
 }
 
-enum Source {
-  internal = 'internal',
-  smart = 'smart',
-  kobo = 'kobo',
-}
-
-const icon = {
-  [Source.internal]: 'content_paste',
-  [Source.kobo]: 'cloud_download',
-  [Source.smart]: 'dynamic_form',
-}
-
-const color = {
-  [Source.internal]: '#FF9800',
-  [Source.kobo]: '#2196F3',
-  [Source.smart]: '#9C27B0',
-}
-
 function NewForm() {
   const {m} = useI18n()
   const {workspaceId} = newFormRoute.useParams() as {workspaceId: Ip.WorkspaceId}
@@ -56,7 +39,7 @@ function NewForm() {
   const dialog = useDialogs()
   const navigate = useNavigate()
 
-  const [source, setSource] = useState<Source>()
+  const [asset, setAsset] = useState<Asset.Type>()
   const [selectedServerId, setSelectedServerId] = useState<Ip.ServerId>()
 
   const queryForm = useQueryForm(workspaceId)
@@ -76,22 +59,22 @@ function NewForm() {
       <Core.Panel>
         <Core.PanelHead>{m.source}</Core.PanelHead>
         <Core.PanelBody>
-          <Core.RadioGroup value={source} sx={{flex: 1}} inline onChange={setSource}>
-            {Obj.keys(Source).map(source => (
+          <Core.RadioGroup value={asset} sx={{flex: 1}} inline onChange={setAsset}>
+            {Obj.keys(Asset.Type).map(asset => (
               <Core.RadioGroupItem
-                key={source}
+                key={asset}
                 hideRadio
-                value={source}
-                title={<OptionBody color={color[source]} icon={icon[source]} label={m.formSource[source]} />}
+                value={asset}
+                title={<OptionBody color={Asset.color[asset]} icon={Asset.icon[asset]} label={m.formSource[asset]} />}
                 sx={{flex: 1}}
               />
             ))}
           </Core.RadioGroup>
         </Core.PanelBody>
       </Core.Panel>
-      {source &&
+      {asset &&
         fnSwitch(
-          source,
+          asset,
           {
             kobo: (
               <>
@@ -136,7 +119,7 @@ function NewForm() {
               <NewFormCreateInternal
                 workspaceId={workspaceId}
                 loading={queryForm.create.isPending}
-                btnLabel={m.create + ' ' + m.formSource[source].toLowerCase()}
+                btnLabel={m.create + ' ' + m.formSource[asset].toLowerCase()}
                 onSubmit={async form => {
                   const newForm = await queryForm.create.mutateAsync(form)
                   navigate({to: '/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})
@@ -146,7 +129,7 @@ function NewForm() {
             smart: (
               <NewFormCreateInternal
                 workspaceId={workspaceId}
-                btnLabel={m.create + ' ' + m.formSource[source].toLowerCase()}
+                btnLabel={m.create + ' ' + m.formSource[asset].toLowerCase()}
                 loading={queryForm.create.isPending}
                 onSubmit={async form => {
                   const newSmartDb = await querySmartDb.mutateAsync(form)

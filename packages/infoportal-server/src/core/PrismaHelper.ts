@@ -15,13 +15,45 @@ import {Ip} from 'infoportal-api-sdk'
 //   [K in keyof PickNotNullable<T>]: T[K]
 // }
 
+type Defined<T> = {
+  [K in keyof T as T[K] extends null | undefined ? never : K]: T[K]
+}
+
 export namespace PrismaHelper {
   type Bytes = Uint8Array<ArrayBufferLike>
   export const mapSubmission = <T extends {id: string}>(_: T): T & {id: Ip.SubmissionId} => _ as any
 
-  export const mapForm = <T extends {kobo?: any | null; serverId?: string | null; id: string}>(
+  export const mapForm = <
+    T extends {
+      kobo?: any | null
+      category?: string | null
+      deploymentStatus?: Ip.Form.DeploymentStatus | null
+      serverId?: string | null
+      id: string
+    },
+  >(
     _: T,
-  ): T & {id: Ip.FormId; serverId?: Ip.ServerId; kobo?: Ip.Form.KoboInfo} => _ as any
+  ): Defined<
+    T & {
+      id: Ip.FormId
+      serverId?: Ip.ServerId
+      category?: string
+      deploymentStatus?: string
+      kobo?: Ip.Form.KoboInfo
+    }
+  > => _ as any
+
+  export const mapSmartDb = <
+    T extends {
+      category?: string | null
+    },
+  >(
+    _: T,
+  ): Defined<
+    T & {
+      category?: string
+    }
+  > => _ as any
 
   export const mapWorkspace = <T extends {id: string}>(_: T): T & {id: Ip.WorkspaceId} => _ as any
   export const mapWorkspaceAccess = <T extends {id: string}>(_: T): T & {id: Ip.Workspace.AccessId} => _ as any

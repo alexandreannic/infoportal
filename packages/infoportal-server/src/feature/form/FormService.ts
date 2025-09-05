@@ -163,7 +163,13 @@ export class FormService {
     await this.prisma.form.delete({where: {id}})
   }
 
-  readonly getByUser = async ({workspaceId, user}: {user: Ip.User; workspaceId: Ip.WorkspaceId}) => {
+  readonly getByUser = async ({
+    workspaceId,
+    user,
+  }: {
+    user: Ip.User
+    workspaceId: Ip.WorkspaceId
+  }): Promise<Ip.Form[]> => {
     const accesses = await this.access.search({workspaceId, user})
     return this.prisma.form
       .findMany({

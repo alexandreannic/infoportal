@@ -6,6 +6,7 @@ import {useI18n} from '@/core/i18n/index.js'
 import {forwardRef, useEffect, useMemo} from 'react'
 import {Core} from '@/shared'
 import Fuse from 'fuse.js'
+import {Asset} from '@/shared/Asset.js'
 
 const SearchInput = forwardRef(
   (
@@ -71,11 +72,11 @@ const defaultFormValues: FilterForm = {
 }
 
 export const AppSidebarFilters = ({
-  forms,
+  assets,
   onFilterChanges,
 }: {
-  forms: Seq<Ip.Form>
-  onFilterChanges: (_: Seq<Ip.Form>) => void
+  assets: Seq<Asset>
+  onFilterChanges: (_: Seq<Asset>) => void
 }) => {
   const {m} = useI18n()
   const searchForm = useForm<FilterForm>()
@@ -87,16 +88,16 @@ export const AppSidebarFilters = ({
   // })
 
   const fuse = useMemo(() => {
-    return new Fuse(forms, {
+    return new Fuse(assets, {
       keys: ['name'],
       includeScore: true,
       isCaseSensitive: false,
       threshold: 0.4,
     })
-  }, [forms])
+  }, [assets])
 
   useEffect(() => {
-    const filteredByName = !values?.name ? forms : fuse.search(values.name).map(res => res.item)
+    const filteredByName = !values?.name ? assets : fuse.search(values.name).map(res => res.item)
     const categories = values?.category ?? []
     const statuses = values?.status ?? []
 
@@ -105,11 +106,11 @@ export const AppSidebarFilters = ({
       .filter(_ => (_.deploymentStatus && statuses.includes(_.deploymentStatus)) || statuses.length === 0)
 
     onFilterChanges(filteredForms)
-  }, [values, forms, fuse, onFilterChanges])
+  }, [values, assets, fuse, onFilterChanges])
 
   const formCategories = useMemo(() => {
-    return forms.map(_ => _.category ?? '').distinct(_ => _)
-  }, [forms])
+    return assets.map(_ => _.category ?? '').distinct(_ => _)
+  }, [assets])
 
   return (
     <Box sx={{mx: 0.5, mb: 1, mt: 0}}>
@@ -119,7 +120,7 @@ export const AppSidebarFilters = ({
         render={({field}) => (
           <SearchInput
             onClear={() => searchForm.reset(defaultFormValues)}
-            placeholder={m.searchInForms(forms.length) + '...'}
+            placeholder={m.searchInForms(assets.length) + '...'}
             {...field}
           />
         )}
