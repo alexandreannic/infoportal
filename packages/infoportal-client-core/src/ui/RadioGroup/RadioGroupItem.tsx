@@ -55,6 +55,7 @@ export const RadioGroupItem = <T,>({
         // paddingRight: '2px',
         px: dense ? 1.5 : 2,
         display: 'flex',
+        flex: 1,
         alignItems: 'flex-start',
         // border: '2px solid ' + 'transparent',
         paddingBottom: '2px',

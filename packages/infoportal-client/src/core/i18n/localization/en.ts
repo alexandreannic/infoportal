@@ -138,7 +138,7 @@ export const en = Object.freeze({
     history: 'History',
     recap: 'Recap',
     search: 'Search',
-    searchInForms: (n: number) => `Search in ${n} forms`,
+    searchInForms: (n: number) => `Search in ${n}`,
     settings: 'Settings',
     onboardingTitle: "Let's start with a name for your workspace",
     enterProjectName: 'Enter your workspace name',

@@ -1,4 +1,4 @@
-import {Box, Icon, IconProps, Tooltip as MuiTooltip, useTheme} from '@mui/material'
+import {Box, Icon, Tooltip as MuiTooltip, useTheme} from '@mui/material'
 import {capitalize} from 'infoportal-common'
 import {Link} from '@tanstack/react-router'
 import {SidebarItem} from '@/shared/Layout/Sidebar/index.js'
@@ -7,7 +7,7 @@ import {Core} from '@/shared'
 import {ReactElement} from 'react'
 import {Ip} from 'infoportal-api-sdk'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
-import {appConfig} from '@/conf/AppConfig.js'
+import {DeploymentStatus} from '@/shared/DeploymentStatus.js'
 
 export const AppSidebarAsset = ({
   asset,
@@ -35,8 +35,9 @@ export const AppSidebarAsset = ({
             key={asset.id}
             active={isActive}
             iconEnd={
+              asset.deploymentStatus &&
               asset.deploymentStatus !== 'deployed' && (
-                <IconDeploymentStatus
+                <DeploymentStatus.Icon
                   fontSize="small"
                   status={asset.deploymentStatus}
                   sx={{marginLeft: '4px', marginRight: '-4px'}}
@@ -72,9 +73,9 @@ function Tooltip({asset, children}: {asset: Asset; children: ReactElement}) {
               {asset.name}
             </Core.Txt>
           </Box>
-          {asset.deploymentStatus !== 'deployed' && (
+          {asset.deploymentStatus && asset.deploymentStatus !== 'deployed' && (
             <Box>
-              <IconDeploymentStatus
+              <DeploymentStatus.Icon
                 status={asset.deploymentStatus}
                 fontSize="medium"
                 sx={{width: 35, m: 0}}
@@ -88,23 +89,5 @@ function Tooltip({asset, children}: {asset: Asset; children: ReactElement}) {
       placement="right-end"
       children={children}
     />
-  )
-}
-
-function IconDeploymentStatus({
-  status,
-  fontSize = 'small',
-  sx,
-  ...props
-}: IconProps & {status?: null | Ip.Form.DeploymentStatus}) {
-  return (
-    <Icon
-      color="disabled"
-      fontSize={fontSize}
-      sx={{marginLeft: '4px', marginRight: '-4px', verticalAlign: 'middle', ...sx}}
-      {...props}
-    >
-      {appConfig.icons.deploymentStatus[status!]}
-    </Icon>
   )
 }

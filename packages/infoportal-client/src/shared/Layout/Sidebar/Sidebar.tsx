@@ -8,7 +8,7 @@ import {SidebarHeader} from './SidebarHeader'
 import {useI18n} from '@/core/i18n'
 import {Core} from '@/shared'
 
-const sidebarWidth = 270
+const sidebarWidth = 280
 
 export const Sidebar = ({
   children,
