@@ -17,6 +17,7 @@ export const queryKeys = {
   originalEmail: () => ['originalEmail'],
   koboForm: (serverId?: Ip.ServerId) => concat('koboForm', serverId),
   smartDb: (workspaceId?: Ip.WorkspaceId) => concat('smartDb', workspaceId),
+  smartDbFunction: (workspaceId?: Ip.WorkspaceId, id?: Ip.SmartDbId) => concat('smartDb', workspaceId, 'function', id),
   servers: (workspaceId?: Ip.WorkspaceId) => concat('servers', workspaceId),
   server: (workspaceId?: Ip.WorkspaceId, serverId?: Ip.ServerId) => concat('server', workspaceId, serverId),
   formAccess: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('formAccess', workspaceId, formId),

@@ -41,13 +41,13 @@ export const AppSidebarAssets = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) =
     ])
   }, [queryForm.accessibleForms.data, querySmartDb.data])
 
-  const [filteredAssets, setFilteredAssets] = useState<Seq<Asset>>(assets)
+  const [filteredAssets, setFilteredAssets] = useState<Asset[]>(assets)
 
   const formItemSize: SidebarItemProps['size'] = assets.length > 19 ? 'tiny' : assets.length > 15 ? 'small' : 'normal'
 
   return (
     <>
-      <AppSidebarFilters assets={assets} onFilterChanges={setFilteredAssets} />
+      <AppSidebarFilters assets={assets} onFilterChanges={setFilteredAssets} sx={{mx: 0.5, mb: 1, mt: 0}} />
       {queryForm.accessibleForms.isLoading ? (
         mapFor(4, i => (
           <SidebarItem key={i} size={formItemSize}>

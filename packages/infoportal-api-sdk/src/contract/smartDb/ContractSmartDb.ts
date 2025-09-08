@@ -43,6 +43,7 @@ export const smartDbClient = (client: TsRestClient) => {
           params: {workspaceId},
         })
         .then(map200)
+        .then(_ => _.map(Ip.SmartDb.map))
     },
     create: ({workspaceId, ...body}: Ip.SmartDb.Payload.Create) => {
       return client.smartDb
@@ -51,6 +52,7 @@ export const smartDbClient = (client: TsRestClient) => {
           body,
         })
         .then(map200)
+        .then(Ip.SmartDb.map)
     },
   }
 }

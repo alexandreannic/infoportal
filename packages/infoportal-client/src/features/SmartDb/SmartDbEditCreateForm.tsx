@@ -1,0 +1,209 @@
+import {Ip} from 'infoportal-api-sdk'
+import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
+import {smartDbEditRoute} from '@/features/SmartDb/SmartDbEdit.js'
+import {Controller, useForm, UseFormReturn} from 'react-hook-form'
+import {useQueryForm} from '@/core/query/useQueryForm.js'
+import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
+import {RefObject, useMemo, useRef, useState} from 'react'
+import {Asset} from '@/shared/Asset.js'
+import {Box, CircularProgress, DialogActions} from '@mui/material'
+import {DeploymentStatus} from '@/shared/DeploymentStatus'
+import {Core} from '@/shared'
+import {useI18n} from '@/core/i18n/index.js'
+import {Obj} from '@axanc/ts-utils'
+
+type Form = Omit<Ip.SmartDb.Payload.ActionCreate, 'body' | 'workspaceId' | 'smartDbId'>
+
+export const SmartDbEditCreateForm = ({onClose}: {onClose: () => void}) => {
+  const stepperRef = useRef<Core.StepperHandle>(null)
+
+  const params = smartDbEditRoute.useParams()
+  const workspaceId = params.workspaceId as Ip.WorkspaceId
+  const smartDbId = params.smartDbId as Ip.SmartDbId
+  const queryAction = UseQuerySmartDbAction.create(workspaceId, smartDbId)
+  const {m} = useI18n()
+
+  const form = useForm<Form>()
+
+  return (
+    <Box sx={{width: 500, pt: 1}}>
+      <Core.Stepper
+        onComplete={() => {
+          queryAction
+            .mutateAsync({
+              ...form.getValues(),
+            })
+            .then(onClose)
+        }}
+        renderDone={
+          <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', p: 1}}>
+            <CircularProgress />
+            {m.creating}...
+          </Box>
+        }
+        ref={stepperRef}
+        steps={[
+          {
+            name: 'type',
+            label: m.action,
+            component: () => <SelectType stepperRef={stepperRef} loading={queryAction.isPending} form={form} />,
+          },
+          {
+            name: 'selectForm',
+            label: m.selectForm,
+            component: () => (
+              <SelectForm
+                stepperRef={stepperRef}
+                loading={queryAction.isPending}
+                form={form}
+                workspaceId={workspaceId}
+              />
+            ),
+          },
+          {
+            name: 'info',
+            label: m.information,
+            component: () => <FormDetails loading={queryAction.isPending} form={form} />,
+          },
+        ]}
+      />
+    </Box>
+  )
+}
+
+function StepperActions({disableNext, loading}: {loading?: boolean; disableNext?: boolean}) {
+  const {m} = useI18n()
+  return (
+    <DialogActions sx={{mt: 1, pb: 0}}>
+      <Core.Btn sx={{marginRight: 'auto'}}>{m.close}</Core.Btn>
+      <Core.StepperBtnPrevious sx={{m: 0}} />
+      <Core.StepperBtnNext loading={loading} disabled={disableNext} sx={{m: 0}} />
+    </DialogActions>
+  )
+}
+
+function SelectType({
+  form,
+  loading,
+  stepperRef,
+}: {
+  stepperRef: RefObject<Core.StepperHandle>
+  form: UseFormReturn<Form>
+  loading: boolean
+}) {
+  const {m} = useI18n()
+  const icon = {
+    [Ip.SmartDb.Action.Type.insert]: 'splitscreen_add',
+    [Ip.SmartDb.Action.Type.mutate]: 'splitscreen_bottom',
+  }
+  const type = form.watch('type')
+  return (
+    <>
+      <Controller
+        control={form.control}
+        name="type"
+        render={({field: {onChange, ...field}}) => (
+          <Core.RadioGroup
+            {...field}
+            onChange={_ => {
+              onChange(_)
+              stepperRef.current?.goTo(1)
+            }}
+          >
+            {Obj.values(Ip.SmartDb.Action.Type).map(_ => (
+              <Core.RadioGroupItem
+                hideRadio
+                value={_}
+                icon={icon[_]}
+                title={m._smartDb._functionTypeLabel[_]}
+                description={m._smartDb._functionTypeDesc[_]}
+              />
+            ))}
+          </Core.RadioGroup>
+        )}
+      />
+      <StepperActions loading={loading} disableNext={!type} />
+    </>
+  )
+}
+
+function SelectForm({
+  form,
+  loading,
+  workspaceId,
+  stepperRef,
+}: {
+  form: UseFormReturn<Form>
+  loading: boolean
+  workspaceId: Ip.WorkspaceId
+  stepperRef: RefObject<Core.StepperHandle>
+}) {
+  const queryForms = useQueryForm(workspaceId).accessibleForms
+  const [filteredForms, setFilteredForms] = useState<Asset[]>([])
+
+  const assets = useMemo(() => {
+    if (!queryForms.data) return []
+    return queryForms.data.map(_ => ({..._, type: _.kobo ? Asset.Type.kobo : Asset.Type.internal}))
+  }, [queryForms.data])
+
+  const formId = form.watch('formId')
+
+  return (
+    <>
+      <AppSidebarFilters assets={assets} onFilterChanges={setFilteredForms} sx={{mb: 1}} />
+      <Controller
+        control={form.control}
+        name="formId"
+        render={({field}) => (
+          <Core.RadioGroup<Ip.FormId>
+            dense
+            sx={{height: 300, overflowY: 'scroll'}}
+            {...field}
+            onChange={_ => {
+              stepperRef.current?.goTo(2)
+              field.onChange(_)
+            }}
+          >
+            {filteredForms.map(_ => (
+              <Core.RadioGroupItem
+                hideRadio
+                value={_.id}
+                key={_.id}
+                sx={{display: 'flex', alignItems: 'center'}}
+                icon={<Asset.Icon type={_.type} />}
+                endContent={
+                  _.deploymentStatus &&
+                  _.deploymentStatus !== 'deployed' && <DeploymentStatus.Icon status={_.deploymentStatus} />
+                }
+              >
+                {_.name}
+              </Core.RadioGroupItem>
+            ))}
+          </Core.RadioGroup>
+        )}
+      />
+      <StepperActions loading={loading} disableNext={!formId} />
+    </>
+  )
+}
+
+function FormDetails({form, loading}: {form: UseFormReturn<Form>; loading: boolean}) {
+  const {m} = useI18n()
+  const name = form.watch('name')
+
+  return (
+    <>
+      <Controller
+        control={form.control}
+        name="name"
+        render={({field}) => <Core.Input label={m._smartDb.functionSummary} {...field} />}
+      />
+      <Controller
+        control={form.control}
+        name="description"
+        render={({field}) => <Core.Input multiline={true} minRows={3} label={m.description} {...field} />}
+      />
+      <StepperActions loading={loading} disableNext={!name} />
+    </>
+  )
+}

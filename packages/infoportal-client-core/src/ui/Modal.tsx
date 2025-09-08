@@ -10,6 +10,7 @@ import {
   LinearProgress,
   PaperProps,
 } from '@mui/material'
+import {ButtonProps} from '@mui/material/Button'
 
 export interface ModalProps extends Omit<DialogProps, 'onClose' | 'children' | 'onClick' | 'open' | 'content'> {
   disabled?: boolean
@@ -25,7 +26,14 @@ export interface ModalProps extends Omit<DialogProps, 'onClose' | 'children' | '
   onClick?: EventHandler<SyntheticEvent<any>>
   PaperProps?: Partial<PaperProps>
   loading?: boolean
-  overrideActions?: (_: () => void) => ReactNode
+  overrideActions?:
+    | null
+    | ((_: {
+        defaultCloseBtn: ReactElement<ButtonProps>
+        defaultConfirmBtn: ReactElement<ButtonProps>
+        onConfirm: (event: SyntheticEvent<any>, close: () => void) => void
+        onClose: () => void
+      }) => ReactNode)
 }
 
 const enterKeyCode = 13
@@ -68,6 +76,18 @@ export const Modal = ({
     }
   }
 
+  const btnClose = (
+    <Button color="primary" onClick={close}>
+      {cancelLabel || 'Cancel'}
+    </Button>
+  )
+
+  const btnConfirm = (
+    <Button color="primary" onClick={confirm} disabled={confirmDisabled}>
+      {confirmLabel || 'Confirm'}
+    </Button>
+  )
+
   return (
     <>
       {cloneElement(children, {
@@ -90,22 +110,19 @@ export const Modal = ({
         )}
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>{typeof content === 'function' ? content(close) : content}</DialogContent>
-        {(onClose !== null || onConfirm || overrideActions) && (
+        {overrideActions !== null && (onClose !== null || onConfirm || overrideActions) && (
           <DialogActions>
             {overrideActions ? (
-              overrideActions(close)
+              overrideActions({
+                defaultCloseBtn: btnClose,
+                defaultConfirmBtn: btnConfirm,
+                onClose: close,
+                onConfirm: confirm,
+              })
             ) : (
               <>
-                {onClose !== null && (
-                  <Button color="primary" onClick={close}>
-                    {cancelLabel || 'Cancel'}
-                  </Button>
-                )}
-                {onConfirm && (
-                  <Button color="primary" onClick={confirm} disabled={confirmDisabled}>
-                    {confirmLabel || 'Confirm'}
-                  </Button>
-                )}
+                {onClose !== null && btnClose}
+                {onConfirm && btnConfirm}
               </>
             )}
           </DialogActions>

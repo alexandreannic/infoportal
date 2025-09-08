@@ -15,11 +15,13 @@ interface StepperProps {
   onComplete?: (props: StepProps, index: number) => void
 }
 
-interface StepperContext {
+export interface StepperContext {
   currentStep: number
   goTo: (i: number) => void
   next: () => void
   prev: () => void
+  isDone: boolean
+  isLast: boolean
 }
 
 export const StepperContext = React.createContext<StepperContext>({
@@ -37,6 +39,7 @@ export const Stepper = forwardRef<StepperHandle, StepperProps>(
     const [currentStep, setCurrentStep] = useState(initialStep ?? 0)
     const maxStep = useMemo(() => steps.length + (renderDone ? 1 : 0), [steps, renderDone])
     const isDone = currentStep >= steps.length
+    const isLast = currentStep === steps.length - 1
 
     const scrollTop = () => window.scrollTo(0, 0)
 
@@ -52,7 +55,9 @@ export const Stepper = forwardRef<StepperHandle, StepperProps>(
 
     const next = () => {
       if (isDone) return
-      setCurrentStep(_ => Math.min(_ + 1, maxStep))
+      setCurrentStep(_ => {
+        return Math.min(_ + 1, maxStep)
+      })
       scrollTop()
     }
 
@@ -70,9 +75,11 @@ export const Stepper = forwardRef<StepperHandle, StepperProps>(
           goTo,
           next,
           prev,
+          isDone,
+          isLast,
         }}
       >
-        <StepperHeader steps={steps.map(_ => _.label)} currentStep={currentStep} goTo={setCurrentStep} />
+        <StepperHeader steps={steps.map(_ => _.label)} />
         {isDone ? renderDone : steps[currentStep].component()}
       </StepperContext.Provider>
     )

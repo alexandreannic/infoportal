@@ -106,7 +106,7 @@ export const XlsFileUploadForm = ({
                         />
                       )}
                     />
-                    <Core.StepperActions disableNext={!watched.xlsFile} />
+                    <Core.StepperActions nextBtnProps={{disabled: !watched.xlsFile}} />
                   </>
                 ),
               },
@@ -137,7 +137,7 @@ export const XlsFileUploadForm = ({
                             </ul>
                           )}
                         </Alert>
-                        <Core.StepperActions disableNext={validation.status === 'error'} />
+                        <Core.StepperActions nextBtnProps={{disabled: validation.status === 'error'}} />
                       </>
                     )
                   )),
@@ -148,7 +148,9 @@ export const XlsFileUploadForm = ({
                       name: 'check',
                       label: m.checkDiff,
                       component: () => {
-                        const action = <Core.StepperActions disableNext={!schemaHasChanges}>{importButton()}</Core.StepperActions>
+                        const action = (
+                          <Core.StepperActions disableNext={!schemaHasChanges}>{importButton()}</Core.StepperActions>
+                        )
                         if (querySchema.isLoading) {
                           return (
                             <>

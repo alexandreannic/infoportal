@@ -5,14 +5,10 @@ import {PrismaHelper} from '../../core/PrismaHelper.js'
 export class SmartDbService {
   constructor(private prisma: PrismaClient) {}
 
-  readonly create = ({name, workspaceId, category}: Ip.SmartDb.Payload.Create): Promise<Ip.SmartDb> => {
+  readonly create = (data: Ip.SmartDb.Payload.Create & {createdBy: Ip.User.Email}): Promise<Ip.SmartDb> => {
     return this.prisma.smartDb
       .create({
-        data: {
-          name,
-          workspaceId,
-          category,
-        },
+        data,
       })
       .then(PrismaHelper.mapSmartDb)
   }

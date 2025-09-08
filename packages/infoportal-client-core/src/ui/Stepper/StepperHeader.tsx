@@ -1,12 +1,11 @@
 import React from 'react'
-import {Box, BoxProps, SxProps, Theme} from '@mui/material'
+import {Box, BoxProps, SxProps, Theme, useTheme} from '@mui/material'
 import {fnSwitch} from '@axanc/ts-utils'
 import {alphaVar, makeSx, styleUtils} from '../../core/theme'
+import {useStepperContext} from './Stepper'
 
 interface StepperHeaderProps extends BoxProps {
   steps: (string | undefined)[]
-  currentStep: number
-  goTo?: (index: number) => void
   stepSize?: number
   stepMargin?: number
   hideLabel?: boolean
@@ -14,21 +13,14 @@ interface StepperHeaderProps extends BoxProps {
 
 type StepState = 'done' | 'current' | 'not_done'
 
-export const StepperHeader = ({
-  sx,
-  steps,
-  currentStep,
-  goTo,
-  stepSize = 32,
-  stepMargin = 8,
-  hideLabel,
-}: StepperHeaderProps) => {
-  const isDone = currentStep >= steps.length
+export const StepperHeader = ({sx, steps, stepSize = 32, stepMargin = 8, hideLabel}: StepperHeaderProps) => {
+  const {goTo, currentStep} = useStepperContext()
+  const t = useTheme()
   return (
     <Box
       sx={{
         display: 'flex',
-        mb: 4,
+        mb: 3,
         justifyContent: 'center',
         ...sx,
       }}
@@ -39,9 +31,9 @@ export const StepperHeader = ({
           <Box key={i} sx={{flex: 1}} onClick={goTo ? () => i < currentStep && goTo(i) : undefined}>
             <Box
               sx={{
-                ...(goTo && {
+                ...{
                   cursor: state === 'not_done' ? 'not-allowed' : 'pointer',
-                }),
+                },
                 display: 'flex',
                 position: 'relative',
                 justifyContent: 'center',
@@ -59,10 +51,10 @@ export const StepperHeader = ({
                     right: `calc(50% + ${stepSize / 2 + stepMargin}px)`,
                     ...(state === 'not_done'
                       ? {
-                          borderTop: (t: Theme) => '2px solid ' + t.vars.palette.divider,
+                          borderTop: '2px solid ' + t.vars.palette.divider,
                         }
                       : {
-                          borderTop: (t: Theme) => '2px solid ' + t.vars.palette.success.light,
+                          borderTop: '2px solid ' + t.vars.palette.success.light,
                         }),
                   }}
                 />
@@ -74,30 +66,30 @@ export const StepperHeader = ({
                   borderRadius: stepSize,
                   display: 'flex',
                   alignItems: 'center',
-                  fontWeight: t => t.typography.fontWeightBold,
+                  fontWeight: '700',
                   ...(stepSize <= 30 && {
-                    fontSize: t => styleUtils(t).fontSize.small,
+                    fontSize: styleUtils(t).fontSize.small,
                   }),
                   justifyContent: 'center',
-                  transition: t => t.transitions.create('all'),
+                  transition: t.transitions.create('all'),
                   mr: 1,
                   ml: 1,
                   ...fnSwitch<StepState, SxProps<Theme>>(
                     state,
                     makeSx({
                       done: {
-                        background: t => t.vars.palette.success.light,
-                        color: t => t.vars.palette.success.contrastText,
+                        border: `2px solid ${t.vars.palette.success.light}`,
+                        background: alphaVar(t.vars.palette.success.main, 0.2),
+                        color: t.vars.palette.success.main,
                       },
                       current: {
-                        boxShadow: t =>
-                          `0px 0px 0px ${stepSize > 30 ? 4 : 2}px ${alphaVar(t.vars.palette.primary.main, 0.3)}`,
-                        color: t => t.vars.palette.primary.contrastText,
-                        bgcolor: 'primary.main',
+                        boxShadow: `0px 0px 0px ${stepSize > 30 ? 4 : 2}px ${alphaVar(t.vars.palette.primary.main, 0.3)}`,
+                        color: t.vars.palette.primary.contrastText,
+                        backgroundColor: 'primary.main',
                       },
                       not_done: {
-                        border: t => `2px solid ${t.vars.palette.divider}`,
-                        color: t => t.vars.palette.text.disabled,
+                        border: `2px solid ${t.vars.palette.divider}`,
+                        color: t.vars.palette.text.disabled,
                       },
                     }),
                   ),
@@ -108,16 +100,20 @@ export const StepperHeader = ({
               {!hideLabel && (
                 <Box
                   sx={{
-                    mt: 1,
+                    mt: .5,
                     textAlign: 'center',
                     ...fnSwitch<StepState, SxProps<Theme>>(
                       state,
                       makeSx({
+                        done: {
+                          color: 'success.main',
+                        },
                         current: {
-                          fontWeight: t => t.typography.fontWeightBold,
+                          fontWeight: t.typography.fontWeightBold,
+                          color: 'primary.main',
                         },
                         not_done: {
-                          color: t => t.vars.palette.text.disabled,
+                          color: t.vars.palette.text.disabled,
                         },
                       }),
                       () => ({}),

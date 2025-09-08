@@ -1,5 +1,5 @@
-import {Box, BoxProps, Checkbox, Icon, Radio, useTheme} from '@mui/material'
-import React, {ReactNode} from 'react'
+import {Box, BoxProps, Checkbox, Icon, Radio, SxProps, useTheme} from '@mui/material'
+import React, {ReactElement, ReactNode} from 'react'
 import {styleUtils} from '../../core/theme'
 
 export interface RadioGroupItemProps<T> extends Omit<BoxProps, 'title'> {
@@ -7,8 +7,9 @@ export interface RadioGroupItemProps<T> extends Omit<BoxProps, 'title'> {
   description?: string | ReactNode
   value: T
   disabled?: boolean
-  icon?: string
+  icon?: string | ReactElement<{sx: SxProps}>
   endContent?: ReactNode
+  /** @deprecated for customization, use icon as ReactElement */
   iconColor?: string
   selected?: boolean
   before?: ReactNode
@@ -150,7 +151,12 @@ export const RadioGroupItem = <T,>({
           />
         ))}
       {before}
-      {icon && <Icon sx={{color: iconColor ?? t.vars.palette.text.disabled, mr: 1, alignSelf: 'center'}}>{icon}</Icon>}
+      {icon &&
+        (typeof icon === 'string' ? (
+          <Icon sx={{color: iconColor ?? t.vars.palette.text.disabled, mr: 1, alignSelf: 'center'}}>{icon}</Icon>
+        ) : (
+          React.cloneElement(icon, {sx: {mr: 1, alignSelf: 'center'}})
+        ))}
       <Box
         sx={{
           alignSelf: 'center',

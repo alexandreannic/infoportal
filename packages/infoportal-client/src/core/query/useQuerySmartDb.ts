@@ -29,4 +29,12 @@ export class UseQuerySmartDb {
       queryFn: () => apiv2.smartDb.getAll({workspaceId}).catch(toastAndThrowHttpError),
     })
   }
+
+  static readonly getById = (workspaceId: Ip.WorkspaceId, dbId: Ip.SmartDbId) => {
+    const all = this.getAll(workspaceId)
+    return {
+      ...all,
+      data: all.data?.find(_ => _.id === dbId),
+    }
+  }
 }

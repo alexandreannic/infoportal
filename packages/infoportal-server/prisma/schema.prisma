@@ -111,7 +111,7 @@ model Form {
   kobo                   FormKoboInfo?
   disconnectedFromKoboAt DateTime?
   disconnectedFromKoboBy String?
-  smartDbFunction        SmartDbFunction[]
+  smartDbAction          SmartDbAction[]
 
   @@index([category])
 }
@@ -366,27 +366,39 @@ model EmailOutBox {
   workspaces  Workspace[]
 }
 
+// ----------------
+// Smart-db
+// ----------------
 model SmartDb {
-  id          String            @id @default(uuid())
-  createdAt   DateTime          @default(now())
+  id          String          @id @default(uuid())
+  createdAt   DateTime        @default(now())
   createdBy   String?
   name        String
   category    String?
   rows        SmartDbRow[]
-  functions   SmartDbFunction[]
-  workspace   Workspace         @relation(fields: [workspaceId], references: [id])
-  workspaceId String            @db.Uuid
+  actions     SmartDbAction[]
+  workspace   Workspace       @relation(fields: [workspaceId], references: [id])
+  workspaceId String          @db.Uuid
 }
 
-model SmartDbFunction {
-  id                String       @id @default(uuid())
-  createdAt         DateTime     @default(now())
-  body              String
-  form              Form         @relation(fields: [formId], references: [id])
-  formId            String       @db.VarChar(32)
-  derivedDatabase   SmartDb?     @relation(fields: [derivedDatabaseId], references: [id])
-  derivedDatabaseId String?
-  logs              SmartDbLog[]
+enum SmartDbActionType {
+  insert
+  mutate
+}
+
+model SmartDbAction {
+  id          String            @id @default(uuid())
+  createdAt   DateTime          @default(now())
+  createdBy   String?
+  type        SmartDbActionType
+  name        String
+  description String?
+  body        String
+  form        Form              @relation(fields: [formId], references: [id])
+  formId      String            @db.VarChar(32)
+  smartDb     SmartDb           @relation(fields: [smartDbId], references: [id])
+  smartDbId   String
+  logs        SmartDbLog[]
 }
 
 enum SmartDbLogType {
@@ -395,19 +407,19 @@ enum SmartDbLogType {
 }
 
 model SmartDbLog {
-  id         String          @id @default(uuid())
-  type       SmartDbLogType
-  createdAt  DateTime        @default(now())
-  function   SmartDbFunction @relation(fields: [functionId], references: [id])
-  content    String
-  functionId String
+  id        String         @id @default(uuid())
+  type      SmartDbLogType
+  createdAt DateTime       @default(now())
+  action    SmartDbAction  @relation(fields: [actionId], references: [id])
+  content   String
+  actionId  String
 }
 
 model SmartDbRow {
-  id                String         @id @default(uuid())
-  createdAt         DateTime       @default(now())
-  submission        FormSubmission @relation(fields: [submissionId], references: [id])
-  submissionId      String         @db.VarChar(32)
-  derivedDatabase   SmartDb?       @relation(fields: [derivedDatabaseId], references: [id])
-  derivedDatabaseId String?
+  id           String         @id @default(uuid())
+  createdAt    DateTime       @default(now())
+  submission   FormSubmission @relation(fields: [submissionId], references: [id])
+  submissionId String         @db.VarChar(32)
+  smartDb      SmartDb?       @relation(fields: [smartDbId], references: [id])
+  smartDbId    String?
 }

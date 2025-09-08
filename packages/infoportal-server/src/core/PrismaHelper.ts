@@ -1,19 +1,5 @@
 import {Ip} from 'infoportal-api-sdk'
-
-// Seems not working but need further trys.
-// type PickNullable<T> = {
-//   [P in keyof T as null extends T[P] ? P : never]: T[P]
-// }
-//
-// type PickNotNullable<T> = {
-//   [P in keyof T as null extends T[P] ? never : P]: T[P]
-// }
-//
-// type OptionalNullable<T> = {
-//   [K in keyof PickNullable<T>]?: Exclude<T[K], null>
-// } & {
-//   [K in keyof PickNotNullable<T>]: T[K]
-// }
+import type * as Prisma from '@prisma/client'
 
 type Defined<T> = {
   [K in keyof T as T[K] extends null | undefined ? never : K]: T[K]
@@ -43,14 +29,34 @@ export namespace PrismaHelper {
     }
   > => _ as any
 
+  export const mapSmartDbAction = <
+    T extends {
+      id: string
+      formId: string
+      smartDbId: string
+      type: Prisma.SmartDbActionType
+    },
+  >(
+    _: T,
+  ): Defined<
+    T & {
+      id: Ip.SmartDb.ActionId
+      formId: Ip.FormId
+      smartDbId: Ip.SmartDbId
+      type: Ip.SmartDb.Action.Type
+    }
+  > => _ as any
+
   export const mapSmartDb = <
     T extends {
+      id: string
       category?: string | null
     },
   >(
     _: T,
   ): Defined<
     T & {
+      id: Ip.SmartDbId
       category?: string
     }
   > => _ as any

@@ -7,8 +7,12 @@ const config: JestConfigWithTsJest = {
   noStackTrace: true,
   extensionsToTreatAsEsm: ['.ts'],
   setupFilesAfterEnv: ['<rootDir>/../../jest.setup.ts'], // Path to your setup file
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1', // Map .js imports to their .ts source files
+  },
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', {useESM: true}], // Ensure proper regex escaping
+    'KoboInterfaceBuilder.spec.ts': ['ts-jest', {useESM: true}], // Ensure proper regex escaping
+    // '^.+\\.tsx?$': ['ts-jest', {useESM: true}], // Ensure proper regex escaping
   },
 }
 

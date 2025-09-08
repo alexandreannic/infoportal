@@ -20,6 +20,9 @@ import {newFormRoute} from '@/features/NewForm/NewForm'
 import {databaseAnswerViewRoute} from '@/features/Form/dialogs/DialogAnswerView'
 import {settingsGroupsRoute} from '@/features/Settings/SettingsGroups'
 import {smartDbRoute} from '@/features/SmartDb/SmartDb'
+import {smartDbDataRoute} from '@/features/SmartDb/SmartDbData.js'
+import {smartDbEditRoute} from '@/features/SmartDb/SmartDbEdit.js'
+import {smartDbActionRoute} from '@/features/SmartDb/SmartDbAction.js'
 
 export const rootRoute = createRootRoute({
   component: App,
@@ -33,7 +36,7 @@ const tsRoutes = [
     newFormRoute,
     formRootRoute.addChildren([
       formsRoute,
-      smartDbRoute,
+      smartDbRoute.addChildren([smartDbActionRoute, smartDbDataRoute, smartDbEditRoute]),
       formRoute.addChildren([
         databaseAccessRoute,
         formBuilderRoute,

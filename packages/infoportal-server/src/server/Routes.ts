@@ -31,6 +31,7 @@ import {MetricsService} from '../feature/MetricsService.js'
 import {GroupService} from '../feature/group/GroupService.js'
 import {GroupItemService} from '../feature/group/GroupItemService.js'
 import {SmartDbService} from '../feature/smartDb/SmartDbService.js'
+import {SmartDbActionService} from '../feature/smartDb/SmartDbActionService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -158,6 +159,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const metrics = new MetricsService(prisma)
   const user = UserService.getInstance(prisma)
   const smartDb = new SmartDbService(prisma)
+  const smartDbAction = new SmartDbActionService(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
     const connectedUser = await permission.checkUserConnected(args.req)
@@ -550,7 +552,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       //     .catch(handleError),
       create: _ =>
         auth2(_)
-          .then(({params, body}) => smartDb.create({workspaceId: params.workspaceId, ...body}))
+          .then(({params, body, req}) => smartDb.create({...params, ...body, createdBy: req.session.app.user.email}))
           .then(ok200)
           .catch(handleError),
       getAll: _ =>
@@ -558,6 +560,20 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({params}) => smartDb.getAll(params))
           .then(ok200)
           .catch(handleError),
+      action: {
+        create: _ =>
+          auth2(_)
+            .then(({params, body, req}) =>
+              smartDbAction.create({...params, ...body, createdBy: req.session.app.user.email}),
+            )
+            .then(ok200)
+            .catch(handleError),
+        getByDbId: _ =>
+          auth2(_)
+            .then(({params}) => smartDbAction.getByDatabaseId(params))
+            .then(ok200)
+            .catch(handleError),
+      },
     },
   })
 

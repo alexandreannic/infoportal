@@ -1,6 +1,6 @@
 import {Controller, useForm, useWatch} from 'react-hook-form'
-import {Box, Collapse, Icon, InputProps} from '@mui/material'
-import {Obj, seq, Seq} from '@axanc/ts-utils'
+import {Box, BoxProps, Collapse, Icon, InputProps} from '@mui/material'
+import {Obj, seq} from '@axanc/ts-utils'
 import {Ip} from 'infoportal-api-sdk'
 import {useI18n} from '@/core/i18n/index.js'
 import {forwardRef, useEffect, useMemo} from 'react'
@@ -82,9 +82,11 @@ const defaultFormValues: FilterForm = {
 export const AppSidebarFilters = ({
   assets,
   onFilterChanges,
-}: {
-  assets: Seq<Asset>
-  onFilterChanges: (_: Seq<Asset>) => void
+  sx,
+  ...props
+}: BoxProps & {
+  assets: Asset[]
+  onFilterChanges: (_: Asset[]) => void
 }) => {
   const {m} = useI18n()
   const searchForm = useForm<FilterForm>()
@@ -120,11 +122,13 @@ export const AppSidebarFilters = ({
   }, [values, assets, fuse, onFilterChanges])
 
   const formCategories = useMemo(() => {
-    return assets.map(_ => _.category ?? '').distinct(_ => _)
+    return seq(assets)
+      .map(_ => _.category ?? '')
+      .distinct(_ => _)
   }, [assets])
 
   return (
-    <Box sx={{mx: 0.5, mb: 1, mt: 0}}>
+    <Box sx={sx} {...props}>
       <Controller
         name="name"
         control={searchForm.control}

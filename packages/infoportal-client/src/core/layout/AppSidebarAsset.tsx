@@ -23,7 +23,7 @@ export const AppSidebarAsset = ({
     <Tooltip asset={asset}>
       <Link
         {...(asset.type === 'smart'
-          ? {to: '/$workspaceId/form/smart-db/$smartDbId', params: {workspaceId, smartDbId: asset.id}}
+          ? {to: '/$workspaceId/form/smart-db/$smartDbId/data', params: {workspaceId, smartDbId: asset.id}}
           : {to: '/$workspaceId/form/$formId', params: {workspaceId, formId: asset.id}})}
       >
         {({isActive}) => (
@@ -45,7 +45,14 @@ export const AppSidebarAsset = ({
               )
             }
           >
-            <Core.Txt sx={{color: asset.deploymentStatus !== 'deployed' ? t.vars!.palette.text.disabled : undefined}}>
+            <Core.Txt
+              sx={{
+                color:
+                  asset.deploymentStatus === 'draft' || asset.deploymentStatus === 'archived'
+                    ? t.vars.palette.text.disabled
+                    : t.vars.palette.text.primary,
+              }}
+            >
               {asset.name}
               {/* {asset.custom && <span style={{fontWeight: 300}}> ({m._koboDatabase.mergedDb})</span>} */}
             </Core.Txt>

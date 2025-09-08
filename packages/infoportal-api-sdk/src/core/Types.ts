@@ -455,15 +455,50 @@ export namespace Ip {
     export type CountByKey = CountBy<'key'>
   }
 
+  export type SmartDbId = Brand<string, 'smartDbId'>
   export type SmartDb = Prisma.SmartDb & {
     category?: string
+    id: SmartDbId
   }
   export namespace SmartDb {
+    export type ActionId = Brand<string, 'smartDbActionId'>
+
+    export const map = (_: Record<keyof Ip.SmartDb, any>): Ip.SmartDb => {
+      _.createdAt = new Date(_.createdAt)
+      return _
+    }
+
+    export type Action = Prisma.SmartDbAction & {
+      id: ActionId
+      formId: FormId
+      smartDbId: SmartDbId
+    }
+    export namespace Action {
+      export type Type = Prisma.SmartDbActionType
+      export const Type = {
+        insert: 'insert',
+        mutate: 'mutate',
+      }
+
+      export const map = (_: Record<keyof Action, any>): Action => {
+        _.createdAt = new Date(_.createdAt)
+        return _
+      }
+    }
     export namespace Payload {
       export type Create = {
         workspaceId: WorkspaceId
         name: string
         category?: string
+      }
+      export type ActionCreate = {
+        workspaceId: WorkspaceId
+        body?: string
+        name: string
+        description?: string
+        formId: Ip.FormId
+        smartDbId: Ip.SmartDbId
+        type: Action.Type
       }
     }
   }

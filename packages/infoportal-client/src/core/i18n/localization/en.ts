@@ -142,8 +142,21 @@ export const en = Object.freeze({
     settings: 'Settings',
     onboardingTitle: "Let's start with a name for your workspace",
     enterProjectName: 'Enter your workspace name',
+    action: 'Action',
     workspaceId: 'Workspace ID',
     Approved: 'Approved',
+    _smartDb: {
+      functionSummary: 'Function summary',
+      newFunction: 'Create a Function',
+      _functionTypeLabel: {
+        [Ip.SmartDb.Action.Type.insert]: 'Insert',
+        [Ip.SmartDb.Action.Type.mutate]: 'Mutate',
+      },
+      _functionTypeDesc: {
+        [Ip.SmartDb.Action.Type.insert]: 'Generate new rows from submissions using a transformation.',
+        [Ip.SmartDb.Action.Type.mutate]: 'Modify existing rows from submissions using a function.',
+      },
+    },
     updatingTag: (rowsCount: number, key: string, value: string) => `Updating ${key}=${value} on ${rowsCount} rows...`,
     cannotUpdateTag: (rowsCount: number, key: string, value: string) =>
       `Update failed for ${key}=${value} on ${rowsCount} rows. Table not edited.`,
@@ -154,6 +167,7 @@ export const en = Object.freeze({
     view: 'View',
     continue: 'Continue',
     viewData: 'View data',
+    creating: 'Creating...',
     theme: 'Dark theme',
     format: 'Format',
     previous: 'Previous',
