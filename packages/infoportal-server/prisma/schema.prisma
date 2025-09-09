@@ -26,6 +26,7 @@ model Workspace {
   featureAccesses FormAccess[]
   access          WorkspaceAccess[]
   invitation      WorkspaceInvitation[]
+  SmartDb         SmartDb[]
 
   @@index([slug])
 }
@@ -110,6 +111,7 @@ model Form {
   kobo                   FormKoboInfo?
   disconnectedFromKoboAt DateTime?
   disconnectedFromKoboBy String?
+  smartDbAction          SmartDbAction[]
 
   @@index([category])
 }
@@ -166,6 +168,7 @@ model FormSubmission {
   deletedAt              DateTime?
   deletedBy              String?
   histories              FormSubmissionHistory[]   @relation("FormSubmissionToHistory")
+  smartDbRow             SmartDbRow[]
 
   @@unique([koboSubmissionId, formId])
   @@index([deletedAt])
@@ -361,4 +364,62 @@ model EmailOutBox {
   deliveredAt DateTime?
   tags        Json?
   workspaces  Workspace[]
+}
+
+// ----------------
+// Smart-db
+// ----------------
+model SmartDb {
+  id          String          @id @default(uuid())
+  createdAt   DateTime        @default(now())
+  createdBy   String?
+  name        String
+  category    String?
+  rows        SmartDbRow[]
+  actions     SmartDbAction[]
+  workspace   Workspace       @relation(fields: [workspaceId], references: [id])
+  workspaceId String          @db.Uuid
+}
+
+enum SmartDbActionType {
+  insert
+  mutate
+}
+
+model SmartDbAction {
+  id          String            @id @default(uuid())
+  createdAt   DateTime          @default(now())
+  createdBy   String?
+  type        SmartDbActionType
+  name        String
+  description String?
+  body        String
+  form        Form              @relation(fields: [formId], references: [id])
+  formId      String            @db.VarChar(32)
+  smartDb     SmartDb           @relation(fields: [smartDbId], references: [id])
+  smartDbId   String
+  logs        SmartDbLog[]
+}
+
+enum SmartDbLogType {
+  error
+  log
+}
+
+model SmartDbLog {
+  id        String         @id @default(uuid())
+  type      SmartDbLogType
+  createdAt DateTime       @default(now())
+  action    SmartDbAction  @relation(fields: [actionId], references: [id])
+  content   String
+  actionId  String
+}
+
+model SmartDbRow {
+  id           String         @id @default(uuid())
+  createdAt    DateTime       @default(now())
+  submission   FormSubmission @relation(fields: [submissionId], references: [id])
+  submissionId String         @db.VarChar(32)
+  smartDb      SmartDb?       @relation(fields: [smartDbId], references: [id])
+  smartDbId    String?
 }

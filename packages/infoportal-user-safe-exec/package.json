@@ -1,0 +1,16 @@
+{
+  "name": "@infoportal/user-safe-exec",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "scripts": {
+    "dev": "tsc && node lib/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "quickjs-emscripten": "^0.31.0",
+    "vm2": "^3.9.19"
+  }
+}

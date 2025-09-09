@@ -15,7 +15,8 @@
     "allowJs": true,
     "sourceMap": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "useDefineForClassFields": false
   },
   "exclude": [
     "**/*.spec.ts",

@@ -7,7 +7,7 @@ export const SidebarFooter = ({children, sx, ...props}: SidebarFooterProps) => {
   return (
     <Box
       sx={{
-        py: 1 / 2,
+        py: 0,
         // pl: 1,
         borderTop: t => '1px solid ' + t.vars.palette.divider,
         ...sx,

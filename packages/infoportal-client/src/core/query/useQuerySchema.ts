@@ -6,14 +6,15 @@ import {queryKeys} from './query.index'
 import {Ip} from 'infoportal-api-sdk'
 import {useMemo} from 'react'
 
-export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
+export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId?: Ip.FormId}) => {
   const {apiv2} = useAppSettings()
   const langIndex = useLangIndex(state => state.langIndex)
 
   const query = useQuery({
     queryKey: queryKeys.schema(workspaceId, formId),
-    queryFn: () => apiv2.form.getSchema({workspaceId, formId}),
+    queryFn: () => apiv2.form.getSchema({workspaceId, formId: formId!}),
     retry: false,
+    enabled: !!formId,
   })
 
   const bundle = useMemo(() => {

@@ -1,16 +1,15 @@
 import {useI18n} from '@/core/i18n'
-import {Core, Fender} from '@/shared'
+import {Core} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
-import {Box, Icon, IconProps, Skeleton, Tooltip, useTheme} from '@mui/material'
+import {Box, Icon, IconProps, useTheme} from '@mui/material'
 import {useMemo, useState} from 'react'
 import {useQueryForm} from '@/core/query/useQueryForm'
 import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
-import {mapFor, Seq, seq} from '@axanc/ts-utils'
+import {Seq, seq} from '@axanc/ts-utils'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
-import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
-import {capitalize} from 'infoportal-common'
+import {AppSidebarAssets} from '@/core/layout/AppSidebarAssets.js'
 
 export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
   const {m} = useI18n()
@@ -74,96 +73,7 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
           )}
         </Link>
       </Box>
-      <AppSidebarFilters forms={forms} onFilterChanges={setFilteredForms} />
-      {queryForm.accessibleForms.isLoading ? (
-        mapFor(4, i => (
-          <SidebarItem key={i} size={formItemSize}>
-            <Skeleton sx={{width: 160, height: 30}} />
-          </SidebarItem>
-        ))
-      ) : queryForm.accessibleForms.data?.length === 0 ? (
-        <Fender
-          type="empty"
-          size="small"
-          title={m._koboDatabase.noAccessToForm}
-          sx={{mt: 2, color: t.vars.palette.text.disabled}}
-        />
-      ) : (
-        <>
-          {filteredForms.map((_: Ip.Form) => (
-            <Tooltip
-              key={_.id}
-              title={
-                <Box>
-                  <Box display="flex" alignItems="center">
-                    {_.category}
-                    {_.category && (
-                      <Icon color="inherit" fontSize="small">
-                        chevron_right
-                      </Icon>
-                    )}
-                    <Core.Txt bold noWrap>
-                      {_.name}
-                    </Core.Txt>
-                  </Box>
-                  {_.deploymentStatus !== 'deployed' && (
-                    <Box>
-                      <IconDeploymentStatus
-                        status={_.deploymentStatus}
-                        fontSize="medium"
-                        sx={{width: 35, m: 0}}
-                        color="inherit"
-                      />
-                      <Core.Txt bold>{capitalize(_.deploymentStatus ?? '')}</Core.Txt>
-                    </Box>
-                  )}
-                  {_.kobo && (
-                    <Box>
-                      <IconLinkedToKobo color="inherit" fontSize="medium" sx={{width: 35, m: 0}} /> {m.linkedToKobo}
-                    </Box>
-                  )}
-                </Box>
-              }
-              placement="right-end"
-            >
-              <Link to="/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
-                {({isActive}) => (
-                  <SidebarItem
-                    size={formItemSize}
-                    sx={{height: 26}}
-                    onClick={() => undefined}
-                    key={_.id}
-                    active={isActive}
-                    iconEnd={
-                      <>
-                        {/* {_.custom && (
-                          <Icon fontSize="small" sx={{marginLeft: '4px', marginRight: '-4px', verticalAlign: 'middle'}}>
-                            device_hub
-                          </Icon>
-                        )} */}
-                        {_.deploymentStatus !== 'deployed' && (
-                          <IconDeploymentStatus
-                            status={_.deploymentStatus}
-                            sx={{marginLeft: '4px', marginRight: '-4px'}}
-                          />
-                        )}
-                        {_.kobo && <IconLinkedToKobo sx={{marginLeft: '4px', marginRight: '-4px'}} />}
-                      </>
-                    }
-                  >
-                    <Core.Txt
-                      sx={{color: _.deploymentStatus !== 'deployed' ? t.vars!.palette.text.disabled : undefined}}
-                    >
-                      {_.name}
-                      {/* {_.custom && <span style={{fontWeight: 300}}> ({m._koboDatabase.mergedDb})</span>} */}
-                    </Core.Txt>
-                  </SidebarItem>
-                )}
-              </Link>
-            </Tooltip>
-          ))}
-        </>
-      )}
+      <AppSidebarAssets workspaceId={workspaceId} />
     </Sidebar>
   )
 }

@@ -1,17 +1,21 @@
 import {Controller, useForm, useWatch} from 'react-hook-form'
-import {Box, Icon, InputProps} from '@mui/material'
-import {Obj, seq, Seq} from '@axanc/ts-utils'
+import {Box, BoxProps, Collapse, Icon, InputProps} from '@mui/material'
+import {Obj, seq} from '@axanc/ts-utils'
 import {Ip} from 'infoportal-api-sdk'
 import {useI18n} from '@/core/i18n/index.js'
 import {forwardRef, useEffect, useMemo} from 'react'
 import {Core} from '@/shared'
 import Fuse from 'fuse.js'
+import {Asset} from '@/shared/Asset.js'
+import {DeploymentStatus} from '@/shared/DeploymentStatus.js'
+import {usePersistentState} from '@axanc/react-hooks'
 
 const SearchInput = forwardRef(
   (
     {
       sx,
       onClear,
+      endAdornment,
       ...props
     }: InputProps & {
       onClear?: () => void
@@ -29,9 +33,12 @@ const SearchInput = forwardRef(
           </Icon>
         }
         endAdornment={
-          <Core.IconBtn onClick={onClear} size="small">
-            clear
-          </Core.IconBtn>
+          <>
+            {endAdornment}
+            <Core.IconBtn onClick={onClear} size="small">
+              clear
+            </Core.IconBtn>
+          </>
         }
         {...props}
       />
@@ -61,25 +68,30 @@ const SearchInput = forwardRef(
 type FilterForm = {
   name: string
   category: string[]
+  assetType: Asset.Type[]
   status: Ip.Form.DeploymentStatus[]
 }
 
 const defaultFormValues: FilterForm = {
   name: '',
+  assetType: [],
   category: [],
   status: [],
 }
 
 export const AppSidebarFilters = ({
-  forms,
+  assets,
   onFilterChanges,
-}: {
-  forms: Seq<Ip.Form>
-  onFilterChanges: (_: Seq<Ip.Form>) => void
+  sx,
+  ...props
+}: BoxProps & {
+  assets: Asset[]
+  onFilterChanges: (_: Asset[]) => void
 }) => {
   const {m} = useI18n()
   const searchForm = useForm<FilterForm>()
   const values = useWatch({control: searchForm.control})
+  const [moreFilters, setMoreFilters] = usePersistentState(false, {storageKey: 'app-filter-more-filter'})
   // useFormPersist('appsidebar-form-filters', {
   //   watch: searchForm.watch,
   //   setValue: searchForm.setValue,
@@ -87,56 +99,103 @@ export const AppSidebarFilters = ({
   // })
 
   const fuse = useMemo(() => {
-    return new Fuse(forms, {
+    return new Fuse(assets, {
       keys: ['name'],
       includeScore: true,
       isCaseSensitive: false,
       threshold: 0.4,
     })
-  }, [forms])
+  }, [assets])
 
   useEffect(() => {
-    const filteredByName = !values?.name ? forms : fuse.search(values.name).map(res => res.item)
+    const filteredByName = !values?.name ? assets : fuse.search(values.name).map(res => res.item)
+    const assetTypes = values?.assetType ?? []
     const categories = values?.category ?? []
     const statuses = values?.status ?? []
 
     const filteredForms = seq(filteredByName)
+      .filter(_ => (_.type && assetTypes.includes(_.type)) || assetTypes.length === 0)
       .filter(_ => (_.category && categories.includes(_.category)) || categories.length === 0)
       .filter(_ => (_.deploymentStatus && statuses.includes(_.deploymentStatus)) || statuses.length === 0)
 
     onFilterChanges(filteredForms)
-  }, [values, forms, fuse, onFilterChanges])
+  }, [values, assets, fuse, onFilterChanges])
 
   const formCategories = useMemo(() => {
-    return forms.map(_ => _.category ?? '').distinct(_ => _)
-  }, [forms])
+    return seq(assets)
+      .map(_ => _.category ?? '')
+      .distinct(_ => _)
+  }, [assets])
 
   return (
-    <Box sx={{mx: 0.5, mb: 1, mt: 0}}>
+    <Box sx={sx} {...props}>
       <Controller
         name="name"
         control={searchForm.control}
         render={({field}) => (
           <SearchInput
+            endAdornment={
+              <Core.IconBtn onClick={() => setMoreFilters(_ => !_)} color={moreFilters ? 'primary' : undefined}>
+                tune
+              </Core.IconBtn>
+            }
             onClear={() => searchForm.reset(defaultFormValues)}
-            placeholder={m.searchInForms(forms.length) + '...'}
+            placeholder={m.searchInForms(assets.length) + '...'}
             {...field}
           />
         )}
       />
-      <Box sx={{mt: 1, display: 'flex'}}>
-        <Controller
-          name="category"
-          control={searchForm.control}
-          render={({field}) => (
-            <Core.SelectMultiple {...field} options={formCategories.get()} label={m.category} sx={{mr: 0.5}} />
-          )}
-        />
-        <Controller
-          name="status"
-          control={searchForm.control}
-          render={({field}) => (
-            <Core.SelectMultiple
+      <Collapse in={moreFilters}>
+        <>
+          <Controller
+            name="category"
+            control={searchForm.control}
+            render={({field}) => (
+              <Core.SelectMultiple {...field} options={formCategories.get()} label={m.category} sx={{mt: 0.5}} />
+            )}
+          />
+          <Box sx={{mt: 0.5, display: 'flex'}}>
+            <Controller
+              name="assetType"
+              control={searchForm.control}
+              render={({field}) => (
+                <Core.RadioGroup<Asset.Type>
+                  value={field.value}
+                  onChange={_ => field.onChange(_)}
+                  multiple
+                  inline
+                  dense
+                  sx={{flex: 1, mr: 0.25}}
+                >
+                  {Obj.values(Asset.Type).map(_ => (
+                    <Core.RadioGroupItem hideRadio key={_} value={_} title={<Asset.Icon fontSize="small" type={_} />} />
+                  ))}
+                </Core.RadioGroup>
+              )}
+            />
+            <Controller
+              name="status"
+              control={searchForm.control}
+              render={({field}) => (
+                <Core.RadioGroup<Ip.Form.DeploymentStatus>
+                  value={field.value}
+                  onChange={_ => field.onChange(_)}
+                  multiple
+                  inline
+                  dense
+                  sx={{flex: 1, ml: 0.25}}
+                >
+                  {Obj.values(Ip.Form.DeploymentStatus).map(_ => (
+                    <Core.RadioGroupItem
+                      hideRadio
+                      key={_}
+                      value={_}
+                      sx={{display: 'flex', alignItems: 'center'}}
+                      title={<DeploymentStatus.Icon fontSize="small" status={_} />}
+                    />
+                  ))}
+                </Core.RadioGroup>
+                /* <Core.SelectMultiple
               {...field}
               options={Obj.keys(Ip.Form.DeploymentStatus).map(_ => {
                 return {
@@ -146,10 +205,12 @@ export const AppSidebarFilters = ({
               })}
               label={m.status}
               sx={{ml: 0.5}}
+            />*/
+              )}
             />
-          )}
-        />
-      </Box>
+          </Box>
+        </>
+      </Collapse>
     </Box>
   )
 }

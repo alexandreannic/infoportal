@@ -1,18 +1,21 @@
 import {Page} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {Collapse} from '@mui/material'
+import {Box, Collapse, Icon} from '@mui/material'
 import {useEffect, useState} from 'react'
 import {useDialogs} from '@toolpad/core'
 import {KoboServerFormDialog} from '@/features/NewForm/KoboServerForm'
 import {SelectKoboForm} from '@/features/NewForm/SelectKoboForm'
 import {useQueryServers} from '@/core/query/useQueryServers'
-import {fnSwitch} from '@axanc/ts-utils'
+import {fnSwitch, Obj} from '@axanc/ts-utils'
 import {NewFormCreateInternal} from '@/features/NewForm/NewFormCreateInternal'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
-import {createRoute} from '@tanstack/react-router'
+import {createRoute, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
+import {useQueryForm} from '@/core/query/useQueryForm'
+import {UseQuerySmartDb} from '@/core/query/useQuerySmartDb'
+import {Asset} from '@/shared/Asset.js'
 
 export const newFormRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -20,25 +23,32 @@ export const newFormRoute = createRoute({
   component: NewForm,
 })
 
+const OptionBody = ({icon, color, label}: {color: string; icon: string; label: string}) => {
+  return (
+    <Box display="flex" flexDirection="column" alignItems="center">
+      <Icon sx={{fontSize: 50, color}}>{icon}</Icon>
+      {label}
+    </Box>
+  )
+}
+
 function NewForm() {
   const {m} = useI18n()
   const {workspaceId} = newFormRoute.useParams() as {workspaceId: Ip.WorkspaceId}
-  const dialog = useDialogs()
-  const [source, setSource] = useState<Ip.Form.Source>(Ip.Form.Source.internal)
-  const [selectedServerId, setSelectedServerId] = useState<Ip.ServerId>()
   const {setTitle} = useLayoutContext()
+  const dialog = useDialogs()
+  const navigate = useNavigate()
 
+  const [asset, setAsset] = useState<Asset.Type>()
+  const [selectedServerId, setSelectedServerId] = useState<Ip.ServerId>()
+
+  const queryForm = useQueryForm(workspaceId)
   const queryServer = useQueryServers(workspaceId)
+  const querySmartDb = UseQuerySmartDb.create(workspaceId)
 
   const handleOpen = () => {
     dialog.open(KoboServerFormDialog, {workspaceId})
   }
-
-  const icons = {
-    [Ip.Form.Source.kobo]: 'cloud_download',
-    [Ip.Form.Source.internal]: 'add',
-  }
-
   useEffect(() => {
     setTitle(m.newForm)
     return () => setTitle('')
@@ -49,15 +59,22 @@ function NewForm() {
       <Core.Panel>
         <Core.PanelHead>{m.source}</Core.PanelHead>
         <Core.PanelBody>
-          <Core.RadioGroup value={source} sx={{flex: 1, minWidth: 200}} dense onChange={setSource}>
-            <Core.RadioGroupItem icon={icons['kobo']} value="kobo" title={m.formSource['kobo']} />
-            <Core.RadioGroupItem icon={icons['internal']} value="internal" title={m.formSource['internal']} />
+          <Core.RadioGroup value={asset} sx={{flex: 1}} inline onChange={setAsset}>
+            {Obj.keys(Asset.Type).map(asset => (
+              <Core.RadioGroupItem
+                key={asset}
+                hideRadio
+                value={asset}
+                title={<OptionBody color={Asset.color[asset]} icon={Asset.icon[asset]} label={m.formSource[asset]} />}
+                sx={{flex: 1}}
+              />
+            ))}
           </Core.RadioGroup>
         </Core.PanelBody>
       </Core.Panel>
-      {source &&
+      {asset &&
         fnSwitch(
-          source,
+          asset,
           {
             kobo: (
               <>
@@ -98,7 +115,31 @@ function NewForm() {
                 </Collapse>
               </>
             ),
-            internal: <NewFormCreateInternal workspaceId={workspaceId} />,
+            internal: (
+              <NewFormCreateInternal
+                workspaceId={workspaceId}
+                loading={queryForm.create.isPending}
+                btnLabel={m.create + ' ' + m.formSource[asset].toLowerCase()}
+                onSubmit={async form => {
+                  const newForm = await queryForm.create.mutateAsync(form)
+                  navigate({to: '/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})
+                }}
+              />
+            ),
+            smart: (
+              <NewFormCreateInternal
+                workspaceId={workspaceId}
+                btnLabel={m.create + ' ' + m.formSource[asset].toLowerCase()}
+                loading={queryForm.create.isPending}
+                onSubmit={async form => {
+                  const newSmartDb = await querySmartDb.mutateAsync(form)
+                  navigate({
+                    to: '/$workspaceId/form/smart-db/$smartDbId',
+                    params: {workspaceId, smartDbId: newSmartDb.id},
+                  })
+                }}
+              />
+            ),
           },
           () => <></>,
         )}
