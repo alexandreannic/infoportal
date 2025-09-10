@@ -17,8 +17,8 @@ import {databaseAccessRoute} from './Access/DatabaseAccess'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {useQueryPermission} from '@/core/query/useQueryPermission'
-import {formSmartActionRoute} from '@/features/SmartDb/SmartDbAction.js'
-import {formSmartActionsRoute} from '@/features/SmartDb/FormSmartActions.js'
+import {formActionRoute} from '@/features/Action/FormAction.js'
+import {formActionsRoute} from '@/features/Action/FormActions.js'
 
 export const formRootRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -152,8 +152,8 @@ function Form() {
             iconPosition="start"
             sx={{minHeight: 34, py: 1}}
             component={Link}
-            value={formSmartActionsRoute.fullPath}
-            to={formSmartActionsRoute.fullPath}
+            value={formActionsRoute.fullPath}
+            to={formActionsRoute.fullPath}
             label={m.action}
             disabled={!schema}
           />

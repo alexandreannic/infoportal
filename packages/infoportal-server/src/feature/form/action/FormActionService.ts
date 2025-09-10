@@ -12,7 +12,7 @@ export class FormActionService {
     if (data.formId === data.sourceFormId) {
       throw new HttpError.BadRequest(`A form action cannot reference itself.`)
     }
-    return this.prisma.formSmartAction
+    return this.prisma.formAction
       .create({
         data,
       })
@@ -20,6 +20,6 @@ export class FormActionService {
   }
 
   readonly getByFormSmartId = ({formId}: {formId: Ip.FormId}): Promise<Ip.Form.Action[]> => {
-    return this.prisma.formSmartAction.findMany({where: {formId}}).then(_ => _.map(PrismaHelper.mapFormAction))
+    return this.prisma.formAction.findMany({where: {formId}}).then(_ => _.map(PrismaHelper.mapFormAction))
   }
 }

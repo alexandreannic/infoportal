@@ -6,13 +6,13 @@ import {useMemo} from 'react'
 import {useQuerySchema} from '@/core/query/useQuerySchema.js'
 import {KoboInterfaceBuilder} from 'infoportal-common'
 import {map} from '@axanc/ts-utils'
-import {SmartDbActionEditor} from '@/features/SmartDb/SmartDbActionEditor.js'
+import {FormActionEditor} from '@/features/Action/FormActionEditor.js'
 import {formRoute} from '@/features/Form/Form.js'
 
-export const formSmartActionRoute = createRoute({
+export const formActionRoute = createRoute({
   getParentRoute: () => formRoute,
   path: 'action/$actionId',
-  component: SmartDbAction,
+  component: FormAction,
 })
 
 const useGetInterfaceInput = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId?: Ip.FormId}) => {
@@ -29,8 +29,8 @@ const useGetInterfaceInput = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceI
   }
 }
 
-export function SmartDbAction() {
-  const params = formSmartActionRoute.useParams()
+export function FormAction() {
+  const params = formActionRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
   const actionId = params.actionId as Ip.Form.ActionId
@@ -40,7 +40,7 @@ export function SmartDbAction() {
   return (
     <Page loading={queryAction.isLoading || interfaceInput.isLoading}>
       {queryAction.data && interfaceInput.data && (
-        <SmartDbActionEditor
+        <FormActionEditor
           inputType={interfaceInput.data}
           outputType={interfaceInput.data}
           body={queryAction.data.body ?? undefined}

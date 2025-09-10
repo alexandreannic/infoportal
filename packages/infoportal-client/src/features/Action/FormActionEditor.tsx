@@ -18,7 +18,7 @@ const defaultActionBody = [
   `}`,
 ].join('\n')
 
-export function SmartDbActionEditor({
+export function FormActionEditor({
   body = defaultActionBody,
   onBodyChange,
   inputType,

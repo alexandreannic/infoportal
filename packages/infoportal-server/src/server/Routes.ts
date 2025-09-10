@@ -30,7 +30,7 @@ import {WorkspaceInvitationService} from '../feature/workspace/WorkspaceInvitati
 import {MetricsService} from '../feature/MetricsService.js'
 import {GroupService} from '../feature/group/GroupService.js'
 import {GroupItemService} from '../feature/group/GroupItemService.js'
-import {FormActionService} from '../feature/form/smart/FormActionService.js'
+import {FormActionService} from '../feature/form/action/FormActionService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user

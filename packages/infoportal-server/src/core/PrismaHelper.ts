@@ -34,7 +34,7 @@ export namespace PrismaHelper {
       id: string
       sourceFormId: string
       formId: string
-      type: Prisma.FormSmartActionType
+      type: Prisma.FormActionType
     },
   >(
     _: T,

@@ -93,9 +93,9 @@ model FormKoboInfo {
 }
 
 model FormSmart {
-  form    Form              @relation(fields: [formId], references: [id])
-  formId  String            @unique @db.VarChar(32)
-  actions FormSmartAction[]
+  form    Form         @relation(fields: [formId], references: [id])
+  formId  String       @unique @db.VarChar(32)
+  actions FormAction[]
 }
 
 model Form {
@@ -113,9 +113,9 @@ model Form {
   histories        FormSubmissionHistory[]
   workspace        Workspace               @relation(fields: [workspaceId], references: [id])
   workspaceId      String                  @db.Uuid
-  formVersion      FormVersion[]
-  formAccess       FormAccess[]
-  smartDbAction    FormSmartAction[]
+  versions         FormVersion[]
+  accesses         FormAccess[]
+  actions          FormAction[]
 
   kobo  FormKoboInfo?
   smart FormSmart?
@@ -378,38 +378,38 @@ model EmailOutBox {
 // Smart-db
 // ----------------
 
-enum FormSmartActionType {
+enum FormActionType {
   insert
   mutate
 }
 
-model FormSmartAction {
-  id           String              @id @default(uuid())
-  createdAt    DateTime            @default(now())
+model FormAction {
+  id           String          @id @default(uuid())
+  createdAt    DateTime        @default(now())
   createdBy    String?
-  type         FormSmartActionType
+  type         FormActionType
   name         String
   description  String?
   body         String?
-  sourceForm   Form                @relation(fields: [sourceFormId], references: [id])
-  sourceFormId String              @db.VarChar(32)
-  smart        FormSmart           @relation(fields: [formId], references: [formId])
+  sourceForm   Form            @relation(fields: [sourceFormId], references: [id])
+  sourceFormId String          @db.VarChar(32)
+  smart        FormSmart       @relation(fields: [formId], references: [formId])
   formId       String
-  logs         FormSmartLog[]
+  logs         FormActionLog[]
 
   @@index([formId])
 }
 
-enum FormSmartLogType {
+enum FormActionLogType {
   error
   log
 }
 
-model FormSmartLog {
-  id        String           @id @default(uuid())
-  type      FormSmartLogType
-  createdAt DateTime         @default(now())
-  action    FormSmartAction  @relation(fields: [actionId], references: [id])
+model FormActionLog {
+  id        String            @id @default(uuid())
+  type      FormActionLogType
+  createdAt DateTime          @default(now())
+  action    FormAction        @relation(fields: [actionId], references: [id])
   content   String
   actionId  String
 }

@@ -1,15 +1,15 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {makeMeta, schema} from '../../../core/Schema.js'
-import {Ip} from '../../../core/Types.js'
-import {map200, TsRestClient} from '../../../core/IpClient.js'
+import {makeMeta, schema} from '../../core/Schema.js'
+import {Ip} from '../../core/Types.js'
+import {map200, TsRestClient} from '../../core/IpClient.js'
 
 const c = initContract()
 
 export const formActionContract = c.router({
   create: {
     method: 'PUT',
-    path: `/:workspaceId/form/smart/:formId/action`,
+    path: `/:workspaceId/form/:formId/action`,
     pathParams: z.object({
       workspaceId: schema.workspaceId,
       formId: schema.formId,
@@ -26,7 +26,7 @@ export const formActionContract = c.router({
   },
   getByDbId: {
     method: 'GET',
-    path: `/:workspaceId/form/smart/:formId/action`,
+    path: `/:workspaceId/form/:formId/action`,
     pathParams: z.object({
       workspaceId: schema.workspaceId,
       formId: schema.formId,

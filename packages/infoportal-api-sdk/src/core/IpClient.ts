@@ -14,7 +14,7 @@ import {workspaceInvitationClient} from '../contract/workspace/ContractWorkspace
 import {metricsClient} from '../contract/ContractMetrics.js'
 import {userClient} from '../contract/ContractUser.js'
 import {groupClient} from '../contract/ContractGroup.js'
-import {formActionClient} from '../contract/form/smart/ContractFormSmartAction.js'
+import {formActionClient} from '../contract/form/ContractFormAction.js'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>

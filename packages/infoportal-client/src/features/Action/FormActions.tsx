@@ -4,18 +4,18 @@ import {Box, Grid, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
 import {Ip} from 'infoportal-api-sdk'
-import {SmartDbEditCreateForm} from '@/features/SmartDb/SmartDbEditCreateForm.js'
+import {FormActionCreate} from '@/features/Action/FormActionCreate.js'
 import {formRoute} from '@/features/Form/Form.js'
 
-export const formSmartActionsRoute = createRoute({
+export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
   path: 'action',
-  component: FormSmartActions,
+  component: FormActions,
 })
 
-export function FormSmartActions() {
+export function FormActions() {
   const {m} = useI18n()
-  const params = formSmartActionsRoute.useParams()
+  const params = formActionsRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
   const queryFunctionCreate = UseQuerySmartDbAction.create(workspaceId, formId)
@@ -28,7 +28,7 @@ export function FormSmartActions() {
           <Core.PanelWBody>
             <Core.Modal
               overrideActions={null}
-              content={onClose => <SmartDbEditCreateForm onClose={onClose} />}
+              content={onClose => <FormActionCreate onClose={onClose} />}
               onConfirm={console.log}
             >
               <Core.Btn size="large" variant="outlined" fullWidth sx={{textAlign: 'center', mb: 1}}>

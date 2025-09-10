@@ -1,6 +1,6 @@
 import {Ip} from 'infoportal-api-sdk'
 import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
-import {formSmartActionsRoute} from '@/features/SmartDb/FormSmartActions.js'
+import {formActionsRoute} from '@/features/Action/FormActions.js'
 import {Controller, useForm, UseFormReturn} from 'react-hook-form'
 import {useQueryForm} from '@/core/query/useQueryForm.js'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
@@ -26,10 +26,10 @@ type Context = {
 const Context = React.createContext<Context>({} as Context)
 const useContext = () => React.useContext(Context)
 
-export const SmartDbEditCreateForm = ({onClose}: {onClose: () => void}) => {
+export const FormActionCreate = ({onClose}: {onClose: () => void}) => {
   const stepperRef = useRef<Core.StepperHandle>(null)
 
-  const params = formSmartActionsRoute.useParams()
+  const params = formActionsRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
   const queryAction = UseQuerySmartDbAction.create(workspaceId, formId)

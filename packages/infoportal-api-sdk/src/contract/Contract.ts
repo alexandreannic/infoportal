@@ -12,7 +12,7 @@ import {workspaceInvitationContract} from './workspace/ContractWorkspaceInvitati
 import {metricsContract} from './ContractMetrics.js'
 import {userContract} from './ContractUser.js'
 import {groupContract} from './ContractGroup.js'
-import {formActionContract} from './form/smart/ContractFormSmartAction.js'
+import {formActionContract} from './form/ContractFormAction.js'
 
 export const ipContract = initContract().router({
   permission: permissionContract,

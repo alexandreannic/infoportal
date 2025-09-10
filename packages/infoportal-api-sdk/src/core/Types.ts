@@ -393,15 +393,15 @@ export namespace Ip {
     }
     export namespace Version {}
 
-    export type ActionId = Brand<string, 'smartDbActionId'>
+    export type ActionId = Brand<string, 'FormActionId'>
 
-    export type Action = Prisma.FormSmartAction & {
+    export type Action = Prisma.FormAction & {
       id: ActionId
       sourceFormId: FormId
       formId: FormId
     }
     export namespace Action {
-      export type Type = Prisma.FormSmartActionType
+      export type Type = Prisma.FormActionType
       export const Type = {
         insert: 'insert',
         mutate: 'mutate',
