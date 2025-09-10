@@ -32,8 +32,8 @@ const useGetInterfaceInput = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceI
 export function SmartDbAction() {
   const params = formSmartActionRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const formId = params.formId as Ip.Form.SmartId
-  const actionId = params.actionId as Ip.Form.Smart.ActionId
+  const formId = params.formId as Ip.FormId
+  const actionId = params.actionId as Ip.Form.ActionId
   const queryAction = UseQuerySmartDbAction.getById(workspaceId, formId, actionId)
   const interfaceInput = useGetInterfaceInput({workspaceId, formId: queryAction.data?.sourceFormId})
 

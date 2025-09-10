@@ -6,17 +6,17 @@ import {map200, TsRestClient} from '../../../core/IpClient.js'
 
 const c = initContract()
 
-export const formSmartActionContract = c.router({
+export const formActionContract = c.router({
   create: {
     method: 'PUT',
-    path: `/:workspaceId/form/smart/:smartId/action`,
+    path: `/:workspaceId/form/smart/:formId/action`,
     pathParams: z.object({
       workspaceId: schema.workspaceId,
-      smartId: schema.smartId,
+      formId: schema.formId,
     }),
-    body: c.type<Omit<Ip.Form.Smart.Payload.ActionCreate, 'smartId' | 'workspaceId'>>(),
+    body: c.type<Omit<Ip.Form.Action.Payload.Create, 'formId' | 'workspaceId'>>(),
     responses: {
-      200: c.type<Ip.Form.Smart.Action>(),
+      200: c.type<Ip.Form.Action>(),
     },
     metadata: makeMeta({
       access: {
@@ -26,41 +26,35 @@ export const formSmartActionContract = c.router({
   },
   getByDbId: {
     method: 'GET',
-    path: `/:workspaceId/form/smart/:smartId/action`,
+    path: `/:workspaceId/form/smart/:formId/action`,
     pathParams: z.object({
       workspaceId: schema.workspaceId,
-      smartId: schema.smartId,
+      formId: schema.formId,
     }),
     responses: {
-      200: c.type<Ip.Form.Smart.Action[]>(),
+      200: c.type<Ip.Form.Action[]>(),
     },
   },
 })
 
-export const formSmartActionClient = (client: TsRestClient) => {
+export const formActionClient = (client: TsRestClient) => {
   return {
-    getByDbId: ({
-      workspaceId,
-      smartId,
-    }: {
-      workspaceId: Ip.WorkspaceId
-      smartId: Ip.Form.SmartId
-    }): Promise<Ip.Form.Smart.Action[]> => {
-      return client.form.smart.action
+    getByDbId: ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}): Promise<Ip.Form.Action[]> => {
+      return client.form.action
         .getByDbId({
-          params: {workspaceId, smartId: smartId},
+          params: {workspaceId, formId: formId},
         })
         .then(map200)
-        .then(_ => _.map(Ip.Form.Smart.Action.map))
+        .then(_ => _.map(Ip.Form.Action.map))
     },
-    create: ({workspaceId, smartId, ...body}: Ip.Form.Smart.Payload.ActionCreate): Promise<Ip.Form.Smart.Action> => {
-      return client.form.smart.action
+    create: ({workspaceId, formId, ...body}: Ip.Form.Action.Payload.Create): Promise<Ip.Form.Action> => {
+      return client.form.action
         .create({
-          params: {workspaceId, smartId: smartId},
+          params: {workspaceId, formId: formId},
           body,
         })
         .then(map200)
-        .then(Ip.Form.Smart.Action.map)
+        .then(Ip.Form.Action.map)
     },
   }
 }

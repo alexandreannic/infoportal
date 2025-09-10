@@ -12,14 +12,14 @@ import {Core} from '@/shared'
 import {useI18n} from '@/core/i18n/index.js'
 import {Obj} from '@axanc/ts-utils'
 
-type Form = Omit<Ip.Form.Smart.Payload.ActionCreate, 'body' | 'workspaceId' | 'smartDbId'>
+type Form = Omit<Ip.Form.Action.Payload.Create, 'body' | 'workspaceId' | 'formId'>
 
 export const SmartDbEditCreateForm = ({onClose}: {onClose: () => void}) => {
   const stepperRef = useRef<Core.StepperHandle>(null)
 
   const params = formSmartActionsRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const formId = params.formId as Ip.Form.SmartId
+  const formId = params.formId as Ip.FormId
   const queryAction = UseQuerySmartDbAction.create(workspaceId, formId)
   const {m} = useI18n()
 
@@ -94,8 +94,8 @@ function SelectType({
 }) {
   const {m} = useI18n()
   const icon = {
-    [Ip.Form.Smart.Action.Type.insert]: 'splitscreen_add',
-    [Ip.Form.Smart.Action.Type.mutate]: 'splitscreen_bottom',
+    [Ip.Form.Action.Type.insert]: 'splitscreen_add',
+    [Ip.Form.Action.Type.mutate]: 'splitscreen_bottom',
   }
   const type = form.watch('type')
   return (
@@ -111,7 +111,7 @@ function SelectType({
               stepperRef.current?.goTo(1)
             }}
           >
-            {Obj.values(Ip.Form.Smart.Action.Type).map(_ => (
+            {Obj.values(Ip.Form.Action.Type).map(_ => (
               <Core.RadioGroupItem
                 hideRadio
                 value={_}
@@ -135,7 +135,7 @@ function SelectForm({
   stepperRef,
   formId,
 }: {
-  formId: Ip.Form.SmartId
+  formId: Ip.FormId
   form: UseFormReturn<Form>
   loading: boolean
   workspaceId: Ip.WorkspaceId
@@ -147,7 +147,7 @@ function SelectForm({
   const assets = useMemo(() => {
     if (!queryForms.data) return []
     return queryForms.data
-      .filter(_ => (_.id as unknown as Ip.Form.SmartId) !== formId)
+      .filter(_ => _.id !== formId)
       .map(_ => ({..._, type: _.kobo ? Asset.Type.kobo : Asset.Type.internal}))
   }, [queryForms.data])
 

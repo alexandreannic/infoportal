@@ -85,18 +85,6 @@ function NewForm() {
                   }}
                 />
               )
-              // <NewFormCreateInternal
-              //   workspaceId={workspaceId}
-              //   btnLabel={m.create + ' ' + m.formSource[type].toLowerCase()}
-              //   loading={queryForm.create.isPending}
-              //   onSubmit={async form => {
-              //     const newSmartDb = await querySmartDb.mutateAsync(form)
-              //     navigate({
-              //       to: '/$workspaceId/form/smart-db/$smartDbId',
-              //       params: {workspaceId, smartDbId: newSmartDb.id},
-              //     })
-              //   }}
-              // />
             }
             case 'kobo': {
               return (

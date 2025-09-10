@@ -17,9 +17,9 @@ export function FormSmartActions() {
   const {m} = useI18n()
   const params = formSmartActionsRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const smartDbId = params.formId as Ip.Form.SmartId
-  const queryFunctionCreate = UseQuerySmartDbAction.create(workspaceId, smartDbId)
-  const queryFunctionGet = UseQuerySmartDbAction.getByDbId(workspaceId, smartDbId)
+  const formId = params.formId as Ip.FormId
+  const queryFunctionCreate = UseQuerySmartDbAction.create(workspaceId, formId)
+  const queryFunctionGet = UseQuerySmartDbAction.getByDbId(workspaceId, formId)
 
   return (
     <Page width="full">
@@ -48,13 +48,13 @@ export function FormSmartActions() {
   )
 }
 
-function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: Ip.Form.Smart.Action}) {
+function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: Ip.Form.Action}) {
   const t = useTheme()
   const {m, formatDate} = useI18n()
   return (
     <Link
       to="/$workspaceId/form/$formId/action/$actionId"
-      params={{workspaceId, formId: action.smartId, actionId: action.id}}
+      params={{workspaceId, formId: action.formId, actionId: action.id}}
     >
       <Box
         sx={{

@@ -393,11 +393,11 @@ model FormSmartAction {
   body         String?
   sourceForm   Form                @relation(fields: [sourceFormId], references: [id])
   sourceFormId String              @db.VarChar(32)
-  smart        FormSmart           @relation(fields: [smartId], references: [formId])
-  smartId      String
+  smart        FormSmart           @relation(fields: [formId], references: [formId])
+  formId       String
   logs         FormSmartLog[]
 
-  @@index([smartId])
+  @@index([formId])
 }
 
 enum FormSmartLogType {

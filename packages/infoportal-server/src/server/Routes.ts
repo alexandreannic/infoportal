@@ -30,7 +30,7 @@ import {WorkspaceInvitationService} from '../feature/workspace/WorkspaceInvitati
 import {MetricsService} from '../feature/MetricsService.js'
 import {GroupService} from '../feature/group/GroupService.js'
 import {GroupItemService} from '../feature/group/GroupItemService.js'
-import {FormSmartActionService} from '../feature/form/smart/FormSmartActionService.js'
+import {FormActionService} from '../feature/form/smart/FormActionService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -157,7 +157,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const permission = new PermissionService(prisma, undefined, formAccess)
   const metrics = new MetricsService(prisma)
   const user = UserService.getInstance(prisma)
-  const smartDbAction = new FormSmartActionService(prisma)
+  const formActionService = new FormActionService(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
     const connectedUser = await permission.checkUserConnected(args.req)
@@ -525,22 +525,19 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .then(ok200)
             .catch(handleError),
       },
-
-      smart: {
-        action: {
-          create: _ =>
-            auth2(_)
-              .then(({params, body, req}) =>
-                smartDbAction.create({...params, ...body, createdBy: req.session.app.user.email}),
-              )
-              .then(ok200)
-              .catch(handleError),
-          getByDbId: _ =>
-            auth2(_)
-              .then(({params}) => smartDbAction.getByFormSmartId(params))
-              .then(ok200)
-              .catch(handleError),
-        },
+      action: {
+        create: _ =>
+          auth2(_)
+            .then(({params, body, req}) =>
+              formActionService.create({...params, ...body, createdBy: req.session.app.user.email}),
+            )
+            .then(ok200)
+            .catch(handleError),
+        getByDbId: _ =>
+          auth2(_)
+            .then(({params}) => formActionService.getByFormSmartId(params))
+            .then(ok200)
+            .catch(handleError),
       },
     },
     metrics: {

@@ -149,13 +149,13 @@ export const en = Object.freeze({
       functionSummary: 'Function summary',
       newFunction: 'Create a Function',
       _functionTypeLabel: {
-        [Ip.Form.Smart.Action.Type.insert]: 'Insert',
-        [Ip.Form.Smart.Action.Type.mutate]: 'Mutate',
-      },
+        [Ip.Form.Action.Type.insert]: 'Insert',
+        [Ip.Form.Action.Type.mutate]: 'Mutate',
+      } as const,
       _functionTypeDesc: {
-        [Ip.Form.Smart.Action.Type.insert]: 'Generate new rows from submissions using a transformation.',
-        [Ip.Form.Smart.Action.Type.mutate]: 'Modify existing rows from submissions using a function.',
-      },
+        [Ip.Form.Action.Type.insert]: 'Generate new rows from submissions using a transformation.',
+        [Ip.Form.Action.Type.mutate]: 'Modify existing rows from submissions using a function.',
+      } as const,
     },
     updatingTag: (rowsCount: number, key: string, value: string) => `Updating ${key}=${value} on ${rowsCount} rows...`,
     cannotUpdateTag: (rowsCount: number, key: string, value: string) =>

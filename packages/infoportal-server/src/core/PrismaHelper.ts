@@ -29,21 +29,21 @@ export namespace PrismaHelper {
     }
   > => _ as any
 
-  export const mapFormSmartAction = <
+  export const mapFormAction = <
     T extends {
       id: string
       sourceFormId: string
-      smartId: string
+      formId: string
       type: Prisma.FormSmartActionType
     },
   >(
     _: T,
   ): Defined<
     T & {
-      id: Ip.Form.Smart.ActionId
+      id: Ip.Form.ActionId
       sourceFormId: Ip.FormId
-      smartId: Ip.Form.SmartId
-      type: Ip.Form.Smart.Action.Type
+      formId: Ip.FormId
+      type: Ip.Form.Action.Type
     }
   > => _ as any
 

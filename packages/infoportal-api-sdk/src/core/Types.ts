@@ -393,40 +393,33 @@ export namespace Ip {
     }
     export namespace Version {}
 
-    export type SmartId = Brand<string, 'smartDbId'>
-    export namespace Smart {
-      export type ActionId = Brand<string, 'smartDbActionId'>
+    export type ActionId = Brand<string, 'smartDbActionId'>
 
-      export type Action = Prisma.FormSmartAction & {
-        id: ActionId
-        sourceFormId: FormId
-        smartId: SmartId
+    export type Action = Prisma.FormSmartAction & {
+      id: ActionId
+      sourceFormId: FormId
+      formId: FormId
+    }
+    export namespace Action {
+      export type Type = Prisma.FormSmartActionType
+      export const Type = {
+        insert: 'insert',
+        mutate: 'mutate',
       }
-      export namespace Action {
-        export type Type = Prisma.FormSmartActionType
-        export const Type = {
-          insert: 'insert',
-          mutate: 'mutate',
-        }
 
-        export const map = (_: Record<keyof Action, any>): Action => {
-          _.createdAt = new Date(_.createdAt)
-          return _
-        }
+      export const map = (_: Record<keyof Action, any>): Action => {
+        _.createdAt = new Date(_.createdAt)
+        return _
       }
+
       export namespace Payload {
         export type Create = {
-          workspaceId: WorkspaceId
-          name: string
-          category?: string
-        }
-        export type ActionCreate = {
           workspaceId: WorkspaceId
           body?: string
           name: string
           description?: string
           sourceFormId: Ip.FormId
-          smartId: SmartId
+          formId: FormId
           type: Action.Type
         }
       }
