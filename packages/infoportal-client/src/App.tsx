@@ -21,7 +21,7 @@ import {buildIpClient, IpClient} from 'infoportal-api-sdk'
 import {Outlet, useRouterState} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import {duration} from '@axanc/ts-utils'
-import {LicenseInfo} from '@mui/x-license-pro'
+import {LicenseInfo} from '@mui/x-license'
 
 LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 

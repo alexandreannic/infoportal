@@ -22,7 +22,7 @@
     "@mui/material": "^7.3.1",
     "@mui/system": "^7.3.1",
     "@mui/x-date-pickers-pro": "8.6.0",
-    "@mui/x-license-pro": "^7.0.0-beta.0",
+    "@mui/x-license": "^7.29.1",
     "@prisma/client": "*",
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.8.2",
@@ -68,8 +68,7 @@
     "react-google-charts": "^5.2.1",
     "react-hook-form": "^7.52.2",
     "react-hook-form-persist": "^3.0.0",
-    "react-json-tree": "^0.19.0",
-    "react-persistent-state": "^1.1.13",
+    "react-json-tree": "^0.20.0",
     "react-portal": "^4.2.2",
     "react-redux": "^9.2.0",
     "react-resizable": "^3.0.5",
@@ -90,6 +89,7 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
+    "@types/react-dom": "^19.1.0",
     "@types/react-resizable": "^3.0.8",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/react-window": "^1.8.8",
