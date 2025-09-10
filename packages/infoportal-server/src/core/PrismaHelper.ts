@@ -29,35 +29,21 @@ export namespace PrismaHelper {
     }
   > => _ as any
 
-  export const mapSmartDbAction = <
+  export const mapFormSmartAction = <
     T extends {
       id: string
-      formId: string
-      smartDbId: string
-      type: Prisma.SmartDbActionType
+      sourceFormId: string
+      smartId: string
+      type: Prisma.FormSmartActionType
     },
   >(
     _: T,
   ): Defined<
     T & {
-      id: Ip.SmartDb.ActionId
-      formId: Ip.FormId
-      smartDbId: Ip.SmartDbId
-      type: Ip.SmartDb.Action.Type
-    }
-  > => _ as any
-
-  export const mapSmartDb = <
-    T extends {
-      id: string
-      category?: string | null
-    },
-  >(
-    _: T,
-  ): Defined<
-    T & {
-      id: Ip.SmartDbId
-      category?: string
+      id: Ip.Form.Smart.ActionId
+      sourceFormId: Ip.FormId
+      smartId: Ip.Form.SmartId
+      type: Ip.Form.Smart.Action.Type
     }
   > => _ as any
 

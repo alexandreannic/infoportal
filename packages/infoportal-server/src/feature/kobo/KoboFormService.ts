@@ -30,6 +30,7 @@ export class KoboFormService {
     uploadedBy: Ip.User.Email
   }): FormServiceCreatePayload => {
     return {
+      type: 'kobo',
       name: schema.name,
       deploymentStatus: schema.deployment_status,
       kobo: {

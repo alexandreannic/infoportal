@@ -101,7 +101,7 @@ export const formContract = c.router({
     pathParams: z.object({
       workspaceId: schema.workspaceId,
     }),
-    body: c.type<Ip.Form.Payload.Create>(),
+    body: c.type<Omit<Ip.Form.Payload.Create, 'workspaceId'>>(),
     responses: {
       200: z.any() as z.ZodType<Ip.Form>,
     },
@@ -180,7 +180,7 @@ export const formClient = (client: TsRestClient, baseUrl: string) => {
       return client.form.refreshAll({params: {workspaceId}, body: undefined}).then(map200)
     },
 
-    create: ({workspaceId, ...body}: {workspaceId: Ip.WorkspaceId; name: string; category?: string}) => {
+    create: ({workspaceId, ...body}: Ip.Form.Payload.Create) => {
       return client.form.create({params: {workspaceId}, body}).then(map200).then(mapForm)
     },
 

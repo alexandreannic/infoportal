@@ -21,11 +21,7 @@ export const AppSidebarAsset = ({
   const t = useTheme()
   return (
     <Tooltip asset={asset}>
-      <Link
-        {...(asset.type === 'smart'
-          ? {to: '/$workspaceId/form/smart-db/$smartDbId/data', params: {workspaceId, smartDbId: asset.id}}
-          : {to: '/$workspaceId/form/$formId', params: {workspaceId, formId: asset.id}})}
-      >
+      <Link to="/$workspaceId/form/$formId" params={{workspaceId, formId: asset.id}}>
         {({isActive}) => (
           <SidebarItem
             size={formItemSize}

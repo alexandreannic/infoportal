@@ -12,14 +12,9 @@ import {workspaceInvitationContract} from './workspace/ContractWorkspaceInvitati
 import {metricsContract} from './ContractMetrics.js'
 import {userContract} from './ContractUser.js'
 import {groupContract} from './ContractGroup.js'
-import {smartDbContract} from './smartDb/ContractSmartDb.js'
-import {smartDbActionContract} from './smartDb/ContractSmartDbAction.js'
+import {formSmartActionContract} from './form/smart/ContractFormSmartAction.js'
 
 export const ipContract = initContract().router({
-  smartDb: {
-    ...smartDbContract,
-    action: smartDbActionContract,
-  },
   permission: permissionContract,
   server: serverContract,
   kobo: koboContract,
@@ -34,6 +29,9 @@ export const ipContract = initContract().router({
     ...formContract,
     access: formAccessContract,
     version: formVersionContract,
+    smart: {
+      action: formSmartActionContract,
+    },
   },
   user: userContract,
   metrics: metricsContract,

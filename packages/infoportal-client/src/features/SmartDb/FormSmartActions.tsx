@@ -1,23 +1,23 @@
 import {createRoute, Link} from '@tanstack/react-router'
-import {smartDbRoute} from '@/features/SmartDb/SmartDb.js'
 import {Core, Page} from '@/shared/index.js'
 import {Box, Grid, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {SmartDbEditCreateForm} from '@/features/SmartDb/SmartDbEditCreateForm.js'
+import {formRoute} from '@/features/Form/Form.js'
 
-export const smartDbEditRoute = createRoute({
-  getParentRoute: () => smartDbRoute,
-  path: 'edit',
-  component: SmartDbEdit,
+export const formSmartActionsRoute = createRoute({
+  getParentRoute: () => formRoute,
+  path: 'action',
+  component: FormSmartActions,
 })
 
-export function SmartDbEdit() {
+export function FormSmartActions() {
   const {m} = useI18n()
-  const params = smartDbEditRoute.useParams()
+  const params = formSmartActionsRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const smartDbId = params.smartDbId as Ip.SmartDbId
+  const smartDbId = params.formId as Ip.Form.SmartId
   const queryFunctionCreate = UseQuerySmartDbAction.create(workspaceId, smartDbId)
   const queryFunctionGet = UseQuerySmartDbAction.getByDbId(workspaceId, smartDbId)
 
@@ -48,13 +48,13 @@ export function SmartDbEdit() {
   )
 }
 
-function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: Ip.SmartDb.Action}) {
+function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: Ip.Form.Smart.Action}) {
   const t = useTheme()
   const {m, formatDate} = useI18n()
   return (
     <Link
-      to="/$workspaceId/form/smart-db/$smartDbId/action/$actionId"
-      params={{workspaceId, smartDbId: action.smartDbId, actionId: action.id}}
+      to="/$workspaceId/form/$formId/action/$actionId"
+      params={{workspaceId, formId: action.smartId, actionId: action.id}}
     >
       <Box
         sx={{

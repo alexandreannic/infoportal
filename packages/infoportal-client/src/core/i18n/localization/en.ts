@@ -149,12 +149,12 @@ export const en = Object.freeze({
       functionSummary: 'Function summary',
       newFunction: 'Create a Function',
       _functionTypeLabel: {
-        [Ip.SmartDb.Action.Type.insert]: 'Insert',
-        [Ip.SmartDb.Action.Type.mutate]: 'Mutate',
+        [Ip.Form.Smart.Action.Type.insert]: 'Insert',
+        [Ip.Form.Smart.Action.Type.mutate]: 'Mutate',
       },
       _functionTypeDesc: {
-        [Ip.SmartDb.Action.Type.insert]: 'Generate new rows from submissions using a transformation.',
-        [Ip.SmartDb.Action.Type.mutate]: 'Modify existing rows from submissions using a function.',
+        [Ip.Form.Smart.Action.Type.insert]: 'Generate new rows from submissions using a transformation.',
+        [Ip.Form.Smart.Action.Type.mutate]: 'Modify existing rows from submissions using a function.',
       },
     },
     updatingTag: (rowsCount: number, key: string, value: string) => `Updating ${key}=${value} on ${rowsCount} rows...`,

@@ -1,5 +1,4 @@
 import {createRoute} from '@tanstack/react-router'
-import {smartDbRoute} from '@/features/SmartDb/SmartDb.js'
 import {Page} from '@/shared/index.js'
 import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
 import {Ip} from 'infoportal-api-sdk'
@@ -8,9 +7,10 @@ import {useQuerySchema} from '@/core/query/useQuerySchema.js'
 import {KoboInterfaceBuilder} from 'infoportal-common'
 import {map} from '@axanc/ts-utils'
 import {SmartDbActionEditor} from '@/features/SmartDb/SmartDbActionEditor.js'
+import {formRoute} from '@/features/Form/Form.js'
 
-export const smartDbActionRoute = createRoute({
-  getParentRoute: () => smartDbRoute,
+export const formSmartActionRoute = createRoute({
+  getParentRoute: () => formRoute,
   path: 'action/$actionId',
   component: SmartDbAction,
 })
@@ -30,12 +30,12 @@ const useGetInterfaceInput = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceI
 }
 
 export function SmartDbAction() {
-  const params = smartDbActionRoute.useParams()
+  const params = formSmartActionRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const smartDbId = params.smartDbId as Ip.SmartDbId
-  const actionId = params.actionId as Ip.SmartDb.ActionId
-  const queryAction = UseQuerySmartDbAction.getById(workspaceId, smartDbId, actionId)
-  const interfaceInput = useGetInterfaceInput({workspaceId, formId: queryAction.data?.formId})
+  const formId = params.formId as Ip.Form.SmartId
+  const actionId = params.actionId as Ip.Form.Smart.ActionId
+  const queryAction = UseQuerySmartDbAction.getById(workspaceId, formId, actionId)
+  const interfaceInput = useGetInterfaceInput({workspaceId, formId: queryAction.data?.sourceFormId})
 
   return (
     <Page loading={queryAction.isLoading || interfaceInput.isLoading}>

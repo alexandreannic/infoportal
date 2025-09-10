@@ -40,7 +40,7 @@ export const useQueryForm = (workspaceId: Ip.WorkspaceId) => {
     onError: toastHttpError,
   })
 
-  const create = useMutation<Ip.Form, ApiError, Ip.Form.Payload.Create>({
+  const create = useMutation<Ip.Form, ApiError, Omit<Ip.Form.Payload.Create, 'workspaceId'>>({
     mutationFn: args => apiv2.form.create({workspaceId, ...args}),
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)}),
     onError: toastHttpError,

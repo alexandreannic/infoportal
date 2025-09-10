@@ -1,4 +1,4 @@
-import {Page} from '@/shared'
+import {Core, Page} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Box, Collapse, Icon} from '@mui/material'
 import {useEffect, useState} from 'react'
@@ -6,15 +6,13 @@ import {useDialogs} from '@toolpad/core'
 import {KoboServerFormDialog} from '@/features/NewForm/KoboServerForm'
 import {SelectKoboForm} from '@/features/NewForm/SelectKoboForm'
 import {useQueryServers} from '@/core/query/useQueryServers'
-import {fnSwitch, Obj} from '@axanc/ts-utils'
+import {Obj} from '@axanc/ts-utils'
 import {NewFormCreateInternal} from '@/features/NewForm/NewFormCreateInternal'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
-import {Core} from '@/shared'
 import {useQueryForm} from '@/core/query/useQueryForm'
-import {UseQuerySmartDb} from '@/core/query/useQuerySmartDb'
 import {Asset} from '@/shared/Asset.js'
 
 export const newFormRoute = createRoute({
@@ -39,12 +37,11 @@ function NewForm() {
   const dialog = useDialogs()
   const navigate = useNavigate()
 
-  const [asset, setAsset] = useState<Asset.Type>()
+  const [type, setType] = useState<Ip.Form.Type>()
   const [selectedServerId, setSelectedServerId] = useState<Ip.ServerId>()
 
   const queryForm = useQueryForm(workspaceId)
   const queryServer = useQueryServers(workspaceId)
-  const querySmartDb = UseQuerySmartDb.create(workspaceId)
 
   const handleOpen = () => {
     dialog.open(KoboServerFormDialog, {workspaceId})
@@ -59,8 +56,8 @@ function NewForm() {
       <Core.Panel>
         <Core.PanelHead>{m.source}</Core.PanelHead>
         <Core.PanelBody>
-          <Core.RadioGroup value={asset} sx={{flex: 1}} inline onChange={setAsset}>
-            {Obj.keys(Asset.Type).map(asset => (
+          <Core.RadioGroup value={type} sx={{flex: 1}} inline onChange={setType}>
+            {Obj.keys(Ip.Form.Type).map(asset => (
               <Core.RadioGroupItem
                 key={asset}
                 hideRadio
@@ -72,77 +69,78 @@ function NewForm() {
           </Core.RadioGroup>
         </Core.PanelBody>
       </Core.Panel>
-      {asset &&
-        fnSwitch(
-          asset,
-          {
-            kobo: (
-              <>
-                <Core.Panel>
-                  <Core.PanelHead>{m.selectAccount}</Core.PanelHead>
-                  <Core.PanelBody>
-                    <Core.RadioGroup sx={{flex: 1, minWidth: 200}} dense onChange={setSelectedServerId}>
-                      {queryServer.getAll.data?.map(_ => (
-                        <Core.RadioGroupItem
-                          key={_.id}
-                          value={_.id}
-                          title={_.name}
-                          description={_.url}
-                          // endContent={
-                          //   <Core.IconBtn
-                          //     size="small"
-                          //     loading={queryServer.remove.isPending}
-                          //     onClick={e => {
-                          //       e.stopPropagation()
-                          //       handleDelete(_.id)
-                          //     }}
-                          //   >
-                          //     delete
-                          //   </Core.IconBtn>
-                          // }
-                        />
-                      ))}
-                      <Core.RadioGroupItem value={null} title={m.addNewKoboAccount} onClick={handleOpen} icon="add" />
-                    </Core.RadioGroup>
-                  </Core.PanelBody>
-                </Core.Panel>
-                <Collapse in={!!selectedServerId} mountOnEnter unmountOnExit>
-                  <SelectKoboForm
-                    workspaceId={workspaceId}
-                    serverId={selectedServerId!}
-                    onAdded={() => queryServer.getAll.refetch()}
-                  />
-                </Collapse>
-              </>
-            ),
-            internal: (
-              <NewFormCreateInternal
-                workspaceId={workspaceId}
-                loading={queryForm.create.isPending}
-                btnLabel={m.create + ' ' + m.formSource[asset].toLowerCase()}
-                onSubmit={async form => {
-                  const newForm = await queryForm.create.mutateAsync(form)
-                  navigate({to: '/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})
-                }}
-              />
-            ),
-            smart: (
-              <NewFormCreateInternal
-                workspaceId={workspaceId}
-                btnLabel={m.create + ' ' + m.formSource[asset].toLowerCase()}
-                loading={queryForm.create.isPending}
-                onSubmit={async form => {
-                  const newSmartDb = await querySmartDb.mutateAsync(form)
-                  navigate({
-                    to: '/$workspaceId/form/smart-db/$smartDbId',
-                    params: {workspaceId, smartDbId: newSmartDb.id},
-                  })
-                }}
-              />
-            ),
-          },
-          () => <></>,
-        )}
+      {type &&
+        (() => {
+          switch (type) {
+            case 'internal':
+            case 'smart': {
+              return (
+                <NewFormCreateInternal
+                  workspaceId={workspaceId}
+                  loading={queryForm.create.isPending}
+                  btnLabel={m.create + ' ' + m.formSource[type].toLowerCase()}
+                  onSubmit={async form => {
+                    const newForm = await queryForm.create.mutateAsync({...form, type})
+                    navigate({to: '/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})
+                  }}
+                />
+              )
+              // <NewFormCreateInternal
+              //   workspaceId={workspaceId}
+              //   btnLabel={m.create + ' ' + m.formSource[type].toLowerCase()}
+              //   loading={queryForm.create.isPending}
+              //   onSubmit={async form => {
+              //     const newSmartDb = await querySmartDb.mutateAsync(form)
+              //     navigate({
+              //       to: '/$workspaceId/form/smart-db/$smartDbId',
+              //       params: {workspaceId, smartDbId: newSmartDb.id},
+              //     })
+              //   }}
+              // />
+            }
+            case 'kobo': {
+              return (
+                <>
+                  <Core.Panel>
+                    <Core.PanelHead>{m.selectAccount}</Core.PanelHead>
+                    <Core.PanelBody>
+                      <Core.RadioGroup sx={{flex: 1, minWidth: 200}} dense onChange={setSelectedServerId}>
+                        {queryServer.getAll.data?.map(_ => (
+                          <Core.RadioGroupItem
+                            key={_.id}
+                            value={_.id}
+                            title={_.name}
+                            description={_.url}
+                            // endContent={
+                            //   <Core.IconBtn
+                            //     size="small"
+                            //     loading={queryServer.remove.isPending}
+                            //     onClick={e => {
+                            //       e.stopPropagation()
+                            //       handleDelete(_.id)
+                            //     }}
+                            //   >
+                            //     delete
+                            //   </Core.IconBtn>
+                            // }
+                          />
+                        ))}
+                        <Core.RadioGroupItem value={null} title={m.addNewKoboAccount} onClick={handleOpen} icon="add" />
+                      </Core.RadioGroup>
+                    </Core.PanelBody>
+                  </Core.Panel>
+                  <Collapse in={!!selectedServerId} mountOnEnter unmountOnExit>
+                    <SelectKoboForm
+                      workspaceId={workspaceId}
+                      serverId={selectedServerId!}
+                      onAdded={() => queryServer.getAll.refetch()}
+                    />
+                  </Collapse>
+                </>
+              )
+            }
+          }
+        })()}
     </Page>
   )
 }

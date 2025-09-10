@@ -26,7 +26,6 @@ model Workspace {
   featureAccesses FormAccess[]
   access          WorkspaceAccess[]
   invitation      WorkspaceInvitation[]
-  SmartDb         SmartDb[]
 
   @@index([slug])
 }
@@ -74,44 +73,52 @@ enum DeploymentStatus {
   draft
 }
 
-enum FormSource {
+enum FormType {
   kobo
-  disconnected
+  smart
   internal
 }
 
 model FormKoboInfo {
-  id        String     @id @default(uuid())
   server    KoboServer @relation(fields: [accountId], references: [id])
   accountId String     @db.Uuid
   enketoUrl String?
   koboId    String
   form      Form       @relation(fields: [formId], references: [id])
   formId    String     @unique @db.VarChar(32)
+  deletedAt DateTime?
+  deletedBy String?
 
   @@index([koboId])
 }
 
+model FormSmart {
+  form    Form              @relation(fields: [formId], references: [id])
+  formId  String            @unique @db.VarChar(32)
+  actions FormSmartAction[]
+}
+
 model Form {
-  id                     String                  @id @default(cuid()) @db.VarChar(32)
-  name                   String
-  createdAt              DateTime                @default(now())
+  id               String                  @id @default(cuid()) @db.VarChar(32)
+  name             String
+  createdAt        DateTime                @default(now())
+  type             FormType
   // createdBy
-  uploadedBy             String?
-  updatedAt              DateTime?
-  updatedBy              String?
-  deploymentStatus       DeploymentStatus?
-  category               String?
-  answers                FormSubmission[]
-  histories              FormSubmissionHistory[]
-  workspace              Workspace               @relation(fields: [workspaceId], references: [id])
-  workspaceId            String                  @db.Uuid
-  formVersion            FormVersion[]
-  formAccess             FormAccess[]
-  kobo                   FormKoboInfo?
-  disconnectedFromKoboAt DateTime?
-  disconnectedFromKoboBy String?
-  smartDbAction          SmartDbAction[]
+  uploadedBy       String?
+  updatedAt        DateTime?
+  updatedBy        String?
+  deploymentStatus DeploymentStatus?
+  category         String?
+  answers          FormSubmission[]
+  histories        FormSubmissionHistory[]
+  workspace        Workspace               @relation(fields: [workspaceId], references: [id])
+  workspaceId      String                  @db.Uuid
+  formVersion      FormVersion[]
+  formAccess       FormAccess[]
+  smartDbAction    FormSmartAction[]
+
+  kobo  FormKoboInfo?
+  smart FormSmart?
 
   @@index([category])
 }
@@ -129,13 +136,12 @@ model FormVersion {
   message    String?
   uploadedBy String
   createdAt  DateTime          @default(now())
-  source     FormSource
   schema     Json
   status     FormVersionStatus @default(inactive)
   form       Form              @relation(fields: [formId], references: [id])
   formId     String
 
-  @@unique([formId, source, version])
+  @@unique([formId, version])
 }
 
 enum FormSubmissionValidation {
@@ -159,7 +165,6 @@ model FormSubmission {
   version                String?
   validationStatus       FormSubmissionValidation?
   validatedBy            String?
-  source                 FormSource                @default(kobo)
   lastValidatedTimestamp Int?
   geolocation            Json?
   isoCode                String?
@@ -168,26 +173,26 @@ model FormSubmission {
   deletedAt              DateTime?
   deletedBy              String?
   histories              FormSubmissionHistory[]   @relation("FormSubmissionToHistory")
-  smartDbRow             SmartDbRow[]
 
   @@unique([koboSubmissionId, formId])
   @@index([deletedAt])
   @@index([formId])
   @@index([formId, koboSubmissionId])
+  @@index([formId, submissionTime])
 }
 
 model FormSubmissionHistory {
   id       String           @id @default(uuid()) @db.Uuid
   form     Form?            @relation(fields: [formId], references: [id])
   formId   String?
-  answerId String?
-  answers  FormSubmission[] @relation("FormSubmissionToHistory")
   by       String
   date     DateTime         @default(now())
   type     String?
   property String?
   oldValue Json?
   newValue Json?
+  answerId String?
+  answers  FormSubmission[] @relation("FormSubmissionToHistory")
 
   @@index([formId])
 }
@@ -245,6 +250,9 @@ model FormAccess {
   workspace   Workspace   @relation(fields: [workspaceId], references: [id])
   workspaceId String      @db.Uuid
   filters     Json?
+
+  @@index([workspaceId, email])
+  @@index([workspaceId, formId])
 }
 
 model Group {
@@ -369,57 +377,39 @@ model EmailOutBox {
 // ----------------
 // Smart-db
 // ----------------
-model SmartDb {
-  id          String          @id @default(uuid())
-  createdAt   DateTime        @default(now())
-  createdBy   String?
-  name        String
-  category    String?
-  rows        SmartDbRow[]
-  actions     SmartDbAction[]
-  workspace   Workspace       @relation(fields: [workspaceId], references: [id])
-  workspaceId String          @db.Uuid
-}
 
-enum SmartDbActionType {
+enum FormSmartActionType {
   insert
   mutate
 }
 
-model SmartDbAction {
-  id          String            @id @default(uuid())
-  createdAt   DateTime          @default(now())
-  createdBy   String?
-  type        SmartDbActionType
-  name        String
-  description String?
-  body        String
-  form        Form              @relation(fields: [formId], references: [id])
-  formId      String            @db.VarChar(32)
-  smartDb     SmartDb           @relation(fields: [smartDbId], references: [id])
-  smartDbId   String
-  logs        SmartDbLog[]
+model FormSmartAction {
+  id           String              @id @default(uuid())
+  createdAt    DateTime            @default(now())
+  createdBy    String?
+  type         FormSmartActionType
+  name         String
+  description  String?
+  body         String?
+  sourceForm   Form                @relation(fields: [sourceFormId], references: [id])
+  sourceFormId String              @db.VarChar(32)
+  smart        FormSmart           @relation(fields: [smartId], references: [formId])
+  smartId      String
+  logs         FormSmartLog[]
+
+  @@index([smartId])
 }
 
-enum SmartDbLogType {
+enum FormSmartLogType {
   error
   log
 }
 
-model SmartDbLog {
-  id        String         @id @default(uuid())
-  type      SmartDbLogType
-  createdAt DateTime       @default(now())
-  action    SmartDbAction  @relation(fields: [actionId], references: [id])
+model FormSmartLog {
+  id        String           @id @default(uuid())
+  type      FormSmartLogType
+  createdAt DateTime         @default(now())
+  action    FormSmartAction  @relation(fields: [actionId], references: [id])
   content   String
   actionId  String
-}
-
-model SmartDbRow {
-  id           String         @id @default(uuid())
-  createdAt    DateTime       @default(now())
-  submission   FormSubmission @relation(fields: [submissionId], references: [id])
-  submissionId String         @db.VarChar(32)
-  smartDb      SmartDb?       @relation(fields: [smartDbId], references: [id])
-  smartDbId    String?
 }

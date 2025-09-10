@@ -298,6 +298,7 @@ export namespace Ip {
     category?: string
     deploymentStatus?: string
   }
+
   export namespace Form {
     export type DeploymentStatus = Prisma.DeploymentStatus
     export const DeploymentStatus = {
@@ -315,10 +316,10 @@ export namespace Ip {
 
     export type Schema = Kobo.Form['content'] & {files?: Kobo.Form.File[]}
 
-    export type Source = Prisma.FormSource
-    export const Source = {
+    export type Type = Prisma.FormType
+    export const Type = {
       kobo: 'kobo',
-      disconnected: 'disconnected',
+      smart: 'smart',
       internal: 'internal',
     } as const
 
@@ -335,8 +336,10 @@ export namespace Ip {
       }
 
       export type Create = {
+        workspaceId: WorkspaceId
         name: string
         category?: string
+        type: Form.Type
       }
     }
 
@@ -389,6 +392,45 @@ export namespace Ip {
       id: VersionId
     }
     export namespace Version {}
+
+    export type SmartId = Brand<string, 'smartDbId'>
+    export namespace Smart {
+      export type ActionId = Brand<string, 'smartDbActionId'>
+
+      export type Action = Prisma.FormSmartAction & {
+        id: ActionId
+        sourceFormId: FormId
+        smartId: SmartId
+      }
+      export namespace Action {
+        export type Type = Prisma.FormSmartActionType
+        export const Type = {
+          insert: 'insert',
+          mutate: 'mutate',
+        }
+
+        export const map = (_: Record<keyof Action, any>): Action => {
+          _.createdAt = new Date(_.createdAt)
+          return _
+        }
+      }
+      export namespace Payload {
+        export type Create = {
+          workspaceId: WorkspaceId
+          name: string
+          category?: string
+        }
+        export type ActionCreate = {
+          workspaceId: WorkspaceId
+          body?: string
+          name: string
+          description?: string
+          sourceFormId: Ip.FormId
+          smartId: SmartId
+          type: Action.Type
+        }
+      }
+    }
   }
 
   // === Group
@@ -453,53 +495,5 @@ export namespace Ip {
     export type CountUserByDate = {date: string; countCreatedAt: number; countLastConnectedCount: number}[]
     export type CountBy<K extends string> = Array<Record<K, string> & {count: number}>
     export type CountByKey = CountBy<'key'>
-  }
-
-  export type SmartDbId = Brand<string, 'smartDbId'>
-  export type SmartDb = Prisma.SmartDb & {
-    category?: string
-    id: SmartDbId
-  }
-  export namespace SmartDb {
-    export type ActionId = Brand<string, 'smartDbActionId'>
-
-    export const map = (_: Record<keyof Ip.SmartDb, any>): Ip.SmartDb => {
-      _.createdAt = new Date(_.createdAt)
-      return _
-    }
-
-    export type Action = Prisma.SmartDbAction & {
-      id: ActionId
-      formId: FormId
-      smartDbId: SmartDbId
-    }
-    export namespace Action {
-      export type Type = Prisma.SmartDbActionType
-      export const Type = {
-        insert: 'insert',
-        mutate: 'mutate',
-      }
-
-      export const map = (_: Record<keyof Action, any>): Action => {
-        _.createdAt = new Date(_.createdAt)
-        return _
-      }
-    }
-    export namespace Payload {
-      export type Create = {
-        workspaceId: WorkspaceId
-        name: string
-        category?: string
-      }
-      export type ActionCreate = {
-        workspaceId: WorkspaceId
-        body?: string
-        name: string
-        description?: string
-        formId: Ip.FormId
-        smartDbId: Ip.SmartDbId
-        type: Action.Type
-      }
-    }
   }
 }

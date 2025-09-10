@@ -1,3 +1,5 @@
+- How to deal with FormVersion for a Form linked with Kobo? How to keep consistency after disconnecting from Kobo.
+
 - Rename Server -> Account
 - Archive form should move kobo ref to deleteKobo column to keep track?  
 - Right now 3 requests are trigger to check loggin.

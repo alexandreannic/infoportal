@@ -11,6 +11,7 @@ import {createRoute, Link} from '@tanstack/react-router'
 import {formRootRoute} from '@/features/Form/Form'
 import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
+import {DeploymentStatus} from '@/shared/DeploymentStatus'
 
 export const formsRoute = createRoute({
   getParentRoute: () => formRootRoute,
@@ -62,23 +63,7 @@ function Forms() {
               align: 'center',
               render: _ => {
                 return {
-                  label: fnSwitch(_.deploymentStatus!, {
-                    archived: (
-                      <Icon fontSize="small" color="disabled">
-                        {appConfig.icons.deploymentStatus.archived}
-                      </Icon>
-                    ),
-                    deployed: (
-                      <Icon fontSize="small" sx={{color: t.vars.palette.success.light}} color="success">
-                        {appConfig.icons.deploymentStatus.deployed}
-                      </Icon>
-                    ),
-                    draft: (
-                      <Icon fontSize="small" color="disabled">
-                        {appConfig.icons.deploymentStatus.draft}
-                      </Icon>
-                    ),
-                  }),
+                  label: <DeploymentStatus.Icon status={_.deploymentStatus} />,
                   value: _.deploymentStatus,
                   export: _.deploymentStatus,
                   option: _.deploymentStatus,

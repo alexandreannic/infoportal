@@ -77,24 +77,3 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
     </Sidebar>
   )
 }
-
-function IconDeploymentStatus({status, sx, ...props}: IconProps & {status?: null | Ip.Form.DeploymentStatus}) {
-  return (
-    <Icon
-      fontSize="small"
-      color="disabled"
-      sx={{marginLeft: '4px', marginRight: '-4px', verticalAlign: 'middle', ...sx}}
-      {...props}
-    >
-      {appConfig.icons.deploymentStatus[status!]}
-    </Icon>
-  )
-}
-
-function IconLinkedToKobo({sx, ...props}: IconProps) {
-  return (
-    <Icon fontSize="small" color="info" sx={{verticalAlign: 'middle', textAlign: 'center', ...sx}} {...props}>
-      plug_connect
-    </Icon>
-  )
-}

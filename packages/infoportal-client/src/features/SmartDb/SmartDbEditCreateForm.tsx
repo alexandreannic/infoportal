@@ -1,6 +1,6 @@
 import {Ip} from 'infoportal-api-sdk'
 import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
-import {smartDbEditRoute} from '@/features/SmartDb/SmartDbEdit.js'
+import {formSmartActionsRoute} from '@/features/SmartDb/FormSmartActions.js'
 import {Controller, useForm, UseFormReturn} from 'react-hook-form'
 import {useQueryForm} from '@/core/query/useQueryForm.js'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
@@ -12,15 +12,15 @@ import {Core} from '@/shared'
 import {useI18n} from '@/core/i18n/index.js'
 import {Obj} from '@axanc/ts-utils'
 
-type Form = Omit<Ip.SmartDb.Payload.ActionCreate, 'body' | 'workspaceId' | 'smartDbId'>
+type Form = Omit<Ip.Form.Smart.Payload.ActionCreate, 'body' | 'workspaceId' | 'smartDbId'>
 
 export const SmartDbEditCreateForm = ({onClose}: {onClose: () => void}) => {
   const stepperRef = useRef<Core.StepperHandle>(null)
 
-  const params = smartDbEditRoute.useParams()
+  const params = formSmartActionsRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const smartDbId = params.smartDbId as Ip.SmartDbId
-  const queryAction = UseQuerySmartDbAction.create(workspaceId, smartDbId)
+  const formId = params.formId as Ip.Form.SmartId
+  const queryAction = UseQuerySmartDbAction.create(workspaceId, formId)
   const {m} = useI18n()
 
   const form = useForm<Form>()
@@ -53,6 +53,7 @@ export const SmartDbEditCreateForm = ({onClose}: {onClose: () => void}) => {
             label: m.selectForm,
             component: () => (
               <SelectForm
+                formId={formId}
                 stepperRef={stepperRef}
                 loading={queryAction.isPending}
                 form={form}
@@ -87,14 +88,14 @@ function SelectType({
   loading,
   stepperRef,
 }: {
-  stepperRef: RefObject<Core.StepperHandle>
+  stepperRef: RefObject<Core.StepperHandle | null>
   form: UseFormReturn<Form>
   loading: boolean
 }) {
   const {m} = useI18n()
   const icon = {
-    [Ip.SmartDb.Action.Type.insert]: 'splitscreen_add',
-    [Ip.SmartDb.Action.Type.mutate]: 'splitscreen_bottom',
+    [Ip.Form.Smart.Action.Type.insert]: 'splitscreen_add',
+    [Ip.Form.Smart.Action.Type.mutate]: 'splitscreen_bottom',
   }
   const type = form.watch('type')
   return (
@@ -110,7 +111,7 @@ function SelectType({
               stepperRef.current?.goTo(1)
             }}
           >
-            {Obj.values(Ip.SmartDb.Action.Type).map(_ => (
+            {Obj.values(Ip.Form.Smart.Action.Type).map(_ => (
               <Core.RadioGroupItem
                 hideRadio
                 value={_}
@@ -132,28 +133,32 @@ function SelectForm({
   loading,
   workspaceId,
   stepperRef,
+  formId,
 }: {
+  formId: Ip.Form.SmartId
   form: UseFormReturn<Form>
   loading: boolean
   workspaceId: Ip.WorkspaceId
-  stepperRef: RefObject<Core.StepperHandle>
+  stepperRef: RefObject<Core.StepperHandle | null>
 }) {
   const queryForms = useQueryForm(workspaceId).accessibleForms
   const [filteredForms, setFilteredForms] = useState<Asset[]>([])
 
   const assets = useMemo(() => {
     if (!queryForms.data) return []
-    return queryForms.data.map(_ => ({..._, type: _.kobo ? Asset.Type.kobo : Asset.Type.internal}))
+    return queryForms.data
+      .filter(_ => (_.id as unknown as Ip.Form.SmartId) !== formId)
+      .map(_ => ({..._, type: _.kobo ? Asset.Type.kobo : Asset.Type.internal}))
   }, [queryForms.data])
 
-  const formId = form.watch('formId')
+  const sourceFormId = form.watch('sourceFormId')
 
   return (
     <>
       <AppSidebarFilters assets={assets} onFilterChanges={setFilteredForms} sx={{mb: 1}} />
       <Controller
         control={form.control}
-        name="formId"
+        name="sourceFormId"
         render={({field}) => (
           <Core.RadioGroup<Ip.FormId>
             dense
@@ -182,7 +187,7 @@ function SelectForm({
           </Core.RadioGroup>
         )}
       />
-      <StepperActions loading={loading} disableNext={!formId} />
+      <StepperActions loading={loading} disableNext={!sourceFormId} />
     </>
   )
 }

@@ -6,34 +6,40 @@ import {queryKeys} from '@/core/query/query.index'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 
 export class UseQuerySmartDbAction {
-  static readonly create = (workspaceId: Ip.WorkspaceId, smartDbId: Ip.SmartDbId) => {
+  static readonly create = (workspaceId: Ip.WorkspaceId, smartId: Ip.Form.SmartId) => {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     const {toastHttpError} = useIpToast()
 
-    return useMutation<Ip.SmartDb.Action, ApiError, Omit<Ip.SmartDb.Payload.ActionCreate, 'smartDbId' | 'workspaceId'>>(
-      {
-        mutationFn: async args => {
-          return apiv2.smartDb.action.create({...args, smartDbId, workspaceId})
-        },
-        onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.smartDbFunction(workspaceId, smartDbId)}),
-        onError: toastHttpError,
+    return useMutation<
+      Ip.Form.Smart.Action,
+      ApiError,
+      Omit<Ip.Form.Smart.Payload.ActionCreate, 'smartId' | 'workspaceId'>
+    >({
+      mutationFn: async args => {
+        return apiv2.form.smart.action.create({...args, smartId, workspaceId})
       },
-    )
+      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.smartDbFunction(workspaceId, smartId)}),
+      onError: toastHttpError,
+    })
   }
 
-  static readonly getByDbId = (workspaceId: Ip.WorkspaceId, smartDbId: Ip.SmartDbId) => {
+  static readonly getByDbId = (workspaceId: Ip.WorkspaceId, smartId: Ip.Form.SmartId) => {
     const {apiv2} = useAppSettings()
     const {toastAndThrowHttpError} = useIpToast()
 
     return useQuery({
-      queryKey: queryKeys.smartDbFunction(workspaceId, smartDbId),
-      queryFn: () => apiv2.smartDb.action.getByDbId({workspaceId, smartDbId}).catch(toastAndThrowHttpError),
+      queryKey: queryKeys.smartDbFunction(workspaceId, smartId),
+      queryFn: () => apiv2.form.smart.action.getByDbId({workspaceId, smartId}).catch(toastAndThrowHttpError),
     })
   }
 
-  static readonly getById = (workspaceId: Ip.WorkspaceId, smartDbId: Ip.SmartDbId, functionId: Ip.SmartDb.ActionId) => {
-    const all = this.getByDbId(workspaceId, smartDbId)
+  static readonly getById = (
+    workspaceId: Ip.WorkspaceId,
+    smartId: Ip.Form.SmartId,
+    functionId: Ip.Form.Smart.ActionId,
+  ) => {
+    const all = this.getByDbId(workspaceId, smartId)
     return {
       ...all,
       data: all.data?.find(_ => _.id === functionId),

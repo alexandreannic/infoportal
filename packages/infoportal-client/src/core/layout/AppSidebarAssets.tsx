@@ -7,39 +7,32 @@ import {useQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {mapFor, Seq, seq} from '@axanc/ts-utils'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
-import {UseQuerySmartDb} from '@/core/query/useQuerySmartDb.js'
-import {Asset} from '@/shared/Asset.js'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
 import {AppSidebarAsset} from '@/core/layout/AppSidebarAsset.js'
+import {Asset} from '@/shared/Asset.js'
 
 export const AppSidebarAssets = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
   const {m} = useI18n()
   const t = useTheme()
 
   const queryForm = useQueryForm(workspaceId)
-  const querySmartDb = UseQuerySmartDb.getAll(workspaceId)
+  // const querySmartDb = UseQuerySmartDb.getAll(workspaceId)
 
   const assets: Seq<Asset> = useMemo(() => {
-    if (!queryForm.accessibleForms.data || !querySmartDb.data) return seq()
-    return seq([
-      ...queryForm.accessibleForms.data.map(_ => {
+    if (!queryForm.accessibleForms.data) return seq()
+    return seq(
+      queryForm.accessibleForms.data.map(_ => {
         return {
           id: _.id,
-          type: _.kobo ? Asset.Type.kobo : Asset.Type.internal,
+          type: _.type as Asset.Type,
           category: _.category,
           createdAt: _.createdAt,
           name: _.name,
           deploymentStatus: _.deploymentStatus,
         }
       }),
-      ...querySmartDb.data.map(_ => {
-        return {
-          ..._,
-          type: Asset.Type.smart,
-        }
-      }),
-    ])
-  }, [queryForm.accessibleForms.data, querySmartDb.data])
+    )
+  }, [queryForm.accessibleForms.data])
 
   const [filteredAssets, setFilteredAssets] = useState<Asset[]>(assets)
 

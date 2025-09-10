@@ -14,8 +14,7 @@ import {workspaceInvitationClient} from '../contract/workspace/ContractWorkspace
 import {metricsClient} from '../contract/ContractMetrics.js'
 import {userClient} from '../contract/ContractUser.js'
 import {groupClient} from '../contract/ContractGroup.js'
-import {smartDbClient} from '../contract/smartDb/ContractSmartDb.js'
-import {smartDbActionClient} from '../contract/smartDb/ContractSmartDbAction.js'
+import {formSmartActionClient} from '../contract/form/smart/ContractFormSmartAction.js'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -29,10 +28,6 @@ const buildClient = (baseUrl: string) =>
 export const buildIpClient = (baseUrl: string) => {
   const client = buildClient(baseUrl)
   return {
-    smartDb: {
-      ...smartDbClient(client),
-      action: smartDbActionClient(client),
-    },
     group: groupClient(client, baseUrl),
     workspace: {
       ...workspaceClient(client, baseUrl),
@@ -47,6 +42,9 @@ export const buildIpClient = (baseUrl: string) => {
       ...formClient(client, baseUrl),
       access: formAccessClient(client, baseUrl),
       version: formVersionClient(client, baseUrl),
+      smart: {
+        action: formSmartActionClient(client),
+      },
     },
     user: userClient(client, baseUrl),
     metrics: metricsClient(client, baseUrl),

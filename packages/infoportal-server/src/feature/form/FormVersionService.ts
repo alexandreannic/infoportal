@@ -102,7 +102,6 @@ export class FormVersionService {
         data: {
           formId,
           status: 'draft',
-          source: 'internal',
           version: nextVersion,
           schema: schemaJson,
           ...rest,

@@ -17,6 +17,8 @@ import {databaseAccessRoute} from './Access/DatabaseAccess'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {useQueryPermission} from '@/core/query/useQueryPermission'
+import {formSmartActionRoute} from '@/features/SmartDb/SmartDbAction.js'
+import {formSmartActionsRoute} from '@/features/SmartDb/FormSmartActions.js'
 
 export const formRootRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -144,16 +146,29 @@ function Form() {
           disabled={!schema}
           label={m.access}
         />
-        <Tab
-          icon={<Icon>history</Icon>}
-          disabled={!schema}
-          iconPosition="start"
-          sx={{minHeight: 34, py: 1}}
-          component={Link}
-          value={databaseHistoryRoute.fullPath}
-          to={databaseHistoryRoute.fullPath}
-          label={m.history}
-        />
+        {queryForm.data?.type === 'smart' ? (
+          <Tab
+            icon={<Icon>dynamic_form</Icon>}
+            iconPosition="start"
+            sx={{minHeight: 34, py: 1}}
+            component={Link}
+            value={formSmartActionsRoute.fullPath}
+            to={formSmartActionsRoute.fullPath}
+            label={m.action}
+            disabled={!schema}
+          />
+        ) : (
+          <Tab
+            icon={<Icon>history</Icon>}
+            disabled={!schema}
+            iconPosition="start"
+            sx={{minHeight: 34, py: 1}}
+            component={Link}
+            value={databaseHistoryRoute.fullPath}
+            to={databaseHistoryRoute.fullPath}
+            label={m.history}
+          />
+        )}
         <Tab
           icon={<Icon>settings</Icon>}
           iconPosition="start"

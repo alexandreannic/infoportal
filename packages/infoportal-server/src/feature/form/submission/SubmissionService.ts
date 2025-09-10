@@ -195,7 +195,9 @@ export class SubmissionService {
     const {formId, workspaceId} = props
     const form = await this.form.get(formId)
     if (!form) throw new HttpError.NotFound(`Form ${formId} does not exists.`)
-    if (form.kobo) throw new HttpError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
+    if (form.type === 'kobo')
+      throw new HttpError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
+    if (form.type === 'smart') throw new HttpError.BadRequest(`Cannot manually submit in a Smart form.`)
     const isoCode = await this.getIsoFromGeopoint(props.geolocation)
     return this.create({
       workspaceId,
@@ -291,7 +293,7 @@ export class SubmissionService {
   }
 
   private readonly isConnectedToKobo = (formId: Ip.FormId) => {
-    return this.prisma.formKoboInfo.findFirst({select: {id: true}, where: {formId}}).then(_ => !!_)
+    return this.prisma.formKoboInfo.findFirst({select: {formId: true}, where: {formId}}).then(_ => !!_)
   }
 
   readonly updateAnswers = async ({

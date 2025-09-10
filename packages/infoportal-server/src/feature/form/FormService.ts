@@ -74,6 +74,7 @@ export class FormService {
     name,
     category,
     kobo,
+    type,
     deploymentStatus = 'draft',
     uploadedBy,
     workspaceId,
@@ -84,6 +85,7 @@ export class FormService {
       },
       data: {
         name,
+        type,
         category,
         deploymentStatus,
         uploadedBy,
