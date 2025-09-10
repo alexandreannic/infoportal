@@ -145,14 +145,14 @@ export const en = Object.freeze({
     action: 'Action',
     workspaceId: 'Workspace ID',
     Approved: 'Approved',
-    _smartDb: {
-      functionSummary: 'Function summary',
+    _formAction: {
+      actionSummary: 'Action summary',
       newFunction: 'Create a Function',
-      _functionTypeLabel: {
+      _actionTypeLabel: {
         [Ip.Form.Action.Type.insert]: 'Insert',
         [Ip.Form.Action.Type.mutate]: 'Mutate',
       } as const,
-      _functionTypeDesc: {
+      _actionTypeDesc: {
         [Ip.Form.Action.Type.insert]: 'Generate new rows from submissions using a transformation.',
         [Ip.Form.Action.Type.mutate]: 'Modify existing rows from submissions using a function.',
       } as const,

@@ -32,7 +32,7 @@ export function FormSmartActions() {
               onConfirm={console.log}
             >
               <Core.Btn size="large" variant="outlined" fullWidth sx={{textAlign: 'center', mb: 1}}>
-                {m._smartDb.newFunction}
+                {m._formAction.newFunction}
               </Core.Btn>
             </Core.Modal>
             {queryFunctionGet.data?.map(_ => (
