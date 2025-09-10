@@ -27,7 +27,6 @@ export const AccessTable = ({
 
   return (
     <Datatable.Component<Ip.Form.Access>
-      defaultLimit={100}
       id="access"
       getRowKey={_ => _.id}
       loading={queryAccess.isLoading || queryAccessUpdate.isPending}

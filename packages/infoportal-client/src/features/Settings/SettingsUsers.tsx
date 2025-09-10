@@ -77,7 +77,6 @@ function SettingsUsers() {
               // cellSelection: {enabled: true},
             }
           }
-          defaultLimit={100}
           data={data}
           getRowKey={_ => _.invitationId ?? _.userId!}
           header={

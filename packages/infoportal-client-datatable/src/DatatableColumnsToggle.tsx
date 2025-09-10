@@ -85,7 +85,6 @@ export const DatatableColumnToggle = ({
               </>
             )}
             contentProps={{sx: {maxHeight: 500}}}
-            defaultLimit={500}
             id="datatable-column-toggle"
             getRowKey={_ => _.id}
             data={columns}

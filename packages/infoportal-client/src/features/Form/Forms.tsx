@@ -43,7 +43,6 @@ function Forms() {
         <Datatable.Component
           getRowKey={_ => _.id}
           // showExportBtn
-          defaultLimit={500}
           header={
             <Link to="/$workspaceId/new-form" params={{workspaceId}}>
               <Core.Btn icon="add" variant={'outlined'} sx={{mr: 0}}>

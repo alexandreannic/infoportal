@@ -240,7 +240,6 @@ export const AccessFormInputGroup = ({
               borderRadius: t => t.vars.shape.borderRadius,
             }}
             id="access"
-            defaultLimit={5}
             data={groupIndex[groupId!]?.items}
             columns={[
               {
