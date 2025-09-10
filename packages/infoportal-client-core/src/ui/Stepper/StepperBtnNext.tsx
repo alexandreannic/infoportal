@@ -5,7 +5,7 @@ import {useStepperContext} from './Stepper'
 
 export interface StepperBtnNextProps extends BtnProps {}
 
-export const StepperBtnNext = ({...props}: StepperBtnNextProps) => {
+export const StepperBtnNext = ({sx, ...props}: StepperBtnNextProps) => {
   const context = useStepperContext()
   const {m} = useI18n()
   return (
@@ -15,7 +15,7 @@ export const StepperBtnNext = ({...props}: StepperBtnNextProps) => {
       endIcon={<Icon>keyboard_arrow_right</Icon>}
       children={m.stepper_next}
       onClick={context.next}
-      hidden={context.isDone}
+      sx={{visibility: context.isDone ? 'hidden' : undefined, ...sx}}
       {...props}
     />
   )

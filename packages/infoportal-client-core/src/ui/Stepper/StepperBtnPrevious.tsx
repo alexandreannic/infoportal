@@ -10,8 +10,7 @@ export const StepperBtnPrevious = ({sx, ...props}: StepperBtnPreviousProps) => {
   return (
     <Btn
       className="StepperBtnPrevious"
-      sx={{marginRight: 'auto', ...sx}}
-      hidden={context.currentStep === 0}
+      sx={{visibility: context.currentStep === 0 ? 'hidden' : undefined, marginRight: 'auto', ...sx}}
       onClick={context.prev}
       color="primary"
       icon="keyboard_arrow_left"

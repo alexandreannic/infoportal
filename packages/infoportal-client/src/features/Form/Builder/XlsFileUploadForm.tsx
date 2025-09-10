@@ -4,7 +4,7 @@ import React, {useRef, useState} from 'react'
 import {Core, Fender} from '@/shared'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useI18n} from '@/core/i18n'
-import {Alert, AlertTitle, CircularProgress, Icon, Skeleton} from '@mui/material'
+import {Alert, AlertTitle, Box, CircularProgress, Icon, Skeleton} from '@mui/material'
 import {DiffView} from '@/features/Form/Builder/DiffView'
 import {Ip} from 'infoportal-api-sdk'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
@@ -46,19 +46,6 @@ export const XlsFileUploadForm = ({
     xlsFile: form.watch('xlsFile'),
   }
 
-  const importButton = (label = m.submit) => (
-    <Core.Btn
-      endIcon={<Icon>keyboard_double_arrow_right</Icon>}
-      sx={{mr: 1, marginLeft: 'auto'}}
-      disabled={!isValid || !validation || validation.status === 'error' || (lastSchema && !schemaHasChanges)}
-      variant="outlined"
-      type="submit"
-      loading={queryVersion.upload.isPending}
-    >
-      {label}
-    </Core.Btn>
-  )
-
   const submit = async (values: Form) => {
     try {
       onSubmit?.(values)
@@ -68,6 +55,22 @@ export const XlsFileUploadForm = ({
     } catch (e) {
       console.warn(e)
     }
+  }
+
+  const Actions = ({hideNext, disabledNext}: {hideNext?: boolean; disabledNext?: boolean}) => {
+    return (
+      <Box sx={{mt: 2, display: 'flex'}}>
+        <Core.StepperBtnPrevious />
+        <ImportBtn
+          loading={queryVersion.upload.isPending}
+          disabled={!isValid || !validation || validation.status === 'error' || (lastSchema && !schemaHasChanges)}
+          sx={{mr: 1, alignSelf: 'flex-end'}}
+        >
+          {m.submit}
+        </ImportBtn>
+        {!hideNext && <Core.StepperBtnNext disabled={disabledNext} sx={{alignSelf: 'flex-end'}} />}
+      </Box>
+    )
   }
 
   return (
@@ -106,7 +109,7 @@ export const XlsFileUploadForm = ({
                         />
                       )}
                     />
-                    <Core.StepperActions nextBtnProps={{disabled: !watched.xlsFile}} />
+                    <Actions disabledNext={!watched.xlsFile} />
                   </>
                 ),
               },
@@ -137,7 +140,7 @@ export const XlsFileUploadForm = ({
                             </ul>
                           )}
                         </Alert>
-                        <Core.StepperActions nextBtnProps={{disabled: validation.status === 'error'}} />
+                        <Actions disabledNext={validation.status === 'error'} />
                       </>
                     )
                   )),
@@ -148,13 +151,11 @@ export const XlsFileUploadForm = ({
                       name: 'check',
                       label: m.checkDiff,
                       component: () => {
-                        const action = (
-                          <Core.StepperActions disableNext={!schemaHasChanges}>{importButton()}</Core.StepperActions>
-                        )
+                        const actions = <Actions disabledNext={!schemaHasChanges} />
                         if (querySchema.isLoading) {
                           return (
                             <>
-                              {action}
+                              {actions}
                               <Skeleton height={200} />
                             </>
                           )
@@ -164,7 +165,7 @@ export const XlsFileUploadForm = ({
                         }
                         return (
                           <>
-                            {action}
+                            {actions}
                             {!schemaHasChanges && (
                               <Alert color="error" sx={{mt: 1}}>
                                 <AlertTitle>{m.xlsFormNoChangeTitle}</AlertTitle>
@@ -177,7 +178,7 @@ export const XlsFileUploadForm = ({
                               hasChanges={setSchemaHasChanges}
                               sx={{mt: 1}}
                             />
-                            {action}
+                            {actions}
                           </>
                         )
                       },
@@ -202,7 +203,7 @@ export const XlsFileUploadForm = ({
                         />
                       )}
                     />
-                    <Core.StepperActions hideNext>{importButton()}</Core.StepperActions>
+                    <Actions hideNext={true} />
                   </>
                 ),
               },
@@ -212,4 +213,8 @@ export const XlsFileUploadForm = ({
       </Core.Panel>
     </form>
   )
+}
+
+function ImportBtn(props: Core.BtnProps) {
+  return <Core.Btn endIcon={<Icon>keyboard_double_arrow_right</Icon>} variant="outlined" type="submit" {...props} />
 }
