@@ -22,7 +22,6 @@ type Context = {
   form: UseFormReturn<Form>
   loading?: boolean
 }
-
 const Context = React.createContext<Context>({} as Context)
 const useContext = () => React.useContext(Context)
 
@@ -59,8 +58,19 @@ export const FormActionCreate = ({onClose}: {onClose: () => void}) => {
           }}
           renderDone={
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', p: 1}}>
-              <CircularProgress />
-              {m.creating}...
+              {queryAction.isPending ? (
+                <>
+                  <CircularProgress />
+                  {m.creating}...
+                </>
+              ) : (
+                queryAction.error && (
+                  <>
+                    <Core.Alert severity="error" sx={{width: '100%'}}>{m.anErrorOccurred}</Core.Alert>
+                    <Core.StepperBtnPrevious />
+                  </>
+                )
+              )}
             </Box>
           }
           ref={stepperRef}
