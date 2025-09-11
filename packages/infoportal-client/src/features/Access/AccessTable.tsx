@@ -2,10 +2,10 @@ import React, {ReactNode} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Core, Datatable} from '@/shared'
-import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
+import {UseQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
 import {useSession} from '@/core/Session/SessionContext'
-import {useQueryUser} from '@/core/query/useQueryUser.js'
+import {UseQueryUser} from '@/core/query/useQueryUser.js'
 
 export const AccessTable = ({
   isAdmin,
@@ -20,10 +20,10 @@ export const AccessTable = ({
 }) => {
   const {m, formatDate} = useI18n()
   const {user} = useSession()
-  const queryJobs = useQueryUser.getJobs(workspaceId)
-  const queryAccess = useQueryFormAccess.getByFormId({workspaceId, formId})
-  const queryAccessUpdate = useQueryFormAccess.update({workspaceId, formId})
-  const queryAccessRemove = useQueryFormAccess.remove({workspaceId, formId})
+  const queryJobs = UseQueryUser.getJobs(workspaceId)
+  const queryAccess = UseQueryFormAccess.getByFormId({workspaceId, formId})
+  const queryAccessUpdate = UseQueryFormAccess.update({workspaceId, formId})
+  const queryAccessRemove = UseQueryFormAccess.remove({workspaceId, formId})
 
   return (
     <Datatable.Component<Ip.Form.Access>

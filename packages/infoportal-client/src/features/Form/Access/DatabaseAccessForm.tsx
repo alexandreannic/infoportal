@@ -7,7 +7,7 @@ import {map, seq} from '@axanc/ts-utils'
 import {useI18n} from '@/core/i18n'
 import {AccessForm, IAccessForm} from '@/features/Access/AccessForm'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
-import {useQueryFormAccess} from '@/core/query/useQueryFormAccess'
+import {UseQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
 import {koboIconMap} from '@/features/Form/Database/columns/DatatableHeadTypeIconByKoboType'
 
@@ -33,7 +33,7 @@ export const DatabaseAccessForm = ({
   const survey = form.survey
 
   const {m} = useI18n()
-  const queryAccessCreate = useQueryFormAccess.create({workspaceId, formId})
+  const queryAccessCreate = UseQueryFormAccess.create({workspaceId, formId})
 
   const accessForm = useForm<Form>()
 

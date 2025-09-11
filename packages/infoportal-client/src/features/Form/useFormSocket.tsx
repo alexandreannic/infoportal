@@ -4,7 +4,7 @@ import {Socket} from 'socket.io-client'
 import {useQueryClient} from '@tanstack/react-query'
 import {IpEvent} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
-import {useQuerySubmission} from '@/core/query/useQuerySubmission'
+import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {getAppSocket} from '@/core/socket'
 
 export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
@@ -27,7 +27,7 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceI
       setConnectedEmails(data)
     })
     socket.on(IpEvent.SUBMISSION_EDITED, data => {
-      useQuerySubmission.cacheUpdate({
+      UseQuerySubmission.cacheUpdate({
         queryClient,
         formId,
         submissionIds: data.submissionIds,
@@ -36,13 +36,13 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceI
       })
     })
     socket.on(IpEvent.SUBMISSION_NEW, data => {
-      useQuerySubmission.cacheInsert({formId, workspaceId, queryClient, submission: data.submission})
+      UseQuerySubmission.cacheInsert({formId, workspaceId, queryClient, submission: data.submission})
     })
     socket.on(IpEvent.SUBMISSION_REMOVED, data => {
-      useQuerySubmission.cacheRemove({formId, workspaceId, queryClient, submissionIds: data.submissionIds})
+      UseQuerySubmission.cacheRemove({formId, workspaceId, queryClient, submissionIds: data.submissionIds})
     })
     socket.on(IpEvent.SUBMISSION_EDITED_VALIDATION, data => {
-      useQuerySubmission.cacheUpdateValidation({
+      UseQuerySubmission.cacheUpdateValidation({
         formId,
         queryClient,
         submissionIds: data.submissionIds,

@@ -6,8 +6,8 @@ import React, {createContext, useContext} from 'react'
 import {rootRoute} from '@/Router'
 import {Layout} from '@/shared/Layout/Layout'
 import {Ip} from 'infoportal-api-sdk'
-import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
-import {useQueryPermission} from '@/core/query/useQueryPermission'
+import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {PageNotFound} from '@/shared/PageNotFound'
 
 export const workspaceRoute = createRoute({
@@ -27,8 +27,8 @@ export const useWorkspaceContext = () => useContext<WorkspaceContext>(Context)
 
 function Workspace() {
   const {workspaceId} = workspaceRoute.useParams() as {workspaceId: Ip.WorkspaceId}
-  const queryWorkspaceGet = useQueryWorkspace.get()
-  const queryPermission = useQueryPermission.workspace({workspaceId})
+  const queryWorkspaceGet = UseQueryWorkspace.get()
+  const queryPermission = UseQueryPermission.workspace({workspaceId})
   const workspace = queryWorkspaceGet.data?.find(_ => _.id === workspaceId)
 
   return (

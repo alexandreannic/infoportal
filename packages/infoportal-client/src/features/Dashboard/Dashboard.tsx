@@ -10,7 +10,7 @@ import {useSetState} from '@axanc/react-hooks'
 import {SlideWidget} from '@/shared/PdfLayout/PdfSlide.js'
 import {appConfig} from '@/conf/AppConfig.js'
 import {useI18n} from '@/core/i18n/index.js'
-import {useQueryUser} from '@/core/query/useQueryUser.js'
+import {UseQueryUser} from '@/core/query/useQueryUser.js'
 import {useEffect, useMemo, useState} from 'react'
 import {SelectStatusConfig} from '@/shared/customInput/SelectStatus.js'
 import {toPercent} from 'infoportal-common'
@@ -81,7 +81,7 @@ function Dashboard() {
   }
   const [period, setPeriod] = useState<Partial<Ip.Period>>(defaultaPeriod)
 
-  const queryUsers = useQueryUser.getAll(workspaceId)
+  const queryUsers = UseQueryUser.getAll(workspaceId)
   const queryForms = useQueryForm(workspaceId).accessibleForms
   const queryMetrics = useQueryMetrics({
     workspaceId,

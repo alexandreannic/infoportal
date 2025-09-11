@@ -3,7 +3,7 @@ import React from 'react'
 import {useI18n} from '@/core/i18n'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Ip} from 'infoportal-api-sdk'
-import {useQueryUser} from '@/core/query/useQueryUser.js'
+import {UseQueryUser} from '@/core/query/useQueryUser.js'
 import {Core} from '@/shared'
 
 export const DrcJobInputMultiple = ({
@@ -14,7 +14,7 @@ export const DrcJobInputMultiple = ({
 }) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
-  const queryJobs = useQueryUser.getJobs(workspaceId)
+  const queryJobs = UseQueryUser.getJobs(workspaceId)
 
   return (
     <Autocomplete
@@ -44,7 +44,7 @@ export const DrcJobInputSingle = ({
 }) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
-  const queryJobs = useQueryUser.getJobs(workspaceId)
+  const queryJobs = UseQueryUser.getJobs(workspaceId)
 
   return (
     <Autocomplete

@@ -6,13 +6,13 @@ import {Page} from '@/shared/Page'
 import {fnSwitch, Obj, seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
 import {AddUserForm} from './AddUserForm'
-import {useQueryUser} from '@/core/query/useQueryUser'
+import {UseQueryUser} from '@/core/query/useQueryUser'
 import {useSession} from '@/core/Session/SessionContext'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
 import {Ip} from 'infoportal-api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
-import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 import {Icon} from '@mui/material'
 
 export const settingsUsersRoute = createRoute({
@@ -35,10 +35,10 @@ function SettingsUsers() {
   const {workspaceId} = settingsUsersRoute.useParams() as {workspaceId: Ip.WorkspaceId}
   const navigate = useNavigate()
   const ctxSession = useSession()
-  const queryUserUpdate = useQueryUser.update(workspaceId)
-  const queryUserGet = useQueryUser.getAll(workspaceId)
-  const queryInvitation = useQueryWorkspaceInvitation.search({workspaceId})
-  const queryInvitationRemove = useQueryWorkspaceInvitation.remove({workspaceId})
+  const queryUserUpdate = UseQueryUser.update(workspaceId)
+  const queryUserGet = UseQueryUser.getAll(workspaceId)
+  const queryInvitation = UseQueryWorkspaceInvitation.search({workspaceId})
+  const queryInvitationRemove = UseQueryWorkspaceInvitation.remove({workspaceId})
 
   const connectAs = async (email: Ip.User.Email) => {
     await ctxSession.connectAs.mutateAsync(email)

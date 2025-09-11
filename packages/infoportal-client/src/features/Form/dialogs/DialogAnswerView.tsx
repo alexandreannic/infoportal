@@ -1,5 +1,5 @@
 import {useI18n} from '@/core/i18n'
-import {useQuerySubmission} from '@/core/query/useQuerySubmission'
+import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {useLangIndex} from '@/core/store/useLangIndex'
@@ -44,7 +44,7 @@ function DatabaseAnswerView() {
   }
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
   const queryForm = useQueryFormById({formId, workspaceId}).get
-  const queryAnswers = useQuerySubmission.search({formId, workspaceId})
+  const queryAnswers = UseQuerySubmission.search({formId, workspaceId})
   const querySchema = useQuerySchema({workspaceId, formId})
 
   const answer = useMemo(() => {

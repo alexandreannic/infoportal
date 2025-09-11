@@ -16,7 +16,7 @@ import {databaseHistoryRoute} from './History/DatabaseHistory'
 import {databaseAccessRoute} from './Access/DatabaseAccess'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
-import {useQueryPermission} from '@/core/query/useQueryPermission'
+import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {formActionsRoute} from '@/features/Action/FormActions.js'
 
 export const formRootRoute = createRoute({
@@ -83,7 +83,7 @@ function Form() {
 
   const querySchema = useQuerySchema({formId, workspaceId})
   const queryForm = useQueryFormById({workspaceId, formId}).get
-  const queryPermission = useQueryPermission.form({workspaceId, formId})
+  const queryPermission = UseQueryPermission.form({workspaceId, formId})
 
   useEffect(() => {
     if (queryForm.data)

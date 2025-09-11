@@ -3,13 +3,13 @@ import {WorkspaceCard, WorkspaceCardAdd, WorkspaceCardInvitation} from '@/featur
 import {Grid, Skeleton} from '@mui/material'
 import {WorkspaceCreate} from '@/features/Workspace/WorkspaceCreate'
 import {useI18n} from '@/core/i18n'
-import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {ProtectRoute} from '@/core/Session/SessionContext'
 import {Layout} from '@/shared/Layout/Layout'
 import {AppHeader} from '@/core/layout/AppHeader'
 import {createRoute} from '@tanstack/react-router'
 import {rootRoute} from '@/Router'
-import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 
 export const workspacesRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -18,8 +18,8 @@ export const workspacesRoute = createRoute({
 })
 
 function Workspaces() {
-  const queryWorkspace = useQueryWorkspace.get()
-  const queryInvitations = useQueryWorkspaceInvitation.getMine()
+  const queryWorkspace = UseQueryWorkspace.get()
+  const queryInvitations = UseQueryWorkspaceInvitation.getMine()
   const {m} = useI18n()
   const loading = queryInvitations.isLoading || queryWorkspace.isLoading
   return (

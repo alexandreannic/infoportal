@@ -1,4 +1,4 @@
-import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useI18n} from '@/core/i18n'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
@@ -8,7 +8,7 @@ import {Obj} from '@axanc/ts-utils'
 import {Badge, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme} from '@mui/material'
 import {Link, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
-import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 import {appConfig} from '@/conf/AppConfig.js'
 
 interface Props extends BoxProps {
@@ -27,8 +27,8 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
 
   const navigate = useNavigate()
   const {sidebarOpen, showSidebarButton, setSidebarOpen, title} = useLayoutContext()
-  const queryInvitation = useQueryWorkspaceInvitation.getMine()
-  const queryWorkspaces = useQueryWorkspace.get()
+  const queryInvitation = UseQueryWorkspaceInvitation.getMine()
+  const queryWorkspaces = UseQueryWorkspace.get()
   const {mode, setMode} = useColorScheme()
 
   return (

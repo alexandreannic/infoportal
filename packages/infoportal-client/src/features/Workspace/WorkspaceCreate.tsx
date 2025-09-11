@@ -4,7 +4,7 @@ import {useEffect, useState} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Controller, useForm} from 'react-hook-form'
 import {useIpToast} from '@/core/useToast'
-import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useFetcher} from '@axanc/react-hooks'
 import {Core} from '@/shared'
 
@@ -19,7 +19,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
   const {toastHttpError} = useIpToast()
   const {m} = useI18n()
 
-  const queryWorkspaceCreate = useQueryWorkspace.create()
+  const queryWorkspaceCreate = UseQueryWorkspace.create()
 
   const form = useForm<Form>({
     mode: 'onChange',

@@ -9,10 +9,10 @@ import {Core} from '@/shared'
 import {useQuerySession} from '@/core/query/useQuerySession'
 import {useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
-import {useQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
-import {useQueryPermission} from '@/core/query/useQueryPermission'
+import {UseQueryPermission} from '@/core/query/useQueryPermission'
 
 export interface SessionContext {
   originalEmail?: string
@@ -58,7 +58,7 @@ export const useSession = (): SessionContext => {
 export const SessionProvider = ({children}: {children: ReactNode}) => {
   const querySession = useQuerySession()
   const user = querySession.getMe.data
-  const queryPermission = useQueryPermission.global()
+  const queryPermission = UseQueryPermission.global()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
@@ -84,9 +84,9 @@ export const SessionProvider = ({children}: {children: ReactNode}) => {
 
 export const ProtectRoute = ({children}: {children: ReactNode}) => {
   const {m} = useI18n()
-  const queryPermission = useQueryPermission.global()
+  const queryPermission = UseQueryPermission.global()
   const querySession = useQuerySession()
-  const queryWorkspace = useQueryWorkspace.get()
+  const queryWorkspace = UseQueryWorkspace.get()
   const {user, originalEmail, revertConnectAs, setUser, logout} = useSessionPending()
 
   if (queryWorkspace.isLoading || querySession.getMe.isPending || queryPermission.isPending) {

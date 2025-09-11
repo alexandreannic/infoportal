@@ -3,7 +3,7 @@ import {AppAvatar, Core} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
-import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 import {appConfig} from '@/conf/AppConfig.js'
 
 export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
@@ -85,7 +85,7 @@ export const WorkspaceCardInvitation = ({
 }) => {
   const t = useTheme()
   const {m, formatDateTime} = useI18n()
-  const accept = useQueryWorkspaceInvitation.accept()
+  const accept = UseQueryWorkspaceInvitation.accept()
   return (
     <Core.Panel
       loading={accept.isPending}

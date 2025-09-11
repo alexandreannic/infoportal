@@ -3,7 +3,7 @@ import {Regexp} from 'infoportal-common'
 import {Controller, useForm} from 'react-hook-form'
 import {HttpError, Ip} from 'infoportal-api-sdk'
 import {Collapse} from '@mui/material'
-import {useQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 import {Core} from '@/shared'
 
 type Form = {
@@ -24,7 +24,7 @@ export const AddUserForm = ({
 }) => {
   const {m} = useI18n()
   const form = useForm<Form>({mode: 'onChange', defaultValues: {email: '', level: Ip.AccessLevel.Read}})
-  const queryInvitation = useQueryWorkspaceInvitation.create(workspaceId)
+  const queryInvitation = UseQueryWorkspaceInvitation.create(workspaceId)
 
   const submit = async (values: Form) => {
     await queryInvitation.mutateAsync(values)
