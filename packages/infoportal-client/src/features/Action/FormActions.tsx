@@ -1,6 +1,6 @@
 import {createRoute, Link} from '@tanstack/react-router'
 import {Core, Page} from '@/shared/index.js'
-import {Box, Grid, useTheme} from '@mui/material'
+import {Box, CircularProgress, Grid, Switch, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
 import {Ip} from 'infoportal-api-sdk'
@@ -51,6 +51,8 @@ export function FormActions() {
 function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: Ip.Form.Action}) {
   const t = useTheme()
   const {m, formatDate} = useI18n()
+  const queryActionUpdate = UseQuerySmartDbAction.update(workspaceId, action.formId)
+  const isUpdating = queryActionUpdate.arePending.has(action.id)
   return (
     <Link
       to="/$workspaceId/form/$formId/action/$actionId"
@@ -58,7 +60,11 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
     >
       <Box
         sx={{
+          '&:hover': {
+            boxShadow: t.vars.shadows[1],
+          },
           '&:not(:last-of-type)': {mb: 1},
+          transition: t.transitions.create('all'),
           background: t.vars.palette.AppBar.defaultBg,
           p: 1,
           borderRadius: t.vars.shape.borderRadius,
@@ -68,9 +74,22 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
       >
         <Box sx={{flex: 1}}>
           <Core.Txt bold>{action.name}</Core.Txt>
-          <Core.Txt color="hint">{formatDate(action.createdAt)}</Core.Txt>
+          <Core.Txt color="hint" sx={{ml: 2}}>
+            {formatDate(action.createdAt)}
+          </Core.Txt>
         </Box>
-        <Core.IconBtn>chevron_right</Core.IconBtn>
+        {isUpdating && <CircularProgress size={24} />}
+        <Switch
+          disabled={isUpdating}
+          sx={{alignSelf: 'flex-end'}}
+          checked={!action.disabled}
+          onClick={e => {
+            e.stopPropagation()
+            e.preventDefault()
+            queryActionUpdate.mutateAsync({id: action.id, disabled: !action.disabled})
+          }}
+        />
+        <Core.IconBtn sx={{alignSelf: 'flex-end'}}>chevron_right</Core.IconBtn>
       </Box>
     </Link>
   )

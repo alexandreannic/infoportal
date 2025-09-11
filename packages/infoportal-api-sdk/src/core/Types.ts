@@ -425,6 +425,7 @@ export namespace Ip {
         export type Update = {
           formId: FormId
           id: ActionId
+          disabled?: boolean
           workspaceId: WorkspaceId
           body?: string
           name?: string
