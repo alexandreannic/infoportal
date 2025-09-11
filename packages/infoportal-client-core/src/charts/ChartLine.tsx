@@ -25,7 +25,8 @@ export interface ChartLineProps extends Pick<BoxProps, 'sx'> {
   hideLegend?: boolean
   percent?: boolean
   loading?: boolean
-  distinctYAxis?: boolean
+  /** @deprecated not remembering the purpose of this. */
+  // distinctYAxis?: boolean
   children?: ReactNode
   data?: ChartLineData[]
   fixMissingMonths?: boolean
@@ -71,7 +72,7 @@ export const ChartLine = ({
   translation,
   hideYTicks = true,
   hideXTicks,
-  distinctYAxis,
+  // distinctYAxis,
   hideLegend,
   fixMissingMonths,
   disableAnimation,
@@ -119,12 +120,10 @@ export const ChartLine = ({
             <CartesianGrid strokeDasharray="1 1" strokeWidth={0.5} vertical={false} />
             {!hideLegend && <Legend {...commonLegendProps} />}
             <XAxis dataKey="name" />
-            {distinctYAxis ? (
-              lines.map(_ => <YAxis hide={hideYTicks} key={_} yAxisId={_} dataKey={_} />)
-            ) : (
-              <YAxis hide={hideYTicks} />
-            )}
-            <YAxis hide={hideYTicks} />
+            {lines.map(_ => (
+              <YAxis hide={hideYTicks} key={_} yAxisId={_} dataKey={_} />
+            ))}
+            {/*<YAxis hide={hideYTicks} />*/}
             <Tooltip
               wrapperStyle={{zIndex: 100, borderRadius: 4}}
               formatter={_ => (percent ? `${_}` : formatLargeNumber(_ as any, {maximumFractionDigits: 2}))}
@@ -135,7 +134,8 @@ export const ChartLine = ({
                 key={line}
                 name={map(translation, _ => _[line]) ?? line}
                 type="monotone"
-                yAxisId={distinctYAxis ? line : undefined}
+                // yAxisId={distinctYAxis ? line : undefined}
+                yAxisId={line}
                 dataKey={line}
                 dot={false}
                 stroke={colorsByKey?.(theme)[line] ?? colors(theme)[i] ?? colors(theme)[0]}
