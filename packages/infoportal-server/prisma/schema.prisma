@@ -92,12 +92,6 @@ model FormKoboInfo {
   @@index([koboId])
 }
 
-model FormSmart {
-  form    Form         @relation(fields: [formId], references: [id])
-  formId  String       @unique @db.VarChar(32)
-  actions FormAction[]
-}
-
 model Form {
   id               String                  @id @default(cuid()) @db.VarChar(32)
   name             String
@@ -115,10 +109,9 @@ model Form {
   workspaceId      String                  @db.Uuid
   versions         FormVersion[]
   accesses         FormAccess[]
-  actions          FormAction[]
-
-  kobo  FormKoboInfo?
-  smart FormSmart?
+  actions          FormAction[]            @relation("OwnerFormToAction")
+  referencedBy     FormAction[]            @relation("TargetFormToAction")
+  kobo             FormKoboInfo?
 
   @@index([category])
 }
@@ -384,18 +377,21 @@ enum FormActionType {
 }
 
 model FormAction {
-  id           String          @id @default(uuid())
-  createdAt    DateTime        @default(now())
-  createdBy    String?
-  type         FormActionType
-  name         String
-  description  String?
-  body         String?
-  sourceForm   Form            @relation(fields: [sourceFormId], references: [id])
-  sourceFormId String          @db.VarChar(32)
-  smart        FormSmart       @relation(fields: [formId], references: [formId])
-  formId       String
-  logs         FormActionLog[]
+  id          String          @id @default(uuid())
+  createdAt   DateTime        @default(now())
+  createdBy   String?
+  type        FormActionType
+  name        String
+  description String?
+  body        String?
+  logs        FormActionLog[]
+
+  form   Form   @relation("OwnerFormToAction", fields: [formId], references: [id])
+  formId String
+
+  // Action is triggered when this form receive new submission
+  targetForm   Form   @relation("TargetFormToAction", fields: [targetFormId], references: [id])
+  targetFormId String
 
   @@index([formId])
 }

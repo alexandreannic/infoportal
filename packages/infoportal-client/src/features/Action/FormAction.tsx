@@ -35,7 +35,7 @@ export function FormAction() {
   const formId = params.formId as Ip.FormId
   const actionId = params.actionId as Ip.Form.ActionId
   const queryAction = UseQuerySmartDbAction.getById(workspaceId, formId, actionId)
-  const interfaceInput = useGetInterfaceInput({workspaceId, formId: queryAction.data?.sourceFormId})
+  const interfaceInput = useGetInterfaceInput({workspaceId, formId: queryAction.data?.targetForm})
 
   return (
     <Page loading={queryAction.isLoading || interfaceInput.isLoading}>

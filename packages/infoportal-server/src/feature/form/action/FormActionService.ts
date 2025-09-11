@@ -9,7 +9,7 @@ export class FormActionService {
     workspaceId,
     ...data
   }: Ip.Form.Action.Payload.Create & {createdBy: Ip.User.Email}): Promise<Ip.Form.Action> => {
-    if (data.formId === data.sourceFormId) {
+    if (data.formId === data.targetFormId) {
       throw new HttpError.BadRequest(`A form action cannot reference itself.`)
     }
     return this.prisma.formAction

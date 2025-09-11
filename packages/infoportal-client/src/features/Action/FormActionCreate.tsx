@@ -66,7 +66,9 @@ export const FormActionCreate = ({onClose}: {onClose: () => void}) => {
               ) : (
                 queryAction.error && (
                   <>
-                    <Core.Alert severity="error" sx={{width: '100%'}}>{m.anErrorOccurred}</Core.Alert>
+                    <Core.Alert severity="error" sx={{width: '100%'}}>
+                      {m.anErrorOccurred}
+                    </Core.Alert>
                     <Core.StepperBtnPrevious />
                   </>
                 )
@@ -161,14 +163,14 @@ function SelectForm() {
 
   const [filteredAsset, setFilteredAsset] = useState<Asset[]>(assets)
 
-  const sourceFormId = form.watch('sourceFormId')
+  const targetFormId = form.watch('targetFormId')
 
   return (
     <>
       {assets.length > 10 && <AppSidebarFilters assets={assets} onFilterChanges={setFilteredAsset} sx={{mb: 1}} />}
       <Controller
         control={form.control}
-        name="sourceFormId"
+        name="targetFormId"
         render={({field}) => (
           <Core.RadioGroup<Ip.FormId>
             dense
@@ -197,7 +199,7 @@ function SelectForm() {
           </Core.RadioGroup>
         )}
       />
-      <StepperActions disableNext={!sourceFormId} />
+      <StepperActions disableNext={!targetFormId} />
     </>
   )
 }

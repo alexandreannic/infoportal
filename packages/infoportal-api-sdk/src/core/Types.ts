@@ -397,7 +397,7 @@ export namespace Ip {
 
     export type Action = Prisma.FormAction & {
       id: ActionId
-      sourceFormId: FormId
+      targetFormId: FormId
       formId: FormId
     }
     export namespace Action {
@@ -418,8 +418,8 @@ export namespace Ip {
           body?: string
           name: string
           description?: string
-          sourceFormId: Ip.FormId
           formId: FormId
+          targetFormId: FormId
           type: Action.Type
         }
       }

@@ -50,7 +50,7 @@ export const formActionClient = (client: TsRestClient) => {
     create: ({workspaceId, formId, ...body}: Ip.Form.Action.Payload.Create): Promise<Ip.Form.Action> => {
       return client.form.action
         .create({
-          params: {workspaceId, formId: formId},
+          params: {workspaceId, formId},
           body,
         })
         .then(map200)

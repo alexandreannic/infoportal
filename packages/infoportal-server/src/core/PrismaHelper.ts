@@ -32,7 +32,7 @@ export namespace PrismaHelper {
   export const mapFormAction = <
     T extends {
       id: string
-      sourceFormId: string
+      targetFormId: string
       formId: string
       type: Prisma.FormActionType
     },
@@ -41,7 +41,7 @@ export namespace PrismaHelper {
   ): Defined<
     T & {
       id: Ip.Form.ActionId
-      sourceFormId: Ip.FormId
+      targetFormId: Ip.FormId
       formId: Ip.FormId
       type: Ip.Form.Action.Type
     }
