@@ -5,6 +5,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {useSetState} from '@axanc/react-hooks'
+import {usePendingMutation} from '@/core/query/usePendingMutation.js'
 
 export class UseQuerySmartDbAction {
   static readonly create = (workspaceId: Ip.WorkspaceId, formId: Ip.FormId) => {
@@ -25,26 +26,14 @@ export class UseQuerySmartDbAction {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     const {toastHttpError} = useIpToast()
-    const arePending = useSetState<Ip.Form.ActionId>()
-
-    const mutation = useMutation<
-      Ip.Form.Action,
-      ApiError,
-      Omit<Ip.Form.Action.Payload.Update, 'formId' | 'workspaceId'>
-    >({
+    return usePendingMutation<Ip.Form.Action, ApiError, Omit<Ip.Form.Action.Payload.Update, 'formId' | 'workspaceId'>>({
+      getId: variables => variables.id,
       mutationFn: async args => {
         return apiv2.form.action.update({...args, formId, workspaceId})
       },
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.formAction(workspaceId, formId)}),
       onError: toastHttpError,
-      onMutate: async variables => {
-        arePending.add(variables.id)
-      },
-      onSettled: (data, error, variables) => {
-        arePending.delete(variables.id)
-      },
     })
-    return {arePending, ...mutation}
   }
 
   static readonly getByDbId = (workspaceId: Ip.WorkspaceId, formId: Ip.FormId) => {

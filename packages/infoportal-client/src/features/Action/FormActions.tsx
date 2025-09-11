@@ -52,7 +52,7 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
   const t = useTheme()
   const {m, formatDate} = useI18n()
   const queryActionUpdate = UseQuerySmartDbAction.update(workspaceId, action.formId)
-  const isUpdating = queryActionUpdate.arePending.has(action.id)
+  const isUpdating = queryActionUpdate.pendingIds.has(action.id)
   return (
     <Link
       to="/$workspaceId/form/$formId/action/$actionId"

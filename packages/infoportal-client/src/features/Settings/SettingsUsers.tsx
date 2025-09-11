@@ -194,7 +194,7 @@ function SettingsUsers() {
                     slotProps={{
                       notchedOutline: {sx: {border: 'none'}},
                     }}
-                    loading={queryUserUpdate.arePending.has(_.userId!)}
+                    loading={queryUserUpdate.pendingIds.has(_.userId!)}
                     disabled={_.email === connectedUser.email || !permission.user_canUpdate || !_.userId}
                     onChange={res => {
                       queryUserUpdate.mutateAsync({id: _.userId!, accessLevel: res!})
@@ -224,7 +224,7 @@ function SettingsUsers() {
                   {_.status === 'invitation' && permission.user_canDelete && (
                     <Core.IconBtn
                       children="delete"
-                      loading={queryInvitationRemove.arePending.has(_.invitationId!)}
+                      loading={queryInvitationRemove.pendingIds.has(_.invitationId!)}
                       onClick={() => queryInvitationRemove.mutate({id: _.invitationId!})}
                       tooltip={m.connectAs}
                     />
