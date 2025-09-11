@@ -11,13 +11,23 @@ export class UseQuerySmartDbAction {
     const queryClient = useQueryClient()
     const {toastHttpError} = useIpToast()
 
-    return useMutation<
-      Ip.Form.Action,
-      ApiError,
-      Omit<Ip.Form.Action.Payload.Create, 'formId' | 'workspaceId'>
-    >({
+    return useMutation<Ip.Form.Action, ApiError, Omit<Ip.Form.Action.Payload.Create, 'formId' | 'workspaceId'>>({
       mutationFn: async args => {
         return apiv2.form.action.create({...args, formId, workspaceId})
+      },
+      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.formAction(workspaceId, formId)}),
+      onError: toastHttpError,
+    })
+  }
+
+  static readonly update = (workspaceId: Ip.WorkspaceId, formId: Ip.FormId) => {
+    const {apiv2} = useAppSettings()
+    const queryClient = useQueryClient()
+    const {toastHttpError} = useIpToast()
+
+    return useMutation<Ip.Form.Action, ApiError, Omit<Ip.Form.Action.Payload.Update, 'formId' | 'workspaceId'>>({
+      mutationFn: async args => {
+        return apiv2.form.action.update({...args, formId, workspaceId})
       },
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.formAction(workspaceId, formId)}),
       onError: toastHttpError,
@@ -34,11 +44,7 @@ export class UseQuerySmartDbAction {
     })
   }
 
-  static readonly getById = (
-    workspaceId: Ip.WorkspaceId,
-    formId: Ip.FormId,
-    functionId: Ip.Form.ActionId,
-  ) => {
+  static readonly getById = (workspaceId: Ip.WorkspaceId, formId: Ip.FormId, functionId: Ip.Form.ActionId) => {
     const all = this.getByDbId(workspaceId, formId)
     return {
       ...all,

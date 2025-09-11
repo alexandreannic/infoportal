@@ -422,6 +422,14 @@ export namespace Ip {
           targetFormId: FormId
           type: Action.Type
         }
+        export type Update = {
+          formId: FormId
+          id: ActionId
+          workspaceId: WorkspaceId
+          body?: string
+          name?: string
+          description?: string
+        }
       }
     }
   }

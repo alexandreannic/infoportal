@@ -533,6 +533,13 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             )
             .then(ok200)
             .catch(handleError),
+        update: _ =>
+          auth2(_)
+            .then(({params, body, req}) =>
+              formActionService.update({...params, ...body, createdBy: req.session.app.user.email}),
+            )
+            .then(ok200)
+            .catch(handleError),
         getByDbId: _ =>
           auth2(_)
             .then(({params}) => formActionService.getByFormSmartId(params))

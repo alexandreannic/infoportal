@@ -24,6 +24,24 @@ export const formActionContract = c.router({
       },
     }),
   },
+  update: {
+    method: 'PATCH',
+    path: `/:workspaceId/form/:formId/action/:id`,
+    pathParams: z.object({
+      workspaceId: schema.workspaceId,
+      formId: schema.formId,
+      id: schema.formActionId,
+    }),
+    body: c.type<Omit<Ip.Form.Action.Payload.Update, 'id' | 'formId' | 'workspaceId'>>(),
+    responses: {
+      200: c.type<Ip.Form.Action>(),
+    },
+    metadata: makeMeta({
+      access: {
+        workspace: ['form_canCreate'],
+      },
+    }),
+  },
   getByDbId: {
     method: 'GET',
     path: `/:workspaceId/form/:formId/action`,
@@ -51,6 +69,15 @@ export const formActionClient = (client: TsRestClient) => {
       return client.form.action
         .create({
           params: {workspaceId, formId},
+          body,
+        })
+        .then(map200)
+        .then(Ip.Form.Action.map)
+    },
+    update: ({workspaceId, formId, id, ...body}: Ip.Form.Action.Payload.Update): Promise<Ip.Form.Action> => {
+      return client.form.action
+        .update({
+          params: {workspaceId, formId, id},
           body,
         })
         .then(map200)

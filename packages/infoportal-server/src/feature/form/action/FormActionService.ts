@@ -18,6 +18,21 @@ export class FormActionService {
       })
       .then(PrismaHelper.mapFormAction)
   }
+  readonly update = ({
+    workspaceId,
+    id,
+    formId,
+    ...data
+  }: Ip.Form.Action.Payload.Update & {createdBy: Ip.User.Email}): Promise<Ip.Form.Action> => {
+    return this.prisma.formAction
+      .update({
+        data,
+        where: {
+          id,
+        },
+      })
+      .then(PrismaHelper.mapFormAction)
+  }
 
   readonly getByFormSmartId = ({formId}: {formId: Ip.FormId}): Promise<Ip.Form.Action[]> => {
     return this.prisma.formAction.findMany({where: {formId}}).then(_ => _.map(PrismaHelper.mapFormAction))

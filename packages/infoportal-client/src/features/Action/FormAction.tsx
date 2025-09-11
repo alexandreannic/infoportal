@@ -45,6 +45,7 @@ export function FormAction() {
   const formId = params.formId as Ip.FormId
   const actionId = params.actionId as Ip.Form.ActionId
   const queryAction = UseQuerySmartDbAction.getById(workspaceId, formId, actionId)
+  const queryActionUpdate = UseQuerySmartDbAction.update(workspaceId, formId)
   const interfaceInput = useBuildInterface({name: 'Input', workspaceId, formId: queryAction.data?.targetFormId})
   const interfaceOutput = useBuildInterface({name: 'Output', workspaceId, formId: queryAction.data?.formId})
 
@@ -53,10 +54,13 @@ export function FormAction() {
       {queryAction.data &&
         (interfaceInput.data && interfaceOutput.data ? (
           <FormActionEditor
+            saving={queryActionUpdate.isPending}
             inputType={interfaceInput.data}
             outputType={interfaceOutput.data}
             body={queryAction.data.body ?? undefined}
-            onBodyChange={console.log}
+            onBodyChange={body => {
+              queryActionUpdate.mutateAsync({id: queryAction.data!.id, body})
+            }}
           />
         ) : (
           <Core.Alert

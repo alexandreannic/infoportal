@@ -6,6 +6,7 @@ import {Obj} from '@axanc/ts-utils'
 import Editor from '@monaco-editor/react'
 // @ts-ignore
 import {constrainedEditor} from 'constrained-editor-plugin'
+import {Core} from '@/shared'
 
 const monacoBg = '#1e1e1e'
 
@@ -21,10 +22,12 @@ const defaultActionBody = [
 
 export function FormActionEditor({
   body = defaultActionBody,
+  saving,
   onBodyChange,
   inputType,
   outputType,
 }: {
+  saving?: boolean
   onBodyChange: (_: string) => void
   body?: string
   inputType: string
@@ -55,6 +58,12 @@ export function FormActionEditor({
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
   const monacoRef = useRef<typeof monaco | null>(null)
 
+  const [bodyChanges, setBodyChanges] = useState<string>(body)
+
+  useEffect(() => {
+    setBodyChanges(body)
+  }, [body])
+
   let restrictions: any[] = []
 
   useEffect(() => {
@@ -77,13 +86,25 @@ export function FormActionEditor({
         {Obj.keys(files).map(_ => (
           <Tab sx={{color: 'white'}} label={_.replace(/^\//, '')} value={_} key={_} />
         ))}
+        <Core.Btn
+          loading={saving}
+          onClick={() => onBodyChange(bodyChanges)}
+          disabled={bodyChanges === body}
+          variant="contained"
+          size="small"
+          sx={{alignSelf: 'center', marginLeft: 'auto', mr: 1}}
+        >
+          {m.save}
+        </Core.Btn>
       </Tabs>
       <Editor
         options={{
           minimap: {enabled: false},
         }}
         onChange={_ => {
-          if (activePath === '/action.ts') onBodyChange(_!)
+          if (activePath === '/action.ts') {
+            setBodyChanges(_!)
+          }
         }}
         onMount={(editor, monaco) => {
           editorRef.current = editor
