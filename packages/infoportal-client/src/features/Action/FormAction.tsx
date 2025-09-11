@@ -1,5 +1,5 @@
-import {createRoute} from '@tanstack/react-router'
-import {Page} from '@/shared/index.js'
+import {createRoute, Link} from '@tanstack/react-router'
+import {Core, Page} from '@/shared/index.js'
 import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {useMemo} from 'react'
@@ -8,6 +8,7 @@ import {KoboInterfaceBuilder} from 'infoportal-common'
 import {map} from '@axanc/ts-utils'
 import {FormActionEditor} from '@/features/Action/FormActionEditor.js'
 import {formRoute} from '@/features/Form/Form.js'
+import {useI18n} from '@/core/i18n/index.js'
 
 export const formActionRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -30,23 +31,39 @@ const useGetInterfaceInput = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceI
 }
 
 export function FormAction() {
+  const {m} = useI18n()
   const params = formActionRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
   const actionId = params.actionId as Ip.Form.ActionId
   const queryAction = UseQuerySmartDbAction.getById(workspaceId, formId, actionId)
-  const interfaceInput = useGetInterfaceInput({workspaceId, formId: queryAction.data?.targetForm})
+  const interfaceInput = useGetInterfaceInput({workspaceId, formId: queryAction.data?.targetFormId})
 
   return (
     <Page loading={queryAction.isLoading || interfaceInput.isLoading}>
-      {queryAction.data && interfaceInput.data && (
-        <FormActionEditor
-          inputType={interfaceInput.data}
-          outputType={interfaceInput.data}
-          body={queryAction.data.body ?? undefined}
-          onBodyChange={console.log}
-        />
-      )}
+      {queryAction.data &&
+        (interfaceInput.data ? (
+          <FormActionEditor
+            inputType={interfaceInput.data}
+            outputType={interfaceInput.data}
+            body={queryAction.data.body ?? undefined}
+            onBodyChange={console.log}
+          />
+        ) : (
+          <Core.Alert
+            severity="warning"
+            action={
+              <Link
+                to="/$workspaceId/form/$formId/formCreator"
+                params={{workspaceId, formId: queryAction.data!.targetFormId}}
+              >
+                <Core.Btn color="inherit">{m.createShema}</Core.Btn>
+              </Link>
+            }
+          >
+            {m._formAction.thisActionTargetAFormWithoutSchema}
+          </Core.Alert>
+        ))}
     </Page>
   )
 }

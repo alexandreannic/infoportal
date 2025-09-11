@@ -145,7 +145,9 @@ export const en = Object.freeze({
     action: 'Action',
     workspaceId: 'Workspace ID',
     Approved: 'Approved',
+    createShema: 'Create schema',
     _formAction: {
+      thisActionTargetAFormWithoutSchema: `This action is targeting a form that does have any schema deployed yet.`,
       actionSummary: 'Action summary',
       newFunction: 'Create a Function',
       _actionTypeLabel: {
