@@ -16,12 +16,20 @@ export const formActionRoute = createRoute({
   component: FormAction,
 })
 
-const useGetInterfaceInput = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId?: Ip.FormId}) => {
+const useBuildInterface = ({
+  name,
+  workspaceId,
+  formId,
+}: {
+  name: string
+  workspaceId: Ip.WorkspaceId
+  formId?: Ip.FormId
+}) => {
   const querySchema = useQuerySchema({workspaceId, formId})
   const data = useMemo(() => {
     if (!querySchema.data) return
     return map(querySchema.data, bundle =>
-      new KoboInterfaceBuilder('Input', bundle.schema, undefined, undefined, bundle).build(),
+      new KoboInterfaceBuilder(name, bundle.schema, undefined, undefined, bundle).build(),
     )
   }, [querySchema.data])
   return {
@@ -37,15 +45,16 @@ export function FormAction() {
   const formId = params.formId as Ip.FormId
   const actionId = params.actionId as Ip.Form.ActionId
   const queryAction = UseQuerySmartDbAction.getById(workspaceId, formId, actionId)
-  const interfaceInput = useGetInterfaceInput({workspaceId, formId: queryAction.data?.targetFormId})
+  const interfaceInput = useBuildInterface({name: 'Input', workspaceId, formId: queryAction.data?.targetFormId})
+  const interfaceOutput = useBuildInterface({name: 'Output', workspaceId, formId: queryAction.data?.formId})
 
   return (
     <Page loading={queryAction.isLoading || interfaceInput.isLoading}>
       {queryAction.data &&
-        (interfaceInput.data ? (
+        (interfaceInput.data && interfaceOutput.data ? (
           <FormActionEditor
             inputType={interfaceInput.data}
-            outputType={interfaceInput.data}
+            outputType={interfaceOutput.data}
             body={queryAction.data.body ?? undefined}
             onBodyChange={console.log}
           />

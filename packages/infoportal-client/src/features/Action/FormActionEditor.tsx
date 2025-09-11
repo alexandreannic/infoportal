@@ -11,8 +11,9 @@ const monacoBg = '#1e1e1e'
 
 const defaultActionBody = [
   `import {Input} from 'input'`,
+  `import {Output} from 'output'`,
   ``,
-  `async function transform(submission: Input.Type): Promise<SmartDbRow | SmartDbRow[]> {`,
+  `async function transform(submission: Input.Type): Promise<Output.Type | Output.Type[]> {`,
   `  // write your transformation here`,
   `  return submission`,
   `}`,
@@ -44,7 +45,7 @@ export function FormActionEditor({
       },
       '/output.ts': {
         isReadonly: true,
-        value: inputType,
+        value: outputType,
       },
     } as const
   }, [body, inputType, outputType])
