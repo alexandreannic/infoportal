@@ -1,4 +1,5 @@
 import {NodeVM} from 'vm2'
+import ts from 'typescript'
 
 export interface WorkerResult {
   success: boolean
@@ -22,9 +23,15 @@ export class Worker {
     })
   }
 
-  /**
-   * Run a user function provided as a string
-   */
+  async compile(tsCode: string): string {
+    return ts.transpileModule(tsCode, {
+      compilerOptions: {
+        target: ts.ScriptTarget.ES2019,
+        module: ts.ModuleKind.CommonJS,
+      },
+    }).outputText
+  }
+
   async run(fnString: string, submission: unknown): Promise<WorkerResult> {
     try {
       // Wrap the function string as a module export

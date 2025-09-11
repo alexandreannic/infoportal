@@ -17,7 +17,6 @@ import {databaseAccessRoute} from './Access/DatabaseAccess'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {useQueryPermission} from '@/core/query/useQueryPermission'
-import {formActionRoute} from '@/features/Action/FormAction.js'
 import {formActionsRoute} from '@/features/Action/FormActions.js'
 
 export const formRootRoute = createRoute({
@@ -37,7 +36,7 @@ export const useDefaultTabRedirect = ({
   workspaceId,
   formId,
 }: {
-  currentFullPath?: string
+  currentFullPath: string
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
 }) => {
@@ -55,6 +54,14 @@ export const useDefaultTabRedirect = ({
       }
     }
   }, [currentFullPath, pathname, querySchema.isLoading])
+}
+
+/**
+ * Needed so sub path are considered as active too.
+ * Both `/action` and `/action/:id` will make Action tab active.
+ */
+const useActiveTab = (currentFullPath: string, basePaths: string[]) => {
+  return basePaths.find(path => currentFullPath.startsWith(path)) ?? false
 }
 
 export type FormContext = {
@@ -114,9 +121,20 @@ function Form() {
     )
   }, [queryForm.status, queryForm.data, querySchema.status, queryPermission.data, workspaceId])
 
+  const activeTab = useActiveTab(currentFullPath, [
+    answersRoute.fullPath,
+    formBuilderRoute.fullPath,
+    databaseAccessRoute.fullPath,
+    formActionsRoute.fullPath,
+    databaseHistoryRoute.fullPath,
+    formSettingsRoute.fullPath,
+    databaseKoboRepeatRoute.fullPath,
+  ])
+  console.log(activeTab)
+
   return (
     <Page width="full">
-      <Tabs variant="scrollable" scrollButtons="auto" value={currentFullPath}>
+      <Tabs variant="scrollable" scrollButtons="auto" value={activeTab}>
         <Tab
           icon={<Icon>{appConfig.icons.dataTable}</Icon>}
           iconPosition="start"
