@@ -25,6 +25,7 @@ export interface DatabaseContext {
   schema: KoboSchemaHelper.Bundle
   form: Ip.Form
   permission: Ip.Permission.Form
+  canEdit: boolean
   asyncRefresh: UseAsyncSimple<() => Promise<void>>
   koboEditEnketoUrl?: (answerId: Kobo.SubmissionId) => string
   data?: Submission[]
@@ -112,6 +113,7 @@ export const DatabaseKoboTableProvider = (props: {
         externalFilesIndex: indexExternalFiles,
         asyncRefresh,
         form,
+        canEdit: props.permission.answers_canUpdate && form.type !== 'smart',
         koboEditEnketoUrl,
         view,
         groupDisplay,

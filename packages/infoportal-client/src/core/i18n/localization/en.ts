@@ -297,6 +297,7 @@ export const en = Object.freeze({
     try: 'Try',
     category: 'Category',
     origin: 'Origin',
+    originId: 'Origin ID',
     destination: 'Destination',
     invalidUrl: 'Invalid URL',
     mainConcerns: 'Main concern',

@@ -39,18 +39,21 @@ export const useDatatableColumns = <T extends Row>({
 
   const all = useMemo(() => {
     if (showRowIndex)
-      mappedColumns.unshift({
-        group: {label: 'Meta', id: 'meta'},
-        id: 'index',
-        className: 'td-index',
-        head: '#',
-        width: 50,
-        render: (_: any) => ({
-          value: _?.index,
-          label: _?.index,
-          export: _?.index,
-        }),
-      })
+      return [
+        {
+          group: {label: 'Meta', id: 'meta'},
+          id: 'index',
+          className: 'td-index',
+          head: '#',
+          width: 50,
+          render: (_: any) => ({
+            value: _?.index,
+            label: _?.index,
+            export: _?.index,
+          }),
+        },
+        ...mappedColumns,
+      ]
     return mappedColumns
   }, [mappedColumns, showRowIndex])
 

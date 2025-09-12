@@ -107,6 +107,7 @@ export namespace KoboBulkUpdate {
                     </Core.RadioGroup>
                   )
                 }
+                case 'note':
                 case 'text':
                 case 'calculate': {
                   return (

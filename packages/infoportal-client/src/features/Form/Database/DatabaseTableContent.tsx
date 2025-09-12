@@ -13,7 +13,7 @@ import {DatabaseViewBtn, DatabaseViewEditor} from '@/features/Form/Database/view
 import {useKoboDialogs, useLangIndex} from '@/core/store/useLangIndex'
 import {Alert, AlertProps, Box, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from 'infoportal-common'
-import {useEffect, useMemo, useState} from 'react'
+import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
@@ -71,6 +71,7 @@ export const DatabaseTableContent = ({
   const schemaColumns = useMemo(() => {
     const schemaColumns = buildDatabaseColumns.type.bySchema({
       workspaceId: workspaceId,
+      isReadonly: !ctx.canEdit,
       getRow: (_: Submission) => _.answers,
       formId: ctx.form.id,
       schema: ctx.schema,
@@ -112,12 +113,21 @@ export const DatabaseTableContent = ({
       queryUpdate: queryUpdate,
       workspaceId,
       formId: ctx.form.id,
-      canEdit: ctx.permission.answers_canUpdate,
+      isReadonly: !ctx.canEdit,
       koboEditEnketoUrl: ctx.koboEditEnketoUrl,
       m,
       dialogs,
     })
-    return [...base, ...schemaColumns].map(_ => ({
+    const colOriginId: Datatable.Column.Props<Ip.Submission>[] = []
+    if (ctx.form.type === 'kobo' || ctx.form.type === 'smart') {
+      colOriginId.push({
+        id: 'originId',
+        head: ctx.form.type === 'kobo' ? m.koboId : m.originId,
+        type: 'string',
+        renderQuick: _ => _.originId,
+      })
+    }
+    return [...base, ...colOriginId, ...schemaColumns].map(_ => ({
       ..._,
       width: ctx.view.colsById[_.id]?.width ?? _.width ?? 90,
     }))
@@ -174,9 +184,9 @@ export const DatabaseTableContent = ({
               mode: 'free',
               renderComponentOnRowSelected: _ => (
                 <DatabaseSelectedRowsAction
+                  canDelete={ctx.canEdit && ctx.permission.answers_canDelete}
                   selectedIds={_.rowIds as Ip.SubmissionId[]}
                   workspaceId={workspaceId}
-                  permission={ctx.permission}
                   formId={ctx.form.id}
                 />
               ),
@@ -272,7 +282,7 @@ export const DatabaseTableContent = ({
                   />
                 )}
 
-                {ctx.permission.answers_import && (
+                {ctx.form.type !== 'smart' && ctx.permission.answers_import && (
                   <DatabaseImportBtn
                     onUploadNewData={file => handleImportData(file, 'create')}
                     onUpdateExistingData={file => handleImportData(file, 'update')}

@@ -8,12 +8,12 @@ import {BtnConfirm} from '@/shared/BtnConfirm'
 
 export const DatabaseSelectedRowsAction = ({
   formId,
-  permission,
+  canDelete,
   workspaceId,
   selectedIds,
 }: {
   workspaceId: Ip.WorkspaceId
-  permission: Ip.Permission.Form
+  canDelete: boolean
   formId: Ip.FormId
   selectedIds: Ip.SubmissionId[]
 }) => {
@@ -21,7 +21,7 @@ export const DatabaseSelectedRowsAction = ({
   const query = useQueryAnswerUpdate()
   return (
     <>
-      {permission.answers_canDelete && (
+      {canDelete && (
         <Core.Modal
           loading={query.remove.isPending}
           onConfirm={(event, close) =>

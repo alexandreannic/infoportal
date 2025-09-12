@@ -45,6 +45,7 @@ const ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['begin_group'])
 const editableColsType: Set<Kobo.Form.QuestionType> = new Set([
   'select_one',
   'calculate',
+  'note',
   'select_multiple',
   'text',
   'integer',
@@ -128,18 +129,22 @@ function byQuestions({
   ...props
 }: {questions: Kobo.Form.Question[]} & Pick<
   BuildFormColumnProps,
-  // | 'translateQuestion'
-  // | 'q'
-  // | 'choicesIndex'
-  // | 'translateChoice'
-  'workspaceId' | 'getRow' | 'schema' | 'formId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
+  | 'isReadonly'
+  | 'workspaceId'
+  | 'getRow'
+  | 'schema'
+  | 'formId'
+  | 't'
+  | 'm'
+  | 'externalFilesIndex'
+  | 'onRepeatGroupClick'
 >): Datatable.Column.Props<Row>[] {
   const getBy = (q: Question): Datatable.Column.Props<Row> | undefined => {
     const args = (isReadonly?: boolean) => ({
       q,
       formId,
       workspaceId,
-      isReadonly,
+      isReadonly: props.isReadonly ?? isReadonly,
       translateQuestion: props.schema.translate.question,
       translateChoice: props.schema.translate.choice,
       choicesIndex: props.schema.helper.choicesIndex,
@@ -181,7 +186,15 @@ function bySchema(
     // | 'q'
     // | 'choicesIndex'
     // | 'translateChoice'
-    'getRow' | 'schema' | 'formId' | 'workspaceId' | 't' | 'm' | 'externalFilesIndex' | 'onRepeatGroupClick'
+    | 'isReadonly'
+    | 'getRow'
+    | 'schema'
+    | 'formId'
+    | 'workspaceId'
+    | 't'
+    | 'm'
+    | 'externalFilesIndex'
+    | 'onRepeatGroupClick'
   >,
 ): Datatable.Column.Props<Row>[] {
   return byQuestions({
@@ -413,7 +426,7 @@ type MetaProps = {
   dialogs: ReturnType<typeof useKoboDialogs>
   formId: Ip.FormId
   koboEditEnketoUrl?: DatabaseContext['koboEditEnketoUrl']
-  canEdit?: boolean
+  isReadonly?: boolean
   m: Messages
 }
 
@@ -448,14 +461,14 @@ function actions({
   workspaceId,
   formId,
   dialogs,
-  canEdit,
+  isReadonly,
   koboEditEnketoUrl,
   m,
 }: {
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   dialogs: ReturnType<typeof useKoboDialogs>
-  canEdit?: boolean
+  isReadonly?: boolean
   koboEditEnketoUrl?: DatabaseContext['koboEditEnketoUrl']
   m: Messages
 }): Datatable.Column.Props<Ip.Submission> {
@@ -477,7 +490,7 @@ function actions({
             />
             {koboEditEnketoUrl && _.originId ? (
               <Datatable.IconBtn
-                disabled={!canEdit}
+                disabled={isReadonly}
                 tooltip={m.editKobo}
                 target="_blank"
                 href={koboEditEnketoUrl(_.originId)}
@@ -485,7 +498,7 @@ function actions({
               />
             ) : (
               <Datatable.IconBtn
-                disabled={!canEdit}
+                disabled={isReadonly}
                 tooltip={m.editForm}
                 children="edit"
                 onClick={() => dialogs.openEdit({answer: _, workspaceId, formId: formId})}
@@ -572,12 +585,12 @@ function validation({
   workspaceId,
   formId,
   getRow = _ => _ as any,
-  canEdit,
+  isReadonly,
   queryUpdate,
   m,
 }: Pick<
   MetaProps,
-  'canEdit' | 'queryUpdate' | 'getRow' | 'formId' | 'workspaceId' | 'm'
+  'isReadonly' | 'queryUpdate' | 'getRow' | 'formId' | 'workspaceId' | 'm'
 >): Datatable.Column.Props<Row> {
   return {
     group: {label: metaLabel, id: 'meta'},
@@ -586,9 +599,15 @@ function validation({
     align: 'center',
     width: 60,
     type: 'select_one',
-    actionOnSelected: ({rowIds}: {rowIds: string[]}) => (
-      <KoboBulkUpdate.Validation formId={formId} workspaceId={workspaceId} answerIds={rowIds as Ip.SubmissionId[]} />
-    ),
+    actionOnSelected: isReadonly
+      ? undefined
+      : ({rowIds}: {rowIds: string[]}) => (
+          <KoboBulkUpdate.Validation
+            formId={formId}
+            workspaceId={workspaceId}
+            answerIds={rowIds as Ip.SubmissionId[]}
+          />
+        ),
     render: (row: any) => {
       const value: Ip.Submission.Validation = getRow(row).validationStatus
       const toGenericStatus = SelectStatusConfig.customStatusToStateStatus.KoboValidation[value]
