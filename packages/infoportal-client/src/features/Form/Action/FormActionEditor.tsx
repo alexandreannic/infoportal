@@ -129,6 +129,10 @@ export function FormActionEditor({
           Obj.entries(files).forEach(([path, {value, isReadonly}]) => {
             let model = monaco.editor.getModel(monaco.Uri.file(path))
             if (!model) monaco.editor.createModel(value, 'typescript', monaco.Uri.file(path))
+            monaco.languages.typescript.typescriptDefaults.addExtraLib(
+              value,
+              `file://${path}`, // keep the .ts extension here
+            )
           })
           editor.setModel(monaco.editor.getModel(monaco.Uri.file(activePath)))
           editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
@@ -144,7 +148,6 @@ export function FormActionEditor({
           constrainedInstance.addRestrictionsTo(model, restrictions)
         }}
         beforeMount={(monacoInstance: typeof monaco) => {
-          // monacoInstance.languages.typescript.typescriptDefaults.addExtraLib(interfaceInput, 'file:///input.d.ts')
           monacoInstance.languages.typescript.typescriptDefaults.setCompilerOptions({
             target: monaco.languages.typescript.ScriptTarget.ES2020,
             strict: true,

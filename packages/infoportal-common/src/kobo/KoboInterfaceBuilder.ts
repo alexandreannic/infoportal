@@ -33,7 +33,7 @@ export class KoboInterfaceBuilder {
     })
     return [
       `export type Choice<List extends keyof typeof choices> = (typeof choices)[List][number]`,
-      `export const choices = { ${body.join(',\n')} } as const`,
+      `const choices = { ${body.join(',\n')} } as const`,
     ].join('\n\n')
   }
 
