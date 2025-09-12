@@ -147,7 +147,7 @@ enum FormSubmissionValidation {
 
 model FormSubmission {
   id                     String                    @id @db.VarChar(32)
-  koboSubmissionId       String?
+  originId               String?
   uuid                   String
   form                   Form                      @relation(fields: [formId], references: [id])
   formId                 String
@@ -167,10 +167,10 @@ model FormSubmission {
   deletedBy              String?
   histories              FormSubmissionHistory[]   @relation("FormSubmissionToHistory")
 
-  @@unique([koboSubmissionId, formId])
+  @@unique([originId, formId])
   @@index([deletedAt])
   @@index([formId])
-  @@index([formId, koboSubmissionId])
+  @@index([formId, originId])
   @@index([formId, submissionTime])
 }
 

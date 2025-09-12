@@ -93,7 +93,7 @@ export class SubmissionService {
               geolocation: true,
               answers: true,
               attachments: true,
-              koboSubmissionId: true,
+              originId: true,
             },
             take: paginate.limit,
             skip: paginate.offset,
@@ -201,21 +201,18 @@ export class SubmissionService {
     const isoCode = await this.getIsoFromGeopoint(props.geolocation)
     return this.create({
       workspaceId,
-      formId,
-      answers: SubmissionService.mapPayload({...props, isoCode}),
+      data: SubmissionService.mapPayload({...props, isoCode}),
     })
   }
 
   readonly create = async ({
     workspaceId,
-    formId,
-    answers,
+    data,
   }: {
-    formId: Ip.FormId
     workspaceId: Ip.WorkspaceId
-    answers: Prisma.FormSubmissionUncheckedCreateInput
+    data: Prisma.FormSubmissionUncheckedCreateInput
   }): Promise<Ip.Submission> => {
-    const submission: any = await this.prisma.formSubmission
+    const submission = await this.prisma.formSubmission
       .create({
         select: {
           id: true,
@@ -229,10 +226,10 @@ export class SubmissionService {
           answers: true,
           attachments: true,
         },
-        data: answers,
+        data: data,
       })
-      .then(PrismaHelper.mapSubmission)
-    this.event.emit(IpEvent.SUBMISSION_NEW, {workspaceId, formId, submission})
+      .then(_ => PrismaHelper.mapSubmission(_) as Ip.Submission)
+    this.event.emit(IpEvent.SUBMISSION_NEW, {workspaceId, formId: data.formId as Ip.FormId, submission})
     return submission
   }
 

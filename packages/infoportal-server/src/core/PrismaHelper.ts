@@ -7,7 +7,8 @@ type Defined<T> = {
 
 export namespace PrismaHelper {
   type Bytes = Uint8Array<ArrayBufferLike>
-  export const mapSubmission = <T extends {id: string}>(_: T): T & {id: Ip.SubmissionId} => _ as any
+  export const mapSubmission = <T extends {id: string}>(_: T): Defined<Omit<T, 'id'> & {id: Ip.SubmissionId}> =>
+    _ as any
 
   export const mapForm = <
     T extends {

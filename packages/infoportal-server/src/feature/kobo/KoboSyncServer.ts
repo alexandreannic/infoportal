@@ -15,7 +15,7 @@ import {PrismaHelper} from '../../core/PrismaHelper.js'
 export type KoboInsert = {
   id: Ip.SubmissionId
   formId: Ip.FormId
-  koboSubmissionId: Kobo.SubmissionId
+  originId: Kobo.SubmissionId
   // koboFormId: Kobo.FormId
   uuid: string
   start: Date
@@ -75,7 +75,7 @@ export class KoboSyncServer {
     const date = answersUngrouped.date ? new Date(answersUngrouped.date as number) : new Date(_submission_time)
     return {
       id: SubmissionService.genId(),
-      koboSubmissionId: '' + _id,
+      originId: '' + _id,
       // koboFormId: _xform_id_string,
       attachments: _attachments ?? [],
       geolocation: _geolocation.filter(_ => _ !== null) as [number, number],
@@ -111,9 +111,9 @@ export class KoboSyncServer {
     connectedForms.map(_ => {
       const answers = KoboSyncServer.mapAnswer(_.id, _answer)
       return this.service.create({
-        formId: _.id,
+        // formId: _.id,
         workspaceId: _.workspaceId as Ip.WorkspaceId,
-        answers: answers as any,
+        data: answers,
       })
     })
   }
@@ -204,7 +204,7 @@ export class KoboSyncServer {
       .getRaw({formId: koboFormId})
       .then(_ => _.results.map(_ => KoboSyncServer.mapAnswer(formId, _)))
     const remoteIdsIndex: Map<Kobo.FormId, KoboInsert> = remoteAnswers.reduce(
-      (map, curr) => map.set(curr.koboSubmissionId, curr),
+      (map, curr) => map.set(curr.originId, curr),
       new Map<Kobo.FormId, KoboInsert>(),
     )
     this.debug(koboFormId, `Fetch remote answers... ${remoteAnswers.length} fetched.`)
@@ -212,12 +212,12 @@ export class KoboSyncServer {
     this.debug(koboFormId, `Fetch local answers...`)
     const localAnswersIndex = await this.prisma.formSubmission
       .findMany({
-        where: {formId, deletedAt: null, koboSubmissionId: {not: null}},
-        select: {koboSubmissionId: true, lastValidatedTimestamp: true, uuid: true},
+        where: {formId, deletedAt: null, originId: {not: null}},
+        select: {originId: true, lastValidatedTimestamp: true, uuid: true},
       })
       .then(_ => {
         return _.reduce(
-          (map, {koboSubmissionId, ...rest}) => map.set(koboSubmissionId!, rest),
+          (map, {originId, ...rest}) => map.set(originId!, rest),
           new Map<Kobo.SubmissionId, {lastValidatedTimestamp: null | number; uuid: UUID}>(),
         )
       })
@@ -252,7 +252,7 @@ export class KoboSyncServer {
     }
 
     const handleCreate = async () => {
-      const notInsertedAnswers = remoteAnswers.filter(_ => !localAnswersIndex.has(_.koboSubmissionId))
+      const notInsertedAnswers = remoteAnswers.filter(_ => !localAnswersIndex.has(_.originId))
       this.debug(koboFormId, `Handle create (${notInsertedAnswers.length})...`)
       await this.service.createMany(notInsertedAnswers as any)
       return notInsertedAnswers
@@ -275,7 +275,7 @@ export class KoboSyncServer {
           //   status: a.validationStatus,
           // })
           return this.prisma.formSubmission.update({
-            where: {koboSubmissionId_formId: {formId, koboSubmissionId: a.koboSubmissionId}},
+            where: {originId_formId: {formId, originId: a.originId}},
             data: {
               validationStatus: a.validationStatus,
               lastValidatedTimestamp: a.lastValidatedTimestamp,
@@ -319,8 +319,8 @@ export class KoboSyncServer {
           // })
           return this.prisma.formSubmission.update({
             where: {
-              koboSubmissionId_formId: {
-                koboSubmissionId: a.koboSubmissionId,
+              originId_formId: {
+                originId: a.originId,
                 formId,
               },
             },

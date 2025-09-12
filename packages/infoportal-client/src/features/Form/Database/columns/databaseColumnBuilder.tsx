@@ -475,12 +475,12 @@ function actions({
               children="visibility"
               onClick={() => dialogs.openView({answer: _, workspaceId, formId: formId})}
             />
-            {koboEditEnketoUrl && _.koboSubmissionId ? (
+            {koboEditEnketoUrl && _.originId ? (
               <Datatable.IconBtn
                 disabled={!canEdit}
                 tooltip={m.editKobo}
                 target="_blank"
-                href={koboEditEnketoUrl(_.koboSubmissionId)}
+                href={koboEditEnketoUrl(_.originId)}
                 children="edit_square"
               />
             ) : (
