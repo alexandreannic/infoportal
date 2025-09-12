@@ -55,6 +55,10 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
   const isUpdating = queryActionUpdate.pendingIds.has(action.id)
   return (
     <Link
+      style={{
+        display: 'block',
+        marginBottom: t.vars.spacing,
+      }}
       to="/$workspaceId/form/$formId/action/$actionId"
       params={{workspaceId, formId: action.formId, actionId: action.id}}
     >
@@ -63,7 +67,6 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
           '&:hover': {
             boxShadow: t.vars.shadows[1],
           },
-          '&:not(:last-of-type)': {mb: 1},
           transition: t.transitions.create('all'),
           background: t.vars.palette.AppBar.defaultBg,
           p: 1,

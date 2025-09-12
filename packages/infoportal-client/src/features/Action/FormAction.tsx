@@ -9,6 +9,7 @@ import {map} from '@axanc/ts-utils'
 import {FormActionEditor} from '@/features/Action/FormActionEditor.js'
 import {formRoute} from '@/features/Form/Form.js'
 import {useI18n} from '@/core/i18n/index.js'
+import {UseQueryForm} from '@/core/query/useQueryForm.js'
 
 export const formActionRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -26,10 +27,14 @@ const useBuildInterface = ({
   formId?: Ip.FormId
 }) => {
   const querySchema = useQuerySchema({workspaceId, formId})
+  const queryForm = UseQueryForm.get({workspaceId, formId})
   const data = useMemo(() => {
-    if (!querySchema.data) return
-    return map(querySchema.data, bundle =>
-      new KoboInterfaceBuilder(name, bundle.schema, undefined, undefined, bundle).build(),
+    if (!querySchema.data || !queryForm.data) return
+    return map(
+      querySchema.data,
+      bundle =>
+        `// ${queryForm.data!.name}\n` +
+        new KoboInterfaceBuilder(name, bundle.schema, undefined, undefined, bundle).build(),
     )
   }, [querySchema.data])
   return {
@@ -58,7 +63,7 @@ export function FormAction() {
             inputType={interfaceInput.data}
             outputType={interfaceOutput.data}
             body={queryAction.data.body ?? undefined}
-            onBodyChange={body => {
+            onSave={body => {
               queryActionUpdate.mutateAsync({id: queryAction.data!.id, body})
             }}
           />

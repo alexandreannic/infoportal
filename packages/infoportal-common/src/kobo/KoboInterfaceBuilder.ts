@@ -79,7 +79,7 @@ export class KoboInterfaceBuilder {
           `'${question.name}': ${type};`,
         ].join('\n')
       })
-    return `{ ${body.join('\n')} }`
+    return `{\n ${body.join('\n')} }`
   }
 
   readonly build = () => {

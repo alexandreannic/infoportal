@@ -18,6 +18,7 @@ export class FormActionService {
       })
       .then(PrismaHelper.mapFormAction)
   }
+
   readonly update = ({
     workspaceId,
     id,

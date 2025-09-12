@@ -130,7 +130,6 @@ function Form() {
     formSettingsRoute.fullPath,
     databaseKoboRepeatRoute.fullPath,
   ])
-  console.log(activeTab)
 
   return (
     <Page width="full">

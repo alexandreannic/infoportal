@@ -1,4 +1,4 @@
-import {Box, Tab, Tabs, useTheme} from '@mui/material'
+import {Box, Icon, Tab, Tabs, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n/index.js'
 import {useEffect, useMemo, useRef, useState} from 'react'
 import * as monaco from 'monaco-editor'
@@ -10,25 +10,15 @@ import {Core} from '@/shared'
 
 const monacoBg = '#1e1e1e'
 
-const defaultActionBody = [
-  `import {Input} from 'input'`,
-  `import {Output} from 'output'`,
-  ``,
-  `async function transform(submission: Input.Type): Promise<Output.Type | Output.Type[]> {`,
-  `  // write your transformation here`,
-  `  return submission`,
-  `}`,
-].join('\n')
-
 export function FormActionEditor({
-  body = defaultActionBody,
+  body = getDefaultBody(),
   saving,
-  onBodyChange,
+  onSave,
   inputType,
   outputType,
 }: {
   saving?: boolean
-  onBodyChange: (_: string) => void
+  onSave: (_: string) => void
   body?: string
   inputType: string
   outputType: string
@@ -50,6 +40,10 @@ export function FormActionEditor({
         isReadonly: true,
         value: outputType,
       },
+      '/meta.ts': {
+        isReadonly: true,
+        value: getMetaInterface(),
+      },
     } as const
   }, [body, inputType, outputType])
 
@@ -59,6 +53,8 @@ export function FormActionEditor({
   const monacoRef = useRef<typeof monaco | null>(null)
 
   const [bodyChanges, setBodyChanges] = useState<string>(body)
+
+  useCaptureCtrlS(() => onSave(bodyChanges))
 
   useEffect(() => {
     setBodyChanges(body)
@@ -75,8 +71,14 @@ export function FormActionEditor({
     const model = mon.editor.getModel(uri)
     if (!model) return
 
+    editor.updateOptions({readOnly: false})
     editor.setModel(model)
-    editor.updateOptions({readOnly: files[activePath].isReadonly})
+    editor
+      .getAction('editor.action.formatDocument')
+      ?.run()
+      .then(() => {
+        editor.updateOptions({readOnly: files[activePath].isReadonly})
+      })
   }, [activePath])
 
   return (
@@ -84,11 +86,25 @@ export function FormActionEditor({
       {/*<Core.Btn variant="outlined">{m.save}</Core.Btn>*/}
       <Tabs value={activePath} onChange={(e, _) => setActivePath(_)} sx={{background: 'none', mb: 0.5}}>
         {Obj.keys(files).map(_ => (
-          <Tab sx={{color: 'white'}} label={_.replace(/^\//, '')} value={_} key={_} />
+          <Tab
+            sx={{color: 'white'}}
+            label={
+              <Box sx={{display: 'flex', alignItems: 'center'}}>
+                {files[_].isReadonly && (
+                  <Icon fontSize="small" sx={{mr: 1}}>
+                    lock
+                  </Icon>
+                )}
+                {_.replace(/^\//, '')}
+              </Box>
+            }
+            value={_}
+            key={_}
+          />
         ))}
         <Core.Btn
           loading={saving}
-          onClick={() => onBodyChange(bodyChanges)}
+          onClick={() => onSave(bodyChanges)}
           disabled={bodyChanges === body}
           variant="contained"
           size="small"
@@ -115,13 +131,15 @@ export function FormActionEditor({
             if (!model) monaco.editor.createModel(value, 'typescript', monaco.Uri.file(path))
           })
           editor.setModel(monaco.editor.getModel(monaco.Uri.file(activePath)))
-
+          editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+            onSave(bodyChanges)
+          })
           // Readonly 1st row of action.ts
           const model = editor.getModel()!
           const constrainedInstance = constrainedEditor(monaco)
           constrainedInstance.initializeIn(editor)
           restrictions.push({
-            range: [4, 1, model.getLineCount(), model.getLineMaxColumn(model.getLineCount())],
+            range: [6, 1, model.getLineCount(), model.getLineMaxColumn(model.getLineCount())],
           })
           constrainedInstance.addRestrictionsTo(model, restrictions)
         }}
@@ -140,4 +158,55 @@ export function FormActionEditor({
       />
     </Box>
   )
+}
+
+function getMetaInterface() {
+  return `// Meta Data
+    export type Submission<T extends Record<string, any>> = {
+      id: string
+      submissionTime: Date
+      submittedBy: string
+      answers: T
+      start?: Date
+      end?: Date
+      version: string
+      formId: string
+      validationStatus: 'Approved' | 'Pending' | 'Rejected' | 'Flagged' | 'UnderReview' 
+      attachments: {
+        download_url: string;
+        filename: string;
+        download_small_url: string;
+        question_xpath: string;
+        id: number,;
+      }[],
+    }
+  `
+}
+
+function getDefaultBody() {
+  return [
+    `import {Input} from 'input'`,
+    `import {Output} from 'output'`,
+    `import {Submission} from 'meta'`,
+    ``,
+    `async function transform(submission: Submission<Input.Type>): Promise<Output.Type | Output.Type[]> {`,
+    `  // write your transformation here`,
+    `  return submission`,
+    `}`,
+  ].join('\n')
+}
+
+function useCaptureCtrlS(action: () => void) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault()
+        action()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 }

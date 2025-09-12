@@ -276,7 +276,7 @@ function Dashboard() {
     )
   }, [querySubmissionsByUser.data])
   return (
-    <Page width="full">
+    <Page width="lg">
       <DataFilterLayout
         hidePopup
         onClear={() => {
