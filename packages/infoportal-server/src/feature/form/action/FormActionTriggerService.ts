@@ -67,8 +67,10 @@ export class FormActionTriggerService {
             const res = await worker.run(jsCode, submission)
             if (res.success) {
               if (Array.isArray(res.result))
-                return this.submission.createMany(
-                  res.result.map(_ => ({
+                return this.submission.createMany({
+                  // A small Smart database collecting only age and gender can have legit duplicates
+                  skipDuplicates: false,
+                  data: res.result.map(_ => ({
                     id: SubmissionService.genId(),
                     originId: submission.id,
                     uuid: '',
@@ -77,7 +79,7 @@ export class FormActionTriggerService {
                     formId: action.formId,
                     answers: _,
                   })),
-                )
+                })
               else
                 return this.submission.create({
                   workspaceId,

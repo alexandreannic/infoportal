@@ -254,7 +254,7 @@ export class KoboSyncServer {
     const handleCreate = async () => {
       const notInsertedAnswers = remoteAnswers.filter(_ => !localAnswersIndex.has(_.originId))
       this.debug(koboFormId, `Handle create (${notInsertedAnswers.length})...`)
-      await this.service.createMany(notInsertedAnswers as any)
+      await this.service.createMany({data: notInsertedAnswers as any, skipDuplicates: true})
       return notInsertedAnswers
     }
 
@@ -274,8 +274,8 @@ export class KoboSyncServer {
           //   answerIds: [a.id],
           //   status: a.validationStatus,
           // })
-          return this.prisma.formSubmission.update({
-            where: {originId_formId: {formId, originId: a.originId}},
+          return this.prisma.formSubmission.updateMany({
+            where: {formId, originId: a.originId},
             data: {
               validationStatus: a.validationStatus,
               lastValidatedTimestamp: a.lastValidatedTimestamp,
@@ -317,12 +317,12 @@ export class KoboSyncServer {
           //     skipProperties: ['instanceID', 'rootUuid', 'deprecatedID'],
           //   }),
           // })
-          return this.prisma.formSubmission.update({
+          return this.prisma.formSubmission.updateMany({
             where: {
-              originId_formId: {
-                originId: a.originId,
-                formId,
-              },
+              // originId_formId: {
+              originId: a.originId,
+              formId,
+              // },
             },
             data: {
               uuid: a.uuid,

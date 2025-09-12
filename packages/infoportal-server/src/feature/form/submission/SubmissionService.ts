@@ -233,10 +233,16 @@ export class SubmissionService {
     return submission
   }
 
-  readonly createMany = (inserts: Prisma.FormSubmissionUncheckedCreateInput[]) => {
+  readonly createMany = ({
+    data,
+    skipDuplicates,
+  }: {
+    data: Prisma.FormSubmissionUncheckedCreateInput[]
+    skipDuplicates?: boolean
+  }) => {
     return this.prisma.formSubmission.createMany({
-      data: inserts,
-      skipDuplicates: true,
+      data,
+      skipDuplicates,
     })
   }
 

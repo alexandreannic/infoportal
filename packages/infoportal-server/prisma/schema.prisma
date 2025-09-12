@@ -167,7 +167,6 @@ model FormSubmission {
   deletedBy              String?
   histories              FormSubmissionHistory[]   @relation("FormSubmissionToHistory")
 
-  @@unique([originId, formId])
   @@index([deletedAt])
   @@index([formId])
   @@index([formId, originId])
