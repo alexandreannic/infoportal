@@ -63,7 +63,7 @@ export class DatatableErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
 }
 
 function Body() {
-  const {globalErrorMessage, m} = useConfig()
+  const {m} = useConfig()
 
   const refreshPage = (hard?: boolean) => {
     if (hard) {
@@ -84,7 +84,7 @@ function Body() {
 
   return (
     <>
-      <Box sx={{mb: 1}}>{globalErrorMessage}</Box>
+      <Box sx={{mb: 1}}>{m.globalError}</Box>
       <Btn icon="refresh" onClick={() => refreshPage()} color="primary" variant="contained" sx={{mr: 1}}>
         {m.refresh}
       </Btn>

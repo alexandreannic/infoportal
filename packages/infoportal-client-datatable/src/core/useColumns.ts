@@ -33,11 +33,11 @@ export const useDatatableColumns = <T extends Row>({
   baseColumns: Column.Props<T>[]
   showRowIndex?: boolean
 }) => {
-  const mappedColumns = useMemo(() => {
+  const mappedColumns: Column.InnerProps<T>[] = useMemo(() => {
     return baseColumns.map(toInnerColumn).map(harmonizeColRenderValue)
   }, [baseColumns])
 
-  const all = useMemo(() => {
+  const all: Column.InnerProps<T>[] = useMemo(() => {
     if (showRowIndex)
       return [
         {

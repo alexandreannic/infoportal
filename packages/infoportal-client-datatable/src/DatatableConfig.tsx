@@ -4,8 +4,8 @@ import {Action} from '@/core/reducer'
 import {BoxProps, SxProps, Theme} from '@mui/material'
 
 export type DatatableConfigProps = {
-  m: Partial<(typeof defaultConfig)['m']>
-  muiIcons: Partial<(typeof defaultConfig)['muiIcons']>
+  m: (typeof defaultConfig)['m']
+  muiIcons: (typeof defaultConfig)['muiIcons']
   formatLargeNumber: (_: number, options?: Intl.NumberFormatOptions) => string
   defaultProps?: {
     // Core
