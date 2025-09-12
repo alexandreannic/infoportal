@@ -6,7 +6,7 @@ import {Obj} from '@axanc/ts-utils'
 import Editor from '@monaco-editor/react'
 // @ts-ignore
 import {constrainedEditor} from 'constrained-editor-plugin'
-import {Core} from '@/shared'
+import {Core} from '@/shared/index.js'
 
 const monacoBg = '#1e1e1e'
 

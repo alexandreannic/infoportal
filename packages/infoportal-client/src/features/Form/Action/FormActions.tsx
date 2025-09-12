@@ -4,7 +4,7 @@ import {Box, CircularProgress, Grid, Switch, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
 import {Ip} from 'infoportal-api-sdk'
-import {FormActionCreate} from '@/features/Action/FormActionCreate.js'
+import {FormActionCreate} from '@/features/Form/Action/FormActionCreate.js'
 import {formRoute} from '@/features/Form/Form.js'
 
 export const formActionsRoute = createRoute({

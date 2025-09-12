@@ -17,7 +17,7 @@ import {databaseAccessRoute} from './Access/DatabaseAccess'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
-import {formActionsRoute} from '@/features/Action/FormActions.js'
+import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 
 export const formRootRoute = createRoute({
   getParentRoute: () => workspaceRoute,

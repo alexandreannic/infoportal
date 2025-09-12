@@ -19,8 +19,8 @@ import {workspacesRoute} from '@/features/Workspace/Workspaces'
 import {newFormRoute} from '@/features/NewForm/NewForm'
 import {databaseAnswerViewRoute} from '@/features/Form/dialogs/DialogAnswerView'
 import {settingsGroupsRoute} from '@/features/Settings/SettingsGroups'
-import {formActionRoute} from '@/features/Action/FormAction.js'
-import {formActionsRoute} from '@/features/Action/FormActions.js'
+import {formActionRoute} from '@/features/Form/Action/FormAction.js'
+import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 
 export const rootRoute = createRootRoute({
   component: App,
