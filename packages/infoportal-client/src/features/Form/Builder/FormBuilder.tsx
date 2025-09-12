@@ -6,7 +6,7 @@ import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {XlsFileUploadForm} from '@/features/Form/Builder/XlsFileUploadForm'
 import {map, seq} from '@axanc/ts-utils'
 import {VersionRow, VersionRowRoot, VersionRowShowMore} from '@/features/Form/Builder/VersionRow'
-import {useQueryFormById} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/useQueryForm'
 import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFender'
 import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
 import {createRoute, Link, useRouter} from '@tanstack/react-router'
@@ -26,7 +26,7 @@ function FormBuilder() {
   const {toastInfo, toastError} = useIpToast()
   const {workspaceId, formId} = formBuilderRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
   const [versionVisible, setVersionVisible] = useState(5)
-  const queryForm = useQueryFormById({workspaceId, formId}).get
+  const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryVersion = useQueryVersion({workspaceId, formId})
   const [showPreview, setShowPreview] = useState(false)
   const router = useRouter()

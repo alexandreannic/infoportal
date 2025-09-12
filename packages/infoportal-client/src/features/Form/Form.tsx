@@ -5,7 +5,7 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {createContext, useContext, useEffect, useMemo} from 'react'
 import {createRoute, Link, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
-import {useQueryFormById} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {Page} from '@/shared'
@@ -82,7 +82,7 @@ function Form() {
   const currentFullPath = useMatches().slice(-1)[0].fullPath
 
   const querySchema = useQuerySchema({formId, workspaceId})
-  const queryForm = useQueryFormById({workspaceId, formId}).get
+  const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
 
   useEffect(() => {

@@ -3,7 +3,7 @@ import {useI18n} from '@/core/i18n'
 import {ReactNode} from 'react'
 import {Box, useTheme} from '@mui/material'
 import {formRoute, useFormContext} from '@/features/Form/Form'
-import {useQueryFormById} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/useQueryForm'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 
 export const formSettingsRoute = createRoute({
@@ -34,8 +34,10 @@ const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; childr
 
 function FormSettings() {
   const {m} = useI18n()
-  const {workspaceId, form, schema} = useFormContext()
-  const queryForm = useQueryFormById({workspaceId, formId: form.id})
+  const {workspaceId, form} = useFormContext()
+  const queryUpdate = UseQueryForm.update(workspaceId)
+  const queryDisconnectFromKobo = UseQueryForm.disconnectFromKobo(workspaceId)
+  const queryRemove = UseQueryForm.remove(workspaceId)
   const navigate = useNavigate()
   return (
     <Page width="xs">
@@ -44,15 +46,15 @@ function FormSettings() {
           {form.kobo && (
             <Row label={m.connectedToKobo} desc={m.connectedToKoboDesc}>
               <Core.Modal
-                loading={queryForm.update.isPending}
+                loading={queryDisconnectFromKobo.isPending}
                 title={m.disconnectToKobo}
                 content={m.disconnectToKoboDesc}
                 onConfirm={async (e, close) => {
-                  await queryForm.disconnectFromKobo.mutateAsync()
+                  await queryDisconnectFromKobo.mutateAsync(form.id)
                   close()
                 }}
               >
-                <Core.Btn disabled={queryForm.update.isPending}>{m.disconnect}</Core.Btn>
+                <Core.Btn disabled={queryDisconnectFromKobo.isPending}>{m.disconnect}</Core.Btn>
               </Core.Modal>
             </Row>
           )}
@@ -65,21 +67,21 @@ function FormSettings() {
             }
           >
             <Core.Btn
-              loading={queryForm.update.isPending}
+              loading={queryUpdate.pendingIds.has(form.id)}
               icon={form.deploymentStatus === 'archived' ? 'unarchive' : 'archive'}
               variant="outlined"
-              onClick={() => queryForm.update.mutateAsync({archive: form.deploymentStatus !== 'archived'})}
+              onClick={() => queryUpdate.mutateAsync({formId: form.id, archive: form.deploymentStatus !== 'archived'})}
             >
               {form.deploymentStatus === 'archived' ? m.unarchive : m.archive}
             </Core.Btn>
           </Row>
           <Row label={m.deleteThisProject} desc={m.deleteThisProjectDesc}>
             <Core.Modal
-              loading={queryForm.remove.isPending}
+              loading={queryRemove.pendingIds.has(form.id)}
               title={m.deleteThisProject}
               content={form.name}
               onConfirm={async (e, close) => {
-                await queryForm.remove.mutateAsync()
+                await queryRemove.mutateAsync(form.id)
                 close()
                 navigate({to: '/$workspaceId/form/list', params: {workspaceId}})
               }}

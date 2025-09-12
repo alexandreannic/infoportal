@@ -9,7 +9,7 @@ import {map} from '@axanc/ts-utils'
 import {Skeleton} from '@mui/material'
 import {useIsFetching} from '@tanstack/react-query'
 import {useCallback} from 'react'
-import {useQueryFormById} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {Datatable, Page} from '@/shared'
@@ -56,7 +56,7 @@ const DatabaseTable = ({
   permission,
   overrideEditAccess,
 }: DatabaseTableProps) => {
-  const queryForm = useQueryFormById({workspaceId, formId}).get
+  const queryForm = UseQueryForm.get({workspaceId, formId})
   const querySchema = useQuerySchema({formId, workspaceId})
   const queryAnswers = UseQuerySubmission.search({workspaceId, formId})
 

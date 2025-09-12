@@ -1,11 +1,11 @@
 import {useI18n} from '@/core/i18n'
 import {Core, Datatable} from '@/shared'
 import {Page} from '@/shared/Page'
-import {fnSwitch, seq} from '@axanc/ts-utils'
-import {Icon, useTheme} from '@mui/material'
+import {seq} from '@axanc/ts-utils'
+import {useTheme} from '@mui/material'
 import {useEffect, useMemo} from 'react'
 import {useQueryServers} from '@/core/query/useQueryServers'
-import {useQueryForm} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/useQueryForm'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRootRoute} from '@/features/Form/Form'
@@ -25,9 +25,7 @@ function Forms() {
   const t = useTheme()
   const {setTitle} = useLayoutContext()
   const queryServer = useQueryServers(workspaceId)
-  const queryForm = useQueryForm(workspaceId)
-
-  const formsAccessible = queryForm.accessibleForms.data
+  const queryForm = UseQueryForm.getAccessibles(workspaceId)
 
   const indexServers: Record<Ip.ServerId, Ip.Server> = useMemo(() => {
     return seq(queryServer.getAll.data).groupByFirst(_ => _.id)
@@ -52,7 +50,7 @@ function Forms() {
             </Link>
           }
           id="kobo-index"
-          data={formsAccessible}
+          data={queryForm.data}
           columns={[
             {
               id: 'status',

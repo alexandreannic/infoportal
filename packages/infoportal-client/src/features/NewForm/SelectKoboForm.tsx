@@ -2,7 +2,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {Icon, useTheme} from '@mui/material'
 import {Core, Datatable} from '@/shared'
-import {useQueryForm} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/useQueryForm'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {Ip} from 'infoportal-api-sdk'
@@ -19,7 +19,8 @@ export const SelectKoboForm = ({
   const {api} = useAppSettings()
   const {m, formatDate} = useI18n()
   const t = useTheme()
-  const queryForms = useQueryForm(workspaceId)
+  const importFromKobo = UseQueryForm.importFromKobo(workspaceId)
+  const queryForms = UseQueryForm.getAccessibles(workspaceId)
 
   const queryKoboForms = useQuery({
     queryKey: queryKeys.koboForm(serverId),
@@ -32,7 +33,7 @@ export const SelectKoboForm = ({
       <Core.PanelBody>
         <Datatable.Component
           getRowKey={_ => _.uid}
-          loading={queryKoboForms.isLoading || queryForms.importFromKobo.isPending}
+          loading={queryKoboForms.isLoading || importFromKobo.isPending}
           id="select-kobo-form"
           sx={{
             overflow: 'hidden',
@@ -91,12 +92,8 @@ export const SelectKoboForm = ({
               renderQuick: form => (
                 <Core.Btn
                   size="small"
-                  onClick={() => queryForms.importFromKobo.mutateAsync({serverId, uid: form.uid}).then(onAdded)}
-                  disabled={
-                    !form.has_deployment ||
-                    !queryForms.accessibleForms.data ||
-                    !!queryForms.accessibleForms.data.find(_ => _.id === form.uid)
-                  }
+                  onClick={() => importFromKobo.mutateAsync({serverId, uid: form.uid}).then(onAdded)}
+                  disabled={!form.has_deployment || !queryForms.data || !!queryForms.data.find(_ => _.id === form.uid)}
                 >
                   {m.add}
                 </Core.Btn>

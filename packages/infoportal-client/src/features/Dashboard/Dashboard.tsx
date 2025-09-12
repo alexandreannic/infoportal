@@ -5,7 +5,7 @@ import {useQueryMetrics} from '@/core/query/useQueryMetrics.js'
 import {Ip} from 'infoportal-api-sdk'
 import {Box, BoxProps, CircularProgress, Grid, Icon, useTheme} from '@mui/material'
 import {Obj, seq} from '@axanc/ts-utils'
-import {useQueryForm} from '@/core/query/useQueryForm.js'
+import {UseQueryForm} from '@/core/query/useQueryForm.js'
 import {useSetState} from '@axanc/react-hooks'
 import {SlideWidget} from '@/shared/PdfLayout/PdfSlide.js'
 import {appConfig} from '@/conf/AppConfig.js'
@@ -82,7 +82,7 @@ function Dashboard() {
   const [period, setPeriod] = useState<Partial<Ip.Period>>(defaultaPeriod)
 
   const queryUsers = UseQueryUser.getAll(workspaceId)
-  const queryForms = useQueryForm(workspaceId).accessibleForms
+  const queryForms = UseQueryForm.getAccessibles(workspaceId)
   const queryMetrics = useQueryMetrics({
     workspaceId,
     formIds: selectedFormsSet.toArray,
@@ -96,7 +96,7 @@ function Dashboard() {
   const querySubmissionsByUser = queryMetrics.getSubmissionsByUser
   const queryUsersByIsoCode = queryMetrics.getUsersByIsoCode
   const getUsersByDate = queryMetrics.getUsersByDate
-  const formIndex = useQueryForm(workspaceId).formIndex
+  const formIndex = UseQueryForm.getAsMap(workspaceId)
 
   const loading =
     querySubmissionByMonth.isFetching ||

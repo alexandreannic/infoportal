@@ -23,7 +23,7 @@ import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
-import {useQueryFormById} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
@@ -43,7 +43,7 @@ function DatabaseAnswerView() {
     answerId: Ip.SubmissionId
   }
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
-  const queryForm = useQueryFormById({formId, workspaceId}).get
+  const queryForm = UseQueryForm.get({formId, workspaceId})
   const queryAnswers = UseQuerySubmission.search({formId, workspaceId})
   const querySchema = useQuerySchema({workspaceId, formId})
 

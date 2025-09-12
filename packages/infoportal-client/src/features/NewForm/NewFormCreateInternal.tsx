@@ -1,6 +1,6 @@
 import {Controller, useForm} from 'react-hook-form'
 import {useI18n} from '@/core/i18n'
-import {useQueryForm} from '@/core/query/useQueryForm'
+import {UseQueryForm, useQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {Autocomplete, Grid} from '@mui/material'
 import {Core} from '@/shared'
@@ -25,7 +25,7 @@ export const NewFormCreateInternal = ({
   const form = useForm<Form>({
     defaultValues: {name: '', category: ''},
   })
-  const queryForm = useQueryForm(workspaceId)
+  const categories = UseQueryForm.categories(workspaceId)
 
   return (
     <form
@@ -62,7 +62,7 @@ export const NewFormCreateInternal = ({
                     {...field}
                     freeSolo
                     disableClearable
-                    options={queryForm.categories ?? []}
+                    options={categories ?? []}
                     value={field.value}
                     onChange={(e, value) => field.onChange(value)}
                     onInputChange={(_, value) => field.onChange(value)}

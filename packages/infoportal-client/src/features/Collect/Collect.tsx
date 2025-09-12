@@ -3,7 +3,7 @@ import {rootRoute} from '@/Router'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {XlsFormFiller} from 'xls-form-filler'
 import {Page} from '@/shared'
-import {useQueryFormById} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/useQueryForm'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useIpToast} from '@/core/useToast'
 import {Ip} from 'infoportal-api-sdk'
@@ -22,7 +22,7 @@ function Collect() {
   const {toastSuccess} = useIpToast()
   const querySubmit = UseQuerySubmission.submit()
   const querySchema = useQuerySchema({workspaceId, formId})
-  const queryForm = useQueryFormById({workspaceId, formId}).get
+  const queryForm = UseQueryForm.get({workspaceId, formId})
   const [geolocation, setGeolocation] = useState<Ip.Geolocation>()
 
   useEffect(function handleGetLocation() {

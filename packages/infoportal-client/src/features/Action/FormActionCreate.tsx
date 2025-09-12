@@ -2,7 +2,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
 import {formActionsRoute} from '@/features/Action/FormActions.js'
 import {Controller, useForm, UseFormReturn} from 'react-hook-form'
-import {useQueryForm} from '@/core/query/useQueryForm.js'
+import {UseQueryForm} from '@/core/query/useQueryForm.js'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
 import React, {RefObject, useMemo, useRef, useState} from 'react'
 import {Asset} from '@/shared/Asset.js'
@@ -153,7 +153,7 @@ function SelectType() {
 
 function SelectForm() {
   const {workspaceId, formId, form, stepperRef} = useContext()
-  const queryForms = useQueryForm(workspaceId).accessibleForms
+  const queryForms = UseQueryForm.getAccessibles(workspaceId)
   const assets = useMemo(() => {
     if (!queryForms.data) return []
     return queryForms.data

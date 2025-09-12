@@ -12,7 +12,7 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
-import {useQueryForm} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Asset} from '@/shared/Asset.js'
 
 export const newFormRoute = createRoute({
@@ -40,7 +40,7 @@ function NewForm() {
   const [type, setType] = useState<Ip.Form.Type>()
   const [selectedServerId, setSelectedServerId] = useState<Ip.ServerId>()
 
-  const queryForm = useQueryForm(workspaceId)
+  const queryForm = UseQueryForm.create(workspaceId)
   const queryServer = useQueryServers(workspaceId)
 
   const handleOpen = () => {
@@ -77,10 +77,10 @@ function NewForm() {
               return (
                 <NewFormCreateInternal
                   workspaceId={workspaceId}
-                  loading={queryForm.create.isPending}
+                  loading={queryForm.isPending}
                   btnLabel={m.create + ' ' + m.formSource[type].toLowerCase()}
                   onSubmit={async form => {
-                    const newForm = await queryForm.create.mutateAsync({...form, type})
+                    const newForm = await queryForm.mutateAsync({...form, type})
                     navigate({to: '/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})
                   }}
                 />

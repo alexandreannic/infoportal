@@ -3,7 +3,7 @@ import {Fender} from '@/shared'
 import {SidebarItem} from '@/shared/Layout/Sidebar'
 import {Skeleton, useTheme} from '@mui/material'
 import {useMemo, useState} from 'react'
-import {useQueryForm} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {mapFor, Seq, seq} from '@axanc/ts-utils'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
@@ -15,13 +15,13 @@ export const AppSidebarAssets = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) =
   const {m} = useI18n()
   const t = useTheme()
 
-  const queryForm = useQueryForm(workspaceId)
+  const queryForm = UseQueryForm.getAccessibles(workspaceId)
   // const querySmartDb = UseQuerySmartDb.getAll(workspaceId)
 
   const assets: Seq<Asset> = useMemo(() => {
-    if (!queryForm.accessibleForms.data) return seq()
+    if (!queryForm.data) return seq()
     return seq(
-      queryForm.accessibleForms.data.map(_ => {
+      queryForm.data.map(_ => {
         return {
           id: _.id,
           type: _.type as Asset.Type,
@@ -32,7 +32,7 @@ export const AppSidebarAssets = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) =
         }
       }),
     )
-  }, [queryForm.accessibleForms.data])
+  }, [queryForm.data])
 
   const [filteredAssets, setFilteredAssets] = useState<Asset[]>(assets)
 
@@ -41,13 +41,13 @@ export const AppSidebarAssets = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) =
   return (
     <>
       <AppSidebarFilters assets={assets} onFilterChanges={setFilteredAssets} sx={{mx: 0.5, mb: 1, mt: 0}} />
-      {queryForm.accessibleForms.isLoading ? (
+      {queryForm.isLoading ? (
         mapFor(4, i => (
           <SidebarItem key={i} size={formItemSize}>
             <Skeleton sx={{width: 160, height: 30}} />
           </SidebarItem>
         ))
-      ) : queryForm.accessibleForms.data?.length === 0 ? (
+      ) : queryForm.data?.length === 0 ? (
         <Fender
           type="empty"
           size="small"
