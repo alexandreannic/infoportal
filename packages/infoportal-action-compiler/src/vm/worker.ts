@@ -23,11 +23,12 @@ export class Worker {
     })
   }
 
-  async compile(tsCode: string): string {
+  compile(tsCode: string): string {
     return ts.transpileModule(tsCode, {
       compilerOptions: {
         target: ts.ScriptTarget.ES2019,
-        module: ts.ModuleKind.CommonJS,
+        // module: ts.ModuleKind.CommonJS,
+        module: ts.ModuleKind.None,
       },
     }).outputText
   }
@@ -35,7 +36,7 @@ export class Worker {
   async run(fnString: string, submission: unknown): Promise<WorkerResult> {
     try {
       // Wrap the function string as a module export
-      const wrappedFn = `module.exports = ${fnString}`
+      const wrappedFn = `${fnString}\nmodule.exports = transform`
       const userFn = this.vm.run(wrappedFn) as (...args: any[]) => Promise<any>
       const result = await userFn(submission)
       return {success: true, result}

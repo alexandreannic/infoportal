@@ -1,15 +1,18 @@
 {
-  "name": "@infoportal/user-safe-exec",
+  "name": "@infoportal/action-compiler",
+  "type": "module",
   "version": "1.0.0",
+  "types": "lib/index.d.ts",
   "main": "lib/index.js",
   "scripts": {
-    "dev": "tsc && node lib/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "dev": "tsc -w"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "infoportal-api-sdk": "1.0.0",
     "quickjs-emscripten": "^0.31.0",
     "vm2": "^3.9.19"
   }
