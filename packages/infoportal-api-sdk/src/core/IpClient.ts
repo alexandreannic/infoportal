@@ -15,6 +15,7 @@ import {metricsClient} from '../contract/ContractMetrics.js'
 import {userClient} from '../contract/ContractUser.js'
 import {groupClient} from '../contract/ContractGroup.js'
 import {formActionClient} from '../contract/form/ContractFormAction.js'
+import {formActionLogClient} from '../contract/form/ContractFormActionLog.js'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -42,7 +43,10 @@ export const buildIpClient = (baseUrl: string) => {
       ...formClient(client, baseUrl),
       access: formAccessClient(client, baseUrl),
       version: formVersionClient(client, baseUrl),
-      action: formActionClient(client),
+      action: {
+        ...formActionClient(client),
+        log: formActionLogClient(client),
+      },
     },
     user: userClient(client, baseUrl),
     metrics: metricsClient(client, baseUrl),

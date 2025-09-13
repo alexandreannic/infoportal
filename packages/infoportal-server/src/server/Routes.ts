@@ -31,6 +31,7 @@ import {MetricsService} from '../feature/MetricsService.js'
 import {GroupService} from '../feature/group/GroupService.js'
 import {GroupItemService} from '../feature/group/GroupItemService.js'
 import {FormActionService} from '../feature/form/action/FormActionService.js'
+import {FormActionLogService} from '../feature/form/action/FormActionLogService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -157,7 +158,8 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const permission = new PermissionService(prisma, undefined, formAccess)
   const metrics = new MetricsService(prisma)
   const user = UserService.getInstance(prisma)
-  const formActionService = new FormActionService(prisma)
+  const formAction = new FormActionService(prisma)
+  const formActionLog = new FormActionLogService(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
     const connectedUser = await permission.checkUserConnected(args.req)
@@ -529,22 +531,29 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         create: _ =>
           auth2(_)
             .then(({params, body, req}) =>
-              formActionService.create({...params, ...body, createdBy: req.session.app.user.email}),
+              formAction.create({...params, ...body, createdBy: req.session.app.user.email}),
             )
             .then(ok200)
             .catch(handleError),
         update: _ =>
           auth2(_)
             .then(({params, body, req}) =>
-              formActionService.update({...params, ...body, createdBy: req.session.app.user.email}),
+              formAction.update({...params, ...body, createdBy: req.session.app.user.email}),
             )
             .then(ok200)
             .catch(handleError),
         getByDbId: _ =>
           auth2(_)
-            .then(({params}) => formActionService.getByFormSmartId(params))
+            .then(({params}) => formAction.getByFormSmartId(params))
             .then(ok200)
             .catch(handleError),
+        log: {
+          search: _ =>
+          auth2(_)
+            .then(({params, body}) => formActionLog.search({...params, ...body}))
+            .then(ok200)
+            .catch(handleError),
+        }
       },
     },
     metrics: {

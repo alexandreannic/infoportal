@@ -7,7 +7,7 @@ import {ApiError} from '@/core/sdk/server/ApiClient'
 import {useSetState} from '@axanc/react-hooks'
 import {usePendingMutation} from '@/core/query/usePendingMutation.js'
 
-export class UseQuerySmartDbAction {
+export class UseQueryFromAction {
   static readonly create = (workspaceId: Ip.WorkspaceId, formId: Ip.FormId) => {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()

@@ -106,7 +106,7 @@ export namespace Column {
 
   export interface Base<T extends Row, K extends string = string> {
     id: K
-    width?: number
+    width?: number | string
     head?: string
     group?: {id: string; label: string; color?: string}
     noSort?: boolean

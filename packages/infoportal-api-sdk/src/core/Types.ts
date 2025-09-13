@@ -395,7 +395,7 @@ export namespace Ip {
 
     export type ActionId = Brand<string, 'FormActionId'>
 
-    export type Action = Prisma.FormAction & {
+    export type Action = Omit<Prisma.FormAction, 'id' | 'targetFormId' | 'formId'> & {
       id: ActionId
       targetFormId: FormId
       formId: FormId
@@ -430,6 +430,26 @@ export namespace Ip {
           body?: string
           name?: string
           description?: string
+        }
+      }
+
+      export type LogId = Brand<string, 'FormActionLogId'>
+      export type Log = Omit<Prisma.FormActionLog, 'id' | 'submission'> & {
+        id: LogId
+        actionId: ActionId
+        submission: Submission
+      }
+      export namespace Log {
+        export const map = (_: Record<keyof Log, any>): Log => {
+          _.createdAt = new Date(_.createdAt)
+          return _
+        }
+        export namespace Payload {
+          export type Search = Pagination & {
+            workspaceId: WorkspaceId
+            formId?: FormId
+            actionId?: Form.ActionId
+          }
         }
       }
     }

@@ -402,10 +402,12 @@ enum FormActionLogType {
 }
 
 model FormActionLog {
-  id        String            @id @default(uuid())
-  type      FormActionLogType
-  createdAt DateTime          @default(now())
-  action    FormAction        @relation(fields: [actionId], references: [id])
-  content   String
-  actionId  String
+  id         String            @id @default(uuid())
+  type       FormActionLogType
+  createdAt  DateTime          @default(now())
+  title      String?
+  details    String?
+  submission Json?
+  action     FormAction        @relation(fields: [actionId], references: [id])
+  actionId   String
 }

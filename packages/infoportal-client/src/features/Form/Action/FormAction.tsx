@@ -1,6 +1,6 @@
 import {createRoute, Link} from '@tanstack/react-router'
 import {Core, Page} from '@/shared/index.js'
-import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
+import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {useMemo} from 'react'
 import {useQuerySchema} from '@/core/query/useQuerySchema.js'
@@ -49,8 +49,8 @@ export function FormAction() {
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
   const actionId = params.actionId as Ip.Form.ActionId
-  const queryAction = UseQuerySmartDbAction.getById(workspaceId, formId, actionId)
-  const queryActionUpdate = UseQuerySmartDbAction.update(workspaceId, formId)
+  const queryAction = UseQueryFromAction.getById(workspaceId, formId, actionId)
+  const queryActionUpdate = UseQueryFromAction.update(workspaceId, formId)
   const interfaceInput = useBuildInterface({name: 'Input', workspaceId, formId: queryAction.data?.targetFormId})
   const interfaceOutput = useBuildInterface({name: 'Output', workspaceId, formId: queryAction.data?.formId})
 

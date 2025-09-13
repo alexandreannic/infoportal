@@ -105,4 +105,8 @@ export namespace PrismaHelper {
   export const mapAccess = <T extends {id: string; filters: any}>(
     _: T,
   ): T & {id: Ip.Form.AccessId; filters: Record<string, any>} => _ as any
+
+  export const mapFormActionLog = <T extends {submission: any | null; id: string; actionId: string | null}>(
+    _: T,
+  ): Defined<T & {submission?: Ip.Submission; actionId?: Ip.Form.ActionId; id: Ip.Form.Action.LogId}> => _ as any
 }

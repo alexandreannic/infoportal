@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client'
-import {app} from '../../../index.js'
+import {app, AppCacheKey} from '../../../index.js'
 import {IpEvent} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
 import {FormActionService} from './FormActionService.js'
@@ -40,7 +40,8 @@ export class FormActionTriggerService {
   }
 
   private findActions = app.cache.request({
-    key: 'actions',
+    key: AppCacheKey.FormAction,
+    genIndex: _ => _,
     fn: async (formId: Ip.FormId) => {
       return this.prisma.formAction.findMany({where: {targetFormId: formId}})
     },
@@ -61,40 +62,63 @@ export class FormActionTriggerService {
       seq(actions)
         .compactBy('body')
         .map(async action => {
+          if (action.disabled) return
           if (action.type === 'insert') {
-            const worker = new Worker()
-            const jsCode = worker.compile(action.body)
-            const res = await worker.run(jsCode, submission)
-            if (res.success) {
-              if (Array.isArray(res.result))
-                return this.submission.createMany({
-                  // A small Smart database collecting only age and gender can have legit duplicates
-                  skipDuplicates: false,
-                  data: res.result.map(_ => ({
-                    id: SubmissionService.genId(),
-                    originId: submission.id,
-                    uuid: '',
-                    attachments: [],
-                    submissionTime: new Date(),
-                    formId: action.formId,
-                    answers: _,
-                  })),
-                })
-              else
-                return this.submission.create({
-                  workspaceId,
+            try {
+              const worker = new Worker()
+              const jsCode = worker.compile(action.body)
+              const res = await worker.run(jsCode, submission)
+              if (res.error) {
+                await this.prisma.formActionLog.create({
                   data: {
-                    id: SubmissionService.genId(),
-                    originId: submission.id,
-                    uuid: '',
-                    attachments: [],
-                    submissionTime: new Date(),
-                    formId: action.formId,
-                    answers: res.result as any,
+                    type: 'error',
+                    actionId: action.id,
+                    title: res.stack?.split(':')?.[0] ?? 'VMError',
+                    details: res.error,
+                    submission: submission,
                   },
                 })
+              } else if (res.success) {
+                if (Array.isArray(res.result))
+                  return this.submission.createMany({
+                    // A small Smart database collecting only age and gender can have legit duplicates
+                    skipDuplicates: false,
+                    data: res.result.map(_ => ({
+                      id: SubmissionService.genId(),
+                      originId: submission.id,
+                      uuid: '',
+                      attachments: [],
+                      submissionTime: new Date(),
+                      formId: action.formId,
+                      answers: _,
+                    })),
+                  })
+                else
+                  return this.submission.create({
+                    workspaceId,
+                    data: {
+                      id: SubmissionService.genId(),
+                      originId: submission.id,
+                      uuid: '',
+                      attachments: [],
+                      submissionTime: new Date(),
+                      formId: action.formId,
+                      answers: res.result as any,
+                    },
+                  })
+              }
+              console.log({jsCode, res})
+            } catch (e) {
+              await this.prisma.formActionLog.create({
+                data: {
+                  type: 'error',
+                  actionId: action.id,
+                  title: (e as Error).name,
+                  details: (e as Error).message,
+                  submission: submission,
+                },
+              })
             }
-            console.log({jsCode, res})
           }
         }),
     )

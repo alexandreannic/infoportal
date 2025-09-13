@@ -1,5 +1,5 @@
 import {Ip} from 'infoportal-api-sdk'
-import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
+import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {Controller, useForm, UseFormReturn} from 'react-hook-form'
 import {UseQueryForm} from '@/core/query/useQueryForm.js'
@@ -31,7 +31,7 @@ export const FormActionCreate = ({onClose}: {onClose: () => void}) => {
   const params = formActionsRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
-  const queryAction = UseQuerySmartDbAction.create(workspaceId, formId)
+  const queryAction = UseQueryFromAction.create(workspaceId, formId)
   const {m} = useI18n()
 
   const form = useForm<Form>()

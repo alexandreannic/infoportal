@@ -2,10 +2,12 @@ import {createRoute, Link} from '@tanstack/react-router'
 import {Core, Page} from '@/shared/index.js'
 import {Box, CircularProgress, Grid, Switch, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n/index.js'
-import {UseQuerySmartDbAction} from '@/core/query/useQuerySmartDbAction.js'
+import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {FormActionCreate} from '@/features/Form/Action/FormActionCreate.js'
 import {formRoute} from '@/features/Form/Form.js'
+import {FormActionLog} from '@/features/Form/Action/FormActionLog.js'
+import {UseQueryForm} from '@/core/query/useQueryForm.js'
 
 export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -18,13 +20,13 @@ export function FormActions() {
   const params = formActionsRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
-  const queryFunctionCreate = UseQuerySmartDbAction.create(workspaceId, formId)
-  const queryFunctionGet = UseQuerySmartDbAction.getByDbId(workspaceId, formId)
+  const queryActionCreate = UseQueryFromAction.create(workspaceId, formId)
+  const queryActionGet = UseQueryFromAction.getByDbId(workspaceId, formId)
 
   return (
     <Page width="full">
       <Grid container>
-        <Grid size={{xs: 12, md: 6}}>
+        <Grid size={{xs: 12, md: 4}}>
           <Core.PanelWBody>
             <Core.Modal
               overrideActions={null}
@@ -32,16 +34,18 @@ export function FormActions() {
               onConfirm={console.log}
             >
               <Core.Btn size="large" variant="outlined" fullWidth sx={{textAlign: 'center', mb: 1}}>
-                {m._formAction.newFunction}
+                {m._formAction.newAction}
               </Core.Btn>
             </Core.Modal>
-            {queryFunctionGet.data?.map(_ => (
+            {queryActionGet.data?.map(_ => (
               <ActionRow workspaceId={workspaceId} action={_} key={_.id} />
             ))}
           </Core.PanelWBody>
         </Grid>
-        <Grid size={{xs: 12, md: 6}}>
-          <Core.PanelWBody>OK</Core.PanelWBody>
+        <Grid size={{xs: 12, md: 8}}>
+          <Core.Panel>
+            <FormActionLog workspaceId={workspaceId} formId={formId} />
+          </Core.Panel>
         </Grid>
       </Grid>
     </Page>
@@ -51,7 +55,8 @@ export function FormActions() {
 function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: Ip.Form.Action}) {
   const t = useTheme()
   const {m, formatDate} = useI18n()
-  const queryActionUpdate = UseQuerySmartDbAction.update(workspaceId, action.formId)
+  const queryActionUpdate = UseQueryFromAction.update(workspaceId, action.formId)
+  const queryForms = UseQueryForm.getAsMap(workspaceId)
   const isUpdating = queryActionUpdate.pendingIds.has(action.id)
   return (
     <Link
@@ -76,15 +81,19 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
         }}
       >
         <Box sx={{flex: 1}}>
-          <Core.Txt bold>{action.name}</Core.Txt>
-          <Core.Txt color="hint" sx={{ml: 2}}>
-            {formatDate(action.createdAt)}
-          </Core.Txt>
+          <Box>
+            <Core.Txt bold>{action.name}</Core.Txt>
+            <Core.Txt color="hint" sx={{ml: 2}}>
+              {formatDate(action.createdAt)}
+            </Core.Txt>
+          </Box>
+          {queryForms?.get(action.targetFormId)?.name}
         </Box>
         {isUpdating && <CircularProgress size={24} />}
         <Switch
+          size="small"
           disabled={isUpdating}
-          sx={{alignSelf: 'flex-end'}}
+          sx={{justifySelf: 'flex-end'}}
           checked={!action.disabled}
           onClick={e => {
             e.stopPropagation()
@@ -92,7 +101,7 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
             queryActionUpdate.mutateAsync({id: action.id, disabled: !action.disabled})
           }}
         />
-        <Core.IconBtn sx={{alignSelf: 'flex-end'}}>chevron_right</Core.IconBtn>
+        <Core.IconBtn sx={{justifySelf: 'flex-end', mr: -1}}>chevron_right</Core.IconBtn>
       </Box>
     </Link>
   )

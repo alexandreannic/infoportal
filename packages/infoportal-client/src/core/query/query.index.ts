@@ -16,20 +16,22 @@ export const queryKeys = {
   workspaces: () => ['workspace'],
   originalEmail: () => ['originalEmail'],
   koboForm: (serverId?: Ip.ServerId) => concat('koboForm', serverId),
-  formAction: (workspaceId?: Ip.WorkspaceId, id?: Ip.FormId) => concat('form', workspaceId, 'action', id),
   servers: (workspaceId?: Ip.WorkspaceId) => concat('servers', workspaceId),
   server: (workspaceId?: Ip.WorkspaceId, serverId?: Ip.ServerId) => concat('server', workspaceId, serverId),
+  form: (workspaceId: Ip.WorkspaceId, formId?: Ip.FormId) => concat('form', workspaceId, formId),
   formAccess: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('formAccess', workspaceId, formId),
+  formAction: (workspaceId?: Ip.WorkspaceId, id?: Ip.FormId) => concat('form', workspaceId, 'action', id),
+  formActionLog: (workspaceId?: Ip.WorkspaceId, search?: Ip.Form.Action.Log.Payload.Search) =>
+    concat('form', workspaceId, 'action', 'log', JSON.stringify(search)),
+  answers: (formId?: Ip.FormId) => concat('answers', formId),
+  schema: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('schema', workspaceId, formId),
+  version: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('version', workspaceId, formId),
   user: (workspaceId?: Ip.WorkspaceId) => concat('user', workspaceId),
   userJob: (workspaceId?: Ip.WorkspaceId) => concat('userJob', workspaceId),
-  version: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('version', workspaceId, formId),
   schemaByVersion: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId, versionId?: Ip.Form.VersionId) =>
     concat('schema', workspaceId, formId, versionId),
-  schema: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('schema', workspaceId, formId),
-  form: (workspaceId: Ip.WorkspaceId, formId?: Ip.FormId) => concat('form', workspaceId, formId),
   group: (workspaceId?: Ip.WorkspaceId, args?: Omit<Ip.Group.Payload.Search, 'workspaceId'>) =>
     concat('group', workspaceId, args ? Core.stableStringify(args) : undefined),
-  answers: (formId?: Ip.FormId) => concat('answers', formId),
   metrics: (
     workspaceId?: Ip.WorkspaceId,
     resource?: string,

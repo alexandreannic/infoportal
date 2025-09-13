@@ -13,6 +13,7 @@ import {metricsContract} from './ContractMetrics.js'
 import {userContract} from './ContractUser.js'
 import {groupContract} from './ContractGroup.js'
 import {formActionContract} from './form/ContractFormAction.js'
+import {formActionLogContract} from './form/ContractFormActionLog.js'
 
 export const ipContract = initContract().router({
   permission: permissionContract,
@@ -29,7 +30,10 @@ export const ipContract = initContract().router({
     ...formContract,
     access: formAccessContract,
     version: formVersionContract,
-    action: formActionContract,
+    action: {
+      ...formActionContract,
+      log: formActionLogContract,
+    },
   },
   user: userContract,
   metrics: metricsContract,
