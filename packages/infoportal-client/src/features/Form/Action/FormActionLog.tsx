@@ -1,19 +1,21 @@
 import {UseQueryFormActionLog} from '@/core/query/useQueryFormActionLog.js'
 import {Ip} from 'infoportal-api-sdk'
-import {Box, Icon, styled} from '@mui/material'
+import {Box, Icon, styled, useTheme} from '@mui/material'
 import {Core, Datatable} from '@/shared'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
+import {PopoverWrapper} from '@infoportal/client-core'
 
-const Code = styled('div')(({theme: t}) => ({
+const Code = styled(Box)(({theme: t}) => ({
   color: t.vars.palette.text.secondary,
   fontFamily: 'monospace',
 }))
 
 export const FormActionLog = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
   const {m, formatDateTime} = useI18n()
+  const t = useTheme()
   const queryLog = UseQueryFormActionLog.search({workspaceId, formId})
   const queryActionGet = UseQueryFromAction.getByDbId(workspaceId, formId)
   const actionAsMap = useMemo(() => {
@@ -96,14 +98,28 @@ export const FormActionLog = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceI
               },
             },
             {
-              width: '2fr',
-              head: m.details,
+              width: 40,
+              align: 'center',
+              head: '',
               type: 'string',
               id: 'details',
               render: _ => {
                 return {
                   value: _.details,
-                  label: <Code>{_.details}</Code>,
+                  label: (
+                    <PopoverWrapper
+                      content={() => {
+                        return (
+                          <Box sx={{p: 1}}>
+                            <Code sx={{color: t.vars.palette.text.primary, fontWeight: '700'}}>{_.title}</Code>
+                            <Code>{_.details}</Code>
+                          </Box>
+                        )
+                      }}
+                    >
+                      <Core.IconBtn size="small" children="open_in_new" />
+                    </PopoverWrapper>
+                  ),
                 }
               },
             },

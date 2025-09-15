@@ -434,15 +434,16 @@ export namespace Ip {
       }
 
       export type LogId = Brand<string, 'FormActionLogId'>
-      export type Log = Omit<Prisma.FormActionLog, 'id' | 'submission'> & {
+      export type Log = Omit<Prisma.FormActionLog, 'details' | 'id' | 'submission'> & {
         id: LogId
         actionId: ActionId
         submission: Submission
+        details?: string
       }
       export namespace Log {
-        export const map = (_: Record<keyof Log, any>): Log => {
+        export const map = (_: Partial<Record<keyof Log, any>>): Log => {
           _.createdAt = new Date(_.createdAt)
-          return _
+          return _ as Log
         }
         export namespace Payload {
           export type Search = Pagination & {
