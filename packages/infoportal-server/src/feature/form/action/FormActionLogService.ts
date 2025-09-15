@@ -8,7 +8,7 @@ export class FormActionLogService {
   readonly search = ({
     actionId,
     formId,
-    limit = 100,
+    limit = 200,
     offset,
     workspaceId,
   }: Ip.Form.Action.Log.Payload.Search): Promise<Ip.Paginate<Ip.Form.Action.Log>> => {

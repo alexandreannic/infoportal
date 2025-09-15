@@ -1,6 +1,6 @@
 import {Controller, useForm} from 'react-hook-form'
 import {useI18n} from '@/core/i18n'
-import {UseQueryForm, useQueryForm} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {Autocomplete, Grid} from '@mui/material'
 import {Core} from '@/shared'

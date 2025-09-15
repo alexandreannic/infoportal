@@ -44,6 +44,8 @@ export class FormActionService {
   }
 
   readonly getByFormSmartId = ({formId}: {formId: Ip.FormId}): Promise<Ip.Form.Action[]> => {
-    return this.prisma.formAction.findMany({where: {formId}}).then(_ => _.map(PrismaHelper.mapFormAction))
+    return this.prisma.formAction
+      .findMany({orderBy: {createdAt: 'desc'}, where: {formId}})
+      .then(_ => _.map(PrismaHelper.mapFormAction))
   }
 }

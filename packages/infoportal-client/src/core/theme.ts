@@ -341,6 +341,7 @@ export const muiTheme = ({
             height: 'auto',
             background: Core.alphaVar(theme.vars.palette.primary.main, 0.18),
             borderRadius: `calc(${theme.vars.shape.borderRadius} - 2px)`,
+            pointerEvents: 'none',
           }),
           root: ({theme}) => ({
             background: theme.vars.palette.background.paper,
@@ -386,7 +387,7 @@ export const muiTheme = ({
           },
           root: {
             backdropFilter: 'blur(4px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.18)',
+            backgroundColor: 'rgba(255, 255, 255, 0.38)',
             // backgroundColor: 'rgba(255, 255, 255, 0.5)',
           },
         },

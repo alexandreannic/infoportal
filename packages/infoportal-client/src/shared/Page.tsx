@@ -44,7 +44,7 @@ export function usePageAnimation({
       opacity: 0,
       transform: fnSwitch(animation, {
         none: 'none',
-        translateLeft: 'translate(50px)',
+        translateLeft: 'translate(90px)',
         default: 'scale(.90)',
       }),
       ...((!animation || appeared) && {
@@ -88,6 +88,7 @@ export const Page = ({children, sx, loading, animation = 'default', animationDep
           display: 'flex',
           flexDirection: 'column',
           flex: 1,
+          minHeight: 0,
           position: 'relative',
           mt: 1,
           ...sx,

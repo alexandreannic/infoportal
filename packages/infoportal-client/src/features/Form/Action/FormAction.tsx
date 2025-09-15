@@ -10,7 +10,7 @@ import {FormActionEditor} from '@/features/Form/Action/FormActionEditor.js'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQueryForm} from '@/core/query/useQueryForm.js'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
-import {Box, Skeleton, useTheme} from '@mui/material'
+import {Box, BoxProps, Skeleton, useTheme} from '@mui/material'
 
 export const formActionRoute = createRoute({
   getParentRoute: () => formActionsRoute,
@@ -44,7 +44,7 @@ const useBuildInterface = ({
   }
 }
 
-export function FormAction() {
+export function FormAction({sx, ...props}: BoxProps) {
   const {m} = useI18n()
   const t = useTheme()
   const params = formActionRoute.useParams()
@@ -57,13 +57,14 @@ export function FormAction() {
   const interfaceOutput = useBuildInterface({name: 'Output', workspaceId, formId: queryAction.data?.formId})
 
   return (
-    <Box sx={{height: 500, mb: 1}}>
+    <Box sx={{height: '100%', ...sx}} {...props}>
       {queryAction.isLoading || interfaceInput.isLoading ? (
         <Skeleton sx={{height: '100%', transform: 'none', borderRadius: t.vars.shape.borderRadius}} />
       ) : (
         queryAction.data &&
         (interfaceInput.data && interfaceOutput.data ? (
           <FormActionEditor
+            key={actionId}
             saving={queryActionUpdate.isPending}
             inputType={interfaceInput.data}
             outputType={interfaceOutput.data}

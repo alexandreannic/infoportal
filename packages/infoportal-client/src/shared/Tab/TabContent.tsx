@@ -30,7 +30,7 @@ export const TabContent = ({
   return (
     <Box
       className={'IpTabContent ' + (className ?? '')}
-      sx={{...widthStyle, ...animationStyle, flex: 1, mt: 1, ...sx}}
+      sx={{...widthStyle, ...animationStyle, minHeight: 0, flex: 1, mt: 1, ...sx}}
       {...props}
       children={loading ? <PagePlaceholder /> : children}
     />

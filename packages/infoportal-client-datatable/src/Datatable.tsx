@@ -30,6 +30,7 @@ export const Datatable = <T extends Row>({data, sx, ...props}: Props<T>) => {
 const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
   const {
     columns,
+    header,
     state: {sortBy, filters, virtualTable, popup},
     dispatch,
     getRowKey,
@@ -94,7 +95,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
 
   return (
     <Box sx={sx}>
-      <DatatableToolbar rowVirtualizer={rowVirtualizer} />
+      {header !== null && <DatatableToolbar rowVirtualizer={rowVirtualizer} />}
       <Box
         className="dt"
         ref={tableRef}
