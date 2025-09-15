@@ -8,7 +8,7 @@ import {SidebarHeader} from './SidebarHeader'
 import {useI18n} from '@/core/i18n'
 import {Core} from '@/shared'
 
-const sidebarWidth = 280
+const sidebarWidth = 260
 
 export const Sidebar = ({
   children,
@@ -50,9 +50,11 @@ export const Sidebar = ({
           transition: t.transitions.create('all') + ' !important',
           m: 1,
           mr: 0,
+          ml: 0,
           position: 'static',
           background: 'transparent',
-          borderRadius: t.vars.shape.borderRadius,
+          borderTopRightRadius: t.vars.shape.borderRadius,
+          borderBottomRightRadius: t.vars.shape.borderRadius,
           border: 'none',
           bottom: 0,
           height: 'auto',
@@ -70,7 +72,6 @@ export const Sidebar = ({
       <Slide direction="right" in={true}>
         <Box
           sx={{
-            borderRadius: t.vars.shape.borderRadius,
             background: isTemporary ? t => t.vars.palette.background.default : t.vars.palette.background.paper,
             height: '100%',
             overflowY: 'auto',
