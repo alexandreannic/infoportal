@@ -11,6 +11,7 @@ import {UseQueryForm} from '@/core/query/useQueryForm.js'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {formActionRoute} from '@/features/Form/Action/FormAction.js'
 import {mapFor} from '@axanc/ts-utils'
+import {Panel, PanelWBody} from '@infoportal/client-core'
 
 export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -32,15 +33,15 @@ export function FormActions() {
       sx={{
         gap: t.vars.spacing,
         display: 'grid',
-        gridTemplateColumns: '310px 1fr',
+        gridTemplateColumns: '300px 1fr',
         gridTemplateRows: actionId ? '5fr minmax(220px, 2fr)' : '0fr 1fr',
-        transition: 'grid-template-rows 0.4s ease',
         flex: '1 1 auto',
         minHeight: 0,
       }}
     >
-      <Box
+      <Core.Panel
         sx={{
+          p: 1,
           gridColumn: 1,
           gridRow: '1 / 3',
           overflowY: 'scroll',
@@ -59,7 +60,7 @@ export function FormActions() {
         {queryActionGet.data?.map(_ => (
           <ActionRow workspaceId={workspaceId} action={_} key={_.id} />
         ))}
-      </Box>
+      </Core.Panel>
       <Box
         sx={{
           minWidth: 0,
@@ -70,15 +71,23 @@ export function FormActions() {
       >
         <Outlet />
       </Box>
-      <Core.Panel
+      <Box
         sx={{
           gridRow: 2,
           gridColumn: 2,
           overflowY: 'scroll',
+          mt: actionId ? 0 : -1,
         }}
       >
-        <FormActionLog workspaceId={workspaceId} formId={formId} actionId={actionId} />
-      </Core.Panel>
+        {!actionId && (
+          <PanelWBody>
+            <Core.Btn>Test</Core.Btn>
+          </PanelWBody>
+        )}
+        <Core.Panel>
+          <FormActionLog workspaceId={workspaceId} formId={formId} actionId={actionId} />
+        </Core.Panel>
+      </Box>
     </TabContent>
   )
 }
@@ -91,20 +100,17 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
   const isUpdating = queryActionUpdate.pendingIds.has(action.id)
   return (
     <Link
-      style={{
-        display: 'block',
-        marginBottom: t.vars.spacing,
-      }}
       to="/$workspaceId/form/$formId/action/$actionId"
       params={{workspaceId, formId: action.formId, actionId: action.id}}
     >
       {({isActive}) => (
-        <Core.Panel
+        <Box
           sx={{
-            '&:hover': {
-              boxShadow: t.vars.shadows[1],
-            },
-            border: '2px solid transparent',
+            // '&:hover': {
+            //   boxShadow: t.vars.shadows[1],
+            // },
+            borderBottom: '1px solid',
+            borderColor: t.vars.palette.divider,
             ...(isActive && {
               borderColor: t.palette.primary.main,
               color: t.palette.primary.main,
@@ -112,8 +118,9 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
             }),
             transition: t.transitions.create('all'),
             // background: t.vars.palette.AppBar.defaultBg,
-            p: 1,
-            borderRadius: t.vars.shape.borderRadius,
+            py: 1,
+            // mb: 1,
+            // borderRadius: t.vars.shape.borderRadius,
             display: 'flex',
             alignItems: 'center',
           }}
@@ -123,7 +130,7 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
               <Core.Txt bold truncate>
                 {action.name}
               </Core.Txt>
-              <Core.Txt color="hint" sx={{ml: 2}}>
+              <Core.Txt color="disabled" sx={{ml: 2}}>
                 {formatDate(action.createdAt)}
               </Core.Txt>
             </Box>
@@ -142,7 +149,7 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
             }}
           />
           <Core.IconBtn sx={{justifySelf: 'flex-end', mr: -1}}>chevron_right</Core.IconBtn>
-        </Core.Panel>
+        </Box>
       )}
     </Link>
   )
