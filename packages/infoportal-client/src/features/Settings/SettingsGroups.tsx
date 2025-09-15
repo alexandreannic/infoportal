@@ -11,6 +11,7 @@ import {createRoute} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
 import {Ip} from 'infoportal-api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
+import {TabContent} from '@/shared/Tab/TabContent.js'
 
 interface GoupForm {
   name: string
@@ -40,7 +41,7 @@ function SettingsGroups() {
   >()
 
   return (
-    <Page width="full">
+    <TabContent width="full">
       <Core.Panel>
         <Datatable.Component
           rowHeight={36}
@@ -238,6 +239,6 @@ function SettingsGroups() {
           </Box>
         </Core.BasicDialog>
       </Core.Panel>
-    </Page>
+    </TabContent>
   )
 }

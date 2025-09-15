@@ -1,10 +1,11 @@
-import {Core, Page} from '@/shared'
+import {Core} from '@/shared'
 import {useI18n} from '@/core/i18n'
 import {ReactNode} from 'react'
 import {Box, useTheme} from '@mui/material'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {createRoute, useNavigate} from '@tanstack/react-router'
+import {TabContent} from '@/shared/Tab/TabContent.js'
 
 export const formSettingsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -40,7 +41,7 @@ function FormSettings() {
   const queryRemove = UseQueryForm.remove(workspaceId)
   const navigate = useNavigate()
   return (
-    <Page width="xs">
+    <TabContent width="xs">
       <Core.Panel>
         <Core.PanelBody>
           {form.kobo && (
@@ -93,6 +94,6 @@ function FormSettings() {
           </Row>
         </Core.PanelBody>
       </Core.Panel>
-    </Page>
+    </TabContent>
   )
 }

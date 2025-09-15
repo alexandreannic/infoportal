@@ -13,6 +13,7 @@ import {createRoute, Link, useRouter} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
 import {useIpToast} from '@/core/useToast'
 import {Ip} from 'infoportal-api-sdk'
+import {TabContent} from '@/shared/Tab/TabContent.js'
 
 export const formBuilderRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -45,7 +46,7 @@ function FormBuilder() {
   }, [queryVersion.get.data])
 
   return (
-    <Page width="full" loading={queryForm.isPending || queryVersion.get.isLoading}>
+    <TabContent width="full" loading={queryForm.isPending || queryVersion.get.isLoading}>
       {queryForm.data &&
         (queryForm.data.kobo ? (
           <FormBuilderKoboFender workspaceId={workspaceId} form={queryForm.data} />
@@ -161,6 +162,6 @@ function FormBuilder() {
             </Grid>
           </Grid>
         ))}
-    </Page>
+    </TabContent>
   )
 }

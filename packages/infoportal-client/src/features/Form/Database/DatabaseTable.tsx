@@ -15,6 +15,7 @@ import {formRoute, useFormContext} from '@/features/Form/Form'
 import {Datatable, Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import {FetchParams} from '@axanc/react-hooks'
+import {TabContent} from '@/shared/Tab/TabContent.js'
 
 export const answersRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -36,14 +37,14 @@ export interface DatabaseTableProps {
 function DatabaseTableContainer() {
   const props = useFormContext()
   return (
-    <Page width="full" sx={{mb: 0}}>
+    <TabContent width="full" sx={{mb: 0}}>
       <DatabaseTable
         permission={props.permission}
         formId={props.form.id}
         workspaceId={props.workspaceId}
         form={props.form}
       />
-    </Page>
+    </TabContent>
   )
 }
 

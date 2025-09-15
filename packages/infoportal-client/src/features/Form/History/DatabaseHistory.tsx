@@ -4,12 +4,12 @@ import {KoboAnswerHistory} from '@/core/sdk/server/kobo/answerHistory/KoboAnswer
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Core, Datatable} from '@/shared'
-import {Page} from '@/shared/Page'
-import {fnSwitch, map} from '@axanc/ts-utils'
+import {map} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
 import {useEffect} from 'react'
 import {createRoute} from '@tanstack/react-router'
 import {useFetcher} from '@axanc/react-hooks'
+import {TabContent} from '@/shared/Tab/TabContent.js'
 
 export const databaseHistoryRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -65,7 +65,7 @@ function DatabaseHistory() {
     })
 
   return (
-    <Page width="lg">
+    <TabContent width="lg">
       <Core.Panel>
         <Datatable.Component
           getRowKey={_ => _.id}
@@ -240,6 +240,6 @@ function DatabaseHistory() {
           ]}
         />
       </Core.Panel>
-    </Page>
+    </TabContent>
   )
 }

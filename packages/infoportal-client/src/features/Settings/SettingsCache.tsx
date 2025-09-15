@@ -10,6 +10,7 @@ import {settingsRoute} from '@/features/Settings/Settings'
 import {createRoute} from '@tanstack/react-router'
 import {Core} from '@/shared'
 import {useAsync, useFetcher} from '@axanc/react-hooks'
+import {TabContent} from '@/shared/Tab/TabContent.js'
 
 export const settingsCacheRoute = createRoute({
   getParentRoute: () => settingsRoute,
@@ -33,7 +34,7 @@ function SettingsCache() {
   }, [])
 
   return (
-    <Page width="md" loading={fetcherCache.loading}>
+    <TabContent width="md" loading={fetcherCache.loading}>
       {map(fetcherCache.get, cache =>
         Object.entries(cache).map(([key, info]) => {
           return (
@@ -105,6 +106,6 @@ function SettingsCache() {
           )
         }),
       )}
-    </Page>
+    </TabContent>
   )
 }

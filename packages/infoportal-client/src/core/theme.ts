@@ -386,7 +386,7 @@ export const muiTheme = ({
           },
           root: {
             backdropFilter: 'blur(4px)',
-            backgroundColor: 'rgba(0, 0, 0, 0.08)',
+            backgroundColor: 'rgba(255, 255, 255, 0.18)',
             // backgroundColor: 'rgba(255, 255, 255, 0.5)',
           },
         },

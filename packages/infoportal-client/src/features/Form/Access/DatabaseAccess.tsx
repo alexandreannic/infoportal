@@ -5,6 +5,7 @@ import {DatabaseAccessForm} from '@/features/Form/Access/DatabaseAccessForm'
 import {AccessTable} from '@/features/Access/AccessTable'
 import {Core, Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
+import {TabContent} from '@/shared/Tab/TabContent.js'
 
 export const databaseAccessRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -16,7 +17,7 @@ function DatabaseAccess() {
   const {workspaceId, permission, form, schema} = useFormContext()
   const {m} = useI18n()
   return (
-    <Page width="full">
+    <TabContent width="full">
       {schema && (
         <Core.Panel>
           <AccessTable
@@ -35,6 +36,6 @@ function DatabaseAccess() {
           />
         </Core.Panel>
       )}
-    </Page>
+    </TabContent>
   )
 }

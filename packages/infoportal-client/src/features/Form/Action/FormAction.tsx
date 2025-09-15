@@ -7,13 +7,14 @@ import {useQuerySchema} from '@/core/query/useQuerySchema.js'
 import {KoboInterfaceBuilder} from 'infoportal-common'
 import {map} from '@axanc/ts-utils'
 import {FormActionEditor} from '@/features/Form/Action/FormActionEditor.js'
-import {formRoute} from '@/features/Form/Form.js'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQueryForm} from '@/core/query/useQueryForm.js'
+import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
+import {Box, Skeleton, useTheme} from '@mui/material'
 
 export const formActionRoute = createRoute({
-  getParentRoute: () => formRoute,
-  path: 'action/$actionId',
+  getParentRoute: () => formActionsRoute,
+  path: '$actionId',
   component: FormAction,
 })
 
@@ -45,6 +46,7 @@ const useBuildInterface = ({
 
 export function FormAction() {
   const {m} = useI18n()
+  const t = useTheme()
   const params = formActionRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
@@ -55,8 +57,11 @@ export function FormAction() {
   const interfaceOutput = useBuildInterface({name: 'Output', workspaceId, formId: queryAction.data?.formId})
 
   return (
-    <Page loading={queryAction.isLoading || interfaceInput.isLoading}>
-      {queryAction.data &&
+    <Box sx={{height: 500, mb: 1}}>
+      {queryAction.isLoading || interfaceInput.isLoading ? (
+        <Skeleton sx={{height: '100%', transform: 'none', borderRadius: t.vars.shape.borderRadius}} />
+      ) : (
+        queryAction.data &&
         (interfaceInput.data && interfaceOutput.data ? (
           <FormActionEditor
             saving={queryActionUpdate.isPending}
@@ -81,7 +86,8 @@ export function FormAction() {
           >
             {m._formAction.thisActionTargetAFormWithoutSchema}
           </Core.Alert>
-        ))}
-    </Page>
+        ))
+      )}
+    </Box>
   )
 }

@@ -82,7 +82,7 @@ export function FormActionEditor({
   }, [activePath])
 
   return (
-    <Box sx={{borderRadius: t.vars.shape.borderRadius, overflow: 'hidden', background: monacoBg}}>
+    <Box sx={{height: '100%', borderRadius: t.vars.shape.borderRadius, overflow: 'hidden', background: monacoBg}}>
       {/*<Core.Btn variant="outlined">{m.save}</Core.Btn>*/}
       <Tabs value={activePath} onChange={(e, _) => setActivePath(_)} sx={{background: 'none', mb: 0.5}}>
         {Obj.keys(files).map(_ => (

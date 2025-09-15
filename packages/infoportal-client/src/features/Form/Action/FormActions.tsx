@@ -1,4 +1,4 @@
-import {createRoute, Link} from '@tanstack/react-router'
+import {createRoute, Link, Outlet} from '@tanstack/react-router'
 import {Core, Page} from '@/shared/index.js'
 import {Box, CircularProgress, Grid, Switch, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n/index.js'
@@ -8,6 +8,7 @@ import {FormActionCreate} from '@/features/Form/Action/FormActionCreate.js'
 import {formRoute} from '@/features/Form/Form.js'
 import {FormActionLog} from '@/features/Form/Action/FormActionLog.js'
 import {UseQueryForm} from '@/core/query/useQueryForm.js'
+import {TabContent} from '@/shared/Tab/TabContent.js'
 
 export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -20,14 +21,16 @@ export function FormActions() {
   const params = formActionsRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
-  const queryActionCreate = UseQueryFromAction.create(workspaceId, formId)
   const queryActionGet = UseQueryFromAction.getByDbId(workspaceId, formId)
 
   return (
-    <Page width="full">
+    <TabContent width="full">
       <Grid container>
         <Grid size={{xs: 12, md: 4}}>
-          <Core.PanelWBody>
+          <>
+            {queryActionGet.data?.map(_ => (
+              <ActionRow workspaceId={workspaceId} action={_} key={_.id} />
+            ))}
             <Core.Modal
               overrideActions={null}
               content={onClose => <FormActionCreate onClose={onClose} />}
@@ -37,18 +40,16 @@ export function FormActions() {
                 {m._formAction.newAction}
               </Core.Btn>
             </Core.Modal>
-            {queryActionGet.data?.map(_ => (
-              <ActionRow workspaceId={workspaceId} action={_} key={_.id} />
-            ))}
-          </Core.PanelWBody>
+          </>
         </Grid>
         <Grid size={{xs: 12, md: 8}}>
+          <Outlet />
           <Core.Panel>
             <FormActionLog workspaceId={workspaceId} formId={formId} />
           </Core.Panel>
         </Grid>
       </Grid>
-    </Page>
+    </TabContent>
   )
 }
 
@@ -67,42 +68,52 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
       to="/$workspaceId/form/$formId/action/$actionId"
       params={{workspaceId, formId: action.formId, actionId: action.id}}
     >
-      <Box
-        sx={{
-          '&:hover': {
-            boxShadow: t.vars.shadows[1],
-          },
-          transition: t.transitions.create('all'),
-          background: t.vars.palette.AppBar.defaultBg,
-          p: 1,
-          borderRadius: t.vars.shape.borderRadius,
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Box sx={{flex: 1}}>
-          <Box>
-            <Core.Txt bold>{action.name}</Core.Txt>
-            <Core.Txt color="hint" sx={{ml: 2}}>
-              {formatDate(action.createdAt)}
-            </Core.Txt>
-          </Box>
-          {queryForms?.get(action.targetFormId)?.name}
-        </Box>
-        {isUpdating && <CircularProgress size={24} />}
-        <Switch
-          size="small"
-          disabled={isUpdating}
-          sx={{justifySelf: 'flex-end'}}
-          checked={!action.disabled}
-          onClick={e => {
-            e.stopPropagation()
-            e.preventDefault()
-            queryActionUpdate.mutateAsync({id: action.id, disabled: !action.disabled})
+      {({isActive}) => (
+        <Core.Panel
+          sx={{
+            '&:hover': {
+              boxShadow: t.vars.shadows[1],
+            },
+            border: '2px solid transparent',
+            ...(isActive && {
+              borderColor: t.palette.primary.main,
+              color: t.palette.primary.main,
+              background: Core.alphaVar(t.vars.palette.primary.main, 0.18),
+            }),
+            transition: t.transitions.create('all'),
+            // background: t.vars.palette.AppBar.defaultBg,
+            p: 1,
+            borderRadius: t.vars.shape.borderRadius,
+            display: 'flex',
+            alignItems: 'center',
           }}
-        />
-        <Core.IconBtn sx={{justifySelf: 'flex-end', mr: -1}}>chevron_right</Core.IconBtn>
-      </Box>
+        >
+          <Box sx={{flex: 1}}>
+            <Box>
+              <Core.Txt bold truncate>
+                {action.name}
+              </Core.Txt>
+              <Core.Txt color="hint" sx={{ml: 2}}>
+                {formatDate(action.createdAt)}
+              </Core.Txt>
+            </Box>
+            <Core.Txt truncate>{queryForms?.get(action.targetFormId)?.name}</Core.Txt>
+          </Box>
+          {isUpdating && <CircularProgress size={24} />}
+          <Switch
+            size="small"
+            disabled={isUpdating}
+            sx={{justifySelf: 'flex-end'}}
+            checked={!action.disabled}
+            onClick={e => {
+              e.stopPropagation()
+              e.preventDefault()
+              queryActionUpdate.mutateAsync({id: action.id, disabled: !action.disabled})
+            }}
+          />
+          <Core.IconBtn sx={{justifySelf: 'flex-end', mr: -1}}>chevron_right</Core.IconBtn>
+        </Core.Panel>
+      )}
     </Link>
   )
 }

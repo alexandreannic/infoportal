@@ -14,6 +14,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
 import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 import {Icon} from '@mui/material'
+import {TabContent} from '@/shared/Tab/TabContent.js'
 
 export const settingsUsersRoute = createRoute({
   getParentRoute: () => settingsRoute,
@@ -66,7 +67,7 @@ function SettingsUsers() {
   const emailsLists = useMemo(() => queryUserGet.data?.map(_ => _.email), [queryUserGet.data])
 
   return (
-    <Page width="full">
+    <TabContent width="full">
       <Core.Panel>
         <Datatable.Component
           rowHeight={36}
@@ -235,6 +236,6 @@ function SettingsUsers() {
           ]}
         />
       </Core.Panel>
-    </Page>
+    </TabContent>
   )
 }

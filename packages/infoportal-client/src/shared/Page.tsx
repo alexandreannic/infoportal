@@ -1,8 +1,9 @@
 import * as React from 'react'
-import {ReactNode, useEffect, useState} from 'react'
-import {Box, BoxProps, CircularProgress, Skeleton} from '@mui/material'
+import {ReactNode, useEffect, useMemo, useRef, useState} from 'react'
+import {Box, BoxProps, CircularProgress, Skeleton, SkeletonProps, SxProps, Theme, useTheme} from '@mui/material'
 import {CenteredContent, Core} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
+import {CSSObject} from '@mui/styled-engine'
 
 export interface PageProps extends BoxProps {
   width?: number | 'xxs' | 'xs' | 'md' | 'lg' | 'full'
@@ -14,107 +15,99 @@ export interface PageProps extends BoxProps {
   animationDeps?: any[]
 }
 
-let timeout: NodeJS.Timeout | undefined
-
-export const PageTitle = ({
-  action,
-  children,
-  subTitle,
-  sx,
-  logo,
-  ...props
-}: BoxProps & {
-  logo?: ReactNode
-  subTitle?: ReactNode
-  action?: ReactNode
-}) => {
+export const PagePlaceholder = ({sx, ...props}: BoxProps) => {
   return (
-    <Box sx={{display: 'flex', mt: 0, mb: 2, alignItems: 'center', ...sx}}>
-      {logo && <Box sx={{mr: 2}}>{logo}</Box>}
-      <Box>
-        <Box component="h2" sx={{m: 0, p: 0}}>
-          {children}
-        </Box>
-        <Core.Txt size="big" color="hint">
-          {subTitle}
-        </Core.Txt>
-      </Box>
-      {action && <Box sx={{ml: 'auto'}}>{action}</Box>}
+    <Box {...props} sx={{...sx, pb: 1, height: '100%'}}>
+      <Skeleton variant="rounded" sx={{width: '100%', height: '100%', transform: 'none'}} />
     </Box>
   )
 }
 
-export const PagePlaceholder = (props: Pick<PageProps, 'width'>) => {
-  const width =
-    typeof props.width === 'string'
-      ? {
-          xxs: 480,
-          xs: 780,
-          md: 1000,
-          lg: 1200,
-          full: 3000,
-        }[props.width]
-      : props.width
+export function usePageAnimation({
+  animation,
+  animationDeps,
+}: Required<Pick<PageProps, 'animation' | 'animationDeps'>>): CSSObject {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const t = useTheme()
+  const [appeared, setAppeared] = useState(false)
+  useEffect(() => {
+    setAppeared(false)
+    if (animation !== 'none') timeoutRef.current = setTimeout(() => setAppeared(true))
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, animationDeps)
+
+  return useMemo(() => {
+    return {
+      transition: t.transitions.create('all', {easing: 'ease', duration: 160}),
+      opacity: 0,
+      transform: fnSwitch(animation, {
+        none: 'none',
+        translateLeft: 'translate(50px)',
+        default: 'scale(.90)',
+      }),
+      ...((!animation || appeared) && {
+        opacity: 1,
+        transform: 'none',
+      }),
+    }
+  }, [animation, appeared])
+}
+
+export function usePageWidthStyle(props: {width: PageProps['width']}): CSSObject {
+  return useMemo(() => {
+    const width = calculatePageWidth(props.width)
+    return {
+      width: '100%',
+      margin: 'auto',
+      maxWidth: width,
+    }
+  }, [props.width])
+}
+
+export const PageLoader = () => {
   return (
-    <Page {...props}>
-      <Skeleton variant="rounded" sx={{width: '100%', height: 'calc(100vh - 100px)'}} />
-    </Page>
+    <CenteredContent>
+      <CircularProgress size={100} thickness={2} />
+    </CenteredContent>
   )
 }
 
 export const Page = ({children, sx, loading, animation = 'default', animationDeps = [], ...props}: PageProps) => {
-  const [appeared, setAppeared] = useState(false)
-  const width =
-    typeof props.width === 'string'
-      ? {
-          xxs: 520,
-          xs: 780,
-          md: 1000,
-          lg: 1240,
-          full: 3000,
-        }[props.width]
-      : props.width
-
-  useEffect(() => {
-    setAppeared(false)
-    if (animation !== 'none') timeout = setTimeout(() => setAppeared(true))
-    return () => clearTimeout(timeout)
-  }, animationDeps)
-
+  const widthStyle = usePageWidthStyle({width: props.width})
+  const animationStyle = usePageAnimation({animation, animationDeps})
   return (
     <>
       <Box
         className={'IpPage ' + (props.className ?? '')}
         {...props}
         sx={{
+          ...widthStyle,
+          ...animationStyle,
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
           position: 'relative',
-          transition: t => t.transitions.create('all', {easing: 'ease', duration: 160}),
-          margin: 'auto',
-          opacity: 0,
-          transform: fnSwitch(animation, {
-            none: 'none',
-            translateLeft: 'translate(50px)',
-            default: 'scale(.90)',
-          }),
-          maxWidth: 932,
           mt: 1,
-          width: '100%',
-          ...((!animation || appeared) && {
-            opacity: 1,
-            transform: 'none',
-          }),
-          ...(width && {maxWidth: width}),
           ...sx,
         }}
       >
-        {loading ? (
-          <CenteredContent>
-            <CircularProgress size={100} thickness={2} />
-          </CenteredContent>
-        ) : (
-          children
-        )}
+        {loading ? <PagePlaceholder /> : children}
       </Box>
     </>
   )
+}
+
+export function calculatePageWidth(width?: string | number) {
+  if (!width) return '100%'
+  return typeof width === 'string'
+    ? {
+        xxs: 520,
+        xs: 780,
+        md: 1000,
+        lg: 1240,
+        full: 3000,
+      }[width]
+    : width
 }

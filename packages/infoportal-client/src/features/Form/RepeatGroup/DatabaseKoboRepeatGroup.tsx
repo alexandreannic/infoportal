@@ -12,6 +12,7 @@ import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
 import {buildDatabaseColumns, BuildFormColumnProps} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Messages} from '@/core/i18n/localization/en'
+import {TabContent} from '@/shared/Tab/TabContent.js'
 
 export const databaseKoboRepeatRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -34,13 +35,7 @@ function DatabaseKoboRepeatContainer() {
   const querySchema = useQuerySchema({workspaceId, formId})
 
   return (
-    <Page
-      width="full"
-      sx={{p: 0, pb: 0, mb: 0}}
-      animation="translateLeft"
-      animationDeps={[formId]}
-      loading={querySchema.isLoading}
-    >
+    <TabContent width="full" sx={{p: 0, pb: 0, mb: 0}} animationDeps={[formId]} loading={querySchema.isLoading}>
       {map(querySchema.data, schema => (
         <Core.Panel sx={{mb: 0}}>
           <DatabaseKoboRepeat
@@ -53,7 +48,7 @@ function DatabaseKoboRepeatContainer() {
           />
         </Core.Panel>
       ))}
-    </Page>
+    </TabContent>
   )
 }
 

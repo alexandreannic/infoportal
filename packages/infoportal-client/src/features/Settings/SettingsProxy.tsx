@@ -14,6 +14,7 @@ import {appConfig} from '@/conf/AppConfig'
 import {createRoute} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
+import {TabContent} from '@/shared/Tab/TabContent'
 
 interface CreateForm {
   name: string
@@ -52,7 +53,7 @@ function SettingsProxy() {
   }
 
   return (
-    <Page width="lg">
+    <TabContent width="lg">
       <Core.Panel>
         <Datatable.Component
           getRowKey={_ => _.id}
@@ -243,6 +244,6 @@ function SettingsProxy() {
           ]}
         />
       </Core.Panel>
-    </Page>
+    </TabContent>
   )
 }
