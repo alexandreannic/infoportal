@@ -11,7 +11,7 @@ import {UseQueryForm} from '@/core/query/useQueryForm.js'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {formActionRoute} from '@/features/Form/Action/FormAction.js'
 import {mapFor} from '@axanc/ts-utils'
-import {Panel, PanelWBody} from '@infoportal/client-core'
+import {Panel} from '@infoportal/client-core'
 
 export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -33,17 +33,20 @@ export function FormActions() {
       sx={{
         gap: t.vars.spacing,
         display: 'grid',
-        gridTemplateColumns: '300px 1fr',
-        gridTemplateRows: actionId ? '5fr minmax(220px, 2fr)' : '0fr 1fr',
+        gridTemplateColumns: '280px 1fr',
+        gridTemplateRows: actionId ? '64px 5fr minmax(220px, 2fr)' : '64px 0fr 1fr',
         flex: '1 1 auto',
         minHeight: 0,
       }}
     >
+      <Panel sx={{mb: 0, px: 1, display: 'flex', alignItems: 'center', gridRow: 1, gridColumn: '1 / 3'}}>
+        <Core.Btn>Test</Core.Btn>
+      </Panel>
       <Core.Panel
         sx={{
           p: 1,
           gridColumn: 1,
-          gridRow: '1 / 3',
+          gridRow: '2 / 4',
           overflowY: 'scroll',
         }}
       >
@@ -66,24 +69,19 @@ export function FormActions() {
           minWidth: 0,
           minHeight: 0,
           gridColumn: 2,
-          gridRow: 1,
+          gridRow: '2 / 3',
         }}
       >
         <Outlet />
       </Box>
       <Box
         sx={{
-          gridRow: 2,
+          gridRow: '3 / 4',
           gridColumn: 2,
           overflowY: 'scroll',
           mt: actionId ? 0 : -1,
         }}
       >
-        {!actionId && (
-          <PanelWBody>
-            <Core.Btn>Test</Core.Btn>
-          </PanelWBody>
-        )}
         <Core.Panel>
           <FormActionLog workspaceId={workspaceId} formId={formId} actionId={actionId} />
         </Core.Panel>
@@ -106,21 +104,24 @@ function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: 
       {({isActive}) => (
         <Box
           sx={{
-            // '&:hover': {
-            //   boxShadow: t.vars.shadows[1],
-            // },
-            borderBottom: '1px solid',
-            borderColor: t.vars.palette.divider,
+            '&:hover': {
+              // background: Core.alphaVar(t.vars.palette.primary.main, 0.08),
+              // mx: -0.5,
+              // px: 1,
+            },
             ...(isActive && {
-              borderColor: t.palette.primary.main,
+              // mt: 1,
+              // mb: 1,
+              mx: -0.5,
+              px: 1,
               color: t.palette.primary.main,
               background: Core.alphaVar(t.vars.palette.primary.main, 0.18),
+              // border: 'none',
             }),
+            borderRadius: t.vars.shape.borderRadius,
             transition: t.transitions.create('all'),
-            // background: t.vars.palette.AppBar.defaultBg,
-            py: 1,
-            // mb: 1,
-            // borderRadius: t.vars.shape.borderRadius,
+            py: 0.5,
+            my: 0.5,
             display: 'flex',
             alignItems: 'center',
           }}

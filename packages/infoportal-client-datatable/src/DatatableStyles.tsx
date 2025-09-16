@@ -35,14 +35,15 @@ export const DatatableGlobalStyles = () => (
         display: 'flex',
         alignItems: 'center',
         borderBottom: `1px solid ${theme.vars.palette.divider}`,
-        borderRight: `1px solid ${theme.vars.palette.divider}`,
         textAlign: 'left',
         padding: '0 0 0 4px',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
         backgroundColor: `rgb(from ${theme.vars.palette.background.paper} r g b)`,
-
+        '&:not(:last-of-type)': {
+          borderRight: `1px solid ${theme.vars.palette.divider}`,
+        },
         '&.td-id': {
           color: theme.vars.palette.info.main,
           fontWeight: 'bold',
@@ -113,12 +114,15 @@ export const DatatableGlobalStyles = () => (
         alignItems: 'center',
         width: '100%',
         minWidth: 20,
-        borderRight: `1px solid ${theme.vars.palette.divider}`,
         textAlign: 'left',
         padding: '0 0 0 4px',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
+
+        '&:not(:last-of-type)': {
+          borderRight: `1px solid ${theme.vars.palette.divider}`,
+        },
       },
 
       '.react-resizable': {

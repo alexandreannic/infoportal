@@ -52,23 +52,20 @@ function NewForm() {
   }, [])
 
   return (
-    <Page width="xs">
-      <Core.Panel>
-        <Core.PanelHead>{m.source}</Core.PanelHead>
-        <Core.PanelBody>
-          <Core.RadioGroup value={type} sx={{flex: 1}} inline onChange={setType}>
-            {Obj.keys(Ip.Form.Type).map(asset => (
-              <Core.RadioGroupItem
-                key={asset}
-                hideRadio
-                value={asset}
-                title={<OptionBody color={Asset.color[asset]} icon={Asset.icon[asset]} label={m.formSource[asset]} />}
-                sx={{flex: 1}}
-              />
-            ))}
-          </Core.RadioGroup>
-        </Core.PanelBody>
-      </Core.Panel>
+    <Page width="xs" sx={{minHeight: undefined}}>
+      <Core.PanelWBody>
+        <Core.RadioGroup value={type} sx={{flex: 1}} inline onChange={setType}>
+          {Obj.keys(Ip.Form.Type).map(asset => (
+            <Core.RadioGroupItem
+              key={asset}
+              hideRadio
+              value={asset}
+              title={<OptionBody color={Asset.color[asset]} icon={Asset.icon[asset]} label={m.formSource[asset]} />}
+              sx={{flex: 1}}
+            />
+          ))}
+        </Core.RadioGroup>
+      </Core.PanelWBody>
       {type &&
         (() => {
           switch (type) {

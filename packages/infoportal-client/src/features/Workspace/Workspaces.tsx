@@ -25,7 +25,7 @@ function Workspaces() {
   return (
     <ProtectRoute>
       <Layout header={<AppHeader />}>
-        <Page>
+        <Page width="md">
           <Grid container spacing={2} sx={{mt: 1}}>
             <Core.AnimateList delay={50}>
               <Grid size={{xs: 6, sm: 4, md: 3}}>

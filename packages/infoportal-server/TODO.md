@@ -1,3 +1,4 @@
+- We cannot add kobo form twice, but what if the kobo form is "disconnected"? 
 - How to deal with FormVersion for a Form linked with Kobo? How to keep consistency after disconnecting from Kobo.
 
 - Rename Server -> Account

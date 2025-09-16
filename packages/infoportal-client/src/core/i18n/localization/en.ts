@@ -147,6 +147,7 @@ export const en = Object.freeze({
     Approved: 'Approved',
     createShema: 'Create schema',
     _formAction: {
+      rereunOnAllData: 'Re-run on all data',
       thisActionTargetAFormWithoutSchema: `This action is targeting a form that does have any schema deployed yet.`,
       actionSummary: 'Action summary',
       newAction: 'Create an Action',
@@ -338,6 +339,7 @@ export const en = Object.freeze({
     change: 'Change',
     includeColumns: `Include column's name`,
     successfullyEdited: (n: number) => `Successfully edited ${n} rows.`,
+    successfullyAdded: `Successfully added.`,
     table: 'Table',
     comparedToTotalAnswers: 'Based on total answers:',
     chart: 'Chart',

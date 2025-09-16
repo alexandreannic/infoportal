@@ -9,7 +9,6 @@ import {useMemo} from 'react'
 import {usePendingMutation} from '@/core/query/usePendingMutation.js'
 
 export class UseQueryForm {
-
   static getAccessibles(workspaceId: Ip.WorkspaceId) {
     const {apiv2} = useAppSettings()
     const {toastAndThrowHttpError} = useIpToast()
@@ -45,7 +44,8 @@ export class UseQueryForm {
     const {apiv2} = useAppSettings()
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
-    return useMutation<Ip.Form, ApiError, Ip.Form.Payload.Import>({
+    return usePendingMutation<Ip.Form, ApiError, Ip.Form.Payload.Import>({
+      getId: _ => _.uid,
       mutationFn: args => apiv2.kobo.importFromKobo({workspaceId, ...args}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)}),
       onError: toastHttpError,

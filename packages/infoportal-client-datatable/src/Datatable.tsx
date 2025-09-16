@@ -14,7 +14,7 @@ import {DatatableToolbar} from '@/DatatableToolbar'
 import {useConfig} from '@/DatatableConfig'
 
 export const Datatable = <T extends Row>({data, sx, ...props}: Props<T>) => {
-  if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} />
+  if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx} />
   const tableRef = React.useRef(null) as unknown as React.RefObject<HTMLDivElement>
   const defaultProps = useConfig().defaultProps
   return (

@@ -6,6 +6,10 @@ import {UseQueryForm} from '@/core/query/useQueryForm'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {Ip} from 'infoportal-api-sdk'
+import {useMemo} from 'react'
+import {seq} from '@axanc/ts-utils'
+import {useIpToast} from '@/core/useToast.js'
+import {Link} from '@tanstack/react-router'
 
 export const SelectKoboForm = ({
   workspaceId,
@@ -19,8 +23,16 @@ export const SelectKoboForm = ({
   const {api} = useAppSettings()
   const {m, formatDate} = useI18n()
   const t = useTheme()
+  const {toastSuccess} = useIpToast()
   const importFromKobo = UseQueryForm.importFromKobo(workspaceId)
   const queryForms = UseQueryForm.getAccessibles(workspaceId)
+
+  const formFromKoboMap = useMemo(() => {
+    if (!queryForms.data) return
+    return seq(queryForms.data)
+      .compactBy('kobo')
+      .groupByToMap(_ => _.kobo.koboId)
+  }, [queryForms.data])
 
   const queryKoboForms = useQuery({
     queryKey: queryKeys.koboForm(serverId),
@@ -28,80 +40,95 @@ export const SelectKoboForm = ({
   })
 
   return (
-    <Core.Panel>
-      <Core.PanelHead>{m.selectKoboForm}</Core.PanelHead>
-      <Core.PanelBody>
-        <Datatable.Component
-          getRowKey={_ => _.uid}
-          loading={queryKoboForms.isLoading || importFromKobo.isPending}
-          id="select-kobo-form"
-          sx={{
-            overflow: 'hidden',
-            border: `1px solid ${t.vars.palette.divider}`,
-            borderRadius: t.vars.shape.borderRadius,
-          }}
-          header={null}
-          data={queryKoboForms.data}
-          columns={[
-            {
-              id: m.live,
-              width: 0,
-              head: 'has_deployment',
-              type: 'select_one',
-              render: _ => {
-                return {
-                  value: '' + _.has_deployment,
-                  label: _.has_deployment ? (
-                    <Icon fontSize="small" color="success">
-                      check_circle
-                    </Icon>
-                  ) : (
-                    <Icon fontSize="small" color="error">
-                      block
-                    </Icon>
-                  ),
-                }
-              },
-            },
-            {id: 'uid', type: 'id', head: m.id, renderQuick: _ => _.uid},
-            {type: 'string', id: 'name', head: m.name, renderQuick: _ => _.name},
-            {
-              type: 'date',
-              id: 'date_created',
-              head: m.createdAt,
-              render: _ => {
-                return {
-                  value: _.date_created,
-                  label: formatDate(_.date_created),
-                }
-              },
-            },
-            {
-              type: 'number',
-              width: 0,
-              align: 'right',
-              id: 'deployment__submission_count',
-              head: m.submissions,
-              renderQuick: _ => _.deployment__submission_count,
-            },
-            {
-              id: 'actions',
-              width: 0,
-              align: 'right',
-              head: '',
-              renderQuick: form => (
-                <Core.Btn
-                  size="small"
-                  onClick={() => importFromKobo.mutateAsync({serverId, uid: form.uid}).then(onAdded)}
-                  disabled={!form.has_deployment || !queryForms.data || !!queryForms.data.find(_ => _.id === form.uid)}
-                >
-                  {m.add}
-                </Core.Btn>
+    <Datatable.Component
+      getRowKey={_ => _.uid}
+      loading={queryKoboForms.isLoading}
+      id="select-kobo-form"
+      contentProps={{
+        maxHeight: 600,
+      }}
+      sx={{
+        mb: 1,
+        overflow: 'hidden',
+        background: t.vars.palette.background.paper,
+        // border: `1px solid ${t.vars.palette.divider}`,
+        borderRadius: t.vars.shape.borderRadius,
+      }}
+      header={<Core.PanelTitle>{m.selectKoboForm}</Core.PanelTitle>}
+      data={queryKoboForms.data}
+      columns={[
+        {
+          id: m.live,
+          width: 40,
+          align: 'center',
+          head: '',
+          type: 'select_one',
+          render: _ => {
+            return {
+              value: '' + _.has_deployment,
+              label: _.has_deployment ? (
+                <Icon fontSize="small" color="success">
+                  check_circle
+                </Icon>
+              ) : (
+                <Icon fontSize="small" color="error">
+                  block
+                </Icon>
               ),
-            },
-          ]}
-        />
-      </Core.PanelBody>
-    </Core.Panel>
+            }
+          },
+        },
+        {id: 'uid', type: 'id', head: m.id, renderQuick: _ => _.uid},
+        {type: 'string', id: 'name', head: m.name, renderQuick: _ => _.name},
+        {
+          type: 'date',
+          id: 'date_created',
+          head: m.createdAt,
+          render: _ => {
+            return {
+              value: _.date_created,
+              label: formatDate(_.date_created),
+            }
+          },
+        },
+        {
+          type: 'number',
+          width: 70,
+          align: 'right',
+          id: 'deployment__submission_count',
+          head: m.submissions,
+          renderQuick: _ => _.deployment__submission_count,
+        },
+        {
+          id: 'actions',
+          width: 65,
+          align: 'right',
+          head: '',
+          renderQuick: form => (
+            <Core.Btn
+              size="small"
+              loading={importFromKobo.pendingIds.has(form.uid)}
+              onClick={() =>
+                importFromKobo
+                  .mutateAsync({serverId, uid: form.uid})
+                  .then(_ => {
+                    return toastSuccess(m.successfullyAdded, {
+                      action: (
+                        <Link to="/$workspaceId/form/$formId" params={{workspaceId, formId: _.id}}>
+                          <Core.Btn endIcon={<Icon>arrow_forward</Icon>}>{m.open}</Core.Btn>
+                        </Link>
+                      ),
+                    })
+                  })
+                  .then(onAdded)
+              }
+              disabled={!form.has_deployment || !formFromKoboMap || formFromKoboMap.has(form.uid)}
+            >
+              {m.add}
+            </Core.Btn>
+          ),
+        },
+      ]}
+    />
   )
 }

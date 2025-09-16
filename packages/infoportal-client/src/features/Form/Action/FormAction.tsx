@@ -1,5 +1,5 @@
 import {createRoute, Link} from '@tanstack/react-router'
-import {Core, Page} from '@/shared/index.js'
+import {Core} from '@/shared/index.js'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {useMemo} from 'react'
