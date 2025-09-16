@@ -30,7 +30,7 @@ import {OrderBy} from '@axanc/react-hooks'
 import {FilterTypeMapping, Option, Row, SortBy} from '@/core/types'
 import {seq} from '@axanc/ts-utils'
 
-export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
+export type PopupFilterProps = Pick<PopoverProps, 'anchorEl'> & {
   sortBy?: SortBy
   onOrderByChange?: (_?: OrderBy) => void
   onClose?: () => void
@@ -67,7 +67,7 @@ export type DatatableFilterDialogProps = Pick<PopoverProps, 'anchorEl'> & {
       }
   )
 
-export const DatatableFilterModal = ({
+export const PopupFilter = ({
   data,
   sortBy,
   onOrderByChange,
@@ -82,9 +82,8 @@ export const DatatableFilterModal = ({
   options,
   filterActive,
   type,
-}: DatatableFilterDialogProps) => {
+}: PopupFilterProps) => {
   const {m} = useConfig()
-  const dispatch = useCtx(_ => _.dispatch)
 
   const [innerValue, setInnerValue] = useState<any>(value)
   useEffect(() => {
@@ -271,7 +270,7 @@ export const DatatableFilterDialogNumber = ({
   data,
   columnId,
   onChange,
-}: Pick<DatatableFilterDialogProps, 'data' | 'columnId'> & {
+}: Pick<PopupFilterProps, 'data' | 'columnId'> & {
   value: FilterTypeMapping['number']
   onChange: Dispatch<SetStateAction<FilterTypeMapping['number']>>
 }) => {

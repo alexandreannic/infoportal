@@ -4,7 +4,7 @@ import {Box, LinearProgress, SxProps, Theme} from '@mui/material'
 import {DatatableHead} from '@/head/DatatableHead'
 import {Provider, useCtx} from '@/core/DatatableContext'
 import {PopupStats} from '@/popup/PopupStats'
-import {DatatableFilterModal} from '@/popup/PopupFilter'
+import {PopupFilter} from '@/popup/PopupFilter'
 import {DatatableRow} from '@/DatatableRow'
 import {FilterValue, Props, Row} from '@/core/types'
 import {PopupSelectedCell} from '@/popup/PopupSelectedCell'
@@ -150,7 +150,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
                 return
               }
               return (
-                <DatatableFilterModal
+                <PopupFilter
                   data={dataFilteredExceptBy(popup.columnId) ?? []}
                   title={column.head}
                   anchorEl={popup.event.target}

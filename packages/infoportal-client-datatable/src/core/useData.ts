@@ -4,9 +4,9 @@ import {fnSwitch, KeyOf, map, Obj} from '@axanc/ts-utils'
 import {Column, Filters, FilterTypeMapping, Row, SortBy} from '@/core/types'
 import {Utils} from '@/helper/utils'
 
-export type UseDatatableData<T extends Row> = ReturnType<typeof useDatatableData<T>>
+export type UseData<T extends Row> = ReturnType<typeof useData<T>>
 
-export const useDatatableData = <T extends Row>({
+export const useData = <T extends Row>({
   data: _data,
   filters,
   sortBy,
@@ -44,7 +44,7 @@ export const useDatatableData = <T extends Row>({
   const filteredAndSortedData = useMemo(() => {
     return (
       map(filteredData, sortBy, (d, sortBy) => {
-        const col = colIndex[sortBy.orderBy]
+        const col = colIndex[sortBy.column]
         if (!col) {
           return filteredData
         }

@@ -1,9 +1,9 @@
 import React, {ReactNode, useEffect, useReducer} from 'react'
 import {Action, datatableReducer, initialState, State} from '@/core/reducer'
 import {KeyOf} from '@axanc/ts-utils'
-import {useDatatableData} from '@/core/useDatatableData'
+import {useData} from '@/core/useData.js'
 import {createContext, useContextSelector} from 'use-context-selector'
-import {useDatatableOptions} from '@/core/useDatatableOptions'
+import {useDatatableOptions} from '@/core/useOptions.js'
 import {UseDatatableColumns, useDatatableColumns} from '@/core/useColumns'
 import {UseCellSelection, useCellSelectionEngine} from '@/core/useCellSelectionEngine'
 import {UseCellSelectionComputed, useCellSelectionComputed} from '@/core/useCellSelectionComputed'
@@ -70,7 +70,7 @@ export const Provider = <T extends Row>(
     baseColumns: props.columns,
   })
 
-  const {filteredAndSortedData, filterExceptBy} = useDatatableData<T>({
+  const {filteredAndSortedData, filterExceptBy} = useData<T>({
     data: props.data,
     filters: state.filters,
     sortBy: state.sortBy,
