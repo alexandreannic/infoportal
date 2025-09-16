@@ -398,6 +398,16 @@ model FormAction {
   @@index([formId])
 }
 
+model FormActionExecReport {
+  id                  String    @id @default(uuid())
+  totalActions        Int
+  actionExecuted      Int
+  submissionsExecuted Int
+  startedAt           DateTime
+  endedAt             DateTime?
+  failed              String?
+}
+
 enum FormActionLogType {
   error
   log

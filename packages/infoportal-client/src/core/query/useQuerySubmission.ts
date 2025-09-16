@@ -17,7 +17,7 @@ export class UseQuerySubmission {
     workspaceId: Ip.WorkspaceId
     queryClient: QueryClient
   }) {
-    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.answers(formId), (old = {data: [], total: 0}) => {
+    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.submission(formId), (old = {data: [], total: 0}) => {
       const idsToDelete = new Set(submissionIds)
       const newData = old.data.filter(sub => !idsToDelete.has(sub.id))
       return {
@@ -44,7 +44,7 @@ export class UseQuerySubmission {
       return
     }
     const mapped = KoboMapper.mapSubmissionBySchema(schema.helper.questionIndex, Ip.Submission.map(submission))
-    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.answers(formId), (old = {data: [], total: 0}) => {
+    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.submission(formId), (old = {data: [], total: 0}) => {
       return {
         total: old.total + 1,
         data: [...old.data, mapped],
@@ -63,7 +63,7 @@ export class UseQuerySubmission {
     formId: Ip.FormId
     submissionIds: Ip.SubmissionId[]
   }) {
-    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.answers(formId), (old = {data: [], total: 0}) => {
+    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.submission(formId), (old = {data: [], total: 0}) => {
       return produce(old ?? {data: [], total: 0}, draft => {
         const idsToUpdate = new Set(submissionIds)
         for (const submission of draft.data) {
@@ -88,7 +88,7 @@ export class UseQuerySubmission {
     formId: Ip.FormId
     submissionIds: Ip.SubmissionId[]
   }) {
-    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.answers(formId), (old = {data: [], total: 0}) => {
+    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.submission(formId), (old = {data: [], total: 0}) => {
       return produce(old ?? {data: [], total: 0}, draft => {
         const idsToUpdate = new Set(submissionIds)
         for (const submission of draft.data) {
@@ -116,7 +116,7 @@ export class UseQuerySubmission {
     const querySchema = useQuerySchema({workspaceId, formId})
 
     const query = useQuery({
-      queryKey: queryKeys.answers(formId),
+      queryKey: queryKeys.submission(formId),
       queryFn: async () => {
         const answersPromise = apiv2.submission.search({workspaceId, formId})
         const schema = querySchema.data // ?? (await querySchema.refetch().then(r => r.data!))
@@ -128,7 +128,7 @@ export class UseQuerySubmission {
     })
 
     const set = (value: Ip.Paginate<Ip.Submission>) => {
-      queryClient.setQueryData(queryKeys.answers(formId), value)
+      queryClient.setQueryData(queryKeys.submission(formId), value)
     }
 
     const find = (submissionId: Ip.SubmissionId): Ip.Submission | undefined => {
@@ -148,7 +148,7 @@ export class UseQuerySubmission {
     return useMutation({
       mutationFn: (params: Ip.Submission.Payload.Submit) => apiv2.submission.submit(params),
       onSuccess: (data, variables) => {
-        queryClient.invalidateQueries({queryKey: queryKeys.answers(variables.formId)})
+        queryClient.invalidateQueries({queryKey: queryKeys.submission(variables.formId)})
       },
     })
   }

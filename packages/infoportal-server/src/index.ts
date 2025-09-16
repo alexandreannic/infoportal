@@ -93,7 +93,7 @@ const startApp = async (conf: AppConf) => {
     //   console.log(`Worker ${worker.process.pid} died`)
     // })
     new EmailService().initializeListeners()
-    FormActionTriggerService.startListening(prisma)
+    new FormActionTriggerService(prisma).startListening()
     // await new KoboSyncServer(prisma).syncApiAnswersToDbAll()
     if (conf.production) {
       new ScheduledTask(prisma).start()

@@ -261,7 +261,7 @@ export const DatabaseTableContent = ({
                     tooltip={m._koboDatabase.openForm}
                   />
                 ) : (
-                  <Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId: ctx.form.id}}>
+                  <Link to="/collect/$workspaceId/$formId" target="_blank" params={{workspaceId, formId: ctx.form.id}}>
                     <Core.IconBtn
                       disabled={ctx.form.deploymentStatus === 'archived'}
                       target="_blank"

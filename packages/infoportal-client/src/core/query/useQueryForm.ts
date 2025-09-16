@@ -84,7 +84,7 @@ export class UseQueryForm {
         queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
         queryClient.removeQueries({queryKey: queryKeys.form(workspaceId, formId)})
         queryClient.removeQueries({queryKey: queryKeys.schema(workspaceId, formId)})
-        queryClient.removeQueries({queryKey: queryKeys.answers(formId)})
+        queryClient.removeQueries({queryKey: queryKeys.submission(formId)})
         queryClient.removeQueries({queryKey: queryKeys.schemaByVersion(workspaceId, formId)})
       },
       onError: toastHttpError,

@@ -18,7 +18,7 @@ const onMutate = async (
     value: any
   },
 ) => {
-  const queryKey = queryKeys.answers(formId)
+  const queryKey = queryKeys.submission(formId)
   await queryClient.cancelQueries({queryKey})
   const previous = queryClient.getQueryData<Ip.Paginate<Submission>>(queryKey)
   if (previous) {
@@ -52,12 +52,12 @@ export const useQueryAnswerUpdate = () => {
 
       onError: (err, variables, context) => {
         if (context?.previous) {
-          queryClient.setQueryData(queryKeys.answers(variables.formId), context.previous)
+          queryClient.setQueryData(queryKeys.submission(variables.formId), context.previous)
         }
       },
 
       onSettled: (data, error, variables) => {
-        queryClient.invalidateQueries({queryKey: queryKeys.answers(variables.formId)})
+        queryClient.invalidateQueries({queryKey: queryKeys.submission(variables.formId)})
       },
     }),
 
@@ -77,12 +77,12 @@ export const useQueryAnswerUpdate = () => {
 
       onError: (err, variables, context) => {
         if (context?.previous) {
-          queryClient.setQueryData(queryKeys.answers(variables.formId), context.previous)
+          queryClient.setQueryData(queryKeys.submission(variables.formId), context.previous)
         }
       },
 
       onSettled: (data, error, variables) => {
-        queryClient.invalidateQueries({queryKey: queryKeys.answers(variables.formId)})
+        queryClient.invalidateQueries({queryKey: queryKeys.submission(variables.formId)})
       },
     }),
 
@@ -92,11 +92,11 @@ export const useQueryAnswerUpdate = () => {
       },
 
       onMutate: async ({formId, answerIds}) => {
-        await queryClient.cancelQueries({queryKey: queryKeys.answers(formId)})
+        await queryClient.cancelQueries({queryKey: queryKeys.submission(formId)})
 
-        const previousData = queryClient.getQueryData<Ip.Paginate<Submission>>(queryKeys.answers(formId))
+        const previousData = queryClient.getQueryData<Ip.Paginate<Submission>>(queryKeys.submission(formId))
 
-        queryClient.setQueryData<Ip.Paginate<Submission>>(queryKeys.answers(formId), old => {
+        queryClient.setQueryData<Ip.Paginate<Submission>>(queryKeys.submission(formId), old => {
           if (!old) return old
           const idsIndex = new Set(answerIds)
           return {
@@ -110,12 +110,12 @@ export const useQueryAnswerUpdate = () => {
 
       onError: (_err, {formId}, context) => {
         if (context?.previousData) {
-          queryClient.setQueryData(queryKeys.answers(formId), context.previousData)
+          queryClient.setQueryData(queryKeys.submission(formId), context.previousData)
         }
       },
 
       onSettled: (_data, _error, {formId}) => {
-        queryClient.invalidateQueries({queryKey: queryKeys.answers(formId)})
+        queryClient.invalidateQueries({queryKey: queryKeys.submission(formId)})
       },
     }),
   }

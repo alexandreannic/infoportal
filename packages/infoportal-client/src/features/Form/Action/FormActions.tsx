@@ -26,6 +26,7 @@ export function FormActions() {
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
   const queryActionGet = UseQueryFromAction.getByDbId(workspaceId, formId)
+  const queryRunAllActionByForm = UseQueryFromAction.runAllActionByForm(workspaceId, formId)
   const actionId = useMatch({from: formActionRoute.id, shouldThrow: false})?.params.actionId as Ip.Form.ActionId
   return (
     <TabContent
@@ -40,7 +41,16 @@ export function FormActions() {
       }}
     >
       <Panel sx={{mb: 0, px: 1, display: 'flex', alignItems: 'center', gridRow: 1, gridColumn: '1 / 3'}}>
-        <Core.Btn>Test</Core.Btn>
+        <Core.Modal
+          title={m._formAction.reRunOnAllData}
+          loading={queryRunAllActionByForm.isPending}
+          content={<div dangerouslySetInnerHTML={{__html: m._formAction.reRunOnAllDataDetails}} />}
+          onConfirm={close => queryRunAllActionByForm.mutateAsync().then(close)}
+        >
+          <Core.Btn icon="refresh" variant="contained">
+            {m._formAction.reRunOnAllData}
+          </Core.Btn>
+        </Core.Modal>
       </Panel>
       <Core.Panel
         sx={{

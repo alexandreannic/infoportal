@@ -22,6 +22,17 @@ export class UseQueryFromAction {
     })
   }
 
+  static readonly runAllActionByForm = (workspaceId: Ip.WorkspaceId, formId: Ip.FormId) => {
+    const {apiv2} = useAppSettings()
+    const queryClient = useQueryClient()
+    const {toastHttpError} = useIpToast()
+    return useMutation({
+      mutationFn: () => apiv2.form.action.runAllActionsByForm({workspaceId, formId}),
+      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.submission(formId)}),
+      onError: toastHttpError,
+    })
+  }
+
   static readonly update = (workspaceId: Ip.WorkspaceId, formId: Ip.FormId) => {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()

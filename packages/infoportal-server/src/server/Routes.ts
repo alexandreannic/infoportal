@@ -32,6 +32,7 @@ import {GroupService} from '../feature/group/GroupService.js'
 import {GroupItemService} from '../feature/group/GroupItemService.js'
 import {FormActionService} from '../feature/form/action/FormActionService.js'
 import {FormActionLogService} from '../feature/form/action/FormActionLogService.js'
+import {FormActionTriggerService} from '../feature/form/action/FormActionTriggerService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -159,6 +160,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const metrics = new MetricsService(prisma)
   const user = UserService.getInstance(prisma)
   const formAction = new FormActionService(prisma)
+  const formActionTrigger = new FormActionTriggerService(prisma)
   const formActionLog = new FormActionLogService(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
@@ -544,16 +546,21 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .catch(handleError),
         getByDbId: _ =>
           auth2(_)
-            .then(({params}) => formAction.getByFormSmartId(params))
+            .then(({params}) => formAction.getByForm(params))
+            .then(ok200)
+            .catch(handleError),
+        runAllActionsByForm: _ =>
+          auth2(_)
+            .then(({params}) => formActionTrigger.runAllActionByForm(params))
             .then(ok200)
             .catch(handleError),
         log: {
           search: _ =>
-          auth2(_)
-            .then(({params, body}) => formActionLog.search({...params, ...body}))
-            .then(ok200)
-            .catch(handleError),
-        }
+            auth2(_)
+              .then(({params, body}) => formActionLog.search({...params, ...body}))
+              .then(ok200)
+              .catch(handleError),
+        },
       },
     },
     metrics: {
