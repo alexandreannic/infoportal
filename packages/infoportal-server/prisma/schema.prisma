@@ -376,15 +376,17 @@ enum FormActionType {
 }
 
 model FormAction {
-  id          String          @id @default(uuid())
-  createdAt   DateTime        @default(now())
-  createdBy   String?
-  type        FormActionType
-  name        String
-  disabled    Boolean?
-  description String?
-  body        String?
-  logs        FormActionLog[]
+  id           String          @id @default(uuid())
+  createdAt    DateTime        @default(now())
+  createdBy    String?
+  type         FormActionType
+  name         String
+  disabled     Boolean?
+  description  String?
+  body         String?
+  bodyErrors   Int?
+  bodyWarnings Int?
+  logs         FormActionLog[]
 
   form   Form   @relation("OwnerFormToAction", fields: [formId], references: [id])
   formId String

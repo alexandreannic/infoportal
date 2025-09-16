@@ -147,6 +147,7 @@ export const en = Object.freeze({
     Approved: 'Approved',
     createShema: 'Create schema',
     _formAction: {
+      actionWithErrorWontRun: `This action cannot run because it contains errors.`,
       rereunOnAllData: 'Re-run on all data',
       thisActionTargetAFormWithoutSchema: `This action is targeting a form that does have any schema deployed yet.`,
       actionSummary: 'Action summary',

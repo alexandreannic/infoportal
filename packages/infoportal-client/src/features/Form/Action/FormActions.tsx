@@ -1,17 +1,17 @@
-import {createRoute, Link, Outlet, useMatch} from '@tanstack/react-router'
+import {createRoute, Outlet, useMatch} from '@tanstack/react-router'
 import {Core} from '@/shared/index.js'
-import {Box, CircularProgress, Skeleton, Switch, useTheme} from '@mui/material'
+import {Box, Skeleton, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {FormActionCreate} from '@/features/Form/Action/FormActionCreate.js'
 import {formRoute} from '@/features/Form/Form.js'
 import {FormActionLog} from '@/features/Form/Action/FormActionLog.js'
-import {UseQueryForm} from '@/core/query/useQueryForm.js'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {formActionRoute} from '@/features/Form/Action/FormAction.js'
 import {mapFor} from '@axanc/ts-utils'
 import {Panel} from '@infoportal/client-core'
+import {FormActionRow} from '@/features/Form/Action/FormActionRow.js'
 
 export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -61,7 +61,7 @@ export function FormActions() {
         </Core.Modal>
         {queryActionGet.isLoading && mapFor(3, i => <Skeleton key={i} height={50} sx={{transform: 'none', mb: 1}} />)}
         {queryActionGet.data?.map(_ => (
-          <ActionRow workspaceId={workspaceId} action={_} key={_.id} />
+          <FormActionRow workspaceId={workspaceId} action={_} key={_.id} />
         ))}
       </Core.Panel>
       <Box
@@ -87,71 +87,5 @@ export function FormActions() {
         </Core.Panel>
       </Box>
     </TabContent>
-  )
-}
-
-function ActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: Ip.Form.Action}) {
-  const t = useTheme()
-  const {m, formatDate} = useI18n()
-  const queryActionUpdate = UseQueryFromAction.update(workspaceId, action.formId)
-  const queryForms = UseQueryForm.getAsMap(workspaceId)
-  const isUpdating = queryActionUpdate.pendingIds.has(action.id)
-  return (
-    <Link
-      to="/$workspaceId/form/$formId/action/$actionId"
-      params={{workspaceId, formId: action.formId, actionId: action.id}}
-    >
-      {({isActive}) => (
-        <Box
-          sx={{
-            '&:hover': {
-              // background: Core.alphaVar(t.vars.palette.primary.main, 0.08),
-              // mx: -0.5,
-              // px: 1,
-            },
-            ...(isActive && {
-              // mt: 1,
-              // mb: 1,
-              mx: -0.5,
-              px: 1,
-              color: t.palette.primary.main,
-              background: Core.alphaVar(t.vars.palette.primary.main, 0.18),
-              // border: 'none',
-            }),
-            borderRadius: t.vars.shape.borderRadius,
-            transition: t.transitions.create('all'),
-            py: 0.5,
-            my: 0.5,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Box sx={{flex: 1}}>
-            <Box>
-              <Core.Txt bold truncate>
-                {action.name}
-              </Core.Txt>
-              <Core.Txt color="disabled" sx={{ml: 2}}>
-                {formatDate(action.createdAt)}
-              </Core.Txt>
-            </Box>
-            <Core.Txt truncate>{queryForms?.get(action.targetFormId)?.name}</Core.Txt>
-          </Box>
-          {isUpdating && <CircularProgress size={24} />}
-          <Switch
-            size="small"
-            disabled={isUpdating}
-            sx={{justifySelf: 'flex-end'}}
-            checked={!action.disabled}
-            onClick={e => {
-              e.stopPropagation()
-              e.preventDefault()
-              queryActionUpdate.mutateAsync({id: action.id, disabled: !action.disabled})
-            }}
-          />
-          <Core.IconBtn sx={{justifySelf: 'flex-end', mr: -1}}>chevron_right</Core.IconBtn>
-        </Box>
-      )}
-    </Link>
   )
 }

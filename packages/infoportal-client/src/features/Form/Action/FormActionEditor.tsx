@@ -1,30 +1,44 @@
 import {Box, Icon, Tab, Tabs, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n/index.js'
 import {useEffect, useMemo, useRef, useState} from 'react'
-import * as monaco from 'monaco-editor'
 import {Obj} from '@axanc/ts-utils'
-import Editor from '@monaco-editor/react'
+import Editor, {useMonaco} from '@monaco-editor/react'
+import type * as monaco from 'monaco-editor'
 // @ts-ignore
 import {constrainedEditor} from 'constrained-editor-plugin'
 import {Core} from '@/shared/index.js'
 
 const monacoBg = '#1e1e1e'
 
-export function FormActionEditor({
+type Props = {
+  saving?: boolean
+  onSave: (_: {body: string; bodyErrors: number; bodyWarnings: number}) => void
+  body?: string
+  inputType: string
+  outputType: string
+}
+
+export function FormActionEditor(props: Props) {
+  const monaco = useMonaco()
+  if (monaco) {
+    return <FormActionEditorWithMonaco monaco={monaco} {...props} />
+  }
+  return null
+}
+
+function FormActionEditorWithMonaco({
   body = getDefaultBody(),
   saving,
   onSave,
   inputType,
+  monaco,
   outputType,
-}: {
-  saving?: boolean
-  onSave: (_: string) => void
-  body?: string
-  inputType: string
-  outputType: string
+}: Props & {
+  monaco: NonNullable<ReturnType<typeof useMonaco>>
 }) {
   const t = useTheme()
   const {m} = useI18n()
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
 
   const files = useMemo(() => {
     return {
@@ -48,27 +62,28 @@ export function FormActionEditor({
   }, [body, inputType, outputType])
 
   const [activePath, setActivePath] = useState<keyof typeof files>('/action.ts')
-
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
-  const monacoRef = useRef<typeof monaco | null>(null)
-
   const [bodyChanges, setBodyChanges] = useState<string>(body)
 
-  useCaptureCtrlS(() => onSave(bodyChanges))
+  const handleSave = () => {
+    const model = monaco.Uri.file('/action.ts')
+    if (!model) throw new Error('Failed to load model.')
+    const markers = monaco.editor?.getModelMarkers({resource: model})
+    const errors = markers.filter(_ => _.severity >= monaco.MarkerSeverity.Error).length
+    const warnings = markers.filter(
+      _ => _.severity >= monaco.MarkerSeverity.Warning && _.severity < monaco.MarkerSeverity.Error,
+    ).length
+    onSave({body: bodyChanges, bodyWarnings: warnings, bodyErrors: errors})
+  }
 
-  useEffect(() => {
-    setBodyChanges(body)
-  }, [body])
-
-  let restrictions: any[] = []
+  useCaptureCtrlS(handleSave)
+  useEffect(() => setBodyChanges(body), [body])
 
   useEffect(() => {
     const editor = editorRef.current
-    const mon = monacoRef.current
-    if (!editor || !mon) return
+    if (!editor) return
 
-    const uri = mon.Uri.file(activePath)
-    const model = mon.editor.getModel(uri)
+    const uri = monaco.Uri.file(activePath)
+    const model = monaco.editor.getModel(uri)
     if (!model) return
 
     editor.updateOptions({readOnly: false})
@@ -81,9 +96,10 @@ export function FormActionEditor({
       })
   }, [activePath])
 
+  let restrictions: any[] = []
+
   return (
     <Box sx={{height: '100%', borderRadius: t.vars.shape.borderRadius, overflow: 'hidden', background: monacoBg}}>
-      {/*<Core.Btn variant="outlined">{m.save}</Core.Btn>*/}
       <Tabs value={activePath} onChange={(e, _) => setActivePath(_)} sx={{background: 'none', mb: 0.5}}>
         {Obj.keys(files).map(_ => (
           <Tab
@@ -104,7 +120,7 @@ export function FormActionEditor({
         ))}
         <Core.Btn
           loading={saving}
-          onClick={() => onSave(bodyChanges)}
+          onClick={handleSave}
           disabled={bodyChanges === body}
           variant="contained"
           size="small"
@@ -124,8 +140,6 @@ export function FormActionEditor({
         }}
         onMount={(editor, monaco) => {
           editorRef.current = editor
-          monacoRef.current = monaco
-
           Obj.entries(files).forEach(([path, {value, isReadonly}]) => {
             let model = monaco.editor.getModel(monaco.Uri.file(path))
             if (!model) monaco.editor.createModel(value, 'typescript', monaco.Uri.file(path))
@@ -135,9 +149,6 @@ export function FormActionEditor({
             )
           })
           editor.setModel(monaco.editor.getModel(monaco.Uri.file(activePath)))
-          editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-            onSave(bodyChanges)
-          })
           // Readonly 1st row of action.ts
           const model = editor.getModel()!
           const constrainedInstance = constrainedEditor(monaco)
@@ -147,7 +158,7 @@ export function FormActionEditor({
           })
           constrainedInstance.addRestrictionsTo(model, restrictions)
         }}
-        beforeMount={(monacoInstance: typeof monaco) => {
+        beforeMount={monacoInstance => {
           monacoInstance.languages.typescript.typescriptDefaults.setCompilerOptions({
             target: monaco.languages.typescript.ScriptTarget.ES2020,
             strict: true,
@@ -164,26 +175,27 @@ export function FormActionEditor({
 }
 
 function getMetaInterface() {
-  return `// Meta Data
-    export type Submission<T extends Record<string, any>> = {
-      id: string
-      submissionTime: Date
-      submittedBy: string
-      answers: T
-      start?: Date
-      end?: Date
-      version: string
-      formId: string
-      validationStatus: 'Approved' | 'Pending' | 'Rejected' | 'Flagged' | 'UnderReview' 
-      attachments: {
-        download_url: string;
-        filename: string;
-        download_small_url: string;
-        question_xpath: string;
-        id: number,;
-      }[],
-    }
-  `
+  return [
+    `// Meta Data`,
+    `export type Submission<T extends Record<string, any>> = {`,
+    `  id: string`,
+    `  submissionTime: Date`,
+    `  submittedBy: string`,
+    `  answers: T`,
+    `  start?: Date`,
+    `  end?: Date`,
+    `  version: string`,
+    `  formId: string`,
+    `  validationStatus: 'Approved' | 'Pending' | 'Rejected' | 'Flagged' | 'UnderReview'`,
+    `  attachments: {`,
+    `    download_url: string`,
+    `    filename: string`,
+    `    download_small_url: string`,
+    `    question_xpath: string`,
+    `    id: number`,
+    `  }[]`,
+    `}`,
+  ].join('\n')
 }
 
 function getDefaultBody() {

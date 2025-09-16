@@ -70,7 +70,7 @@ export function FormAction({sx, ...props}: BoxProps) {
             outputType={interfaceOutput.data}
             body={queryAction.data.body ?? undefined}
             onSave={body => {
-              queryActionUpdate.mutateAsync({id: queryAction.data!.id, body})
+              queryActionUpdate.mutateAsync({id: queryAction.data!.id, ...body})
             }}
           />
         ) : (

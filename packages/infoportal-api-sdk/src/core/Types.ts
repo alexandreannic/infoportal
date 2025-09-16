@@ -428,6 +428,8 @@ export namespace Ip {
           disabled?: boolean
           workspaceId: WorkspaceId
           body?: string
+          bodyErrors?: number
+          bodyWarnings?: number
           name?: string
           description?: string
         }
