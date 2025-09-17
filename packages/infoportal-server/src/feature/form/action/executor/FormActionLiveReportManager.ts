@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client'
-import {Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
 
 type LiveReport = Omit<Ip.Form.Action.ExecReport, 'id'>
 
@@ -38,14 +38,19 @@ export class FormActionLiveReportManager {
 
   async finalize(formId: Ip.FormId, failed?: string) {
     const report = this.liveReportMap.get(formId)
-    if (!report) return
+    if (!report) throw new HttpError.InternalServerError(`Failed to fetch execution report.`)
     this.liveReportMap.delete(formId)
     return this.prisma.formActionExecReport.create({
       data: {...report, endedAt: new Date(), failed: failed ?? null},
     })
   }
 
-  get(formId: Ip.FormId) {
-    return this.liveReportMap.get(formId)
+  get(formId: Ip.FormId): Ip.Form.Action.ExecReport | undefined {
+    const liveReport = this.liveReportMap.get(formId)
+    if (!liveReport) return
+    return {
+      id: '' as any,
+      ...liveReport,
+    }
   }
 }

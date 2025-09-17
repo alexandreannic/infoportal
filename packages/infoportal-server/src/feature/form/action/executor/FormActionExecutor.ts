@@ -7,8 +7,9 @@ import {SubmissionService} from '../../submission/SubmissionService.js'
 import {FormActionLiveReportManager} from './FormActionLiveReportManager.js'
 import {FormActionErrorHandler} from './FormActionErrorHandler.js'
 import {Worker} from '@infoportal/action-compiler'
-import {seq} from '@axanc/ts-utils'
+import {chunkify, delay, seq, sleep} from '@axanc/ts-utils'
 import {PromisePool} from '@supercharge/promise-pool'
+import {appConf} from '../../../../core/conf/AppConf.js'
 
 export class FormActionExecutor {
   private liveReport = FormActionLiveReportManager.getInstance(this.prisma)
@@ -20,6 +21,7 @@ export class FormActionExecutor {
     private submission = new SubmissionService(prisma),
     private event = app.event,
     private log = app.logger('FormActionTriggerService'),
+    private conf = appConf,
   ) {}
 
   readonly startListening = () => {
@@ -43,7 +45,7 @@ export class FormActionExecutor {
   }: {
     workspaceId: Ip.WorkspaceId
     formId: Ip.FormId
-  }): Promise<Ip.Form.Action.ExecReport | undefined> => {
+  }): Promise<Ip.Form.Action.ExecReport> => {
     if (this.liveReport.has(formId)) {
       throw new HttpError.Conflict(`An execution is already running for ${formId}`)
     }
@@ -68,17 +70,16 @@ export class FormActionExecutor {
     this.liveReport.start(formId, actions.length)
     this.log.info(`Executing ${formId}: ${actions.length} actions...`)
     try {
-      await PromisePool.withConcurrency(5)
+      await PromisePool.withConcurrency(1)
         .for(actions)
         .process(async action => {
           const submissions = await this.submission.searchAnswers({workspaceId, formId: action.targetFormId})
           this.log.info(
             `Executing ${formId}: Action ${action.id}: ${submissions.total} submissions from Form ${action.targetFormId}`,
           )
-          await this.runActionOnSubmission({workspaceId, action, submissions: submissions.data})
+          await this.runActionOnSubmission({workspaceId, formId, action, submissions: submissions.data})
           this.liveReport.update(formId, prev => ({
             actionExecuted: prev.actionExecuted + 1,
-            submissionsExecuted: prev.submissionsExecuted + submissions.total,
           }))
         })
       return await this.liveReport.finalize(formId)
@@ -102,7 +103,7 @@ export class FormActionExecutor {
     return Promise.all(
       actions
         .filter(a => !!a.body)
-        .map(action => this.runActionOnSubmission({workspaceId, action, submissions: [submission]})),
+        .map(action => this.runActionOnSubmission({workspaceId, action, formId, submissions: [submission]})),
     )
   }
 
@@ -110,7 +111,9 @@ export class FormActionExecutor {
     workspaceId,
     action,
     submissions,
+    formId,
   }: {
+    formId: Ip.FormId
     workspaceId: Ip.WorkspaceId
     action: Ip.Form.Action
     submissions: Ip.Submission[]
@@ -122,32 +125,43 @@ export class FormActionExecutor {
       try {
         const jsCode = worker.transpile(action.body).outputText
 
-        const results = await Promise.all(
-          submissions.map(async s => {
+        const results = await PromisePool.withConcurrency(1000)
+          .for(submissions)
+          .process(async s => {
             const res = await worker.run(jsCode, s)
             if (res.error) {
               throw new HttpError.BadRequest(`Failed to run action ${action.id} on submission ${s.id}`)
             }
             return {output: res.result, submissionId: s.id}
-          }),
-        )
+          })
+        if (results.errors.length > 0) throw new HttpError.InternalServerError(JSON.stringify(results.errors))
 
-        const data = seq(results)
+        const data = seq(results.results)
           .compactBy('output')
           .flatMap(r => [r.output].flat().map(output => ({output, submissionId: r.submissionId})))
           .get()
 
-        await this.submission.createMany({
-          skipDuplicates: false,
-          data: data.map(d => ({
-            id: SubmissionService.genId(),
-            originId: d.submissionId,
-            uuid: '',
-            attachments: [],
-            submissionTime: new Date(),
-            formId: action.formId,
-            answers: d.output,
-          })),
+        await chunkify({
+          data,
+          concurrency: 1,
+          size: this.conf.db.maxPreparedStatementParams,
+          fn: async data => {
+            await this.submission.createMany({
+              skipDuplicates: false,
+              data: data.map(d => ({
+                id: SubmissionService.genId(),
+                originId: d.submissionId,
+                uuid: '',
+                attachments: [],
+                submissionTime: new Date(),
+                formId: action.formId,
+                answers: d.output,
+              })),
+            })
+            this.liveReport.update(formId, prev => ({
+              submissionsExecuted: prev.submissionsExecuted + data.length,
+            }))
+          },
         })
       } catch (e) {
         await this.errorHandler.handle(e, {actionId: action.id})

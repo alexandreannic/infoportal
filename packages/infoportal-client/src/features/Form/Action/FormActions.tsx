@@ -10,8 +10,8 @@ import {FormActionLog} from '@/features/Form/Action/FormActionLog.js'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {formActionRoute} from '@/features/Form/Action/FormAction.js'
 import {mapFor} from '@axanc/ts-utils'
-import {Panel} from '@infoportal/client-core'
 import {FormActionRow} from '@/features/Form/Action/FormActionRow.js'
+import {FormActionsExecutorPanel} from '@/features/Form/Action/FormActionsExecutorPanel.js'
 
 export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -26,8 +26,8 @@ export function FormActions() {
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
   const queryActionGet = UseQueryFromAction.getByDbId(workspaceId, formId)
-  const queryRunAllActionByForm = UseQueryFromAction.runAllActionByForm(workspaceId, formId)
   const actionId = useMatch({from: formActionRoute.id, shouldThrow: false})?.params.actionId as Ip.Form.ActionId
+
   return (
     <TabContent
       width="full"
@@ -40,18 +40,7 @@ export function FormActions() {
         minHeight: 0,
       }}
     >
-      <Panel sx={{mb: 0, px: 1, display: 'flex', alignItems: 'center', gridRow: 1, gridColumn: '1 / 3'}}>
-        <Core.Modal
-          title={m._formAction.reRunOnAllData}
-          loading={queryRunAllActionByForm.isPending}
-          content={<div dangerouslySetInnerHTML={{__html: m._formAction.reRunOnAllDataDetails}} />}
-          onConfirm={(e, close) => queryRunAllActionByForm.mutateAsync().then(close)}
-        >
-          <Core.Btn icon="refresh" variant="contained">
-            {m._formAction.reRunOnAllData}
-          </Core.Btn>
-        </Core.Modal>
-      </Panel>
+      <FormActionsExecutorPanel workspaceId={workspaceId} formId={formId} />
       <Core.Panel
         sx={{
           p: 1,

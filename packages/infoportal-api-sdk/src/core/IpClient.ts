@@ -14,8 +14,9 @@ import {workspaceInvitationClient} from '../contract/workspace/ContractWorkspace
 import {metricsClient} from '../contract/ContractMetrics.js'
 import {userClient} from '../contract/ContractUser.js'
 import {groupClient} from '../contract/ContractGroup.js'
-import {formActionClient} from '../contract/form/ContractFormAction.js'
-import {formActionLogClient} from '../contract/form/ContractFormActionLog.js'
+import {formActionClient} from '../contract/form/action/ContractFormAction.js'
+import {formActionLogClient} from '../contract/form/action/ContractFormActionLog.js'
+import {formActionReportClient} from '../contract/form/action/ContractFormActionReport.js'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -46,6 +47,7 @@ export const buildIpClient = (baseUrl: string) => {
       action: {
         ...formActionClient(client),
         log: formActionLogClient(client),
+        report: formActionReportClient(client),
       },
     },
     user: userClient(client, baseUrl),

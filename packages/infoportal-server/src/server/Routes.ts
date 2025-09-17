@@ -122,8 +122,9 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   }
 
   const okOrNotFound = <T>(
-    body: T,
-  ): {status: SuccessfulHttpStatusCode; body: T} | {status: ErrorHttpStatusCode; body: ErrBody} => {
+    body: T | undefined,
+  ): T extends undefined ? {status: 404; body: ErrBody} : {status: SuccessfulHttpStatusCode; body: T} => {
+    // @ts-ignore
     return body ? ok200(body) : notFound()
   }
 
@@ -556,6 +557,13 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .then(({params}) => formActionExecutor.runAllActionByForm(params))
             .then(ok200)
             .catch(handleError),
+        report: {
+          getLive: _ =>
+            auth2(_)
+              .then(({params}) => formActionLiveReport.get(params.formId))
+              .then(okOrNotFound)
+              .catch(handleError),
+        },
         log: {
           search: _ =>
             auth2(_)

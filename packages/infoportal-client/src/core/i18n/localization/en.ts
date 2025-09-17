@@ -146,7 +146,9 @@ export const en = Object.freeze({
     workspaceId: 'Workspace ID',
     Approved: 'Approved',
     createShema: 'Create schema',
+    runningEllipsis: 'Running...',
     _formAction: {
+      syncStarted: 'Synchronisation started...',
       reRunOnAllData: 'Re-run all actions',
       reRunOnAllDataDetails:
         'This will reset all data in the database and re-run all actions.\n' +
