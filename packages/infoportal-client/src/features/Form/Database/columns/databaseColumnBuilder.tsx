@@ -470,20 +470,15 @@ function version({m}: {m: Messages}): Datatable.Column.Props<Ip.Submission> {
 }
 
 function actions({
-  workspaceId,
-  formId,
   dialogs,
   isReadonly,
   koboEditEnketoUrl,
+  formType,
   m,
-}: {
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
-  dialogs: ReturnType<typeof useKoboDialogs>
-  isReadonly?: boolean
-  koboEditEnketoUrl?: DatabaseContext['koboEditEnketoUrl']
-  m: Messages
-}): Datatable.Column.Props<Ip.Submission> {
+}: Pick<
+  MetaProps,
+  'formType' | 'workspaceId' | 'formId' | 'dialogs' | 'isReadonly' | 'koboEditEnketoUrl' | 'm'
+>): Datatable.Column.Props<Ip.Submission> {
   return {
     group: {label: metaLabel, id: 'meta'},
     id: 'meta/actions' as const,
@@ -496,7 +491,7 @@ function actions({
         label: (
           <>
             <Datatable.IconBtn tooltip={m.view} children="visibility" onClick={() => dialogs.openView({answer: _})} />
-            {koboEditEnketoUrl && _.originId ? (
+            {formType === 'smart' ? undefined : koboEditEnketoUrl && _.originId ? (
               <Datatable.IconBtn
                 disabled={isReadonly}
                 tooltip={m.editKobo}
@@ -629,14 +624,14 @@ function validation({
   }
 }
 
-function byMeta({formType, ...props}: MetaProps): Datatable.Column.Props<any>[] {
+function byMeta(props: MetaProps): Datatable.Column.Props<any>[] {
   return [
     actions(props),
-    validation(props),
+    props.formType === 'smart' ? undefined : validation(props),
     id(props),
-    formType === 'smart' ? undefined : version(props),
+    props.formType === 'smart' ? undefined : version(props),
     submissionTime(props),
-  ].filter(_ => !!_) as const
+  ].filter(_ => !!_)
 }
 
 function MissingOption({value}: {value?: string}) {

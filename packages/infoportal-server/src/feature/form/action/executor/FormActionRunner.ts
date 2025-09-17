@@ -134,13 +134,13 @@ export class FormActionRunner {
             if (res.error) {
               throw new HttpError.BadRequest(`Failed to run action ${action.id} on submission ${s.id}`)
             }
-            return {output: res.result, submissionId: s.id}
+            return {output: res.result, submissionTime: s.submissionTime, submissionId: s.id}
           })
         if (results.errors.length > 0) throw new HttpError.InternalServerError(JSON.stringify(results.errors))
 
         const data = seq(results.results)
           .compactBy('output')
-          .flatMap(r => [r.output].flat().map(output => ({output, submissionId: r.submissionId})))
+          .flatMap(({output, ...res}) => [output].flat().map(_ => ({output: _, ...res})))
           .get()
 
         await chunkify({
@@ -155,7 +155,7 @@ export class FormActionRunner {
                 originId: d.submissionId,
                 uuid: '',
                 attachments: [],
-                submissionTime: new Date(),
+                submissionTime: d.submissionTime,
                 formId: action.formId,
                 answers: d.output,
               })),
