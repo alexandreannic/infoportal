@@ -42,7 +42,9 @@ export class FormActionExecutor {
   readonly runAllActionByForm = async ({
     workspaceId,
     formId,
+    startedBy,
   }: {
+    startedBy: Ip.User.Email
     workspaceId: Ip.WorkspaceId
     formId: Ip.FormId
   }): Promise<Ip.Form.Action.ExecReport> => {
@@ -67,7 +69,7 @@ export class FormActionExecutor {
     await this.prisma.formSubmission.deleteMany({where: {formId}})
 
     const actions = await this.action.getActivesByForm({formId})
-    this.liveReport.start(formId, actions.length)
+    this.liveReport.start(formId, actions.length, startedBy)
     this.log.info(`Executing ${formId}: ${actions.length} actions...`)
     try {
       await PromisePool.withConcurrency(1)

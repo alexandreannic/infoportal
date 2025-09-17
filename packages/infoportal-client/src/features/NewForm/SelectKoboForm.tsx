@@ -21,7 +21,7 @@ export const SelectKoboForm = ({
   onAdded?: () => void
 }) => {
   const {api} = useAppSettings()
-  const {m, formatDate} = useI18n()
+  const {m, formatDate, formatLargeNumber} = useI18n()
   const t = useTheme()
   const {toastSuccess} = useIpToast()
   const importFromKobo = UseQueryForm.importFromKobo(workspaceId)
@@ -78,26 +78,43 @@ export const SelectKoboForm = ({
             }
           },
         },
-        {id: 'uid', type: 'id', head: m.id, renderQuick: _ => _.uid},
-        {type: 'string', id: 'name', head: m.name, renderQuick: _ => _.name},
+        {id: 'uid', type: 'id', width: '1fr', head: m.id, renderQuick: _ => _.uid},
+        {
+          type: 'string',
+          id: 'name',
+          width: '2fr',
+          head: m.name,
+          render: _ => {
+            return {
+              value: _.name,
+              label: <Core.Txt bold>{_.name}</Core.Txt>,
+            }
+          },
+        },
         {
           type: 'date',
+          width: '1fr',
           id: 'date_created',
           head: m.createdAt,
           render: _ => {
             return {
               value: _.date_created,
-              label: formatDate(_.date_created),
+              label: <Core.Txt color="hint">{formatDate(_.date_created)}</Core.Txt>,
             }
           },
         },
         {
           type: 'number',
-          width: 70,
+          width: '1fr',
           align: 'right',
           id: 'deployment__submission_count',
           head: m.submissions,
-          renderQuick: _ => _.deployment__submission_count,
+          render: _ => {
+            return {
+              value: _.deployment__submission_count,
+              label: formatLargeNumber(_.deployment__submission_count),
+            }
+          },
         },
         {
           id: 'actions',

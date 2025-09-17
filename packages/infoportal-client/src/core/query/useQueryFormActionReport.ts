@@ -13,15 +13,22 @@ export class UseQueryFormActionReport {
       queryKey,
       queryFn: async () =>
         apiv2.form.action.report.getLive({workspaceId, formId}).catch(e => {
-          if (e instanceof HttpError.NotFound) {
-            queryClient.removeQueries({queryKey})
-          }
+          if (e instanceof HttpError.NotFound) queryClient.removeQueries({queryKey})
           throw e
         }),
       staleTime: 0,
       retry: Infinity,
       retryDelay: 1000,
       refetchInterval: 1000,
+    })
+  }
+
+  static getByFormId({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
+    const {apiv2} = useAppSettings()
+    const queryKey = queryKeys.formActionReport(workspaceId, formId)
+    return useQuery({
+      queryKey,
+      queryFn: async () => apiv2.form.action.report.getByFormId({workspaceId, formId}),
     })
   }
 }

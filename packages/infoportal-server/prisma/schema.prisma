@@ -111,6 +111,7 @@ model Form {
   accesses         FormAccess[]
   actions          FormAction[]            @relation("OwnerFormToAction")
   referencedBy     FormAction[]            @relation("TargetFormToAction")
+  actionsReport    FormActionExecReport[]
   kobo             FormKoboInfo?
 
   @@index([category])
@@ -406,6 +407,9 @@ model FormActionExecReport {
   startedAt           DateTime
   endedAt             DateTime?
   failed              String?
+  startedBy           String
+  form                Form?     @relation(fields: [formId], references: [id])
+  formId              String?   @db.VarChar(32)
 }
 
 enum FormActionLogType {

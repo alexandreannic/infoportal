@@ -123,6 +123,12 @@ const AppWithBaseContext = () => {
         _ => (
           <Datatable.Config
             children={_}
+            defaultProps={{
+              rowHeight: 38,
+              module: {
+                columnsResize: {enabled: false},
+              },
+            }}
             formatLargeNumber={formatLargeNumber}
             m={{
               globalError: m.globalError,

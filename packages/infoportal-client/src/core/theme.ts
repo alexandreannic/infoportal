@@ -88,7 +88,7 @@ export const styleUtils = (t: Theme) => ({
         background: 'none',
       },
     },
-    success: '#00b79f',
+    success: '#1a7f37',
     error: '#cf0040',
     warning: '#ff9800',
     info: '#0288d1',
@@ -139,7 +139,7 @@ export const muiTheme = ({
             defaultBg: 'rgba(245, 245, 247, 1)',
           },
           warning: orange,
-          success: green,
+          // success: green,
           primary: colorPrimary,
           secondary: colorSecondary,
           error: red,
@@ -158,7 +158,7 @@ export const muiTheme = ({
       dark: {
         palette: {
           warning: orange,
-          success: green,
+          // success: green,
           primary: Core.colorPrimary,
           secondary: colorSecondary,
           error: red,

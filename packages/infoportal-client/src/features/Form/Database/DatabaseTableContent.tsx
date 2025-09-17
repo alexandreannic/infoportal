@@ -158,6 +158,7 @@ export const DatabaseTableContent = ({
       </DatabaseToolbarContainer>
       <Core.Panel sx={{width: '100%'}}>
         <Datatable.Component
+          rowHeight={34}
           onEvent={_ => {
             switch (_.type) {
               case 'RESIZE': {

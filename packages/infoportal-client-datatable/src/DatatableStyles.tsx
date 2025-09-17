@@ -4,7 +4,13 @@ import {memo} from 'react'
 export const DatatableGlobalStyles = () => (
   <GlobalStyles
     styles={theme => ({
+      '.dt-container': {
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%'
+      },
       '.dt': {
+        flex: 1,
         display: 'grid',
         gridTemplateRows: 'auto 1fr',
         // minWidth: '100%',
@@ -36,7 +42,7 @@ export const DatatableGlobalStyles = () => (
         alignItems: 'center',
         borderBottom: `1px solid ${theme.vars.palette.divider}`,
         textAlign: 'left',
-        padding: '0 0 0 4px',
+        padding: '0 0 0 6px',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
@@ -50,7 +56,7 @@ export const DatatableGlobalStyles = () => (
         },
 
         '&.td-right': {
-          paddingRight: 2,
+          paddingRight: 6,
           paddingLeft: 0,
           justifyContent: 'flex-end',
         },

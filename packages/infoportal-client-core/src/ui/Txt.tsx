@@ -9,7 +9,7 @@ export interface TxtProps extends BoxProps {
   block?: boolean
   skeleton?: boolean | number | string
   size?: 'big' | 'title' | 'small'
-  color?: 'primary' | 'secondary' | 'disabled' | 'hint' | 'default' | 'error'
+  color?: 'primary' | 'secondary' | 'disabled' | 'hint' | 'default' | 'error' | 'success' | 'warning' | 'info'
   uppercase?: boolean
   truncate?: boolean
   noWrap?: boolean
@@ -73,6 +73,15 @@ export const Txt = forwardRef(
               },
               default: {
                 color: t.vars.palette.text.primary,
+              },
+              success: {
+                color: t.vars.palette.success.main,
+              },
+              info: {
+                color: t.vars.palette.info.main,
+              },
+              warning: {
+                color: t.vars.palette.warning.main,
               },
             }[color]),
           ...(block && {

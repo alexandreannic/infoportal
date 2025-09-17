@@ -23,6 +23,22 @@ export const formActionReportContract = c.router({
       },
     }),
   },
+  getByFormId: {
+    method: 'GET',
+    path: `/:workspaceId/form/:formId/action/report`,
+    pathParams: z.object({
+      workspaceId: schema.workspaceId,
+      formId: schema.formId,
+    }),
+    responses: {
+      200: c.type<Ip.Form.Action.ExecReport[]>(),
+    },
+    metadata: makeMeta({
+      access: {
+        form: ['action_canRead'],
+      },
+    }),
+  },
 })
 
 export const formActionReportClient = (client: TsRestClient) => {
@@ -35,6 +51,12 @@ export const formActionReportClient = (client: TsRestClient) => {
         .getLive({params})
         .then(map200)
         .then(_ => (_ ? Ip.Form.Action.ExecReport.map(_) : _))
+    },
+    getByFormId: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}): Promise<Ip.Form.Action.ExecReport[]> => {
+      return client.form.action.report
+        .getByFormId({params})
+        .then(map200)
+        .then(_ => _.map(Ip.Form.Action.ExecReport.map))
     },
   }
 }

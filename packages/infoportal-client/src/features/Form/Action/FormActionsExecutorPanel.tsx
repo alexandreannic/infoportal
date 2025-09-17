@@ -1,6 +1,5 @@
 import {map} from '@axanc/ts-utils'
 import {Box, BoxProps, CircularProgress, Icon, useTheme} from '@mui/material'
-import {intervalToDuration} from 'date-fns'
 import {Core} from '@/shared'
 import {useI18n} from '@/core/i18n/index.js'
 import {useIpToast} from '@/core/useToast.js'
@@ -42,7 +41,7 @@ export const FormActionsExecutorPanel = ({workspaceId, formId}: {workspaceId: Ip
               {m.runningEllipsis}
             </Core.Txt>
             <Core.Txt block color="hint" sx={{minWidth: 200}}>
-              {formatDuration(intervalToDuration({start: report.startedAt, end: now}))}
+              {formatDuration({start: report.startedAt, end: now})}
             </Core.Txt>
             <Box>
               <Title>Actions</Title> <Core.Txt bold>{report.actionExecuted}</Core.Txt> / {report.totalActions}

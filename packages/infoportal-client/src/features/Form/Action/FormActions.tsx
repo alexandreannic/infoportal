@@ -6,12 +6,13 @@ import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {FormActionCreate} from '@/features/Form/Action/FormActionCreate.js'
 import {formRoute} from '@/features/Form/Form.js'
-import {FormActionLog} from '@/features/Form/Action/FormActionLog.js'
+import {FormActionLogs} from '@/features/Form/Action/FormActionLogs.js'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {formActionRoute} from '@/features/Form/Action/FormAction.js'
 import {mapFor} from '@axanc/ts-utils'
 import {FormActionRow} from '@/features/Form/Action/FormActionRow.js'
 import {FormActionsExecutorPanel} from '@/features/Form/Action/FormActionsExecutorPanel.js'
+import {FormActionReports} from '@/features/Form/Action/FormActionReports.js'
 
 export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -77,12 +78,14 @@ export function FormActions() {
         sx={{
           gridRow: '3 / 4',
           gridColumn: 2,
-          overflowY: 'scroll',
+          overflowY: 'hidden',
           mt: actionId ? 0 : -1,
+          // pb: 1,
         }}
       >
-        <Core.Panel>
-          <FormActionLog workspaceId={workspaceId} formId={formId} actionId={actionId} />
+        <Core.Panel sx={{height: `calc(100% - ${t.vars.spacing})`, mb: 1}}>
+          {/*<FormActionLogs workspaceId={workspaceId} formId={formId} actionId={actionId} />*/}
+          <FormActionReports workspaceId={workspaceId} formId={formId} />
         </Core.Panel>
       </Box>
     </TabContent>

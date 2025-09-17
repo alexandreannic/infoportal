@@ -94,7 +94,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
   }, [])
 
   return (
-    <Box sx={sx}>
+    <Box className="dt-container" sx={sx}>
       {header !== null && <DatatableToolbar rowVirtualizer={rowVirtualizer} />}
       <Box
         className="dt"

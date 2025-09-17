@@ -34,6 +34,7 @@ import {FormActionService} from '../feature/form/action/FormActionService.js'
 import {FormActionLogService} from '../feature/form/action/FormActionLogService.js'
 import {FormActionExecutor} from '../feature/form/action/executor/FormActionExecutor.js'
 import {FormActionLiveReportManager} from '../feature/form/action/executor/FormActionLiveReportManager.js'
+import {FormActionReportService} from '../feature/form/action/FormActionReportService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -164,6 +165,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const formAction = new FormActionService(prisma)
   const formActionExecutor = new FormActionExecutor(prisma)
   const formActionLiveReport = FormActionLiveReportManager.getInstance(prisma)
+  const formActionReport = new FormActionReportService(prisma)
   const formActionLog = new FormActionLogService(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
@@ -554,10 +556,15 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .catch(handleError),
         runAllActionsByForm: _ =>
           auth2(_)
-            .then(({params}) => formActionExecutor.runAllActionByForm(params))
+            .then(({params, req}) => formActionExecutor.runAllActionByForm({...params, startedBy: req.session.app.user.email}))
             .then(ok200)
             .catch(handleError),
         report: {
+          getByFormId: _ =>
+            auth2(_)
+              .then(({params}) => formActionReport.getByFormId(params))
+              .then(ok200)
+              .catch(handleError),
           getLive: _ =>
             auth2(_)
               .then(({params}) => formActionLiveReport.get(params.formId))

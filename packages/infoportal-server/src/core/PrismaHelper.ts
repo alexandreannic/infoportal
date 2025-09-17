@@ -30,6 +30,14 @@ export namespace PrismaHelper {
     }
   > => _ as any
 
+  export const mapFormActionReport = <T extends {startedBy: string}>(
+    _: T,
+  ): Defined<
+    T & {
+      startedBy: Ip.User.Email
+    }
+  > => _ as any
+
   export const mapFormAction = <
     T extends {
       id: string

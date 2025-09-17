@@ -1,4 +1,4 @@
-import {formatDistance, formatDuration as formatDurationFns} from 'date-fns'
+import {formatDistance, formatDuration as formatDurationFns, intervalToDuration} from 'date-fns'
 import {Ip} from 'infoportal-api-sdk'
 
 const invalidDate = ''
@@ -34,7 +34,9 @@ export const formatLargeNumber = (n?: number, options?: Intl.NumberFormatOptions
   return n !== undefined && n !== null && !isNaN(n) ? n.toLocaleString('en-EN', options) : '-'
 }
 
-export const formatDuration = formatDurationFns
+export const formatDuration = ({start, end}: {start: Date; end: Date}) => {
+  return formatDurationFns(intervalToDuration({start, end}))
+}
 
 export type Messages = (typeof en)['messages']
 
@@ -148,6 +150,8 @@ export const en = Object.freeze({
     createShema: 'Create schema',
     runningEllipsis: 'Running...',
     _formAction: {
+      executedActions: 'Executed actions',
+      executionsHistory: 'Executions history',
       syncStarted: 'Synchronisation started...',
       reRunOnAllData: 'Re-run all actions',
       reRunOnAllDataDetails:
