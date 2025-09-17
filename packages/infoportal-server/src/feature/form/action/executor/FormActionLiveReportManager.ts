@@ -54,7 +54,7 @@ export class FormActionLiveReportManager {
     const liveReport = this.liveReportMap.get(formId)
     if (!liveReport) return
     return {
-      id: '' as any,
+      id: '<TMP>' as any,
       ...liveReport,
     }
   }

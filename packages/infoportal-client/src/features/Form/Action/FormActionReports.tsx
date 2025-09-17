@@ -1,23 +1,48 @@
 import {Ip} from 'infoportal-api-sdk'
-import {Icon} from '@mui/material'
+import {CircularProgress, Icon, useTheme} from '@mui/material'
 import {AppAvatar, Core, Datatable} from '@/shared'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQueryFormActionReport} from '@/core/query/useQueryFormActionReport.js'
 import {Code} from '@/features/Form/Action/FormActionLogs.js'
+import {useNow} from '@/shared/useNow.js'
+import {FormActionExecBtn} from '@/features/Form/Action/FormActionExecBtn.js'
+import {useMemo} from 'react'
+import {fnSwitch} from '@axanc/ts-utils'
+
+type ExecReport = Ip.Form.Action.ExecReport & {
+  running?: boolean
+}
 
 export const FormActionReports = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
   const {m, formatDateTime, formatDuration, formatLargeNumber} = useI18n()
+  const t = useTheme()
+
   const queryReports = UseQueryFormActionReport.getByFormId({workspaceId, formId})
+  const queryLiveReport = UseQueryFormActionReport.getLive({workspaceId, formId})
+
+  const data: ExecReport[] | undefined = useMemo(() => {
+    if (!queryLiveReport.data) return queryReports.data
+    return [{...queryLiveReport.data, running: true}, ...(queryReports.data ?? [])]
+  }, [queryReports.data, queryLiveReport.data?.actionExecuted, queryLiveReport.data?.submissionsExecuted])
 
   return (
     <Datatable.Component
       getRowKey={_ => _.id}
-      data={queryReports.data}
+      data={data ?? []}
       loading={queryReports.isLoading}
+      rowStyle={_ => (_.running ? {background: Core.alphaVar(t.vars.palette.warning.light, 0.5)} : {})}
       header={
-        <Core.PanelTitle>
-          {m._formAction.executionsHistory} ({queryReports.data?.length ?? '...'})
-        </Core.PanelTitle>
+        <>
+          <Core.PanelTitle>
+            {m._formAction.executionsHistory} ({data?.length ?? '...'})
+          </Core.PanelTitle>
+          <FormActionExecBtn
+            workspaceId={workspaceId}
+            formId={formId}
+            disabled={!!queryLiveReport.data}
+            sx={{marginLeft: 'auto'}}
+          />
+        </>
       }
       id={`logs:${formId}`}
       columns={[
@@ -28,9 +53,13 @@ export const FormActionReports = ({workspaceId, formId}: {workspaceId: Ip.Worksp
           width: 60,
           align: 'center',
           render: _ => {
-            const value = _.failed ? 'error' : 'success'
+            const value = _.failed ? 'error' : _.running ? 'running' : 'success'
             return {
-              label: <Icon color={value} children={value === 'success' ? 'check_circle' : 'error'} />,
+              label: fnSwitch(value, {
+                error: <Icon color="error" children="error" />,
+                success: <Icon color="success" children="check_circle" />,
+                running: <CircularProgress size={24} color="warning" />,
+              }),
               value,
             }
           },
@@ -59,15 +88,16 @@ export const FormActionReports = ({workspaceId, formId}: {workspaceId: Ip.Worksp
           head: m.duration,
           id: 'duration',
           align: 'right',
+          width: '1.5fr',
           type: 'string',
           render: _ => {
-            const duration = _.endedAt ? formatDuration({start: _.startedAt, end: _.endedAt}) : undefined
+            const duration = _.endedAt ? formatDuration({start: _.startedAt, end: _.endedAt ?? new Date()}) : undefined
             return {
               tooltip: duration,
               value: duration,
               label: duration && (
                 <>
-                  {duration}
+                  {_.running ? <Duration start={_.startedAt} /> : duration}
                   <Icon fontSize="small" color="action" children="today" sx={{ml: 1}} />
                 </>
               ),
@@ -136,4 +166,10 @@ export const FormActionReports = ({workspaceId, formId}: {workspaceId: Ip.Worksp
       ]}
     />
   )
+}
+
+function Duration({start}: {start: Date}) {
+  const {formatDuration} = useI18n()
+  const now = useNow()
+  return formatDuration({start, end: now})
 }

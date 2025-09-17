@@ -42,6 +42,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
     cellSelection,
     tableRef,
     contentProps,
+    rowStyle,
     module,
   } = useCtx(_ => _)
 
@@ -127,6 +128,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
                 onCellClick={onCellClick}
                 columns={columns.visible}
                 rowId={rowId}
+                rowStyle={rowStyle}
                 virtualRow={virtualTable[rowId]}
                 virtualItem={virtualItem}
                 cellSelection_isRowInSelection={isRowInSelection}

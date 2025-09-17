@@ -1,7 +1,7 @@
 import {VirtualItem} from '@tanstack/react-virtual'
 import {Skeleton} from '@mui/material'
 import React, {memo} from 'react'
-import {Column, Row} from '@/core/types'
+import {Column, Props, Row} from '@/core/types'
 import {VirtualCell} from '@/core/reducer'
 
 export const DatatableRow = memo(DatatableRow_, (prevProps, nextProps) => {
@@ -9,6 +9,7 @@ export const DatatableRow = memo(DatatableRow_, (prevProps, nextProps) => {
     prevProps.rowId === nextProps.rowId &&
     prevProps.virtualItem === nextProps.virtualItem &&
     prevProps.virtualRow === nextProps.virtualRow &&
+    prevProps.rowStyle === nextProps.rowStyle &&
     prevProps.columns === nextProps.columns &&
     prevProps.onCellClick === nextProps.onCellClick &&
     prevProps.cellSelection_handleMouseDown === nextProps.cellSelection_handleMouseDown &&
@@ -31,11 +32,14 @@ function DatatableRow_<T extends Row>({
   cellSelection_isSelected,
   cellSelection_handleMouseDown,
   cellSelection_handleMouseEnter,
+  rowStyle,
+  row,
 }: {
   onCellClick: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
   virtualRow: Record<string, VirtualCell>
   rowId: string
   row: T
+  rowStyle: Props<any>['rowStyle']
   columns: Column.InnerProps<T>[]
   virtualItem: VirtualItem
   cellSelection_isSelected: (rowIndex: number, colIndex: number) => boolean
@@ -55,6 +59,7 @@ function DatatableRow_<T extends Row>({
       className="dtr"
       key={rowId}
       style={{
+        ...rowStyle?.(row),
         height: `${virtualItem.size}px`,
         transform: `translateY(${virtualItem.start}px)`,
       }}

@@ -12,10 +12,12 @@ export class UseQueryFormActionReport {
     return useQuery({
       queryKey,
       queryFn: async () =>
-        apiv2.form.action.report.getLive({workspaceId, formId}).catch(e => {
-          if (e instanceof HttpError.NotFound) queryClient.removeQueries({queryKey})
-          throw e
-        }),
+        apiv2.form.action.report
+          .getLive({workspaceId, formId})
+          .catch(e => {
+            if (e instanceof HttpError.NotFound) queryClient.removeQueries({queryKey})
+            throw e
+          }),
       staleTime: 0,
       retry: Infinity,
       retryDelay: 1000,

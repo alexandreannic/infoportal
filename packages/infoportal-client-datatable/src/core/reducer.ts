@@ -92,16 +92,10 @@ const buildVirtualTable = <T extends Row>({
   dataIndexes.forEach(index => {
     const row = data[index]
     columns.forEach(col => {
-      const rendered = row ? col.render(row) : {label: '?', value: '?'}
-      // fix in case
-      let rowId
-      try {
-        rowId = getRowKey(row)
-      } catch (e) {
-        // console.error('CATCH', col.id, (e as any).message)
-      }
+      if (!row) return
+      const rendered = col.render(row) // : {label: '?', value: '?'}
+      const rowId = getRowKey(row)
       if (!rowId) return
-      // const key = Datatable.buildKey({getRowKey, row, colId: col.id})
       if (!result[rowId]) result[rowId] = {}
       result[rowId][col.id] = {
         label: rendered.label,
@@ -142,7 +136,7 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
           data,
           columns,
           getRowKey,
-          dataIndexes: mapFor(limit, i => offset + i),
+          dataIndexes: mapFor(Math.min(limit, data.length), i => offset + i),
         }),
       }
     },

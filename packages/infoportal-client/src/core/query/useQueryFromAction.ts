@@ -6,6 +6,7 @@ import {queryKeys} from '@/core/query/query.index'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {useSetState} from '@axanc/react-hooks'
 import {usePendingMutation} from '@/core/query/usePendingMutation.js'
+import {Submission} from '@/core/sdk/server/kobo/KoboMapper.js'
 
 export class UseQueryFromAction {
   static readonly create = (workspaceId: Ip.WorkspaceId, formId: Ip.FormId) => {
@@ -27,7 +28,13 @@ export class UseQueryFromAction {
     const queryClient = useQueryClient()
     const {toastHttpError} = useIpToast()
     return useMutation({
-      mutationFn: () => apiv2.form.action.runAllActionsByForm({workspaceId, formId}),
+      mutationFn: () =>
+        apiv2.form.action.runAllActionsByForm({workspaceId, formId}).then(_ => {
+          const queryKey = queryKeys.formActionReport(workspaceId, formId)
+          const previous = queryClient.getQueryData<Ip.Form.Action.ExecReport[]>(queryKey) ?? []
+          queryClient.setQueryData(queryKey, [_, ...previous])
+          return _
+        }),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.submission(formId)}),
       onError: toastHttpError,
     })
