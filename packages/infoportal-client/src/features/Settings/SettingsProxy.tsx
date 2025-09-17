@@ -141,7 +141,7 @@ function SettingsProxy() {
                   </>
                 }
               >
-                <Core.IconBtn>add</Core.IconBtn>
+                <Core.Btn icon="add" variant="outlined">{m.create}</Core.Btn>
               </Core.Modal>
             )
           }

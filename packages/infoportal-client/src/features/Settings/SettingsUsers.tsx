@@ -2,7 +2,6 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@/core/i18n'
 import {Core, Datatable} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
-import {Page} from '@/shared/Page'
 import {fnSwitch, Obj, seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
 import {AddUserForm} from './AddUserForm'
@@ -89,7 +88,7 @@ function SettingsUsers() {
                   <AddUserForm workspaceId={workspaceId} existingEmails={emailsLists} onClose={close} />
                 )}
               >
-                <Core.Btn icon="person_add" variant="outlined" sx={{marginLeft: 'auto'}}>
+                <Core.Btn icon="person_add" variant="outlined">
                   {m.addUser}
                 </Core.Btn>
               </Core.Modal>

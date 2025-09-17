@@ -1,7 +1,7 @@
 import {green, orange, purple, red} from '@mui/material/colors'
-import {createTheme, SxProps, Theme} from '@mui/material'
+import {alpha, createTheme, SxProps, Theme} from '@mui/material'
 import {Core} from '@/shared'
-import {colorPrimary} from '@infoportal/client-core'
+import {alphaVar, colorPrimary} from '@infoportal/client-core'
 
 export const sxUtils = Core.makeSx({
   fontBig: {
@@ -387,8 +387,8 @@ export const muiTheme = ({
           },
           root: {
             backdropFilter: 'blur(4px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.38)',
-            // backgroundColor: 'rgba(255, 255, 255, 0.5)',
+            // backgroundColor: 'rgba(255, 255, 255, 0.02)',
+            // backgroundColor: 'rgba(0, 0, 0, 0.3)',
           },
         },
       },
@@ -409,6 +409,13 @@ export const muiTheme = ({
             },
           }),
         },
+      },
+      MuiDialog: {
+        styleOverrides: {
+          paper: ({theme}) => ({
+            background: alphaVar(theme.vars.palette.background.paper, .75)
+          })
+        }
       },
       MuiDialogTitle: {
         styleOverrides: {
