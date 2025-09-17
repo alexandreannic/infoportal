@@ -344,11 +344,11 @@ export const muiTheme = ({
             pointerEvents: 'none',
           }),
           root: ({theme}) => ({
+            border: 'none',
             background: theme.vars.palette.background.paper,
             borderRadius: theme.vars.shape.borderRadius,
             // boxShadow: theme.shadows[1],
             minHeight: 40,
-            borderBottom: 'none !important',
           }),
         },
       },

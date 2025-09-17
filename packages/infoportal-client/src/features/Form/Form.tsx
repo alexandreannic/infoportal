@@ -18,6 +18,7 @@ import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
+import {formActionReportsRoute} from '@/features/Form/Action/FormActionReports.js'
 
 export const formRootRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -131,17 +132,9 @@ function Form() {
     databaseKoboRepeatRoute.fullPath,
   ])
 
-  const router = useRouter()
-
   return (
     <Page width="full">
-      <Tabs
-        variant="scrollable"
-        scrollButtons="auto"
-        value={activeTab}
-        // onChange={(event, newValue) => {
-        //   router.navigate({to: newValue})
-      >
+      <Tabs variant="scrollable" scrollButtons="auto" value={activeTab}>
         <Tab
           icon={<Icon>{appConfig.icons.dataTable}</Icon>}
           iconPosition="start"
@@ -178,7 +171,7 @@ function Form() {
             sx={{minHeight: 34, py: 1}}
             component={Link}
             value={formActionsRoute.fullPath}
-            to={formActionsRoute.fullPath}
+            to={formActionReportsRoute.fullPath}
             label={m.action}
             disabled={!schema}
           />

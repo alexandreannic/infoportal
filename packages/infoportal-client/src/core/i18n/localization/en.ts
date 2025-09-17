@@ -151,7 +151,7 @@ export const en = Object.freeze({
     runningEllipsis: 'Running...',
     _formAction: {
       executedActions: 'Executed actions',
-      executionsHistory: 'Executions history',
+      executionsHistory: 'Executions',
       syncStarted: 'Synchronisation started...',
       reRunOnAllData: 'Re-run all actions',
       reRunOnAllDataDetails:

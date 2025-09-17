@@ -11,6 +11,7 @@ import {useI18n} from '@/core/i18n/index.js'
 import {UseQueryForm} from '@/core/query/useQueryForm.js'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {Box, BoxProps, Skeleton, useTheme} from '@mui/material'
+import {FormActionLogs} from '@/features/Form/Action/FormActionLogs.js'
 
 export const formActionRoute = createRoute({
   getParentRoute: () => formActionsRoute,
@@ -57,39 +58,44 @@ export function FormAction({sx, ...props}: BoxProps) {
   const interfaceOutput = useBuildInterface({name: 'Output', workspaceId, formId: queryAction.data?.formId})
 
   return (
-    <Box sx={{height: '100%', ...sx}} {...props}>
-      {queryAction.isLoading || interfaceInput.isLoading ? (
-        <Skeleton sx={{height: '100%', transform: 'none', borderRadius: t.vars.shape.borderRadius}} />
-      ) : (
-        queryAction.data &&
-        (interfaceInput.data && interfaceOutput.data ? (
-          <FormActionEditor
-            key={actionId}
-            actionId={actionId}
-            saving={queryActionUpdate.isPending}
-            inputType={interfaceInput.data}
-            outputType={interfaceOutput.data}
-            body={queryAction.data.body ?? undefined}
-            onSave={body => {
-              queryActionUpdate.mutateAsync({id: queryAction.data!.id, ...body})
-            }}
-          />
-        ) : (
-          <Core.Alert
-            severity="warning"
-            action={
-              <Link
-                to="/$workspaceId/form/$formId/formCreator"
-                params={{workspaceId, formId: queryAction.data!.targetFormId}}
+    <Core.Animate>
+      <Box sx={{display: 'grid', gridTemplateRows: '2.5fr minmax(200px, 1fr)', height: '100%', ...sx}} {...props}>
+        <Box sx={{mb: 1, gridRow: '1 / 2', minHeight: 0}}>
+          {queryAction.isLoading || interfaceInput.isLoading ? (
+            <Skeleton sx={{height: '100%', transform: 'none', borderRadius: t.vars.shape.borderRadius}} />
+          ) : (
+            queryAction.data &&
+            (interfaceInput.data && interfaceOutput.data ? (
+              <FormActionEditor
+                key={actionId}
+                actionId={actionId}
+                saving={queryActionUpdate.isPending}
+                inputType={interfaceInput.data}
+                outputType={interfaceOutput.data}
+                body={queryAction.data.body ?? undefined}
+                onSave={body => {
+                  queryActionUpdate.mutateAsync({id: queryAction.data!.id, ...body})
+                }}
+              />
+            ) : (
+              <Core.Alert
+                severity="warning"
+                action={
+                  <Link
+                    to="/$workspaceId/form/$formId/formCreator"
+                    params={{workspaceId, formId: queryAction.data!.targetFormId}}
+                  >
+                    <Core.Btn color="inherit">{m.createShema}</Core.Btn>
+                  </Link>
+                }
               >
-                <Core.Btn color="inherit">{m.createShema}</Core.Btn>
-              </Link>
-            }
-          >
-            {m._formAction.thisActionTargetAFormWithoutSchema}
-          </Core.Alert>
-        ))
-      )}
-    </Box>
+                {m._formAction.thisActionTargetAFormWithoutSchema}
+              </Core.Alert>
+            ))
+          )}
+        </Box>
+        <FormActionLogs sx={{gridRow: '2 / 3'}} workspaceId={workspaceId} formId={formId} actionId={actionId} />
+      </Box>
+    </Core.Animate>
   )
 }

@@ -21,6 +21,8 @@ import {databaseAnswerViewRoute} from '@/features/Form/dialogs/DialogAnswerView'
 import {settingsGroupsRoute} from '@/features/Settings/SettingsGroups'
 import {formActionRoute} from '@/features/Form/Action/FormAction.js'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
+import {formActionReportsRoute} from '@/features/Form/Action/FormActionReports.js'
+import {formActionLogsRoute} from '@/features/Form/Action/FormActionLogs.js'
 
 export const rootRoute = createRootRoute({
   component: App,
@@ -42,7 +44,7 @@ const tsRoutes = [
         databaseHistoryRoute,
         databaseKoboRepeatRoute,
         formSettingsRoute,
-        formActionsRoute.addChildren([formActionRoute]),
+        formActionsRoute.addChildren([formActionRoute, formActionLogsRoute, formActionReportsRoute]),
       ]),
     ]),
     settingsRoute.addChildren([settingsGroupsRoute, settingsCacheRoute, settingsProxyRoute, settingsUsersRoute]),

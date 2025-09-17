@@ -1,16 +1,16 @@
-import {createRoute, Outlet, useMatch} from '@tanstack/react-router'
+import {createRoute, Link, Outlet, useMatches} from '@tanstack/react-router'
 import {Core} from '@/shared/index.js'
-import {Box, Skeleton, useTheme} from '@mui/material'
+import {Box, Icon, Skeleton, Tab, Tabs, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {FormActionCreate} from '@/features/Form/Action/FormActionCreate.js'
 import {formRoute} from '@/features/Form/Form.js'
 import {TabContent} from '@/shared/Tab/TabContent.js'
-import {formActionRoute} from '@/features/Form/Action/FormAction.js'
 import {mapFor} from '@axanc/ts-utils'
 import {FormActionRow} from '@/features/Form/Action/FormActionRow.js'
-import {FormActionReports} from '@/features/Form/Action/FormActionReports.js'
+import {formActionReportsRoute} from '@/features/Form/Action/FormActionReports.js'
+import {formActionLogsRoute} from '@/features/Form/Action/FormActionLogs.js'
 
 export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -25,7 +25,7 @@ export function FormActions() {
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
   const queryActionGet = UseQueryFromAction.getByDbId(workspaceId, formId)
-  const actionId = useMatch({from: formActionRoute.id, shouldThrow: false})?.params.actionId as Ip.Form.ActionId
+  const currentFullPath = useMatches().slice(-1)[0].fullPath
 
   return (
     <TabContent
@@ -34,7 +34,7 @@ export function FormActions() {
         gap: t.vars.spacing,
         display: 'grid',
         gridTemplateColumns: '280px 1fr',
-        gridTemplateRows: actionId ? '5fr minmax(220px, 2fr)' : '0fr 1fr',
+        gridTemplateRows: '1fr',
         flex: '1 1 auto',
         minHeight: 0,
       }}
@@ -43,10 +43,37 @@ export function FormActions() {
         sx={{
           p: 1,
           gridColumn: 1,
-          gridRow: '1 / 3',
+          gridRow: '1',
           overflowY: 'scroll',
         }}
       >
+        <Tabs
+          value={currentFullPath}
+          sx={{
+            p: 0,
+            border: '1px solid',
+            borderColor: t.vars.palette.divider,
+            borderRadius: t.vars.shape.borderRadius,
+            mb: 1,
+          }}
+        >
+          <Tab
+            sx={{flex: 1}}
+            component={Link}
+            value={formActionReportsRoute.fullPath}
+            to={formActionReportsRoute.fullPath}
+            icon={<Icon children="terminal" />}
+            label={m._formAction.executionsHistory}
+          />
+          <Tab
+            sx={{flex: 1, mr: 0.5}}
+            component={Link}
+            value={formActionLogsRoute.fullPath}
+            to={formActionLogsRoute.fullPath}
+            icon={<Icon children="overview" />}
+            label={m.logs}
+          />
+        </Tabs>
         <Core.Modal
           overrideActions={null}
           content={onClose => <FormActionCreate onClose={onClose} />}
@@ -66,23 +93,11 @@ export function FormActions() {
           minWidth: 0,
           minHeight: 0,
           gridColumn: 2,
-          gridRow: '1 / 2',
+          gridRow: '1',
+          mb: 1,
         }}
       >
         <Outlet />
-      </Box>
-      <Box
-        sx={{
-          gridRow: '2 / 3',
-          gridColumn: 2,
-          overflowY: 'hidden',
-          mt: actionId ? 0 : -1,
-        }}
-      >
-        <Core.Panel sx={{height: `calc(100% - ${t.vars.spacing})`, mb: 1}}>
-          {/*<FormActionLogs workspaceId={workspaceId} formId={formId} actionId={actionId} />*/}
-          <FormActionReports workspaceId={workspaceId} formId={formId} />
-        </Core.Panel>
       </Box>
     </TabContent>
   )

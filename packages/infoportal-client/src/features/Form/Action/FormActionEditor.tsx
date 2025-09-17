@@ -1,4 +1,4 @@
-import {Box, Icon, Tab, Tabs, useTheme} from '@mui/material'
+import {Box, BoxProps, Icon, Tab, Tabs, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n/index.js'
 import {useEffect, useMemo, useRef, useState} from 'react'
 import {Obj} from '@axanc/ts-utils'
@@ -10,7 +10,7 @@ import {Core} from '@/shared/index.js'
 
 const monacoBg = '#1e1e1e'
 
-type Props = {
+type Props = BoxProps & {
   actionId: string
   saving?: boolean
   onSave: (_: {body: string; bodyErrors: number; bodyWarnings: number}) => void
@@ -35,6 +35,8 @@ function FormActionEditorWithMonaco({
   actionId,
   monaco,
   outputType,
+  sx,
+  ...props
 }: Props & {
   monaco: NonNullable<ReturnType<typeof useMonaco>>
 }) {
@@ -101,7 +103,17 @@ function FormActionEditorWithMonaco({
   let restrictions: any[] = []
 
   return (
-    <Box sx={{height: '100%', borderRadius: t.vars.shape.borderRadius, overflow: 'hidden', background: monacoBg}}>
+    <Box
+      sx={{
+        height: '100%',
+        minHeight: 0,
+        borderRadius: t.vars.shape.borderRadius,
+        overflow: 'hidden',
+        background: monacoBg,
+        ...sx,
+      }}
+      {...props}
+    >
       <Tabs value={activePath} onChange={(e, _) => setActivePath(_)} sx={{background: 'none', mb: 0.5}}>
         {Obj.keys(files).map(_ => (
           <Tab
@@ -141,6 +153,7 @@ function FormActionEditorWithMonaco({
             setBodyChanges(_!)
           }
         }}
+
         onMount={(editor, monaco) => {
           editorRef.current = editor
           Obj.entries(files).forEach(([path, {value, isReadonly}]) => {
@@ -169,7 +182,6 @@ function FormActionEditorWithMonaco({
             allowNonTsExtensions: true,
           })
         }}
-        height="80vh"
         theme="vs-dark"
         defaultLanguage="typescript"
       />
