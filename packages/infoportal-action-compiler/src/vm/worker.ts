@@ -1,9 +1,9 @@
 import {NodeVM} from 'vm2'
 import ts from 'typescript'
 
-export interface WorkerResult {
+export interface WorkerResult<T = Record<string, any>> {
   success: boolean
-  result?: unknown
+  result?: T[] | T
   error?: string
   stack?: string
 }
@@ -23,14 +23,15 @@ export class Worker {
     })
   }
 
-  compile(tsCode: string): string {
+  transpile(tsCode: string) {
     return ts.transpileModule(tsCode, {
       compilerOptions: {
         target: ts.ScriptTarget.ES2019,
+        strict: true,
         // module: ts.ModuleKind.CommonJS,
         module: ts.ModuleKind.None,
       },
-    }).outputText
+    })
   }
 
   async run(fnString: string, submission: unknown): Promise<WorkerResult> {

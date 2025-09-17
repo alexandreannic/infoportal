@@ -1,4 +1,4 @@
-import {formatDistance, formatDuration as formatDurationFns} from 'date-fns'
+import {formatDistance, formatDuration as formatDurationFns, intervalToDuration} from 'date-fns'
 import {Ip} from 'infoportal-api-sdk'
 
 const invalidDate = ''
@@ -34,7 +34,9 @@ export const formatLargeNumber = (n?: number, options?: Intl.NumberFormatOptions
   return n !== undefined && n !== null && !isNaN(n) ? n.toLocaleString('en-EN', options) : '-'
 }
 
-export const formatDuration = formatDurationFns
+export const formatDuration = ({start, end}: {start: Date; end: Date}) => {
+  return formatDurationFns(intervalToDuration({start, end}))
+}
 
 export type Messages = (typeof en)['messages']
 
@@ -146,9 +148,16 @@ export const en = Object.freeze({
     workspaceId: 'Workspace ID',
     Approved: 'Approved',
     createShema: 'Create schema',
+    runningEllipsis: 'Running...',
     _formAction: {
+      executedActions: 'Executed actions',
+      executionsHistory: 'Executions history',
+      syncStarted: 'Synchronisation started...',
+      reRunOnAllData: 'Re-run all actions',
+      reRunOnAllDataDetails:
+        'This will reset all data in the database and re-run all actions.\n' +
+        'This process may take a few minutes. Are you sure you want to continue?',
       actionWithErrorWontRun: `This action cannot run because it contains errors.`,
-      rereunOnAllData: 'Re-run on all data',
       thisActionTargetAFormWithoutSchema: `This action is targeting a form that does have any schema deployed yet.`,
       actionSummary: 'Action summary',
       newAction: 'Create an Action',

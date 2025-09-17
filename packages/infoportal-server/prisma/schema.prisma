@@ -111,6 +111,7 @@ model Form {
   accesses         FormAccess[]
   actions          FormAction[]            @relation("OwnerFormToAction")
   referencedBy     FormAction[]            @relation("TargetFormToAction")
+  actionsReport    FormActionReport[]
   kobo             FormKoboInfo?
 
   @@index([category])
@@ -381,7 +382,7 @@ model FormAction {
   createdBy    String?
   type         FormActionType
   name         String
-  disabled     Boolean?
+  disabled     Boolean         @default(false)
   description  String?
   body         String?
   bodyErrors   Int?
@@ -396,6 +397,19 @@ model FormAction {
   targetFormId String
 
   @@index([formId])
+}
+
+model FormActionReport {
+  id                  String    @id @default(uuid())
+  totalActions        Int
+  actionExecuted      Int
+  submissionsExecuted Int
+  startedAt           DateTime
+  endedAt             DateTime?
+  failed              String?
+  startedBy           String
+  form                Form?     @relation(fields: [formId], references: [id])
+  formId              String?   @db.VarChar(32)
 }
 
 enum FormActionLogType {

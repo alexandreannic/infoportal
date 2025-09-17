@@ -1,8 +1,8 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {makeMeta, schema} from '../../core/Schema.js'
-import {Ip} from '../../core/Types.js'
-import {map200, TsRestClient} from '../../core/IpClient.js'
+import {makeMeta, schema} from '../../../core/Schema.js'
+import {Ip} from '../../../core/Types.js'
+import {map200, TsRestClient} from '../../../core/IpClient.js'
 
 const c = initContract()
 
@@ -20,7 +20,24 @@ export const formActionContract = c.router({
     },
     metadata: makeMeta({
       access: {
-        workspace: ['form_canCreate'],
+        workspace: ['formAction_canCreate'],
+      },
+    }),
+  },
+  runAllActionsByForm: {
+    method: 'POST',
+    path: `/:workspaceId/form/:formId/action/run`,
+    pathParams: z.object({
+      workspaceId: schema.workspaceId,
+      formId: schema.formId,
+    }),
+    body: c.type<undefined>(),
+    responses: {
+      200: c.type<Ip.Form.Action.Report>(),
+    },
+    metadata: makeMeta({
+      access: {
+        form: ['action_canRun'],
       },
     }),
   },
@@ -38,7 +55,7 @@ export const formActionContract = c.router({
     },
     metadata: makeMeta({
       access: {
-        workspace: ['form_canCreate'],
+        form: ['action_canUpdate'],
       },
     }),
   },
@@ -52,6 +69,11 @@ export const formActionContract = c.router({
     responses: {
       200: c.type<Ip.Form.Action[]>(),
     },
+    metadata: makeMeta({
+      access: {
+        form: ['action_canRead'],
+      },
+    }),
   },
 })
 
@@ -82,6 +104,14 @@ export const formActionClient = (client: TsRestClient) => {
         })
         .then(map200)
         .then(Ip.Form.Action.map)
+    },
+    runAllActionsByForm: (params: Ip.Form.Action.Payload.Run) => {
+      return client.form.action
+        .runAllActionsByForm({
+          params,
+        })
+        .then(map200)
+        .then(Ip.Form.Action.Report.map)
     },
   }
 }

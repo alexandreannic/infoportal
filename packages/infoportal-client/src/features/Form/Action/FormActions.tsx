@@ -6,12 +6,11 @@ import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {FormActionCreate} from '@/features/Form/Action/FormActionCreate.js'
 import {formRoute} from '@/features/Form/Form.js'
-import {FormActionLog} from '@/features/Form/Action/FormActionLog.js'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {formActionRoute} from '@/features/Form/Action/FormAction.js'
 import {mapFor} from '@axanc/ts-utils'
-import {Panel} from '@infoportal/client-core'
 import {FormActionRow} from '@/features/Form/Action/FormActionRow.js'
+import {FormActionReports} from '@/features/Form/Action/FormActionReports.js'
 
 export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -27,6 +26,7 @@ export function FormActions() {
   const formId = params.formId as Ip.FormId
   const queryActionGet = UseQueryFromAction.getByDbId(workspaceId, formId)
   const actionId = useMatch({from: formActionRoute.id, shouldThrow: false})?.params.actionId as Ip.Form.ActionId
+
   return (
     <TabContent
       width="full"
@@ -34,19 +34,16 @@ export function FormActions() {
         gap: t.vars.spacing,
         display: 'grid',
         gridTemplateColumns: '280px 1fr',
-        gridTemplateRows: actionId ? '64px 5fr minmax(220px, 2fr)' : '64px 0fr 1fr',
+        gridTemplateRows: actionId ? '5fr minmax(220px, 2fr)' : '0fr 1fr',
         flex: '1 1 auto',
         minHeight: 0,
       }}
     >
-      <Panel sx={{mb: 0, px: 1, display: 'flex', alignItems: 'center', gridRow: 1, gridColumn: '1 / 3'}}>
-        <Core.Btn>Test</Core.Btn>
-      </Panel>
       <Core.Panel
         sx={{
           p: 1,
           gridColumn: 1,
-          gridRow: '2 / 4',
+          gridRow: '1 / 3',
           overflowY: 'scroll',
         }}
       >
@@ -69,21 +66,22 @@ export function FormActions() {
           minWidth: 0,
           minHeight: 0,
           gridColumn: 2,
-          gridRow: '2 / 3',
+          gridRow: '1 / 2',
         }}
       >
         <Outlet />
       </Box>
       <Box
         sx={{
-          gridRow: '3 / 4',
+          gridRow: '2 / 3',
           gridColumn: 2,
-          overflowY: 'scroll',
+          overflowY: 'hidden',
           mt: actionId ? 0 : -1,
         }}
       >
-        <Core.Panel>
-          <FormActionLog workspaceId={workspaceId} formId={formId} actionId={actionId} />
+        <Core.Panel sx={{height: `calc(100% - ${t.vars.spacing})`, mb: 1}}>
+          {/*<FormActionLogs workspaceId={workspaceId} formId={formId} actionId={actionId} />*/}
+          <FormActionReports workspaceId={workspaceId} formId={formId} />
         </Core.Panel>
       </Box>
     </TabContent>

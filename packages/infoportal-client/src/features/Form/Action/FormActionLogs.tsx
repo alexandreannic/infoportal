@@ -8,12 +8,12 @@ import {useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
 import {PopoverWrapper} from '@infoportal/client-core'
 
-const Code = styled(Box)(({theme: t}) => ({
+export const Code = styled(Box)(({theme: t}) => ({
   color: t.vars.palette.text.secondary,
   fontFamily: 'monospace',
 }))
 
-export const FormActionLog = ({
+export const FormActionLogs = ({
   workspaceId,
   formId,
   actionId,

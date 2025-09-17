@@ -43,7 +43,14 @@ export class FormActionService {
     return action
   }
 
-  readonly getByFormSmartId = ({formId}: {formId: Ip.FormId}): Promise<Ip.Form.Action[]> => {
+  readonly getActivesByForm = ({formId}: {formId: Ip.FormId}): Promise<Ip.Form.Action[]> => {
+    return this.prisma.formAction
+      .findMany({orderBy: {createdAt: 'desc'}, where: {formId, disabled: {not: true}, body: {not: null}}})
+      .then(_ => _.filter(_ => !_.bodyErrors || _.bodyErrors == 0))
+      .then(_ => _.map(PrismaHelper.mapFormAction))
+  }
+
+  readonly getByForm = ({formId}: {formId: Ip.FormId}): Promise<Ip.Form.Action[]> => {
     return this.prisma.formAction
       .findMany({orderBy: {createdAt: 'desc'}, where: {formId}})
       .then(_ => _.map(PrismaHelper.mapFormAction))

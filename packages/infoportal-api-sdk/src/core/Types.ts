@@ -2,8 +2,14 @@ import type * as Prisma from '@prisma/client'
 import {Kobo} from 'kobo-sdk'
 import {KeyOf} from '@axanc/ts-utils'
 
-type ReplaceNullWithUndefined<T> = {
-  [K in keyof T]: Exclude<T[K], null> | Extract<T[K], null> extends never ? undefined : Exclude<T[K], null> | undefined
+type NullToOptional<T> = {
+  // keep required keys (no null)
+  [K in keyof T as null extends T[K] ? never : K]: T[K] extends object ? NullToOptional<T[K]> : T[K]
+} & {
+  // make nullable keys optional, remove null from their type
+  [K in keyof T as null extends T[K] ? K : never]?: Exclude<T[K], null> extends object
+    ? NullToOptional<Exclude<T[K], null>>
+    : Exclude<T[K], null>
 }
 
 type Brand<K, T> = K & {
@@ -63,11 +69,16 @@ export namespace Ip {
       version_canGet: boolean
       answers_import: boolean
       databaseview_manage: boolean
+      action_canRead: boolean
+      action_canDelete: boolean
+      action_canRun: boolean
+      action_canUpdate: boolean
     }
 
     export type Workspace = {
       canUpdate: boolean
       canDelete: boolean
+      formAction_canCreate: boolean
       form_canCreate: boolean
       server_canGet: boolean
       server_canCreate: boolean
@@ -432,6 +443,22 @@ export namespace Ip {
           bodyWarnings?: number
           name?: string
           description?: string
+        }
+        export type Run = {
+          workspaceId: WorkspaceId
+          formId: FormId
+        }
+      }
+
+      export type Report = Omit<Prisma.FormActionReport, 'startedBy'> & {
+        startedBy: User.Email
+      }
+
+      export namespace Report {
+        export const map = (_: Record<keyof Report, any>): Report => {
+          _.startedAt = new Date(_.startedAt)
+          _.endedAt = new Date(_.endedAt)
+          return _
         }
       }
 

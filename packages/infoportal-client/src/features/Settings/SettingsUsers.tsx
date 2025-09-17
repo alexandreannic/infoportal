@@ -69,7 +69,6 @@ function SettingsUsers() {
     <TabContent width="full">
       <Core.Panel>
         <Datatable.Component
-          rowHeight={36}
           loading={queryUserGet.isLoading}
           id="users"
           module={

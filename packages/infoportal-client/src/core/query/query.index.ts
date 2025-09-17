@@ -23,7 +23,9 @@ export const queryKeys = {
   formAction: (workspaceId?: Ip.WorkspaceId, id?: Ip.FormId) => concat('form', workspaceId, 'action', id),
   formActionLog: (workspaceId?: Ip.WorkspaceId, search?: Ip.Form.Action.Log.Payload.Search) =>
     concat('form', workspaceId, 'action', 'log', JSON.stringify(search)),
-  answers: (formId?: Ip.FormId) => concat('answers', formId),
+  formActionReport: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId, rest?: string) =>
+    concat(workspaceId, 'form', formId, 'action', 'report', rest),
+  submission: (formId?: Ip.FormId) => concat('submission', formId),
   schema: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('schema', workspaceId, formId),
   version: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('version', workspaceId, formId),
   user: (workspaceId?: Ip.WorkspaceId) => concat('user', workspaceId),
