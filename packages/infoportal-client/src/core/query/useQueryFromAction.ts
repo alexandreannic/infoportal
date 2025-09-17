@@ -31,8 +31,10 @@ export class UseQueryFromAction {
       mutationFn: () =>
         apiv2.form.action.runAllActionsByForm({workspaceId, formId}).then(_ => {
           const queryKey = queryKeys.formActionReport(workspaceId, formId)
-          const previous = queryClient.getQueryData<Ip.Form.Action.ExecReport[]>(queryKey) ?? []
-          queryClient.setQueryData(queryKey, [_, ...previous])
+          const previous = queryClient.getQueryData<Ip.Form.Action.Report[]>(queryKey) ?? []
+          setTimeout(() => {
+            queryClient.setQueryData(queryKey, [_, ...previous])
+          }, 1000)
           return _
         }),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.submission(formId)}),

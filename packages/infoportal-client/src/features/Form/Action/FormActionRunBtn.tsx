@@ -4,7 +4,7 @@ import {useI18n} from '@/core/i18n/index.js'
 import {useIpToast} from '@/core/useToast.js'
 import {Ip} from 'infoportal-api-sdk'
 
-export const FormActionExecBtn = ({
+export const FormActionRunBtn = ({
   workspaceId,
   formId,
   ...props

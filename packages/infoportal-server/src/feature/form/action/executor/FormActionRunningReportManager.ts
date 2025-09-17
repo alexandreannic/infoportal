@@ -2,18 +2,18 @@ import {PrismaClient} from '@prisma/client'
 import {HttpError, Ip} from 'infoportal-api-sdk'
 import {PrismaHelper} from '../../../../core/PrismaHelper.js'
 
-type LiveReport = Omit<Ip.Form.Action.ExecReport, 'id'>
+type LiveReport = Omit<Ip.Form.Action.Report, 'id'>
 
-export class FormActionLiveReportManager {
+export class FormActionRunningReportManager {
   private liveReportMap = new Map<Ip.FormId, LiveReport>()
 
   private constructor(private prisma: PrismaClient) {}
 
-  private static instance: FormActionLiveReportManager
+  private static instance: FormActionRunningReportManager
   static readonly getInstance = (prisma: PrismaClient) => {
-    if (!FormActionLiveReportManager.instance)
-      FormActionLiveReportManager.instance = new FormActionLiveReportManager(prisma)
-    return FormActionLiveReportManager.instance
+    if (!FormActionRunningReportManager.instance)
+      FormActionRunningReportManager.instance = new FormActionRunningReportManager(prisma)
+    return FormActionRunningReportManager.instance
   }
 
   has(formId: Ip.FormId) {
@@ -43,14 +43,14 @@ export class FormActionLiveReportManager {
     const report = this.liveReportMap.get(formId)
     if (!report) throw new HttpError.InternalServerError(`Failed to fetch execution report.`)
     this.liveReportMap.delete(formId)
-    return this.prisma.formActionExecReport
+    return this.prisma.formActionReport
       .create({
         data: {...report, endedAt: new Date(), failed: failed ?? null},
       })
       .then(PrismaHelper.mapFormActionReport)
   }
 
-  get(formId: Ip.FormId): Ip.Form.Action.ExecReport | undefined {
+  get(formId: Ip.FormId): Ip.Form.Action.Report | undefined {
     const liveReport = this.liveReportMap.get(formId)
     if (!liveReport) return
     return {

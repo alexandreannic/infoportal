@@ -111,7 +111,7 @@ model Form {
   accesses         FormAccess[]
   actions          FormAction[]            @relation("OwnerFormToAction")
   referencedBy     FormAction[]            @relation("TargetFormToAction")
-  actionsReport    FormActionExecReport[]
+  actionsReport    FormActionReport[]
   kobo             FormKoboInfo?
 
   @@index([category])
@@ -399,7 +399,7 @@ model FormAction {
   @@index([formId])
 }
 
-model FormActionExecReport {
+model FormActionReport {
   id                  String    @id @default(uuid())
   totalActions        Int
   actionExecuted      Int

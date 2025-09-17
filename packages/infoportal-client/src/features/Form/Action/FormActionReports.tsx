@@ -1,15 +1,15 @@
 import {Ip} from 'infoportal-api-sdk'
 import {CircularProgress, Icon, useTheme} from '@mui/material'
-import {AppAvatar, Core, Datatable} from '@/shared'
+import {AppAvatar, Core, Datatable, Fender} from '@/shared'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQueryFormActionReport} from '@/core/query/useQueryFormActionReport.js'
 import {Code} from '@/features/Form/Action/FormActionLogs.js'
 import {useNow} from '@/shared/useNow.js'
-import {FormActionExecBtn} from '@/features/Form/Action/FormActionExecBtn.js'
+import {FormActionRunBtn} from '@/features/Form/Action/FormActionRunBtn.js'
 import {useMemo} from 'react'
 import {fnSwitch} from '@axanc/ts-utils'
 
-type ExecReport = Ip.Form.Action.ExecReport & {
+type Report = Ip.Form.Action.Report & {
   running?: boolean
 }
 
@@ -18,9 +18,9 @@ export const FormActionReports = ({workspaceId, formId}: {workspaceId: Ip.Worksp
   const t = useTheme()
 
   const queryReports = UseQueryFormActionReport.getByFormId({workspaceId, formId})
-  const queryLiveReport = UseQueryFormActionReport.getLive({workspaceId, formId})
+  const queryLiveReport = UseQueryFormActionReport.getRunning({workspaceId, formId})
 
-  const data: ExecReport[] | undefined = useMemo(() => {
+  const data: Report[] | undefined = useMemo(() => {
     if (!queryLiveReport.data) return queryReports.data
     return [{...queryLiveReport.data, running: true}, ...(queryReports.data ?? [])]
   }, [queryReports.data, queryLiveReport.data?.actionExecuted, queryLiveReport.data?.submissionsExecuted])
@@ -30,13 +30,16 @@ export const FormActionReports = ({workspaceId, formId}: {workspaceId: Ip.Worksp
       getRowKey={_ => _.id}
       data={data ?? []}
       loading={queryReports.isLoading}
+      renderEmptyState={
+      <Fender type="empty"/>
+      }
       rowStyle={_ => (_.running ? {background: Core.alphaVar(t.vars.palette.warning.light, 0.5)} : {})}
       header={
         <>
           <Core.PanelTitle>
             {m._formAction.executionsHistory} ({data?.length ?? '...'})
           </Core.PanelTitle>
-          <FormActionExecBtn
+          <FormActionRunBtn
             workspaceId={workspaceId}
             formId={formId}
             disabled={!!queryLiveReport.data}
@@ -44,7 +47,7 @@ export const FormActionReports = ({workspaceId, formId}: {workspaceId: Ip.Worksp
           />
         </>
       }
-      id={`logs:${formId}`}
+      id={`reports:${formId}`}
       columns={[
         {
           type: 'select_one',

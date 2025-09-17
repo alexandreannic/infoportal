@@ -4,15 +4,15 @@ import {IpEvent} from 'infoportal-common'
 import {HttpError, Ip} from 'infoportal-api-sdk'
 import {FormActionService} from '../FormActionService.js'
 import {SubmissionService} from '../../submission/SubmissionService.js'
-import {FormActionLiveReportManager} from './FormActionLiveReportManager.js'
+import {FormActionRunningReportManager} from './FormActionRunningReportManager.js'
 import {FormActionErrorHandler} from './FormActionErrorHandler.js'
 import {Worker} from '@infoportal/action-compiler'
-import {chunkify, delay, seq, sleep} from '@axanc/ts-utils'
+import {chunkify, seq} from '@axanc/ts-utils'
 import {PromisePool} from '@supercharge/promise-pool'
 import {appConf} from '../../../../core/conf/AppConf.js'
 
-export class FormActionExecutor {
-  private liveReport = FormActionLiveReportManager.getInstance(this.prisma)
+export class FormActionRunner {
+  private liveReport = FormActionRunningReportManager.getInstance(this.prisma)
   private errorHandler = new FormActionErrorHandler(this.prisma, app.logger('FormActionError'))
 
   constructor(
@@ -47,7 +47,7 @@ export class FormActionExecutor {
     startedBy: Ip.User.Email
     workspaceId: Ip.WorkspaceId
     formId: Ip.FormId
-  }): Promise<Ip.Form.Action.ExecReport> => {
+  }): Promise<Ip.Form.Action.Report> => {
     if (this.liveReport.has(formId)) {
       throw new HttpError.Conflict(`An execution is already running for ${formId}`)
     }

@@ -32,8 +32,8 @@ import {GroupService} from '../feature/group/GroupService.js'
 import {GroupItemService} from '../feature/group/GroupItemService.js'
 import {FormActionService} from '../feature/form/action/FormActionService.js'
 import {FormActionLogService} from '../feature/form/action/FormActionLogService.js'
-import {FormActionExecutor} from '../feature/form/action/executor/FormActionExecutor.js'
-import {FormActionLiveReportManager} from '../feature/form/action/executor/FormActionLiveReportManager.js'
+import {FormActionRunner} from '../feature/form/action/executor/FormActionRunner.js'
+import {FormActionRunningReportManager} from '../feature/form/action/executor/FormActionRunningReportManager.js'
 import {FormActionReportService} from '../feature/form/action/FormActionReportService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
@@ -163,8 +163,8 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const metrics = new MetricsService(prisma)
   const user = UserService.getInstance(prisma)
   const formAction = new FormActionService(prisma)
-  const formActionExecutor = new FormActionExecutor(prisma)
-  const formActionLiveReport = FormActionLiveReportManager.getInstance(prisma)
+  const formActionRunner = new FormActionRunner(prisma)
+  const formActionRunningReport = FormActionRunningReportManager.getInstance(prisma)
   const formActionReport = new FormActionReportService(prisma)
   const formActionLog = new FormActionLogService(prisma)
 
@@ -556,7 +556,9 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .catch(handleError),
         runAllActionsByForm: _ =>
           auth2(_)
-            .then(({params, req}) => formActionExecutor.runAllActionByForm({...params, startedBy: req.session.app.user.email}))
+            .then(({params, req}) =>
+              formActionRunner.runAllActionByForm({...params, startedBy: req.session.app.user.email}),
+            )
             .then(ok200)
             .catch(handleError),
         report: {
@@ -565,9 +567,9 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               .then(({params}) => formActionReport.getByFormId(params))
               .then(ok200)
               .catch(handleError),
-          getLive: _ =>
+          getRunning: _ =>
             auth2(_)
-              .then(({params}) => formActionLiveReport.get(params.formId))
+              .then(({params}) => formActionRunningReport.get(params.formId))
               .then(okOrNotFound)
               .catch(handleError),
         },

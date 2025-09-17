@@ -10,7 +10,7 @@ export class FormActionReportService {
   ) {}
 
   readonly getByFormId = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
-    return this.prisma.formActionExecReport
+    return this.prisma.formActionReport
       .findMany({where: {formId}, orderBy: {startedAt: 'desc'}})
       .then(_ => _.map(PrismaHelper.mapFormActionReport))
   }

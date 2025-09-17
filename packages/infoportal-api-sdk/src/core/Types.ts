@@ -450,12 +450,12 @@ export namespace Ip {
         }
       }
 
-      export type ExecReport = Omit<Prisma.FormActionExecReport, 'startedBy'> & {
+      export type Report = Omit<Prisma.FormActionReport, 'startedBy'> & {
         startedBy: User.Email
       }
 
-      export namespace ExecReport {
-        export const map = (_: Record<keyof ExecReport, any>): ExecReport => {
+      export namespace Report {
+        export const map = (_: Record<keyof Report, any>): Report => {
           _.startedAt = new Date(_.startedAt)
           _.endedAt = new Date(_.endedAt)
           return _

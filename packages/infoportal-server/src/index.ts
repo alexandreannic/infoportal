@@ -10,7 +10,7 @@ import {Syslog} from 'winston-syslog'
 import {EmailService} from './feature/email/EmailService.js'
 import {DbInit} from './core/DbInit.js'
 import * as os from 'os'
-import {FormActionExecutor} from './feature/form/action/executor/FormActionExecutor.js'
+import {FormActionRunner} from './feature/form/action/executor/FormActionRunner.js'
 
 export type AppLogger = WinstonLogger
 
@@ -93,7 +93,7 @@ const startApp = async (conf: AppConf) => {
     //   console.log(`Worker ${worker.process.pid} died`)
     // })
     new EmailService().initializeListeners()
-    new FormActionExecutor(prisma).startListening()
+    new FormActionRunner(prisma).startListening()
     // await new KoboSyncServer(prisma).syncApiAnswersToDbAll()
     if (conf.production) {
       new ScheduledTask(prisma).start()

@@ -5,7 +5,7 @@ import {queryKeys} from '@/core/query/query.index.js'
 import {duration} from '@axanc/ts-utils'
 
 export class UseQueryFormActionReport {
-  static getLive({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
+  static getRunning({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
     const queryClient = useQueryClient()
     const {apiv2} = useAppSettings()
     const queryKey = queryKeys.formActionReport(workspaceId, formId, 'live')
@@ -13,7 +13,7 @@ export class UseQueryFormActionReport {
       queryKey,
       queryFn: async () =>
         apiv2.form.action.report
-          .getLive({workspaceId, formId})
+          .getRunning({workspaceId, formId})
           .catch(e => {
             if (e instanceof HttpError.NotFound) queryClient.removeQueries({queryKey})
             throw e

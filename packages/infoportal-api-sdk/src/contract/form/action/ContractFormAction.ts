@@ -33,7 +33,7 @@ export const formActionContract = c.router({
     }),
     body: c.type<undefined>(),
     responses: {
-      200: c.type<Ip.Form.Action.ExecReport>(),
+      200: c.type<Ip.Form.Action.Report>(),
     },
     metadata: makeMeta({
       access: {
@@ -111,7 +111,7 @@ export const formActionClient = (client: TsRestClient) => {
           params,
         })
         .then(map200)
-        .then(Ip.Form.Action.ExecReport.map)
+        .then(Ip.Form.Action.Report.map)
     },
   }
 }
