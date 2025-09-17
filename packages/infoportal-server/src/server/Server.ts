@@ -100,7 +100,7 @@ export class Server {
     this.server.use(bodyParser.urlencoded({extended: false}))
     if (!this.conf.production)
       this.server.use((req, res, next) => {
-        const delay = 400 + Math.random() * 200 // 500–1500ms delay
+        const delay = 100 + Math.random() * 200
         setTimeout(next, delay)
       })
     const {tsRestRoutes, rawRoutes} = getRoutes(this.pgClient)
@@ -108,9 +108,12 @@ export class Server {
     createExpressEndpoints(ipContract, tsRestRoutes, this.server, {logInitialization: false})
     // this.server.use(Sentry.Handlers.errorHandler())
     this.server.use(this.errorHandler)
-    const httpServer = this.server.listen(this.conf.port, /*'0.0.0.0',*/ () => {
-      this.log.info(`server start listening on port ${this.conf.port}`)
-    })
+    const httpServer = this.server.listen(
+      this.conf.port,
+      /*'0.0.0.0',*/ () => {
+        this.log.info(`server start listening on port ${this.conf.port}`)
+      },
+    )
     const io = new SocketIOServer(httpServer, {
       cors: {
         origin: this.conf.cors.allowOrigin,
