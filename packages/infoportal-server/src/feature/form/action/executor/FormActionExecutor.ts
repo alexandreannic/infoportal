@@ -8,6 +8,7 @@ import {FormActionLiveReportManager} from './FormActionLiveReportManager.js'
 import {FormActionErrorHandler} from './FormActionErrorHandler.js'
 import {Worker} from '@infoportal/action-compiler'
 import {seq} from '@axanc/ts-utils'
+import {PromisePool} from '@supercharge/promise-pool'
 
 export class FormActionExecutor {
   private liveReport = FormActionLiveReportManager.getInstance(this.prisma)
@@ -65,18 +66,21 @@ export class FormActionExecutor {
 
     const actions = await this.action.getActivesByForm({formId})
     this.liveReport.start(formId, actions.length)
-
+    this.log.info(`Executing ${formId}: ${actions.length} actions...`)
     try {
-      await Promise.all(
-        actions.map(async action => {
+      await PromisePool.withConcurrency(5)
+        .for(actions)
+        .process(async action => {
           const submissions = await this.submission.searchAnswers({workspaceId, formId: action.targetFormId})
+          this.log.info(
+            `Executing ${formId}: Action ${action.id}: ${submissions.total} submissions from Form ${action.targetFormId}`,
+          )
           await this.runActionOnSubmission({workspaceId, action, submissions: submissions.data})
           this.liveReport.update(formId, prev => ({
             actionExecuted: prev.actionExecuted + 1,
             submissionsExecuted: prev.submissionsExecuted + submissions.total,
           }))
-        }),
-      )
+        })
       return await this.liveReport.finalize(formId)
     } catch (e) {
       await this.errorHandler.handle(e, {formId})

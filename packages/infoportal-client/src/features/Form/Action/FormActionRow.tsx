@@ -6,6 +6,7 @@ import {UseQueryForm} from '@/core/query/useQueryForm.js'
 import {Link} from '@tanstack/react-router'
 import {Core} from '@/shared'
 import {ReactNode} from 'react'
+import {styleUtils} from '@infoportal/client-core'
 
 export function FormActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: Ip.Form.Action}) {
   const t = useTheme()
@@ -45,7 +46,7 @@ export function FormActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceI
             alignItems: 'center',
           }}
         >
-          <Box sx={{flex: 1}}>
+          <Box sx={{flex: 1, ...styleUtils(t).truncate}}>
             <Box>
               <Core.Txt bold truncate>
                 {action.name}
@@ -54,7 +55,9 @@ export function FormActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceI
                 {formatDate(action.createdAt)}
               </Core.Txt>
             </Box>
-            <Core.Txt truncate>{queryForms?.get(action.targetFormId)?.name}</Core.Txt>
+            <Tooltip title={queryForms?.get(action.targetFormId)?.name}>
+              <Core.Txt truncate>{queryForms?.get(action.targetFormId)?.name}</Core.Txt>
+            </Tooltip>
           </Box>
           {isUpdating && <CircularProgress size={24} />}
           <CompilationTooltip

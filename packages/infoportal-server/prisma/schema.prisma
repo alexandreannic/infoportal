@@ -381,7 +381,7 @@ model FormAction {
   createdBy    String?
   type         FormActionType
   name         String
-  disabled     Boolean?
+  disabled     Boolean         @default(false)
   description  String?
   body         String?
   bodyErrors   Int?
