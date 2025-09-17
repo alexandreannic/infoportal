@@ -483,11 +483,7 @@ function actions({
         value: null as any,
         label: (
           <>
-            <Datatable.IconBtn
-              tooltip={m.view}
-              children="visibility"
-              onClick={() => dialogs.openView({answer: _, workspaceId, formId: formId})}
-            />
+            <Datatable.IconBtn tooltip={m.view} children="visibility" onClick={() => dialogs.openView({answer: _})} />
             {koboEditEnketoUrl && _.originId ? (
               <Datatable.IconBtn
                 disabled={isReadonly}
@@ -501,7 +497,7 @@ function actions({
                 disabled={isReadonly}
                 tooltip={m.editForm}
                 children="edit"
-                onClick={() => dialogs.openEdit({answer: _, workspaceId, formId: formId})}
+                onClick={() => dialogs.openEdit({answer: _})}
               />
             )}
           </>

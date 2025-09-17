@@ -1,9 +1,8 @@
 import {DialogAnswerEdit} from '@/features/Form/dialogs/DialogAnswerEdit'
 import {DialogAnswerView} from '@/features/Form/dialogs/DialogAnswerView'
-import {useQueryClient} from '@tanstack/react-query'
 import {useDialogs} from '@toolpad/core'
 import {create} from 'zustand'
-import {getSchema} from '../query/useQuerySchema'
+import {useQuerySchema} from '../query/useQuerySchema'
 import {Ip} from 'infoportal-api-sdk'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 
@@ -21,31 +20,29 @@ export const useLangIndex = create<LangIndex>(set => ({
 }))
 
 export interface OpenModalProps {
-  workspaceId: Ip.WorkspaceId
   answer: Submission
-  formId: Ip.FormId
 }
 
-export const useKoboDialogs = () => {
+export const useKoboDialogs = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
   const dialogs = useDialogs()
-  const queryClient = useQueryClient()
+  const querySchema = useQuerySchema({workspaceId, formId})
 
   return {
     openView: (params: OpenModalProps) => {
-      const schema = getSchema({queryClient, ...params})
+      const schema = querySchema.data
       if (!schema) {
-        console.error(`Missing schema ${params.formId}`)
+        console.error(`Missing schema ${formId}`)
         return
       }
-      dialogs.open(DialogAnswerView, {schema, ...params})
+      dialogs.open(DialogAnswerView, {schema, workspaceId, formId, ...params})
     },
     openEdit: (params: OpenModalProps) => {
-      const schema = getSchema({queryClient, ...params})
+      const schema = querySchema.data
       if (!schema) {
-        console.error(`Missing schema ${params.formId}`)
+        console.error(`Missing schema ${formId}`)
         return
       }
-      dialogs.open(DialogAnswerEdit, {schema, ...params})
+      dialogs.open(DialogAnswerEdit, {schema, workspaceId, formId, ...params})
     },
   }
 }

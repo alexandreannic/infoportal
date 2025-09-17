@@ -53,7 +53,7 @@ export const DatabaseTableContent = ({
   const setLangIndex = useLangIndex(_ => _.setLangIndex)
   const navigate = useNavigate()
   const ctx = useDatabaseKoboTableContext()
-  const dialogs = useKoboDialogs()
+  const dialogs = useKoboDialogs({workspaceId, formId: ctx.form.id})
   const connectedUsers = useFormSocket({workspaceId, formId: ctx.form.id})
   const [viewEditorOpen, setViewEditorOpen] = useState(false)
 

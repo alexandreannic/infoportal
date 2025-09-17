@@ -157,6 +157,7 @@ const KoboAnswerFormView = ({
   answer: Submission
   formId: Ip.FormId
 }) => {
+  console.log(schema)
   return (
     <Box>
       {seq(schema.schemaSanitized.survey)

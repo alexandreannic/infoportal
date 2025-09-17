@@ -2,7 +2,7 @@ import {QueryClient, useMutation, useQuery, useQueryClient} from '@tanstack/reac
 import {useAppSettings} from '../context/ConfigContext'
 import {KoboMapper} from '../sdk/server/kobo/KoboMapper'
 import {queryKeys} from './query.index'
-import {getSchema, useQuerySchema} from './useQuerySchema'
+import {useQuerySchema} from './useQuerySchema'
 import {Ip, Paginate} from 'infoportal-api-sdk'
 import {produce} from 'immer'
 
@@ -38,7 +38,7 @@ export class UseQuerySubmission {
     queryClient: QueryClient
     submission: Ip.Submission
   }) {
-    const schema = getSchema({formId, workspaceId, queryClient})
+    const schema = useQuerySchema({workspaceId, formId}).data
     if (!schema) {
       console.error('Cannot get schema from store.')
       return

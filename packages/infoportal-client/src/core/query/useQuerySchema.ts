@@ -1,5 +1,5 @@
 import {useLangIndex} from '@/core/store/useLangIndex'
-import {QueryClient, useQuery} from '@tanstack/react-query'
+import {useQuery} from '@tanstack/react-query'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {useAppSettings} from '../context/ConfigContext'
 import {queryKeys} from './query.index'
@@ -29,16 +29,4 @@ export const useQuerySchema = ({workspaceId, formId}: {workspaceId: Ip.Workspace
     ...query,
     data: bundle,
   }
-}
-
-export const getSchema = ({
-  workspaceId,
-  formId,
-  queryClient,
-}: {
-  workspaceId: Ip.WorkspaceId
-  queryClient: QueryClient
-  formId: Ip.FormId
-}): undefined | KoboSchemaHelper.Bundle => {
-  return queryClient.getQueryData<KoboSchemaHelper.Bundle>(queryKeys.schema(workspaceId, formId))
 }
