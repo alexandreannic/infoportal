@@ -45,7 +45,7 @@ export function FormActions() {
           title={m._formAction.reRunOnAllData}
           loading={queryRunAllActionByForm.isPending}
           content={<div dangerouslySetInnerHTML={{__html: m._formAction.reRunOnAllDataDetails}} />}
-          onConfirm={close => queryRunAllActionByForm.mutateAsync().then(close)}
+          onConfirm={(e, close) => queryRunAllActionByForm.mutateAsync().then(close)}
         >
           <Core.Btn icon="refresh" variant="contained">
             {m._formAction.reRunOnAllData}

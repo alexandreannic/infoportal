@@ -447,7 +447,6 @@ export namespace Ip {
         export type Run = {
           workspaceId: WorkspaceId
           formId: FormId
-          actionId: ActionId
         }
       }
 
