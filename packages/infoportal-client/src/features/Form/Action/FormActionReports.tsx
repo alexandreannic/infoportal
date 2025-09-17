@@ -30,9 +30,6 @@ export const FormActionReports = ({workspaceId, formId}: {workspaceId: Ip.Worksp
       getRowKey={_ => _.id}
       data={data ?? []}
       loading={queryReports.isLoading}
-      renderEmptyState={
-      <Fender type="empty"/>
-      }
       rowStyle={_ => (_.running ? {background: Core.alphaVar(t.vars.palette.warning.light, 0.5)} : {})}
       header={
         <>

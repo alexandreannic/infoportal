@@ -5,19 +5,19 @@ import {alphaVar, colorPrimary} from '@infoportal/client-core'
 
 export const sxUtils = Core.makeSx({
   fontBig: {
-    fontSize: t => `calc(${t.typography.fontSize} * 1.15)`,
+    fontSize: t => `calc(${t.typography.fontSize}px * 1.15)`,
   },
   fontNormal: {
-    fontSize: t => `calc(${t.typography.fontSize})`,
+    fontSize: t => t.typography.fontSize,
   },
   fontSmall: {
-    fontSize: t => `calc(${t.typography.fontSize} * 0.85)`,
+    fontSize: t => `calc(${t.typography.fontSize}px * 0.85)`,
   },
   fontTitle: {
-    fontSize: t => `calc(${t.typography.fontSize} * 1.3)`,
+    fontSize: t => `calc(${t.typography.fontSize}px * 1.3)`,
   },
   fontBigTitle: {
-    fontSize: t => `calc(${t.typography.fontSize} * 1.6)`,
+    fontSize: t => `calc(${t.typography.fontSize}px * 1.6)`,
   },
   tdActions: {
     textAlign: 'right',
@@ -413,9 +413,9 @@ export const muiTheme = ({
       MuiDialog: {
         styleOverrides: {
           paper: ({theme}) => ({
-            background: alphaVar(theme.vars.palette.background.paper, .75)
-          })
-        }
+            background: alphaVar(theme.vars.palette.background.paper, 0.75),
+          }),
+        },
       },
       MuiDialogTitle: {
         styleOverrides: {

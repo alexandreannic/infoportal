@@ -1,4 +1,4 @@
-import {ReactNode} from 'react'
+import {ReactNode, useCallback, useMemo} from 'react'
 import {Box, BoxProps, CircularProgress, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {sxUtils} from '@/core/theme'
 import {fnSwitch} from '@axanc/ts-utils'
@@ -22,8 +22,8 @@ const textSizes: Record<FenderSize, {title: SxProps<Theme>; description: SxProps
     description: sxUtils.fontSmall,
   },
   big: {
-    title: sxUtils.fontBig,
-    description: sxUtils.fontNormal,
+    title: sxUtils.fontTitle,
+    description: sxUtils.fontBig,
   },
   normal: {
     title: sxUtils.fontBig,
@@ -47,7 +47,13 @@ export const Fender = ({
   ...props
 }: FenderProps) => {
   const t = useTheme()
-  const getIcon = () => {
+
+  const renderIcon = useCallback(
+    (name: string) => <Icon sx={{fontSize: `${iconSize}px !important`}}>{name}</Icon>,
+    [iconSize],
+  )
+
+  const getIcon = useMemo(() => {
     if (icon) return renderIcon(icon)
     switch (type) {
       case 'empty':
@@ -61,9 +67,25 @@ export const Fender = ({
       case 'loading':
         return <CircularProgress size={iconSize} />
     }
-  }
+  }, [type, renderIcon])
 
-  const renderIcon = (name: string) => <Icon sx={{fontSize: `${iconSize}px !important`}}>{name}</Icon>
+  const color = useCallback(() => {
+    return fnSwitch(type, {
+      loading: {},
+      error: {
+        color: t.vars.palette.error.main,
+      },
+      empty: {
+        color: t.vars.palette.text.disabled,
+      },
+      warning: {
+        color: t.vars.palette.warning.main,
+      },
+      success: {
+        color: t.vars.palette.success.main,
+      },
+    })
+  }, [type])
 
   return (
     <Box
@@ -82,27 +104,13 @@ export const Fender = ({
           sx={{
             height: iconSize,
             lineHeight: 1,
-            ...{
-              error: {
-                color: t.vars.palette.error.main,
-              },
-              empty: {
-                color: t.vars.palette.text.disabled,
-              },
-              warning: {
-                color: t.vars.palette.warning.main,
-              },
-              loading: {},
-              success: {
-                color: t.vars.palette.success.main,
-              },
-            }[type],
+            color,
             ...sx,
           }}
         >
-          {getIcon()}
+          {getIcon}
         </Box>
-        <Box sx={{mt: 0}}>
+        <Box sx={{mt: 0, color}}>
           {title && <Box sx={textSizes[size].title}>{title}</Box>}
           {description && <Box sx={textSizes[size].description}>{description}</Box>}
           {children}

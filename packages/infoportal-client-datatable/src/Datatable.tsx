@@ -37,6 +37,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
     data,
     rowHeight = 32,
     dataFilteredAndSorted,
+    loading,
     dataFilteredExceptBy,
     getColumnOptions,
     cellSelection,
@@ -44,6 +45,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
     contentProps,
     rowStyle,
     module,
+    renderEmptyState,
   } = useCtx(_ => _)
 
   const overscan = 10
@@ -108,6 +110,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
         }}
       >
         <DatatableHead onMouseDown={() => cellSelection.engine.reset()} />
+        {renderEmptyState && data.length === 0 && !loading && renderEmptyState}
         <div
           className="dtbody"
           onMouseUp={cellSelection.engine.handleMouseUp}
