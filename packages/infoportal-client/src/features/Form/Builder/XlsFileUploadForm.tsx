@@ -1,7 +1,7 @@
 import {Controller, useForm} from 'react-hook-form'
 import {DragDropFileInput} from '@/shared/DragDropFileInput'
 import React, {useRef, useState} from 'react'
-import {Core, Fender} from '@/shared'
+import {Core} from '@/shared'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useI18n} from '@/core/i18n'
 import {Alert, AlertTitle, Box, CircularProgress, Icon, Skeleton} from '@mui/material'
@@ -161,7 +161,7 @@ export const XlsFileUploadForm = ({
                           )
                         }
                         if (!validation) {
-                          return <Fender type="error" title={m.error} />
+                          return <Core.Fender type="error" title={m.error} />
                         }
                         return (
                           <>

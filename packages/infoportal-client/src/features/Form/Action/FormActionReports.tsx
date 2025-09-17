@@ -1,6 +1,6 @@
 import {Ip} from 'infoportal-api-sdk'
 import {CircularProgress, Icon, useTheme} from '@mui/material'
-import {AppAvatar, Core, Datatable, Fender} from '@/shared'
+import {AppAvatar, Core, Datatable} from '@/shared'
 import {useI18n} from '@/core/i18n/index.js'
 import {UseQueryFormActionReport} from '@/core/query/useQueryFormActionReport.js'
 import {Code} from '@/features/Form/Action/FormActionLogs.js'

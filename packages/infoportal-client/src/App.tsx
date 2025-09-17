@@ -5,7 +5,7 @@ import {getMsalInstance} from '@/core/msal'
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {SessionProvider} from '@/core/Session/SessionContext'
-import {CenteredContent, Core, Datatable, Fender} from '@/shared'
+import {CenteredContent, Core, Datatable} from '@/shared'
 import {IpLogo} from '@/shared/logo/logo'
 import {MsalProvider} from '@azure/msal-react'
 import {ThemeProvider} from '@mui/material/styles'
@@ -124,7 +124,7 @@ const AppWithBaseContext = () => {
           <Datatable.Config
             children={_}
             defaultProps={{
-              renderEmptyState: <Fender type="empty" size="big" title={m.noDataAtm} />,
+              renderEmptyState: <Core.Fender type="empty" size="big" title={m.noDataAtm} />,
               rowHeight: 38,
               module: {
                 columnsResize: {enabled: false},

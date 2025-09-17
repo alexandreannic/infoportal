@@ -1,5 +1,5 @@
 import {useI18n} from '@/core/i18n'
-import {Fender} from '@/shared'
+import {Core} from '@/shared'
 import {SidebarItem} from '@/shared/Layout/Sidebar'
 import {Skeleton, useTheme} from '@mui/material'
 import {useMemo, useState} from 'react'
@@ -48,7 +48,7 @@ export const AppSidebarAssets = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) =
           </SidebarItem>
         ))
       ) : queryForm.data?.length === 0 ? (
-        <Fender
+        <Core.Fender
           type="empty"
           size="small"
           title={m._koboDatabase.noAccessToForm}

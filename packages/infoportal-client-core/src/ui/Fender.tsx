@@ -1,6 +1,5 @@
 import {ReactNode, useCallback, useMemo} from 'react'
-import {Box, BoxProps, CircularProgress, Icon, SxProps, Theme, useTheme} from '@mui/material'
-import {sxUtils} from '@/core/theme'
+import {Box, BoxProps, CircularProgress, Icon, useTheme} from '@mui/material'
 import {fnSwitch} from '@axanc/ts-utils'
 
 type State = 'loading' | 'error' | 'empty' | 'success' | 'warning'
@@ -16,18 +15,18 @@ export interface FenderProps extends Omit<BoxProps, 'title'> {
   description?: ReactNode
 }
 
-const textSizes: Record<FenderSize, {title: SxProps<Theme>; description: SxProps<Theme>}> = {
+const textSizes: Record<FenderSize, {title: string; description: string}> = {
   small: {
-    title: sxUtils.fontNormal,
-    description: sxUtils.fontSmall,
+    title: '1em',
+    description: '0.85em',
   },
   big: {
-    title: sxUtils.fontTitle,
-    description: sxUtils.fontBig,
+    title: '1.3em',
+    description: '1.15em',
   },
   normal: {
-    title: sxUtils.fontBig,
-    description: sxUtils.fontNormal,
+    title: '1.15em',
+    description: '1em',
   },
 }
 
@@ -111,8 +110,8 @@ export const Fender = ({
           {getIcon}
         </Box>
         <Box sx={{mt: 0, color}}>
-          {title && <Box sx={textSizes[size].title}>{title}</Box>}
-          {description && <Box sx={textSizes[size].description}>{description}</Box>}
+          {title && <Box sx={{fontSize: textSizes[size].title}}>{title}</Box>}
+          {description && <Box sx={{fontSize: textSizes[size].description}}>{description}</Box>}
           {children}
         </Box>
       </div>

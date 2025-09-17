@@ -1,6 +1,5 @@
 import {Page} from '@/shared/Page'
 import {CenteredContent} from '@/shared/CenteredContent'
-import {Fender} from '@/shared/Fender'
 import React from 'react'
 import {useI18n} from '@/core/i18n'
 import {Link} from '@tanstack/react-router'
@@ -12,7 +11,7 @@ export const PageNotFound = () => {
   return (
     <Page>
       <CenteredContent>
-        <Fender size="big" title={m.pageNotExists}>
+        <Core.Fender size="big" title={m.pageNotExists}>
           <Link to="/">
             <Core.Btn
               variant="contained"
@@ -23,7 +22,7 @@ export const PageNotFound = () => {
               {m.home}
             </Core.Btn>
           </Link>
-        </Fender>
+        </Core.Fender>
       </CenteredContent>
     </Page>
   )
