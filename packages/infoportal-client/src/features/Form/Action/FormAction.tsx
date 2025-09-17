@@ -65,6 +65,7 @@ export function FormAction({sx, ...props}: BoxProps) {
         (interfaceInput.data && interfaceOutput.data ? (
           <FormActionEditor
             key={actionId}
+            actionId={actionId}
             saving={queryActionUpdate.isPending}
             inputType={interfaceInput.data}
             outputType={interfaceOutput.data}

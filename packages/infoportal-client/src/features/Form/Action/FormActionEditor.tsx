@@ -11,6 +11,7 @@ import {Core} from '@/shared/index.js'
 const monacoBg = '#1e1e1e'
 
 type Props = {
+  actionId: string
   saving?: boolean
   onSave: (_: {body: string; bodyErrors: number; bodyWarnings: number}) => void
   body?: string
@@ -31,6 +32,7 @@ function FormActionEditorWithMonaco({
   saving,
   onSave,
   inputType,
+  actionId,
   monaco,
   outputType,
 }: Props & {
@@ -130,6 +132,7 @@ function FormActionEditorWithMonaco({
         </Core.Btn>
       </Tabs>
       <Editor
+        key={actionId}
         options={{
           minimap: {enabled: false},
         }}
