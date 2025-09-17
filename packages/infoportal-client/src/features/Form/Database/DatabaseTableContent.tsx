@@ -110,6 +110,7 @@ export const DatabaseTableContent = ({
 
   const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const base = buildDatabaseColumns.meta.all({
+      formType: ctx.form.type,
       queryUpdate: queryUpdate,
       workspaceId,
       formId: ctx.form.id,

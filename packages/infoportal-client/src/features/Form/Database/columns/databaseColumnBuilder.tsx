@@ -420,6 +420,7 @@ function repeatGroup(
 }
 
 type MetaProps = {
+  formType: Ip.Form.Type
   workspaceId: Ip.WorkspaceId
   queryUpdate: ReturnType<typeof useQueryAnswerUpdate>
   getRow?: (_: any) => Row
@@ -434,7 +435,7 @@ function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'> = {}): Datatable
   return {
     group: {label: metaLabel, id: 'meta'},
     type: 'id',
-    id: 'id' as const,
+    id: 'meta/id' as const,
     actionOnSelected: () => <ReadonlyAction />,
     head: 'ID',
     width: 110,
@@ -457,6 +458,17 @@ function id({getRow = _ => _ as any}: Pick<MetaProps, 'getRow'> = {}): Datatable
   } as const
 }
 
+function version({m}: {m: Messages}): Datatable.Column.Props<Ip.Submission> {
+  return {
+    group: {label: metaLabel, id: 'meta'},
+    id: 'meta/version' as const,
+    head: m.version,
+    width: 70,
+    noCsvExport: true,
+    renderQuick: (_: Ip.Submission) => _.version,
+  }
+}
+
 function actions({
   workspaceId,
   formId,
@@ -474,7 +486,7 @@ function actions({
 }): Datatable.Column.Props<Ip.Submission> {
   return {
     group: {label: metaLabel, id: 'meta'},
-    id: 'actions' as const,
+    id: 'meta/actions' as const,
     head: '',
     width: 70,
     noCsvExport: true,
@@ -546,7 +558,7 @@ function end({
     translateQuestion: () => m.end,
     q: {
       type: 'end',
-      name: 'submissionTime',
+      name: 'end',
       label: [m.end],
       $xpath: 'meta/submissionTime',
     },
@@ -590,7 +602,7 @@ function validation({
 >): Datatable.Column.Props<Row> {
   return {
     group: {label: metaLabel, id: 'meta'},
-    id: '_validation' as const,
+    id: 'meta/_validation' as const,
     head: m.validation,
     align: 'center',
     width: 60,
@@ -617,8 +629,14 @@ function validation({
   }
 }
 
-function byMeta(props: MetaProps): Datatable.Column.Props<any>[] {
-  return [actions(props), validation(props), id(props), submissionTime(props)] as const
+function byMeta({formType, ...props}: MetaProps): Datatable.Column.Props<any>[] {
+  return [
+    actions(props),
+    validation(props),
+    id(props),
+    formType === 'smart' ? undefined : version(props),
+    submissionTime(props),
+  ].filter(_ => !!_) as const
 }
 
 function MissingOption({value}: {value?: string}) {

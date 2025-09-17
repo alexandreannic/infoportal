@@ -143,7 +143,9 @@ export class SubmissionService {
     attachments,
     author,
     isoCode,
+    version,
   }: {
+    version: string
     author?: string
     formId: Ip.FormId
     isoCode?: string
@@ -155,6 +157,7 @@ export class SubmissionService {
       end: new Date(),
       uuid: genUUID(),
       submissionTime: new Date(),
+      version,
       isoCode,
       submittedBy: author,
       answers,
@@ -194,6 +197,11 @@ export class SubmissionService {
   ): Promise<Ip.Submission> => {
     const {formId, workspaceId} = props
     const form = await this.form.get(formId)
+    const formVersion = await this.prisma.formVersion.findFirst({
+      select: {version: true},
+      where: {formId, status: 'active'},
+    })
+    if (!formVersion) throw new HttpError.BadRequest(`No active version found for Form ${formId}.`)
     if (!form) throw new HttpError.NotFound(`Form ${formId} does not exists.`)
     if (form.type === 'kobo')
       throw new HttpError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
@@ -201,7 +209,7 @@ export class SubmissionService {
     const isoCode = await this.getIsoFromGeopoint(props.geolocation)
     return this.create({
       workspaceId,
-      data: SubmissionService.mapPayload({...props, isoCode}),
+      data: SubmissionService.mapPayload({...props, version: 'v' + formVersion.version, isoCode}),
     })
   }
 
