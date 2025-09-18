@@ -60,7 +60,7 @@ function NewForm() {
               key={asset}
               hideRadio
               value={asset}
-              title={<OptionBody color={Asset.color[asset]} icon={Asset.icon[asset]} label={m.formSource[asset]} />}
+              title={<OptionBody color={Asset.color[asset]} icon={Asset.icon[asset]} label={m.formSource_[asset]} />}
               sx={{flex: 1}}
             />
           ))}
@@ -75,7 +75,7 @@ function NewForm() {
                 <NewFormCreateInternal
                   workspaceId={workspaceId}
                   loading={queryForm.isPending}
-                  btnLabel={m.create + ' ' + m.formSource[type].toLowerCase()}
+                  btnLabel={m.create + ' ' + m.formSource_[type].toLowerCase()}
                   onSubmit={async form => {
                     const newForm = await queryForm.mutateAsync({...form, type})
                     navigate({to: '/$workspaceId/form/$formId', params: {workspaceId, formId: newForm.id}})

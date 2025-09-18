@@ -1,6 +1,7 @@
 import {formatDistance, formatDuration as formatDurationFns, intervalToDuration} from 'date-fns'
 import {Ip} from 'infoportal-api-sdk'
 import {ReactNode} from 'react'
+import {Asset} from '@/shared/Asset.js'
 
 const invalidDate = ''
 
@@ -120,7 +121,7 @@ export const en = Object.freeze({
     submissionsByCategory: 'Submissions by category',
     submissionsByUser: 'Submissions by user',
     submissionsByForm: 'Submissions by form',
-    linkedToKobo: 'Linked to Kobo',
+    connectedToKobo: 'Connected to Kobo',
     includeKoboAccountNames: "Include KoboToolbox account's name",
     copyLink: 'Copy link',
     copyResponderLink: 'Copy responder link',
@@ -336,10 +337,10 @@ export const en = Object.freeze({
     submit: 'Submit',
     newForm: 'New form',
     retry: 'Retry',
-    formSource: {
-      smart: 'Smart database',
-      kobo: 'Import from KoboToolbox',
-      internal: 'Raw form',
+    formSource_: {
+      [Asset.Type.smart]: 'Smart database',
+      [Asset.Type.kobo]: 'Imported from KoboToolbox',
+      [Asset.Type.internal]: 'Raw form',
     },
     changeAccount: 'Change account',
     addNewKoboAccount: 'Add new Kobo account',

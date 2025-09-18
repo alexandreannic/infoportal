@@ -1,5 +1,6 @@
 import {IconProps, Icon as MuiIcon} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
+import {useI18n} from '@/core/i18n/index.js'
 
 export type Asset = {
   id: string
@@ -29,8 +30,9 @@ export namespace Asset {
   }
 
   export const Icon = ({type, sx, ...props}: IconProps & {type: Type}) => {
+    const {m} = useI18n()
     return (
-      <MuiIcon sx={{color: color[type], ...sx}} {...props}>
+      <MuiIcon title={m.formSource_[type]} sx={{color: color[type], ...sx}} {...props}>
         {icon[type]}
       </MuiIcon>
     )

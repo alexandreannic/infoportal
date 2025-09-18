@@ -1,5 +1,6 @@
 import {Icon as MuiIcon, IconProps, Theme, useTheme} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
+import {useI18n} from '@/core/i18n/index.js'
 
 export namespace DeploymentStatus {
   export const icon = {
@@ -16,8 +17,9 @@ export namespace DeploymentStatus {
 
   export const Icon = ({status, fontSize = 'small', sx, ...props}: IconProps & {status: Ip.Form.DeploymentStatus}) => {
     const t = useTheme()
+    const {m} = useI18n()
     return (
-      <MuiIcon fontSize={fontSize} sx={{color: color(t)[status], ...sx}} {...props}>
+      <MuiIcon title={m.deploymentStatus_[status]} fontSize={fontSize} sx={{color: color(t)[status], ...sx}} {...props}>
         {icon[status]}
       </MuiIcon>
     )

@@ -135,7 +135,7 @@ function Dashboard() {
     }
     return (
       <Core.Panel sx={{height: '100%', py: 1, px: 2, display: 'flex', alignItems: 'center'}}>
-        <Core.ChartPieWidget title={m.linkedToKobo} dense showValue showBase value={value} base={base} />
+        <Core.ChartPieWidget title={m.connectedToKobo} dense showValue showBase value={value} base={base} />
       </Core.Panel>
     )
   }, [queryForms.data])

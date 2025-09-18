@@ -2,7 +2,7 @@ import {useI18n} from '@/core/i18n'
 import {Core, Datatable} from '@/shared'
 import {Page} from '@/shared/Page'
 import {seq} from '@axanc/ts-utils'
-import {useTheme} from '@mui/material'
+import {Icon, useTheme} from '@mui/material'
 import {useEffect, useMemo} from 'react'
 import {useQueryServers} from '@/core/query/useQueryServers'
 import {UseQueryForm} from '@/core/query/useQueryForm'
@@ -12,6 +12,7 @@ import {formRootRoute} from '@/features/Form/Form'
 import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
 import {DeploymentStatus} from '@/shared/DeploymentStatus'
+import {Asset} from '@/shared/Asset.js'
 
 export const formsRoute = createRoute({
   getParentRoute: () => formRootRoute,
@@ -53,11 +54,42 @@ function Forms() {
           data={queryForm.data}
           columns={[
             {
+              id: 'type',
+              type: 'select_one',
+              width: 65,
+              head: m.type,
+              align: 'center',
+              render: _ => {
+                return {
+                  label: <Asset.Icon type={_.type as any} />,
+                  value: _.type,
+                  export: _.type,
+                  option: _.type,
+                }
+              },
+            },
+            {
+              id: 'linkedToKobo',
+              type: 'select_one',
+              width: 65,
+              head: m.connectedToKobo,
+              align: 'center',
+              render: _ => {
+                const isKobo = Ip.Form.isKobo(_)
+                const connected = Ip.Form.isConnectedToKobo(_)
+                return {
+                  label: isKobo ? !connected && <Icon color="error" children="block" /> : undefined,
+                  value: isKobo ? '' + connected : undefined,
+                  export: isKobo ? '' + connected : undefined,
+                  option: isKobo ? '' + connected : undefined,
+                }
+              },
+            },
+            {
               id: 'status',
               type: 'select_one',
-              width: 0,
+              width: 65,
               head: m.status,
-              styleHead: {maxWidth: 0},
               align: 'center',
               render: _ => {
                 return {
@@ -71,6 +103,7 @@ function Forms() {
             {
               id: 'name',
               type: 'select_one',
+              width: '2fr',
               head: m.name,
               render: _ => {
                 return {
@@ -139,7 +172,6 @@ function Forms() {
               id: 'createdAt',
               type: 'date',
               head: m.createdAt,
-              width: 0,
               render: _ => {
                 return {
                   label: <Core.Txt color="hint">{formatDate(_.createdAt)}</Core.Txt>,
@@ -150,7 +182,6 @@ function Forms() {
             {
               id: 'updatedAt',
               type: 'date',
-              width: 0,
               head: m.updatedAt,
               render: _ => {
                 return {
@@ -162,9 +193,9 @@ function Forms() {
             {
               id: 'form_url',
               head: m.link,
+              width: 60,
               align: 'center',
               type: 'string',
-              width: 0,
               render: _ => {
                 if (!_.kobo?.enketoUrl) return {label: '', value: undefined}
                 return {
@@ -181,7 +212,7 @@ function Forms() {
             },
             {
               id: 'actions',
-              width: 0,
+              width: 45,
               styleHead: {maxWidth: 0},
               align: 'right',
               head: '',
