@@ -120,7 +120,7 @@ function Form() {
         <Outlet />
       </Context.Provider>
     )
-  }, [queryForm.status, queryForm.data, querySchema.status, queryPermission.data, workspaceId])
+  }, [queryForm.data, querySchema.data, queryPermission.data, workspaceId])
 
   const activeTab = useActiveTab(currentFullPath, [
     answersRoute.fullPath,

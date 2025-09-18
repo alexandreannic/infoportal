@@ -203,7 +203,7 @@ export class SubmissionService {
     })
     if (!formVersion) throw new HttpError.BadRequest(`No active version found for Form ${formId}.`)
     if (!form) throw new HttpError.NotFound(`Form ${formId} does not exists.`)
-    if (form.type === 'kobo')
+    if (Ip.Form.isConnectedToKobo(form))
       throw new HttpError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
     if (form.type === 'smart') throw new HttpError.BadRequest(`Cannot manually submit in a Smart form.`)
     const isoCode = await this.getIsoFromGeopoint(props.geolocation)

@@ -17,17 +17,30 @@ export class KoboSchemaCache {
     return this.instance
   }
 
-  readonly get = app.cache.request({
+  readonly getHot = async ({formId}: {formId: Ip.FormId}): Promise<Kobo.Form | undefined> => {
+    const [sdk, koboId] = await Promise.all([
+      this.koboSdk.getBy.formId(formId),
+      this.prisma.formKoboInfo.findUnique({select: {koboId: true}, where: {formId}}).then(_ => _?.koboId),
+    ])
+    if (!koboId || !sdk) throw new HttpError.NotFound()
+    return sdk.v2.form.get({formId: koboId, use$autonameAsName: true})
+  }
+
+  readonly getCache = app.cache.request({
     key: AppCacheKey.KoboSchema,
     genIndex: _ => _.formId,
     ttlMs: duration(2, 'day').toMs,
-    fn: async ({formId}: {formId: Ip.FormId}): Promise<Kobo.Form> => {
-      const [sdk, koboId] = await Promise.all([
-        this.koboSdk.getBy.formId(formId),
-        this.prisma.formKoboInfo.findUnique({select: {koboId: true}, where: {formId}}).then(_ => _?.koboId),
-      ])
-      if (!koboId || !sdk) throw new HttpError.NotFound()
-      return sdk.v2.form.get({formId: koboId, use$autonameAsName: true})
-    },
+    fn: this.getHot,
   })
+
+  readonly get = async (p: {formId: Ip.FormId}): Promise<Kobo.Form> => {
+    const cache = await this.getCache(p)
+    if (cache) return cache
+    const form = await this.getHot(p)
+    if (form) {
+      app.cache.clear(AppCacheKey.KoboSchema, p.formId)
+      return form
+    }
+    throw new HttpError.NotFound(`Form ${p.formId} not found`)
+  }
 }
