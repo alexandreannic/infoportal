@@ -89,9 +89,13 @@ export const en = Object.freeze({
     pageNotExists: 'This page does not exist.',
     reinitialize: 'Reinitialize',
     connectAs: 'Connect as',
+    wait: 'Wait',
+    skip: 'Skip',
     _builder: {
+      diffTimeout: 'Calculating changes is taking too long. Are you sure you have uploaded the good form?',
       alertPreviouslyKoboForm: `This form was originally imported from Kobo. It's no longer connected. Any version you publish here here won’t update Kobo.`,
       importCurrentKoboSurvey: 'Import last Kobo form version',
+      backToFormSelection: 'Select new form',
     },
     column: 'Column',
     name: 'Name',

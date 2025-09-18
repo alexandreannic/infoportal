@@ -38,7 +38,7 @@ export const XlsFileUploadForm = ({
   const queryVersion = useQueryVersion({workspaceId, formId})
   const [validation, setValidation] = useState<Ip.Form.Schema.Validation>()
   const stepperRef = useRef<Core.StepperHandle>(null)
-  const [schemaHasChanges, setSchemaHasChanges] = useState<boolean>(false)
+  const [schemaHasChanges, setSchemaHasChanges] = useState<boolean | null>(null)
 
   const querySchema = useQuerySchemaByVersion({formId, workspaceId, versionId: lastSchema?.id})
 
@@ -166,13 +166,14 @@ export const XlsFileUploadForm = ({
                         return (
                           <>
                             {actions}
-                            {!schemaHasChanges && (
+                            {schemaHasChanges === false && (
                               <Alert color="error" sx={{mt: 1}}>
                                 <AlertTitle>{m.xlsFormNoChangeTitle}</AlertTitle>
                                 {m.xlsFormNoChangeDesc}
                               </Alert>
                             )}
                             <DiffView
+                              stepperRef={stepperRef}
                               oldStr={schemaToString(querySchema.data)}
                               newStr={schemaToString(validation.schema)}
                               hasChanges={setSchemaHasChanges}

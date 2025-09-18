@@ -29,7 +29,6 @@ export const Alert = forwardRef(
         {...props}
         ref={ref as any}
         sx={{
-          ...sx,
           ...((hidden || !isVisible || (deletable === 'permanent' && !isPersistentVisible)) && {
             minHeight: '0 !important',
             height: '0 !important',
@@ -37,6 +36,7 @@ export const Alert = forwardRef(
             padding: '0 !important',
             margin: '0 !important',
           }),
+          ...sx,
         }}
         onClose={
           deletable

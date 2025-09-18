@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {forwardRef, ReactNode} from 'react'
+import {forwardRef, ReactNode, useMemo} from 'react'
 import {alpha, Button, CircularProgress, Icon, Tooltip} from '@mui/material'
 import {ButtonProps} from '@mui/material/Button'
 import {makeStyles} from 'tss-react/mui'
@@ -91,9 +91,14 @@ export const Btn = forwardRef(
     ref: any,
   ) => {
     const {classes, cx} = useStyles({loading, variant})
+    const endIcon = useMemo(() => {
+      if (typeof props.endIcon === 'string') return <Icon>{props.endIcon}</Icon>
+      return props.endIcon
+    }, [props.endIcon])
     const btn = (
       <Button
         {...props}
+        endIcon={endIcon}
         variant={variant === 'light' || variant === 'input' ? 'outlined' : variant}
         color={color}
         disabled={disabled || loading}
