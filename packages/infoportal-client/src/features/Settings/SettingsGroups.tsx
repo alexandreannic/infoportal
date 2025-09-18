@@ -2,7 +2,7 @@ import {Page} from '@/shared/Page'
 import React, {useState} from 'react'
 import {useI18n} from '@/core/i18n'
 import {Box, Chip, Icon, useTheme} from '@mui/material'
-import {useForm} from 'react-hook-form'
+import {Controller, useForm} from 'react-hook-form'
 import {accessLevelIcon, IAccessForm} from '@/features/Access/AccessForm'
 import {SettingsGroupAccessForm} from '@/features/Settings/SettingsGroupAccessForm'
 import {Core, Datatable} from '@/shared'
@@ -12,11 +12,7 @@ import {settingsRoute} from '@/features/Settings/Settings'
 import {Ip} from 'infoportal-api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
 import {TabContent} from '@/shared/Tab/TabContent.js'
-
-interface GoupForm {
-  name: string
-  desc?: string
-}
+import {SettingsGroupCreateForm} from '@/features/Settings/SettingsGroupCreateForm.js'
 
 export const settingsGroupsRoute = createRoute({
   getParentRoute: () => settingsRoute,
@@ -24,10 +20,15 @@ export const settingsGroupsRoute = createRoute({
   component: SettingsGroups,
 })
 
+export interface GroupCreateForm {
+  name: string
+  desc?: string
+}
+
 function SettingsGroups() {
   const {m, formatDateTime} = useI18n()
   const {permission, workspace, workspaceId} = useWorkspaceContext()
-  const groupForm = useForm<GoupForm>()
+  const groupForm = useForm<GroupCreateForm>()
   const accessForm = useForm<IAccessForm>()
   const query = useQueryGroup(workspaceId)
   const queryGet = query.getAll
@@ -59,12 +60,7 @@ function SettingsGroups() {
                   })()
                 }
                 title={m._admin.createGroup}
-                content={
-                  <>
-                    <Core.Input sx={{mt: 2}} label={m.name} autoFocus {...groupForm.register('name')} />
-                    <Core.Input multiline minRows={3} maxRows={6} label={m.desc} {...groupForm.register('desc')} />
-                  </>
-                }
+                content={<SettingsGroupCreateForm form={groupForm} />}
               >
                 <Core.Btn icon="add" variant="outlined">
                   {m.create}
@@ -147,12 +143,13 @@ function SettingsGroups() {
             },
             {
               id: 'actions',
-              width: 84,
+              width: 90,
               align: 'right',
               renderQuick: _ => (
                 <>
                   <Core.Modal
                     onOpen={groupForm.reset}
+                    loading={query.update.isPending}
                     onConfirm={(e, close) =>
                       groupForm.handleSubmit(form => {
                         query.update
@@ -163,27 +160,9 @@ function SettingsGroups() {
                           .then(close)
                       })()
                     }
-                    title={m._admin.createGroup}
+                    title={m.edit}
                     confirmLabel={m.edit}
-                    content={
-                      <>
-                        <Core.Input
-                          sx={{mt: 2}}
-                          label={m.name}
-                          defaultValue={_.name}
-                          autoFocus
-                          {...groupForm.register('name')}
-                        />
-                        <Core.Input
-                          multiline
-                          minRows={3}
-                          maxRows={6}
-                          defaultValue={_.desc}
-                          label={m.desc}
-                          {...groupForm.register('desc')}
-                        />
-                      </>
-                    }
+                    content={<SettingsGroupCreateForm form={groupForm} defaultValue={{desc: _.desc, name: _.name}} />}
                   >
                     <Core.IconBtn size="small">edit</Core.IconBtn>
                   </Core.Modal>

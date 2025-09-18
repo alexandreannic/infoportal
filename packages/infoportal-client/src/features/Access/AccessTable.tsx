@@ -34,7 +34,6 @@ export const AccessTable = ({
       data={queryAccess.data}
       columns={[
         {
-          width: 80,
           id: 'createdAt',
           type: 'date',
           head: m.createdAt,
@@ -75,7 +74,6 @@ export const AccessTable = ({
           renderQuick: _ => _.groupName ?? Datatable.Utils.blank,
         },
         {
-          width: 90,
           id: 'level',
           head: m.accessLevel,
           type: 'select_one',
@@ -103,8 +101,8 @@ export const AccessTable = ({
           ? [
               {
                 id: 'actions',
-                width: 0,
                 head: '',
+                width: 40,
                 align: 'right',
                 renderQuick: (_: Ip.Form.Access) => {
                   return (

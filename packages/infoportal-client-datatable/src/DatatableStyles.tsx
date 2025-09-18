@@ -7,7 +7,7 @@ export const DatatableGlobalStyles = () => (
       '.dt-container': {
         display: 'flex',
         flexDirection: 'column',
-        height: '100%'
+        height: '100%',
       },
       '.dt': {
         flex: 1,
@@ -47,6 +47,9 @@ export const DatatableGlobalStyles = () => (
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
         backgroundColor: `rgb(from ${theme.vars.palette.background.paper} r g b)`,
+        '& [class$="MuiOutlinedInput-notchedOutline"]': {
+          border: 'none',
+        },
         '&:not(:last-of-type)': {
           borderRight: `1px solid ${theme.vars.palette.divider}`,
         },

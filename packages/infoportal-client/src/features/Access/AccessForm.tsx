@@ -8,6 +8,7 @@ import {DrcJobInputMultiple} from '@/shared/customInput/DrcJobInput'
 import {Core, Datatable} from '@/shared'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
 import {Ip} from 'infoportal-api-sdk'
+import {Regexp} from 'infoportal-common'
 
 export interface IAccessForm {
   selectBy?: 'email' | 'job' | 'group' | null
@@ -102,15 +103,22 @@ export const AccessFormInputEmail = ({form}: {form: UseFormReturn<IAccessForm>})
   const {m} = useI18n()
   const required = form.watch('selectBy') === 'email'
   return (
-    <Core.Input
-      label={m.email}
-      error={!!form.formState.errors.email}
-      helperText={form.formState.errors.email?.message as string}
-      required={required}
-      {...form.register('email', {
+    <Controller
+      control={form.control}
+      name="email"
+      rules={{
         required: {value: required, message: m.required},
-        pattern: {value: /(@drc.ngo$|\s)/, message: m.invalidEmail},
-      })}
+        pattern: {value: Regexp.get.email, message: m.invalidEmail},
+      }}
+      render={({field, fieldState}) => (
+        <Core.Input
+          label={m.email}
+          error={!!fieldState.error}
+          helperText={fieldState.error?.message}
+          required={required}
+          {...field}
+        />
+      )}
     />
   )
 }

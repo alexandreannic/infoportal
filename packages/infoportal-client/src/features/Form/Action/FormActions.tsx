@@ -51,8 +51,7 @@ export function FormActions() {
           value={currentFullPath}
           sx={{
             p: 0,
-            border: '1px solid',
-            borderColor: t.vars.palette.divider,
+            border: `1px solid ${t.vars.palette.divider} !important`,
             borderRadius: t.vars.shape.borderRadius,
             mb: 1,
           }}

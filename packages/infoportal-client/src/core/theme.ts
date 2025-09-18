@@ -344,7 +344,7 @@ export const muiTheme = ({
             pointerEvents: 'none',
           }),
           root: ({theme}) => ({
-            border: 'none',
+            borderBottom: 'none !important',
             background: theme.vars.palette.background.paper,
             borderRadius: theme.vars.shape.borderRadius,
             // boxShadow: theme.shadows[1],

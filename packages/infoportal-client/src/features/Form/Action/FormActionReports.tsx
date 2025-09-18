@@ -39,7 +39,7 @@ export function FormActionReports() {
 
   return (
     <Core.Animate>
-      <Core.Panel>
+      <Core.Panel sx={{height: '100%'}}>
         <Datatable.Component
           getRowKey={_ => _.id}
           data={data ?? []}
@@ -105,9 +105,7 @@ export function FormActionReports() {
               width: '1.5fr',
               type: 'string',
               render: _ => {
-                const duration = _.endedAt
-                  ? formatDuration({start: _.startedAt, end: _.endedAt ?? new Date()})
-                  : undefined
+                const duration = _.endedAt ? formatDuration({start: _.startedAt, end: _.endedAt}) : undefined
                 return {
                   tooltip: duration,
                   value: duration,

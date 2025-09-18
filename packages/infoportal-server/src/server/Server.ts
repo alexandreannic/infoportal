@@ -100,7 +100,7 @@ export class Server {
     this.server.use(bodyParser.urlencoded({extended: false}))
     if (!this.conf.production)
       this.server.use((req, res, next) => {
-        const delay = 100 + Math.random() * 200
+        const delay = 50 + Math.random() * 200
         setTimeout(next, delay)
       })
     const {tsRestRoutes, rawRoutes} = getRoutes(this.pgClient)
