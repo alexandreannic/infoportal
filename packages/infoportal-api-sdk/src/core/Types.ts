@@ -339,6 +339,7 @@ export namespace Ip {
         workspaceId: WorkspaceId
         formId: FormId
         archive?: boolean
+        category?: string
       }
 
       export type Import = {

@@ -7,13 +7,15 @@ import {UseQueryForm} from '@/core/query/useQueryForm'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 
+import {SelectFormCategory} from '@/shared/SelectFormCategory.js'
+
 export const formSettingsRoute = createRoute({
   getParentRoute: () => formRoute,
   path: 'settings',
   component: FormSettings,
 })
 
-const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; children: ReactNode}) => {
+const Row = ({label, desc, children}: {label: ReactNode; desc?: ReactNode; children: ReactNode}) => {
   const t = useTheme()
   return (
     <Box
@@ -24,9 +26,11 @@ const Row = ({label, desc, children}: {label: ReactNode; desc: ReactNode; childr
         <Core.Txt bold block>
           {label}
         </Core.Txt>
-        <Core.Txt block color="hint">
-          {desc}
-        </Core.Txt>
+        {desc && (
+          <Core.Txt block color="hint">
+            {desc}
+          </Core.Txt>
+        )}
       </Box>
       <div>{children}</div>
     </Box>
@@ -44,18 +48,29 @@ function FormSettings() {
     <TabContent width="xs">
       <Core.Panel>
         <Core.PanelBody>
+          <Row label={m.category} desc={m._settings.setCategoryDesc}>
+            <SelectFormCategory
+              sx={{minWidth: 150}}
+              workspaceId={workspaceId}
+              loading={queryUpdate.isPending}
+              value={form.category}
+              onChange={(e, value) => {
+                queryUpdate.mutateAsync({formId: form.id, category: value})
+              }}
+            />
+          </Row>
           {form.kobo && (
-            <Row label={m.connectedToKobo} desc={m.connectedToKoboDesc}>
+            <Row label={m._settings.connectedToKobo} desc={m._settings.connectedToKoboDesc}>
               <Core.Modal
                 loading={queryDisconnectFromKobo.isPending}
-                title={m.disconnectToKobo}
-                content={m.disconnectToKoboDesc}
+                title={m._settings.disconnectToKobo}
+                content={m._settings.disconnectToKoboDesc}
                 onConfirm={async (e, close) => {
                   await queryDisconnectFromKobo.mutateAsync(form.id)
                   close()
                 }}
               >
-                <Core.Btn disabled={queryDisconnectFromKobo.isPending}>{m.disconnect}</Core.Btn>
+                <Core.Btn disabled={queryDisconnectFromKobo.isPending}>{m._settings.disconnect}</Core.Btn>
               </Core.Modal>
             </Row>
           )}

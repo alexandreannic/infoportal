@@ -131,12 +131,12 @@ export class FormService {
   }
 
   readonly update = async (params: Ip.Form.Payload.Update): Promise<Ip.Form> => {
-    const {formId, archive} = params
+    const {formId, archive, category} = params
 
     // TODO trigger event!
     // const koboUpdate$ = this.koboForm.update(params)
 
-    const newData: Partial<Form> = {}
+    const newData: Partial<Form> = {category}
     if (archive) {
       newData.deploymentStatus = 'archived'
     } else if (archive === false) {

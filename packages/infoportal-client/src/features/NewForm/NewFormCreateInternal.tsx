@@ -1,9 +1,9 @@
 import {Controller, useForm} from 'react-hook-form'
 import {useI18n} from '@/core/i18n'
-import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
-import {Autocomplete, Grid} from '@mui/material'
+import {Grid} from '@mui/material'
 import {Core} from '@/shared'
+import {SelectFormCategory} from '@/shared/SelectFormCategory.js'
 
 type Form = {
   name: string
@@ -25,7 +25,6 @@ export const NewFormCreateInternal = ({
   const form = useForm<Form>({
     defaultValues: {name: '', category: ''},
   })
-  const categories = UseQueryForm.categories(workspaceId)
 
   return (
     <form
@@ -57,23 +56,13 @@ export const NewFormCreateInternal = ({
               <Controller
                 name="category"
                 control={form.control}
-                render={({field, fieldState}) => (
-                  <Autocomplete
+                render={({field}) => (
+                  <SelectFormCategory
                     {...field}
-                    freeSolo
-                    disableClearable
-                    options={categories ?? []}
+                    workspaceId={workspaceId}
                     value={field.value}
                     onChange={(e, value) => field.onChange(value)}
                     onInputChange={(_, value) => field.onChange(value)}
-                    renderInput={params => (
-                      <Core.Input
-                        {...params.InputProps}
-                        inputProps={params.inputProps}
-                        label={m.category}
-                        ref={params.InputProps.ref}
-                      />
-                    )}
                   />
                 )}
               />

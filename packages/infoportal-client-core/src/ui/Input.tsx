@@ -15,27 +15,26 @@ export const Input = React.forwardRef(
     }, [])
 
     if (label) label = label + (label && required ? ' *' : '')
-    const notch = !!props.value
+    // const notch = !!props.value
 
     return (
-      <FormControl size={size} sx={{width: '100%', ...sx}} error={error}>
+      <FormControl size={size} sx={{width: '100%', ...sx}} error={error} variant="outlined">
         {label && (
-          <InputLabel {...InputLabelProps} htmlFor={id} shrink={notch}>
+          <InputLabel htmlFor={id} {...InputLabelProps}>
             {label}
           </InputLabel>
         )}
         <OutlinedInput
-          error={error}
+          id={id}
           label={label}
           inputRef={inputElement}
-          id={id}
           required={required}
-          ref={ref}
           size={size}
-          notched={notch}
-          margin="dense"
+          error={error}
+          ref={ref}
           {...props}
         />
+
         {helperText !== null && <FormHelperText>{helperText}&nbsp;</FormHelperText>}
       </FormControl>
     )

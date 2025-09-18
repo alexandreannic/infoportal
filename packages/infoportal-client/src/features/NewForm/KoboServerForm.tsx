@@ -58,7 +58,7 @@ export const KoboServerForm = ({
 }) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
-  const form = useForm<Omit<Ip.Server, 'id'>>()
+  const form = useForm<Omit<Ip.Server, 'id'>>({mode: 'onChange'})
   const [server, setServer] = useState<undefined | 'custom' | keyof typeof servers>('custom')
 
   const fetcherTest = useFetcher(() => {
@@ -113,7 +113,12 @@ export const KoboServerForm = ({
             pattern: Regexp.get.url,
           }}
           render={({field, fieldState}) => (
-            <Core.Input required {...field} label={m.serverUrlV2} error={fieldState.invalid} />
+            <Core.Input
+              required
+              {...field}
+              label={m.serverUrlV2}
+              error={fieldState.invalid}
+            />
           )}
         />
       </AccessFormSection>

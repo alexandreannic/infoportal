@@ -419,15 +419,18 @@ export const en = Object.freeze({
     documentation: 'Documentation',
     general: 'General',
     email: 'Email',
-    connectedToKobo: 'Connected to Kobo',
-    connectedToKoboDesc: 'The database is automatically synchronized whenever submissions are made in Kobo.',
-    connectToKobo: 'Connect to Kobo',
-    connectToKoboDesc: 'The database will be automatically synchronized whenever submissions are made in Kobo.',
-    disconnect: 'Disconnect',
-    disconnectToKobo: 'Disconnect from Kobo',
-    disconnectToKoboDesc:
-      "The database won't be synchronized when submissions are made in Kobo. " +
-      'Once you disconnect a form, there is no going back. Please be certain.',
+    _settings: {
+      setCategoryDesc: 'Type something and press Enter to create a new category.',
+      connectedToKobo: 'Connected to Kobo',
+      connectedToKoboDesc: 'The database is automatically synchronized whenever submissions are made in Kobo.',
+      connectToKobo: 'Connect to Kobo',
+      connectToKoboDesc: 'The database will be automatically synchronized whenever submissions are made in Kobo.',
+      disconnect: 'Disconnect',
+      disconnectToKobo: 'Disconnect from Kobo',
+      disconnectToKoboDesc:
+        "The database won't be synchronized when submissions are made in Kobo. " +
+        'Once you disconnect a form, there is no going back. Please be certain.',
+    },
     job: 'Job',
     Access: {
       giveAccessBy: 'Grant access by',
