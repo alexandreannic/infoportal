@@ -1,7 +1,7 @@
 import {useI18n} from '@/core/i18n'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {Core, Datatable, Page} from '@/shared'
+import {Core, Datatable} from '@/shared'
 import {map} from '@axanc/ts-utils'
 import {Theme, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from 'infoportal-common'
@@ -75,7 +75,8 @@ const DatabaseKoboRepeat = ({
   const queryAnswers = UseQuerySubmission.search({workspaceId, formId})
   const data = queryAnswers.data?.data
   const groupInfo = schema.helper.group.getByName(group)!
-  const paths = groupInfo.pathArr
+  console.log(group, groupInfo)
+  const paths = groupInfo?.pathArr
 
   const {columns, filters} = useMemo(() => {
     const res = getColumnsForRepeatGroup({
