@@ -35,8 +35,8 @@ const Row = ({
 
 export const accessLevelIcon: Record<Ip.AccessLevel, string> = {
   Admin: 'shield_person',
-  Read: 'edit',
-  Write: 'visibility',
+  Read: 'visibility',
+  Write: 'edit',
 }
 
 export const AppHeaderMenu = ({sx, ...props}: Partial<Omit<BoxProps, 'borderColor'>>) => {

@@ -159,6 +159,7 @@ export const en = Object.freeze({
     createShema: 'Create schema',
     runningEllipsis: 'Running...',
     _formAction: {
+      noAccessToForm: 'Unknown form (no access)',
       executedActions: 'Executed actions',
       executionsHistory: 'Executions',
       syncStarted: 'Synchronisation started...',

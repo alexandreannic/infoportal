@@ -7,6 +7,7 @@ import {Link} from '@tanstack/react-router'
 import {Core} from '@/shared'
 import {ReactNode} from 'react'
 import {styleUtils} from '@infoportal/client-core'
+import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
 
 export function FormActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: Ip.Form.Action}) {
   const t = useTheme()
@@ -14,6 +15,8 @@ export function FormActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceI
   const queryActionUpdate = UseQueryFromAction.update(workspaceId, action.formId)
   const queryForms = UseQueryForm.getAsMap(workspaceId)
   const isUpdating = queryActionUpdate.pendingIds.has(action.id)
+  const queryPermission = UseQueryPermission.form({workspaceId, formId: action.formId})
+
   return (
     <Link
       to="/$workspaceId/form/$formId/action/$actionId"
@@ -56,7 +59,7 @@ export function FormActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceI
               </Core.Txt>
             </Box>
             <Tooltip title={queryForms?.get(action.targetFormId)?.name}>
-              <Core.Txt truncate>{queryForms?.get(action.targetFormId)?.name}</Core.Txt>
+              <Core.Txt truncate>{queryForms?.get(action.targetFormId)?.name ?? <Core.Txt italic color="disabled">{m._formAction.noAccessToForm}</Core.Txt>}</Core.Txt>
             </Tooltip>
           </Box>
           {isUpdating && <CircularProgress size={24} />}
@@ -67,7 +70,7 @@ export function FormActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceI
             <Switch
               size="small"
               color={(action.bodyErrors ?? 0) > 0 ? 'error' : (action.bodyWarnings ?? 0) > 0 ? 'warning' : undefined}
-              disabled={isUpdating || !action.body}
+              disabled={!queryPermission.data || !queryPermission.data.action_canUpdate || isUpdating || !action.body}
               sx={{justifySelf: 'flex-end'}}
               checked={!action.disabled}
               onClick={e => {

@@ -17,6 +17,7 @@ type Props = BoxProps & {
   body?: string
   inputType: string
   outputType: string
+  isReadOnly?: boolean
 }
 
 export function FormActionEditor(props: Props) {
@@ -34,6 +35,7 @@ function FormActionEditorWithMonaco({
   inputType,
   actionId,
   monaco,
+  isReadOnly,
   outputType,
   sx,
   ...props
@@ -69,6 +71,7 @@ function FormActionEditorWithMonaco({
   const [bodyChanges, setBodyChanges] = useState<string>(body)
 
   const handleSave = () => {
+    if (isReadOnly) return
     const model = monaco.Uri.file('/action.ts')
     if (!model) throw new Error('Failed to load model.')
     const markers = monaco.editor?.getModelMarkers({resource: model})
@@ -96,7 +99,7 @@ function FormActionEditorWithMonaco({
       .getAction('editor.action.formatDocument')
       ?.run()
       .then(() => {
-        editor.updateOptions({readOnly: files[activePath].isReadonly})
+        editor.updateOptions({readOnly: isReadOnly ?? files[activePath].isReadonly})
       })
   }, [activePath])
 
@@ -120,7 +123,7 @@ function FormActionEditorWithMonaco({
             sx={{color: 'white'}}
             label={
               <Box sx={{display: 'flex', alignItems: 'center'}}>
-                {files[_].isReadonly && (
+                {(isReadOnly || files[_].isReadonly) && (
                   <Icon fontSize="small" sx={{mr: 1}}>
                     lock
                   </Icon>
@@ -132,16 +135,18 @@ function FormActionEditorWithMonaco({
             key={_}
           />
         ))}
-        <Core.Btn
-          loading={saving}
-          onClick={handleSave}
-          disabled={bodyChanges === body}
-          variant="contained"
-          size="small"
-          sx={{alignSelf: 'center', marginLeft: 'auto', mr: 1}}
-        >
-          {m.save}
-        </Core.Btn>
+        {!isReadOnly && (
+          <Core.Btn
+            loading={saving}
+            onClick={handleSave}
+            disabled={bodyChanges === body}
+            variant="contained"
+            size="small"
+            sx={{alignSelf: 'center', marginLeft: 'auto', mr: 1}}
+          >
+            {m.save}
+          </Core.Btn>
+        )}
       </Tabs>
       <Editor
         key={actionId}
@@ -153,7 +158,6 @@ function FormActionEditorWithMonaco({
             setBodyChanges(_!)
           }
         }}
-
         onMount={(editor, monaco) => {
           editorRef.current = editor
           Obj.entries(files).forEach(([path, {value, isReadonly}]) => {

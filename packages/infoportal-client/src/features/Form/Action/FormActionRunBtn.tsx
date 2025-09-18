@@ -3,6 +3,7 @@ import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {useI18n} from '@/core/i18n/index.js'
 import {useIpToast} from '@/core/useToast.js'
 import {Ip} from 'infoportal-api-sdk'
+import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
 
 export const FormActionRunBtn = ({
   workspaceId,
@@ -15,6 +16,8 @@ export const FormActionRunBtn = ({
   const {m} = useI18n()
   const queryRunAllActionByForm = UseQueryFromAction.runAllActionByForm(workspaceId, formId)
   const {toastSuccess} = useIpToast()
+  const queryPermission = UseQueryPermission.form({workspaceId, formId})
+  if (!queryPermission.data || !queryPermission.data?.action_canRun) return
   return (
     <Core.Modal
       title={m._formAction.reRunOnAllData}

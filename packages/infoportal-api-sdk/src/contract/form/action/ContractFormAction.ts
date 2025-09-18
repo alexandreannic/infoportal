@@ -20,7 +20,7 @@ export const formActionContract = c.router({
     },
     metadata: makeMeta({
       access: {
-        workspace: ['formAction_canCreate'],
+        form: ['action_canCreate'],
       },
     }),
   },

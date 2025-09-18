@@ -12,6 +12,7 @@ import {UseQueryForm} from '@/core/query/useQueryForm.js'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {Box, BoxProps, Skeleton, useTheme} from '@mui/material'
 import {FormActionLogs} from '@/features/Form/Action/FormActionLogs.js'
+import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
 
 export const formActionRoute = createRoute({
   getParentRoute: () => formActionsRoute,
@@ -54,6 +55,7 @@ export function FormAction({sx, ...props}: BoxProps) {
   const actionId = params.actionId as Ip.Form.ActionId
   const queryAction = UseQueryFromAction.getById(workspaceId, formId, actionId)
   const queryActionUpdate = UseQueryFromAction.update(workspaceId, formId)
+  const queryPermissionForm = UseQueryPermission.form({formId, workspaceId})
   const interfaceInput = useBuildInterface({name: 'Input', workspaceId, formId: queryAction.data?.targetFormId})
   const interfaceOutput = useBuildInterface({name: 'Output', workspaceId, formId: queryAction.data?.formId})
 
@@ -68,6 +70,7 @@ export function FormAction({sx, ...props}: BoxProps) {
             (interfaceInput.data && interfaceOutput.data ? (
               <FormActionEditor
                 key={actionId}
+                isReadOnly={!queryPermissionForm.data || !queryPermissionForm.data.action_canUpdate}
                 actionId={actionId}
                 saving={queryActionUpdate.isPending}
                 inputType={interfaceInput.data}

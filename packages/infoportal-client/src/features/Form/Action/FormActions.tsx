@@ -11,6 +11,7 @@ import {mapFor} from '@axanc/ts-utils'
 import {FormActionRow} from '@/features/Form/Action/FormActionRow.js'
 import {formActionReportsRoute} from '@/features/Form/Action/FormActionReports.js'
 import {formActionLogsRoute} from '@/features/Form/Action/FormActionLogs.js'
+import {FormActionCreateBtn} from '@/features/Form/Action/FormActionCreateBtn.js'
 
 export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -73,15 +74,7 @@ export function FormActions() {
             label={m.logs}
           />
         </Tabs>
-        <Core.Modal
-          overrideActions={null}
-          content={onClose => <FormActionCreate onClose={onClose} />}
-          onConfirm={console.log}
-        >
-          <Core.Btn icon="add" size="large" variant="outlined" fullWidth sx={{textAlign: 'center', mb: 1}}>
-            {m._formAction.newAction}
-          </Core.Btn>
-        </Core.Modal>
+        <FormActionCreateBtn workspaceId={workspaceId} formId={formId} />
         {queryActionGet.isLoading && mapFor(3, i => <Skeleton key={i} height={50} sx={{transform: 'none', mb: 1}} />)}
         {queryActionGet.data?.map(_ => (
           <FormActionRow workspaceId={workspaceId} action={_} key={_.id} />

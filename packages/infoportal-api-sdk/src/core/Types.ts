@@ -74,12 +74,12 @@ export namespace Ip {
       action_canDelete: boolean
       action_canRun: boolean
       action_canUpdate: boolean
+      action_canCreate: boolean
     }
 
     export type Workspace = {
       canUpdate: boolean
       canDelete: boolean
-      formAction_canCreate: boolean
       form_canCreate: boolean
       server_canGet: boolean
       server_canCreate: boolean
