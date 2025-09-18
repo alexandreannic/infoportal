@@ -46,7 +46,19 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Ip.Workspac
     },
     onError: toastHttpError,
   })
+
+  const importLastKoboSchema = useMutation({
+    mutationFn: async () => {
+      return apiv2.form.version.importLastKoboSchema({formId, workspaceId}).catch(toastAndThrowHttpError)
+    },
+    onSuccess: newVersion => {
+      queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
+    },
+    onError: toastHttpError,
+  })
+
   return {
+    importLastKoboSchema,
     deployLast,
     validateXls,
     get,

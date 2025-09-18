@@ -88,6 +88,24 @@ export const formVersionContract = c.router({
       },
     }),
   },
+
+  importLastKoboSchema: {
+    method: 'POST',
+    path: '/:workspaceId/form/:formId/version/import-kobo',
+    pathParams: z.object({
+      workspaceId: schema.workspaceId,
+      formId: schema.formId,
+    }),
+    body: z.object({}),
+    responses: {
+      200: z.custom<Ip.Form.Version>(),
+    },
+    metadata: makeMeta({
+      access: {
+        form: ['version_canDeploy'],
+      },
+    }),
+  },
 })
 
 export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
@@ -145,6 +163,14 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
     deployLast: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) => {
       return client.form.version
         .deployLast({
+          params: {workspaceId, formId},
+        })
+        .then(map200)
+    },
+
+    importLastKoboSchema: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) => {
+      return client.form.version
+        .importLastKoboSchema({
           params: {workspaceId, formId},
         })
         .then(map200)

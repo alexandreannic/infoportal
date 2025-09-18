@@ -254,7 +254,7 @@ export const DatabaseTableContent = ({
                   connectedUsers.map(_ => (
                     <AppAvatar size={36} email={_} overlap borderColor={t.vars.palette.primary.main} key={_} />
                   ))}
-                {ctx.form.kobo ? (
+                {Ip.Form.isKobo(ctx.form) ? (
                   <Core.IconBtn
                     disabled={!ctx.form.kobo.enketoUrl || ctx.form.deploymentStatus === 'archived'}
                     href={ctx.form.kobo.enketoUrl ?? ''}
@@ -272,7 +272,7 @@ export const DatabaseTableContent = ({
                     />
                   </Link>
                 )}
-                {ctx.form.kobo && (
+                {Ip.Form.isConnectedToKobo(ctx.form) && (
                   <DatabaseKoboSyncBtn
                     loading={ctx.asyncRefresh.loading}
                     tooltip={

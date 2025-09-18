@@ -1,6 +1,7 @@
 import type * as Prisma from '@prisma/client'
 import {Kobo} from 'kobo-sdk'
 import {KeyOf} from '@axanc/ts-utils'
+import {Defined} from 'yup'
 
 type NullToOptional<T> = {
   // keep required keys (no null)
@@ -330,8 +331,17 @@ export namespace Ip {
       return _ as any
     }
 
-    export const isConnectedToKobo = (_: {kobo?: Ip.Form.KoboInfo}) => !!_.kobo && !_.kobo.deletedAt
-    export const isKobo = (_: {type: Ip.Form['type']}) => _.type === 'kobo'
+    export const isConnectedToKobo = <
+      T extends {
+        kobo?: Ip.Form.KoboInfo | null
+      },
+    >(
+      _: T,
+    ): _ is Defined<T & {type: 'kobo'; kobo: NonNullable<Ip.Form['kobo']>}> => !!_.kobo && !_.kobo.deletedAt
+
+    export const isKobo = (_: {
+      type: Ip.Form['type']
+    }): _ is Ip.Form & {type: 'kobo'; kobo: NonNullable<Ip.Form['kobo']>} => _.type === 'kobo'
 
     export type Id = Brand<string, 'FormId'>
 

@@ -1,22 +1,23 @@
 import {duration, seq} from '@axanc/ts-utils'
 import {KoboServer, PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../index.js'
-import {HttpError, Ip} from 'infoportal-api-sdk'
-import {UUID} from 'infoportal-common'
+import {Ip} from 'infoportal-api-sdk'
 import {Kobo, KoboClient} from 'kobo-sdk'
+import {KoboAccountIndex} from './KoboAccountIndex.js'
 
 export class KoboSdkGenerator {
   static instance: KoboSdkGenerator | null = null
 
-  static readonly getSingleton = (pgClient: PrismaClient) => {
+  static readonly getSingleton = (prisma: PrismaClient) => {
     if (!this.instance) {
-      this.instance = new KoboSdkGenerator(pgClient)
+      this.instance = new KoboSdkGenerator(prisma)
     }
     return this.instance
   }
 
   private constructor(
     private prisma: PrismaClient,
+    private koboAccountIndex = KoboAccountIndex.getSingleton(prisma),
     private log = app.logger('KoboSdkGenerator'),
   ) {}
 
@@ -53,26 +54,6 @@ export class KoboSdkGenerator {
     }),
   }
 
-  private readonly getServerIndex = app.cache.request({
-    key: AppCacheKey.KoboServerIndex,
-    ttlMs: duration(7, 'day'),
-    fn: async (): Promise<Record<Kobo.FormId, Ip.ServerId>> => {
-      return this.prisma.formKoboInfo
-        .findMany({
-          select: {koboId: true, accountId: true},
-        })
-        .then(_ => {
-          this.log.info(`Recalculate server index`)
-          return seq(_)
-            .compactBy('accountId')
-            .groupByAndApply(
-              _ => _.koboId,
-              _ => _[0].accountId as Ip.ServerId,
-            )
-        })
-    },
-  })
-
   private readonly getFormsIndex = app.cache.request({
     key: AppCacheKey.KoboServerIndex,
     ttlMs: duration(7, 'day'),
@@ -94,9 +75,7 @@ export class KoboSdkGenerator {
   })
 
   private readonly getServerId = async (formId: Kobo.FormId): Promise<Ip.ServerId> => {
-    return await this.getServerIndex()
-      .then(_ => _[formId])
-      .then(HttpError.throwNotFoundIfUndefined(`No serverId for form ${formId}`))
+    return this.koboAccountIndex.getByKoboId(formId)
   }
 
   private readonly buildSdk = (server: KoboServer): KoboClient => {

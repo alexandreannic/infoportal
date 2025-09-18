@@ -1,7 +1,8 @@
 import {Ip} from 'infoportal-api-sdk'
 import type * as Prisma from '@prisma/client'
+import {Kobo} from 'kobo-sdk'
 
-type Defined<T> = {
+export type Defined<T> = {
   [K in keyof T as T[K] extends null | undefined ? never : K]: T[K]
 }
 
@@ -29,6 +30,18 @@ export namespace PrismaHelper {
       kobo?: Ip.Form.KoboInfo
     }
   > => _ as any
+
+  export const mapKoboInfo = <
+    T extends {
+      accountId: string | null
+      koboId: string | null
+    },
+  >(
+    _: T,
+  ): Defined<T> & {
+    accountId?: Ip.ServerId
+    koboId?: Kobo.FormId
+  } => _ as any
 
   export const mapFormActionReport = <T extends {startedBy: string}>(
     _: T,

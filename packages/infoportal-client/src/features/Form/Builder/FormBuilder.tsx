@@ -1,5 +1,5 @@
-import {Core, Page} from '@/shared'
-import {Grid, Grow, useTheme} from '@mui/material'
+import {Core} from '@/shared'
+import {Box, Grid, Grow, useTheme} from '@mui/material'
 import {useI18n} from '@/core/i18n'
 import React, {useMemo, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
@@ -48,11 +48,26 @@ function FormBuilder() {
   return (
     <TabContent width="full" loading={queryForm.isPending || queryVersion.get.isLoading}>
       {queryForm.data &&
-        (queryForm.data.kobo ? (
+        (Ip.Form.isConnectedToKobo(queryForm.data) ? (
           <FormBuilderKoboFender workspaceId={workspaceId} form={queryForm.data} />
         ) : (
           <Grid container>
             <Grid size={{xs: 12, md: 6}}>
+              <Core.Alert severity="warning" sx={{mb: 1}}>
+                <div>{m._builder.alertPreviouslyKoboForm}</div>
+                {queryVersion.get.data?.length === 0 && (
+                  <div style={{textAlign: 'right'}}>
+                    <Core.Btn
+                      color="inherit"
+                      icon="download"
+                      loading={queryVersion.importLastKoboSchema.isPending}
+                      onClick={() => queryVersion.importLastKoboSchema.mutate()}
+                      sx={{textTransform: 'inherit', marginLeft: 'auto', whiteSpace: 'nowrap'}}
+                      children={m._builder.importCurrentKoboSurvey}
+                    />
+                  </div>
+                )}
+              </Core.Alert>
               <XlsFileUploadForm
                 lastSchema={seq(queryVersion.get.data ?? []).last()}
                 workspaceId={workspaceId}

@@ -18,7 +18,7 @@ import multer from 'multer'
 import {initServer} from '@ts-rest/express'
 import {FormVersionService} from '../feature/form/FormVersionService.js'
 import {KoboFormService} from '../feature/kobo/KoboFormService.js'
-import {ServerService} from '../feature/ServerService.js'
+import {KoboAccountService} from '../feature/kobo/KoboAccountService.js'
 import {FormService} from '../feature/form/FormService.js'
 import {ErrorHttpStatusCode, SuccessfulHttpStatusCode} from '@ts-rest/core'
 import {FormAccessService} from '../feature/form/access/FormAccessService.js'
@@ -156,7 +156,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const formVersion = new FormVersionService(prisma)
   const formAccess = new FormAccessService(prisma)
   const formSubmission = new SubmissionService(prisma)
-  const server = new ServerService(prisma)
+  const server = new KoboAccountService(prisma)
   const group = new GroupService(prisma)
   const groupItem = new GroupItemService(prisma)
   const permission = new PermissionService(prisma, undefined, formAccess)
@@ -533,6 +533,13 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         deployLast: _ =>
           auth2(_)
             .then(({req, params}) => formVersion.deployLastDraft({formId: params.formId}))
+            .then(ok200)
+            .catch(handleError),
+        importLastKoboSchema: _ =>
+          auth2(_)
+            .then(({req, params}) =>
+              formVersion.importLastKoboSchema({author: req.session.app.user.email, formId: params.formId}),
+            )
             .then(ok200)
             .catch(handleError),
       },

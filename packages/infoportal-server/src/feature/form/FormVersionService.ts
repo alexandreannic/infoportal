@@ -1,15 +1,18 @@
 import {PrismaClient} from '@prisma/client'
-import {app} from '../../index.js'
+import {app, AppCacheKey} from '../../index.js'
 import {appConf} from '../../core/conf/AppConf.js'
 import {Kobo} from 'kobo-sdk'
 import {yup} from '../../helper/Utils.js'
 import {XlsFormParser} from '../kobo/XlsFormParser.js'
 import {Ip} from 'infoportal-api-sdk'
 import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {FormService} from './FormService.js'
+import {KoboSchemaCache} from './KoboSchemaCache.js'
 
 export class FormVersionService {
   constructor(
     private prisma: PrismaClient,
+    private koboSchemaCache = KoboSchemaCache.getInstance(prisma),
     private log = app.logger('FormVersionService'),
     private conf = appConf,
   ) {}
@@ -39,9 +42,7 @@ export class FormVersionService {
     if (!validation.schema || validation.status === 'error') {
       throw new Error('Invalid XLSForm')
     }
-    return this.createNewVersion({fileName: file.filename, schemaJson: validation.schema, ...rest}).then(
-      PrismaHelper.mapVersion,
-    )
+    return this.createNewVersion({fileName: file.filename, schemaJson: validation.schema, ...rest})
   }
 
   readonly deployLastDraft = async ({formId}: {formId: Ip.FormId}) => {
@@ -108,7 +109,7 @@ export class FormVersionService {
         },
       })
       const versions = await this.getVersions({formId})
-      return {...schema, versions}
+      return PrismaHelper.mapVersion({...schema, versions})
     })
   }
 
@@ -127,5 +128,16 @@ export class FormVersionService {
         where: {formId, status: 'active'},
       })
       .then(_ => _ !== null)
+  }
+
+  readonly importLastKoboSchema = async ({formId, author}: {formId: Ip.FormId; author: Ip.User.Email}) => {
+    app.cache.clear(AppCacheKey.KoboSchema, formId)
+    const lastSchema = await this.koboSchemaCache.get({formId})
+    return this.createNewVersion({
+      schemaJson: lastSchema.content,
+      formId,
+      uploadedBy: author,
+      message: 'Imported from Kobo - Version: ' + lastSchema.version_id,
+    })
   }
 }

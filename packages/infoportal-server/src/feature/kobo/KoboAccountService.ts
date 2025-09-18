@@ -1,8 +1,8 @@
 import {PrismaClient} from '@prisma/client'
 import {Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../core/PrismaHelper.js'
+import {PrismaHelper} from '../../core/PrismaHelper.js'
 
-export class ServerService {
+export class KoboAccountService {
   constructor(private prisma: PrismaClient) {}
 
   readonly get = ({id, workspaceId}: {id: Ip.ServerId; workspaceId: Ip.WorkspaceId}) => {

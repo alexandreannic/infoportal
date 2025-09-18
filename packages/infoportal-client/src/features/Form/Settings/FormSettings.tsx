@@ -17,7 +17,6 @@ export const formSettingsRoute = createRoute({
   component: FormSettings,
 })
 
-
 const DialogKoboRow = ({icon, children, active}: {icon: string; children: string; active: boolean}) => {
   const t = useTheme()
   return (
@@ -103,7 +102,7 @@ function FormSettings() {
               }}
             />
           </Row>
-          {form.kobo && (
+          {Ip.Form.isKobo(form) && (
             <Row
               icon={Asset.icon[Type.kobo]}
               label={m._settings.connectedToKobo}
@@ -136,7 +135,8 @@ function FormSettings() {
             label={m.archive}
             desc={
               <>
-                {m.archiveFormDesc} {form.kobo && <span style={{fontWeight: 'bold'}}>{m.archiveKoboFormDesc}</span>}
+                {m.archiveFormDesc}{' '}
+                {Ip.Form.isKobo(form) && <span style={{fontWeight: 'bold'}}>{m.archiveKoboFormDesc}</span>}
               </>
             }
           >

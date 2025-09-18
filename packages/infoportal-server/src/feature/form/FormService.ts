@@ -4,9 +4,8 @@ import {FormVersionService} from './FormVersionService.js'
 import {FormAccessService} from './access/FormAccessService.js'
 import {PrismaHelper} from '../../core/PrismaHelper.js'
 import {Kobo} from 'kobo-sdk'
-import {app, AppCacheKey} from '../../index.js'
-import {duration, seq} from '@axanc/ts-utils'
-import {KoboSdkGenerator} from '../kobo/KoboSdkGenerator.js'
+import {seq} from '@axanc/ts-utils'
+import {KoboSchemaCache} from './KoboSchemaCache.js'
 
 export type FormServiceCreatePayload = Ip.Form.Payload.Create & {
   kobo?: {
@@ -22,15 +21,18 @@ export class FormService {
   constructor(
     private prisma: PrismaClient,
     private formVersion = new FormVersionService(prisma),
+    private koboSchemaCache = KoboSchemaCache.getInstance(prisma),
     private access = new FormAccessService(prisma),
-    private koboSdk = KoboSdkGenerator.getSingleton(prisma),
     private formAccess = new FormAccessService(prisma),
   ) {}
 
   readonly getSchema = async ({formId}: {formId: Ip.FormId}): Promise<undefined | Ip.Form.Schema> => {
-    const form = await this.prisma.form.findFirst({select: {kobo: true}, where: {id: formId}})
+    const form = await this.prisma.form.findFirst({select: {id: true, kobo: true}, where: {id: formId}}).then(_ => {
+      if (_) return {..._, kobo: _.kobo ? PrismaHelper.mapKoboInfo(_.kobo) : _.kobo}
+      return _
+    })
     if (!form) return
-    if (!form.kobo)
+    if (!Ip.Form.isConnectedToKobo(form))
       return this.prisma.formVersion
         .findFirst({
           select: {schema: true},
@@ -40,18 +42,8 @@ export class FormService {
           },
         })
         .then(_ => _?.schema as any)
-    return this.getKoboSchema({koboFormId: form.kobo.koboId}).then(_ => _.content)
+    return this.koboSchemaCache.get({formId: form.id as Ip.FormId}).then(_ => _.content)
   }
-
-  private readonly getKoboSchema = app.cache.request({
-    key: AppCacheKey.KoboSchema,
-    genIndex: _ => _.koboFormId,
-    ttlMs: duration(2, 'day').toMs,
-    fn: async ({koboFormId}: {koboFormId: Kobo.FormId}): Promise<Kobo.Form> => {
-      const sdk = await this.koboSdk.getBy.koboFormId(koboFormId)
-      return sdk.v2.form.get({formId: koboFormId, use$autonameAsName: true})
-    },
-  })
 
   readonly getSchemaByVersion = async ({
     formId,
