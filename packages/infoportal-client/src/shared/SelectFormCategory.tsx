@@ -9,6 +9,7 @@ export function SelectFormCategory({
   loading: _loading,
   ...props
 }: Omit<AutocompleteProps<string, false, true, true>, 'renderInput' | 'options'> & {
+  InputProps: Core.InputProps
   loading?: boolean
   workspaceId: Ip.WorkspaceId
 }) {
@@ -30,6 +31,7 @@ export function SelectFormCategory({
           label={m.category}
           ref={params.InputProps.ref}
           endAdornment={<>{loading ? <CircularProgress size={20} /> : null}</>}
+          {...props.InputProps}
         />
       )}
     />

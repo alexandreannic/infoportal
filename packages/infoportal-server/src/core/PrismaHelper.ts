@@ -16,7 +16,7 @@ export namespace PrismaHelper {
       category?: string | null
       deploymentStatus?: Ip.Form.DeploymentStatus | null
       serverId?: string | null
-      id: string
+      id?: string
     },
   >(
     _: T,

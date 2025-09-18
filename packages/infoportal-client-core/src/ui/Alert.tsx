@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {forwardRef, ReactNode, useState} from 'react'
-import {Alert as MuiAlert, AlertProps as MuiAlertProps} from '@mui/material'
+import {AlertTitle, Alert as MuiAlert, AlertProps as MuiAlertProps} from '@mui/material'
 import {usePersistentState} from '@axanc/react-hooks'
 
 export type AlertProps = Omit<MuiAlertProps, 'id'> & {
@@ -17,35 +17,40 @@ export type AlertProps = Omit<MuiAlertProps, 'id'> & {
       }
   )
 
-export const Alert = forwardRef(({content, hidden, deletable, sx, onClose, ...props}: AlertProps, ref) => {
-  const [isPersistentVisible, setPersistentIsVisible] = usePersistentState<boolean>(true, {
-    storageKey: props.id!,
-  })
-  const [isVisible, setIsVisible] = useState<boolean>(true)
+export const Alert = forwardRef(
+  ({title, content, children, hidden, deletable, sx, onClose, ...props}: AlertProps, ref) => {
+    const [isPersistentVisible, setPersistentIsVisible] = usePersistentState<boolean>(true, {
+      storageKey: props.id!,
+    })
+    const [isVisible, setIsVisible] = useState<boolean>(true)
 
-  return (
-    <MuiAlert
-      {...props}
-      ref={ref as any}
-      sx={{
-        ...sx,
-        ...((hidden || !isVisible || (deletable === 'permanent' && !isPersistentVisible)) && {
-          minHeight: '0 !important',
-          height: '0 !important',
-          opacity: '0 !important',
-          padding: '0 !important',
-          margin: '0 !important',
-        }),
-      }}
-      onClose={
-        deletable
-          ? (e: any) => {
-              setIsVisible(false)
-              onClose?.(e)
-              if (deletable === 'permanent') setPersistentIsVisible(false)
-            }
-          : onClose
-      }
-    />
-  )
-})
+    return (
+      <MuiAlert
+        {...props}
+        ref={ref as any}
+        sx={{
+          ...sx,
+          ...((hidden || !isVisible || (deletable === 'permanent' && !isPersistentVisible)) && {
+            minHeight: '0 !important',
+            height: '0 !important',
+            opacity: '0 !important',
+            padding: '0 !important',
+            margin: '0 !important',
+          }),
+        }}
+        onClose={
+          deletable
+            ? (e: any) => {
+                setIsVisible(false)
+                onClose?.(e)
+                if (deletable === 'permanent') setPersistentIsVisible(false)
+              }
+            : onClose
+        }
+      >
+        {title && <AlertTitle>{title}</AlertTitle>}
+        {children}
+      </MuiAlert>
+    )
+  },
+)

@@ -100,20 +100,21 @@ export class UseQueryForm {
       mutationFn: args => apiv2.form.update({workspaceId, ...args}),
       onSuccess: (data, variables) => {
         queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, variables.formId)})
-        // queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
+        queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
       },
       onError: toastHttpError,
     })
   }
 
-  static disconnectFromKobo(workspaceId: Ip.WorkspaceId) {
+  static updateKoboConnexion(workspaceId: Ip.WorkspaceId) {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     const {toastHttpError} = useIpToast()
     return useMutation({
-      mutationFn: (formId: Ip.FormId) => apiv2.form.disconnectFromKobo({workspaceId, formId}),
-      onSuccess: (data, formId) => {
-        queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, formId)})
+      mutationFn: (params: Omit<Ip.Form.Payload.UpdateKoboConnexion, 'workspaceId'>) =>
+        apiv2.form.updateKoboConnexion({workspaceId, ...params}),
+      onSuccess: (data, params) => {
+        queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, params.formId)})
       },
       onError: toastHttpError,
     })

@@ -1,5 +1,5 @@
 import {Form, PrismaClient} from '@prisma/client'
-import {Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
 import {FormVersionService} from './FormVersionService.js'
 import {FormAccessService} from './access/FormAccessService.js'
 import {PrismaHelper} from '../../core/PrismaHelper.js'
@@ -116,34 +116,42 @@ export class FormService {
     })
   }
 
-  readonly disconnectFromKobo = async (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}): Promise<Ip.Form> => {
-    return this.prisma.form
-      .update({
-        include: {
-          kobo: true,
-        },
-        where: {id: params.formId},
-        data: {
-          kobo: {delete: true},
-        },
-      })
-      .then(PrismaHelper.mapForm)
+  readonly updateKoboConnexion = async ({
+    author,
+    formId,
+    connected,
+  }: Ip.Form.Payload.UpdateKoboConnexion & {
+    author: Ip.User.Email
+  }): Promise<Ip.Form> => {
+    await this.prisma.formKoboInfo.update({
+      where: {formId},
+      data: {
+        deletedAt: connected ? null : new Date(),
+        deletedBy: author,
+      },
+    })
+    const update = await this.get(formId)
+    if (!update) throw new HttpError.NotFound(`${formId} not found.`)
+    return update
   }
 
-  readonly update = async (params: Ip.Form.Payload.Update): Promise<Ip.Form> => {
-    const {formId, archive, category} = params
-
+  readonly update = async ({formId, archive, category}: Ip.Form.Payload.Update): Promise<Ip.Form> => {
     // TODO trigger event!
     // const koboUpdate$ = this.koboForm.update(params)
-
+    const form = await this.prisma.form.findUnique({select: {type: true}, where: {id: formId}})
+    if (!form) throw new HttpError.NotFound(`${formId} not found.`)
     const newData: Partial<Form> = {category}
     if (archive) {
       newData.deploymentStatus = 'archived'
     } else if (archive === false) {
-      const hasActiveVersion = await this.formVersion.hasActiveVersion({formId})
-      newData.deploymentStatus = hasActiveVersion ? 'deployed' : 'draft'
+      if (Ip.Form.isKobo(form)) {
+        newData.deploymentStatus = 'deployed'
+      } else {
+        const hasActiveVersion = await this.formVersion.hasActiveVersion({formId})
+        newData.deploymentStatus = hasActiveVersion ? 'deployed' : 'draft'
+      }
     }
-    const update = await this.prisma.form
+    return this.prisma.form
       .update({
         include: {
           kobo: true,
@@ -152,7 +160,6 @@ export class FormService {
         data: newData,
       })
       .then(PrismaHelper.mapForm)
-    return update
   }
 
   readonly remove = async (id: Ip.FormId): Promise<void> => {

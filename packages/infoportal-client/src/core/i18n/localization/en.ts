@@ -1,5 +1,6 @@
 import {formatDistance, formatDuration as formatDurationFns, intervalToDuration} from 'date-fns'
 import {Ip} from 'infoportal-api-sdk'
+import {ReactNode} from 'react'
 
 const invalidDate = ''
 
@@ -423,13 +424,13 @@ export const en = Object.freeze({
       setCategoryDesc: 'Type something and press Enter to create a new category.',
       connectedToKobo: 'Connected to Kobo',
       connectedToKoboDesc: 'The database is automatically synchronized whenever submissions are made in Kobo.',
-      connectToKobo: 'Connect to Kobo',
-      connectToKoboDesc: 'The database will be automatically synchronized whenever submissions are made in Kobo.',
-      disconnect: 'Disconnect',
+      ipToKobo: 'Updating submissions from Kobo are sent are automatically sent to Kobo.',
+      koboToIp: `New submissions from Kobo are automatically sent to InfoPortal. Any changes in Kobo can be uploaded in InfoPortal using the <b>SYNC</b> button`,
+      koboDisconnectedNoteTitle: `Connexion can re-enable later`,
+      koboDisconnectedNoteDesc: `But changes made in InfoPortal while it was disabled won't be pushed to Kobo.`,
+      // disconnectToKoboDesc: `New submissions in Kobo won’t appear in InfoPortal, and updates made in InfoPortal won’t be sent to Kobo.<br/> <b>You can re-enable sync later</b>, but changes made in InfoPortal while it was disabled won't be pushed to Kobo.`,
       disconnectToKobo: 'Disconnect from Kobo',
-      disconnectToKoboDesc:
-        "The database won't be synchronized when submissions are made in Kobo. " +
-        'Once you disconnect a form, there is no going back. Please be certain.',
+      reconnectToKobo: 'Re-connect to Kobo',
     },
     job: 'Job',
     Access: {

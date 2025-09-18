@@ -12,9 +12,10 @@ import {
 } from '@mui/material'
 import {ButtonProps} from '@mui/material/Button'
 
-export interface ModalProps extends Omit<DialogProps, 'onClose' | 'children' | 'onClick' | 'open' | 'content'> {
+export interface ModalProps
+  extends Omit<DialogProps, 'title' | 'onClose' | 'children' | 'onClick' | 'open' | 'content'> {
   disabled?: boolean
-  title?: string
+  title?: ReactNode
   confirmLabel?: string
   cancelLabel?: string
   content?: ((content: () => void) => ReactNode) | ReactNode | string

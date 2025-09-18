@@ -1,13 +1,15 @@
-import {Core} from '@/shared'
 import {useI18n} from '@/core/i18n'
-import {ReactNode} from 'react'
-import {Box, useTheme} from '@mui/material'
-import {formRoute, useFormContext} from '@/features/Form/Form'
 import {UseQueryForm} from '@/core/query/useQueryForm'
-import {createRoute, useNavigate} from '@tanstack/react-router'
+import {formRoute, useFormContext} from '@/features/Form/Form'
+import {Core} from '@/shared'
 import {TabContent} from '@/shared/Tab/TabContent.js'
-
+import {Box, CircularProgress, Icon, Switch, useTheme} from '@mui/material'
+import {createRoute, useNavigate} from '@tanstack/react-router'
+import {ReactNode} from 'react'
+import {Asset} from '@/shared/Asset.js'
 import {SelectFormCategory} from '@/shared/SelectFormCategory.js'
+import {Ip} from 'infoportal-api-sdk'
+import Type = Asset.Type
 
 export const formSettingsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -15,24 +17,62 @@ export const formSettingsRoute = createRoute({
   component: FormSettings,
 })
 
-const Row = ({label, desc, children}: {label: ReactNode; desc?: ReactNode; children: ReactNode}) => {
+
+const DialogKoboRow = ({icon, children, active}: {icon: string; children: string; active: boolean}) => {
+  const t = useTheme()
+  return (
+    <Box sx={{display: 'flex', alignItems: 'center', '&:not(:last-of-type)': {mb: 2}}}>
+      <Icon sx={{color: t.vars.palette.text.secondary, mr: 1, alignSelf: 'flex-start', mt: 0.5}}>{icon}</Icon>
+      <Box
+        flex={1}
+        sx={{textDecoration: active ? 'line-through' : undefined}}
+        dangerouslySetInnerHTML={{__html: children}}
+      />
+      <Box sx={{ml: 2}}>
+        {active ? <Icon color="error" children="block" /> : <Icon color="success" children="check_circle" />}
+      </Box>
+    </Box>
+  )
+}
+
+const Row = ({
+  icon,
+  label,
+  desc,
+  children,
+}: {
+  icon: string
+  label: ReactNode
+  desc?: ReactNode
+  children: ReactNode
+}) => {
   const t = useTheme()
   return (
     <Box
       display="flex"
-      sx={{'&:not(:last-of-type)': {mb: 2, pb: 2, borderBottom: '1px solid', borderColor: t.vars.palette.divider}}}
+      sx={{
+        '&:not(:last-of-type) .FormSettings-Row-Body': {
+          mb: 2,
+          pb: 2,
+          borderBottom: '1px solid',
+          borderColor: t.vars.palette.divider,
+        },
+      }}
     >
-      <Box flex={1}>
-        <Core.Txt bold block>
-          {label}
-        </Core.Txt>
-        {desc && (
-          <Core.Txt block color="hint">
-            {desc}
+      <Icon sx={{mt: 0.5, mr: 1.5, color: t.vars?.palette.text.secondary}}>{icon}</Icon>
+      <Box flex={1} display="flex" alignItems="center" className="FormSettings-Row-Body">
+        <Box flex={1}>
+          <Core.Txt bold block>
+            {label}
           </Core.Txt>
-        )}
+          {desc && (
+            <Core.Txt block color="hint">
+              {desc}
+            </Core.Txt>
+          )}
+        </Box>
+        <div>{children}</div>
       </Box>
-      <div>{children}</div>
     </Box>
   )
 }
@@ -41,15 +81,19 @@ function FormSettings() {
   const {m} = useI18n()
   const {workspaceId, form} = useFormContext()
   const queryUpdate = UseQueryForm.update(workspaceId)
-  const queryDisconnectFromKobo = UseQueryForm.disconnectFromKobo(workspaceId)
+  const queryUpdateKoboConnexion = UseQueryForm.updateKoboConnexion(workspaceId)
   const queryRemove = UseQueryForm.remove(workspaceId)
   const navigate = useNavigate()
+
+  const isConnectedToKobo = Ip.Form.isConnectedToKobo(form)
+
   return (
     <TabContent width="xs">
       <Core.Panel>
         <Core.PanelBody>
-          <Row label={m.category} desc={m._settings.setCategoryDesc}>
+          <Row icon="category" label={m.category} desc={m._settings.setCategoryDesc}>
             <SelectFormCategory
+              InputProps={{label: '', placeholder: '...'}}
               sx={{minWidth: 150}}
               workspaceId={workspaceId}
               loading={queryUpdate.isPending}
@@ -60,21 +104,35 @@ function FormSettings() {
             />
           </Row>
           {form.kobo && (
-            <Row label={m._settings.connectedToKobo} desc={m._settings.connectedToKoboDesc}>
+            <Row
+              icon={Asset.icon[Type.kobo]}
+              label={m._settings.connectedToKobo}
+              desc={m._settings.connectedToKoboDesc}
+            >
+              {queryUpdateKoboConnexion.isPending && <CircularProgress size={24} />}
               <Core.Modal
-                loading={queryDisconnectFromKobo.isPending}
-                title={m._settings.disconnectToKobo}
-                content={m._settings.disconnectToKoboDesc}
+                loading={queryUpdateKoboConnexion.isPending}
+                title={isConnectedToKobo ? m._settings.disconnectToKobo : m._settings.reconnectToKobo}
+                content={
+                  <Box>
+                    <DialogKoboRow icon="cloud_upload" children={m._settings.ipToKobo} active={isConnectedToKobo} />
+                    <DialogKoboRow icon="cloud_download" children={m._settings.koboToIp} active={isConnectedToKobo} />
+                    <Core.Alert severity="info" title={m._settings.koboDisconnectedNoteTitle}>
+                      {m._settings.koboDisconnectedNoteDesc}
+                    </Core.Alert>
+                  </Box>
+                }
                 onConfirm={async (e, close) => {
-                  await queryDisconnectFromKobo.mutateAsync(form.id)
+                  await queryUpdateKoboConnexion.mutateAsync({formId: form.id, connected: !isConnectedToKobo})
                   close()
                 }}
               >
-                <Core.Btn disabled={queryDisconnectFromKobo.isPending}>{m._settings.disconnect}</Core.Btn>
+                <Switch checked={isConnectedToKobo} disabled={queryUpdateKoboConnexion.isPending} />
               </Core.Modal>
             </Row>
           )}
           <Row
+            icon="archive"
             label={m.archive}
             desc={
               <>
@@ -91,7 +149,7 @@ function FormSettings() {
               {form.deploymentStatus === 'archived' ? m.unarchive : m.archive}
             </Core.Btn>
           </Row>
-          <Row label={m.deleteThisProject} desc={m.deleteThisProjectDesc}>
+          <Row icon="delete" label={m.deleteThisProject} desc={m.deleteThisProjectDesc}>
             <Core.Modal
               loading={queryRemove.pendingIds.has(form.id)}
               title={m.deleteThisProject}
@@ -102,7 +160,7 @@ function FormSettings() {
                 navigate({to: '/$workspaceId/form/list', params: {workspaceId}})
               }}
             >
-              <Core.Btn color="error" variant="outlined" icon="delete">
+              <Core.Btn icon="delete" color="error" variant="outlined">
                 {m.delete}
               </Core.Btn>
             </Core.Modal>

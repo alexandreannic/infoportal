@@ -80,11 +80,11 @@ export const formContract = c.router({
     }),
   },
 
-  disconnectFromKobo: {
+  updateKoboConnexion: {
     method: 'POST',
     path: '/:workspaceId/form/:formId/disconnect',
-    pathParams: c.type<Pick<Ip.Form.Payload.Update, 'workspaceId' | 'formId'>>(),
-    body: c.type<void>(),
+    pathParams: c.type<Pick<Ip.Form.Payload.UpdateKoboConnexion, 'workspaceId' | 'formId'>>(),
+    body: c.type<Omit<Ip.Form.Payload.UpdateKoboConnexion, 'workspaceId' | 'formId'>>(),
     responses: {
       200: z.any() as z.ZodType<Ip.Form>,
     },
@@ -164,16 +164,6 @@ export const formContract = c.router({
   },
 })
 
-export const mapForm = (_: Ip.Form): Ip.Form => {
-  if (_.updatedAt) _.updatedAt = new Date(_.updatedAt)
-  _.createdAt = new Date(_.createdAt)
-  return _ as any
-}
-
-export const mapFormNullable = (_?: Ip.Form): undefined | Ip.Form => {
-  if (_) return mapForm(_)
-}
-
 export const formClient = (client: TsRestClient, baseUrl: string) => {
   return {
     refreshAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
@@ -181,7 +171,7 @@ export const formClient = (client: TsRestClient, baseUrl: string) => {
     },
 
     create: ({workspaceId, ...body}: Ip.Form.Payload.Create) => {
-      return client.form.create({params: {workspaceId}, body}).then(map200).then(mapForm)
+      return client.form.create({params: {workspaceId}, body}).then(map200).then(Ip.Form.map)
     },
 
     remove: ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
@@ -189,21 +179,24 @@ export const formClient = (client: TsRestClient, baseUrl: string) => {
     },
 
     get: ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
-      return client.form.get({params: {workspaceId, formId}}).then(map200).then(mapFormNullable)
+      return client.form
+        .get({params: {workspaceId, formId}})
+        .then(map200)
+        .then(_ => (_ ? Ip.Form.map(_) : _))
     },
 
     getAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
       return client.form
         .getAll({params: {workspaceId}})
         .then(map200)
-        .then(_ => _.map(mapForm))
+        .then(_ => _.map(Ip.Form.map))
     },
 
     getMine: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
       return client.form
         .getMine({params: {workspaceId}})
         .then(map200)
-        .then(_ => _.map(mapForm))
+        .then(_ => _.map(Ip.Form.map))
     },
 
     getSchemaByVersion: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId; versionId: Ip.Form.VersionId}) => {
@@ -215,11 +208,11 @@ export const formClient = (client: TsRestClient, baseUrl: string) => {
     },
 
     update: ({workspaceId, formId, ...body}: Ip.Form.Payload.Update): Promise<Ip.Form> => {
-      return client.form.update({params: {workspaceId, formId}, body}).then(map200).then(mapForm)
+      return client.form.update({params: {workspaceId, formId}, body}).then(map200).then(Ip.Form.map)
     },
 
-    disconnectFromKobo: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}): Promise<Ip.Form> => {
-      return client.form.disconnectFromKobo({params, body: undefined}).then(map200).then(mapForm)
+    updateKoboConnexion: ({workspaceId, formId, ...body}: Ip.Form.Payload.UpdateKoboConnexion): Promise<Ip.Form> => {
+      return client.form.updateKoboConnexion({params: {workspaceId, formId}, body}).then(map200).then(Ip.Form.map)
     },
   }
 }

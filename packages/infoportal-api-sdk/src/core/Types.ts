@@ -323,6 +323,16 @@ export namespace Ip {
       koboId: Kobo.FormId
     }
 
+    export const map = (_: Ip.Form): Ip.Form => {
+      _.createdAt = new Date(_.createdAt)
+      if (_.updatedAt) _.updatedAt = new Date(_.updatedAt)
+      if (_.kobo?.deletedAt) _.kobo.deletedAt = new Date(_.kobo.deletedAt)
+      return _ as any
+    }
+
+    export const isConnectedToKobo = (_: {kobo?: Ip.Form.KoboInfo}) => !!_.kobo && !_.kobo.deletedAt
+    export const isKobo = (_: {type: Ip.Form['type']}) => _.type === 'kobo'
+
     export type Id = Brand<string, 'FormId'>
 
     export type Schema = Kobo.Form['content'] & {files?: Kobo.Form.File[]}
@@ -340,6 +350,12 @@ export namespace Ip {
         formId: FormId
         archive?: boolean
         category?: string
+      }
+
+      export type UpdateKoboConnexion = {
+        workspaceId: WorkspaceId
+        formId: FormId
+        connected: boolean
       }
 
       export type Import = {

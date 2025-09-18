@@ -4,7 +4,6 @@ import {Ip} from '../../core/Types.js'
 import {initContract} from '@ts-rest/core'
 import {map200, TsRestClient} from '../../core/IpClient.js'
 import {Kobo} from 'kobo-sdk'
-import {mapForm} from '../form/ContractForm.js'
 
 const c = initContract()
 
@@ -37,7 +36,7 @@ export const koboClient = (client: TsRestClient, baseUrl: string) => {
       serverId: Ip.ServerId
       uid: Kobo.FormId
     }) => {
-      return client.kobo.importFromKobo({params: {workspaceId}, body}).then(map200).then(mapForm)
+      return client.kobo.importFromKobo({params: {workspaceId}, body}).then(map200).then(Ip.Form.map)
     },
   }
 }

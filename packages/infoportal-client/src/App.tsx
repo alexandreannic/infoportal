@@ -124,7 +124,7 @@ const AppWithBaseContext = () => {
           <Datatable.Config
             children={_}
             defaultProps={{
-              renderEmptyState: <Core.Fender type="empty" size="big" title={m.noDataAtm} />,
+              renderEmptyState: <Core.Fender type="empty" size="normal" children={m.noDataAtm} sx={{my: 1}} />,
               rowHeight: 38,
               module: {
                 columnsResize: {enabled: false},
