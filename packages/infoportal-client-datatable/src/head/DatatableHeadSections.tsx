@@ -4,7 +4,7 @@ import {Obj, seq} from '@axanc/ts-utils'
 import {memo, useMemo} from 'react'
 import {Column} from '@/core/types'
 
-const colors = [
+export const primaryColors = [
   '#2196F3',
   '#FF9800',
   '#673AB7',
@@ -86,15 +86,15 @@ function DatatableHeadSections_({
             style={{
               gridColumn: groupSpans[i],
               // i !== groups.length - 1 ? `${prevSpan ? prevSpan + 1 : 1} / span ${cols.length}` : undefined,
-              color: t.palette.getContrastText(colors[i % colors.length]),
-              background: colors[i % colors.length],
+              color: t.palette.getContrastText(primaryColors[i % primaryColors.length]),
+              background: primaryColors[i % primaryColors.length],
             }}
           >
             <Content title={group} className="DtHeadSectionCell-Content">
               <BtnHide
                 sx={{
                   mr: 0.5,
-                  color: t.palette.getContrastText(colors[i % colors.length]),
+                  color: t.palette.getContrastText(primaryColors[i % primaryColors.length]),
                 }}
                 size="small"
                 color="primary"

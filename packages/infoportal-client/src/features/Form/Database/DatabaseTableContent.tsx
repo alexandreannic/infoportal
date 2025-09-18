@@ -251,8 +251,8 @@ export const DatabaseTableContent = ({
 
               <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>
                 {connectedUsers.length > 1 &&
-                  connectedUsers.map(_ => (
-                    <AppAvatar size={36} email={_} overlap borderColor={t.vars.palette.primary.main} key={_} />
+                  connectedUsers.map((_, i) => (
+                    <AppAvatar size={36} email={_} tooltip overlap borderColor={Datatable.primaryColors[i]} key={_} />
                   ))}
                 {Ip.Form.isKobo(ctx.form) ? (
                   <Core.IconBtn

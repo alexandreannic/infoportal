@@ -1,3 +1,4 @@
+export {primaryColors} from '@/head/DatatableHeadSections'
 export {DatatableHeadIcon as HeadIcon} from '@/head/DatatableHead'
 export {DatatableHeadIconByType as HeadIconByType} from '@/head/DatatableHead'
 export {DatatableSkeleton as Skeleton} from '@/DatatableSkeleton'
