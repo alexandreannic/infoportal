@@ -30,7 +30,7 @@ export class FormAccessService {
                 {
                   OR: [
                     {email: {equals: user.email, mode: 'insensitive' as const}},
-                    {job: {equals: user.job, mode: 'insensitive' as const}},
+                    user.job ? {job: {equals: user.job, mode: 'insensitive' as const}} : {},
                   ],
                 },
               ]
