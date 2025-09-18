@@ -143,7 +143,7 @@ function Form() {
           value={answersRoute.fullPath}
           to={answersRoute.fullPath}
           label={m.data}
-          disabled={!schema}
+          disabled={!schema && (!queryForm.data || !Ip.Form.isKobo(queryForm.data))}
         />
         <Tab
           icon={<Icon>edit</Icon>}
@@ -153,6 +153,7 @@ function Form() {
           value={formBuilderRoute.fullPath}
           to={formBuilderRoute.fullPath}
           label={m.form}
+          disabled={!queryPermission.data || !queryPermission.data.version_canGet}
         />
         <Tab
           icon={<Icon>lock</Icon>}
@@ -191,6 +192,7 @@ function Form() {
           icon={<Icon>settings</Icon>}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
+          disabled={!queryPermission.data || !queryPermission.data?.canDelete || !queryPermission.data?.canUpdate}
           component={Link}
           value={formSettingsRoute.fullPath}
           to={formSettingsRoute.fullPath}

@@ -20,7 +20,7 @@ export const formActionLogContract = c.router({
     },
     metadata: makeMeta({
       access: {
-        form: ['canUpdate'],
+        form: ['action_canRead'],
       },
     }),
   },

@@ -13,6 +13,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
 import {DeploymentStatus} from '@/shared/DeploymentStatus'
 import {Asset} from '@/shared/Asset.js'
+import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
 
 export const formsRoute = createRoute({
   getParentRoute: () => formRootRoute,
@@ -27,6 +28,7 @@ function Forms() {
   const {setTitle} = useLayoutContext()
   const queryServer = useQueryServers(workspaceId)
   const queryForm = UseQueryForm.getAccessibles(workspaceId)
+  const permissionWorkspace = UseQueryPermission.workspace({workspaceId})
 
   const indexServers: Record<Ip.ServerId, Ip.Server> = useMemo(() => {
     return seq(queryServer.getAll.data).groupByFirst(_ => _.id)
@@ -44,11 +46,13 @@ function Forms() {
           getRowKey={_ => _.id}
           // showExportBtn
           header={
-            <Link to="/$workspaceId/new-form" params={{workspaceId}}>
-              <Core.Btn icon="add" variant={'outlined'} sx={{mr: 0}}>
-                {m.add}
-              </Core.Btn>
-            </Link>
+            permissionWorkspace.data?.form_canCreate && (
+              <Link to="/$workspaceId/new-form" params={{workspaceId}}>
+                <Core.Btn icon="add" variant={'outlined'} sx={{mr: 0}}>
+                  {m.add}
+                </Core.Btn>
+              </Link>
+            )
           }
           id="kobo-index"
           data={queryForm.data}

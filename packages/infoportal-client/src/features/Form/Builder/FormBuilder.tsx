@@ -14,6 +14,7 @@ import {formRoute} from '@/features/Form/Form'
 import {useIpToast} from '@/core/useToast'
 import {Ip} from 'infoportal-api-sdk'
 import {TabContent} from '@/shared/Tab/TabContent.js'
+import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
 
 export const formBuilderRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -29,6 +30,7 @@ function FormBuilder() {
   const [versionVisible, setVersionVisible] = useState(5)
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryVersion = useQueryVersion({workspaceId, formId})
+  const queryPermission = UseQueryPermission.form({workspaceId, formId})
   const [showPreview, setShowPreview] = useState(false)
   const router = useRouter()
 
@@ -53,26 +55,30 @@ function FormBuilder() {
         ) : (
           <Grid container>
             <Grid size={{xs: 12, md: 6}}>
-              <Core.Alert severity="warning" sx={{mb: 1}}>
-                <div>{m._builder.alertPreviouslyKoboForm}</div>
-                {queryVersion.get.data?.length === 0 && (
-                  <div style={{textAlign: 'right'}}>
-                    <Core.Btn
-                      color="inherit"
-                      icon="download"
-                      loading={queryVersion.importLastKoboSchema.isPending}
-                      onClick={() => queryVersion.importLastKoboSchema.mutate()}
-                      sx={{textTransform: 'inherit', marginLeft: 'auto', whiteSpace: 'nowrap'}}
-                      children={m._builder.importCurrentKoboSurvey}
-                    />
-                  </div>
-                )}
-              </Core.Alert>
-              <XlsFileUploadForm
-                lastSchema={seq(queryVersion.get.data ?? []).last()}
-                workspaceId={workspaceId}
-                formId={formId}
-              />
+              {queryPermission.data?.version_canCreate && (
+                <Core.Alert severity="warning" sx={{mb: 1}}>
+                  <div>{m._builder.alertPreviouslyKoboForm}</div>
+                  {queryVersion.get.data?.length === 0 && (
+                    <div style={{textAlign: 'right'}}>
+                      <Core.Btn
+                        color="inherit"
+                        icon="download"
+                        loading={queryVersion.importLastKoboSchema.isPending}
+                        onClick={() => queryVersion.importLastKoboSchema.mutate()}
+                        sx={{textTransform: 'inherit', marginLeft: 'auto', whiteSpace: 'nowrap'}}
+                        children={m._builder.importCurrentKoboSurvey}
+                      />
+                    </div>
+                  )}
+                </Core.Alert>
+              )}
+              {queryPermission.data?.version_canCreate && (
+                <XlsFileUploadForm
+                  lastSchema={seq(queryVersion.get.data ?? []).last()}
+                  workspaceId={workspaceId}
+                  formId={formId}
+                />
+              )}
               {map(
                 queryVersion.get.data,
                 versions =>
@@ -80,22 +86,24 @@ function FormBuilder() {
                     <Core.Panel>
                       <Core.PanelHead
                         action={
-                          <Core.Modal
-                            loading={queryVersion.deployLast.isPending}
-                            title={m.confirm}
-                            onConfirm={(event, close) =>
-                              queryVersion.deployLast.mutateAsync({workspaceId, formId}).then(close)
-                            }
-                          >
-                            <Core.Btn
-                              icon="send"
-                              variant="contained"
-                              disabled={!draft}
+                          queryPermission.data?.version_canDeploy && (
+                            <Core.Modal
                               loading={queryVersion.deployLast.isPending}
+                              title={m.confirm}
+                              onConfirm={(event, close) =>
+                                queryVersion.deployLast.mutateAsync({workspaceId, formId}).then(close)
+                              }
                             >
-                              {m.deployLastVersion}
-                            </Core.Btn>
-                          </Core.Modal>
+                              <Core.Btn
+                                icon="send"
+                                variant="contained"
+                                disabled={!draft}
+                                loading={queryVersion.deployLast.isPending}
+                              >
+                                {m.deployLastVersion}
+                              </Core.Btn>
+                            </Core.Modal>
+                          )
                         }
                       >
                         {m.versions}
