@@ -9,7 +9,7 @@ export function SelectFormCategory({
   loading: _loading,
   ...props
 }: Omit<AutocompleteProps<string, false, true, true>, 'renderInput' | 'options'> & {
-  InputProps: Core.InputProps
+  InputProps?: Core.InputProps
   loading?: boolean
   workspaceId: Ip.WorkspaceId
 }) {

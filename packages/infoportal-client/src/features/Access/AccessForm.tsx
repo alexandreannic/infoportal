@@ -9,6 +9,7 @@ import {Core, Datatable} from '@/shared'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
 import {Ip} from 'infoportal-api-sdk'
 import {Regexp} from 'infoportal-common'
+import {UseQueryUser} from '@/core/query/useQueryUser.js'
 
 export interface IAccessForm {
   selectBy?: 'email' | 'job' | 'group' | null
@@ -83,7 +84,7 @@ export const AccessForm = ({workspaceId, form}: {workspaceId: Ip.WorkspaceId; fo
                 <AccessFormInputLocation form={form} />
               </>
             ),
-            email: <AccessFormInputEmail form={form} />,
+            email: <AccessFormInputEmail workspaceId={workspaceId} form={form} />,
           },
           () => (
             <></>
@@ -99,9 +100,17 @@ export const AccessForm = ({workspaceId, form}: {workspaceId: Ip.WorkspaceId; fo
   )
 }
 
-export const AccessFormInputEmail = ({form}: {form: UseFormReturn<IAccessForm>}) => {
+export const AccessFormInputEmail = ({
+  workspaceId,
+  form,
+}: {
+  workspaceId: Ip.WorkspaceId
+  form: UseFormReturn<IAccessForm>
+}) => {
   const {m} = useI18n()
   const required = form.watch('selectBy') === 'email'
+  const queryUserGet = UseQueryUser.getAll(workspaceId)
+  const emails = useMemo(() => queryUserGet.data?.map(_ => _.email), [queryUserGet.data])
   return (
     <Controller
       control={form.control}
@@ -111,12 +120,24 @@ export const AccessFormInputEmail = ({form}: {form: UseFormReturn<IAccessForm>})
         pattern: {value: Regexp.get.email, message: m.invalidEmail},
       }}
       render={({field, fieldState}) => (
-        <Core.Input
-          label={m.email}
-          error={!!fieldState.error}
-          helperText={fieldState.error?.message}
-          required={required}
+        <Autocomplete
           {...field}
+          value={field.value}
+          onChange={(e, value) => field.onChange(value)}
+          onInputChange={(_, value) => field.onChange(value)}
+          loading={queryUserGet.isLoading}
+          options={emails ?? []}
+          renderInput={params => (
+            <Core.Input
+              {...params}
+              label={m.email}
+              disableBrowserAutocomplete
+              error={!!fieldState.error}
+              ref={params.InputProps.ref}
+              helperText={fieldState.error?.message}
+              required={required}
+            />
+          )}
         />
       )}
     />

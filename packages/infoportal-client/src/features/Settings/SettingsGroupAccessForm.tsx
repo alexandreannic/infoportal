@@ -69,7 +69,7 @@ export const SettingsGroupAccessForm = ({
                 <AccessFormInputLocation form={form} />
               </>
             ),
-            email: <AccessFormInputEmail form={form} />,
+            email: <AccessFormInputEmail workspaceId={workspaceId} form={form} />,
           },
           () => (
             <></>
