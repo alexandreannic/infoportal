@@ -5,6 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   build: {
+    outDir: 'dist',
     rollupOptions: {
       external: ['fs', 'stream'],
     },
@@ -14,6 +15,9 @@ export default defineConfig({
     port: 3000,
   },
   server: {
+    watch: {
+      ignored: ['**/.idea/**', '**/.git/**', '**/.history/**'],
+    },
     // host: '0.0.0.0',
     port: 3000,
   },
