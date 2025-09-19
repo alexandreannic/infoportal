@@ -1,6 +1,5 @@
 import {formatDistance, formatDuration as formatDurationFns, intervalToDuration} from 'date-fns'
 import {Ip} from 'infoportal-api-sdk'
-import {ReactNode} from 'react'
 import {Asset} from '@/shared/Asset.js'
 
 const invalidDate = ''

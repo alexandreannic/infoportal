@@ -1,11 +1,10 @@
 import {Ip} from 'infoportal-api-sdk'
 import {useI18n} from '@/core/i18n'
 import {Box, BoxProps, Chip, Icon, styled, Tooltip, useTheme} from '@mui/material'
-import {AppAvatar} from '@/shared'
+import {AppAvatar, Core} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 import {capitalize} from 'infoportal-common'
 import React from 'react'
-import {Core} from '@/shared'
 
 const borderWidth = 2.5
 const avatarSize = 26

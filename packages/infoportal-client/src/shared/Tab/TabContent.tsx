@@ -1,14 +1,6 @@
 import {Box, BoxProps} from '@mui/material'
-import {useMemo} from 'react'
-import {
-  calculatePageWidth,
-  PageLoader,
-  PagePlaceholder,
-  PageProps,
-  usePageAnimation,
-  usePageWidthStyle,
-} from '@/shared/index.js'
 import * as React from 'react'
+import {PagePlaceholder, PageProps, usePageAnimation, usePageWidthStyle,} from '@/shared/index.js'
 
 export const TabContent = ({
   sx,

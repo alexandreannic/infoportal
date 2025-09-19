@@ -1,4 +1,4 @@
-import {Controller, useForm, UseFormReturn} from 'react-hook-form'
+import {Controller, UseFormReturn} from 'react-hook-form'
 import React from 'react'
 import {Core} from '@/shared'
 import {useI18n} from '@/core/i18n/index.js'

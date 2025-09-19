@@ -1,5 +1,5 @@
-import {green, orange, purple, red} from '@mui/material/colors'
-import {alpha, createTheme, SxProps, Theme} from '@mui/material'
+import {orange, red} from '@mui/material/colors'
+import {createTheme, SxProps, Theme} from '@mui/material'
 import {Core} from '@/shared'
 import {alphaVar, colorPrimary} from '@infoportal/client-core'
 

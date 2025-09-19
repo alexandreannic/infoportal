@@ -3,7 +3,6 @@ import {useAppSettings} from '@/core/context/ConfigContext.js'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index.js'
 import {useIpToast} from '@/core/useToast.js'
-import {useSetState} from '@axanc/react-hooks'
 import {usePendingMutation} from '@/core/query/usePendingMutation.js'
 
 export class UseQueryWorkspaceInvitation {

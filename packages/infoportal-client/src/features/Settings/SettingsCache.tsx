@@ -1,4 +1,3 @@
-import {Page} from '@/shared/Page'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import React, {useEffect} from 'react'
 import {useI18n} from '@/core/i18n'

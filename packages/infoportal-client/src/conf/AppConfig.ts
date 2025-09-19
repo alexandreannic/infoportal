@@ -1,5 +1,4 @@
 import {bool, defaultValue, env, required} from '@axanc/ts-utils'
-import {Ip} from 'infoportal-api-sdk'
 
 enum Env {
   VITE_SENTRY_DNS = 'VITE_SENTRY_DNS',

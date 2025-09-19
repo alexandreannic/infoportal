@@ -2,7 +2,6 @@ import {useAppSettings} from '@/core/context/ConfigContext.js'
 import {useQuery} from '@tanstack/react-query'
 import {Ip} from 'infoportal-api-sdk'
 import {queryKeys} from '@/core/query/query.index.js'
-import {duration} from '@axanc/ts-utils'
 
 export class UseQueryFormActionLog {
   static search(params: Ip.Form.Action.Log.Payload.Search) {

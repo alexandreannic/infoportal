@@ -3,11 +3,7 @@ import {mapFor} from '@axanc/ts-utils'
 import {Messages} from '@/core/i18n/localization/en'
 import {Theme} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
-import {
-  buildDatabaseColumns,
-  BuildFormColumnProps,
-  colorRepeatedQuestionHeader,
-} from '@/features/Form/Database/columns/databaseColumnBuilder'
+import {buildDatabaseColumns, BuildFormColumnProps, colorRepeatedQuestionHeader,} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Datatable} from '@/shared'
 
 export type DatabaseDisplay = {

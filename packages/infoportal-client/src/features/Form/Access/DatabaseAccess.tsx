@@ -3,7 +3,7 @@ import {useI18n} from '@/core/i18n'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {DatabaseAccessForm} from '@/features/Form/Access/DatabaseAccessForm'
 import {AccessTable} from '@/features/Access/AccessTable'
-import {Core, Page} from '@/shared'
+import {Core} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 

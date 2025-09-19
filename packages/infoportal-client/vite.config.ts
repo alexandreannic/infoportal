@@ -10,14 +10,10 @@ export default defineConfig({
       external: ['fs', 'stream'],
     },
   },
-  preview: {
-    // host: '0.0.0.0',
+  server: {
     port: 3000,
   },
-  server: {
-    watch: {
-      ignored: ['**/.idea/**', '**/.git/**', '**/.history/**'],
-    },
+  preview: {
     // host: '0.0.0.0',
     port: 3000,
   },

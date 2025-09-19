@@ -1,4 +1,3 @@
-import {Page} from '@/shared/Page'
 import {useEffect} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useCrudList} from '@axanc/react-hooks'

@@ -4,16 +4,7 @@ import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {createContext, useContext, useEffect, useMemo} from 'react'
-import {
-  createRoute,
-  Link,
-  LinkProps,
-  Outlet,
-  useMatches,
-  useNavigate,
-  useRouter,
-  useRouterState,
-} from '@tanstack/react-router'
+import {createRoute, Link, Outlet, useMatches, useNavigate, useRouterState,} from '@tanstack/react-router'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'

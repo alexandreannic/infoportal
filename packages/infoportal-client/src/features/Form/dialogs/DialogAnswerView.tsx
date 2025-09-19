@@ -7,18 +7,7 @@ import {Core} from '@/shared'
 import {Page} from '@/shared/Page'
 import {KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {map, seq} from '@axanc/ts-utils'
-import {
-  Alert,
-  Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Icon,
-  Skeleton,
-  Switch,
-  useTheme,
-} from '@mui/material'
+import {Alert, Box, Dialog, DialogActions, DialogContent, DialogTitle, Icon, Skeleton, Switch, useTheme,} from '@mui/material'
 import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'

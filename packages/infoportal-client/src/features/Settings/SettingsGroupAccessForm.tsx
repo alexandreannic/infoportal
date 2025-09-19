@@ -3,13 +3,7 @@ import React, {useEffect} from 'react'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {Controller, UseFormReturn} from 'react-hook-form'
 import {fnSwitch} from '@axanc/ts-utils'
-import {
-  AccessFormInputAccessLevel,
-  AccessFormInputEmail,
-  AccessFormInputJob,
-  AccessFormInputLocation,
-  IAccessForm,
-} from '@/features/Access/AccessForm'
+import {AccessFormInputAccessLevel, AccessFormInputEmail, AccessFormInputJob, AccessFormInputLocation, IAccessForm,} from '@/features/Access/AccessForm'
 import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
 

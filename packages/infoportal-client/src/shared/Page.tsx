@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {ReactNode, useEffect, useMemo, useRef, useState} from 'react'
-import {Box, BoxProps, CircularProgress, Skeleton, SkeletonProps, SxProps, Theme, useTheme} from '@mui/material'
-import {CenteredContent, Core} from '@/shared'
+import {Box, BoxProps, CircularProgress, Skeleton, useTheme} from '@mui/material'
+import {CenteredContent} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
 import {CSSObject} from '@mui/styled-engine'
 

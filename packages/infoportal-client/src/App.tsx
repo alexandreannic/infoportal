@@ -33,7 +33,7 @@ const api = new ApiSdk(
 
 const apiv2: IpClient = buildIpClient(appConfig.apiURL)
 
-export const queryClient = new QueryClient({
+const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: duration(10, 'minute'),
@@ -44,7 +44,7 @@ export const queryClient = new QueryClient({
 export const App = () => {
   return (
     <AppSettingsProvider api={api} apiv2={apiv2}>
-      <AppWithConfig />
+      <AppWithConfig/>
     </AppSettingsProvider>
   )
 }
@@ -64,23 +64,23 @@ const AppWithConfig = () => {
   return (
     <Core.Provide
       providers={[
-        _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns} />,
-        _ => <ThemeProvider theme={defaultTheme} children={_} />,
-        _ => <Core.ToastProvider children={_} />,
-        _ => <CssBaseline children={_} />,
-        _ => <I18nProvider children={_} />,
-        _ => <MsalProvider children={_} instance={msal} />,
-        _ => <QueryClientProvider client={queryClient} children={_} />,
-        _ => <DialogsProvider children={_} />,
-        _ => <SessionProvider children={_} />,
+        _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns}/>,
+        _ => <ThemeProvider theme={defaultTheme} children={_}/>,
+        _ => <Core.ToastProvider children={_}/>,
+        _ => <CssBaseline children={_}/>,
+        _ => <I18nProvider children={_}/>,
+        _ => <MsalProvider children={_} instance={msal}/>,
+        _ => <QueryClientProvider client={queryClient} children={_}/>,
+        _ => <DialogsProvider children={_}/>,
+        _ => <SessionProvider children={_}/>,
       ]}
     >
-      <TrackLocation />
-      <AppWithBaseContext />
+      <TrackLocation/>
+      <AppWithBaseContext/>
       {!settings.conf.production && (
         <>
-          <TanStackRouterDevtools />
-          <ReactQueryDevtools initialIsOpen={false} />
+          <TanStackRouterDevtools/>
+          <ReactQueryDevtools initialIsOpen={false}/>
         </>
       )}
     </Core.Provide>
@@ -104,7 +104,7 @@ const AppWithBaseContext = () => {
             alignItems: 'center',
           }}
         >
-          <IpLogo sx={{display: 'block', mb: 2}} />
+          <IpLogo sx={{display: 'block', mb: 2}}/>
           <Core.Txt size="title" block>
             {m.title}
           </Core.Txt>
@@ -124,7 +124,7 @@ const AppWithBaseContext = () => {
           <Datatable.Config
             children={_}
             defaultProps={{
-              renderEmptyState: <Core.Fender type="empty" size="normal" children={m.noDataAtm} sx={{my: 1}} />,
+              renderEmptyState: <Core.Fender type="empty" size="normal" children={m.noDataAtm} sx={{my: 1}}/>,
               rowHeight: 38,
               module: {
                 columnsResize: {enabled: false},
@@ -165,7 +165,7 @@ const AppWithBaseContext = () => {
         ),
       ]}
     >
-      <Outlet />
+      <Outlet/>
     </Core.Provide>
   )
 }

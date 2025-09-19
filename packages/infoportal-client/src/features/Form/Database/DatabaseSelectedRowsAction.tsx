@@ -4,7 +4,6 @@ import {useI18n} from '@/core/i18n'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Ip} from 'infoportal-api-sdk'
 import {Alert} from '@mui/material'
-import {BtnConfirm} from '@/shared/BtnConfirm'
 
 export const DatabaseSelectedRowsAction = ({
   formId,
