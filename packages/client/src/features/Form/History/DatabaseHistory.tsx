@@ -1,5 +1,5 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {KoboAnswerHistory} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistory'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {AppAvatar} from '@/shared/AppAvatar'

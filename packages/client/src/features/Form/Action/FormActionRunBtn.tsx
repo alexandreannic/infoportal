@@ -1,6 +1,6 @@
 import {Core} from '@/shared'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
-import {useI18n} from '@/core/i18n/index.js'
+import {useI18n} from '@infoportal/client-i18n'
 import {useIpToast} from '@/core/useToast.js'
 import {Ip} from 'infoportal-api-sdk'
 import {UseQueryPermission} from '@/core/query/useQueryPermission.js'

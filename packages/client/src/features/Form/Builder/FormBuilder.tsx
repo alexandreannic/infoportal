@@ -1,6 +1,6 @@
 import {Core} from '@/shared'
 import {Grid, Grow, useTheme} from '@mui/material'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import React, {useMemo, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {XlsFileUploadForm} from '@/features/Form/Builder/XlsFileUploadForm'

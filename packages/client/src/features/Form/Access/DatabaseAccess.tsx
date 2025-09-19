@@ -1,5 +1,5 @@
 import React from 'react'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {DatabaseAccessForm} from '@/features/Form/Access/DatabaseAccessForm'
 import {AccessTable} from '@/features/Access/AccessTable'

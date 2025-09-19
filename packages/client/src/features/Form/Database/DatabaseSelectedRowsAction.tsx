@@ -1,6 +1,6 @@
 import React from 'react'
 import {Core} from '@/shared'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Ip} from 'infoportal-api-sdk'
 import {Alert} from '@mui/material'

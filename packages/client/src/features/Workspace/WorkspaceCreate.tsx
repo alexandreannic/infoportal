@@ -1,4 +1,4 @@
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Box, CardActions, CircularProgress} from '@mui/material'
 import {useEffect, useState} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'

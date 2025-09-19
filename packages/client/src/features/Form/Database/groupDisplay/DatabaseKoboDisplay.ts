@@ -1,6 +1,6 @@
 import {KoboSchemaHelper} from 'infoportal-common'
 import {mapFor} from '@axanc/ts-utils'
-import {Messages} from '@/core/i18n/localization/en'
+import {Messages} from '@infoportal/client-i18n'
 import {Theme} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import {buildDatabaseColumns, BuildFormColumnProps, colorRepeatedQuestionHeader,} from '@/features/Form/Database/columns/databaseColumnBuilder'

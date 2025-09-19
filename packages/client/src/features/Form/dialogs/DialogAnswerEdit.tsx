@@ -1,4 +1,4 @@
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {KoboMapper, Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from '@mui/material'
 import {DialogProps} from '@toolpad/core'

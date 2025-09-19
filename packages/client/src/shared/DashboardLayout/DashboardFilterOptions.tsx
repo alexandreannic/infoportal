@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react'
 import {BoxProps, Checkbox, FormControlLabel, FormGroup} from '@mui/material'
 import {DashboardFilterLabel} from './DashboardFilterLabel'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {makeStyles} from 'tss-react/mui'
 import {Core, Datatable} from '@/shared'
 

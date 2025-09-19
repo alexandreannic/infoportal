@@ -1,5 +1,5 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Core, Datatable} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {fnSwitch, Obj, seq} from '@axanc/ts-utils'

@@ -1,4 +1,4 @@
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
 import {Box, Icon, useTheme} from '@mui/material'

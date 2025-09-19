@@ -1,5 +1,5 @@
 import {Box, BoxProps, Icon, Tab, Tabs, useTheme} from '@mui/material'
-import {useI18n} from '@/core/i18n/index.js'
+import {useI18n} from '@infoportal/client-i18n'
 import {useEffect, useMemo, useRef, useState} from 'react'
 import {Obj} from '@axanc/ts-utils'
 import Editor, {useMonaco} from '@monaco-editor/react'

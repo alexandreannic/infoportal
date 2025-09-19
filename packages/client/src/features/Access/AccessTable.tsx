@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Core, Datatable} from '@/shared'
 import {UseQueryFormAccess} from '@/core/query/useQueryFormAccess'

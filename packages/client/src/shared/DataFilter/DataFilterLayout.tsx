@@ -4,7 +4,7 @@ import {Box, BoxProps} from '@mui/material'
 import {DataFilter} from '@/shared/DataFilter/DataFilter'
 import {Obj, Seq, seq} from '@axanc/ts-utils'
 import {DashboardFilterOptions} from '@/shared/DashboardLayout/DashboardFilterOptions'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {DataFilterLayoutPopup} from '@/shared/DataFilter/DataFilterLayoutPopup'
 import {Core} from '@/shared'
 

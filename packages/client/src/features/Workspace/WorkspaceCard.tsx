@@ -1,6 +1,6 @@
 import {Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
 import {AppAvatar, Core} from '@/shared'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'

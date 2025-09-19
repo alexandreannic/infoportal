@@ -1,6 +1,6 @@
 import {Box} from '@mui/material'
 import React, {useEffect, useRef, useState} from 'react'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '@/shared'
 
 export const ViewMoreText = ({

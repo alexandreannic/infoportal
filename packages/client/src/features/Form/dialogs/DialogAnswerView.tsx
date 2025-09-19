@@ -1,4 +1,4 @@
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'

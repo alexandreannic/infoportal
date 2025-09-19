@@ -1,7 +1,7 @@
 import React from 'react'
 import {Box, Icon, useTheme} from '@mui/material'
 import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '@/shared'
 
 export const DatabaseGroupDisplayInput = (props: Core.BtnProps) => {

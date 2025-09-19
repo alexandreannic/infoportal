@@ -1,6 +1,6 @@
 import {appConfig} from '@/conf/AppConfig'
 import {AppSettingsProvider, useAppSettings} from '@/core/context/ConfigContext'
-import {I18nProvider, useI18n} from '@/core/i18n'
+import {I18nProvider, useI18n} from '@infoportal/client-i18n'
 import {getMsalInstance} from '@/core/msal'
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'

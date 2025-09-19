@@ -6,7 +6,7 @@ import {Sidebar, SidebarItem} from '@/shared/Layout/Sidebar'
 import {DashboardHeader} from '@/shared/DashboardLayout/DashboardHeader'
 import {Page} from '@/shared/Page'
 import {map} from '@axanc/ts-utils'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {appConfig} from '@/conf/AppConfig'
 import {Core} from '@/shared'
 

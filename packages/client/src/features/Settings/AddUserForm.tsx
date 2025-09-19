@@ -1,4 +1,4 @@
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Regexp} from 'infoportal-common'
 import {Controller, useForm} from 'react-hook-form'
 import {HttpError, Ip} from 'infoportal-api-sdk'

@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react'
 import {Obj, Seq} from '@axanc/ts-utils'
 import {FilterLayoutProps} from '@/shared/DataFilter/DataFilterLayout'
 import {DataFilter} from '@/shared/DataFilter/DataFilter'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '@/shared'
 
 export const DataFilterLayoutPopup = ({

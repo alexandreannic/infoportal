@@ -1,6 +1,6 @@
 import React, {ReactNode, useMemo, useState} from 'react'
 import {Alert, Box, Collapse} from '@mui/material'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {useKoboColumnDef} from '@/shared/koboEdit/KoboSchemaWrapper'
 import {ArrayValues} from 'infoportal-common'
 import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
