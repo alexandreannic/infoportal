@@ -3,7 +3,7 @@ node_modules
 packages/*/node_modules
 packages/*/lib
 packages/*/dist
-packages/infoportal-client/.next
+packages/client/.next
 .next/
 
 # Logs
@@ -67,10 +67,10 @@ bower_components
 .yarn-integrity
 
 # dotenv environment variables file
-packages/infoportal-server/.env
-packages/infoportal-client/.env
+packages/server/.env
+packages/client/.env
 .env.test
-infoportal-client/.env.local
+*.env.*
 .env
 
 # FuseBox cache

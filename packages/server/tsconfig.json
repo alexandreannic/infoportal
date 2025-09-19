@@ -9,7 +9,7 @@
     "outDir": "./lib",
     "paths": {
       "infoportal-common/*": [
-        "../infoportal-common/src/*"
+        "../common/src/*"
       ],
       "*": [
         "./*"
@@ -18,7 +18,7 @@
   },
   "references": [
     {
-      "path": "../infoportal-common"
+      "path": "../common"
     }
   ],
   "ts-node": {

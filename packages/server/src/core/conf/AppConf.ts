@@ -12,8 +12,8 @@ const e = env(process.env)
 
 export const appConf = {
   sessionSecret: e(required)('SESSION_SECRET'),
-  baseUrl: e(defaultValue('https://infoportal-ua-api.drc.ngo'))('BASE_URL'),
-  frontEndBaseUrl: e(defaultValue(`https://infoportal-ua.drc.ngo`))('FRONTEND_BASE_URL'),
+  baseUrl: e(required)('BASE_URL'),
+  frontEndBaseUrl: e(required)('FRONTEND_BASE_URL'),
   logLevel: e(defaultValue('info'))('LOG_LEVEL'),
   rootProjectDir: e(defaultValue(__dirname))('ROOT_PROJECT_DIR'),
   disableScheduledTask: e(bool, defaultValue(false))('DISABLED_SCHEDULED_TASK'),
