@@ -149,6 +149,7 @@ export namespace Ip {
   // === Workspace
   export type Workspace = Prisma.Workspace & {
     id: WorkspaceId
+    level?: AccessLevel
   }
   export type WorkspaceId = Brand<string, 'workspaceId'>
   export namespace Workspace {

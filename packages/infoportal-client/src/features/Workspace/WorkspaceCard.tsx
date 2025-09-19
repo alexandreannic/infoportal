@@ -5,6 +5,7 @@ import {Link} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 import {appConfig} from '@/conf/AppConfig.js'
+import {AccessLevelRow} from '@/core/layout/AppHeaderMenu.js'
 
 export const WorkspaceCardAdd = ({sx, ...props}: ButtonBaseProps) => {
   const t = useTheme()
@@ -68,6 +69,7 @@ export const WorkspaceCard = ({workspace}: {workspace: Ip.Workspace}) => {
         <Core.Txt truncate block>
           {workspace.sector}
         </Core.Txt>
+        <AccessLevelRow accessLevel={workspace.level!} sx={{mt: 2}}/>
         <Core.Txt color="hint" textAlign="right" block sx={{mt: 'auto'}}>
           {formatDate(workspace.createdAt)}
         </Core.Txt>

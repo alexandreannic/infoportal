@@ -134,7 +134,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             <Core.IconBtn children="home" />
           </Badge>
         </Link>
-        <AppHeaderMenu />
+        <AppHeaderMenu workspaceId={workspaceId}/>
       </AppHeaderContainer>
     </Slide>
   )

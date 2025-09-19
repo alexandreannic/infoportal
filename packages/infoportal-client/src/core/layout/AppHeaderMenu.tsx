@@ -1,20 +1,23 @@
-import React, {ReactNode} from 'react'
+import React, {ReactNode, useMemo} from 'react'
 import {useSession} from '@/core/Session/SessionContext'
 import {Box, BoxProps, Chip, Icon, Popover, SxProps} from '@mui/material'
 import {useI18n} from '@/core/i18n'
 import {Core} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Ip} from 'infoportal-api-sdk'
+import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace.js'
 
 const Row = ({
   icon,
   sxIcon,
   sxText,
   children,
+  sx,
 }: {
   icon: string
   sxText?: SxProps
   sxIcon?: SxProps
+  sx?: SxProps
   children: ReactNode
 }) => {
   return (
@@ -23,6 +26,7 @@ const Row = ({
         display: 'flex',
         alignItems: 'center',
         mb: 1.5,
+        ...sx,
       }}
     >
       <Icon sx={{mr: 1, color: t => t.vars.palette.text.secondary, ...sxIcon}}>{icon}</Icon>
@@ -39,11 +43,44 @@ export const accessLevelIcon: Record<Ip.AccessLevel, string> = {
   Write: 'edit',
 }
 
-export const AppHeaderMenu = ({sx, ...props}: Partial<Omit<BoxProps, 'borderColor'>>) => {
+export const AccessBadge = ({accessLevel}: {accessLevel: Ip.AccessLevel}) => {
+  return (
+    <Chip
+      sx={{ml: 1}}
+      color="info"
+      icon={<Icon>{accessLevelIcon[accessLevel]}</Icon>}
+      variant="filled"
+      size="small"
+      label={accessLevel}
+    />
+  )
+}
+
+export const AccessLevelRow = ({accessLevel, sx}: {sx?: SxProps; accessLevel: Ip.AccessLevel}) => {
+  const {m} = useI18n()
+  return (
+    <Row icon="badge" sx={sx}>
+      {m.access}
+      <AccessBadge accessLevel={accessLevel} />
+    </Row>
+  )
+}
+
+export const AppHeaderMenu = ({
+  workspaceId,
+  sx,
+  ...props
+}: {workspaceId?: Ip.WorkspaceId} & Partial<Omit<BoxProps, 'borderColor'>>) => {
   const {user, logout} = useSession()
   const me = user
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
   const open = !!anchorEl
+  const queryWorkspace = UseQueryWorkspace.get()
+
+  const currentWorkspace = useMemo(() => {
+    return queryWorkspace.data?.find(_ => _.id === workspaceId)
+  }, [queryWorkspace.data])
+
   const {m} = useI18n()
   if (!me) {
     return <></>
@@ -67,17 +104,7 @@ export const AppHeaderMenu = ({sx, ...props}: Partial<Omit<BoxProps, 'borderColo
             </Core.Txt>
             <Row icon="email">{me.email}</Row>
             {me.job && <Row icon="work">{me.job}</Row>}
-            <Row icon="badge">
-              {m.access}
-              <Chip
-                sx={{ml: 1}}
-                color="info"
-                icon={<Icon>{accessLevelIcon[me.accessLevel]}</Icon>}
-                variant="filled"
-                size="small"
-                label={me.accessLevel}
-              />
-            </Row>
+            {currentWorkspace?.level && <AccessLevelRow accessLevel={currentWorkspace?.level} />}
           </Box>
           <Box sx={{px: 2}}>
             <Core.Btn icon="logout" variant="outlined" onClick={logout} sx={{mb: 2}}>
