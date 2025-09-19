@@ -1,4 +1,4 @@
-import {dateFromNow, formatDate, formatDateTime, formatDuration, formatLargeNumber, formatTime} from './en'
+import {dateFromNow, formatDate, formatDateTime, formatDuration, formatLargeNumber, formatTime} from './en.js'
 
 export const ua = {
   formatDate,

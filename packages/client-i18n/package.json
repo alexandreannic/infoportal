@@ -1,0 +1,26 @@
+{
+  "name": "@infoportal/client-i18n",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "infoportal-api-sdk": "1.0.0",
+    "@axanc/ts-utils": "^2.4.1",
+    "date-fns": "^4.1.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  }
+}
