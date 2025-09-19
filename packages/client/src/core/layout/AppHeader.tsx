@@ -41,6 +41,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
           py: 0.5,
           display: 'flex',
           alignItems: 'center',
+          background: Core.alphaVar(t.vars.palette.background.paper, .35),
           // position: 'fixed',
           // top: 0,
           // right: 0,
@@ -134,7 +135,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             <Core.IconBtn children="home" />
           </Badge>
         </Link>
-        <AppHeaderMenu workspaceId={workspaceId}/>
+        <AppHeaderMenu workspaceId={workspaceId} />
       </AppHeaderContainer>
     </Slide>
   )
