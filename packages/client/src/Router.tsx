@@ -23,6 +23,8 @@ import {formActionRoute} from '@/features/Form/Action/FormAction.js'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {formActionReportsRoute} from '@/features/Form/Action/FormActionReports.js'
 import {formActionLogsRoute} from '@/features/Form/Action/FormActionLogs.js'
+import {dashboardRoute} from '@/features/Dashboard/Dashboards'
+import {dashboardCreatorRoute} from '@/features/Dashboard/DashboardCreator'
 
 export const rootRoute = createRootRoute({
   component: App,
@@ -32,6 +34,8 @@ const tsRoutes = [
   collectRoute,
   workspacesRoute,
   workspaceRoute.addChildren([
+    dashboardRoute,
+    dashboardCreatorRoute,
     overviewRoute,
     newFormRoute,
     formRootRoute.addChildren([

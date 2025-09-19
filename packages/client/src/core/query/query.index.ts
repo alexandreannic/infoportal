@@ -15,6 +15,7 @@ export const queryKeys = {
   workspaceInvitation: (workspaceId?: Ip.WorkspaceId | 'me') => concat('workspace', 'invitation', workspaceId),
   workspaces: () => ['workspace'],
   originalEmail: () => ['originalEmail'],
+  dashboards: (workspaceId?: Ip.WorkspaceId) => concat('dashboards', workspaceId),
   koboForm: (serverId?: Ip.ServerId) => concat('koboForm', serverId),
   servers: (workspaceId?: Ip.WorkspaceId) => concat('servers', workspaceId),
   server: (workspaceId?: Ip.WorkspaceId, serverId?: Ip.ServerId) => concat('server', workspaceId, serverId),

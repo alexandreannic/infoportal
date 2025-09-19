@@ -17,6 +17,7 @@ import {groupClient} from '../contract/ContractGroup.js'
 import {formActionClient} from '../contract/form/action/ContractFormAction.js'
 import {formActionLogClient} from '../contract/form/action/ContractFormActionLog.js'
 import {formActionReportClient} from '../contract/form/action/ContractFormActionReport.js'
+import {dashboardClient} from '../contract/dashboard/ContractDashboard.js'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -35,6 +36,9 @@ export const buildIpClient = (baseUrl: string) => {
       ...workspaceClient(client, baseUrl),
       access: workspaceAccessClient(client, baseUrl),
       invitation: workspaceInvitationClient(client, baseUrl),
+    },
+    dashboard: {
+      ...dashboardClient(client),
     },
     permission: permissionClient(client, baseUrl),
     server: serverClient(client, baseUrl),

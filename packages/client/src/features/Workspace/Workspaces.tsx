@@ -1,5 +1,5 @@
 import {Core, Page} from '@/shared'
-import {WorkspaceCard, WorkspaceCardAdd, WorkspaceCardInvitation} from '@/features/Workspace/WorkspaceCard'
+import {WorkspaceCard, WorkspaceCardInvitation} from '@/features/Workspace/WorkspaceCard'
 import {Grid, Skeleton} from '@mui/material'
 import {WorkspaceCreate} from '@/features/Workspace/WorkspaceCreate'
 import {useI18n} from '@infoportal/client-i18n'
@@ -10,6 +10,8 @@ import {AppHeader} from '@/core/layout/AppHeader'
 import {createRoute} from '@tanstack/react-router'
 import {rootRoute} from '@/Router'
 import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {CardAdd} from '@/shared/CardAdd'
+import {appConfig} from '@/conf/AppConfig'
 
 export const workspacesRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -35,7 +37,7 @@ function Workspaces() {
                   onClose={null}
                   content={close => <WorkspaceCreate onClose={close} />}
                 >
-                  <WorkspaceCardAdd />
+                  <CardAdd icon={appConfig.icons.workspace} title={m.createWorkspace} />
                 </Core.Modal>
               </Grid>
               {queryInvitations.data?.map(_ => (

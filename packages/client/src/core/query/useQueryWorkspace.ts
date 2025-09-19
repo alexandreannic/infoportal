@@ -2,7 +2,8 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {queryKeys} from '@/core/query/query.index'
 import {duration} from '@axanc/ts-utils'
-import {HttpError} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
+import {useMemo} from 'react'
 
 export class UseQueryWorkspace {
   static get() {
@@ -16,6 +17,17 @@ export class UseQueryWorkspace {
         return failureCount < 5
       },
     })
+  }
+  static getById(id: Ip.WorkspaceId) {
+    const {apiv2} = useAppSettings()
+    const query = this.get()
+    const workspace = useMemo(() => {
+      return query.data?.find(_ => _.id === id)
+    }, [id, query.data])
+    return {
+      ...query,
+      data: workspace,
+    }
   }
 
   static create() {
