@@ -1,5 +1,5 @@
 import {Btn, BtnProps} from '../Btn'
-import {useI18n} from '../../core/Translation'
+import {useI18n} from '@infoportal/client-i18n'
 import {useStepperContext} from './Stepper'
 
 export interface StepperBtnPreviousProps extends BtnProps {}
@@ -14,7 +14,7 @@ export const StepperBtnPrevious = ({sx, ...props}: StepperBtnPreviousProps) => {
       onClick={context.prev}
       color="primary"
       icon="keyboard_arrow_left"
-      children={m.stepper_previous}
+      children={m.previous}
       {...props}
     />
   )

@@ -4,7 +4,7 @@ import {Box, Popover, TextField} from '@mui/material'
 import {mapFor} from '@axanc/ts-utils'
 import {endOfMonth, format, startOfMonth, subMonths} from 'date-fns'
 import {PeriodPickerProps} from './PeriodPicker'
-import {useI18n} from '../../core/Translation'
+import {useI18n} from '@infoportal/client-i18n'
 
 /** @deprecated Not used, keep it in case I got issue with the native MUI behavior*/
 export const PeriodPickerMui2 = ({min, max, value, onChange, label, fullWidth, sx, ...props}: PeriodPickerProps) => {
@@ -45,7 +45,7 @@ export const PeriodPickerMui2 = ({min, max, value, onChange, label, fullWidth, s
           fullWidth={fullWidth}
           InputLabelProps={{shrink: true}}
           ref={anchor as any}
-          label={label?.[0] ?? m.datepicker_start}
+          label={label?.[0] ?? m.start}
           value={start}
           onClick={() => setOpen(_ => !_)}
           onChange={console.log}
@@ -71,7 +71,7 @@ export const PeriodPickerMui2 = ({min, max, value, onChange, label, fullWidth, s
           fullWidth={fullWidth}
           InputLabelProps={{shrink: true}}
           onClick={() => setOpen(_ => !_)}
-          label={label?.[1] ?? m.datepicker_end}
+          label={label?.[1] ?? m.end}
           value={end}
           onChange={console.log}
           InputProps={{

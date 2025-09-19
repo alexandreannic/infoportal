@@ -7,7 +7,7 @@ import {styleUtils} from '../core/theme'
 import {addMonths, format, isBefore, parse} from 'date-fns'
 import {chartConfig} from './index'
 import {commonLegendProps} from './ChartBarStacked'
-import {useI18n} from '../core/Translation'
+import {useI18n} from '@infoportal/client-i18n'
 
 export interface ChartLineProps extends Pick<BoxProps, 'sx'> {
   colorsByKey?: (t: Theme) => Record<string, string>

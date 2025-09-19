@@ -1,6 +1,6 @@
 import React, {ReactNode, useEffect, useMemo, useState} from 'react'
 import {seq} from '@axanc/ts-utils'
-import {useI18n} from '../core/Translation'
+import {useI18n} from '@infoportal/client-i18n'
 
 export type MultipleChoicesChoice<T extends string> = {
   value: T
@@ -72,7 +72,7 @@ export const useMultipleChoices = <T extends string>({
     toggleAll,
     onClick,
     options: [
-      ...(addBlankOption ? [{value: '', label: m.select_blankOption} as MultipleChoicesChoice<any>] : []),
+      ...(addBlankOption ? [{value: '', label: m.blank} as MultipleChoicesChoice<any>] : []),
       ...options,
     ].map(_ => ({
       ..._,

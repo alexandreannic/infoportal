@@ -5,7 +5,7 @@ import {PanelProps} from '../ui/Panel/Panel'
 import {LightTooltip, TooltipRow} from '../ui/LightTooltip'
 import {Txt, TxtProps} from '../ui/Txt'
 import {ChartPie} from './ChartPie'
-import {useI18n} from '../core/Translation'
+import {useI18n} from '@infoportal/client-i18n'
 
 const previousPeriodDeltaDays = 90
 

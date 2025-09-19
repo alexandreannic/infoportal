@@ -6,7 +6,7 @@ import {Obj} from '@axanc/ts-utils'
 import {toPercent} from 'infoportal-common'
 import {Txt} from '../ui/Txt'
 import {ChartDataVal} from './chartHelper'
-import {useI18n} from '../core/Translation'
+import {useI18n} from '@infoportal/client-i18n'
 import {alphaVar} from '../core/theme'
 import {LightTooltip, TooltipRow} from '../ui/LightTooltip'
 
@@ -42,7 +42,7 @@ export const ChartBar = <K extends string>(props: Props<K>) => {
       }}
     >
       <Icon sx={{fontSize: '3em !important'}}>block</Icon>
-      <Box>{m.chart_noDataAtm}</Box>
+      <Box>{m.noDataAtm}</Box>
     </Box>
   )
 }
@@ -97,7 +97,7 @@ export const ChartBarContent = <K extends string>({
             block
           </Icon>
           <Txt block color="disabled">
-            {m.chart_noDataAtm}
+            {m.noDataAtm}
           </Txt>
         </Box>
       )}
@@ -239,7 +239,7 @@ const TooltipWrapper = ({
             />
             {base !== sumValue && (
               <TooltipRow
-                label={m.chart_comparedToTotalAnswers}
+                label={m.comparedToTotalAnswers}
                 hint={
                   <>
                     {formatLargeNumber(item.value)} / {formatLargeNumber(sumValue)}
