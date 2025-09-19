@@ -56,7 +56,8 @@ export const appConfig = {
     openFormLink: 'file_open',
     koboFormLink: 'fact_check',
     dataTable: 'data_table',
-    dashboard: 'stacked_bar_chart',
+    // dashboard: 'stacked_bar_chart',
+    dashboard: 'monitoring',
   },
   iconStatus: {
     error: 'error',

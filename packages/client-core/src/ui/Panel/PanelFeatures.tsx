@@ -3,7 +3,7 @@ import {ReactNode, useRef, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
 import html2canvas from 'html2canvas'
 import {IconBtn} from '../IconBtn'
-import {openCanvasInNewTab} from '../../core/utils'
+import {openCanvasInNewTab} from '../../core'
 
 export const PanelFeatures = ({
   children,

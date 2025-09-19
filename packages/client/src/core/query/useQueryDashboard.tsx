@@ -1,0 +1,28 @@
+import {useAppSettings} from '@/core/context/ConfigContext'
+import {useIpToast} from '@/core/useToast'
+import {Ip} from 'infoportal-api-sdk'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
+import {queryKeys} from '@/core/query/query.index'
+import {ApiError} from '@/core/sdk/server/ApiClient'
+
+export class UseQueryDashboard {
+  static getAll = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+    const {apiv2} = useAppSettings()
+    const {toastAndThrowHttpError} = useIpToast()
+    return useQuery({
+      queryFn: () => apiv2.dashboard.getAll({workspaceId}).catch(toastAndThrowHttpError),
+      queryKey: queryKeys.dashboards(workspaceId),
+    })
+  }
+
+  static create = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+    const {apiv2} = useAppSettings()
+    const {toastHttpError} = useIpToast()
+    const queryClient = useQueryClient()
+    return useMutation<Ip.Dashboard, ApiError, Omit<Ip.Dashboard.Payload.Create, 'workspaceId'>>({
+      mutationFn: args => apiv2.dashboard.create({workspaceId, ...args}),
+      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboards(workspaceId)}),
+      onError: toastHttpError,
+    })
+  }
+}

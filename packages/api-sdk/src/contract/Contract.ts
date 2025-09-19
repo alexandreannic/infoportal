@@ -15,12 +15,16 @@ import {groupContract} from './ContractGroup.js'
 import {formActionContract} from './form/action/ContractFormAction.js'
 import {formActionLogContract} from './form/action/ContractFormActionLog.js'
 import {formActionReportContract} from './form/action/ContractFormActionReport.js'
+import {dashboardContract} from './dashboard/ContractDashboard.js'
 
 export const ipContract = initContract().router({
   permission: permissionContract,
   server: serverContract,
   kobo: koboContract,
   group: groupContract,
+  dashboard: {
+    ...dashboardContract,
+  },
   workspace: {
     ...workspaceContract,
     invitation: workspaceInvitationContract,

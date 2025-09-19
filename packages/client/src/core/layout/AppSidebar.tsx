@@ -28,6 +28,13 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
           </SidebarItem>
         )}
       </Link>
+      <Link to="/$workspaceId/dashboard" params={{workspaceId}}>
+        {({isActive}) => (
+          <SidebarItem icon={appConfig.icons.dashboard} active={isActive}>
+            {m.dashboard}
+          </SidebarItem>
+        )}
+      </Link>
       {/*<Link to="/$workspaceId/new-form" params={{workspaceId}}>*/}
       {/*  {({isActive}) => (*/}
       {/*    <SidebarItem icon="add" active={isActive}>*/}

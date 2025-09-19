@@ -489,7 +489,11 @@ export const muiTheme = ({
       },
       MuiOutlinedInput: {
         styleOverrides: {
-          root: ({theme}) => ({}),
+          root: ({theme}) => ({
+            '&.Mui-disabled .MuiOutlinedInput-notchedOutline': {
+              borderStyle: 'dashed',
+            },
+          }),
           notchedOutline: ({theme}) => ({
             ...styleUtils(theme).color.input.default,
           }),

@@ -2,15 +2,12 @@ import {Ip} from 'infoportal-api-sdk'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {Controller, useForm, UseFormReturn} from 'react-hook-form'
-import {UseQueryForm} from '@/core/query/useQueryForm.js'
-import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
-import React, {RefObject, useMemo, useRef, useState} from 'react'
-import {Asset} from '@/shared/Asset.js'
+import React, {RefObject, useRef} from 'react'
 import {Box, CircularProgress, DialogActions} from '@mui/material'
-import {DeploymentStatus} from '@/shared/DeploymentStatus.js'
 import {Core} from '@/shared/index.js'
 import {useI18n} from '@infoportal/client-i18n'
 import {Obj} from '@axanc/ts-utils'
+import {SelectFormInput} from '@/shared/SelectFormInput'
 
 type Form = Omit<Ip.Form.Action.Payload.Create, 'body' | 'workspaceId' | 'formId'>
 
@@ -47,7 +44,7 @@ export const FormActionCreate = ({onClose}: {onClose: () => void}) => {
         onClose,
       }}
     >
-      <Box sx={{width: 500, pt: 1}}>
+      <Box sx={{width: 500}}>
         <Core.Stepper
           onComplete={() => {
             queryAction
@@ -152,51 +149,23 @@ function SelectType() {
 }
 
 function SelectForm() {
-  const {workspaceId, formId, form, stepperRef} = useContext()
-  const queryForms = UseQueryForm.getAccessibles(workspaceId)
-  const assets = useMemo(() => {
-    if (!queryForms.data) return []
-    return queryForms.data
-      .filter(_ => _.id !== formId)
-      .map(_ => ({..._, type: _.kobo ? Asset.Type.kobo : Asset.Type.internal}))
-  }, [queryForms.data])
-
-  const [filteredAsset, setFilteredAsset] = useState<Asset[]>(assets)
-
+  const {workspaceId, form, stepperRef} = useContext()
   const targetFormId = form.watch('targetFormId')
 
   return (
     <>
-      {assets.length > 10 && <AppSidebarFilters assets={assets} onFilterChanges={setFilteredAsset} sx={{mb: 1}} />}
       <Controller
         control={form.control}
         name="targetFormId"
-        render={({field}) => (
-          <Core.RadioGroup<Ip.FormId>
-            dense
-            sx={{height: 300, overflowY: 'scroll'}}
+        render={({field: {onChange, ...field}}) => (
+          <SelectFormInput
             {...field}
             onChange={_ => {
+              onChange(_)
               stepperRef.current?.goTo(2)
-              field.onChange(_)
             }}
-          >
-            {filteredAsset.map(_ => (
-              <Core.RadioGroupItem
-                hideRadio
-                value={_.id}
-                key={_.id}
-                sx={{display: 'flex', alignItems: 'center'}}
-                icon={<Asset.Icon type={_.type} />}
-                endContent={
-                  _.deploymentStatus &&
-                  _.deploymentStatus !== 'deployed' && <DeploymentStatus.Icon status={_.deploymentStatus} />
-                }
-              >
-                {_.name}
-              </Core.RadioGroupItem>
-            ))}
-          </Core.RadioGroup>
+            workspaceId={workspaceId}
+          />
         )}
       />
       <StepperActions disableNext={!targetFormId} />

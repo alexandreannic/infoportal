@@ -21,7 +21,7 @@ export class WorkspaceService {
     }
   }
 
-  readonly getUniqSlug = async (name: string) => {
+  private readonly getUniqSlug = async (name: string) => {
     const baseSlug = slugify(name)
     const existingSlugs = await this.prisma.workspace
       .findMany({

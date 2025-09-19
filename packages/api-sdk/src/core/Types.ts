@@ -105,6 +105,8 @@ export namespace Ip {
       user_canRead: boolean
       user_canConnectAs: boolean
       form_canGetAll: boolean
+      dashboard_canCreate: boolean
+      dashboard_canUpdate: boolean
     }
 
     export type Global = {
@@ -591,5 +593,45 @@ export namespace Ip {
     export type CountUserByDate = {date: string; countCreatedAt: number; countLastConnectedCount: number}[]
     export type CountBy<K extends string> = Array<Record<K, string> & {count: number}>
     export type CountByKey = CountBy<'key'>
+  }
+
+  // === Dashboard
+  export type DashboardId = Brand<string, 'DashboardId'>
+  export type Dashboard = Omit<Prisma.Dashboard, 'id'> & {
+    id: DashboardId
+  }
+
+  export namespace Dashboard {
+    export const buildPath = (workspace: Ip.Workspace, dashboard: Pick<Dashboard, 'slug'>) =>
+      '/' + workspace.slug + '/d/' + dashboard.slug
+
+    export const map = (_: Record<keyof Dashboard, any>): Dashboard => {
+      if (_.createdBy) _.createdBy = new Date(_.createdBy)
+      return _
+    }
+    export namespace Payload {
+      export type Create = {
+        workspaceId: Ip.WorkspaceId
+        name: string
+        slug: string
+        sourceFormId: Ip.FormId
+        isPublic: boolean
+      }
+    }
+    export type WidgetId = Brand<string, 'WidgetId'>
+    export type Widget = Omit<Prisma.Widget, 'id'> & {
+      id: WidgetId
+      slug: string
+    }
+    export namespace Widget {
+      export type Type = Prisma.WidgetType
+      export const Type = {
+        PieChart: 'PieChart',
+        GeoChart: 'GeoChart',
+        LineChart: 'LineChart',
+        BarChart: 'BarChart',
+        Table: 'Table',
+      } as const
+    }
   }
 }

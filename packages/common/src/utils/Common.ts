@@ -210,7 +210,8 @@ export const slugify: {
   _?.replaceAll(/\s/g, '_')
     .replaceAll(/[éèê]/g, 'e')
     .replaceAll(/[àâ]/g, 'a')
-    .replaceAll(/[^a-zA-Z0-9_-]/g, '') as any
+    .replaceAll(/[^a-zA-Z0-9_-]/g, '')
+    .toLowerCase() as any
 
 export const logThen =
   (log: string) =>

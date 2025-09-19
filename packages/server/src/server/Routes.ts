@@ -35,6 +35,7 @@ import {FormActionLogService} from '../feature/form/action/FormActionLogService.
 import {FormActionRunner} from '../feature/form/action/executor/FormActionRunner.js'
 import {FormActionRunningReportManager} from '../feature/form/action/executor/FormActionRunningReportManager.js'
 import {FormActionReportService} from '../feature/form/action/FormActionReportService.js'
+import {DashboardService} from '../feature/dashboard/DashboardService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -167,6 +168,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const formActionRunningReport = FormActionRunningReportManager.getInstance(prisma)
   const formActionReport = new FormActionReportService(prisma)
   const formActionLog = new FormActionLogService(prisma)
+  const dashboard = new DashboardService(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
     const connectedUser = await permission.checkUserConnected(args.req)
@@ -285,6 +287,23 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         auth2(_)
           .then(({params, body}) => groupItem.update({...body, ...params}))
           .then(HttpError.throwNotFoundIfUndefined())
+          .then(ok200)
+          .catch(handleError),
+    },
+    dashboard: {
+      checkSlug: _ =>
+        auth2(_)
+          .then(({body}) => dashboard.checkSlug(body.slug))
+          .then(ok200)
+          .catch(handleError),
+      getAll: _ =>
+        auth2(_)
+          .then(({params}) => dashboard.getAll({...params}))
+          .then(ok200)
+          .catch(handleError),
+      create: _ =>
+        auth2(_)
+          .then(({params, body, req}) => dashboard.create({...params, ...body, createdBy: req.session.app.user.email}))
           .then(ok200)
           .catch(handleError),
     },

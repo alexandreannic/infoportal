@@ -95,6 +95,8 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
         render={({field, fieldState}) => (
           <Core.Input
             sx={{mt: 2}}
+            notched={!!watch.name}
+            InputLabelProps={{shrink: !!watch.name}}
             label={m.workspaceId}
             disabled={disableSlug}
             size="small"
@@ -102,7 +104,7 @@ export const WorkspaceCreate = ({onClose}: {onClose?: () => void}) => {
             error={!!fieldState.error?.message}
             helperText={fieldState.error?.message}
             endAdornment={
-              <Box display="flex" justifyContent="center" alignItems="center" height={40}>
+              <Box display="flex" justifyContent="center" alignItems="center">
                 <CircularProgress sx={{visibility: fetchCheckSlug.loading ? 'visible' : 'hidden'}} size={24} />
                 <Core.IconBtn onClick={() => setDisableSlug(_ => !_)}>edit</Core.IconBtn>
               </Box>

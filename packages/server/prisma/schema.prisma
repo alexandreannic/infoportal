@@ -26,6 +26,7 @@ model Workspace {
   featureAccesses FormAccess[]
   access          WorkspaceAccess[]
   invitation      WorkspaceInvitation[]
+  dashboards      Dashboard[]
 
   @@index([slug])
 }
@@ -113,6 +114,7 @@ model Form {
   referencedBy     FormAction[]            @relation("TargetFormToAction")
   actionsReport    FormActionReport[]
   kobo             FormKoboInfo?
+  Dashboard        Dashboard[]
 
   @@index([category])
 }
@@ -368,7 +370,7 @@ model EmailOutBox {
 }
 
 // ----------------
-// Smart-db
+// Form Action
 // ----------------
 
 enum FormActionType {
@@ -426,4 +428,44 @@ model FormActionLog {
   submission Json?
   action     FormAction        @relation(fields: [actionId], references: [id])
   actionId   String
+}
+
+// ----------------
+// Dashboard
+// ----------------
+
+model Dashboard {
+  id               String           @id @default(uuid())
+  name             String
+  createdAt        DateTime         @default(now())
+  createdBy        String
+  slug             String           @unique
+  description      String?
+  widgets          Widget[]
+  sourceform       Form             @relation(fields: [sourceFormId], references: [id])
+  sourceFormId     String           @db.VarChar(32)
+  isPublic         Boolean          @default(false)
+  workspace        Workspace        @relation(fields: [workspaceId], references: [id])
+  workspaceId      String           @db.Uuid
+  deploymentStatus DeploymentStatus
+}
+
+enum WidgetType {
+  PieChart
+  GeoChart
+  LineChart
+  BarChart
+  Table
+}
+
+model Widget {
+  id           String     @id @default(uuid())
+  type         WidgetType
+  title        String?
+  description  String?
+  position     Json // { x: number; y: number; w: number; h: number } // grid layout
+  config       Json // Record<String, any> // widget-specific options
+  Dashboard    Dashboard? @relation(fields: [dashboardId], references: [id])
+  dashboardId  String?
+  dataSourceId String
 }

@@ -13,7 +13,7 @@ export const StepperBtnNext = ({sx, ...props}: StepperBtnNextProps) => {
       className="StepperBtnNext"
       color="primary"
       endIcon={<Icon>keyboard_arrow_right</Icon>}
-      children={m.next}
+      children={context.isLast ? m.complete : m.next}
       onClick={context.next}
       sx={{visibility: context.isDone ? 'hidden' : undefined, ...sx}}
       {...props}

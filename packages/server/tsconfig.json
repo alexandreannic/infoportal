@@ -16,6 +16,17 @@
       ]
     }
   },
+  "references": [
+    {
+      "path": "../action-compiler"
+    },
+    {
+      "path": "../api-sdk"
+    },
+    {
+      "path": "../common"
+    }
+  ],
   "ts-node": {
     "files": true
   },

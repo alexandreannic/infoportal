@@ -11,16 +11,18 @@ import {SlideWidget} from '@/shared/PdfLayout/PdfSlide.js'
 import {appConfig} from '@/conf/AppConfig.js'
 import {useI18n} from '@infoportal/client-i18n'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
-import {useEffect, useMemo, useState} from 'react'
+import {useEffect, useMemo, useRef, useState} from 'react'
 import {toPercent} from 'infoportal-common'
 import {addDays, subYears} from 'date-fns'
 import {DataFilterLayout} from '@/shared/DataFilter/DataFilterLayout.js'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext.js'
-import {statusConfig} from '@infoportal/client-core'
+import {openCanvasInNewTab, statusConfig} from '@infoportal/client-core'
+import html2canvas from 'html2canvas'
+import {content} from 'html2canvas/dist/types/css/property-descriptors/content'
 
 export const overviewRoute = createRoute({
   getParentRoute: () => workspaceRoute,
-  path: '/overview',
+  path: 'overview',
   component: Overview,
 })
 
@@ -275,6 +277,7 @@ function Overview() {
       </Core.PanelWBody>
     )
   }, [querySubmissionsByUser.data])
+
   return (
     <Page width="lg">
       <DataFilterLayout
