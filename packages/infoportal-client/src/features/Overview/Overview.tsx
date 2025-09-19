@@ -18,10 +18,10 @@ import {addDays, subYears} from 'date-fns'
 import {DataFilterLayout} from '@/shared/DataFilter/DataFilterLayout.js'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext.js'
 
-export const dashboardRoute = createRoute({
+export const overviewRoute = createRoute({
   getParentRoute: () => workspaceRoute,
-  path: '/dashboard',
-  component: Dashboard,
+  path: '/overview',
+  component: Overview,
 })
 
 const PieChartStatus = ({
@@ -63,11 +63,11 @@ const PieChartStatus = ({
   )
 }
 
-function Dashboard() {
+function Overview() {
   const {m, formatLargeNumber} = useI18n()
   const t = useTheme()
   const {setTitle} = useLayoutContext()
-  const workspaceId = dashboardRoute.useParams().workspaceId as Ip.WorkspaceId
+  const workspaceId = overviewRoute.useParams().workspaceId as Ip.WorkspaceId
 
   useEffect(() => {
     setTitle(m.overview)

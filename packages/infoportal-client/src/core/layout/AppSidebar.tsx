@@ -14,7 +14,7 @@ export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
   const permission = UseQueryPermission.workspace({workspaceId})
   return (
     <Sidebar headerId="app-header">
-      <Link to="/$workspaceId/dashboard" params={{workspaceId}}>
+      <Link to="/$workspaceId/overview" params={{workspaceId}}>
         {({isActive}) => (
           <SidebarItem icon="home" active={isActive}>
             {m.overview}

@@ -13,7 +13,7 @@ import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboR
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {App} from '@/App'
 import {collectRoute} from '@/features/Collect/Collect'
-import {dashboardRoute} from '@/features/Dashboard/Dashboard'
+import {overviewRoute} from '@/features/Overview/Overview.js'
 import {answersRoute} from '@/features/Form/Database/DatabaseTable'
 import {workspacesRoute} from '@/features/Workspace/Workspaces'
 import {newFormRoute} from '@/features/NewForm/NewForm'
@@ -32,7 +32,7 @@ const tsRoutes = [
   collectRoute,
   workspacesRoute,
   workspaceRoute.addChildren([
-    dashboardRoute,
+    overviewRoute,
     newFormRoute,
     formRootRoute.addChildren([
       formsRoute,

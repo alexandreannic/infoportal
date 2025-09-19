@@ -94,7 +94,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             }
             value={workspaceId}
             hideNullOption
-            onChange={_ => navigate({to: '/$workspaceId/dashboard', params: {workspaceId: _}})}
+            onChange={_ => navigate({to: '/$workspaceId/overview', params: {workspaceId: _}})}
             sx={{width: 200, mr: 0.5}}
             options={(queryWorkspaces.data ?? []).map(_ => ({
               value: _.id,
