@@ -19,7 +19,13 @@ type Brand<K, T> = K & {
 }
 
 export namespace Ip {
-  export type StateStatus = 'error' | 'warning' | 'info' | 'success' | 'disabled'
+  export enum StateStatus {
+    error = 'error',
+    warning = 'warning',
+    info = 'info',
+    success = 'success',
+    disabled = 'disabled',
+  }
 
   export type BulkResponse<ID extends string> = {id: ID; status: 'success'}[]
 
@@ -241,11 +247,11 @@ export namespace Ip {
     } as const
 
     export const validationToStatus: Record<Ip.Submission.Validation, StateStatus> = {
-      Approved: 'success',
-      Pending: 'warning',
-      Rejected: 'error',
-      Flagged: 'info',
-      UnderReview: 'warning',
+      Approved: StateStatus.success,
+      Pending: StateStatus.warning,
+      Rejected: StateStatus.error,
+      Flagged: StateStatus.info,
+      UnderReview: StateStatus.warning,
     }
 
     export type Meta = {

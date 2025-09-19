@@ -10,9 +10,6 @@ import {UseDatabaseView, useDatabaseView} from '@/features/Form/Database/view/us
 import {DatabaseDisplay} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {Ip} from 'infoportal-api-sdk'
 
-export type ExternalFilesChoices = {list_name: string; name: string; label: string}
-export type KoboExternalFilesIndex = Record<string, Record<string, ExternalFilesChoices>>
-
 export interface DatabaseContext {
   refetch: (p?: FetchParams) => Promise<void>
   schema: KoboSchemaHelper.Bundle

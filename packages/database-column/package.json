@@ -1,0 +1,34 @@
+{
+  "name": "@infoportal/database-column",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc -b"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "@infoportal/client-i18n": "1.0.0",
+    "@infoportal/client-core": "1.0.0",
+    "infoportal-common": "1.0.0",
+    "@infoportal/client-datatable": "1.0.0",
+    "infoportal-api-sdk": "1.0.0",
+    "kobo-sdk": "^2.4.1",
+    "@axanc/react-hooks": "^1.14.0",
+    "@mui/material": "^7.3.1",
+    "date-fns": "^4.1.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-google-charts": "^5.2.1",
+    "recharts": "^2.10.4"
+  }
+}

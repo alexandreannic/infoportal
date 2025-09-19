@@ -113,6 +113,13 @@ export const en = Object.freeze({
     city: 'City',
     koboServer: 'Kobo server',
     no: 'No',
+    validation_: {
+      [Ip.Submission.Validation.Approved]: 'Approved',
+      [Ip.Submission.Validation.Pending]: 'Pending',
+      [Ip.Submission.Validation.Rejected]: 'Rejected',
+      [Ip.Submission.Validation.Flagged]: 'Flagged',
+      [Ip.Submission.Validation.UnderReview]: 'UnderReview',
+    } as const,
     deploymentStatus_: {
       [Ip.Form.DeploymentStatus.draft]: 'Draft',
       [Ip.Form.DeploymentStatus.archived]: 'Archived',

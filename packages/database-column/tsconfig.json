@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base",
+  "compilerOptions": {
+    "composite": true,
+    "module": "esnext",
+    "rootDir": "./src",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "incremental": true,
+    "outDir": "./lib"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
