@@ -1,12 +1,12 @@
-import {DatatableColumnToggle} from '@/DatatableColumnsToggle'
 import {Badge, Box, useTheme} from '@mui/material'
-import {IconBtn, Txt} from '@infoportal/client-core'
+import {IconBtn} from '@infoportal/client-core'
 import React from 'react'
-import {useCtx} from '@/core/DatatableContext'
-import {useConfig} from '@/DatatableConfig'
 import {useMemoFn} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
 import {Virtualizer} from '@tanstack/virtual-core'
+import {useConfig} from './DatatableConfig'
+import {useCtx} from './core/DatatableContext'
+import {DatatableColumnToggle} from './DatatableColumnsToggle'
 
 export const DatatableToolbar = ({rowVirtualizer}: {rowVirtualizer: Virtualizer<HTMLDivElement, Element>}) => {
   const {m, formatLargeNumber} = useConfig()
@@ -33,9 +33,9 @@ export const DatatableToolbar = ({rowVirtualizer}: {rowVirtualizer: Virtualizer<
       <Box sx={{flex: 1, display: 'flex', alignItems: 'center'}}>
         {typeof header === 'function'
           ? header({
-              data: data ?? [],
-              filteredAndSortedData: dataFilteredAndSorted ?? [],
-            })
+            data: data ?? [],
+            filteredAndSortedData: dataFilteredAndSorted ?? [],
+          })
           : header}
       </Box>
       <Box sx={{marginLeft: 'auto'}}>
@@ -53,7 +53,7 @@ export const DatatableToolbar = ({rowVirtualizer}: {rowVirtualizer: Virtualizer<
             rowVirtualizer.scrollToIndex(0)
           }}
         >
-          <IconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
+          <IconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount}/>
         </Badge>
         {/*<Txt bold color="hint" sx={{mr: 0.5}}>*/}
         {/*  {formatLargeNumber(dataFilteredAndSorted.length)}*/}

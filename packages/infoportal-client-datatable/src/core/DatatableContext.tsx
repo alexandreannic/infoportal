@@ -1,14 +1,14 @@
-import React, {ReactNode, useEffect, useReducer} from 'react'
-import {Action, datatableReducer, initialState, State} from '@/core/reducer'
+import React, {ReactNode, useReducer} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
-import {useData} from '@/core/useData.js'
 import {createContext, useContextSelector} from 'use-context-selector'
-import {useDatatableOptions} from '@/core/useOptions.js'
-import {UseDatatableColumns, useDatatableColumns} from '@/core/useColumns'
-import {UseCellSelection, useCellSelectionEngine} from '@/core/useCellSelectionEngine'
-import {UseCellSelectionComputed, useCellSelectionComputed} from '@/core/useCellSelectionComputed'
-import {Option, Props, Row} from '@/core/types'
 import {useEffectFn} from '@axanc/react-hooks'
+import {Option, Props, Row} from './types'
+import {Action, datatableReducer, initialState, State} from './reducer'
+import {useDatatableColumns, UseDatatableColumns} from './useColumns'
+import {useCellSelectionComputed, UseCellSelectionComputed} from './useCellSelectionComputed'
+import {UseCellSelection, useCellSelectionEngine} from './useCellSelectionEngine'
+import {useData} from './useData'
+import {useDatatableOptions} from './useOptions'
 
 export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'data' | 'columns'> & {
   tableRef: React.MutableRefObject<HTMLDivElement>

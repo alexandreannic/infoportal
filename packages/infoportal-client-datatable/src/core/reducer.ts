@@ -1,4 +1,4 @@
-import {Column, FilterValue, Props, Row, SortBy} from '@/core/types'
+import {Column, FilterValue, Props, Row, SortBy} from './types'
 import {KeyOf, mapFor} from '@axanc/ts-utils'
 import {OrderBy} from '@axanc/react-hooks'
 import {CSSProperties, ReactNode} from 'react'
@@ -26,21 +26,21 @@ export type VirtualCell = {
 
 export type Action<T extends Row> =
   | {
-      type: 'INIT_DATA'
-      data: T[]
-      limit: number
-      offset: number
-      columns: Column.InnerProps<T>[]
-      getRowKey: Props<T>['getRowKey']
-    }
+  type: 'INIT_DATA'
+  data: T[]
+  limit: number
+  offset: number
+  columns: Column.InnerProps<T>[]
+  getRowKey: Props<T>['getRowKey']
+}
   | {
-      type: 'SET_DATA'
-      data: T[]
-      limit: number
-      offset: number
-      columns: Column.InnerProps<T>[]
-      getRowKey: Props<T>['getRowKey']
-    }
+  type: 'SET_DATA'
+  data: T[]
+  limit: number
+  offset: number
+  columns: Column.InnerProps<T>[]
+  getRowKey: Props<T>['getRowKey']
+}
   | {type: 'CLOSE_POPUP'}
   | {type: 'OPEN_POPUP'; event: Popup.Event}
   | {type: 'SORT'; column: string; orderBy?: OrderBy}

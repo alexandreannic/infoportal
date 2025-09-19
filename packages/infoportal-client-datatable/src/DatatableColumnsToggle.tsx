@@ -1,11 +1,11 @@
 import {Badge, Chip, Icon, IconButton, IconButtonProps, Switch, Tooltip} from '@mui/material'
 import React, {useEffect, useMemo} from 'react'
 import {Alert, Btn, PopoverWrapper, Txt} from '@infoportal/client-core'
-import {useConfig} from '@/DatatableConfig'
 import {useSetState} from '@axanc/react-hooks'
-import {Datatable} from '@/Datatable'
-import {Column} from '@/core/types'
-import {DatatableHeadIcon, DatatableHeadIconByType} from '@/head/DatatableHead'
+import {Column} from './core/types'
+import {useConfig} from './DatatableConfig'
+import {DatatableHeadIcon, DatatableHeadIconByType} from './head/DatatableHead'
+import {Datatable} from './Datatable'
 
 type DatatableColumnToggleProps = Pick<
   Column.InnerProps<any>,
@@ -41,8 +41,8 @@ export const DatatableColumnToggle = ({
       content={() => (
         <>
           <Alert deletable="permanent" id="datatable-alert-cols-toggle" color="info">
-            Use table filters to quickly toggle bunch of columns. For example, to hide all the <br />
-            <code>calculate</code> columns (<DatatableHeadIcon children="short_text" />
+            Use table filters to quickly toggle bunch of columns. For example, to hide all the <br/>
+            <code>calculate</code> columns (<DatatableHeadIcon children="short_text"/>
             ), select them from column <b>{m.type}</b> and click on&nbsp;
             <Chip
               sx={{mr: 1, fontWeight: 'bold'}}
@@ -105,7 +105,7 @@ export const DatatableColumnToggle = ({
                         }}
                       />
                     ),
-                    option: <Switch size="small" checked={!set.has(_.id)} disabled />,
+                    option: <Switch size="small" checked={!set.has(_.id)} disabled/>,
                     value: !set.has(_.id) ? m.visible : m.hidden,
                   }
                 },
@@ -123,26 +123,26 @@ export const DatatableColumnToggle = ({
                         {_.typeIcon} {_.typeLabel ?? _.type}
                       </>
                     ),
-                    label: _.typeIcon ?? <DatatableHeadIconByType type={_.type} />,
+                    label: _.typeIcon ?? <DatatableHeadIconByType type={_.type}/>,
                     value: _.typeLabel ?? _.type ?? '',
                   }
                 },
               },
               ...(hasGroup
                 ? [
-                    {
-                      type: 'select_one',
-                      head: m.group,
-                      id: 'group',
-                      width: 150,
-                      render: (_: DatatableColumnToggleProps) => {
-                        return {
-                          value: _.group?.id,
-                          label: _.group?.label,
-                        }
-                      },
-                    } as const,
-                  ]
+                  {
+                    type: 'select_one',
+                    head: m.group,
+                    id: 'group',
+                    width: 150,
+                    render: (_: DatatableColumnToggleProps) => {
+                      return {
+                        value: _.group?.id,
+                        label: _.group?.label,
+                      }
+                    },
+                  } as const,
+                ]
                 : []),
               {
                 id: 'question',

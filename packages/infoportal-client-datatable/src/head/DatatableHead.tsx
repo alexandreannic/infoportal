@@ -1,11 +1,11 @@
 import React, {DetailedReactHTMLElement, HTMLAttributes, ReactNode, useMemo, useRef} from 'react'
 import {Resizable} from 'react-resizable'
-import {useCtx} from '@/core/DatatableContext'
-import {Popup} from '@/core/reducer'
-import {DatatableHeadSections} from '@/head/DatatableHeadSections'
-import {Column} from '@/core/types'
-import {TableIcon, TableIconBtn} from '@/ui/TableIcon'
-import {IconButton, IconProps} from '@mui/material'
+import {IconProps} from '@mui/material'
+import {useCtx} from '../core/DatatableContext'
+import {DatatableHeadSections} from './DatatableHeadSections'
+import {Popup} from '../core/reducer'
+import {TableIcon, TableIconBtn} from '../ui/TableIcon'
+import {Column} from '../core/types'
 
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],
@@ -92,11 +92,11 @@ const DatatableHeadTdBody = ({
           case 'select_multiple':
           case 'date':
           case 'number':
-            return <TableIconBtn children="bar_chart" onClick={e => onOpenStats(e)} />
+            return <TableIconBtn children="bar_chart" onClick={e => onOpenStats(e)}/>
         }
       })()}
       {column.type && (
-        <TableIconBtn color={active ? 'primary' : undefined} children="filter_alt" onClick={e => onOpenFilter(e)} />
+        <TableIconBtn color={active ? 'primary' : undefined} children="filter_alt" onClick={e => onOpenFilter(e)}/>
       )}
     </span>
   )
@@ -118,17 +118,17 @@ export const DatatableHeadIconByType = ({
 } & Pick<IconProps, 'sx' | 'color'>) => {
   switch (type) {
     case 'date':
-      return <DatatableHeadIcon children="event" tooltip={type} />
+      return <DatatableHeadIcon children="event" tooltip={type}/>
     case 'select_multiple':
-      return <DatatableHeadIcon children="check_box" tooltip={type} />
+      return <DatatableHeadIcon children="check_box" tooltip={type}/>
     case 'select_one':
-      return <DatatableHeadIcon children="radio_button_checked" tooltip={type} />
+      return <DatatableHeadIcon children="radio_button_checked" tooltip={type}/>
     case 'number':
-      return <DatatableHeadIcon children="tag" tooltip={type} />
+      return <DatatableHeadIcon children="tag" tooltip={type}/>
     case 'id':
-      return <DatatableHeadIcon children="key" tooltip={type} color="info" />
+      return <DatatableHeadIcon children="key" tooltip={type} color="info"/>
     case 'string':
-      return <DatatableHeadIcon children="short_text" tooltip={type} />
+      return <DatatableHeadIcon children="short_text" tooltip={type}/>
     default:
       return
   }

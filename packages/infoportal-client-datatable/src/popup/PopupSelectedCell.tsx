@@ -1,8 +1,8 @@
-import {useCtx} from '@/core/DatatableContext'
-import {useConfig} from '@/DatatableConfig'
 import {Box, Icon, Popover, Switch, useTheme} from '@mui/material'
 import {Btn, lightenVar, Txt} from '@infoportal/client-core'
 import React, {useEffect, useMemo, useState} from 'react'
+import {useCtx} from '../core/DatatableContext'
+import {useConfig} from '../DatatableConfig'
 
 const dangerThreshold = 200
 
@@ -73,7 +73,7 @@ export const PopupSelectedCell = () => {
           <Btn size="small" variant="outlined" onClick={engine.reset} color="primary" sx={{mr: 1, minWidth: 0}}>
             <Icon>clear</Icon>
           </Btn>
-          <BtnCopyCells />
+          <BtnCopyCells/>
         </Box>
 
         {selectedColumnUniq &&

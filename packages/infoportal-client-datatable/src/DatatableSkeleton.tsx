@@ -29,7 +29,7 @@ export const DatatableSkeleton = memo(
             <div className="dth" key={i}>
               {mapFor(Math.min(columns, 14), i => (
                 <div className="dtd" key={i}>
-                  <Skeleton sx={{mx: 1, width: '100%'}} />
+                  <Skeleton sx={{mx: 1, width: '100%'}}/>
                 </div>
               ))}
             </div>

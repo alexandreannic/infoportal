@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Box} from '@mui/material'
 import {Btn, Txt} from '@infoportal/client-core'
-import {useConfig} from '@/DatatableConfig'
+import {useConfig} from './DatatableConfig'
 
 interface ErrorBoundaryProps {
   children: React.ReactNode
@@ -37,7 +37,7 @@ export class DatatableErrorBoundary extends Component<ErrorBoundaryProps, ErrorB
       const error = this.state.error
       return (
         <Box sx={{p: 2}}>
-          <Body />
+          <Body/>
           <Box
             sx={t => ({
               fontFamily: 'monospace',

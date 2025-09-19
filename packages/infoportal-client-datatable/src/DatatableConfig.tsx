@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react'
-import {DatatableGlobalStyles} from '@/DatatableStyles'
-import {Action} from '@/core/reducer'
 import {BoxProps, SxProps, Theme} from '@mui/material'
+import {Action} from '.'
+import {DatatableGlobalStyles} from './DatatableStyles'
 
 export type DatatableConfigProps = {
   m: (typeof defaultConfig)['m']
@@ -88,8 +88,8 @@ const Context = React.createContext<DatatableConfigProps>(defaultConfig)
 
 export const DatatableConfig: React.FC<
   Partial<DatatableConfigProps> & {
-    children?: React.ReactNode
-  }
+  children?: React.ReactNode
+}
 > = ({defaultProps = {}, children, m, muiIcons, formatLargeNumber = defaultConfig.formatLargeNumber}) => {
   return (
     <Context.Provider
@@ -100,7 +100,7 @@ export const DatatableConfig: React.FC<
         formatLargeNumber,
       }}
     >
-      <DatatableGlobalStyles />
+      <DatatableGlobalStyles/>
       {children}
     </Context.Provider>
   )

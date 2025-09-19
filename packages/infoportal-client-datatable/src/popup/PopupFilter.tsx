@@ -1,34 +1,12 @@
-import {useConfig} from '@/DatatableConfig'
 import React, {Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState} from 'react'
-import {
-  Alert,
-  Box,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  Icon,
-  MenuItem,
-  Popover,
-  PopoverProps,
-  Slider,
-  Switch,
-} from '@mui/material'
-import {
-  Btn,
-  IconBtn,
-  Input,
-  MultipleChoices,
-  PanelBody,
-  PanelFoot,
-  PanelHead,
-  PeriodPicker,
-  Txt,
-} from '@infoportal/client-core'
+import {Alert, Box, Checkbox, Divider, FormControlLabel, Icon, MenuItem, Popover, PopoverProps, Slider, Switch,} from '@mui/material'
+import {Btn, IconBtn, Input, MultipleChoices, PanelBody, PanelFoot, PanelHead, PeriodPicker, Txt,} from '@infoportal/client-core'
 import {endOfDay} from 'date-fns'
-import {useCtx} from '@/core/DatatableContext'
 import {OrderBy} from '@axanc/react-hooks'
-import {FilterTypeMapping, Option, Row, SortBy} from '@/core/types'
 import {seq} from '@axanc/ts-utils'
+import {FilterTypeMapping, Option, Row, SortBy} from '../core/types'
+import {useConfig} from '../DatatableConfig'
+import {useCtx} from '../core/DatatableContext'
 
 export type PopupFilterProps = Pick<PopoverProps, 'anchorEl'> & {
   sortBy?: SortBy
@@ -41,30 +19,30 @@ export type PopupFilterProps = Pick<PopoverProps, 'anchorEl'> & {
   data: Row[]
   options?: Option[]
 } & (
-    | {
-        renderValue: any
-        onChange?: (columnName: string, value: FilterTypeMapping['number']) => void
-        value: FilterTypeMapping['number']
-        type: 'number'
-      }
-    | {
-        renderValue: any
-        onChange?: (columnName: string, value: FilterTypeMapping['date']) => void
-        value: FilterTypeMapping['date']
-        type: 'date'
-      }
-    | {
-        renderValue: any
-        onChange?: (columnName: string, value: FilterTypeMapping['select_multiple']) => void
-        value: FilterTypeMapping['select_multiple']
-        type: 'select_one' | 'select_multiple'
-      }
-    | {
-        renderValue: any
-        onChange?: (columnName: string, value: FilterTypeMapping['string']) => void
-        value: FilterTypeMapping['string']
-        type: 'string' | 'id'
-      }
+  | {
+  renderValue: any
+  onChange?: (columnName: string, value: FilterTypeMapping['number']) => void
+  value: FilterTypeMapping['number']
+  type: 'number'
+}
+  | {
+  renderValue: any
+  onChange?: (columnName: string, value: FilterTypeMapping['date']) => void
+  value: FilterTypeMapping['date']
+  type: 'date'
+}
+  | {
+  renderValue: any
+  onChange?: (columnName: string, value: FilterTypeMapping['select_multiple']) => void
+  value: FilterTypeMapping['select_multiple']
+  type: 'select_one' | 'select_multiple'
+}
+  | {
+  renderValue: any
+  onChange?: (columnName: string, value: FilterTypeMapping['string']) => void
+  value: FilterTypeMapping['string']
+  type: 'string' | 'id'
+}
   )
 
 export const PopupFilter = ({
@@ -161,7 +139,7 @@ export const PopupFilter = ({
                 )
               case 'select_one':
               case 'select_multiple':
-                return <DatatableFilterDialogSelect options={options} value={innerValue} onChange={setInnerValue} />
+                return <DatatableFilterDialogSelect options={options} value={innerValue} onChange={setInnerValue}/>
               case 'number': {
                 return (
                   <DatatableFilterDialogNumber
@@ -173,7 +151,7 @@ export const PopupFilter = ({
                 )
               }
               default:
-                return <DatatableFilterDialogText value={innerValue} onChange={setInnerValue} />
+                return <DatatableFilterDialogText value={innerValue} onChange={setInnerValue}/>
             }
           })()}
       </PanelBody>
@@ -217,18 +195,18 @@ export const DatatableFilterDialogSelect = ({
           <FormControlLabel
             sx={{display: 'block', fontWeight: t => t.typography.fontWeightBold}}
             onClick={toggleAll}
-            control={<Checkbox size="small" checked={allChecked} indeterminate={!allChecked && someChecked} />}
+            control={<Checkbox size="small" checked={allChecked} indeterminate={!allChecked && someChecked}/>}
             label={m.selectAll}
           />
-          <Input label={m.filterPlaceholder} helperText={null} sx={{mb: 1}} onChange={e => setFilter(e.target.value)} />
-          <Divider />
+          <Input label={m.filterPlaceholder} helperText={null} sx={{mb: 1}} onChange={e => setFilter(e.target.value)}/>
+          <Divider/>
           <Box sx={{maxHeight: 350, overflowY: 'auto'}}>
             {options.map(o => (
               <FormControlLabel
                 title={'' + o.label}
                 sx={{display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}
                 key={o.key}
-                control={<Checkbox size="small" name={o.value} checked={o.checked} onChange={o.onChange} />}
+                control={<Checkbox size="small" name={o.value} checked={o.checked} onChange={o.onChange}/>}
                 label={o.label}
               />
             ))}
@@ -260,7 +238,7 @@ export const DatatableFilterDialogText = ({
           />
         }
       />
-      <Input value={value?.value} onChange={e => onChange(prev => ({...prev, value: e.target.value}))} />
+      <Input value={value?.value} onChange={e => onChange(prev => ({...prev, value: e.target.value}))}/>
     </>
   )
 }
@@ -295,7 +273,7 @@ export const DatatableFilterDialogNumber = ({
 
   return (
     <>
-      <Slider min={min} max={max} value={mappedValue} onChange={(e, _) => onChange(_ as [number, number])} />
+      <Slider min={min} max={max} value={mappedValue} onChange={(e, _) => onChange(_ as [number, number])}/>
       <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
         <Input
           type="number"

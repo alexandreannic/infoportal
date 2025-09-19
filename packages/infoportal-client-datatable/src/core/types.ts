@@ -1,7 +1,7 @@
 import {BoxProps, SxProps, Theme} from '@mui/material'
 import React, {CSSProperties, ReactElement, ReactNode} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
-import {Action} from '@/core/reducer'
+import {Action} from './reducer'
 
 export type OrderBy = 'asc' | 'desc'
 
@@ -33,9 +33,9 @@ export type FilterTypeMapping = {
   number: [number | undefined, number | undefined]
   string:
     | {
-        filterBlank?: boolean
-        value?: string
-      }
+    filterBlank?: boolean
+    value?: string
+  }
     | undefined
   select_one: string
   select_multiple: string[]
@@ -228,7 +228,7 @@ export namespace Column {
       | Number.TypeInner<T>
       | SelectMultiple.TypeInner<T>
       | Undefined.TypeInner<T>
-    )
+      )
   export type Props<T extends Row = Record<string, any>, K extends string = string> = Base<T, K> &
     (
       | Text.TypeOuter<T>
@@ -237,7 +237,7 @@ export namespace Column {
       | Number.TypeOuter<T>
       | SelectMultiple.TypeOuter<T>
       | Undefined.TypeOuter<T>
-    )
+      )
   export type QuickProps<T extends Row, K extends string = string> = Base<T, K> &
     (
       | Text.TypeQuick<T>
@@ -246,7 +246,7 @@ export namespace Column {
       | Number.TypeQuick<T>
       | SelectMultiple.TypeQuick<T>
       | Undefined.TypeQuick<T>
-    )
+      )
 
   export const isQuick = (_: Props<any>): _ is QuickProps<any> => {
     return !!(_ as any).renderQuick

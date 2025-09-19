@@ -1,8 +1,8 @@
 import {VirtualItem} from '@tanstack/react-virtual'
 import {Skeleton} from '@mui/material'
 import React, {memo} from 'react'
-import {Column, Props, Row} from '@/core/types'
-import {VirtualCell} from '@/core/reducer'
+import {Column, Props, Row} from './core/types'
+import {VirtualCell} from './core/reducer'
 
 export const DatatableRow = memo(DatatableRow_, (prevProps, nextProps) => {
   return (
@@ -69,7 +69,7 @@ function DatatableRow_<T extends Row>({
         const selected = cellSelection_isSelected(virtualItem.index, colIndex)
         const key = virtualItem.key + col.id
         if (!cell) {
-          return <CellSkeleton key={key} />
+          return <CellSkeleton key={key}/>
           // // if (col.id === 'id')
           // cell = data?.[virtualRow.index]
           //   console.log({
@@ -102,7 +102,7 @@ function DatatableRow_<T extends Row>({
 const CellSkeleton = () => {
   return (
     <div className="dtd skeleton">
-      <Skeleton width="100%" />
+      <Skeleton width="100%"/>
     </div>
   )
 }

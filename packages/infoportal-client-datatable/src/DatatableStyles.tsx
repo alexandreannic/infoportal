@@ -1,5 +1,4 @@
 import {GlobalStyles} from '@mui/material'
-import {memo} from 'react'
 
 export const DatatableGlobalStyles = () => (
   <GlobalStyles

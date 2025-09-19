@@ -2,8 +2,8 @@ import React from 'react'
 import {StateStatus} from 'infoportal-common'
 import {styled} from '@mui/material'
 import {DebouncedInput, IconBtn, InputProps} from '@infoportal/client-core'
-import {TableIcon} from '@/ui/TableIcon'
-import {useConfig} from '@/DatatableConfig'
+import {TableIcon} from './TableIcon'
+import {useConfig} from '../DatatableConfig'
 
 const Input = styled('input')(({theme: t}) => ({
   height: '100%',
@@ -52,7 +52,7 @@ export const TableInput = ({
         value={value}
         onChange={_ => onChange(_ === '' || _ === originalValue ? undefined : _)}
       >
-        {(value, onChange) => <Input value={value} onChange={e => onChange(e.target.value)} />}
+        {(value, onChange) => <Input value={value} onChange={e => onChange(e.target.value)}/>}
       </DebouncedInput>
       {helper && (
         <TableIcon tooltip={helper.text ?? undefined} color={helper.status}>

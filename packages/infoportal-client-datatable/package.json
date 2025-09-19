@@ -8,15 +8,14 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && tsc-alias",
-    "dev": "tsc --watch & tsc-alias --watch",
+    "build": "tsc",
+    "dev": "tsc --watch",
     "preview": "vite preview --config vite.config.demo.ts"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "tsc-alias": "^1.8.16"
   },
   "dependencies": {
     "@axanc/react-hooks": "^1.14.0",

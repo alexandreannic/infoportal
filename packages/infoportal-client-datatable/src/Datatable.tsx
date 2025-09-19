@@ -1,27 +1,27 @@
 import React, {useCallback, useEffect} from 'react'
 import {useVirtualizer} from '@tanstack/react-virtual'
 import {Box, LinearProgress, SxProps, Theme} from '@mui/material'
-import {DatatableHead} from '@/head/DatatableHead'
-import {Provider, useCtx} from '@/core/DatatableContext'
-import {PopupStats} from '@/popup/PopupStats'
-import {PopupFilter} from '@/popup/PopupFilter'
-import {DatatableRow} from '@/DatatableRow'
-import {FilterValue, Props, Row} from '@/core/types'
-import {PopupSelectedCell} from '@/popup/PopupSelectedCell'
-import {DatatableErrorBoundary} from '@/DatatableErrorBundary'
-import {DatatableSkeleton} from '@/DatatableSkeleton'
-import {DatatableToolbar} from '@/DatatableToolbar'
-import {useConfig} from '@/DatatableConfig'
+import {DatatableSkeleton} from './DatatableSkeleton'
+import {useConfig} from './DatatableConfig'
+import {FilterValue, Props, Row} from './core/types'
+import {DatatableErrorBoundary} from './DatatableErrorBundary'
+import {Provider, useCtx} from './core/DatatableContext'
+import {DatatableToolbar} from './DatatableToolbar'
+import {DatatableHead} from './head/DatatableHead'
+import {DatatableRow} from './DatatableRow'
+import {PopupSelectedCell} from './popup/PopupSelectedCell'
+import {PopupStats} from './popup/PopupStats'
+import {PopupFilter} from './popup/PopupFilter'
 
 export const Datatable = <T extends Row>({data, sx, ...props}: Props<T>) => {
-  if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx} />
+  if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx}/>
   const tableRef = React.useRef(null) as unknown as React.RefObject<HTMLDivElement>
   const defaultProps = useConfig().defaultProps
   return (
     <DatatableErrorBoundary>
       <Provider {...{...defaultProps, ...props}} data={data} tableRef={tableRef}>
-        {props.loading && <LinearProgress sx={{position: 'absolute', top: 0, right: 0, left: 0, height: 3}} />}
-        <DatatableWithData sx={sx} />
+        {props.loading && <LinearProgress sx={{position: 'absolute', top: 0, right: 0, left: 0, height: 3}}/>}
+        <DatatableWithData sx={sx}/>
       </Provider>
     </DatatableErrorBoundary>
   )
@@ -98,7 +98,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
 
   return (
     <Box className="dt-container" sx={sx}>
-      {header !== null && <DatatableToolbar rowVirtualizer={rowVirtualizer} />}
+      {header !== null && <DatatableToolbar rowVirtualizer={rowVirtualizer}/>}
       <Box
         className="dt"
         ref={tableRef}
@@ -109,7 +109,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
           ...contentProps?.style,
         }}
       >
-        <DatatableHead onMouseDown={() => cellSelection.engine.reset()} />
+        <DatatableHead onMouseDown={() => cellSelection.engine.reset()}/>
         {renderEmptyState && data.length === 0 && !loading && renderEmptyState}
         <div
           className="dtbody"
@@ -142,11 +142,11 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
             )
           })}
         </div>
-        <PopupSelectedCell />
+        <PopupSelectedCell/>
         {(() => {
           switch (popup?.name) {
             case 'STATS': {
-              return <PopupStats event={popup.event} columnId={popup.columnId} />
+              return <PopupStats event={popup.event} columnId={popup.columnId}/>
             }
             case 'FILTER': {
               const column = columns.indexMap[popup.columnId]

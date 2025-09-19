@@ -1,21 +1,12 @@
-import {useCtx} from '@/core/DatatableContext'
-import {Popup} from '@/core/reducer'
 import React, {ReactNode, useMemo} from 'react'
 import {Box, Popover, PopoverProps} from '@mui/material'
-import {
-  Btn,
-  ChartBar,
-  ChartHelper,
-  ChartLineByDate,
-  PanelBody,
-  PanelFoot,
-  PanelHead,
-  Txt,
-} from '@infoportal/client-core'
+import {Btn, ChartBar, ChartHelper, ChartLineByDate, PanelBody, PanelFoot, PanelHead, Txt,} from '@infoportal/client-core'
 import {KeyOf} from 'infoportal-common'
-import {useConfig} from '@/DatatableConfig'
 import {seq} from '@axanc/ts-utils'
-import {Option, Row} from '@/core/types'
+import {Popup} from '../core/reducer'
+import {useCtx} from '../core/DatatableContext'
+import {useConfig} from '../DatatableConfig'
+import {Option, Row} from '../core/types'
 
 export const PopupStats = ({columnId, event}: Popup.StatsAgs) => {
   const dispatch = useCtx(_ => _.dispatch)
@@ -77,7 +68,7 @@ const RenderRow = ({label, value}: {label: ReactNode; value: ReactNode}) => {
   )
 }
 
-export const NumberChoicesPopover = <T,>({
+export const NumberChoicesPopover = <T, >({
   question,
   data,
   mapValues,
@@ -104,11 +95,11 @@ export const NumberChoicesPopover = <T,>({
     <Popover open={!!anchorEl} anchorEl={anchorEl} onClose={onClose}>
       <PanelHead>{question as string}</PanelHead>
       <PanelBody>
-        <RenderRow label={m.count} value={formatLargeNumber(chart.mapped.length)} />
-        <RenderRow label={m.sum} value={formatLargeNumber(chart.sum)} />
-        <RenderRow label={m.average} value={formatLargeNumber(chart.avg, {maximumFractionDigits: 2})} />
-        <RenderRow label={m.min} value={formatLargeNumber(chart.min)} />
-        <RenderRow label={m.max} value={formatLargeNumber(chart.max)} />
+        <RenderRow label={m.count} value={formatLargeNumber(chart.mapped.length)}/>
+        <RenderRow label={m.sum} value={formatLargeNumber(chart.sum)}/>
+        <RenderRow label={m.average} value={formatLargeNumber(chart.avg, {maximumFractionDigits: 2})}/>
+        <RenderRow label={m.min} value={formatLargeNumber(chart.min)}/>
+        <RenderRow label={m.max} value={formatLargeNumber(chart.max)}/>
       </PanelBody>
       <PanelFoot alignEnd>
         <Btn color="primary" onClick={onClose as any}>
@@ -136,14 +127,14 @@ const MultipleChoicesPopover = <T extends Row>({
 } & Pick<PopoverProps, 'anchorEl' | 'onClose'> &
   (
     | {
-        multiple: true
-        getValue: (_: T) => string[]
-      }
+    multiple: true
+    getValue: (_: T) => string[]
+  }
     | {
-        multiple?: false
-        getValue: (_: T) => string
-      }
-  )) => {
+    multiple?: false
+    getValue: (_: T) => string
+  }
+    )) => {
   const {m} = useConfig()
   const chart = useMemo(() => {
     const chart = (() => {
@@ -171,7 +162,7 @@ const MultipleChoicesPopover = <T extends Row>({
         <Txt truncate>{title}</Txt>
       </PanelHead>
       <PanelBody sx={{maxHeight: '50vh', overflowY: 'auto'}}>
-        <ChartBar data={chart} />
+        <ChartBar data={chart}/>
       </PanelBody>
       <PanelFoot alignEnd>
         <Btn color="primary" onClick={onClose as any}>
@@ -182,7 +173,7 @@ const MultipleChoicesPopover = <T extends Row>({
   )
 }
 
-const DatesPopover = <T,>({
+const DatesPopover = <T, >({
   getValue,
   data,
   anchorEl,
@@ -209,7 +200,7 @@ const DatesPopover = <T,>({
     <Popover open={!!anchorEl} anchorEl={anchorEl} onClose={onClose}>
       <PanelHead>{title}</PanelHead>
       <PanelBody sx={{maxHeight: '50vh', overflowY: 'auto'}}>
-        <ChartLineByDate data={data} curves={{[title]: getValue}} sx={{minWidth: 360}} />
+        <ChartLineByDate data={data} curves={{[title]: getValue}} sx={{minWidth: 360}}/>
       </PanelBody>
       <PanelFoot alignEnd>
         <Btn color="primary" onClick={onClose as any}>
