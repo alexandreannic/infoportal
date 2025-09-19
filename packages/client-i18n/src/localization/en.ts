@@ -19,7 +19,7 @@ export const formatTime = (d?: Date): string => {
 
 export const formatDateTime = (d?: Date): string => {
   if (!isDateValid(d)) return invalidDate
-  return formatDate(d) + ' ' + formatTime(d)
+  return d!.toLocaleDateString() + ' ' + d!.toLocaleTimeString()
 }
 
 export const dateFromNow: {

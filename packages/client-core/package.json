@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "dev": "tsc --watch",
-    "build": "tsc"
+    "build": "tsc -b"
   },
   "author": "",
   "license": "ISC",

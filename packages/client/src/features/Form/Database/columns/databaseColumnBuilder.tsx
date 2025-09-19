@@ -10,11 +10,11 @@ import {Ip} from 'infoportal-api-sdk'
 import {Box, Icon, Theme, useTheme} from '@mui/material'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useKoboDialogs} from '@/core/store/useLangIndex'
-import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {useI18n} from '@infoportal/client-i18n'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByKoboType'
 import {KoboBulkUpdate} from '@/shared/koboEdit/KoboBulkUpdate'
 import {isDateValid} from '@infoportal/client-i18n/lib/localization/en.js'
+import {StatusIcon} from '@infoportal/client-core'
 
 export const formatDate = (d?: Date): string => {
   if (!isDateValid(d)) return '-'
@@ -629,12 +629,12 @@ function validation({
         ),
     render: (row: any) => {
       const value: Ip.Submission.Validation = getRow(row).validationStatus
-      const toGenericStatus = SelectStatusConfig.customStatusToStateStatus.KoboValidation[value]
+      const status = Ip.Submission.validationToStatus[value]
       return {
         export: value ? (m as any)[value] : Datatable.Utils.blank,
         value: value ?? Datatable.Utils.blank,
         option: value ? (m as any)[value] : Datatable.Utils.blank,
-        label: <StateStatusIcon type={toGenericStatus} />,
+        label: <StatusIcon type={status} />,
       }
     },
   }

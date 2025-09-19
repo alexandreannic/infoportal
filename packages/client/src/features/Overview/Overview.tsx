@@ -12,11 +12,11 @@ import {appConfig} from '@/conf/AppConfig.js'
 import {useI18n} from '@infoportal/client-i18n'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
 import {useEffect, useMemo, useState} from 'react'
-import {SelectStatusConfig} from '@/shared/customInput/SelectStatus.js'
 import {toPercent} from 'infoportal-common'
 import {addDays, subYears} from 'date-fns'
 import {DataFilterLayout} from '@/shared/DataFilter/DataFilterLayout.js'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext.js'
+import {statusConfig} from '@infoportal/client-core'
 
 export const overviewRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -31,8 +31,8 @@ const PieChartStatus = ({
 }: {percent: number; validation: Ip.Submission.Validation} & BoxProps) => {
   const {m} = useI18n()
   const t = useTheme()
-  const type = SelectStatusConfig.customStatusToStateStatus.KoboValidation[validation]
-  const style = SelectStatusConfig.stateStatusStyle[type ?? 'disabled']
+  const type = Ip.Submission.validationToStatus[validation]
+  const style = statusConfig[type ?? 'disabled']
   return (
     <Box {...props}>
       <Box sx={{position: 'relative'}}>

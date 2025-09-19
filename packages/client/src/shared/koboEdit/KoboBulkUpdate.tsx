@@ -3,11 +3,11 @@ import {Alert, Box, Collapse} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import {useKoboColumnDef} from '@/shared/koboEdit/KoboSchemaWrapper'
 import {ArrayValues} from 'infoportal-common'
-import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
 import {Obj} from '@axanc/ts-utils'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
+import {StatusIcon} from '@infoportal/client-core'
 
 export type KoboEditModalOption = {
   value: string | null
@@ -217,12 +217,7 @@ export namespace KoboBulkUpdate {
         options={Obj.values(Ip.Submission.Validation).map(_ => ({
           value: _,
           label: _,
-          before: (
-            <StateStatusIcon
-              sx={{alignSelf: 'center', mr: 1}}
-              type={SelectStatusConfig.customStatusToStateStatus.KoboValidation[_]}
-            />
-          ),
+          before: <StatusIcon sx={{alignSelf: 'center', mr: 1}} type={Ip.Submission.validationToStatus[_]} />,
         }))}
       />
     )
