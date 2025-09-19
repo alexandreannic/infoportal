@@ -1,14 +1,13 @@
 import {useEffect} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useCrudList} from '@axanc/react-hooks'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Switch} from '@mui/material'
 import {Controller, useForm} from 'react-hook-form'
 import {NullableFn, Regexp, slugify} from 'infoportal-common'
 import {Proxy} from '@/core/sdk/server/proxy/Proxy'
 import {endOfDay} from 'date-fns'
 import {Core, Datatable} from '@/shared'
-import {formatDateTime} from '@/core/i18n/localization/en'
 import {appConfig} from '@/conf/AppConfig'
 import {createRoute} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
@@ -31,7 +30,7 @@ export const settingsProxyRoute = createRoute({
 function SettingsProxy() {
   const {api} = useAppSettings()
   const {permission} = useWorkspaceContext()
-  const {m} = useI18n()
+  const {m, formatDateTime} = useI18n()
 
   const _createForm = useForm<CreateForm>({
     mode: 'onChange',

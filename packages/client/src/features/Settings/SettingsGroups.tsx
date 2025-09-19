@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Box, Chip, Icon} from '@mui/material'
 import {useForm} from 'react-hook-form'
 import {accessLevelIcon, IAccessForm} from '@/features/Access/AccessForm'

@@ -1,7 +1,7 @@
 import React, {ReactNode, useMemo} from 'react'
 import {useSession} from '@/core/Session/SessionContext'
 import {Box, BoxProps, Chip, Icon, Popover, SxProps} from '@mui/material'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Ip} from 'infoportal-api-sdk'

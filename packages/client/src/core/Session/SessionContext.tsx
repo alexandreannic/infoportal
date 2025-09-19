@@ -1,5 +1,5 @@
 import React, {ReactNode, useContext} from 'react'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Box, LinearProgress} from '@mui/material'
 import {SessionLoginForm} from '@/core/Session/SessionLoginForm'
 import {CenteredContent} from '@/shared/CenteredContent'

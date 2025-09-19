@@ -1,7 +1,7 @@
 import {createRoute, Link, Outlet, useMatches} from '@tanstack/react-router'
 import {Core} from '@/shared/index.js'
 import {Box, Icon, Skeleton, Tab, Tabs, useTheme} from '@mui/material'
-import {useI18n} from '@/core/i18n/index.js'
+import {useI18n} from '@infoportal/client-i18n'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {formRoute} from '@/features/Form/Form.js'

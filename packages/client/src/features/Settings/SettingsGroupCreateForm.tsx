@@ -1,7 +1,7 @@
 import {Controller, UseFormReturn} from 'react-hook-form'
 import React from 'react'
 import {Core} from '@/shared'
-import {useI18n} from '@/core/i18n/index.js'
+import {useI18n} from '@infoportal/client-i18n'
 
 export interface GroupCreateForm {
   name: string

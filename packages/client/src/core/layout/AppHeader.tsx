@@ -1,5 +1,5 @@
 import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
 import {Core} from '@/shared'

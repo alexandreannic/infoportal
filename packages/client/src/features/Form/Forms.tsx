@@ -1,4 +1,4 @@
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Core, Datatable} from '@/shared'
 import {Page} from '@/shared/Page'
 import {seq} from '@axanc/ts-utils'

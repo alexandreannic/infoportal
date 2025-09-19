@@ -2,7 +2,7 @@ import React, {RefObject, useEffect, useState} from 'react'
 import 'react-diff-view/style/index.css'
 import 'diff2html/bundles/css/diff2html.min.css'
 import {Alert, Box, BoxProps, CircularProgress, useColorScheme, useTheme} from '@mui/material'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '@/shared'
 import DiffWorker from './diff.worker?worker'
 

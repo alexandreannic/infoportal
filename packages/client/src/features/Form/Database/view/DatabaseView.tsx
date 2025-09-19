@@ -1,6 +1,6 @@
 import {Box, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import React, {useState} from 'react'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {useForm} from 'react-hook-form'
 import {DatabaseViewVisibility} from '@/core/sdk/server/databaseView/DatabaseView'
 import {DatabaseViewInputRow} from '@/features/Form/Database/view/DatabaseViewInputRow'

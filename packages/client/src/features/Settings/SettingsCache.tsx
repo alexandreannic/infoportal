@@ -1,6 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import React, {useEffect} from 'react'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {map} from '@axanc/ts-utils'
 import {JSONTree} from 'react-json-tree'
 import {Box, useTheme} from '@mui/material'

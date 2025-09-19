@@ -1,7 +1,7 @@
 import {Ip} from 'infoportal-api-sdk'
 import {XlsFormFiller} from 'xls-form-filler'
 import React from 'react'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 import {Core} from '@/shared'
 

@@ -1,6 +1,6 @@
 import {Alert, Box, Chip, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {useCallback, useState} from 'react'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {styleUtils} from '@/core/theme'
 import {Core} from '@/shared'
 

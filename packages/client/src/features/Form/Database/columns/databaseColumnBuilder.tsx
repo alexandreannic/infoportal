@@ -1,4 +1,4 @@
-import {formatDate, formatDateTime, Messages} from '@/core/i18n/localization/en'
+import {Messages} from '@infoportal/client-i18n'
 import React from 'react'
 import {Kobo} from 'kobo-sdk'
 import {map} from '@axanc/ts-utils'
@@ -11,9 +11,25 @@ import {Box, Icon, Theme, useTheme} from '@mui/material'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {useKoboDialogs} from '@/core/store/useLangIndex'
 import {SelectStatusConfig, StateStatusIcon} from '@/shared/customInput/SelectStatus'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {DatatableHeadTypeIconByKoboType} from '@/features/Form/Database/columns/DatatableHeadTypeIconByKoboType'
 import {KoboBulkUpdate} from '@/shared/koboEdit/KoboBulkUpdate'
+import {isDateValid} from '@infoportal/client-i18n/lib/localization/en.js'
+
+export const formatDate = (d?: Date): string => {
+  if (!isDateValid(d)) return '-'
+  return d!.toLocaleDateString()
+}
+
+export const formatTime = (d?: Date): string => {
+  if (!isDateValid(d)) return '-'
+  return d!.toLocaleTimeString()
+}
+
+export const formatDateTime = (d?: Date): string => {
+  if (!isDateValid(d)) return '-'
+  return formatDate(d) + ' ' + formatTime(d)
+}
 
 export const buildDatabaseColumns = {
   type: {

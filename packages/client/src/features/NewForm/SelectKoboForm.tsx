@@ -1,5 +1,5 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Icon, useTheme} from '@mui/material'
 import {Core, Datatable} from '@/shared'
 import {UseQueryForm} from '@/core/query/useQueryForm'

@@ -1,6 +1,5 @@
 import {formatDistance, formatDuration as formatDurationFns, intervalToDuration} from 'date-fns'
 import {Ip} from 'infoportal-api-sdk'
-import {Asset} from '@/shared/Asset.js'
 
 const invalidDate = ''
 
@@ -342,9 +341,9 @@ export const en = Object.freeze({
     newForm: 'New form',
     retry: 'Retry',
     formSource_: {
-      [Asset.Type.smart]: 'Smart database',
-      [Asset.Type.kobo]: 'Imported from KoboToolbox',
-      [Asset.Type.internal]: 'Raw form',
+      [Ip.Form.Type.smart]: 'Smart database',
+      [Ip.Form.Type.kobo]: 'Imported from KoboToolbox',
+      [Ip.Form.Type.internal]: 'Raw form',
     },
     changeAccount: 'Change account',
     addNewKoboAccount: 'Add new Kobo account',

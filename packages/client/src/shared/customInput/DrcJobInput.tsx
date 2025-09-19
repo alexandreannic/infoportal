@@ -1,6 +1,6 @@
 import {Autocomplete, AutocompleteProps, Chip} from '@mui/material'
 import React from 'react'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Ip} from 'infoportal-api-sdk'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'

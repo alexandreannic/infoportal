@@ -2,7 +2,7 @@ import {Box} from '@mui/material'
 import {ViewMoreText} from '@/shared/ViewMoreText'
 import {Seq} from '@axanc/ts-utils'
 import React, {memo, ReactNode, useState} from 'react'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '@/shared'
 
 export interface CommentsPanelProps {

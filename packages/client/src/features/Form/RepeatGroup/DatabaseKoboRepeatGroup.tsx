@@ -1,4 +1,4 @@
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {Core, Datatable} from '@/shared'
@@ -11,7 +11,7 @@ import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
 import {buildDatabaseColumns, BuildFormColumnProps} from '@/features/Form/Database/columns/databaseColumnBuilder'
-import {Messages} from '@/core/i18n/localization/en'
+import {Messages} from '@infoportal/client-i18n'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 
 export const databaseKoboRepeatRoute = createRoute({

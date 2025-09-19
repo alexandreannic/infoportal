@@ -1,5 +1,5 @@
 import {Alert, AlertTitle, Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import React from 'react'
 import {useQueryServer} from '@/core/query/useQueryServers'
 import {Ip} from 'infoportal-api-sdk'

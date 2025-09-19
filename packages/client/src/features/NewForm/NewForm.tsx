@@ -1,5 +1,5 @@
 import {Core, Page} from '@/shared'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Box, Collapse, Icon} from '@mui/material'
 import {useEffect, useState} from 'react'
 import {useDialogs} from '@toolpad/core'

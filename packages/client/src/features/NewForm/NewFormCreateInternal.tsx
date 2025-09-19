@@ -1,5 +1,5 @@
 import {Controller, useForm} from 'react-hook-form'
-import {useI18n} from '@/core/i18n'
+import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {Grid} from '@mui/material'
 import {Core} from '@/shared'

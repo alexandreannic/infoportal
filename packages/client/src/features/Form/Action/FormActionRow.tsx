@@ -1,6 +1,6 @@
 import {Ip} from 'infoportal-api-sdk'
 import {Box, CircularProgress, Icon, Switch, Tooltip, useTheme} from '@mui/material'
-import {useI18n} from '@/core/i18n/index.js'
+import {useI18n} from '@infoportal/client-i18n'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {UseQueryForm} from '@/core/query/useQueryForm.js'
 import {Link} from '@tanstack/react-router'
