@@ -57,7 +57,7 @@ export const useCellSelectionComputed = <T extends Row>({
     state.setSelectionStart({row: 0, col: columnIndex})
     cellSelectionEngine.setAnchorEl(event.target as any)
     state.setSelectionEnd({row: filteredAndSortedData.length - 1, col: columnIndex})
-  }, [])
+  }, [filteredAndSortedData])
 
   const areAllColumnsSelected = useMemo(() => {
     return selectedColumnsIds.size === visibleColumns.length

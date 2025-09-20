@@ -28,10 +28,6 @@ export const useData = <T extends Row>({
     })
   }, [_data])
 
-  const filteredData = useMemo(() => {
-    return filterBy({data, filters: filters, colIndex: colIndex})
-  }, [data, filters])
-
   const filterExceptBy = useCallback(
     (key: KeyOf<T>) => {
       const filtersCopy = {...filters} as Filters<any>
@@ -42,6 +38,7 @@ export const useData = <T extends Row>({
   )
 
   const filteredAndSortedData = useMemo(() => {
+    const filteredData = filterBy({data, filters: filters, colIndex: colIndex})
     return (
       map(filteredData, sortBy, (d, sortBy) => {
         const col = colIndex[sortBy.column]
@@ -79,12 +76,11 @@ export const useData = <T extends Row>({
         return [...sorted]
       }) ?? filteredData
     )
-  }, [filteredData, sortBy])
+  }, [data, sortBy])
 
   return {
     filterExceptBy,
     data,
-    filteredData,
     filteredAndSortedData,
   }
 }
