@@ -122,7 +122,7 @@ export const DatabaseTableContent = ({
       colOriginId.push({
         id: 'originId',
         head: ctx.form.type === 'kobo' ? m.koboId : m.originId,
-        type: 'string',
+        type: 'id',
         renderQuick: _ => _.originId,
       })
     }

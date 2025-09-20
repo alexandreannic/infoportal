@@ -20,7 +20,7 @@ export class Meta {
     return {
       group: metaGroup,
       type: 'id',
-      id: 'meta/id' as const,
+      id: 'id' as const,
       actionOnSelected: () => <ReadonlyAction />,
       head: 'ID',
       width: 110,
@@ -46,7 +46,7 @@ export class Meta {
   static version({m}: {m: Messages}): Datatable.Column.Props<Row> {
     return {
       group: metaGroup,
-      id: 'meta/version' as const,
+      id: 'version' as const,
       head: m.version,
       width: 70,
       noCsvExport: true,
@@ -66,7 +66,7 @@ export class Meta {
   >): Datatable.Column.Props<Row> {
     return {
       group: metaGroup,
-      id: 'meta/actions' as const,
+      id: 'actions' as const,
       head: '',
       width: 70,
       noCsvExport: true,
@@ -111,7 +111,7 @@ export class Meta {
     key: KeysOfType<Ip.Submission, Date>
   }): Datatable.Column.Props<Row> {
     return {
-      id: 'meta/name',
+      id: key,
       group: metaGroup,
       type: 'date',
       head: label,
@@ -163,7 +163,7 @@ export class Meta {
   >): Datatable.Column.Props<Row> {
     return {
       group: metaGroup,
-      id: 'meta/_validation' as const,
+      id: '_validation' as const,
       head: m.validation,
       align: 'center',
       width: 60,
