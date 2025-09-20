@@ -185,10 +185,8 @@ export class QuestionType {
           value,
           tooltip: value,
           export: url,
-          label: (
-            <Datatable.Img url={url} />
-            // <KoboAttachedImg answerId={row.id} formId={props.formId} attachments={row.attachments} fileName={value} />
-          ),
+          label: url ? <Datatable.Img url={url} /> : '',
+          // <KoboAttachedImg answerId={row.id} formId={props.formId} attachments={row.attachments} fileName={value} />
         }
       },
     }

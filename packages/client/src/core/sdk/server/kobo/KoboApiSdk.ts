@@ -54,7 +54,7 @@ export class KoboApiSdk {
     )
   }
 
-  static readonly getAttachementUrl = ({
+  static readonly getAttachmentUrl = ({
     baseUrl,
     formId,
     attachmentId,

@@ -34,10 +34,11 @@ export const getKoboAttachmentUrl = ({
 }) => {
   const attachment = getAttachment({fileName, attachments})
   if (attachment)
-    return KoboApiSdk.getAttachementUrl({
+    return KoboApiSdk.getAttachmentUrl({
       formId,
       answerId: submissionId,
-      attachmentId: attachment?.id,
+      // Seems Kobo change .id to .uid. Update SDK
+      attachmentId: (attachment as any)?.uid,
       baseUrl: conf.apiURL,
     })
 }

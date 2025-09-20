@@ -21,6 +21,7 @@ export enum AppCacheKey {
   KoboSchema = 'KoboSchema',
   FormAction = 'FromAction',
   KoboServerIndex = 'KoboServerIndex',
+  KoboFormIndex = 'KoboFormIndex',
   KoboClient = 'KoboClient',
   Proxy = 'Proxy',
   WfpDeduplication = 'WfpDeduplication',

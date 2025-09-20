@@ -54,7 +54,6 @@ export const DatatableColumnToggle = ({
             />
           </Alert>
           <Datatable<DatatableColumnToggleProps>
-            onEvent={console.log}
             header={_ => (
               <>
                 <Chip

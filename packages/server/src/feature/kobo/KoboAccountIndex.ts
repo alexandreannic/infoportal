@@ -5,10 +5,9 @@ import {HttpError, Ip} from 'infoportal-api-sdk'
 import {duration, seq} from '@axanc/ts-utils'
 
 export class KoboAccountIndex {
-  private constructor(
-    private prisma: PrismaClient,
-    private log = app.logger('KoboAccountIndex'),
-  ) {}
+
+  private readonly cacheRefreshDelay = 5_000
+  private readonly lastCacheClear: Record<Kobo.FormId, number> = {}
 
   static instance: KoboAccountIndex | null = null
   static readonly getSingleton = (prisma: PrismaClient) => {
@@ -16,13 +15,18 @@ export class KoboAccountIndex {
     return this.instance
   }
 
+  private constructor(
+    private prisma: PrismaClient,
+    private log = app.logger('KoboAccountIndex'),
+  ) {}
+
   private readonly getHot = async (): Promise<Record<Kobo.FormId, Ip.ServerId>> => {
     return this.prisma.formKoboInfo
       .findMany({
         select: {koboId: true, accountId: true},
       })
       .then(_ => {
-        this.log.info(`Recalculate server index`)
+        this.log.info(`Recalculate accounts index`)
         return seq(_)
           .compactBy('accountId')
           .groupByAndApply(
@@ -41,9 +45,13 @@ export class KoboAccountIndex {
   readonly getByKoboId = async (koboFormId: Kobo.FormId): Promise<Ip.ServerId> => {
     const cache = await this.getCached()
     if (cache[koboFormId]) return cache[koboFormId]
-    const hot = await this.getHot()
-    if (hot[koboFormId]) {
-      app.cache.clear(AppCacheKey.KoboServerIndex)
+    const now = Date.now()
+    if (!this.lastCacheClear[koboFormId] || now - this.lastCacheClear[koboFormId] > this.cacheRefreshDelay) {
+      this.lastCacheClear[koboFormId] = now
+      const hot = await this.getHot()
+      if (hot[koboFormId]) {
+        app.cache.clear(AppCacheKey.KoboServerIndex)
+      }
       return hot[koboFormId]
     }
     throw new HttpError.NotFound(`No serverId for form ${koboFormId}`)

@@ -52,7 +52,7 @@ export const FormBuilderKoboFender = ({workspaceId, form}: {workspaceId: Ip.Work
             sx={{mr: 2}}
             icon="assistant_on_hub"
             label={m.viewInKobo}
-            href={queryServer.data.url + `/#/forms/${form.id}/landing`}
+            href={queryServer.data.url + `/#/forms/${form.kobo!.koboId}/landing`}
           />
           {form.kobo?.enketoUrl && <Button icon="ballot" href={form.kobo?.enketoUrl} label={m.fillForm} />}
         </Core.PanelBody>
