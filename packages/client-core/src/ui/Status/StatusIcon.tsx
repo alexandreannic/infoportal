@@ -1,7 +1,7 @@
 import {StateStatus} from 'infoportal-common'
 import {Icon, SxProps, useTheme} from '@mui/material'
 import React from 'react'
-import {statusConfig} from './statusConfig.js'
+import {statusConfig} from './statusConfig'
 
 export const StatusIcon = ({type, filled, sx}: {type: StateStatus; filled?: boolean; sx?: SxProps}) => {
   const t = useTheme()

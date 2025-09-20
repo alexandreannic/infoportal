@@ -1,5 +1,6 @@
 {
   "name": "@infoportal/client-core",
+  "type": "module",
   "version": "1.0.0",
   "main": "lib/index.js",
   "module": "lib/index.js",
