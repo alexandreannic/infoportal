@@ -14,14 +14,14 @@ import {PopupStats} from './popup/PopupStats'
 import {PopupFilter} from './popup/PopupFilter'
 
 export const Datatable = <T extends Row>({data, sx, ...props}: Props<T>) => {
-  if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx}/>
+  if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx} />
   const tableRef = React.useRef(null) as unknown as React.RefObject<HTMLDivElement>
   const defaultProps = useConfig().defaultProps
   return (
     <DatatableErrorBoundary>
       <Provider {...{...defaultProps, ...props}} data={data} tableRef={tableRef}>
-        {props.loading && <LinearProgress sx={{position: 'absolute', top: 0, right: 0, left: 0, height: 3}}/>}
-        <DatatableWithData sx={sx}/>
+        {props.loading && <LinearProgress sx={{position: 'absolute', top: 0, right: 0, left: 0, height: 3}} />}
+        <DatatableWithData sx={sx} />
       </Provider>
     </DatatableErrorBoundary>
   )
@@ -48,45 +48,45 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
     renderEmptyState,
   } = useCtx(_ => _)
 
-  const overscan = 10
   const rowVirtualizer = useVirtualizer({
     count: dataFilteredAndSorted?.length ?? 0,
-    debug: false,
     getScrollElement: () => tableRef.current,
     estimateSize: () => rowHeight,
-    overscan,
+    overscan: 10,
   })
 
   useEffect(() => {
     const items = rowVirtualizer.getVirtualItems()
+    if (!items.length) return
+
     dispatch({
       type: 'INIT_DATA',
       data: dataFilteredAndSorted,
       columns: columns.all,
       getRowKey,
-      offset: items[0]?.index ?? 0,
-      limit: items.length + overscan,
+      offset: items[0].index,
+      limit: items.length,
     })
-  }, [dataFilteredAndSorted, columns.all])
+  }, [dataFilteredAndSorted, columns.all, rowVirtualizer.range])
 
   useEffect(() => {
-    const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse()
-    const lastIndex = lastItem?.index
-    if (!lastIndex) {
-      return
+    const items = rowVirtualizer.getVirtualItems()
+    if (!items.length) return
+
+    const lastItem = items[items.length - 1]
+    const lastIndex = lastItem.index
+
+    if (lastIndex < dataFilteredAndSorted.length - 1) {
+      dispatch({
+        type: 'SET_DATA',
+        data: dataFilteredAndSorted,
+        columns: columns.all,
+        getRowKey,
+        offset: lastIndex,
+        limit: 22,
+      })
     }
-    if (lastIndex >= dataFilteredAndSorted.length) {
-      return
-    }
-    dispatch({
-      type: 'SET_DATA',
-      data: dataFilteredAndSorted,
-      columns: columns.all,
-      getRowKey,
-      offset: lastIndex,
-      limit: 22 + overscan,
-    })
-  }, [dataFilteredAndSorted, rowVirtualizer.getVirtualItems()])
+  }, [dataFilteredAndSorted, rowVirtualizer.range])
 
   const onCellClick = useCallback((rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
     const row = dataFilteredAndSorted[rowIndex]
@@ -98,7 +98,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
 
   return (
     <Box className="dt-container" sx={sx}>
-      {header !== null && <DatatableToolbar rowVirtualizer={rowVirtualizer}/>}
+      {header !== null && <DatatableToolbar rowVirtualizer={rowVirtualizer} />}
       <Box
         className="dt"
         ref={tableRef}
@@ -109,7 +109,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
           ...contentProps?.style,
         }}
       >
-        <DatatableHead onMouseDown={() => cellSelection.engine.reset()}/>
+        <DatatableHead onMouseDown={() => cellSelection.engine.reset()} />
         {renderEmptyState && data.length === 0 && !loading && renderEmptyState}
         <div
           className="dtbody"
@@ -142,11 +142,11 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
             )
           })}
         </div>
-        <PopupSelectedCell/>
+        <PopupSelectedCell />
         {(() => {
           switch (popup?.name) {
             case 'STATS': {
-              return <PopupStats event={popup.event} columnId={popup.columnId}/>
+              return <PopupStats event={popup.event} columnId={popup.columnId} />
             }
             case 'FILTER': {
               const column = columns.indexMap[popup.columnId]

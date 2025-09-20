@@ -9,6 +9,8 @@ export const DatatableGlobalStyles = () => (
         height: '100%',
       },
       '.dt': {
+        // TanStack virtual need a fixed height to calculate his buffer
+        maxHeight: 'calc(100vh - 156px)',
         flex: 1,
         display: 'grid',
         gridTemplateRows: 'auto 1fr',

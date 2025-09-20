@@ -198,7 +198,6 @@ export const DatabaseTableContent = ({
             },
           }}
           loading={ctx.loading}
-          contentProps={{sx: {maxHeight: 'calc(100vh - 156px)'}}}
           // showExportBtn
           // select={
           //   ctx.permission.answers_canUpdate

@@ -1,4 +1,4 @@
-import {useI18n} from '@infoportal/client-i18n'
+import {Messages, useI18n} from '@infoportal/client-i18n'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {Core, Datatable} from '@/shared'
@@ -10,7 +10,6 @@ import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
-import {Messages} from '@infoportal/client-i18n'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {buildDbColumns, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
@@ -121,7 +120,7 @@ const DatabaseKoboRepeat = ({
 
   return (
     <Datatable.Component
-      getRowKey={_ => _.id}
+      getRowKey={_ => _.id + '-' + (_._parent_index ?? '') + '-' + _._index}
       defaultFilters={defaultFilters}
       module={{
         cellSelection: {
