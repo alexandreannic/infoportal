@@ -42,7 +42,9 @@ export class FormService {
           },
         })
         .then(_ => _?.schema as any)
-    return this.koboSchemaCache.get({formId: form.id as Ip.FormId}).then(_ => _.content)
+    return this.koboSchemaCache
+      .get({refreshCacheIfMissing: true, formId: form.id as Ip.FormId})
+      .then(_ => (_ ? _.content : undefined))
   }
 
   readonly getSchemaByVersion = async ({

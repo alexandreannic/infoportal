@@ -4,7 +4,7 @@ import {appConf} from '../../core/conf/AppConf.js'
 import {Kobo} from 'kobo-sdk'
 import {yup} from '../../helper/Utils.js'
 import {XlsFormParser} from '../kobo/XlsFormParser.js'
-import {Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
 import {PrismaHelper} from '../../core/PrismaHelper.js'
 import {FormService} from './FormService.js'
 import {KoboSchemaCache} from './KoboSchemaCache.js'
@@ -133,6 +133,7 @@ export class FormVersionService {
   readonly importLastKoboSchema = async ({formId, author}: {formId: Ip.FormId; author: Ip.User.Email}) => {
     app.cache.clear(AppCacheKey.KoboSchema, formId)
     const lastSchema = await this.koboSchemaCache.get({formId})
+    if (!lastSchema) throw new HttpError.NotFound(`[importLastKoboSchema] Missing schema for ${formId}`)
     return this.createNewVersion({
       schemaJson: lastSchema.content,
       formId,

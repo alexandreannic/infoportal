@@ -33,9 +33,10 @@ export class KoboSchemaCache {
     fn: this.getHot,
   })
 
-  readonly get = async (p: {formId: Ip.FormId}): Promise<Kobo.Form> => {
+  readonly get = async (p: {formId: Ip.FormId; refreshCacheIfMissing?: boolean}): Promise<Kobo.Form | undefined> => {
     const cache = await this.getCache(p)
     if (cache) return cache
+    if (!p.refreshCacheIfMissing) return
     const form = await this.getHot(p)
     if (form) {
       app.cache.clear(AppCacheKey.KoboSchema, p.formId)

@@ -5,7 +5,8 @@ import {KoboSdkGenerator} from '../../../feature/kobo/KoboSdkGenerator.js'
 import {KoboSyncServer} from '../../../feature/kobo/KoboSyncServer.js'
 import axios, {AxiosError} from 'axios'
 import {KoboFormService} from '../../../feature/kobo/KoboFormService.js'
-import {Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
+import {KoboFormIndex} from '../../../feature/kobo/KoboFormIndex.js'
 
 export class ControllerKoboApi {
   constructor(
@@ -13,6 +14,7 @@ export class ControllerKoboApi {
     private koboService = new KoboFormService(pgClient),
     private syncService = new KoboSyncServer(pgClient),
     private koboSdkGenerator = KoboSdkGenerator.getSingleton(pgClient),
+    private koboFormIndex = KoboFormIndex.getSingleton(pgClient),
   ) {}
 
   private readonly extractParams = async (req: Request) => {
@@ -88,17 +90,34 @@ export class ControllerKoboApi {
   }
 
   readonly getAttachementsWithoutAuth = async (req: Request, res: Response, next: NextFunction) => {
+    // TODO Really bad performance I think, hard to deal with both IP attachments and Kobo attachments
+    const params = await yup
+      .object({
+        formId: yup.string().required(),
+        attachmentId: yup.string().required(),
+        submissionId: yup.string().required(),
+      })
+      .validate(req.params)
+    const fileName = req.query.fileName
+    const formId = params.formId as Ip.FormId
+    // TODO Cache this
+    const koboSubmissionId = await this.pgClient.formSubmission
+      .findUnique({
+        select: {originId: true},
+        where: {id: params.submissionId},
+      })
+      .then(_ => _?.originId)
+    if (!koboSubmissionId)
+      throw new HttpError.NotFound(`Cannot find KoboSubmissionId for SubmissionId ${params.submissionId}`)
+    const koboFormId = await this.koboFormIndex.getByFormId(formId)
+    if (!koboFormId) throw new HttpError.NotFound(`Cannot find KoboFormId for FormId ${formId}`)
+    const sdk = await this.koboSdkGenerator.getBy.koboFormId(koboFormId)
     try {
-      const params = await yup
-        .object({
-          formId: yup.string().required(),
-          attachmentId: yup.string().required(),
-          submissionId: yup.string().required(),
-        })
-        .validate(req.params)
-      const fileName = req.query.fileName
-      const sdk = await this.koboSdkGenerator.getBy.koboFormId(params.formId)
-      const img = await sdk.v2.submission.getAttachement(params)
+      const img = await sdk.v2.submission.getAttachement({
+        submissionId: koboSubmissionId,
+        attachmentId: params.attachmentId,
+        formId: koboFormId,
+      })
       if (!fileName) {
         res.set('Content-Type', 'image/jpeg')
         res.set('Content-Length', img.length)
@@ -107,7 +126,7 @@ export class ControllerKoboApi {
       }
       res.send(img)
     } catch (e) {
-      console.log('ControllerKoboApi/getAttachementsWithoutAuth', (e as AxiosError).code)
+      console.log('ControllerKoboApi/getAttachmentsWithoutAuth', (e as AxiosError).code)
       res.send(undefined)
     }
   }
