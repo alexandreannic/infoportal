@@ -2,6 +2,8 @@ import {Theme} from '@mui/material'
 import {Kobo} from 'kobo-sdk'
 import {alphaVar} from '@infoportal/client-core'
 
+export const defaultColWidth = 120
+
 export const colorRepeatedQuestionHeader = (t: Theme) => alphaVar(t.vars!.palette.info.light, 0.22)
 
 export const ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['begin_group'])

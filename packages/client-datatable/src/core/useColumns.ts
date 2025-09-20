@@ -8,7 +8,7 @@ export type UseDatatableColumns<T extends Row> = ReturnType<typeof useDatatableC
 
 type ColumnWidth = string | number
 
-const minWidth = 20
+const minWidth = 30
 
 const parseColumnWidth = (w: ColumnWidth) => {
   if (!isNaN(w as any)) {
@@ -19,7 +19,7 @@ const parseColumnWidth = (w: ColumnWidth) => {
       return `minmax(${minWidth}px, ${w})`
     }
   }
-  return '1fr'
+  return `minmax(${minWidth}px, 1fr)`
 }
 
 export const useDatatableColumns = <T extends Row>({

@@ -8,6 +8,7 @@ import {Messages} from '@infoportal/client-i18n'
 import {StatusIcon} from '@infoportal/client-core'
 import {BulkUpdateValidation} from '../ui/BulkUpdate'
 import {KoboTypeIcon} from '../ui/KoboTypeIcon'
+import {defaultColWidth} from './common'
 
 const metaGroup = {label: 'Meta', id: 'meta'}
 
@@ -112,6 +113,7 @@ export class Meta {
   }): Datatable.Column.Props<Row> {
     return {
       id: key,
+      width: defaultColWidth,
       group: metaGroup,
       type: 'date',
       head: label,

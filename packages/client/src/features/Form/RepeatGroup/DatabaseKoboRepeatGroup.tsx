@@ -122,6 +122,7 @@ const DatabaseKoboRepeat = ({
     <Datatable.Component
       getRowKey={_ => _.id + '-' + (_._parent_index ?? '') + '-' + _._index}
       defaultFilters={defaultFilters}
+      showRowIndex
       module={{
         cellSelection: {
           mode: 'free',
@@ -184,29 +185,22 @@ export function getColumnsForRepeatGroup({
   const groupInfo = schema.helper.group.getByName(groupName)!
   const res: Datatable.Column.Props<KoboFlattenRepeatedGroup.Data>[] = []
   if (groupInfo.depth > 1) {
-    res.push(
-      {
-        type: 'select_one',
-        id: '_parent_table_name',
-        head: '_parent_table_name',
-        renderQuick: (_: KoboFlattenRepeatedGroup.Data) => _._parent_table_name,
-      },
-      {
-        type: 'string',
-        id: '_parent_index',
-        head: '_parent_index',
-        renderQuick: (_: KoboFlattenRepeatedGroup.Data) => '' + _._parent_index,
-      },
-    )
+    res.push({
+      width: defaultColWidth,
+      type: 'select_one',
+      id: '_parent_table_name',
+      head: '_parent_table_name',
+      renderQuick: (_: KoboFlattenRepeatedGroup.Data) => _._parent_table_name,
+    })
   }
   res.push(
     {
-      width: 50,
       type: 'string',
       align: 'center',
-      id: '_index',
-      head: '_index',
-      renderQuick: _ => '' + _._index,
+      width: 50,
+      id: '_parent_index',
+      head: '_parent_index',
+      renderQuick: (_: KoboFlattenRepeatedGroup.Data) => '' + _._parent_index,
     },
     buildDbColumns.meta.id(),
     buildDbColumns.meta.submissionTime({m}),

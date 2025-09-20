@@ -3,7 +3,7 @@ import React from 'react'
 import {MissingOption} from '../ui/MissingOption'
 import {ColumnQuestionBaseProps, ColumnQuestionProps, Question, Row} from './type'
 import * as Datatable from '@infoportal/client-datatable'
-import {colorRepeatedQuestionHeader, ignoredColType} from './common'
+import {colorRepeatedQuestionHeader, defaultColWidth, ignoredColType} from './common'
 import {Btn, Txt} from '@infoportal/client-core'
 import {ReadonlyAction} from '../ui/ReadonlyAction'
 import {BulkUpdateAnswer} from '../ui/BulkUpdate'
@@ -36,7 +36,7 @@ export class QuestionType {
   > {
     return {
       id: q.name,
-      width: 120,
+      width: defaultColWidth,
       typeLabel: q.type,
       actionOnSelected: isReadonly
         ? () => <ReadonlyAction />
@@ -162,7 +162,7 @@ export class QuestionType {
     return {
       ...this.getBase(props),
       type: 'string',
-      width: props.q.appearance === 'multiline' ? 240 : 120,
+      width: props.q.appearance === 'multiline' ? defaultColWidth * 2 : defaultColWidth,
       renderQuick: (row: Row) => this.getValue({row, getRow: props.getRow, q: props.q}) as string,
     }
   }
