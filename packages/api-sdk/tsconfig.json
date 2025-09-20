@@ -1,24 +1,11 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.base.package.json",
   "compilerOptions": {
-    "lib": [
-      "ES2021",
-      "dom"
-    ],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "declaration": true,
-    "declarationMap": true,
-    "outDir": "./lib",
-    "checkJs": false,
     "rootDir": "./src",
-    "composite": true,
-    "skipLibCheck": true
+    "outDir": "./lib"
   },
   "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "lib/**/*"
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ]
 }

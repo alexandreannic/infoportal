@@ -1,24 +1,16 @@
 {
-  "extends": "../../tsconfig.base",
+  "extends": "../../tsconfig.base.package.json",
   "compilerOptions": {
-    "composite": true,
-    "module": "esnext",
     "rootDir": "./src",
-    "moduleResolution": "bundler",
-    "jsx": "preserve",
-    "incremental": true,
     "outDir": "./lib"
   },
-  "references": [
-    {
-      "path": "../client-i18n"
-    }
-  ],
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx"
   ],
-  "exclude": [
-    "node_modules"
+  "references": [
+    {
+      "path": "../client-i18n"
+    }
   ]
 }

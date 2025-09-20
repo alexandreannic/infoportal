@@ -27,6 +27,9 @@
       "path": "../client-datatable"
     },
     {
+      "path": "../database-column"
+    },
+    {
       "path": "../client-i18n"
     },
     {
