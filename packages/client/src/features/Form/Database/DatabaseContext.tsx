@@ -1,5 +1,12 @@
 import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState} from 'react'
-import {FetchParams, useAsync, UseAsyncSimple, useFetcher, useObjectState, UseObjectStateReturn,} from '@axanc/react-hooks'
+import {
+  FetchParams,
+  useAsync,
+  UseAsyncSimple,
+  useFetcher,
+  useObjectState,
+  UseObjectStateReturn,
+} from '@axanc/react-hooks'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {Kobo} from 'kobo-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
@@ -9,6 +16,7 @@ import {map, Obj, seq} from '@axanc/ts-utils'
 import {UseDatabaseView, useDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
 import {DatabaseDisplay} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {Ip} from 'infoportal-api-sdk'
+import {ExternalFilesChoices, KoboExternalFilesIndex} from '@infoportal/database-column'
 
 export interface DatabaseContext {
   refetch: (p?: FetchParams) => Promise<void>

@@ -1,9 +1,9 @@
-import {AppConfig, appConfig} from '@/conf/AppConfig'
-import {TableImg} from '@/shared/TableImg/TableImg'
-import {useMemo} from 'react'
-import {KoboApiSdk} from '@/core/sdk/server/kobo/KoboApiSdk'
+import {AppConfig, appConfig} from '@/conf/AppConfig.js'
+import {KoboApiSdk} from '@/core/sdk/server/kobo/KoboApiSdk.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
+import {useMemo} from 'react'
+import {Datatable} from '@/shared'
 
 const parseKoboFileName = (fileName?: string) =>
   fileName ? fileName.replaceAll(' ', '_').replaceAll(/[^0-9a-zA-Z-_.\u0400-\u04FF]/g, '') : undefined
@@ -24,17 +24,22 @@ export const getKoboAttachmentUrl = ({
   attachments,
   conf = appConfig,
   formId,
-  answerId,
+  submissionId,
 }: {
   formId: Ip.FormId
-  answerId: Ip.SubmissionId
+  submissionId: Ip.SubmissionId
   fileName?: string
   attachments: Kobo.Submission.Attachment[]
   conf?: AppConfig
 }) => {
   const attachment = getAttachment({fileName, attachments})
   if (attachment)
-    return KoboApiSdk.getAttachementUrl({formId, answerId, attachmentId: attachment?.id, baseUrl: conf.apiURL})
+    return KoboApiSdk.getAttachementUrl({
+      formId,
+      answerId: submissionId,
+      attachmentId: attachment?.id,
+      baseUrl: conf.apiURL,
+    })
 }
 
 export const KoboAttachedImg = ({
@@ -42,16 +47,19 @@ export const KoboAttachedImg = ({
   attachments,
   size,
   formId,
-  answerId,
+  submissionId,
   tooltipSize = 450,
 }: {
   formId: Ip.FormId
-  answerId: Ip.SubmissionId
+  submissionId: Ip.SubmissionId
   size?: number
   tooltipSize?: number | null
   fileName?: string
   attachments: Kobo.Submission.Attachment[]
 }) => {
-  const url = useMemo(() => getKoboAttachmentUrl({formId, answerId, attachments, fileName}), [attachments, fileName])
-  return fileName && <TableImg size={size} tooltipSize={tooltipSize} url={url} />
+  const url = useMemo(
+    () => getKoboAttachmentUrl({formId, submissionId, attachments, fileName}),
+    [attachments, fileName],
+  )
+  return fileName && <Datatable.Img size={size} tooltipSize={tooltipSize} url={url} />
 }

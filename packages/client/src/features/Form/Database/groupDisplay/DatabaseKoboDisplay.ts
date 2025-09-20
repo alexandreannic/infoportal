@@ -3,8 +3,10 @@ import {mapFor} from '@axanc/ts-utils'
 import {Messages} from '@infoportal/client-i18n'
 import {Theme} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
-import {buildDatabaseColumns, BuildFormColumnProps, colorRepeatedQuestionHeader,} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Datatable} from '@/shared'
+import {OnRepeatGroupClick} from '@infoportal/database-column/lib/columns/type.js'
+import {buildDbColumns, colorRepeatedQuestionHeader} from '@infoportal/database-column'
+import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
 
 export type DatabaseDisplay = {
   repeatAs?: 'rows' | 'columns'
@@ -17,9 +19,11 @@ type DatabaseKoboDisplayProps = {
   schema: KoboSchemaHelper.Bundle
   formId: Ip.FormId
   workspaceId: Ip.WorkspaceId
-  onRepeatGroupClick?: BuildFormColumnProps['onRepeatGroupClick']
+  onRepeatGroupClick?: OnRepeatGroupClick
   m: Messages
   t: Theme
+  getFileUrl: typeof getKoboAttachmentUrl
+  queryUpdateAnswer: Parameters<typeof buildDbColumns.question.byQuestions>[0]['queryUpdateAnswer']
 }
 
 export const databaseKoboDisplayBuilder = ({
@@ -29,6 +33,8 @@ export const databaseKoboDisplayBuilder = ({
   formId,
   workspaceId,
   onRepeatGroupClick,
+  queryUpdateAnswer,
+  getFileUrl,
   m,
   t,
 }: DatabaseKoboDisplayProps) => {
@@ -40,8 +46,10 @@ export const databaseKoboDisplayBuilder = ({
           const index = copy.findIndex(_ => _.id == group.name)
           const groupSize = Math.max(0, ...data.map(_ => _.answers[group.name]?.length ?? 0))
           mapFor(groupSize, repeat => {
-            const newCols = buildDatabaseColumns.type
+            const newCols = buildDbColumns.question
               .byQuestions({
+                queryUpdateAnswer,
+                getFileUrl,
                 workspaceId,
                 questions: group.questions,
                 schema,
@@ -76,8 +84,10 @@ export const databaseKoboDisplayBuilder = ({
         if (!display.repeatGroupName) return columns
         const group = schema.helper.group.getByName(display.repeatGroupName)
         if (!group || group.depth > 1) return columns
-        const repeatGroupColumns = buildDatabaseColumns.type
+        const repeatGroupColumns = buildDbColumns.question
           .byQuestions({
+            queryUpdateAnswer,
+            getFileUrl,
             workspaceId,
             questions: group.questions,
             schema,

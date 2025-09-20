@@ -11,12 +11,12 @@ import {Core} from '@/shared'
 
 export const DialogAnswerEdit = ({
   onClose,
-  payload: {schema, workspaceId, formId, answer},
+  payload: {schema, workspaceId, formId, submission},
 }: DialogProps<{
   schema: KoboSchemaHelper.Bundle
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
-  answer: Submission
+  submission: Submission
 }>) => {
   const formRef = useRef<XlsFormFillerHandle>(null)
   const {m} = useI18n()
@@ -26,18 +26,18 @@ export const DialogAnswerEdit = ({
         <Box sx={{display: 'flex', alignItems: 'center'}}>
           <Link
             to="/$workspaceId/form/$formId/answer/$answerId"
-            params={{workspaceId, formId, answerId: answer.id}}
+            params={{workspaceId, formId, answerId: submission.id}}
             onClick={() => onClose()}
           >
             <Core.IconBtn color="primary">open_in_new</Core.IconBtn>
           </Link>
-          {answer.id}
+          {submission.id}
         </Box>
       </DialogTitle>
       <DialogContent>
         <XlsFormFiller
           ref={formRef}
-          answers={KoboMapper.unmapSubmissionBySchema(schema.helper.questionIndex, answer)}
+          answers={KoboMapper.unmapSubmissionBySchema(schema.helper.questionIndex, submission)}
           survey={schema.schema}
           hideActions
           onSubmit={_ => {
