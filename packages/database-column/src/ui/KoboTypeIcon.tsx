@@ -1,21 +1,10 @@
 import {fnSwitch} from '@axanc/ts-utils'
 import React from 'react'
-import {Datatable} from '@/shared'
 import {IconProps} from '@mui/material'
 import {Kobo} from 'kobo-sdk'
+import * as Datatable from '@infoportal/client-datatable'
 
-export const DatatableHeadTypeIconByKoboType = ({
-  children,
-  ...props
-}: {
-  children: Kobo.Form.QuestionType
-} & Pick<IconProps, 'sx' | 'color'>) => {
-  return (
-    <Datatable.HeadIcon children={fnSwitch(children, koboIconMap, () => 'short_text')} tooltip={children} {...props} />
-  )
-}
-
-export const koboIconMap: Record<Kobo.Form.QuestionType, string> = {
+const koboIconMap: Record<Kobo.Form.QuestionType, string> = {
   image: 'image',
   file: 'description',
   calculate: 'functions',
@@ -38,4 +27,15 @@ export const koboIconMap: Record<Kobo.Form.QuestionType, string> = {
   deviceid: '',
   end_group: '',
   end_repeat: '',
+}
+
+export const KoboTypeIcon = ({
+  children,
+  ...props
+}: {
+  children: Kobo.Form.QuestionType
+} & Pick<IconProps, 'sx' | 'color'>) => {
+  return (
+    <Datatable.HeadIcon children={fnSwitch(children, koboIconMap, () => 'short_text')} tooltip={children} {...props} />
+  )
 }

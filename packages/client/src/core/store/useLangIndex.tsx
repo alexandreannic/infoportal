@@ -20,7 +20,7 @@ export const useLangIndex = create<LangIndex>(set => ({
 }))
 
 export interface OpenModalProps {
-  answer: Submission
+  submission: Submission
 }
 
 export const useKoboDialogs = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {

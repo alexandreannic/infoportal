@@ -1,0 +1,23 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/client-core"
+    },
+    {
+      "path": "./packages/client-datatable"
+    },
+    {
+      "path": "./packages/database-column"
+    },
+    {
+      "path": "./packages/client-i18n"
+    },
+    {
+      "path": "./packages/api-sdk"
+    },
+    {
+      "path": "./packages/common"
+    }
+  ]
+}

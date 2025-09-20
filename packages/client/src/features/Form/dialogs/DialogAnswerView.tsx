@@ -5,9 +5,19 @@ import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {useLangIndex} from '@/core/store/useLangIndex'
 import {Core} from '@/shared'
 import {Page} from '@/shared/Page'
-import {KoboAttachedImg} from '@/shared/TableImg/KoboAttachedImg'
 import {map, seq} from '@axanc/ts-utils'
-import {Alert, Box, Dialog, DialogActions, DialogContent, DialogTitle, Icon, Skeleton, Switch, useTheme,} from '@mui/material'
+import {
+  Alert,
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Icon,
+  Skeleton,
+  Switch,
+  useTheme,
+} from '@mui/material'
 import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
@@ -16,7 +26,10 @@ import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
-import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
+import {buildDbColumns} from '@infoportal/database-column'
+import {getKoboAttachmentUrl, KoboAttachedImg} from '@/core/KoboAttachmentUrl.js'
+import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate.js'
+import {Datatable} from '@/shared'
 
 export const databaseAnswerViewRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -87,12 +100,12 @@ function DatabaseAnswerView() {
 
 export const DialogAnswerView = ({
   onClose,
-  payload: {schema, formId, answer, workspaceId},
+  payload: {schema, formId, submission, workspaceId},
 }: DialogProps<{
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   schema: KoboSchemaHelper.Bundle
-  answer: Submission
+  submission: Submission
 }>) => {
   const {m} = useI18n()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
@@ -103,12 +116,12 @@ export const DialogAnswerView = ({
         <Box sx={{display: 'flex', alignItems: 'center'}}>
           <Link
             to="/$workspaceId/form/$formId/answer/$answerId"
-            params={{workspaceId, formId, answerId: answer.id}}
+            params={{workspaceId, formId, answerId: submission.id}}
             onClick={() => onClose()}
           >
             <Core.IconBtn color="primary">open_in_new</Core.IconBtn>
           </Link>
-          {answer.id}
+          {submission.id}
           <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
             <Core.Txt sx={{fontSize: '1rem'}} color="hint">
               {m._koboDatabase.showAllQuestions}
@@ -123,7 +136,7 @@ export const DialogAnswerView = ({
           schema={schema}
           formId={formId}
           showQuestionWithoutAnswer={showQuestionWithoutAnswer}
-          answer={answer}
+          answer={submission}
         />
       </DialogContent>
       <DialogActions>
@@ -189,11 +202,14 @@ const KoboAnswerQuestionView = ({
   const {formatDateTime} = useI18n()
   const {m} = useI18n()
   const t = useTheme()
+  const queryUpdate = useQueryAnswerUpdate().update
   const columns = useMemo(() => {
     if (questionSchema.type !== 'begin_repeat') return
     const group = schema.helper.group.getByName(questionSchema.name)
     if (!group) return
-    return buildDatabaseColumns.type.byQuestions({
+    return buildDbColumns.question.byQuestions({
+      getFileUrl: getKoboAttachmentUrl,
+      queryUpdateAnswer: queryUpdate,
       questions: group.questions,
       workspaceId,
       schema,
@@ -222,7 +238,7 @@ const KoboAnswerQuestionView = ({
             </Core.Txt>
             <KoboAttachedImg
               formId={formId}
-              answerId={row.id}
+              submissionId={row.id}
               attachments={row.attachments}
               size={84}
               fileName={row.answers[questionSchema.name] as string}
@@ -253,7 +269,12 @@ const KoboAnswerQuestionView = ({
       return (
         <>
           <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
-          {/*<Datatable columns={columns!} data={row.answers[questionSchema.name] as any[]} id={questionSchema.name} />*/}
+          <Datatable.Component
+            getRowKey={_ => _.id}
+            columns={columns!}
+            data={row.answers[questionSchema.name] as any[]}
+            id={questionSchema.name}
+          />
         </>
       )
     }

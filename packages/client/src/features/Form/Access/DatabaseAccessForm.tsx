@@ -9,7 +9,7 @@ import {AccessForm, IAccessForm} from '@/features/Access/AccessForm'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {UseQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
-import {koboIconMap} from '@/features/Form/Database/columns/DatatableHeadTypeIconByKoboType'
+import {KoboTypeIcon} from '@infoportal/database-column'
 
 interface Form extends IAccessForm {
   question?: string
@@ -130,9 +130,7 @@ export const DatabaseAccessForm = ({
                   renderOption={(props, option) => {
                     return (
                       <Box component="li" {...props} key={option}>
-                        <Icon color="disabled" sx={{mr: 1}}>
-                          {koboIconMap[indexQuestion[option].type]}
-                        </Icon>
+                        <KoboTypeIcon children={indexQuestion[option].type} />
                         <div>
                           <Core.Txt block>
                             {KoboSchemaHelper.getLabel(indexQuestion[option], langIndex).replace(/<[^>]+>/g, '') ??

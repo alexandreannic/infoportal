@@ -10,9 +10,11 @@ import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
-import {buildDatabaseColumns, BuildFormColumnProps} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Messages} from '@infoportal/client-i18n'
 import {TabContent} from '@/shared/Tab/TabContent.js'
+import {buildDbColumns, OnRepeatGroupClick} from '@infoportal/database-column'
+import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
+import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate.js'
 
 export const databaseKoboRepeatRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -73,13 +75,14 @@ const DatabaseKoboRepeat = ({
   const navigate = useNavigate()
 
   const queryAnswers = UseQuerySubmission.search({workspaceId, formId})
+  const queryUpdate = useQueryAnswerUpdate().update
   const data = queryAnswers.data?.data
   const groupInfo = schema.helper.group.getByName(group)!
-  console.log(group, groupInfo)
   const paths = groupInfo?.pathArr
 
   const {columns, filters} = useMemo(() => {
     const res = getColumnsForRepeatGroup({
+      queryUpdateAnswer: queryUpdate,
       formId,
       schema,
       workspaceId,
@@ -166,6 +169,7 @@ export function getColumnsForRepeatGroup({
   schema,
   workspaceId,
   onRepeatGroupClick,
+  queryUpdateAnswer,
   m,
   t,
 }: {
@@ -173,7 +177,8 @@ export function getColumnsForRepeatGroup({
   groupName: string
   formId: Ip.FormId
   schema: KoboSchemaHelper.Bundle
-  onRepeatGroupClick?: BuildFormColumnProps['onRepeatGroupClick']
+  onRepeatGroupClick?: OnRepeatGroupClick
+  queryUpdateAnswer: Parameters<typeof buildDbColumns.question.byQuestions>[0]['queryUpdateAnswer']
   m: Messages
   t: Theme
 }) {
@@ -204,9 +209,11 @@ export function getColumnsForRepeatGroup({
       head: '_index',
       renderQuick: _ => '' + _._index,
     },
-    buildDatabaseColumns.meta.id(),
-    buildDatabaseColumns.meta.submissionTime({workspaceId, formId, m}),
-    ...buildDatabaseColumns.type.byQuestions({
+    buildDbColumns.meta.id(),
+    buildDbColumns.meta.submissionTime({m}),
+    ...buildDbColumns.question.byQuestions({
+      getFileUrl: getKoboAttachmentUrl,
+      queryUpdateAnswer,
       workspaceId,
       formId,
       questions: groupInfo.questions,

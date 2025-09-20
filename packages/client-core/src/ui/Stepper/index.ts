@@ -1,4 +1,4 @@
-export * from './Stepper.jsx'
+export * from './Stepper'
 export * from './StepperActions'
 export * from './StepperBtnNext'
 export * from './StepperBtnPrevious'

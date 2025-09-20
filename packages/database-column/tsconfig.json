@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.base.package.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./lib"
+  },
+  "references": [
+    {
+      "path": "../client-i18n"
+    },
+    {
+      "path": "../client-core"
+    },
+    {
+      "path": "../common"
+    },
+    {
+      "path": "../client-datatable"
+    },
+    {
+      "path": "../api-sdk"
+    }
+  ]
+}

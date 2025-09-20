@@ -1,6 +1,5 @@
 {
-  "name": "@infoportal/client-core",
-  "type": "module",
+  "name": "@infoportal/database-column",
   "version": "1.0.0",
   "main": "lib/index.js",
   "module": "lib/index.js",
@@ -19,6 +18,11 @@
   },
   "dependencies": {
     "@infoportal/client-i18n": "1.0.0",
+    "@infoportal/client-core": "1.0.0",
+    "infoportal-common": "1.0.0",
+    "@infoportal/client-datatable": "1.0.0",
+    "infoportal-api-sdk": "1.0.0",
+    "kobo-sdk": "^2.4.1",
     "@axanc/react-hooks": "^1.14.0",
     "@mui/material": "^7.3.1",
     "date-fns": "^4.1.0",

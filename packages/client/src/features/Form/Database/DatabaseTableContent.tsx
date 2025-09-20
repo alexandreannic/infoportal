@@ -17,13 +17,14 @@ import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
-import {buildDatabaseColumns} from '@/features/Form/Database/columns/databaseColumnBuilder'
 import {Ip} from 'infoportal-api-sdk'
 import {AppAvatar, Core, Datatable} from '@/shared'
 import {useFormSocket} from '@/features/Form/useFormSocket'
 import {appConfig} from '@/conf/AppConfig.js'
 import {DatabaseToolbarContainer} from '@/features/Form/Database/DatabaseToolbarContainer.js'
 import {useAsync} from '@axanc/react-hooks'
+import {buildDbColumns, OnRepeatGroupClick} from '@infoportal/database-column'
+import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -53,7 +54,7 @@ export const DatabaseTableContent = ({
   const setLangIndex = useLangIndex(_ => _.setLangIndex)
   const navigate = useNavigate()
   const ctx = useDatabaseKoboTableContext()
-  const dialogs = useKoboDialogs({workspaceId, formId: ctx.form.id})
+  const dialog = useKoboDialogs({workspaceId, formId: ctx.form.id})
   const connectedUsers = useFormSocket({workspaceId, formId: ctx.form.id})
   const [viewEditorOpen, setViewEditorOpen] = useState(false)
 
@@ -69,39 +70,36 @@ export const DatabaseTableContent = ({
   }, [ctx.data, ctx.groupDisplay.get])
 
   const schemaColumns = useMemo(() => {
-    const schemaColumns = buildDatabaseColumns.type.bySchema({
+    const onRepeatGroupClick = (_: Parameters<OnRepeatGroupClick>[0]) =>
+      navigate({
+        to: '/$workspaceId/form/$formId/group/$group',
+        params: {workspaceId, formId: ctx.form.id, group: _.name},
+        search: {
+          id: _.row.id,
+          index: _.row._index,
+        },
+      })
+    const schemaColumns = buildDbColumns.question.bySchema({
+      queryUpdateAnswer: queryUpdate.update,
+      getFileUrl: getKoboAttachmentUrl,
       workspaceId: workspaceId,
       isReadonly: !ctx.canEdit,
       getRow: (_: Submission) => _.answers,
       formId: ctx.form.id,
       schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,
-      onRepeatGroupClick: _ =>
-        navigate({
-          to: '/$workspaceId/form/$formId/group/$group',
-          params: {workspaceId, formId: ctx.form.id, group: _.name},
-          search: {
-            id: _.row.id,
-            index: _.row._index,
-          },
-        }),
+      onRepeatGroupClick,
       t,
       m,
     })
     return databaseKoboDisplayBuilder({
+      queryUpdateAnswer: queryUpdate.update,
+      getFileUrl: getKoboAttachmentUrl,
       workspaceId,
       data: ctx.data ?? [],
       formId: ctx.form.id,
       schema: ctx.schema,
-      onRepeatGroupClick: _ =>
-        navigate({
-          to: '/$workspaceId/form/$formId/group/$group',
-          params: {workspaceId, formId: ctx.form.id, group: _.name},
-          search: {
-            id: _.row.id,
-            index: _.row._index,
-          },
-        }),
+      onRepeatGroupClick,
       display: ctx.groupDisplay.get,
       m,
       t,
@@ -109,15 +107,15 @@ export const DatabaseTableContent = ({
   }, [ctx.data, ctx.schema.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: Datatable.Column.Props<any>[] = useMemo(() => {
-    const base = buildDatabaseColumns.meta.all({
+    const base = buildDbColumns.meta.all({
       formType: ctx.form.type,
-      queryUpdate: queryUpdate,
+      queryUpdateValidation: queryUpdate.updateValidation,
       workspaceId,
       formId: ctx.form.id,
       isReadonly: !ctx.canEdit,
       koboEditEnketoUrl: ctx.koboEditEnketoUrl,
       m,
-      dialogs,
+      dialog,
     })
     const colOriginId: Datatable.Column.Props<Ip.Submission>[] = []
     if (ctx.form.type === 'kobo' || ctx.form.type === 'smart') {
