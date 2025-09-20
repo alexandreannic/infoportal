@@ -9,6 +9,11 @@
     "incremental": true,
     "outDir": "./lib"
   },
+  "references": [
+    {
+      "path": "../client-i18n"
+    }
+  ],
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx"

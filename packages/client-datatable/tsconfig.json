@@ -27,6 +27,11 @@
       }
     ]
   },
+  "references": [
+    {
+      "path": "../client-core"
+    }
+  ],
   "include": [
     "src/**/*"
   ],

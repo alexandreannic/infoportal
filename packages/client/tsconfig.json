@@ -19,6 +19,23 @@
       ]
     }
   },
+  "references": [
+    {
+      "path": "../client-core"
+    },
+    {
+      "path": "../client-datatable"
+    },
+    {
+      "path": "../client-i18n"
+    },
+    {
+      "path": "../api-sdk"
+    },
+    {
+      "path": "../common"
+    }
+  ],
   "include": [
     "**/*.ts",
     "**/*.tsx"

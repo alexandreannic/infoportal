@@ -16,11 +16,6 @@
       ]
     }
   },
-  "references": [
-    {
-      "path": "../common"
-    }
-  ],
   "ts-node": {
     "files": true
   },

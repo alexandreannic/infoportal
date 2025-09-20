@@ -15,5 +15,22 @@
   ],
   "exclude": [
     "node_modules"
+  ],
+  "references": [
+    {
+      "path": "../client-i18n"
+    },
+    {
+      "path": "../client-core"
+    },
+    {
+      "path": "../common"
+    },
+    {
+      "path": "../client-datatable"
+    },
+    {
+      "path": "../api-sdk"
+    }
   ]
 }

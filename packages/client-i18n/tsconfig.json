@@ -15,5 +15,10 @@
   ],
   "exclude": [
     "node_modules"
+  ],
+  "references": [
+    {
+      "path": "../api-sdk"
+    }
   ]
 }
