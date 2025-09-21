@@ -11,7 +11,7 @@ import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute} from '@/features/Form/Form'
 import {TabContent} from '@/shared/Tab/TabContent.js'
-import {buildDbColumns, OnRepeatGroupClick} from '@infoportal/database-column'
+import {buildDbColumns, defaultColWidth, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate.js'
 

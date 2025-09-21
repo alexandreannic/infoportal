@@ -2,12 +2,12 @@ import {Box, Icon, Tooltip as MuiTooltip, useTheme} from '@mui/material'
 import {capitalize} from 'infoportal-common'
 import {Link} from '@tanstack/react-router'
 import {SidebarItem} from '@/shared/Layout/Sidebar/index.js'
-import {Asset} from '@/shared/Asset.js'
+import {Asset, AssetIcon} from '@/shared/Asset.js'
 import {Core} from '@/shared'
 import {ReactElement} from 'react'
 import {Ip} from 'infoportal-api-sdk'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
-import {DeploymentStatus} from '@/shared/DeploymentStatus.js'
+import {DeploymentStatusIcon} from '@/shared/DeploymentStatus.js'
 
 export const AppSidebarAsset = ({
   asset,
@@ -27,13 +27,13 @@ export const AppSidebarAsset = ({
             size={formItemSize}
             sx={{height: 26}}
             onClick={() => undefined}
-            icon={<Asset.Icon fontSize="small" sx={{mr: `calc(${t.vars.spacing}/ -2)`}} type={asset.type} />}
+            icon={<AssetIcon fontSize="small" sx={{mr: `calc(${t.vars.spacing}/ -2)`}} type={asset.type} />}
             key={asset.id}
             active={isActive}
             iconEnd={
               asset.deploymentStatus &&
               asset.deploymentStatus !== 'deployed' && (
-                <DeploymentStatus.Icon
+                <DeploymentStatusIcon
                   fontSize="small"
                   status={asset.deploymentStatus}
                   sx={{marginLeft: '4px', marginRight: '-4px'}}
@@ -78,7 +78,7 @@ function Tooltip({asset, children}: {asset: Asset; children: ReactElement}) {
           </Box>
           {asset.deploymentStatus && asset.deploymentStatus !== 'deployed' && (
             <Box>
-              <DeploymentStatus.Icon
+              <DeploymentStatusIcon
                 status={asset.deploymentStatus}
                 fontSize="medium"
                 sx={{width: 35, m: 0}}

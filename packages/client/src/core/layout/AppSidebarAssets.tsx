@@ -9,7 +9,7 @@ import {mapFor, Seq, seq} from '@axanc/ts-utils'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
 import {AppSidebarAsset} from '@/core/layout/AppSidebarAsset.js'
-import {Asset} from '@/shared/Asset.js'
+import {Asset, AssetType} from '@/shared/Asset.js'
 
 export const AppSidebarAssets = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
   const {m} = useI18n()
@@ -24,7 +24,7 @@ export const AppSidebarAssets = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) =
       queryForm.data.map(_ => {
         return {
           id: _.id,
-          type: _.type as Asset.Type,
+          type: _.type as AssetType,
           category: _.category,
           createdAt: _.createdAt,
           name: _.name,
