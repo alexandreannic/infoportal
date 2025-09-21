@@ -11,8 +11,8 @@ import {createRoute, Link} from '@tanstack/react-router'
 import {formRootRoute} from '@/features/Form/Form'
 import {Ip} from 'infoportal-api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
-import {DeploymentStatus} from '@/shared/DeploymentStatus'
-import {Asset} from '@/shared/Asset.js'
+import {DeploymentStatusIcon} from '@/shared/DeploymentStatus'
+import {AssetIcon} from '@/shared/Asset.js'
 import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
 
 export const formsRoute = createRoute({
@@ -65,7 +65,7 @@ function Forms() {
               align: 'center',
               render: _ => {
                 return {
-                  label: <Asset.Icon type={_.type as any} />,
+                  label: <AssetIcon type={_.type as any} />,
                   value: _.type,
                   export: _.type,
                   option: _.type,
@@ -97,7 +97,7 @@ function Forms() {
               align: 'center',
               render: _ => {
                 return {
-                  label: <DeploymentStatus.Icon status={_.deploymentStatus} />,
+                  label: <DeploymentStatusIcon status={_.deploymentStatus} />,
                   value: _.deploymentStatus,
                   export: _.deploymentStatus,
                   option: _.deploymentStatus,

@@ -6,8 +6,8 @@ import {useI18n} from '@infoportal/client-i18n'
 import {forwardRef, useEffect, useMemo} from 'react'
 import {Core} from '@/shared'
 import Fuse from 'fuse.js'
-import {Asset} from '@/shared/Asset.js'
-import {DeploymentStatus} from '@/shared/DeploymentStatus.js'
+import {Asset, AssetIcon, AssetType} from '@/shared/Asset.js'
+import {DeploymentStatusIcon} from '@/shared/DeploymentStatus.js'
 import {usePersistentState} from '@axanc/react-hooks'
 
 const SearchInput = forwardRef(
@@ -68,7 +68,7 @@ const SearchInput = forwardRef(
 type FilterForm = {
   name: string
   category: string[]
-  assetType: Asset.Type[]
+  assetType: AssetType[]
   status: Ip.Form.DeploymentStatus[]
 }
 
@@ -159,7 +159,7 @@ export const AppSidebarFilters = ({
               name="assetType"
               control={searchForm.control}
               render={({field}) => (
-                <Core.RadioGroup<Asset.Type>
+                <Core.RadioGroup<AssetType>
                   value={field.value}
                   onChange={_ => field.onChange(_)}
                   multiple
@@ -167,8 +167,8 @@ export const AppSidebarFilters = ({
                   dense
                   sx={{flex: 1, mr: 0.25}}
                 >
-                  {Obj.values(Asset.Type).map(_ => (
-                    <Core.RadioGroupItem hideRadio key={_} value={_} title={<Asset.Icon fontSize="small" type={_} />} />
+                  {Obj.values(AssetType).map(_ => (
+                    <Core.RadioGroupItem hideRadio key={_} value={_} title={<AssetIcon fontSize="small" type={_} />} />
                   ))}
                 </Core.RadioGroup>
               )}
@@ -191,7 +191,7 @@ export const AppSidebarFilters = ({
                       key={_}
                       value={_}
                       sx={{display: 'flex', alignItems: 'center'}}
-                      title={<DeploymentStatus.Icon fontSize="small" status={_} />}
+                      title={<DeploymentStatusIcon fontSize="small" status={_} />}
                     />
                   ))}
                 </Core.RadioGroup>

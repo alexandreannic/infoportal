@@ -1,9 +1,9 @@
 import {Ip} from 'infoportal-api-sdk'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import React, {useMemo, useState} from 'react'
-import {Asset} from '@/shared/Asset'
+import {Asset, AssetIcon, AssetType} from '@/shared/Asset'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters'
-import {DeploymentStatus} from '@/shared/DeploymentStatus'
+import {DeploymentStatusIcon} from '@/shared/DeploymentStatus'
 import {Core} from '.'
 
 export function SelectFormInput({
@@ -18,7 +18,7 @@ export function SelectFormInput({
   const queryForms = UseQueryForm.getAccessibles(workspaceId)
   const assets = useMemo(() => {
     if (!queryForms.data) return []
-    return queryForms.data.map(_ => ({..._, type: _.kobo ? Asset.Type.kobo : Asset.Type.internal}))
+    return queryForms.data.map(_ => ({..._, type: _.kobo ? AssetType.kobo : AssetType.internal}))
   }, [queryForms.data])
 
   const [filteredAsset, setFilteredAsset] = useState<Asset[]>(assets)
@@ -32,10 +32,10 @@ export function SelectFormInput({
             value={_.id}
             key={_.id}
             sx={{display: 'flex', alignItems: 'center'}}
-            icon={<Asset.Icon type={_.type} />}
+            icon={<AssetIcon type={_.type} />}
             endContent={
               _.deploymentStatus &&
-              _.deploymentStatus !== 'deployed' && <DeploymentStatus.Icon status={_.deploymentStatus} />
+              _.deploymentStatus !== 'deployed' && <DeploymentStatusIcon status={_.deploymentStatus} />
             }
           >
             {_.name}

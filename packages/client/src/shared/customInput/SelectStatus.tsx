@@ -6,7 +6,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
 
-export namespace SelectStatusConfig {
+export namespace selectStatusConfig {
   export const enumStatus = {
     KoboValidation: Ip.Submission.Validation,
   }
@@ -48,19 +48,9 @@ export namespace SelectStatusConfig {
       iconOutlined: 'remove_circle_outline',
     },
   }
-
-  export const customStatusToStateStatus = {
-    KoboValidation: {
-      Approved: 'success',
-      Pending: 'warning',
-      Rejected: 'error',
-      Flagged: 'info',
-      UnderReview: 'warning',
-    } as Record<Ip.Submission.Validation, StateStatus>,
-  }
 }
 
-export const OptionLabelType = ({
+const OptionLabelType = ({
   type,
   iconFilled,
   children,
@@ -70,7 +60,7 @@ export const OptionLabelType = ({
   children: ReactNode
 }) => {
   const t = useTheme()
-  const style = SelectStatusConfig.stateStatusStyle[type]
+  const style = selectStatusConfig.stateStatusStyle[type]
   return (
     <Box sx={{display: 'flex', alignItems: 'center'}}>
       <StateStatusIcon filled={iconFilled} type={type} />
@@ -81,7 +71,7 @@ export const OptionLabelType = ({
 
 export const StateStatusIcon = ({type, filled, sx}: {type: StateStatus; filled?: boolean; sx?: SxProps}) => {
   const t = useTheme()
-  const style = SelectStatusConfig.stateStatusStyle[type]
+  const style = selectStatusConfig.stateStatusStyle[type]
   if (!style) {
     return null
   }
@@ -128,26 +118,6 @@ export const SelectStatus = <T extends string>({
       hideNullOption={false}
       options={options}
       {...props}
-    />
-  )
-}
-
-export const SelectStatusBy = <
-  K extends SelectStatusConfig.EnumStatus,
-  V extends (typeof SelectStatusConfig.enumStatus)[K][KeyOf<(typeof SelectStatusConfig.enumStatus)[K]>],
->(
-  // @ts-ignore
-  props: Omit<SelectStatusProps<V>, 'status' | 'labels'> & {
-    enum: K
-  },
-) => {
-  return (
-    // @ts-ignore
-    <SelectStatus
-      {...props}
-      iconFilled={props.enum === 'KoboValidation'}
-      labels={SelectStatusConfig.customStatusToStateStatus[props.enum]}
-      status={SelectStatusConfig.enumStatus[props.enum]}
     />
   )
 }
