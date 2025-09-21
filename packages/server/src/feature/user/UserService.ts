@@ -2,7 +2,7 @@ import {PrismaClient} from '@prisma/client'
 import {UUID} from 'infoportal-common'
 import {app, AppLogger} from '../../index.js'
 import {Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class UserService {
   private static instance: UserService
@@ -47,7 +47,7 @@ export class UserService {
           avatar: false,
         },
       })
-      .then(_ => _.map(PrismaHelper.mapUser))
+      .then(_ => _.map(prismaMapper.access.mapUser))
   }
 
   readonly getUserByEmail = async (email: Ip.User.Email) => {
@@ -67,7 +67,7 @@ export class UserService {
         where: {email},
         data: data,
       })
-      .then(PrismaHelper.mapUser)
+      .then(prismaMapper.access.mapUser)
   }
 
   readonly updateByUserId = ({workspaceId, id, ...data}: Ip.User.Payload.Update) => {
@@ -76,7 +76,7 @@ export class UserService {
         where: {id},
         data: data,
       })
-      .then(PrismaHelper.mapUser)
+      .then(prismaMapper.access.mapUser)
   }
 
   readonly getDistinctJobs = async ({workspaceId}: {workspaceId: Ip.WorkspaceId}): Promise<string[]> => {
@@ -89,6 +89,6 @@ export class UserService {
   }
 
   readonly getByEmail = (email: Ip.User.Email): Promise<Ip.User | undefined> => {
-    return this.prisma.user.findFirst({where: {email}}).then(_ => (_ ? PrismaHelper.mapUser(_) : undefined))
+    return this.prisma.user.findFirst({where: {email}}).then(_ => (_ ? prismaMapper.access.mapUser(_) : undefined))
   }
 }

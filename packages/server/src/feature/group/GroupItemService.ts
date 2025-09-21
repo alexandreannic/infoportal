@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class GroupItemService {
   constructor(private prisma: PrismaClient) {}
@@ -24,7 +24,7 @@ export class GroupItemService {
           },
         }),
       ),
-    ).then(_ => _.map(PrismaHelper.mapGroupItem))
+    ).then(_ => _.map(prismaMapper.access.mapGroupItem))
   }
 
   readonly update = async ({job, email, location, id, level}: Ip.Group.Payload.ItemUpdate) => {
@@ -40,7 +40,7 @@ export class GroupItemService {
           email: email,
         },
       })
-      .then(PrismaHelper.mapGroupItem)
+      .then(prismaMapper.access.mapGroupItem)
   }
 
   readonly remove = ({id}: {id: Ip.Group.ItemId}) => {

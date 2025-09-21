@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {HttpError, Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../../../core/PrismaHelper.js'
+import {prismaMapper} from '../../../../core/prismaMapper/PrismaMapper.js'
 
 type LiveReport = Omit<Ip.Form.Action.Report, 'id'>
 
@@ -47,7 +47,7 @@ export class FormActionRunningReportManager {
       .create({
         data: {...report, endedAt: new Date(), failed: failed ?? null},
       })
-      .then(PrismaHelper.mapFormActionReport)
+      .then(prismaMapper.form.mapFormActionReport)
   }
 
   get(formId: Ip.FormId): Ip.Form.Action.Report | undefined {

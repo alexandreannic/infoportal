@@ -11,7 +11,7 @@ import {Kobo} from 'kobo-sdk'
 import {IpEvent, KoboCustomDirective, logPerformance} from 'infoportal-common'
 import {KoboMapper} from '../../kobo/KoboMapper.js'
 import {FormService} from '../FormService.js'
-import {PrismaHelper} from '../../../core/PrismaHelper.js'
+import {prismaMapper} from '../../../core/prismaMapper/PrismaMapper.js'
 import {nanoid} from 'nanoid'
 
 export class SubmissionService {
@@ -236,7 +236,7 @@ export class SubmissionService {
         },
         data: data,
       })
-      .then(_ => PrismaHelper.mapSubmission(_) as Ip.Submission)
+      .then(_ => prismaMapper.form.mapSubmission(_) as Ip.Submission)
     this.event.emit(IpEvent.SUBMISSION_NEW, {workspaceId, formId: data.formId as Ip.FormId, submission})
     return submission
   }

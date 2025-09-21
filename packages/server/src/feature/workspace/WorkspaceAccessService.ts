@@ -3,7 +3,7 @@ import {InferType} from 'yup'
 import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {UserService} from '../user/UserService.js'
 import {HttpError, Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export type WorkspaceAccessCreate = InferType<typeof WorkspaceAccessService.schema.create>
 
@@ -42,7 +42,7 @@ export class WorkspaceAccessService {
           createdBy,
         },
       })
-      .then(PrismaHelper.mapWorkspaceAccess)
+      .then(prismaMapper.workspace.mapWorkspaceAccess)
   }
 
   readonly searchInvitations = async ({
@@ -54,7 +54,7 @@ export class WorkspaceAccessService {
       .findMany({
         where: {workspaceId},
       })
-      .then(_ => _.map(PrismaHelper.mapWorkspaceInvitation))
+      .then(_ => _.map(prismaMapper.workspace.mapWorkspaceInvitation))
   }
 
   readonly getByUser = async ({workspaceId, user}: {workspaceId: Ip.WorkspaceId; user: Ip.User}) => {

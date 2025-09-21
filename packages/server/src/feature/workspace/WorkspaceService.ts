@@ -4,7 +4,7 @@ import {slugify, UUID} from 'infoportal-common'
 import {GroupService} from '../group/GroupService.js'
 import {FormAccessService} from '../form/access/FormAccessService.js'
 import {Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class WorkspaceService {
   constructor(
@@ -60,7 +60,7 @@ export class WorkspaceService {
           }
         })
       })
-      .then(_ => _.map(PrismaHelper.mapWorkspace))
+      .then(_ => _.map(prismaMapper.workspace.mapWorkspace))
   }
 
   readonly create = async (data: Ip.Workspace.Payload.Create, user: Ip.User) => {
@@ -82,7 +82,7 @@ export class WorkspaceService {
           },
         },
       })
-      .then(PrismaHelper.mapWorkspace)
+      .then(prismaMapper.workspace.mapWorkspace)
   }
 
   readonly update = (id: UUID, data: Partial<Ip.Workspace.Payload.Update>) => {
@@ -91,7 +91,7 @@ export class WorkspaceService {
         where: {id},
         data: data,
       })
-      .then(PrismaHelper.mapWorkspace)
+      .then(prismaMapper.workspace.mapWorkspace)
   }
 
   readonly remove = async (id: UUID) => {

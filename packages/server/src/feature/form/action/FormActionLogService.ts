@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {Ip, Paginate} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../../core/PrismaHelper.js'
+import {prismaMapper} from '../../../core/prismaMapper/PrismaMapper.js'
 
 export class FormActionLogService {
   constructor(private prisma: PrismaClient) {}
@@ -26,7 +26,7 @@ export class FormActionLogService {
           },
         },
       })
-      .then(_ => _.map(PrismaHelper.mapFormActionLog))
+      .then(_ => _.map(prismaMapper.form.mapFormActionLog))
       .then(Paginate.make())
   }
 }

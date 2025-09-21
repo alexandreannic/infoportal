@@ -8,7 +8,7 @@ import {google} from 'googleapis'
 import {WorkspaceService} from '../workspace/WorkspaceService.js'
 import {UserProfile} from './AppSession.js'
 import {HttpError, Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {UserService} from '../user/UserService.js'
 
 export class SessionService {
@@ -79,7 +79,7 @@ export class SessionService {
     })
 
     this.log.info(`${connectedUser.email} connected via Google.`)
-    return PrismaHelper.mapUser(connectedUser)
+    return prismaMapper.access.mapUser(connectedUser)
   }
 
   readonly loginWithMicrosoft = async (userBody: {
@@ -127,7 +127,7 @@ export class SessionService {
       avatar: avatar ? Buffer.from(avatar) : undefined,
     })
     this.log.info(`${connectedUser.email} connected.`)
-    return PrismaHelper.mapUser(connectedUser)
+    return prismaMapper.access.mapUser(connectedUser)
   }
 
   readonly syncUserInDb = async ({

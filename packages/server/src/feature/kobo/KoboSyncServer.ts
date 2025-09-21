@@ -10,7 +10,7 @@ import {appConf} from '../../core/conf/AppConf.js'
 import {genUUID, previewList} from '../../helper/Utils.js'
 import {Kobo, KoboSubmissionFormatter} from 'kobo-sdk'
 import {KoboMapper} from './KoboMapper.js'
-import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export type KoboInsert = {
   id: Ip.SubmissionId
@@ -106,7 +106,7 @@ export class KoboSyncServer {
         select: {workspaceId: true, id: true},
         where: {kobo: {koboId: koboFormId}},
       })
-      .then(_ => _.map(PrismaHelper.mapForm))
+      .then(_ => _.map(prismaMapper.form.mapForm))
     this.log.info(`Handle webhook for form ${koboFormId}, ${_answer._id}`)
     connectedForms.map(_ => {
       const answers = KoboSyncServer.mapAnswer(_.id, _answer)

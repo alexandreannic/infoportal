@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {HttpError, Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {WorkspaceAccessCreate, WorkspaceAccessService} from './WorkspaceAccessService.js'
 import {UserService} from '../user/UserService.js'
 
@@ -19,7 +19,7 @@ export class WorkspaceInvitationService {
           toEmail: user.email,
         },
       })
-      .then(_ => _.map(PrismaHelper.mapWorkspaceInvitationW_workspace))
+      .then(_ => _.map(prismaMapper.workspace.mapWorkspaceInvitationW_workspace))
   }
 
   readonly create = async (
@@ -50,7 +50,7 @@ export class WorkspaceInvitationService {
           toEmail: email,
         },
       })
-      .then(PrismaHelper.mapWorkspaceInvitation)
+      .then(prismaMapper.workspace.mapWorkspaceInvitation)
   }
 
   readonly remove = async ({id}: {id: Ip.Workspace.InvitationId}) => {
@@ -60,7 +60,7 @@ export class WorkspaceInvitationService {
   readonly accept = async ({id, accept}: {accept: boolean; id: Ip.Workspace.InvitationId}) => {
     const invitation = await this.prisma.workspaceInvitation
       .findFirst({where: {id}})
-      .then(_ => (_ ? PrismaHelper.mapWorkspaceInvitation(_) : undefined))
+      .then(_ => (_ ? prismaMapper.workspace.mapWorkspaceInvitation(_) : undefined))
     if (!invitation) throw new HttpError.NotFound()
     if (accept)
       await this.access.create(
@@ -83,6 +83,6 @@ export class WorkspaceInvitationService {
       .findMany({
         where: {workspaceId},
       })
-      .then(_ => _.map(PrismaHelper.mapWorkspaceInvitation))
+      .then(_ => _.map(prismaMapper.workspace.mapWorkspaceInvitation))
   }
 }

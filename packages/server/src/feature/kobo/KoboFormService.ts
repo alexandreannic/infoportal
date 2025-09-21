@@ -6,7 +6,7 @@ import {appConf} from '../../core/conf/AppConf.js'
 import {app, AppCacheKey} from '../../index.js'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {FormService, FormServiceCreatePayload} from '../form/FormService.js'
 
 export class KoboFormService {
@@ -73,7 +73,7 @@ export class KoboFormService {
     ])
     this.cache.clear(AppCacheKey.KoboServerIndex)
     this.cache.clear(AppCacheKey.KoboClient)
-    return PrismaHelper.mapForm(newFrom)
+    return prismaMapper.form.mapForm(newFrom)
   }
 
   readonly deleteHookIfExists = async ({formId, sdk}: {formId: Kobo.FormId; sdk?: KoboClient}) => {
@@ -146,7 +146,7 @@ export class KoboFormService {
           workspaceId: wsId,
         },
       })
-      .then(_ => _.map(PrismaHelper.mapForm))
+      .then(_ => _.map(prismaMapper.form.mapForm))
   }
 
   readonly refreshAll = async ({byEmail, wsId}: {byEmail: Ip.User.Email; wsId: Ip.WorkspaceId}) => {

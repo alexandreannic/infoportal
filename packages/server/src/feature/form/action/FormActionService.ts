@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {HttpError, Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../../core/PrismaHelper.js'
+import {prismaMapper} from '../../../core/prismaMapper/PrismaMapper.js'
 import {app, AppCacheKey} from '../../../index.js'
 
 export class FormActionService {
@@ -20,7 +20,7 @@ export class FormActionService {
       .create({
         data,
       })
-      .then(PrismaHelper.mapFormAction)
+      .then(prismaMapper.form.mapFormAction)
     this.cache.clear(AppCacheKey.FormAction, action.formId)
     return action
   }
@@ -38,7 +38,7 @@ export class FormActionService {
           id,
         },
       })
-      .then(PrismaHelper.mapFormAction)
+      .then(prismaMapper.form.mapFormAction)
     this.cache.clear(AppCacheKey.FormAction, action.formId)
     return action
   }
@@ -47,12 +47,12 @@ export class FormActionService {
     return this.prisma.formAction
       .findMany({orderBy: {createdAt: 'desc'}, where: {formId, disabled: {not: true}, body: {not: null}}})
       .then(_ => _.filter(_ => !_.bodyErrors || _.bodyErrors == 0))
-      .then(_ => _.map(PrismaHelper.mapFormAction))
+      .then(_ => _.map(prismaMapper.form.mapFormAction))
   }
 
   readonly getByForm = ({formId}: {formId: Ip.FormId}): Promise<Ip.Form.Action[]> => {
     return this.prisma.formAction
       .findMany({orderBy: {createdAt: 'desc'}, where: {formId}})
-      .then(_ => _.map(PrismaHelper.mapFormAction))
+      .then(_ => _.map(prismaMapper.form.mapFormAction))
   }
 }

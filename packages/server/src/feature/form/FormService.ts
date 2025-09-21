@@ -2,7 +2,7 @@ import {Form, PrismaClient} from '@prisma/client'
 import {HttpError, Ip} from 'infoportal-api-sdk'
 import {FormVersionService} from './FormVersionService.js'
 import {FormAccessService} from './access/FormAccessService.js'
-import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {Kobo} from 'kobo-sdk'
 import {seq} from '@axanc/ts-utils'
 import {KoboSchemaCache} from './KoboSchemaCache.js'
@@ -28,7 +28,7 @@ export class FormService {
 
   readonly getSchema = async ({formId}: {formId: Ip.FormId}): Promise<undefined | Ip.Form.Schema> => {
     const form = await this.prisma.form.findFirst({select: {id: true, kobo: true}, where: {id: formId}}).then(_ => {
-      if (_) return {..._, kobo: _.kobo ? PrismaHelper.mapKoboInfo(_.kobo) : _.kobo}
+      if (_) return {..._, kobo: _.kobo ? prismaMapper.form.mapKoboInfo(_.kobo) : _.kobo}
       return _
     })
     if (!form) return
@@ -100,13 +100,13 @@ export class FormService {
       email: uploadedBy,
       level: 'Admin',
     })
-    return PrismaHelper.mapForm(created)
+    return prismaMapper.form.mapForm(created)
   }
 
   readonly get = async (id: Ip.FormId): Promise<Ip.Form | undefined> => {
     return this.prisma.form.findFirst({include: {kobo: true}, where: {id}}).then(_ => {
       if (!_) return
-      return PrismaHelper.mapForm(_)
+      return prismaMapper.form.mapForm(_)
     })
   }
 
@@ -153,7 +153,7 @@ export class FormService {
         where: {id: formId},
         data: newData,
       })
-      .then(PrismaHelper.mapForm)
+      .then(prismaMapper.form.mapForm)
   }
 
   readonly remove = async (id: Ip.FormId): Promise<void> => {
@@ -186,7 +186,7 @@ export class FormService {
           },
         },
       })
-      .then(_ => _.map(PrismaHelper.mapForm))
+      .then(_ => _.map(prismaMapper.form.mapForm))
   }
 
   readonly getAll = async ({wsId}: {wsId: Ip.WorkspaceId}): Promise<Ip.Form[]> => {
@@ -199,7 +199,7 @@ export class FormService {
           workspaceId: wsId,
         },
       })
-      .then(_ => _.map(PrismaHelper.mapForm))
+      .then(_ => _.map(prismaMapper.form.mapForm))
   }
 
   readonly getKoboIdByFormId = (formId: Ip.FormId): Promise<Kobo.FormId | undefined> => {

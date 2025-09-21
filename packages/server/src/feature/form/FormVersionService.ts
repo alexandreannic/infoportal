@@ -5,7 +5,7 @@ import {Kobo} from 'kobo-sdk'
 import {yup} from '../../helper/Utils.js'
 import {XlsFormParser} from '../kobo/XlsFormParser.js'
 import {HttpError, Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {FormService} from './FormService.js'
 import {KoboSchemaCache} from './KoboSchemaCache.js'
 
@@ -70,7 +70,7 @@ export class FormVersionService {
           data: {status: 'active'},
         })
       })
-      .then(PrismaHelper.mapVersion)
+      .then(prismaMapper.form.mapVersion)
   }
 
   private readonly createNewVersion = async ({
@@ -109,7 +109,7 @@ export class FormVersionService {
         },
       })
       const versions = await this.getVersions({formId})
-      return PrismaHelper.mapVersion({...schema, versions})
+      return prismaMapper.form.mapVersion({...schema, versions})
     })
   }
 
@@ -119,7 +119,7 @@ export class FormVersionService {
         omit: {schema: true},
         where: {formId},
       })
-      .then(_ => _.map(PrismaHelper.mapVersion))
+      .then(_ => _.map(prismaMapper.form.mapVersion))
   }
 
   readonly hasActiveVersion = ({formId}: {formId: Ip.FormId}): Promise<boolean> => {

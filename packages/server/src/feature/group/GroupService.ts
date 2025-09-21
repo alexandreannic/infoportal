@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {format} from 'date-fns'
 import {Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../core/PrismaHelper.js'
+import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class GroupService {
   constructor(private prisma: PrismaClient) {}
@@ -16,7 +16,7 @@ export class GroupService {
           desc: body.desc,
         },
       })
-      .then(PrismaHelper.mapGroup)
+      .then(prismaMapper.access.mapGroup)
   }
 
   readonly update = async ({id, ...data}: Ip.Group.Payload.Update): Promise<Ip.Group | undefined> => {
@@ -30,7 +30,7 @@ export class GroupService {
         },
         data,
       })
-      .then(PrismaHelper.mapGroup)
+      .then(prismaMapper.access.mapGroup)
   }
 
   readonly remove = ({id}: {id: Ip.GroupId}) => {
@@ -71,6 +71,6 @@ export class GroupService {
         },
         orderBy: {createdAt: 'desc'},
       })
-      .then(_ => _.map(PrismaHelper.mapGroup))
+      .then(_ => _.map(prismaMapper.access.mapGroup))
   }
 }

@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {app, AppLogger} from '../../../index.js'
 import {HttpError, Ip} from 'infoportal-api-sdk'
-import {PrismaHelper} from '../../../core/PrismaHelper.js'
+import {prismaMapper} from '../../../core/prismaMapper/PrismaMapper.js'
 
 export class FormAccessService {
   constructor(
@@ -134,7 +134,7 @@ export class FormAccessService {
         where: {id},
         data: data,
       })
-      .then(PrismaHelper.mapAccess)
+      .then(prismaMapper.access.mapAccess)
   }
 
   readonly removeByFormId = ({formId}: {formId: Ip.FormId}) => {
