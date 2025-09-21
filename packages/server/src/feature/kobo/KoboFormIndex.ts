@@ -1,5 +1,5 @@
 import {Kobo} from 'kobo-sdk'
-import {Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
 import {PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../index.js'
 import {duration, seq} from '@axanc/ts-utils'
@@ -16,7 +16,7 @@ export class KoboFormIndex {
     private log = app.logger('KoboAccountIndex'),
   ) {}
 
-  private readonly getFormsIndex = app.cache.request({
+  private readonly getCache = app.cache.request({
     key: AppCacheKey.KoboFormIndex,
     ttlMs: duration(7, 'day'),
     fn: async (): Promise<Record<Ip.FormId, Kobo.FormId>> => {
@@ -36,9 +36,12 @@ export class KoboFormIndex {
     },
   })
 
-  getByFormId = async (formId: Ip.FormId): Promise<Kobo.FormId | undefined> => {
-    const index = await this.getFormsIndex()
-    console.log('index', formId, index)
-    return index[formId]
+  readonly getByFormId = async (formId: Ip.FormId): Promise<Kobo.FormId | undefined> => {
+    const cache = await this.getCache()
+    if (cache[formId]) return cache[formId]
+    app.cache.clear(AppCacheKey.KoboFormIndex)
+    const fresh = await this.getCache()
+    if (fresh[formId]) return cache[formId]
+    throw new HttpError.BadRequest(`Cannot find ${formId} either in cache or database.`)
   }
 }
