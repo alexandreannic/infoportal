@@ -110,15 +110,16 @@ export class UseQuerySubmission {
     // }
   }
 
-  static search({formId, workspaceId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) {
+  static search({formId, workspaceId}: {formId?: Ip.FormId; workspaceId: Ip.WorkspaceId}) {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     const querySchema = useQuerySchema({workspaceId, formId})
 
     const query = useQuery({
+      enabled: !!formId,
       queryKey: queryKeys.submission(formId),
       queryFn: async () => {
-        const answersPromise = apiv2.submission.search({workspaceId, formId})
+        const answersPromise = apiv2.submission.search({workspaceId, formId: formId!})
         const schema = querySchema.data // ?? (await querySchema.refetch().then(r => r.data!))
         const answers = await answersPromise
         return Paginate.map((_: Ip.Submission) => KoboMapper.mapSubmissionBySchema(schema!.helper.questionIndex, _))(

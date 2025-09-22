@@ -58,7 +58,10 @@ export const DashboardCard = ({
         {/*</Core.Txt>*/}
       </Core.PanelBody>
       <Core.PanelFoot>
-        <Link to="/$workspaceId/dashboard/creator" params={{workspaceId: workspace.id}}>
+        <Link
+          to="/$workspaceId/dashboard/$dashboardId/creator"
+          params={{workspaceId: workspace.id, dashboardId: dashboard.id}}
+        >
           <Core.Btn icon="edit">{m.edit}</Core.Btn>
         </Link>
         <Core.PopoverWrapper

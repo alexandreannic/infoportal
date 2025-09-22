@@ -597,8 +597,9 @@ export namespace Ip {
 
   // === Dashboard
   export type DashboardId = Brand<string, 'DashboardId'>
-  export type Dashboard = Omit<Prisma.Dashboard, 'id'> & {
+  export type Dashboard = Omit<Prisma.Dashboard, 'sourceFormId' | 'id'> & {
     id: DashboardId
+    sourceFormId: FormId
   }
 
   export namespace Dashboard {
@@ -619,11 +620,32 @@ export namespace Ip {
       }
     }
     export type WidgetId = Brand<string, 'WidgetId'>
-    export type Widget = Omit<Prisma.Widget, 'id'> & {
+    export type Widget = Omit<Prisma.Widget, 'id' | 'position'> & {
+      position: Widget.Position
       id: WidgetId
       slug: string
     }
     export namespace Widget {
+      export type Position = {
+        x: number
+        y: number
+        w: number
+        h: number
+      }
+
+      export type Config = {
+        [Type.BarChart]: {
+          selectedChoices: string[]
+          base?: 'percentOfTotalAnswers' | 'percentOfTotalChoices'
+          labels: Record<string, string>
+          limit?: number
+          multiple?: boolean
+        }
+      }
+
+      export namespace Payload {
+        export type Create = Omit<Widget, 'id' | 'createdAt' | 'dashboardId'>
+      }
       export type Type = Prisma.WidgetType
       export const Type = {
         PieChart: 'PieChart',

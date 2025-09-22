@@ -61,6 +61,10 @@ const _RadioGroup = <T,>(
 ) => {
   const [innerValue, setInnerValue] = useState<T | T[]>()
 
+  // useEffect(() => {
+  //   onChange?.(innerValue as any)
+  // }, [innerValue])
+
   useEffect(() => {
     if (value !== undefined) {
       setInnerValue(value)
@@ -100,25 +104,21 @@ const _RadioGroup = <T,>(
                   ? innerValue.includes(child.props.value)
                   : innerValue === child.props.value,
               onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                if (child.props.disabled) return
+                if (child.props.disabled || disabled) return
                 if (child.props.onClick) child.props.onClick(event)
-                if (!disabled) {
-                  const value = child.props.value
-                  setInnerValue(currentValue => {
-                    const newValue = (() => {
-                      if (isMultiple(multiple, currentValue)) {
-                        if (currentValue.includes(value)) {
-                          return currentValue.filter(_ => _ !== value)
-                        } else {
-                          return [...currentValue, value]
-                        }
-                      }
-                      return value
-                    })()
-                    if (onChange) onChange(newValue as any)
-                    return newValue
-                  })
-                }
+                const value = child.props.value
+                const newValue = (() => {
+                  if (isMultiple(multiple, innerValue)) {
+                    if (innerValue.includes(value)) {
+                      return innerValue.filter(_ => _ !== value)
+                    } else {
+                      return [...innerValue, value]
+                    }
+                  }
+                  return value
+                })()
+                setInnerValue(newValue)
+                if (onChange) onChange(newValue as any)
               },
             }),
         )}
