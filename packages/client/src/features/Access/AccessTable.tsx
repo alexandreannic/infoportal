@@ -6,6 +6,7 @@ import {UseQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
 import {useSession} from '@/core/Session/SessionContext'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 
 export const AccessTable = ({
   isAdmin,
@@ -24,7 +25,7 @@ export const AccessTable = ({
   const queryAccess = UseQueryFormAccess.getByFormId({workspaceId, formId})
   const queryAccessUpdate = UseQueryFormAccess.update({workspaceId, formId})
   const queryAccessRemove = UseQueryFormAccess.remove({workspaceId, formId})
-
+  const querySchema = useQuerySchema({workspaceId, formId})
   return (
     <Datatable.Component<Ip.Form.Access>
       id="access"
@@ -95,6 +96,29 @@ export const AccessTable = ({
                 ),
               }
             return {value: row.level, label: row.level}
+          },
+        },
+        {
+          id: 'filter_question',
+          type: 'select_one',
+          head: m.question,
+          renderQuick: _ => querySchema.data?.translate.question(_.filters ? Obj.keys(_.filters)[0] : ''),
+        },
+        {
+          id: 'filter_choices',
+          type: 'select_multiple',
+          options: () => [],
+          head: m.choices,
+          render: _ => {
+            const question = Obj.keys(_.filters ?? {})[0]
+            const choices =
+              _.filters?.[question]
+                .map(_ => _)
+                .map(_ => (querySchema.data ? querySchema.data?.translate.choice(question, _) : _)) ?? []
+            return {
+              value: choices,
+              label: choices.join(', '),
+            }
           },
         },
         ...(isAdmin

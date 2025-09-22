@@ -72,6 +72,7 @@ export const en = Object.freeze({
     updating: 'Updating',
     users: 'Users',
     link: 'Link',
+    choices: 'Choices',
     edit: 'Edit',
     type: 'Type',
     editKobo: `Edit (⚠️. Requires appropriate KoboToolbox permissions).`,

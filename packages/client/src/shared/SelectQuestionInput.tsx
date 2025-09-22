@@ -69,7 +69,13 @@ export const SelectQuestionInput = ({
       }}
       options={questions?.map(_ => _.name!) ?? []}
       renderInput={({InputProps: renderInputProps, ...renderProps}) => (
-        <Core.Input {...renderInputProps} {...renderProps} {...InputProps} />
+        <Core.Input
+          label={m.question}
+          {...renderInputProps}
+          {...renderProps}
+          {...InputProps}
+          endAdornment={loading ? <CircularProgress size={20} /> : undefined}
+        />
       )}
       renderOption={(props, option) => {
         return (
