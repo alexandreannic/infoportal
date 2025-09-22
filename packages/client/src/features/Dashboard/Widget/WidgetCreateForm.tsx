@@ -7,6 +7,8 @@ import {WidgetCreateBtn} from '@/features/Dashboard/Widget/WidgetCreateBtn.js'
 import {Controller, useForm, UseFormReturn} from 'react-hook-form'
 import React, {RefObject, useRef} from 'react'
 import {SelectFormInput} from '@/shared/SelectFormInput'
+import {UseQueryForm} from '@/core/query/useQueryForm'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 
 export type Form = {
   type: Ip.Dashboard.Widget.Type
@@ -17,13 +19,22 @@ type Context = {
   form: UseFormReturn<Form>
   stepperRef: RefObject<Core.StepperHandle | null>
   onClose: () => void
+  dashboard: Ip.Dashboard
   workspaceId: Ip.WorkspaceId
 }
 
 const Context = React.createContext<Context>({} as Context)
 const useContext = () => React.useContext(Context)
 
-export const WidgetCreateForm = ({workspaceId, onClose}: {workspaceId: Ip.WorkspaceId; onClose: () => void}) => {
+export const WidgetCreateForm = ({
+  workspaceId,
+  dashboard,
+  onClose,
+}: {
+  dashboard: Ip.Dashboard
+  workspaceId: Ip.WorkspaceId
+  onClose: () => void
+}) => {
   const form = useForm<Form>()
   const stepperRef = useRef<Core.StepperHandle>(null)
 
@@ -31,6 +42,7 @@ export const WidgetCreateForm = ({workspaceId, onClose}: {workspaceId: Ip.Worksp
   return (
     <Context.Provider
       value={{
+        dashboard,
         onClose,
         form,
         stepperRef,
@@ -46,11 +58,11 @@ export const WidgetCreateForm = ({workspaceId, onClose}: {workspaceId: Ip.Worksp
               label: m.type,
               component: () => <SelectType />,
             },
-            {
-              name: 'source',
-              label: m.source,
-              component: () => <SelectSource />,
-            },
+            // {
+            //   name: 'source',
+            //   label: m.source,
+            //   component: () => <SelectSource />,
+            // },
           ]}
         />
       </Box>
@@ -87,27 +99,12 @@ function SelectType() {
   )
 }
 
-function SelectSource() {
-  const {stepperRef, workspaceId, form} = useContext()
-  return (
-    <>
-      <Controller
-        name="source"
-        control={form.control}
-        render={({field}) => (
-          <SelectFormInput
-            {...field}
-            onChange={_ => {
-              field.onChange({target: _})
-              stepperRef.current?.goTo(2)
-            }}
-            workspaceId={workspaceId}
-          />
-        )}
-      />
-      <StepperActions/>
-    </>
-  )
+function SelectQuestion() {
+  const {dashboard, workspaceId} = useContext()
+  const querySchema = useQuerySchema({workspaceId, formId: dashboard.sourceFormId})
+  return <Box>
+    {querySchema.data?.schema.survey.map()}
+  </Box>
 }
 
 function StepperActions({disableNext}: {disableNext?: boolean}) {

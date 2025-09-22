@@ -4,6 +4,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {ApiError} from '@/core/sdk/server/ApiClient'
+import {useMemo} from 'react'
 
 export class UseQueryDashboard {
   static getAll = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
@@ -13,6 +14,17 @@ export class UseQueryDashboard {
       queryFn: () => apiv2.dashboard.getAll({workspaceId}).catch(toastAndThrowHttpError),
       queryKey: queryKeys.dashboards(workspaceId),
     })
+  }
+
+  static getById = ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
+    const query = this.getAll({workspaceId})
+    const data = useMemo(() => {
+      return query.data?.find(_ => _.id === id)
+    }, [query.data])
+    return {
+      ...query,
+      data,
+    }
   }
 
   static create = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {

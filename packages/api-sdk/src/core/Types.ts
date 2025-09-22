@@ -597,8 +597,9 @@ export namespace Ip {
 
   // === Dashboard
   export type DashboardId = Brand<string, 'DashboardId'>
-  export type Dashboard = Omit<Prisma.Dashboard, 'id'> & {
+  export type Dashboard = Omit<Prisma.Dashboard, 'sourceFormId' | 'id'> & {
     id: DashboardId
+    sourceFormId: FormId
   }
 
   export namespace Dashboard {
