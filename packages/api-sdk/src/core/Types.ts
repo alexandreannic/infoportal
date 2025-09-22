@@ -400,7 +400,7 @@ export namespace Ip {
 
     // === Access
     export type AccessId = Brand<string, 'accessId'>
-    export type Access = Prisma.FormAccess & {
+    export type Access = Omit<Prisma.FormAccess, 'id' | 'filters'> & {
       id: AccessId
       groupName?: string
       filters?: Access.Filters
