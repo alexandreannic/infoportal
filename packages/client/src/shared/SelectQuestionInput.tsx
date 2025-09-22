@@ -1,4 +1,4 @@
-import {Autocomplete, AutocompleteProps, Box, createFilterOptions} from '@mui/material'
+import {Autocomplete, AutocompleteProps, Box, CircularProgress, createFilterOptions} from '@mui/material'
 import {KoboTypeIcon} from '@infoportal/database-column'
 import {KoboSchemaHelper} from 'infoportal-common'
 import React, {useCallback, useMemo} from 'react'
@@ -6,9 +6,11 @@ import {map, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {Core} from '.'
+import {useI18n} from '@infoportal/client-i18n'
 
 type Props = Omit<AutocompleteProps<any, any, any, any>, 'options' | 'renderInput'> & {
-  schema: Ip.Form.Schema
+  schema?: Ip.Form.Schema
+  loading?: boolean
   InputProps: Core.InputProps
   questionTypeFilter: Array<Kobo.Form.QuestionType>
   langIndex?: number
@@ -17,6 +19,7 @@ type Props = Omit<AutocompleteProps<any, any, any, any>, 'options' | 'renderInpu
 export const SelectQuestionInput = ({
   langIndex = 0,
   schema,
+  loading,
   questionTypeFilter,
   value,
   onInputChange,
@@ -24,8 +27,9 @@ export const SelectQuestionInput = ({
   onChange,
   ...props
 }: Props) => {
+  const {m} = useI18n()
   const questions = useMemo(() => {
-    return map(schema.survey, schema => schema.filter(_ => questionTypeFilter.includes(_.type)))
+    return map(schema?.survey, schema => schema.filter(_ => questionTypeFilter.includes(_.type)))
   }, [questionTypeFilter, schema])
 
   const questionIndex = useMemo(() => {
@@ -53,6 +57,7 @@ export const SelectQuestionInput = ({
   return (
     <Autocomplete
       value={value}
+      loading={loading}
       onInputChange={(e, newInputValue, reason) => {
         if (reason === 'reset') {
           onInputChange?.(e, '', reason)
@@ -69,7 +74,13 @@ export const SelectQuestionInput = ({
       }}
       options={questions?.map(_ => _.name!) ?? []}
       renderInput={({InputProps: renderInputProps, ...renderProps}) => (
-        <Core.Input {...renderInputProps} {...renderProps} {...InputProps} />
+        <Core.Input
+          endAdornment={loading ? <CircularProgress size={20} /> : undefined}
+          label={m.question}
+          {...renderInputProps}
+          {...renderProps}
+          {...InputProps}
+        />
       )}
       renderOption={(props, option) => {
         return (

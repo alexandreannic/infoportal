@@ -620,11 +620,21 @@ export namespace Ip {
       }
     }
     export type WidgetId = Brand<string, 'WidgetId'>
-    export type Widget = Omit<Prisma.Widget, 'id'> & {
+    export type Widget = Omit<Prisma.Widget, 'id' | 'position'> & {
+      position: Widget.Position
       id: WidgetId
       slug: string
     }
     export namespace Widget {
+      export type Position = {
+        x: number
+        y: number
+        w: number
+        h: number
+      }
+      export namespace Payload {
+        export type Create = Omit<Widget, 'id' | 'createdAt' | 'dashboardId'>
+      }
       export type Type = Prisma.WidgetType
       export const Type = {
         PieChart: 'PieChart',

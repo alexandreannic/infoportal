@@ -1,22 +1,18 @@
+import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {WidgetCreateBtn} from '@/features/Dashboard/Widget/WidgetCreateBtn.js'
 import {Core} from '@/shared'
+import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {Obj} from '@axanc/ts-utils'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, DialogActions} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
-import {Obj} from '@axanc/ts-utils'
-import {WidgetCreateBtn} from '@/features/Dashboard/Widget/WidgetCreateBtn.js'
-import {Controller, useForm, UseFormReturn} from 'react-hook-form'
 import React, {RefObject, useRef} from 'react'
-import {SelectFormInput} from '@/shared/SelectFormInput'
-import {UseQueryForm} from '@/core/query/useQueryForm'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {Controller, useForm, UseFormReturn} from 'react-hook-form'
 
-export type Form = {
-  type: Ip.Dashboard.Widget.Type
-  source: Ip.FormId
-}
+export type WidgetCreateForm = Ip.Dashboard.Widget.Payload.Create
 
 type Context = {
-  form: UseFormReturn<Form>
+  form: UseFormReturn<WidgetCreateForm>
   stepperRef: RefObject<Core.StepperHandle | null>
   onClose: () => void
   dashboard: Ip.Dashboard
@@ -26,7 +22,7 @@ type Context = {
 const Context = React.createContext<Context>({} as Context)
 const useContext = () => React.useContext(Context)
 
-export const WidgetCreateForm = ({
+export const WidgetCreatorForm = ({
   workspaceId,
   dashboard,
   onClose,
@@ -35,7 +31,7 @@ export const WidgetCreateForm = ({
   workspaceId: Ip.WorkspaceId
   onClose: () => void
 }) => {
-  const form = useForm<Form>()
+  const form = useForm<WidgetCreateForm>()
   const stepperRef = useRef<Core.StepperHandle>(null)
 
   const {m} = useI18n()
@@ -58,11 +54,11 @@ export const WidgetCreateForm = ({
               label: m.type,
               component: () => <SelectType />,
             },
-            // {
-            //   name: 'source',
-            //   label: m.source,
-            //   component: () => <SelectSource />,
-            // },
+            {
+              name: 'source',
+              label: m.source,
+              component: () => <SelectQuestion />,
+            },
           ]}
         />
       </Box>
@@ -70,8 +66,7 @@ export const WidgetCreateForm = ({
   )
 }
 
-function SelectType() {
-  const {form, stepperRef} = useContext()
+function SelectType({form}: {form: UseFormReturn<WidgetCreateForm>}) {
   return (
     <Box>
       <Controller
@@ -83,7 +78,6 @@ function SelectType() {
             {...field}
             onChange={_ => {
               field.onChange({target: _})
-              stepperRef.current?.goTo(1)
             }}
           >
             {Obj.keys(Ip.Dashboard.Widget.Type).map(_ => (
@@ -100,11 +94,39 @@ function SelectType() {
 }
 
 function SelectQuestion() {
-  const {dashboard, workspaceId} = useContext()
+  const {m} = useI18n()
+  const {dashboard, workspaceId, form} = useContext()
   const querySchema = useQuerySchema({workspaceId, formId: dashboard.sourceFormId})
-  return <Box>
-    {querySchema.data?.schema.survey.map()}
-  </Box>
+  const questionName = form.watch('questionName')
+  const question = querySchema.data?.helper.questionIndex[questionName]
+  const choices = querySchema.data?.helper.choicesIndex[question?.select_from_list_name!]
+  return (
+    <Box>
+      <Controller
+        name="questionName"
+        control={form.control}
+        render={({field, formState}) => (
+          <SelectQuestionInput
+            {...field}
+            schema={querySchema.data?.schema}
+            loading={querySchema.isPending}
+            InputProps={{
+              error: !!form.formState.errors.questionName,
+              helperText: form.formState.errors.questionName && m.required,
+            }}
+            questionTypeFilter={['select_multiple', 'select_one']}
+          />
+        )}
+      />
+      {choices && (
+        <Box>
+          {choices.map(choice => (
+            <Box>{choice.name}</Box>
+          ))}
+        </Box>
+      )}
+    </Box>
+  )
 }
 
 function StepperActions({disableNext}: {disableNext?: boolean}) {
