@@ -1,6 +1,6 @@
-import * as form from './PrismaMapperForm'
-import * as workspace from './PrismaMapperWorkspace'
-import * as access from './PrismaMapperAccess'
+import * as form from './PrismaMapperForm.js'
+import * as workspace from './PrismaMapperWorkspace.js'
+import * as access from './PrismaMapperAccess.js'
 
 export const prismaMapper = {
   form,

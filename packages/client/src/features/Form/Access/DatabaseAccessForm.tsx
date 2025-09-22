@@ -10,6 +10,7 @@ import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {UseQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboTypeIcon} from '@infoportal/database-column'
+import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 
 interface Form extends IAccessForm {
   question?: string
@@ -46,14 +47,6 @@ export const DatabaseAccessForm = ({
       indexOptionsByName: seq(form.choices).groupByFirst(_ => _.name),
     }
   }, [form])
-
-  const questions = useMemo(() => {
-    return map(survey, schema =>
-      schema.filter(
-        _ => _.type === 'calculate' || _.type === 'text' || _.type === 'select_multiple' || _.type === 'select_one',
-      ),
-    )
-  }, [survey])
 
   const filterOptions = useCallback(
     (
@@ -99,47 +92,21 @@ export const DatabaseAccessForm = ({
               name="question"
               control={accessForm.control}
               render={({field: {onChange, value, ...field}}) => (
-                <Autocomplete
+                <SelectQuestionInput
                   {...field}
-                  value={value}
-                  onInputChange={(event, newInputValue, reason) => {
-                    if (reason === 'reset') {
-                      onChange('')
-                    } else {
-                      onChange(newInputValue)
-                    }
+                  schema={form}
+                  questionTypeFilter={['calculate', 'text', 'select_multiple', 'select_one']}
+                  InputProps={{
+                    label: m.question,
+                    error: !!accessForm.formState.errors.question,
+                    helperText: accessForm.formState.errors.question && m.required,
                   }}
-                  filterOptions={filterOptions(indexQuestion)}
-                  onChange={(e, _) => {
-                    if (_) {
-                      onChange(_)
-                      accessForm.setValue('questionAnswer', [])
-                    }
+                  onChange={(e, value) => {
+                    onChange(value)
+                    accessForm.setValue('questionAnswer', [])
                   }}
-                  loading={!questions}
-                  options={questions?.map(_ => _.name!) ?? []}
-                  renderInput={({InputProps, ...props}) => (
-                    <Core.Input
-                      {...InputProps}
-                      {...props}
-                      label={m.question}
-                      error={!!accessForm.formState.errors.question}
-                      helperText={accessForm.formState.errors.question && m.required}
-                    />
-                  )}
-                  renderOption={(props, option) => {
-                    return (
-                      <Box component="li" {...props} key={option}>
-                        <KoboTypeIcon children={indexQuestion[option].type} />
-                        <div>
-                          <Core.Txt block>
-                            {KoboSchemaHelper.getLabel(indexQuestion[option], langIndex).replace(/<[^>]+>/g, '') ??
-                              option}
-                          </Core.Txt>
-                          <Core.Txt color="disabled">{option}</Core.Txt>
-                        </div>
-                      </Box>
-                    )
+                  onInputChange={(e, value) => {
+                    onChange(value)
                   }}
                 />
               )}
@@ -165,7 +132,6 @@ export const DatabaseAccessForm = ({
                           filterOptions={filterOptions(indexOptionsByName)}
                           multiple
                           onChange={(e, _) => _ && field.onChange(_)}
-                          loading={!questions}
                           disableCloseOnSelect
                           options={options?.map(_ => _.name) ?? []}
                           // options={options?.map(_ => ({children: KoboSchemaHelper.getLabel(_, langIndex), value: _.name}))}
