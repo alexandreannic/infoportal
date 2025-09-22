@@ -11,6 +11,7 @@ import {UseQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboTypeIcon} from '@infoportal/database-column'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {SelectChoiceInput} from '@/shared/SelectChoiceInput'
 
 interface Form extends IAccessForm {
   question?: string
@@ -38,31 +39,11 @@ export const DatabaseAccessForm = ({
 
   const accessForm = useForm<Form>()
 
-  const {indexQuestion, indexOptionsByListName, indexOptionsByName} = useMemo(() => {
-    return {
-      indexQuestion: seq(survey)
-        .compactBy('name')
-        .groupByFirst(_ => _.name),
-      indexOptionsByListName: seq(form.choices).groupBy(_ => _.list_name),
-      indexOptionsByName: seq(form.choices).groupByFirst(_ => _.name),
-    }
+  const questionIndex = useMemo(() => {
+    return seq(survey)
+      .compactBy('name')
+      .groupByFirst(_ => _.name)
   }, [form])
-
-  const filterOptions = useCallback(
-    (
-      index: Record<
-        string,
-        {
-          name: string
-          label?: string[]
-        }
-      >,
-    ) =>
-      createFilterOptions({
-        stringify: (optionName: string) => KoboSchemaHelper.getLabel(index[optionName], langIndex),
-      }),
-    [form],
-  )
 
   const submit = ({selectBy, question, questionAnswer, ...f}: Form) => {
     queryAccessCreate
@@ -94,6 +75,7 @@ export const DatabaseAccessForm = ({
               render={({field: {onChange, value, ...field}}) => (
                 <SelectQuestionInput
                   {...field}
+                  langIndex={langIndex}
                   schema={form}
                   questionTypeFilter={['calculate', 'text', 'select_multiple', 'select_one']}
                   InputProps={{
@@ -112,57 +94,28 @@ export const DatabaseAccessForm = ({
               )}
             />
             {map(accessForm.watch('question'), questionName => {
-              if (questionName === '') return
-              const question = indexQuestion[questionName]
+              const question = questionIndex[questionName]
               if (!question) return
               switch (question.type) {
                 case 'select_one':
                 case 'select_multiple': {
-                  const listName = question?.select_from_list_name
-                  const options = indexOptionsByListName[listName!]
                   return (
                     <Controller
                       name="questionAnswer"
                       control={accessForm.control}
                       render={({field}) => (
-                        <Autocomplete
+                        <SelectChoiceInput
                           {...field}
+                          langIndex={langIndex}
+                          schema={form}
+                          questionName={questionName}
                           onReset={() => accessForm.setValue('questionAnswer', [])}
-                          freeSolo
-                          filterOptions={filterOptions(indexOptionsByName)}
-                          multiple
                           onChange={(e, _) => _ && field.onChange(_)}
-                          disableCloseOnSelect
-                          options={options?.map(_ => _.name) ?? []}
-                          // options={options?.map(_ => ({children: KoboSchemaHelper.getLabel(_, langIndex), value: _.name}))}
-                          renderInput={({InputProps, ...props}) => (
-                            <Core.Input
-                              {...InputProps}
-                              {...props}
-                              label={m.answer}
-                              error={!!accessForm.formState.errors.questionAnswer}
-                              helperText={accessForm.formState.errors.questionAnswer && m.required}
-                            />
-                          )}
-                          renderTags={(value: string[], getTagProps) =>
-                            value.map((option: string, index: number) => (
-                              // eslint-disable-next-line react/jsx-key
-                              <Chip size="small" variant="outlined" label={option} {...getTagProps({index})} />
-                            ))
-                          }
-                          renderOption={(props, option) => (
-                            <Box component="li" {...props} key={option}>
-                              <div>
-                                <Core.Txt block>
-                                  {KoboSchemaHelper.getLabel(indexOptionsByName[option], langIndex).replace(
-                                    /<[^>]+>/g,
-                                    '',
-                                  ) ?? option}
-                                </Core.Txt>
-                                <Core.Txt color="disabled">{option}</Core.Txt>
-                              </div>
-                            </Box>
-                          )}
+                          InputProps={{
+                            label: m.answer,
+                            error: !!accessForm.formState.errors.questionAnswer,
+                            helperText: accessForm.formState.errors.questionAnswer && m.required,
+                          }}
                         />
                       )}
                     />
