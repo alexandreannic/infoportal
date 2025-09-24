@@ -3,7 +3,6 @@ import {createRoute} from '@tanstack/react-router'
 import Grid from 'react-grid-layout'
 import {Box, useTheme} from '@mui/material'
 import 'react-grid-layout/css/styles.css'
-import 'react-resizable/css/styles.css'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
@@ -15,6 +14,7 @@ import React, {useCallback, useMemo, useState} from 'react'
 import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard'
 import {PartialExcept} from 'infoportal-common'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
+import {DashboardHeader} from '@/features/Dashboard/DashboardHeader'
 
 export const dashboardCreatorRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -52,7 +52,7 @@ export function DashboardCreator() {
   const widgets: Ip.Dashboard.Widget[] = useMemo(() => {
     return [
       {id: 'create', position: {x: 0, y: 0, w: 4, h: 3}} as Ip.Dashboard.Widget,
-      {id: 'chart1', position: {x: 4, y: 0, w: 4, h: 3}} as Ip.Dashboard.Widget,
+      {id: 'chart1', position: {x: 4, y: 0, w: 4, h: 4}} as Ip.Dashboard.Widget,
       // {id: 'chart2', position: {x: 8, y: 0, w: 4, h: 3}} as Ip.Dashboard.Widget,
       // {id: 'chart3', position: {x: 12, y: 0, w: 4, h: 3}} as Ip.Dashboard.Widget,
     ]
@@ -103,12 +103,10 @@ export function DashboardCreator() {
       width="full"
       loading={querySubmissions.isLoading || queryDashboard.isLoading}
       sx={{
-        display: 'flex',
-        height: '100%',
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        pb: 1,
-        flexDirection: 'row',
+        '.react-grid-item.react-grid-placeholder': {
+          background: t.vars.palette.primary.light,
+          borderRadius: t.vars.shape.borderRadius,
+        },
       }}
     >
       {map(queryDashboard.data, querySubmissions.data, (dashboard, submissions) => (
@@ -121,62 +119,75 @@ export function DashboardCreator() {
         >
           <Box
             sx={{
-              flex: 1,
-              margin: '0 auto',
-              mb: 1,
-              maxWidth: width,
+              display: 'flex',
+              height: '100%',
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start',
+              pb: 1,
+              flexDirection: 'row',
             }}
           >
             <Box
               sx={{
-                background: 'rgba(0,0,0,.04)',
-                borderRadius: `calc(${t.vars.shape.borderRadius} + 4px)`,
+                flex: 1,
+                margin: '0 auto',
+                mb: 1,
+                maxWidth: width,
+                width: width,
               }}
             >
-              <Grid
-                layout={layout}
-                margin={[8, 8]}
-                rowHeight={30}
-                width={width}
-                cols={12}
-                draggableHandle=".drag-handle"
+              <DashboardHeader />
+              <Box
+                sx={{
+                  background: 'rgba(0,0,0,.04)',
+                  borderRadius: `calc(${t.vars.shape.borderRadius} + 4px)`,
+                }}
               >
-                {widgets.map(widget => (
-                  <div key={widget.id}>
-                    <WidgetCard
-                      onClick={() => selectWidget(widget)}
-                      status={editingWidget?.id === widget.id ? 'editing' : undefined}
-                      widget={widget}
-                    />
-                  </div>
-                ))}
-                {drafts.map(draft => (
-                  <div key={draft.id}>
-                    <WidgetCard
-                      onClick={() => selectWidget(draft)}
-                      status={editingWidget?.id === draft.id ? 'editing' : 'draft'}
-                      widget={draft}
-                    />
-                  </div>
-                ))}
-              </Grid>
-              <Box sx={{p: 1, pt: 0}}>
-                <Core.Modal overrideActions={null} content={_ => <SelectType close={_} onSelect={createDraft} />}>
-                  <Core.Btn
-                    icon="add"
-                    fullWidth
-                    variant="outlined"
-                    sx={{border: '2px dashed', borderColor: t.vars.palette.divider}}
-                  >
-                    {m.create}
-                  </Core.Btn>
-                </Core.Modal>
+                <Grid
+                  layout={layout}
+                  margin={[8, 8]}
+                  rowHeight={30}
+                  width={width}
+                  cols={12}
+                  draggableHandle=".drag-handle"
+                >
+                  {widgets.map(widget => (
+                    <div key={widget.id}>
+                      <WidgetCard
+                        onClick={() => selectWidget(widget)}
+                        status={editingWidget?.id === widget.id ? 'editing' : undefined}
+                        widget={widget}
+                      />
+                    </div>
+                  ))}
+                  {drafts.map(draft => (
+                    <div key={draft.id}>
+                      <WidgetCard
+                        onClick={() => selectWidget(draft)}
+                        status={editingWidget?.id === draft.id ? 'editing' : 'draft'}
+                        widget={draft}
+                      />
+                    </div>
+                  ))}
+                </Grid>
+                <Box sx={{p: 1, pt: 0}}>
+                  <Core.Modal overrideActions={null} content={_ => <SelectType close={_} onSelect={createDraft} />}>
+                    <Core.Btn
+                      icon="add"
+                      fullWidth
+                      variant="outlined"
+                      sx={{border: '2px dashed', borderColor: t.vars.palette.divider}}
+                    >
+                      {m.create}
+                    </Core.Btn>
+                  </Core.Modal>
+                </Box>
               </Box>
             </Box>
+            {editingWidget && (
+              <WidgetCreatorFormPanel widget={editingWidget} onChange={onUpdateDraft} onClose={console.log} />
+            )}
           </Box>
-          {editingWidget && (
-            <WidgetCreatorFormPanel widget={editingWidget} onChange={onUpdateDraft} onClose={console.log} />
-          )}
         </Context.Provider>
       ))}
     </Page>
