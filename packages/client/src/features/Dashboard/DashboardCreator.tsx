@@ -7,14 +7,16 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {UseQueryDashboard} from '@/core/query/useQueryDashboard'
-import {map, Obj, seq, Seq} from '@axanc/ts-utils'
-import {WidgetCreatorFormPanel} from '@/features/Dashboard/Widget/WidgetCreatorPanel'
-import {WidgetCreateBtn} from '@/features/Dashboard/Widget/WidgetCreateBtn'
+import {map, seq, Seq} from '@axanc/ts-utils'
+import {WidgetCreatorFormPanel} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import React, {useCallback, useMemo, useState} from 'react'
 import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard'
-import {PartialExcept} from 'infoportal-common'
+import {KoboSchemaHelper, PartialExcept} from 'infoportal-common'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {DashboardHeader} from '@/features/Dashboard/DashboardHeader'
+import {UseQueryDashboardWidget} from '@/core/query/useQueryDashboardWidget'
+import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 
 export const dashboardCreatorRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -30,47 +32,64 @@ type Context = {
   workspaceId: Ip.WorkspaceId
   submissions: Seq<Ip.Submission>
   dashboard: Ip.Dashboard
+  schema: KoboSchemaHelper.Bundle
+  widgets: Ip.Dashboard.Widget[]
 }
 
 const Context = React.createContext<Context>({} as Context)
 export const useDashboardCreatorContext = () => React.useContext(Context)
 
 export function DashboardCreator() {
-  const t = useTheme()
-  const {m} = useI18n()
-
   const params = dashboardCreatorRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const dashboardId = params.dashboardId as Ip.DashboardId
 
   const queryDashboard = UseQueryDashboard.getById({workspaceId, id: dashboardId})
+  const querySchema = useQuerySchema({workspaceId, formId: queryDashboard.data?.sourceFormId})
   const querySubmissions = UseQuerySubmission.search({workspaceId, formId: queryDashboard.data?.sourceFormId})
+  const queryWidgets = UseQueryDashboardWidget.getByDashboard({workspaceId, dashboardId})
+  return (
+    <Page
+      width="full"
+      loading={
+        queryWidgets.isLoading || querySubmissions.isLoading || queryDashboard.isLoading || querySchema.isLoading
+      }
+    >
+      {querySubmissions.data && queryWidgets.data && queryDashboard.data && querySchema.data && (
+        <Context.Provider
+          value={{
+            workspaceId,
+            schema: querySchema.data,
+            submissions: seq(querySubmissions.data.data),
+            dashboard: queryDashboard.data,
+            widgets: queryWidgets.data,
+          }}
+        >
+          <_DashboardCreator />
+        </Context.Provider>
+      )}
+    </Page>
+  )
+}
+
+export function _DashboardCreator() {
+  const t = useTheme()
+  const {m} = useI18n()
+  const {workspaceId, widgets, dashboard} = useDashboardCreatorContext()
+  const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id})
 
   const [drafts, setDrafts] = useState<WidgetDraft[]>([])
   const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>()
 
-  const widgets: Ip.Dashboard.Widget[] = useMemo(() => {
-    return [
-      {id: 'create', position: {x: 0, y: 0, w: 4, h: 3}} as Ip.Dashboard.Widget,
-      {id: 'chart1', position: {x: 4, y: 0, w: 4, h: 4}} as Ip.Dashboard.Widget,
-      // {id: 'chart2', position: {x: 8, y: 0, w: 4, h: 3}} as Ip.Dashboard.Widget,
-      // {id: 'chart3', position: {x: 12, y: 0, w: 4, h: 3}} as Ip.Dashboard.Widget,
-    ]
-  }, [queryDashboard.data])
-
-  const allWidgets = [...widgets, ...drafts]
-
-  const createDraft = (type: Ip.Dashboard.Widget.Type) => {
+  const createWidget = async (form: WidgetCreateForm) => {
     const maxY = Math.max(...widgets.map(w => w.position.y + w.position.h))
-    const newDraft = {
-      id: ('draft' + drafts.length) as any,
-      type,
+    const data = await queryWidgetCreate.mutateAsync({
+      ...form,
+      title: '',
+      config: {},
       position: {x: 0, y: maxY, w: 6, h: 5},
-    }
-    setDrafts(_ => {
-      return [..._, newDraft]
     })
-    setEditingWidgetId(newDraft.id)
+    setEditingWidgetId(data.id)
   }
 
   const selectWidget = (draft: WidgetDraft) => {
@@ -78,8 +97,8 @@ export function DashboardCreator() {
   }
 
   const editingWidget = useMemo(() => {
-    return allWidgets.find(_ => _.id === editingWidgetId)
-  }, [allWidgets])
+    return widgets.find(_ => _.id === editingWidgetId)
+  }, [widgets])
 
   const onUpdateDraft = useCallback(
     (draft: WidgetDraft) => {
@@ -95,119 +114,83 @@ export function DashboardCreator() {
   )
 
   const layout = useMemo(() => {
-    return allWidgets.map(_ => ({i: _.id, ..._.position}))
-  }, [allWidgets])
+    return widgets.map(_ => ({i: _.id, ..._.position}))
+  }, [widgets])
 
   return (
-    <Page
-      width="full"
-      loading={querySubmissions.isLoading || queryDashboard.isLoading}
-      sx={{
-        '.react-grid-item.react-grid-placeholder': {
-          background: t.vars.palette.primary.light,
-          borderRadius: t.vars.shape.borderRadius,
-        },
-      }}
-    >
-      {map(queryDashboard.data, querySubmissions.data, (dashboard, submissions) => (
-        <Context.Provider
-          value={{
-            workspaceId,
-            submissions: seq(submissions.data),
-            dashboard,
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          height: '100%',
+          alignItems: 'flex-start',
+          justifyContent: 'flex-start',
+          pb: 1,
+          flexDirection: 'row',
+        }}
+      >
+        <Box
+          sx={{
+            flex: 1,
+            margin: '0 auto',
+            mb: 1,
+            maxWidth: width,
+            width: width,
           }}
         >
+          <DashboardHeader />
           <Box
             sx={{
-              display: 'flex',
-              height: '100%',
-              alignItems: 'flex-start',
-              justifyContent: 'flex-start',
-              pb: 1,
-              flexDirection: 'row',
+              background: 'rgba(0,0,0,.04)',
+              borderRadius: `calc(${t.vars.shape.borderRadius} + 4px)`,
+              '.react-grid-item.react-grid-placeholder': {
+                background: t.vars.palette.primary.light,
+                borderRadius: t.vars.shape.borderRadius,
+              },
             }}
           >
-            <Box
-              sx={{
-                flex: 1,
-                margin: '0 auto',
-                mb: 1,
-                maxWidth: width,
-                width: width,
-              }}
+            <Grid
+              onLayoutChange={console.log}
+              layout={layout}
+              margin={[8, 8]}
+              rowHeight={30}
+              width={width}
+              cols={12}
+              draggableHandle=".drag-handle"
             >
-              <DashboardHeader />
-              <Box
-                sx={{
-                  background: 'rgba(0,0,0,.04)',
-                  borderRadius: `calc(${t.vars.shape.borderRadius} + 4px)`,
-                }}
+              {widgets.map(widget => (
+                <div key={widget.id}>
+                  <WidgetCard
+                    onClick={() => selectWidget(widget)}
+                    status={editingWidget?.id === widget.id ? 'editing' : undefined}
+                    widget={widget}
+                  />
+                </div>
+              ))}
+            </Grid>
+            <Box sx={{p: 1, pt: 0}}>
+              <Core.Modal
+                overrideActions={null}
+                content={close => (
+                  <WidgetCreate close={close} loading={queryWidgetCreate.isPending} onSubmit={createWidget} />
+                )}
               >
-                <Grid
-                  layout={layout}
-                  margin={[8, 8]}
-                  rowHeight={30}
-                  width={width}
-                  cols={12}
-                  draggableHandle=".drag-handle"
+                <Core.Btn
+                  icon="add"
+                  fullWidth
+                  variant="outlined"
+                  sx={{border: '2px dashed', borderColor: t.vars.palette.divider}}
                 >
-                  {widgets.map(widget => (
-                    <div key={widget.id}>
-                      <WidgetCard
-                        onClick={() => selectWidget(widget)}
-                        status={editingWidget?.id === widget.id ? 'editing' : undefined}
-                        widget={widget}
-                      />
-                    </div>
-                  ))}
-                  {drafts.map(draft => (
-                    <div key={draft.id}>
-                      <WidgetCard
-                        onClick={() => selectWidget(draft)}
-                        status={editingWidget?.id === draft.id ? 'editing' : 'draft'}
-                        widget={draft}
-                      />
-                    </div>
-                  ))}
-                </Grid>
-                <Box sx={{p: 1, pt: 0}}>
-                  <Core.Modal overrideActions={null} content={_ => <SelectType close={_} onSelect={createDraft} />}>
-                    <Core.Btn
-                      icon="add"
-                      fullWidth
-                      variant="outlined"
-                      sx={{border: '2px dashed', borderColor: t.vars.palette.divider}}
-                    >
-                      {m.create}
-                    </Core.Btn>
-                  </Core.Modal>
-                </Box>
-              </Box>
+                  {m.create}
+                </Core.Btn>
+              </Core.Modal>
             </Box>
-            {editingWidget && (
-              <WidgetCreatorFormPanel widget={editingWidget} onChange={onUpdateDraft} onClose={console.log} />
-            )}
           </Box>
-        </Context.Provider>
-      ))}
-    </Page>
-  )
-}
-
-function SelectType({close, onSelect}: {onSelect: (_: Ip.Dashboard.Widget.Type) => void; close: () => void}) {
-  return (
-    <Core.RadioGroup<Ip.Dashboard.Widget.Type>
-      inline
-      onChange={_ => {
-        onSelect(_)
-        close()
-      }}
-    >
-      {Obj.keys(Ip.Dashboard.Widget.Type).map(_ => (
-        <Core.RadioGroupItem key={_} hideRadio value={_}>
-          <WidgetCreateBtn type={_} />
-        </Core.RadioGroupItem>
-      ))}
-    </Core.RadioGroup>
+        </Box>
+        {editingWidget && (
+          <WidgetCreatorFormPanel widget={editingWidget} onChange={onUpdateDraft} onClose={console.log} />
+        )}
+      </Box>
+    </>
   )
 }

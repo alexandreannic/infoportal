@@ -18,6 +18,7 @@ import {formActionClient} from '../contract/form/action/ContractFormAction.js'
 import {formActionLogClient} from '../contract/form/action/ContractFormActionLog.js'
 import {formActionReportClient} from '../contract/form/action/ContractFormActionReport.js'
 import {dashboardClient} from '../contract/dashboard/ContractDashboard.js'
+import {widgetClient} from '../contract/dashboard/ContractWidget.js'
 
 export type IpClient = ReturnType<typeof buildIpClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -39,6 +40,7 @@ export const buildIpClient = (baseUrl: string) => {
     },
     dashboard: {
       ...dashboardClient(client),
+      widget: widgetClient(client),
     },
     permission: permissionClient(client, baseUrl),
     server: serverClient(client, baseUrl),

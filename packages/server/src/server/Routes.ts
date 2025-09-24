@@ -36,6 +36,7 @@ import {FormActionRunner} from '../feature/form/action/executor/FormActionRunner
 import {FormActionRunningReportManager} from '../feature/form/action/executor/FormActionRunningReportManager.js'
 import {FormActionReportService} from '../feature/form/action/FormActionReportService.js'
 import {DashboardService} from '../feature/dashboard/DashboardService.js'
+import {WidgetService} from '../feature/dashboard/DashboardWidgetService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -169,6 +170,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const formActionReport = new FormActionReportService(prisma)
   const formActionLog = new FormActionLogService(prisma)
   const dashboard = new DashboardService(prisma)
+  const widget = new WidgetService(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
     const connectedUser = await permission.checkUserConnected(args.req)
@@ -306,6 +308,28 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({params, body, req}) => dashboard.create({...params, ...body, createdBy: req.session.app.user.email}))
           .then(ok200)
           .catch(handleError),
+      widget: {
+        getByDashboard: _ =>
+          auth2(_)
+            .then(({params}) => widget.getByDashboard(params))
+            .then(ok200)
+            .catch(handleError),
+        create: _ =>
+          auth2(_)
+            .then(({params, body}) => widget.create({...params, ...body}))
+            .then(ok200)
+            .catch(handleError),
+        update: _ =>
+          auth2(_)
+            .then(({params, body}) => widget.update({...params, ...body}))
+            .then(ok200)
+            .catch(handleError),
+        remove: _ =>
+          auth2(_)
+            .then(({params}) => widget.remove(params))
+            .then(ok204)
+            .catch(handleError),
+      },
     },
     user: {
       update: _ =>

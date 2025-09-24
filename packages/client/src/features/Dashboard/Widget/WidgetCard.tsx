@@ -7,7 +7,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {fnSwitch} from '@axanc/ts-utils'
 import {Widget} from '@prisma/client'
 
-type Status = 'draft' | 'editing' | 'in-editor'
+type Status = 'editing'
 
 export const WidgetCard = forwardRef(
   ({status, widget, onClick}: {status?: Status; widget: WidgetDraft; onClick: () => void}, ref) => {
@@ -28,7 +28,7 @@ export const WidgetCard = forwardRef(
           p: 1,
           height: '100%',
           transition: t.transitions.create('border'),
-          border: status === 'editing' ? '2px solid' : status === 'draft' ? '1px dashed' : undefined,
+          border: status === 'editing' ? '2px solid' : undefined,
           borderColor: t.vars.palette.primary.main,
         }}
       >

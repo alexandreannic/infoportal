@@ -620,12 +620,15 @@ export namespace Ip {
       }
     }
     export type WidgetId = Brand<string, 'WidgetId'>
-    export type Widget = Omit<Prisma.Widget, 'id' | 'position'> & {
+    export type Widget = Omit<Prisma.Widget, 'config' | 'id' | 'position'> & {
+      config: any
       position: Widget.Position
       id: WidgetId
-      slug: string
     }
     export namespace Widget {
+      export const map = (_: Record<keyof Widget, any>): Widget => {
+        return _
+      }
       export type Position = {
         x: number
         y: number
@@ -644,7 +647,16 @@ export namespace Ip {
       }
 
       export namespace Payload {
-        export type Create = Omit<Widget, 'id' | 'createdAt' | 'dashboardId'>
+        export type Create = Omit<Widget, 'description' | 'id' | 'createdAt' | 'dashboardId'> & {
+          description?: string
+          workspaceId: WorkspaceId
+          dashboardId: DashboardId
+        }
+        export type Update = Partial<Omit<Create, 'workspaceId' | 'dashboardId' | 'id'>> & {
+          workspaceId: WorkspaceId
+          dashboardId: DashboardId
+          widgetId: WidgetId
+        }
       }
       export type Type = Prisma.WidgetType
       export const Type = {

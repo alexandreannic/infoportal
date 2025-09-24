@@ -468,5 +468,4 @@ model Widget {
   config       Json // Record<String, any> // widget-specific options
   dashboard    Dashboard? @relation(fields: [dashboardId], references: [id])
   dashboardId  String?
-  dataSourceId String
 }
