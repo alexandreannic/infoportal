@@ -39,8 +39,10 @@ export const WidgetCreatorFormPanel = ({
       }}
     >
       <Core.PanelWBody
-        sx={{height: '100%', width: 300, ml: 1, mr: -1, borderBottomRightRadius: 0, borderTopRightRadius: 0}}
+        sx={{overflowY: 'scroll', height: '100%', ml: 1, mr: -1, borderBottomRightRadius: 0, borderTopRightRadius: 0}}
       >
+        <Core.IconBtn onClick={onClose}>close</Core.IconBtn>
+
         <Core.Input value={widget.title} label={m.title} onChange={_ => onChange('title', _.target.value)} />
 
         {widget.questionName &&

@@ -1,7 +1,7 @@
 import {Core, Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import Grid from 'react-grid-layout'
-import {Box, useTheme} from '@mui/material'
+import {Box, Collapse, Slide, useTheme} from '@mui/material'
 import 'react-grid-layout/css/styles.css'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
@@ -24,7 +24,8 @@ export const dashboardCreatorRoute = createRoute({
   component: DashboardCreator,
 })
 
-const width = 1200
+const layoutWidth = 1200
+const sidePanelWidth = 300
 
 type Context = {
   workspaceId: Ip.WorkspaceId
@@ -126,8 +127,8 @@ export function _DashboardCreator() {
             flex: 1,
             margin: '0 auto',
             mb: 1,
-            maxWidth: width,
-            width: width,
+            maxWidth: layoutWidth,
+            width: layoutWidth,
           }}
         >
           <DashboardHeader />
@@ -150,7 +151,7 @@ export function _DashboardCreator() {
               layout={layout}
               margin={[8, 8]}
               rowHeight={30}
-              width={width}
+              width={layoutWidth}
               cols={12}
               draggableHandle=".drag-handle"
             >
@@ -183,13 +184,17 @@ export function _DashboardCreator() {
             </Box>
           </Box>
         </Box>
-        {editingWidget && (
-          <WidgetCreatorFormPanel
-            widget={editingWidget}
-            onChange={(...args) => updateWidget(editingWidget.id, ...args)}
-            onClose={console.log}
-          />
-        )}
+        <Collapse sx={{height: '100%'}} in={!!editingWidget} orientation="horizontal" mountOnEnter unmountOnExit>
+          <Box sx={{height: '100%', width: sidePanelWidth}}>
+            {editingWidget && (
+              <WidgetCreatorFormPanel
+                widget={editingWidget}
+                onChange={(...args) => updateWidget(editingWidget.id, ...args)}
+                onClose={() => setEditingWidgetId(undefined)}
+              />
+            )}
+          </Box>
+        </Collapse>
       </Box>
     </>
   )

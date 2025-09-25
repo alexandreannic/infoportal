@@ -2,7 +2,7 @@ import {Box, Icon, useTheme} from '@mui/material'
 import {widgetTypeToIcon} from '@/features/Dashboard/Widget/WidgetCreateBtn'
 import React, {forwardRef} from 'react'
 import {Core} from '@/shared'
-import {useDashboardCreatorContext, WidgetDraft} from '@/features/Dashboard/DashboardCreator'
+import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
 import {Ip} from 'infoportal-api-sdk'
 import {fnSwitch} from '@axanc/ts-utils'
 import {Widget} from '@prisma/client'
@@ -10,7 +10,7 @@ import {Widget} from '@prisma/client'
 type Status = 'editing'
 
 export const WidgetCard = forwardRef(
-  ({status, widget, onClick}: {status?: Status; widget: WidgetDraft; onClick: () => void}, ref) => {
+  ({status, widget, onClick}: {status?: Status; widget: Ip.Dashboard.Widget; onClick: () => void}, ref) => {
     widget.questionName
     const t = useTheme()
     if (widget.questionName) {
@@ -27,10 +27,10 @@ export const WidgetCard = forwardRef(
         sx={{
           p: 1,
           height: '100%',
-          transition: t.transitions.create('all'),
+          transition: t.transitions.create('box-shadow'),
           boxShadow: status === 'editing' ? t.vars.shadows[2] : undefined,
-          border: status === 'editing' ? '2px solid' : undefined,
-          borderColor: t.vars.palette.primary.main,
+          border: '2px solid',
+          borderColor: status === 'editing' ? t.vars.palette.primary.main : 'transparent',
         }}
       >
         <Box display="flex" alignItems="center">
