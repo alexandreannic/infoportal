@@ -233,6 +233,13 @@ export const en = Object.freeze({
     appSubTitle: 'InfoPortal',
     noDataAtm: 'No data at the moment',
     fileName: 'File name',
+    _widgetType: {
+      [Ip.Dashboard.Widget.Type.PieChart]: 'Pie Chart',
+      [Ip.Dashboard.Widget.Type.GeoChart]: 'Geo Chart',
+      [Ip.Dashboard.Widget.Type.LineChart]: 'Line Chart',
+      [Ip.Dashboard.Widget.Type.BarChart]: 'Bar Chart',
+      [Ip.Dashboard.Widget.Type.Table]: 'Table',
+    },
     signIn: 'Sign-in',
     signInMicrosoft: 'Sign in with Microsoft',
     signInMicrosoftDesc: 'Use your Microsoft credentials',
@@ -313,6 +320,9 @@ export const en = Object.freeze({
     householdSize: 'Household size',
     occurrences: 'Occurrences',
     dashboard: 'Dashboard',
+    _dashboard: {
+      maxChoicesToDisplay: 'Maximum choices to display',
+    },
     loading: 'Loading',
     price: 'Price',
     submittedAt: 'Submitted at',

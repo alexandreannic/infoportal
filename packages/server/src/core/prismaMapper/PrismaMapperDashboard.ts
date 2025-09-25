@@ -4,6 +4,6 @@ export const mapDashboard = <T extends {id: string; sourceFormId: string; create
   _: T,
 ): T & {id: Ip.DashboardId; sourceFormId: Ip.FormId; createdBy: Ip.User.Email} => _ as any
 
-export const mapWidget = <T extends {id: string; position: any; config: any}>(
+export const mapWidget = <T extends {id: string; title: string | null; position: any; config: any}>(
   _: T,
-): T & {id: Ip.Dashboard.WidgetId; position: Ip.Dashboard.Widget.Position; config: any} => _ as any
+): T & {id: Ip.Dashboard.WidgetId; position: Ip.Dashboard.Widget.Position; title?: string; config: any} => _ as any

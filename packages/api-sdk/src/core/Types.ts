@@ -620,14 +620,15 @@ export namespace Ip {
       }
     }
     export type WidgetId = Brand<string, 'WidgetId'>
-    export type Widget = Omit<Prisma.Widget, 'config' | 'id' | 'position'> & {
+    export type Widget = Omit<Prisma.Widget, 'title' | 'config' | 'id' | 'position'> & {
+      title?: string
       config: any
       position: Widget.Position
       id: WidgetId
     }
     export namespace Widget {
-      export const map = (_: Record<keyof Widget, any>): Widget => {
-        return _
+      export const map = (_: Partial<Record<keyof Widget, any>>): Widget => {
+        return _ as Widget
       }
       export type Position = {
         x: number

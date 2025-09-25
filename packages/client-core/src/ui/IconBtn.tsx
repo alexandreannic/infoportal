@@ -10,10 +10,12 @@ export interface IconBtnProps extends IconButtonProps {
   target?: '_blank'
 }
 
-export const IconBtn = ({tooltip, size, children, ...props}: IconBtnProps) => {
+export const IconBtn = ({tooltip, color, size, children, ...props}: IconBtnProps) => {
   const content = (
-    <IconButton {...props} size={size}>
-      <Icon fontSize={size}>{children}</Icon>
+    <IconButton {...props} color={color} size={size}>
+      <Icon fontSize={size} color={color as any}>
+        {children}
+      </Icon>
     </IconButton>
   )
   return tooltip ? (

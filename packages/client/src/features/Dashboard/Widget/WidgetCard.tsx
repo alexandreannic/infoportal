@@ -1,6 +1,6 @@
 import {Box, Icon, useTheme} from '@mui/material'
 import {widgetTypeToIcon} from '@/features/Dashboard/Widget/WidgetCreateBtn'
-import React, {forwardRef} from 'react'
+import React, {forwardRef, useMemo} from 'react'
 import {Core} from '@/shared'
 import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
 import {Ip} from 'infoportal-api-sdk'
@@ -34,7 +34,7 @@ export const WidgetCard = forwardRef(
         }}
       >
         <Box display="flex" alignItems="center">
-          <Core.Txt block size="big" bold sx={{flex: 1}}>
+          <Core.Txt block size="big" bold sx={{flex: 1, mb: 1}}>
             {widget.title}
           </Core.Txt>
           <Icon sx={{color: t.vars.palette.text.secondary}} className="drag-handle">
@@ -53,7 +53,6 @@ export const WidgetCard = forwardRef(
               () => <></>,
             )
           )}
-          {widget.id}
         </Box>
       </Core.Panel>
     )
@@ -69,11 +68,20 @@ function Placeholder({type}: {type: Ip.Dashboard.Widget.Type}) {
 }
 
 function BarChart({widget}: {widget: Pick<Widget, 'config' | 'questionName'>}) {
-  const {submissions} = useDashboardCreatorContext()
+  const {submissions, schema} = useDashboardCreatorContext()
+  const labels = useMemo(() => {
+    const q = widget.questionName
+    return schema.helper
+      .getOptionsByQuestionName(q)
+      .reduceObject<Record<string, string>>(_ => [_.name, schema.translate.choice(q, _.name)])
+  }, [widget.questionName, schema])
   return (
-    <Box>
-      {submissions.length}
-      <Core.ChartBarMultipleByKey data={submissions.map(_ => _.answers) as any} property={widget.questionName as any} />
+    <Box sx={{overflowY: 'scroll'}}>
+      <Core.ChartBarMultipleByKey
+        data={submissions.map(_ => _.answers) as any}
+        label={labels}
+        property={widget.questionName as any}
+      />
     </Box>
   )
 }

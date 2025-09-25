@@ -74,17 +74,19 @@ export function DashboardCreator() {
 export function _DashboardCreator() {
   const t = useTheme()
   const {m} = useI18n()
-  const {workspaceId, widgets, dashboard} = useDashboardCreatorContext()
+  const {workspaceId, schema, widgets, dashboard} = useDashboardCreatorContext()
   const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id})
   const queryWidgetUpdate = UseQueryDashboardWidget.update({workspaceId, dashboardId: dashboard.id})
 
-  const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>()
+  const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>(
+    '45bcd3c5-f6a3-40d7-a5b4-a008f4f390f0' as any,
+  )
 
   const createWidget = async (form: WidgetCreateForm) => {
     const maxY = Math.max(...widgets.map(w => w.position.y + w.position.h))
     const data = await queryWidgetCreate.mutateAsync({
       ...form,
-      title: '',
+      title: schema.translate.question(form.questionName),
       config: {},
       position: {x: 0, y: maxY, w: 6, h: 5},
     })
