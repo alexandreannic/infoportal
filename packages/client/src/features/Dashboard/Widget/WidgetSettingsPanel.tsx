@@ -1,20 +1,17 @@
 import {Core} from '@/shared'
 import {Ip} from 'infoportal-api-sdk'
-import {Controller, useForm, UseFormReturn} from 'react-hook-form'
+import {useForm} from 'react-hook-form'
 import React, {RefObject, useEffect, useRef} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {Box, LinearProgress} from '@mui/material'
-import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {Box} from '@mui/material'
 import {fnSwitch} from '@axanc/ts-utils'
-import {KoboSchemaHelper} from 'infoportal-common'
-import {useDashboardCreatorContext, WidgetDraft} from '@/features/Dashboard/DashboardCreator'
+import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
 
 type Context = {
-  widget: WidgetDraft
+  widget: Ip.Dashboard.Widget
   stepperRef: RefObject<Core.StepperHandle | null>
   onClose: () => void
-  onChange: <T extends keyof WidgetDraft>(key: T, value: WidgetDraft[T]) => void
+  onChange: <T extends keyof Ip.Dashboard.Widget>(key: T, value: Ip.Dashboard.Widget[T]) => void
 }
 
 const Context = React.createContext<Context>({} as Context)
@@ -25,21 +22,17 @@ export const WidgetCreatorFormPanel = ({
   widget,
   onChange,
 }: {
-  widget: WidgetDraft
-  onChange: (form: WidgetDraft) => void
+  widget: Ip.Dashboard.Widget
+  onChange: <T extends keyof Ip.Dashboard.Widget>(key: T, value: Ip.Dashboard.Widget[T]) => void
   onClose: () => void
 }) => {
-  const _onChange = <T extends keyof WidgetDraft>(key: T, value: WidgetDraft[T]) => {
-    onChange({...widget, [key]: value})
-  }
-
   const stepperRef = useRef<Core.StepperHandle>(null)
   const {m} = useI18n()
 
   return (
     <Context.Provider
       value={{
-        onChange: _onChange,
+        onChange,
         widget,
         onClose,
         stepperRef,
@@ -48,7 +41,7 @@ export const WidgetCreatorFormPanel = ({
       <Core.PanelWBody
         sx={{height: '100%', width: 300, ml: 1, mr: -1, borderBottomRightRadius: 0, borderTopRightRadius: 0}}
       >
-        <Core.Input value={widget.title} label={m.title} onChange={_ => _onChange('title', _.target.value)} />
+        <Core.Input value={widget.title} label={m.title} onChange={_ => onChange('title', _.target.value)} />
 
         {widget.questionName &&
           fnSwitch(

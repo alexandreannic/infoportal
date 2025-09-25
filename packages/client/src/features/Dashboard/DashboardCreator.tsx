@@ -7,7 +7,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {UseQueryDashboard} from '@/core/query/useQueryDashboard'
-import {map, seq, Seq} from '@axanc/ts-utils'
+import {seq, Seq} from '@axanc/ts-utils'
 import {WidgetCreatorFormPanel} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import React, {useCallback, useMemo, useState} from 'react'
 import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard'
@@ -24,9 +24,7 @@ export const dashboardCreatorRoute = createRoute({
   component: DashboardCreator,
 })
 
-const width = 1000
-
-export type WidgetDraft = PartialExcept<Ip.Dashboard.Widget, 'id' | 'type' | 'position'>
+const width = 1200
 
 type Context = {
   workspaceId: Ip.WorkspaceId
@@ -77,8 +75,8 @@ export function _DashboardCreator() {
   const {m} = useI18n()
   const {workspaceId, widgets, dashboard} = useDashboardCreatorContext()
   const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id})
+  const queryWidgetUpdate = UseQueryDashboardWidget.update({workspaceId, dashboardId: dashboard.id})
 
-  const [drafts, setDrafts] = useState<WidgetDraft[]>([])
   const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>()
 
   const createWidget = async (form: WidgetCreateForm) => {
@@ -92,25 +90,19 @@ export function _DashboardCreator() {
     setEditingWidgetId(data.id)
   }
 
-  const selectWidget = (draft: WidgetDraft) => {
-    setEditingWidgetId(draft.id)
+  const selectWidget = (widget: Ip.Dashboard.Widget) => {
+    setEditingWidgetId(widget.id)
   }
 
   const editingWidget = useMemo(() => {
     return widgets.find(_ => _.id === editingWidgetId)
-  }, [widgets])
+  }, [widgets, editingWidgetId])
 
-  const onUpdateDraft = useCallback(
-    (draft: WidgetDraft) => {
-      console.log('>>> UPDATE', draft)
-      setDrafts(prev =>
-        prev.map(_ => {
-          console.log(prev, draft.id, _.id === draft.id)
-          return _.id === draft.id ? (draft as WidgetDraft) : _
-        }),
-      )
+  const updateWidget = useCallback(
+    <T extends keyof Ip.Dashboard.Widget>(id: Ip.Dashboard.WidgetId, key: T, value: Ip.Dashboard.Widget[T]) => {
+      queryWidgetUpdate.mutateAsync({widgetId: id, [key]: value})
     },
-    [drafts],
+    [],
   )
 
   const layout = useMemo(() => {
@@ -150,7 +142,11 @@ export function _DashboardCreator() {
             }}
           >
             <Grid
-              onLayoutChange={console.log}
+              onLayoutChange={layout => {
+                layout.forEach(({i, x, y, h, w}) => {
+                  updateWidget(i as Ip.Dashboard.WidgetId, 'position', {x, y, h, w})
+                })
+              }}
               layout={layout}
               margin={[8, 8]}
               rowHeight={30}
@@ -188,7 +184,11 @@ export function _DashboardCreator() {
           </Box>
         </Box>
         {editingWidget && (
-          <WidgetCreatorFormPanel widget={editingWidget} onChange={onUpdateDraft} onClose={console.log} />
+          <WidgetCreatorFormPanel
+            widget={editingWidget}
+            onChange={(...args) => updateWidget(editingWidget.id, ...args)}
+            onClose={console.log}
+          />
         )}
       </Box>
     </>

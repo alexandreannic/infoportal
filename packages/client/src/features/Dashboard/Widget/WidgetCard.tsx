@@ -27,7 +27,8 @@ export const WidgetCard = forwardRef(
         sx={{
           p: 1,
           height: '100%',
-          transition: t.transitions.create('border'),
+          transition: t.transitions.create('all'),
+          boxShadow: status === 'editing' ? t.vars.shadows[2] : undefined,
           border: status === 'editing' ? '2px solid' : undefined,
           borderColor: t.vars.palette.primary.main,
         }}
