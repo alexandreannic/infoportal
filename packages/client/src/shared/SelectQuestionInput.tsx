@@ -29,13 +29,13 @@ export const SelectQuestionInput = ({
 }: Props) => {
   const {m} = useI18n()
   const questions = useMemo(() => {
+    if (questionTypeFilter.length === 0) return schema?.survey
     return map(schema?.survey, schema => schema.filter(_ => questionTypeFilter.includes(_.type)))
   }, [questionTypeFilter, schema])
 
   const questionIndex = useMemo(() => {
-    return seq(questions)
-      .compactBy('name')
-      .groupByFirst(_ => _.name)
+    console.log(questions)
+    return seq(questions).groupByFirst(_ => _.name)
   }, [schema])
 
   const filterOptions = useCallback(
@@ -83,6 +83,7 @@ export const SelectQuestionInput = ({
         />
       )}
       renderOption={(props, option) => {
+        console.log(option, questionIndex)
         return (
           <Box component="li" {...props} key={option}>
             <KoboTypeIcon children={questionIndex[option].type} sx={{ml: -0.5, mr: 1}} />

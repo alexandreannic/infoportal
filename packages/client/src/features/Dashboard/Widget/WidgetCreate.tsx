@@ -1,12 +1,13 @@
 import {Ip} from 'infoportal-api-sdk'
-import {Obj} from '@axanc/ts-utils'
-import {WidgetCreateBtn} from '@/features/Dashboard/Widget/WidgetCreateBtn'
-import React from 'react'
+import {fnSwitch, Obj} from '@axanc/ts-utils'
+import {WidgetTypeIcon} from '@/features/Dashboard/Widget/WidgetTypeIcon'
+import React, {useMemo} from 'react'
 import {Core} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
 import {Controller, useForm} from 'react-hook-form'
+import {Kobo} from 'kobo-sdk'
 
 export type WidgetCreateForm = {
   type: Ip.Dashboard.Widget.Type
@@ -26,6 +27,21 @@ export function WidgetCreate({
   const form = useForm<WidgetCreateForm>({mode: 'onChange'})
   const {schema} = useDashboardCreatorContext()
 
+  const type = form.watch('type')
+  const questionTypeFilters: Kobo.Form.QuestionType[] = useMemo(() => {
+    switch (type) {
+      case 'BarChart': {
+        return ['select_multiple', 'select_one']
+      }
+      case 'PieChart': {
+        return ['select_one', 'integer', 'decimal']
+      }
+      default: {
+        return []
+      }
+    }
+  }, [type])
+
   return (
     <form onSubmit={_ => form.handleSubmit(onSubmit)(_).then(close)}>
       <Controller
@@ -35,7 +51,7 @@ export function WidgetCreate({
           <Core.RadioGroup<Ip.Dashboard.Widget.Type> {...field} inline sx={{mb: 2}}>
             {Obj.keys(Ip.Dashboard.Widget.Type).map(_ => (
               <Core.RadioGroupItem key={_} hideRadio value={_}>
-                <WidgetCreateBtn type={_} />
+                <WidgetTypeIcon type={_} sx={{my: 1, fontSize: '3em'}} />
               </Core.RadioGroupItem>
             ))}
           </Core.RadioGroup>
@@ -52,7 +68,7 @@ export function WidgetCreate({
             {...field}
             onChange={(e, _) => field.onChange(_)}
             schema={schema.schema}
-            questionTypeFilter={['select_multiple', 'select_one']}
+            questionTypeFilter={questionTypeFilters}
             InputProps={{
               label: m.question,
               error: !!fieldState.error,

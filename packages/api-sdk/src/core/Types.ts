@@ -645,6 +645,15 @@ export namespace Ip {
           limit?: number
           multiple?: boolean
         }
+        [Type.PieChart]: {
+          showValue?: boolean
+          showBase?: boolean
+          filterNumber?: {min?: number; max?: number}
+          filterNumberBase?: {min?: number; max?: number}
+          filterChoiceBase?: string[]
+          filterChoice?: string[]
+          dense?: boolean
+        }
       }
 
       export namespace Payload {

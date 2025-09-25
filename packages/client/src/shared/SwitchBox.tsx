@@ -2,11 +2,11 @@ import {Box, ButtonBase, FormControlLabel, Icon, Switch, SwitchProps, useTheme} 
 import {ReactNode} from 'react'
 import {styleUtils} from '@infoportal/client-core'
 
-export const SwitchBox = ({icon, label, ...props}: SwitchProps & {icon?: string; label: ReactNode}) => {
+export const SwitchBox = ({icon, label, sx, ...props}: SwitchProps & {icon?: string; label: ReactNode}) => {
   const t = useTheme()
 
   return (
-    <ButtonBase sx={{width: '100%', display: 'block',}}>
+    <ButtonBase sx={{width: '100%', display: 'block', ...sx}}>
       <FormControlLabel
         control={<Switch {...props} />}
         label={

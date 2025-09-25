@@ -1,3 +1,4 @@
+- Use i18n package in client-core and client-datatable and remove Translation
 - Move API Error to API-SDK
 - We cannot add kobo form twice, but what if the kobo form is "disconnected"? 
 - How to deal with FormVersion for a Form linked with Kobo? How to keep consistency after disconnecting from Kobo.

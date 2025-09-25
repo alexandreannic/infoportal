@@ -8,7 +8,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {UseQueryDashboard} from '@/core/query/useQueryDashboard'
 import {seq, Seq} from '@axanc/ts-utils'
-import {WidgetCreatorFormPanel} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
+import {WidgetCreatorFormPanel, WidgetUpdatePayload} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import React, {useCallback, useMemo, useState} from 'react'
 import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard'
 import {KoboSchemaHelper, PartialExcept} from 'infoportal-common'
@@ -17,6 +17,7 @@ import {DashboardHeader} from '@/features/Dashboard/DashboardHeader'
 import {UseQueryDashboardWidget} from '@/core/query/useQueryDashboardWidget'
 import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {SubmissionMapped, SubmissionMappedType} from '@/core/sdk/server/kobo/KoboMapper'
 
 export const dashboardCreatorRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -31,6 +32,7 @@ type Context = {
   workspaceId: Ip.WorkspaceId
   submissions: Seq<Ip.Submission>
   dashboard: Ip.Dashboard
+  answers: Seq<SubmissionMapped>
   schema: KoboSchemaHelper.Bundle
   widgets: Ip.Dashboard.Widget[]
 }
@@ -60,6 +62,7 @@ export function DashboardCreator() {
             workspaceId,
             schema: querySchema.data,
             submissions: seq(querySubmissions.data.data),
+            answers: seq(querySubmissions.data.data).map(_ => _.answers),
             dashboard: queryDashboard.data,
             widgets: queryWidgets.data,
           }}
@@ -101,12 +104,9 @@ export function _DashboardCreator() {
     return widgets.find(_ => _.id === editingWidgetId)
   }, [widgets, editingWidgetId])
 
-  const updateWidget = useCallback(
-    <T extends keyof Ip.Dashboard.Widget>(id: Ip.Dashboard.WidgetId, key: T, value: Ip.Dashboard.Widget[T]) => {
-      queryWidgetUpdate.mutateAsync({widgetId: id, [key]: value})
-    },
-    [],
-  )
+  const updateWidget = useCallback((id: Ip.Dashboard.WidgetId, values: WidgetUpdatePayload) => {
+    queryWidgetUpdate.mutateAsync({widgetId: id, ...values})
+  }, [])
 
   const layout = useMemo(() => {
     return widgets.map(_ => ({i: _.id, ..._.position}))
@@ -147,7 +147,7 @@ export function _DashboardCreator() {
             <Grid
               onLayoutChange={layout => {
                 layout.forEach(({i, x, y, h, w}) => {
-                  updateWidget(i as Ip.Dashboard.WidgetId, 'position', {x, y, h, w})
+                  updateWidget(i as Ip.Dashboard.WidgetId, {position: {x, y, h, w}})
                 })
               }}
               layout={layout}
@@ -190,6 +190,7 @@ export function _DashboardCreator() {
           <Box sx={{height: '100%', width: sidePanelWidth}}>
             {editingWidget && (
               <WidgetCreatorFormPanel
+                key={editingWidgetId}
                 widget={editingWidget}
                 onChange={(...args) => updateWidget(editingWidget.id, ...args)}
                 onClose={() => setEditingWidgetId(undefined)}
@@ -201,3 +202,22 @@ export function _DashboardCreator() {
     </>
   )
 }
+
+// function CreateWidgetBtn({loading}: {loading?: boolean}) {
+//   const {m} = useI18n()
+//   return (
+//     <Core.Modal
+//       overrideActions={null}
+//       content={close => <WidgetCreate close={close} loading={queryWidgetCreate.isPending} onSubmit={createWidget} />}
+//     >
+//       <Core.Btn
+//         icon="add"
+//         fullWidth
+//         variant="outlined"
+//         sx={{border: '2px dashed', borderColor: t.vars.palette.divider}}
+//       >
+//         {m.create}
+//       </Core.Btn>
+//     </Core.Modal>
+//   )
+// }

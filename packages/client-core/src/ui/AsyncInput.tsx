@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react'
+import {forwardRef, JSX, useCallback, useEffect, useState} from 'react'
 import {IconBtn, Input, InputProps} from '.'
 import {Box} from '@mui/material'
 
@@ -11,48 +11,63 @@ const useDebouncedValue = <T,>(value: T, delay: number) => {
   return debounced
 }
 
-export type AsyncInputProps = {
-  value?: string
+type AsyncInputBase<T extends string | number = string | number> = {
   loading?: boolean
-  originalValue?: string | null
   debounce?: number
-  onChange?: (val: string | undefined) => void
-  onSubmit?: (val: string | undefined) => Promise<void> | void
-} & Omit<InputProps, 'onSubmit' | 'onChange' | 'value'>
+  value?: T
+  originalValue?: T | null
+  onChange?: (val: T | undefined) => void
+  onSubmit?: (val: T | undefined) => Promise<void> | void
+} & Omit<InputProps, 'onSubmit' | 'onChange' | 'type' | 'value'>
 
-export const AsyncInput = ({
+export function AsyncInput(props: AsyncInputBase<number> & {type: 'number'}): JSX.Element
+export function AsyncInput(props: AsyncInputBase<string> & {type?: Exclude<InputProps['type'], 'number'>}): JSX.Element
+
+export function AsyncInput({
   value: propValue,
   originalValue = null,
   debounce = 0,
   onChange,
   loading,
   onSubmit,
+  type,
   ...props
-}: AsyncInputProps) => {
-  const [local, setLocal] = useState(propValue ?? '')
+}: AsyncInputBase<any> & {type?: string}) {
+  const [local, setLocal] = useState(propValue === undefined || propValue === null ? '' : String(propValue))
   const debounced = useDebouncedValue(local, debounce)
+
+  const convert = useCallback(
+    (raw: string): string | number | undefined => {
+      if (type === 'number') {
+        return raw === '' || raw === String(originalValue) ? undefined : Number(raw)
+      }
+      return raw === '' || raw === String(originalValue) ? undefined : raw
+    },
+    [type, originalValue],
+  )
 
   useEffect(() => {
     if (debounce > 0) {
-      onChange?.(debounced === '' || debounced === originalValue ? undefined : debounced)
+      onChange?.(convert(debounced) as any)
     }
   }, [debounced])
 
   useEffect(() => {
     if (debounce === 0) {
-      onChange?.(local === '' || local === originalValue ? undefined : local)
+      onChange?.(convert(local) as any)
     }
   }, [local])
 
   const triggerSubmit = useCallback(() => {
     if (onSubmit) {
-      onSubmit(local === '' || local === originalValue ? undefined : local)
+      onSubmit(convert(local) as any)
     }
-  }, [local, originalValue, onSubmit])
+  }, [local, convert, onSubmit])
 
   return (
     <Input
       {...props}
+      type={type}
       value={local}
       onChange={e => setLocal(e.target.value)}
       onKeyDown={e => {
@@ -62,17 +77,19 @@ export const AsyncInput = ({
       }}
       endAdornment={
         <Box sx={{mr: -1}} display="flex" alignItems="center">
-          <IconBtn color="success" size="small" onClick={triggerSubmit} disabled={local === originalValue}>
-            check
-          </IconBtn>
+          {local !== String(originalValue ?? '') && (
+            <IconBtn color="success" size="small" onClick={triggerSubmit} disabled={local === String(originalValue)}>
+              check
+            </IconBtn>
+          )}
 
-          {local !== (originalValue ?? '') && (
+          {local !== String(originalValue ?? '') && (
             <IconBtn
               color="error"
               size="small"
               onClick={() => {
-                setLocal(originalValue ?? '')
-                onChange?.(undefined)
+                setLocal(originalValue == null ? '' : String(originalValue))
+                onChange?.(undefined as any)
               }}
             >
               clear

@@ -1,5 +1,5 @@
 import {Ip} from 'infoportal-api-sdk'
-import {Icon} from '@mui/material'
+import {Icon, IconProps} from '@mui/material'
 
 export const widgetTypeToIcon = {
   [Ip.Dashboard.Widget.Type.PieChart]: 'data_usage',
@@ -9,6 +9,8 @@ export const widgetTypeToIcon = {
   [Ip.Dashboard.Widget.Type.Table]: 'table',
 }
 
-export const WidgetCreateBtn = ({type}: {type: Ip.Dashboard.Widget.Type}) => {
-  return <Icon sx={{my: 1, fontSize: '3em'}} children={widgetTypeToIcon[type]} />
+type Props = Omit<IconProps, 'children' | 'type'> & {type: Ip.Dashboard.Widget.Type}
+
+export const WidgetTypeIcon = ({type, sx, ...props}: Props) => {
+  return <Icon sx={sx} children={widgetTypeToIcon[type]} {...props} />
 }

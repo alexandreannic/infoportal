@@ -8,7 +8,6 @@ import {useMemo} from 'react'
 import {usePendingMutation} from '@/core/query/usePendingMutation'
 
 export class UseQueryDashboardWidget {
-
   static getByDashboard = (params: {dashboardId: Ip.DashboardId; workspaceId: Ip.WorkspaceId}) => {
     const {apiv2} = useAppSettings()
     const {toastAndThrowHttpError} = useIpToast()
@@ -43,9 +42,23 @@ export class UseQueryDashboardWidget {
       Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'dashboardId'>
     >({
       getId: _ => _.widgetId,
-      mutationFn: args => apiv2.dashboard.widget.update({workspaceId, dashboardId, ...args}),
-      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboardWidget(workspaceId, dashboardId)}),
-      onError: toastHttpError,
+      mutationFn: variables => {
+        const query = apiv2.dashboard.widget.update({workspaceId, dashboardId, ...variables})
+        const key = queryKeys.dashboardWidget(workspaceId, dashboardId)
+        queryClient.setQueryData<Ip.Dashboard.Widget[]>(key, old => {
+          return old?.map(_ => {
+            if (_.id === variables.widgetId) return {..._, ...variables}
+            return _
+          })
+        })
+        return query
+      },
+      onSuccess: (data, variables, context) => {
+      },
+      onError: e => {
+        toastHttpError(e)
+        queryClient.invalidateQueries({queryKey: queryKeys.dashboardWidget(workspaceId, dashboardId)})
+      },
     })
   }
 
