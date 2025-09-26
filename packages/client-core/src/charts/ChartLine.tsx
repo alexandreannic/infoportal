@@ -11,7 +11,7 @@ import {useI18n} from '@infoportal/client-i18n'
 
 export interface ChartLineProps extends Pick<BoxProps, 'sx'> {
   colorsByKey?: (t: Theme) => Record<string, string>
-  colors?: (t: Theme) => string[]
+  colors?: (t: Theme) => (string | undefined)[]
   /**
    * This props may be needed because sometimes label are not showing because of animation.
    * https://github.com/recharts/recharts/issues/1135
@@ -19,7 +19,7 @@ export interface ChartLineProps extends Pick<BoxProps, 'sx'> {
   disableAnimation?: boolean
   hideLabelToggle?: boolean
   translation?: Record<string, string>
-  height?: number
+  height?: number | string
   hideYTicks?: boolean
   hideXTicks?: boolean
   hideLegend?: boolean
@@ -68,7 +68,7 @@ export const ChartLine = ({
   children,
   sx,
   colorsByKey,
-  colors = chartConfig.defaultColors,
+  colors,
   translation,
   hideYTicks = true,
   hideXTicks,
@@ -78,11 +78,10 @@ export const ChartLine = ({
   disableAnimation,
   hideLabelToggle,
   percent,
-  height = 220,
+  height = '100%',
 }: ChartLineProps) => {
   const theme = useTheme()
   const {formatLargeNumber} = useI18n()
-  // const lines = Object.keys(data?.[0] ?? {}).filter(_ => _ !== 'name')
   const lines = Object.keys(data?.[0]?.values ?? {})
   const [showCurves, setShowCurves] = useState<boolean[]>(new Array(lines.length).fill(false))
 
@@ -94,6 +93,13 @@ export const ChartLine = ({
       ...row.values,
     }))
   }, [data, fixMissingMonths])
+
+  const resolveColor = (key: string, index: number) => {
+    let color = colorsByKey?.(theme)[key]
+    if (!color) color = colors?.(theme)[index]
+    if (!color) color = chartConfig.defaultColors(theme)[index]
+    return color ?? '#000'
+  }
 
   return (
     <>
@@ -107,16 +113,22 @@ export const ChartLine = ({
               onChange={e => setShowCurves(prev => prev.map((_, index) => (i === index ? e.currentTarget.checked : _)))}
               sx={{
                 '& svg': {
-                  fill: colorsByKey ? colorsByKey(theme)[c] : (colors(theme)[i] ?? colors(theme)[0] + ' !important'),
+                  fill: resolveColor(c, i),
                 },
               }}
             />
           ))}
         </Box>
       )}
-      <Box sx={{height, ml: hideYTicks ? 0 : -2, mb: hideXTicks ? -4 : 0, ...sx}}>
+      <Box
+        sx={{
+          height: height,
+          ml: hideYTicks ? 0 : -2,
+          ...sx,
+        }}
+      >
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart height={height - 60} data={cleanedData}>
+          <LineChart data={cleanedData}>
             <CartesianGrid strokeDasharray="1 1" strokeWidth={0.5} vertical={false} />
             {!hideLegend && <Legend {...commonLegendProps} />}
             <XAxis dataKey="name" />
@@ -138,7 +150,7 @@ export const ChartLine = ({
                 yAxisId={line}
                 dataKey={line}
                 dot={false}
-                stroke={colorsByKey?.(theme)[line] ?? colors(theme)[i] ?? colors(theme)[0]}
+                stroke={resolveColor(line, i)}
                 strokeWidth={2}
               >
                 {showCurves[i] && (
@@ -146,7 +158,7 @@ export const ChartLine = ({
                     dataKey={lines[i]}
                     position="top"
                     style={{
-                      fill: colorsByKey?.(theme)[line] ?? colors(theme)[i] ?? colors(theme)[0],
+                      fill: resolveColor(line, i),
                       fontSize: styleUtils(theme).fontSize.small,
                     }}
                   />

@@ -76,7 +76,7 @@ export const styleUtils = (t: Theme) => ({
     },
     toolbar: {
       default: {
-        background: t.vars.palette.background.default, //'rgb(237, 242, 250)',
+        background: 'rgb(235, 240, 249)', // t.vars.palette.background.default,
         ...t.applyStyles('dark', {
           background: darkenVar(t.vars.palette.background.paper, 0.16),
         }),

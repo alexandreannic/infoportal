@@ -628,19 +628,37 @@ export namespace Ip {
         h: number
       }
 
+      export type ConfigFilter = {
+        questionName: string
+        number?: {min?: number; max?: number}
+        choices?: string[]
+      }
+
       export type Config = {
         [Type.Card]: {
           icon?: string
-          operation: 'sum' | 'avg' | 'min' | 'max'
+          operation?: 'sum' | 'avg' | 'min' | 'max'
+        }
+        [Type.LineChart]: {
+          lines?: {
+            title?: string
+            questionName: string
+            color?: string
+            filter: ConfigFilter
+          }[]
+          start?: Date
+          end?: Date
         }
         [Type.BarChart]: {
-          selectedChoices: string[]
+          questionName?: string
+          selectedChoices?: string[]
           base?: 'percentOfTotalAnswers' | 'percentOfTotalChoices'
-          labels: Record<string, string>
+          labels?: Record<string, string>
           limit?: number
           multiple?: boolean
         }
         [Type.PieChart]: {
+          questionName?: string
           showValue?: boolean
           showBase?: boolean
           filterNumber?: {min?: number; max?: number}

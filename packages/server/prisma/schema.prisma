@@ -465,7 +465,7 @@ model Widget {
   title       String?
   description String?
   position    Json // { x: number; y: number; w: number; h: number } // grid layout
-  config      Json // Record<String, any> // widget-specific options
+  config      Json       @default("{}") // Record<String, any> // widget-specific options
   dashboard   Dashboard? @relation(fields: [dashboardId], references: [id])
   dashboardId String?
 }

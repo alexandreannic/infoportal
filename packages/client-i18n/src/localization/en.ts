@@ -309,6 +309,9 @@ export const en = Object.freeze({
     error: 'Error',
     anErrorOccurred: 'An error occurred',
     create: 'Create',
+    line: 'Line',
+    label: 'Label',
+    color: 'Color',
     proxy: 'Proxy',
     noSurveyCreatedYet: 'No form created yet',
     proxyUrl: 'Proxy URL',
@@ -324,6 +327,7 @@ export const en = Object.freeze({
     base: 'Base',
     smaller: 'Smaller',
     _dashboard: {
+      newLine: 'New line',
       showValue: 'Show value',
       showBase: 'Show base',
       maxChoicesToDisplay: 'Maximum choices to display',

@@ -8,9 +8,9 @@ import {
   Label,
   useQuestionInfo,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
 import {Core} from '@/shared'
-import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/SelectChoices'
+import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 
 export function SettingsCard() {
   const {m} = useI18n()

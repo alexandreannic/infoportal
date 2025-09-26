@@ -1,17 +1,17 @@
 import {Core} from '@/shared'
 import {Ip} from 'infoportal-api-sdk'
-import React, {RefObject, useMemo, useRef} from 'react'
+import React, {RefObject, useRef} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
-import {Box, Checkbox, FormControlLabel, Icon, useTheme} from '@mui/material'
+import {Box, Icon, useTheme} from '@mui/material'
 import {fnSwitch} from '@axanc/ts-utils'
 import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
 import {widgetTypeToIcon} from '@/features/Dashboard/Widget/WidgetTypeIcon'
 import {UseQueryDashboardWidget} from '@/core/query/useQueryDashboardWidget'
 import {useIpToast} from '@/core/useToast'
 import {Kobo} from 'kobo-sdk'
-import {SettingsBarChart} from '@/features/Dashboard/Widget/SettingsPanel/SettingsBarChart'
-import {SettingsPieChart} from '@/features/Dashboard/Widget/SettingsPanel/SettingsPieChart'
-import {type} from 'node:os'
+import {SettingsBarChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsBarChart'
+import {SettingsPieChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsPieChart'
+import {SettingsLineChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsLineChart'
 
 export type WidgetUpdatePayload = Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'widgetId' | 'dashboardId'>
 type Context = {
@@ -32,6 +32,9 @@ export const getQuestionTypeByWidget = (type: Ip.Dashboard.Widget.Type): Kobo.Fo
     case 'BarChart': {
       return ['select_multiple', 'select_one']
     }
+    case 'LineChart': {
+      return ['date', 'datetime']
+    }
     case 'PieChart': {
       return ['select_one', 'integer', 'decimal']
     }
@@ -51,6 +54,7 @@ export const useQuestionInfo: {
   return {question, choices} as any
 }
 
+const padding = 0.75
 export const WidgetCreatorFormPanel = ({
   onClose,
   widget,
@@ -89,6 +93,7 @@ export const WidgetCreatorFormPanel = ({
         <Core.PanelBody
           sx={{
             mb: 1,
+            p: padding,
             background: t.vars.palette.background.default,
             borderBottom: `1px solid ${t.vars.palette.divider}`,
           }}
@@ -124,12 +129,13 @@ export const WidgetCreatorFormPanel = ({
             onSubmit={_ => onChange({title: _})}
           />
         </Core.PanelBody>
-        <Core.PanelBody>
+        <Core.PanelBody sx={{p: padding}}>
           {fnSwitch(
             widget.type,
             {
               BarChart: <SettingsBarChart />,
               PieChart: <SettingsPieChart />,
+              LineChart: <SettingsLineChart />,
             },
             () => (
               <></>
@@ -168,5 +174,5 @@ export const WidgetCreatorFormPanel = ({
 // }
 
 export function Label({sx, ...props}: Core.TxtProps) {
-  return <Core.Txt uppercase color="hint" size="small" sx={{mt: 1, ...sx}} block {...props} />
+  return <Core.Txt color="hint" size="small" sx={{mt: 1, ...sx}} block {...props} />
 }

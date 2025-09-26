@@ -9,8 +9,8 @@ import {
   Label,
   useQuestionInfo,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
-import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/SelectChoices'
+} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
+import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 
 export function SettingsBarChart() {

@@ -25,6 +25,7 @@ export const SelectQuestionInput = ({
   onInputChange,
   InputProps,
   onChange,
+  sx,
   ...props
 }: Props) => {
   const {m} = useI18n()
@@ -66,23 +67,26 @@ export const SelectQuestionInput = ({
       }}
       filterOptions={filterOptions(questionIndex)}
       onChange={(e, _, reason, details) => {
-        if (_) {
-          onChange?.(e, _, reason, details)
-          // accessForm.setValue('questionAnswer', [])
-        }
+        onChange?.(e, _, reason, details)
       }}
       options={questions?.map(_ => _.name!) ?? []}
       renderInput={({InputProps: renderInputProps, ...renderProps}) => (
         <Core.Input
           label={m.question}
+          sx={sx}
           {...renderInputProps}
           {...renderProps}
           {...InputProps}
-          endAdornment={loading ? <CircularProgress size={20} /> : undefined}
+          endAdornment={
+            <>
+              {loading ? <CircularProgress size={20} /> : undefined}
+              {renderInputProps.endAdornment}
+            </>
+          }
         />
       )}
+      renderValue={_ => KoboSchemaHelper.getLabel(questionIndex[_], langIndex).replace(/<[^>]+>/g, '') ?? _}
       renderOption={(props, option) => {
-        console.log(option, questionIndex)
         return (
           <Box component="li" {...props} key={option}>
             <KoboTypeIcon children={questionIndex[option].type} sx={{ml: -0.5, mr: 1}} />

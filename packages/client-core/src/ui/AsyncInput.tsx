@@ -77,13 +77,13 @@ export function AsyncInput({
       }}
       endAdornment={
         <Box sx={{mr: -1}} display="flex" alignItems="center">
-          {local !== String(originalValue ?? '') && (
+          {onSubmit && local !== String(originalValue ?? '') && (
             <IconBtn color="success" size="small" onClick={triggerSubmit} disabled={local === String(originalValue)}>
               check
             </IconBtn>
           )}
 
-          {local !== String(originalValue ?? '') && (
+          {onSubmit && local !== String(originalValue ?? '') && (
             <IconBtn
               color="error"
               size="small"

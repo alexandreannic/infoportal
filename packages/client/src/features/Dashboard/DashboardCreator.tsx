@@ -1,6 +1,6 @@
 import {Core, Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
-import Grid from 'react-grid-layout'
+import ReactGridLayout, {WidthProvider} from 'react-grid-layout'
 import {Box, Collapse, Icon, useTheme} from '@mui/material'
 import 'react-grid-layout/css/styles.css'
 import {useI18n} from '@infoportal/client-i18n'
@@ -11,16 +11,17 @@ import {seq, Seq} from '@axanc/ts-utils'
 import {
   WidgetCreatorFormPanel,
   WidgetUpdatePayload,
-} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
 import React, {useCallback, useMemo, useState} from 'react'
-import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard'
+import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {DashboardHeader} from '@/features/Dashboard/DashboardHeader'
 import {UseQueryDashboardWidget} from '@/core/query/useQueryDashboardWidget'
 import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {SubmissionMapped} from '@/core/sdk/server/kobo/KoboMapper'
+
+const GridLayout = WidthProvider(ReactGridLayout)
 
 export const dashboardCreatorRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -88,7 +89,7 @@ export function _DashboardCreator() {
   const queryWidgetUpdate = UseQueryDashboardWidget.update({workspaceId, dashboardId: dashboard.id})
 
   const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>(
-    '45bcd3c5-f6a3-40d7-a5b4-a008f4f390f0' as any,
+    '03fd30a5-eae9-45d9-9899-8847b7f34c6d' as any,
   )
 
   const createWidget = async (form: WidgetCreateForm) => {
@@ -102,9 +103,12 @@ export function _DashboardCreator() {
     setEditingWidgetId(data.id)
   }
 
-  const selectWidget = (widget: Ip.Dashboard.Widget) => {
-    setEditingWidgetId(widget.id)
-  }
+  const selectWidget = useCallback(
+    (id: Ip.Dashboard.WidgetId) => {
+      setEditingWidgetId(id)
+    },
+    [setEditingWidgetId],
+  )
 
   const editingWidget = useMemo(() => {
     return widgets.find(_ => _.id === editingWidgetId)
@@ -136,7 +140,7 @@ export function _DashboardCreator() {
             margin: '0 auto',
             mb: 1,
             maxWidth: layoutWidth,
-            width: layoutWidth,
+            width: '100%',
           }}
         >
           <DashboardHeader />
@@ -150,7 +154,7 @@ export function _DashboardCreator() {
               },
             }}
           >
-            <Grid
+            <GridLayout
               onLayoutChange={layout => {
                 layout.forEach(({i, x, y, h, w}) => {
                   updateWidget(i as Ip.Dashboard.WidgetId, {position: {x, y, h, w}})
@@ -166,7 +170,7 @@ export function _DashboardCreator() {
               {widgets.map(widget => (
                 <div key={widget.id}>
                   <WidgetCard
-                    onClick={() => selectWidget(widget)}
+                    onClick={selectWidget}
                     status={editingWidget?.id === widget.id ? 'editing' : undefined}
                     widget={widget}
                   />
@@ -184,7 +188,7 @@ export function _DashboardCreator() {
                   </Icon>
                 </div>
               ))}
-            </Grid>
+            </GridLayout>
             <Box sx={{p: 1, pt: 0}}>
               <Core.Modal
                 overrideActions={null}

@@ -1,7 +1,7 @@
 import {SxProps} from '@mui/material'
 import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
 import React, {useMemo} from 'react'
-import {useQuestionInfo, useWidgetSettingsContext} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+import {useQuestionInfo, useWidgetSettingsContext} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
 import {Core} from '@/shared'
 
 export function SelectChoices({

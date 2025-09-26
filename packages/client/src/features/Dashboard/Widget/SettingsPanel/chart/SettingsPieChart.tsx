@@ -2,18 +2,17 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect} from 'react'
-import {Box, SxProps, useTheme} from '@mui/material'
+import {Box} from '@mui/material'
 import {SwitchBox} from '@/shared/SwitchBox'
 import {
   getQuestionTypeByWidget,
-  Label,
   useQuestionInfo,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
-import {SelectChoices} from './SelectChoices'
-import {Core} from '@/shared'
+} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
+import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
+import {RangeInput} from '@/features/Dashboard/Widget/SettingsPanel/shared/RangeInput'
 
 export function SettingsPieChart() {
   const {schema} = useDashboardCreatorContext()
@@ -96,43 +95,5 @@ export function SettingsPieChart() {
       />
       <SwitchBox {...form.register('dense')} label={m.smaller} />
     </>
-  )
-}
-
-function RangeInput({
-  value = {},
-  onChange,
-  label,
-  sx,
-}: {
-  sx?: SxProps
-  label?: string
-  value?: {min?: number; max?: number}
-  onChange: (v: {min?: number; max?: number}) => void
-}) {
-  const t = useTheme()
-  const {m} = useI18n()
-  return (
-    <Box sx={sx}>
-      {label && <Label>{label}</Label>}
-      <Box sx={{display: 'flex', alignItems: 'center', gap: t.vars.spacing}}>
-        <Core.AsyncInput
-          placeholder={m.min}
-          debounce={300}
-          type="number"
-          helperText={null}
-          value={value.min}
-          onChange={_ => onChange({max: value.max && _ ? Math.max(value.max, _) : value.max, min: _})}
-        />
-        <Core.AsyncInput
-          helperText={null}
-          placeholder={m.max}
-          debounce={300}
-          type="number"
-          value={value.max}
-          onChange={_ => onChange({min: value.min && _ ? Math.min(value.min, _) : value.min, max: _})}
-        />
-      </Box>
-    </Box>
   )
 }
