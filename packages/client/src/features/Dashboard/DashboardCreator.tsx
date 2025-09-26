@@ -1,23 +1,26 @@
 import {Core, Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import Grid from 'react-grid-layout'
-import {Box, Collapse, Slide, useTheme} from '@mui/material'
+import {Box, Collapse, useTheme} from '@mui/material'
 import 'react-grid-layout/css/styles.css'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {UseQueryDashboard} from '@/core/query/useQueryDashboard'
 import {seq, Seq} from '@axanc/ts-utils'
-import {WidgetCreatorFormPanel, WidgetUpdatePayload} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+import {
+  WidgetCreatorFormPanel,
+  WidgetUpdatePayload,
+} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import React, {useCallback, useMemo, useState} from 'react'
 import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard'
-import {KoboSchemaHelper, PartialExcept} from 'infoportal-common'
+import {KoboSchemaHelper} from 'infoportal-common'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {DashboardHeader} from '@/features/Dashboard/DashboardHeader'
 import {UseQueryDashboardWidget} from '@/core/query/useQueryDashboardWidget'
 import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {SubmissionMapped, SubmissionMappedType} from '@/core/sdk/server/kobo/KoboMapper'
+import {SubmissionMapped} from '@/core/sdk/server/kobo/KoboMapper'
 
 export const dashboardCreatorRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -30,10 +33,9 @@ const sidePanelWidth = 300
 
 type Context = {
   workspaceId: Ip.WorkspaceId
-  submissions: Seq<Ip.Submission>
+  flatSubmissions: Seq<Record<string, any>>
   dashboard: Ip.Dashboard
-  answers: Seq<SubmissionMapped>
-  schema: KoboSchemaHelper.Bundle
+  schema: KoboSchemaHelper.Bundle<true>
   widgets: Ip.Dashboard.Widget[]
 }
 
@@ -41,6 +43,7 @@ const Context = React.createContext<Context>({} as Context)
 export const useDashboardCreatorContext = () => React.useContext(Context)
 
 export function DashboardCreator() {
+  const {m} = useI18n()
   const params = dashboardCreatorRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const dashboardId = params.dashboardId as Ip.DashboardId
@@ -49,6 +52,15 @@ export function DashboardCreator() {
   const querySchema = useQuerySchema({workspaceId, formId: queryDashboard.data?.sourceFormId})
   const querySubmissions = UseQuerySubmission.search({workspaceId, formId: queryDashboard.data?.sourceFormId})
   const queryWidgets = UseQueryDashboardWidget.getByDashboard({workspaceId, dashboardId})
+  const schemaWithMeta = useMemo(() => {
+    if (!querySchema.data) return
+    return KoboSchemaHelper.upgradeIncludingMeta(querySchema.data, {
+      ...m._meta,
+      choices: {
+        validationStatus: m.validation_,
+      },
+    })
+  }, [querySchema.data])
   return (
     <Page
       width="full"
@@ -56,13 +68,12 @@ export function DashboardCreator() {
         queryWidgets.isLoading || querySubmissions.isLoading || queryDashboard.isLoading || querySchema.isLoading
       }
     >
-      {querySubmissions.data && queryWidgets.data && queryDashboard.data && querySchema.data && (
+      {querySubmissions.data && queryWidgets.data && queryDashboard.data && schemaWithMeta && (
         <Context.Provider
           value={{
             workspaceId,
-            schema: querySchema.data,
-            submissions: seq(querySubmissions.data.data),
-            answers: seq(querySubmissions.data.data).map(_ => _.answers),
+            schema: schemaWithMeta,
+            flatSubmissions: seq(querySubmissions.data.data.map(({answers, ...rest}) => ({...answers, ...rest}))),
             dashboard: queryDashboard.data,
             widgets: queryWidgets.data,
           }}
