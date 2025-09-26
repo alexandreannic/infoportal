@@ -31,14 +31,11 @@ export const WidgetCard = memo(
           borderColor: status === 'editing' ? t.vars.palette.primary.main : 'transparent',
         }}
       >
-        <Box display="flex" alignItems="center">
+        {widget.type !== 'PieChart' && (
           <Core.Txt truncate title={widget.title} block size="big" bold sx={{flex: 1, mb: 1}}>
             {widget.title}
           </Core.Txt>
-          <Icon sx={{color: t.vars.palette.text.secondary}} className="drag-handle">
-            drag_indicator
-          </Icon>
-        </Box>
+        )}
         <Box>
           {widget.questionName === undefined ? (
             <Placeholder type={widget.type} />

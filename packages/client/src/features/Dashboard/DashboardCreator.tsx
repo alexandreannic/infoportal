@@ -1,7 +1,7 @@
 import {Core, Page} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import Grid from 'react-grid-layout'
-import {Box, Collapse, useTheme} from '@mui/material'
+import {Box, Collapse, Icon, useTheme} from '@mui/material'
 import 'react-grid-layout/css/styles.css'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
@@ -170,6 +170,18 @@ export function _DashboardCreator() {
                     status={editingWidget?.id === widget.id ? 'editing' : undefined}
                     widget={widget}
                   />
+                  <Icon
+                    fontSize="small"
+                    sx={{
+                      position: 'absolute',
+                      top: `calc(${t.vars.spacing} / 2)`,
+                      right: `calc(${t.vars.spacing} / 2)`,
+                      color: t.vars.palette.text.secondary,
+                    }}
+                    className="drag-handle"
+                  >
+                    drag_indicator
+                  </Icon>
                 </div>
               ))}
             </Grid>
