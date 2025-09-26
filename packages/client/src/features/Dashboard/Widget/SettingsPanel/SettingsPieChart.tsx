@@ -4,12 +4,22 @@ import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect} from 'react'
 import {Box, SxProps, useTheme} from '@mui/material'
 import {SwitchBox} from '@/shared/SwitchBox'
-import {Label, useWidgetSettingsContext} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+import {
+  getQuestionTypeByWidget,
+  Label,
+  useQuestionInfo,
+  useWidgetSettingsContext,
+} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import {SelectChoices} from './SelectChoices'
 import {Core} from '@/shared'
+import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
 
 export function SettingsPieChart() {
-  const {widget, question, onChange} = useWidgetSettingsContext()
+  const {schema} = useDashboardCreatorContext()
+  const {widget, onChange} = useWidgetSettingsContext()
+  const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
+  const {question} = useQuestionInfo(config.questionName)
   const {m} = useI18n()
   const form = useForm<Ip.Dashboard.Widget.Config['PieChart']>({
     mode: 'onChange',
@@ -21,38 +31,62 @@ export function SettingsPieChart() {
   useEffect(() => {
     onChange({config: values})
   }, [values])
+
   return (
     <>
-      {question.type === 'select_one' ? (
-        <>
-          <Controller
-            name="filterChoice"
-            control={form.control}
-            render={({field}) => <SelectChoices {...field} label={m.select} sx={{mb: 1}} />}
+      <Controller
+        name="questionName"
+        control={form.control}
+        rules={{
+          required: true,
+        }}
+        render={({field, fieldState}) => (
+          <SelectQuestionInput
+            {...field}
+            onChange={(e, _) => field.onChange(_)}
+            schema={schema.schema}
+            questionTypeFilter={getQuestionTypeByWidget(widget.type)}
+            InputProps={{
+              label: m.question,
+              error: !!fieldState.error,
+              helperText: fieldState.error && m.required,
+            }}
           />
+        )}
+      />
+      {question &&
+        (question.type === 'select_one' ? (
+          <>
+            <Controller
+              name="filterChoice"
+              control={form.control}
+              render={({field}) => (
+                <SelectChoices {...field} questionName={question.name} label={m.select} sx={{mb: 1}} />
+              )}
+            />
 
-          <Controller
-            name="filterChoiceBase"
-            control={form.control}
-            render={({field}) => <SelectChoices {...field} label={m.base} />}
-          />
-        </>
-      ) : (
-        <>
-          <Box>
             <Controller
-              name="filterNumber"
+              name="filterChoiceBase"
               control={form.control}
-              render={({field}) => <RangeInput label={m.value} {...field} />}
+              render={({field}) => <SelectChoices {...field} questionName={question.name} label={m.base} />}
             />
-            <Controller
-              name="filterNumberBase"
-              control={form.control}
-              render={({field}) => <RangeInput label={m.base} {...field} />}
-            />
-          </Box>
-        </>
-      )}
+          </>
+        ) : (
+          <>
+            <Box>
+              <Controller
+                name="filterNumber"
+                control={form.control}
+                render={({field}) => <RangeInput label={m.value} {...field} />}
+              />
+              <Controller
+                name="filterNumberBase"
+                control={form.control}
+                render={({field}) => <RangeInput label={m.base} {...field} />}
+              />
+            </Box>
+          </>
+        ))}
       <SwitchBox sx={{mt: 2, mb: 1}} {...form.register('showValue')} label={m._dashboard.showValue} />
       <SwitchBox
         disabled={!values.showValue}

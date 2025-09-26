@@ -4,19 +4,20 @@ import {useForm} from 'react-hook-form'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect} from 'react'
 import {Box, Slider} from '@mui/material'
-import {Label, useWidgetSettingsContext} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+import {
+  Label,
+  useQuestionInfo,
+  useWidgetSettingsContext,
+} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import {Core} from '@/shared'
 import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/SelectChoices'
 
-export function SettingsBarChart() {
+export function SettingsCard() {
   const {m} = useI18n()
   const {schema} = useDashboardCreatorContext()
-  const {widget, question, choices} = useWidgetSettingsContext()
+  const {question, choices} = useQuestionInfo()
+  const {widget} = useWidgetSettingsContext()
   const barChartForm = useForm<Ip.Dashboard.Widget.Config['BarChart']>()
-
-  useEffect(() => {
-    barChartForm.setValue('multiple', question.type === 'select_one')
-  }, [question])
 
   if (!question) {
     return <Core.Alert severity="error" title={m.anErrorOccurred} />
@@ -26,7 +27,6 @@ export function SettingsBarChart() {
     <Box>
       <SelectChoices value={[]} onChange={console.log} />
       <Label uppercase></Label>
-      <Slider defaultValue={choices.length} max={choices.length} valueLabelDisplay="auto" />
     </Box>
   )
 }

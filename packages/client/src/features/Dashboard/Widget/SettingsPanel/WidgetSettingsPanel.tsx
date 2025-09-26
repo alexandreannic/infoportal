@@ -1,6 +1,6 @@
 import {Core} from '@/shared'
 import {Ip} from 'infoportal-api-sdk'
-import React, {RefObject, useRef} from 'react'
+import React, {RefObject, useMemo, useRef} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, Checkbox, FormControlLabel, Icon, useTheme} from '@mui/material'
 import {fnSwitch} from '@axanc/ts-utils'
@@ -11,6 +11,7 @@ import {useIpToast} from '@/core/useToast'
 import {Kobo} from 'kobo-sdk'
 import {SettingsBarChart} from '@/features/Dashboard/Widget/SettingsPanel/SettingsBarChart'
 import {SettingsPieChart} from '@/features/Dashboard/Widget/SettingsPanel/SettingsPieChart'
+import {type} from 'node:os'
 
 export type WidgetUpdatePayload = Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'widgetId' | 'dashboardId'>
 type Context = {
@@ -18,12 +19,37 @@ type Context = {
   stepperRef: RefObject<Core.StepperHandle | null>
   onClose: () => void
   onChange: (value: WidgetUpdatePayload) => void
-  question: Kobo.Form.Question
-  choices: Kobo.Form.Choice[]
 }
 
 const Context = React.createContext<Context>({} as Context)
 export const useWidgetSettingsContext = () => React.useContext(Context)
+
+export const getQuestionTypeByWidget = (type: Ip.Dashboard.Widget.Type): Kobo.Form.QuestionType[] => {
+  switch (type) {
+    case 'Card': {
+      return []
+    }
+    case 'BarChart': {
+      return ['select_multiple', 'select_one']
+    }
+    case 'PieChart': {
+      return ['select_one', 'integer', 'decimal']
+    }
+    default: {
+      return []
+    }
+  }
+}
+export const useQuestionInfo: {
+  (_: string): {question: Kobo.Form.Question; choices: Kobo.Form.Choice[]}
+  (_?: string): {question?: Kobo.Form.Question; choices?: Kobo.Form.Choice[]}
+} = (questionName?: string) => {
+  const {schema} = useDashboardCreatorContext()
+  if (!questionName) return {question: undefined, choices: undefined}
+  const question = schema.helper.questionIndex[questionName!]
+  const choices = schema.helper.choicesIndex[question?.select_from_list_name!]
+  return {question, choices} as any
+}
 
 export const WidgetCreatorFormPanel = ({
   onClose,
@@ -40,8 +66,6 @@ export const WidgetCreatorFormPanel = ({
   const {workspaceId, dashboard, schema} = useDashboardCreatorContext()
   const queryWidgetRemove = UseQueryDashboardWidget.remove({workspaceId, dashboardId: dashboard.id})
   const {toastSuccess} = useIpToast()
-  const question = schema.helper.questionIndex[widget.questionName!]
-  const choices = schema.helper.choicesIndex[question?.select_from_list_name!]
 
   return (
     <Context.Provider
@@ -50,8 +74,6 @@ export const WidgetCreatorFormPanel = ({
         widget,
         onClose,
         stepperRef,
-        question,
-        choices,
       }}
     >
       <Core.Panel
@@ -75,7 +97,7 @@ export const WidgetCreatorFormPanel = ({
             sx={{
               display: 'flex',
               alignItems: 'center',
-              mb: 1,
+              mb: 2,
             }}
           >
             <Icon color="disabled">{widgetTypeToIcon[widget.type]}</Icon>
@@ -94,61 +116,56 @@ export const WidgetCreatorFormPanel = ({
             </Core.IconBtn>
             <Core.IconBtn onClick={onClose}>close</Core.IconBtn>
           </Box>
-          <Core.Input
-            helperText={null}
-            disabled
-            label={m.question}
-            value={schema.translate.question(widget.questionName)}
-          />
-        </Core.PanelBody>
-        <Core.PanelBody>
           <Core.AsyncInput
+            helperText={null}
             value={widget.title}
             originalValue={widget.title}
             label={m.title}
             onSubmit={_ => onChange({title: _})}
           />
-
-          {widget.questionName &&
-            fnSwitch(
-              widget.type,
-              {
-                BarChart: <SettingsBarChart />,
-                PieChart: <SettingsPieChart />,
-              },
-              () => <></>,
-            )}
+        </Core.PanelBody>
+        <Core.PanelBody>
+          {fnSwitch(
+            widget.type,
+            {
+              BarChart: <SettingsBarChart />,
+              PieChart: <SettingsPieChart />,
+            },
+            () => (
+              <></>
+            ),
+          )}
         </Core.PanelBody>
       </Core.Panel>
     </Context.Provider>
   )
 }
 
-function SelectChoices2() {
-  const {m} = useI18n()
-  const {schema} = useDashboardCreatorContext()
-  const {widget, question, choices} = useWidgetSettingsContext()
-  return (
-    <Core.MultipleChoices
-      options={choices.map(_ => ({value: _.name, label: schema.translate.choice(widget.questionName, _.name)}))}
-      onChange={console.log}
-    >
-      {({options, allChecked, toggleAll, someChecked}) => (
-        <>
-          <FormControlLabel
-            control={<Checkbox checked={allChecked} indeterminate={someChecked} onClick={toggleAll} />}
-            label={m.selectAll}
-          />
-          <Core.RadioGroup dense multiple sx={{maxHeight: 300, overflowY: 'scroll'}}>
-            {options.map(choice => (
-              <Core.RadioGroupItem value={choice.value} key={choice.key} title={choice.label} />
-            ))}
-          </Core.RadioGroup>
-        </>
-      )}
-    </Core.MultipleChoices>
-  )
-}
+// function SelectChoices2() {
+//   const {m} = useI18n()
+//   const {schema} = useDashboardCreatorContext()
+//   const {question, choices} = useQuestionInfo()
+//   return (
+//     <Core.MultipleChoices
+//       options={choices.map(_ => ({value: _.name, label: schema.translate.choice(widget.questionName, _.name)}))}
+//       onChange={console.log}
+//     >
+//       {({options, allChecked, toggleAll, someChecked}) => (
+//         <>
+//           <FormControlLabel
+//             control={<Checkbox checked={allChecked} indeterminate={someChecked} onClick={toggleAll} />}
+//             label={m.selectAll}
+//           />
+//           <Core.RadioGroup dense multiple sx={{maxHeight: 300, overflowY: 'scroll'}}>
+//             {options.map(choice => (
+//               <Core.RadioGroupItem value={choice.value} key={choice.key} title={choice.label} />
+//             ))}
+//           </Core.RadioGroup>
+//         </>
+//       )}
+//     </Core.MultipleChoices>
+//   )
+// }
 
 export function Label({sx, ...props}: Core.TxtProps) {
   return <Core.Txt uppercase color="hint" size="small" sx={{mt: 1, ...sx}} block {...props} />

@@ -10,15 +10,7 @@ type Status = 'editing'
 
 export const WidgetCard = memo(
   ({status, widget, onClick}: {status?: Status; widget: Ip.Dashboard.Widget; onClick: () => void}) => {
-    widget.questionName
     const t = useTheme()
-    if (widget.questionName) {
-      widget.questionName
-    }
-    if (widget.questionName === undefined || widget.questionName === null) {
-    } else {
-      widget.questionName
-    }
     return (
       <Core.Panel
         onClick={onClick}
@@ -36,58 +28,59 @@ export const WidgetCard = memo(
             {widget.title}
           </Core.Txt>
         )}
-        <Box>
-          {widget.questionName === undefined ? (
-            <Placeholder type={widget.type} />
-          ) : (
-            fnSwitch(
-              widget.type,
-              {
-                BarChart: <BarChart widget={widget as any} />,
-                PieChart: <PieChart widget={widget as any} />,
-              },
-              () => <></>,
-            )
-          )}
-        </Box>
+        {fnSwitch(
+          widget.type,
+          {
+            BarChart: <BarChart widget={widget as any} />,
+            PieChart: <PieChart widget={widget as any} />,
+          },
+          () => (
+            <></>
+          ),
+        )}
       </Core.Panel>
     )
   },
 )
 
-function Placeholder({type}: {type: Ip.Dashboard.Widget.Type}) {
+function WidgetPlaceholder({type}: {type: Ip.Dashboard.Widget.Type}) {
   return (
-    <Box sx={{height: '100%', display: 'flex', alignItems: 'center'}}>
-      <Icon sx={{fontSize: '3em'}}>{widgetTypeToIcon[type]}</Icon>
+    <Box sx={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+      <Icon sx={{fontSize: '3.5em'}} color="disabled">
+        {widgetTypeToIcon[type]}
+      </Icon>
     </Box>
   )
 }
 
-function computeFn(qName: string, conf: Ip.Dashboard.Widget.Config['PieChart']) {
-  if (conf.filterChoice) {
-    return [
-      (_: Record<string, string>) => conf.filterChoice!.includes(_[qName]),
-      (_: Record<string, string>) => !conf.filterChoiceBase || conf.filterChoiceBase!.includes(_[qName]),
-    ]
-  }
-  if (conf.filterNumber) {
-    return [
-      (_: Record<string, number>) => {
-        const value = _[qName]
-        if (isNaN(value)) return false
-        if (conf.filterNumber?.min && conf.filterNumber.min > value) return false
-        if (conf.filterNumber?.max && conf.filterNumber.max < value) return false
-        return true
-      },
-      (_: Record<string, number>) => {
-        if (!conf.filterNumberBase) return true
-        const value = _[qName]
-        if (isNaN(value)) return false
-        if (conf.filterNumberBase?.min && conf.filterNumberBase.min > value) return false
-        if (conf.filterNumberBase?.max && conf.filterNumberBase.max < value) return false
-        return true
-      },
-    ]
+function computeFn(conf: Ip.Dashboard.Widget.Config['PieChart']) {
+  if (conf.questionName) {
+    const qName = conf.questionName
+    if (conf.filterChoice) {
+      return [
+        (_: Record<string, string>) => conf.filterChoice!.includes(_[qName]),
+        (_: Record<string, string>) => !conf.filterChoiceBase || conf.filterChoiceBase!.includes(_[qName]),
+      ]
+    }
+    if (conf.filterNumber) {
+      return [
+        (_: Record<string, number>) => {
+          const value = _[qName]
+          if (isNaN(value)) return false
+          if (conf.filterNumber?.min && conf.filterNumber.min > value) return false
+          if (conf.filterNumber?.max && conf.filterNumber.max < value) return false
+          return true
+        },
+        (_: Record<string, number>) => {
+          if (!conf.filterNumberBase) return true
+          const value = _[qName]
+          if (isNaN(value)) return false
+          if (conf.filterNumberBase?.min && conf.filterNumberBase.min > value) return false
+          if (conf.filterNumberBase?.max && conf.filterNumberBase.max < value) return false
+          return true
+        },
+      ]
+    }
   }
   return [(_: any) => true, (_: any) => true]
 }
@@ -96,15 +89,17 @@ function PieChart({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
   const {flatSubmissions, schema} = useDashboardCreatorContext()
   const [filterValue, filterBase] = useMemo(() => {
-    return computeFn(widget.questionName, config)
-  }, [widget.questionName, config])
+    return computeFn(config)
+  }, [config.questionName, config])
+
+  if (!config.questionName) return <WidgetPlaceholder type={widget.type} />
 
   return (
     <Core.ChartPieWidgetBy<any>
       title={widget.title}
       data={flatSubmissions}
       dense={config.dense}
-      property={widget.questionName}
+      property={config.questionName}
       filter={filterValue}
       filterBase={filterBase}
       showBase={config.showBase}
@@ -114,16 +109,22 @@ function PieChart({widget}: {widget: Ip.Dashboard.Widget}) {
 }
 
 function BarChart({widget}: {widget: Ip.Dashboard.Widget}) {
+  const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
   const {flatSubmissions, schema} = useDashboardCreatorContext()
   const labels = useMemo(() => {
-    const q = widget.questionName
+    const q = config.questionName
+    if (!q) return {}
     return schema.helper
       .getOptionsByQuestionName(q)
       .reduceObject<Record<string, string>>(_ => [_.name, schema.translate.choice(q, _.name)])
-  }, [widget.questionName, schema])
+  }, [config.questionName, schema])
   return (
     <Box sx={{overflowY: 'scroll'}}>
-      <Core.ChartBarMultipleByKey data={flatSubmissions} label={labels} property={widget.questionName} />
+      {!config.questionName ? (
+        <WidgetPlaceholder type={widget.type} />
+      ) : (
+        <Core.ChartBarMultipleByKey data={flatSubmissions} label={labels} property={config.questionName} />
+      )}
     </Box>
   )
 }

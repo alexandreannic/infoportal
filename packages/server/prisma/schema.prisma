@@ -460,13 +460,12 @@ enum WidgetType {
 }
 
 model Widget {
-  id           String     @id @default(uuid())
-  type         WidgetType
-  title        String?
-  description  String?
-  questionName String
-  position     Json // { x: number; y: number; w: number; h: number } // grid layout
-  config       Json // Record<String, any> // widget-specific options
-  dashboard    Dashboard? @relation(fields: [dashboardId], references: [id])
-  dashboardId  String?
+  id          String     @id @default(uuid())
+  type        WidgetType
+  title       String?
+  description String?
+  position    Json // { x: number; y: number; w: number; h: number } // grid layout
+  config      Json // Record<String, any> // widget-specific options
+  dashboard   Dashboard? @relation(fields: [dashboardId], references: [id])
+  dashboardId String?
 }

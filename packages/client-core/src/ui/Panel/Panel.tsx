@@ -27,7 +27,9 @@ export const Panel = forwardRef(
           // border: t => `1px solid ${t.vars.palette.divider}`,
           // boxShadow: t => t.vars.shadows[1],
           // boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-
+          // '&:hover .panel-actions': {
+          //   display: 'block',
+          // },
           position: 'relative',
           background: t => t.vars.palette.background.paper,
           borderRadius: t => t.vars.shape.borderRadius,
@@ -49,9 +51,6 @@ export const Panel = forwardRef(
             elevation > 0 && {
               border: 'none',
             }),
-          // '&:hover .panel-actions': {
-          //   display: 'block',
-          // },
           ...sx,
         }}
         {...other}
