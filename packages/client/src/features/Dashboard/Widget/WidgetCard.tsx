@@ -101,6 +101,7 @@ function PieChart({widget}: {widget: Ip.Dashboard.Widget}) {
 
   return (
     <Core.ChartPieWidgetBy<any>
+      title={widget.title}
       data={flatSubmissions}
       dense={config.dense}
       property={widget.questionName}

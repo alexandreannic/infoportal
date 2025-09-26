@@ -54,7 +54,12 @@ export function SettingsPieChart() {
         </>
       )}
       <SwitchBox sx={{mt: 2, mb: 1}} {...form.register('showValue')} label={m._dashboard.showValue} />
-      <SwitchBox sx={{mb: 1}} {...form.register('showBase')} label={m._dashboard.showBase} />
+      <SwitchBox
+        disabled={!values.showValue}
+        sx={{mb: 1}}
+        {...form.register('showBase')}
+        label={m._dashboard.showBase}
+      />
       <SwitchBox {...form.register('dense')} label={m.smaller} />
     </>
   )
