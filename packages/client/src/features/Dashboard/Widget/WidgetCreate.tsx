@@ -30,6 +30,9 @@ export function WidgetCreate({
   const type = form.watch('type')
   const questionTypeFilters: Kobo.Form.QuestionType[] = useMemo(() => {
     switch (type) {
+      case 'Card': {
+        return []
+      }
       case 'BarChart': {
         return ['select_multiple', 'select_one']
       }

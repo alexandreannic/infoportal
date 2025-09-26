@@ -638,6 +638,10 @@ export namespace Ip {
       }
 
       export type Config = {
+        [Type.Card]: {
+          icon?: string
+          operation: 'sum' | 'avg' | 'min' | 'max'
+        }
         [Type.BarChart]: {
           selectedChoices: string[]
           base?: 'percentOfTotalAnswers' | 'percentOfTotalChoices'
@@ -670,6 +674,7 @@ export namespace Ip {
       }
       export type Type = Prisma.WidgetType
       export const Type = {
+        Card: 'Card',
         PieChart: 'PieChart',
         GeoChart: 'GeoChart',
         LineChart: 'LineChart',

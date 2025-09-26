@@ -2,6 +2,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {Icon, IconProps} from '@mui/material'
 
 export const widgetTypeToIcon = {
+  [Ip.Dashboard.Widget.Type.Card]: 'pin',
   [Ip.Dashboard.Widget.Type.PieChart]: 'data_usage',
   [Ip.Dashboard.Widget.Type.GeoChart]: 'map',
   [Ip.Dashboard.Widget.Type.LineChart]: 'line_axis',
