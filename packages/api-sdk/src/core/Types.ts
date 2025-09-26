@@ -220,16 +220,7 @@ export namespace Ip {
   }
 
   // === Submission
-  export type Submission<T extends Record<string, any> = Record<string, any>> = Omit<
-    Prisma.FormSubmission,
-    'answers' | 'deletedBy' | 'deletedAt' | 'formId' | 'form' | 'histories'
-  > & {
-    id: SubmissionId
-    start?: Date | undefined
-    end?: Date | undefined
-    answers: T
-    attachments: Kobo.Submission.Attachment[]
-  }
+  export type Submission<T extends Record<string, any> = Record<string, any>> = Submission.Meta & {answers: T}
   export type SubmissionId = Brand<string, 'submissionId'>
   export namespace Submission {
     export const map = (_: Submission): Submission => {
@@ -260,19 +251,19 @@ export namespace Ip {
       start: Date
       /** Refresh whenever submission is updated */
       end: Date
+      originId?: string
       /** Set by Kobo Server, not editable */
-      submissionTime: Kobo.Submission['_submission_time']
-      version?: Kobo.Submission['__version__']
+      submissionTime: Date
+      version?: string
       attachments: Kobo.Submission.Attachment[]
       geolocation?: Geolocation
       isoCode?: string
-      id: Kobo.SubmissionId
-      uuid: Kobo.Submission['_uuid']
+      id: SubmissionId
+      uuid: Uuid
+      /** From Kobo, used to Sync */
       validationStatus?: Submission.Validation
       validatedBy?: Ip.User.Email
       submittedBy?: Ip.User.Email
-      lastValidatedTimestamp?: number
-      updatedAt?: Date
     }
 
     export namespace Payload {

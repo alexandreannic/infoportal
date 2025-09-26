@@ -112,7 +112,7 @@ export class Meta {
     key: KeysOfType<Ip.Submission, Date>
   }): Datatable.Column.Props<Row> {
     return {
-      id: key,
+      id: key as string,
       width: defaultColWidth,
       group: metaGroup,
       type: 'date',
@@ -120,7 +120,7 @@ export class Meta {
       typeIcon: <KoboTypeIcon children="date" />,
       typeLabel: key,
       render: (row: Row) => {
-        const value = row[key]
+        const value = row[key as string]
         const time = value ? value.toLocaleDateString() + ' ' + value.toLocaleTimeString() : ''
         return {
           label: value ? value.toLocaleDateString() : '',

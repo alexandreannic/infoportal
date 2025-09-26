@@ -1,4 +1,5 @@
 import {Kobo} from 'kobo-sdk'
+import {Obj} from '@axanc/ts-utils'
 
 export namespace KoboMetaHelper {
   export const metaKeys = [
@@ -51,20 +52,21 @@ export namespace KoboMetaHelper {
     submittedBy: string
     lastValidatedTimestamp: string
     updatedAt: string
-    choices: {
-      validationStatus: {
-        Approved: string
-        Pending: string
-        Rejected: string
-        Flagged: string
-        UnderReview: string
-      }
+  }
+
+  export type ChoicesLabel = {
+    validationStatus: {
+      Approved: string
+      Pending: string
+      Rejected: string
+      Flagged: string
+      UnderReview: string
     }
   }
 
   export const getMetaAsQuestion = (labels: Labels): Kobo.Form.Question[] => {
-    return KoboMetaHelper.metaKeys.map(_ => {
-      const type = KoboMetaHelper.metaType[_]
+    return metaKeys.map(_ => {
+      const type = metaType[_]
       const q: Kobo.Form.Question = {
         type,
         name: _,
@@ -78,6 +80,21 @@ export namespace KoboMetaHelper {
         calculation: undefined as any,
       }
       return q
+    })
+  }
+
+  export const getMetaAsChoices = (labels: ChoicesLabel): Kobo.Form.Choice[] => {
+    return Obj.keys(labels).flatMap(list_name => {
+      return Obj.keys(labels[list_name]).map(_ => {
+        const c: Kobo.Form.Choice = {
+          list_name,
+          name: _,
+          $autovalue: _,
+          $kuid: _,
+          label: [labels[list_name][_]],
+        }
+        return c
+      })
     })
   }
 }

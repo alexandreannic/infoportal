@@ -54,12 +54,7 @@ export function DashboardCreator() {
   const queryWidgets = UseQueryDashboardWidget.getByDashboard({workspaceId, dashboardId})
   const schemaWithMeta = useMemo(() => {
     if (!querySchema.data) return
-    return KoboSchemaHelper.upgradeIncludingMeta(querySchema.data, {
-      ...m._meta,
-      choices: {
-        validationStatus: m.validation_,
-      },
-    })
+    return KoboSchemaHelper.upgradeIncludingMeta(querySchema.data, m._meta, {validationStatus: m.validation_})
   }, [querySchema.data])
   return (
     <Page

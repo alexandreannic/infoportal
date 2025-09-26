@@ -34,7 +34,6 @@ export const SelectQuestionInput = ({
   }, [questionTypeFilter, schema])
 
   const questionIndex = useMemo(() => {
-    console.log(questions)
     return seq(questions).groupByFirst(_ => _.name)
   }, [schema])
 

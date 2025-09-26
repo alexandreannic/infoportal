@@ -1,4 +1,4 @@
-import {Obj, seq} from '@axanc/ts-utils'
+import {seq} from '@axanc/ts-utils'
 import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
@@ -122,44 +122,15 @@ export namespace KoboSchemaHelper {
     }
   }
 
-
-  export const upgradeIncludingMeta = (bundle: Bundle, labels: MetaLabels): Bundle<true> => {
+  export const upgradeIncludingMeta = (
+    bundle: Bundle,
+    labels: KoboMetaHelper.Labels,
+    choices: KoboMetaHelper.ChoicesLabel,
+  ): Bundle<true> => {
     const upgradedSchema: Ip.Form.Schema = {
       ...bundle.schema,
-      survey: [
-        ...KoboMetaHelper.metaKeys.map(_ => {
-          const type = KoboMetaHelper.metaType[_]
-          const q: Kobo.Form.Question = {
-            type,
-            name: _,
-            label: [labels[_] ?? _],
-            select_from_list_name: type === 'select_one' || type === 'select_multiple' ? _ : undefined,
-            $xpath: _,
-            $qpath: _,
-            $kuid: _,
-            $autoname: _,
-            // TODO Fix kobo-sdk where calculation is required
-            calculation: undefined as any,
-          }
-          return q
-        }),
-        ...bundle.schema.survey,
-      ],
-      choices: [
-        ...(bundle.schema.choices ?? []),
-        ...Obj.keys(labels.choices).flatMap(list_name => {
-          return Obj.keys(labels.choices[list_name]).map(_ => {
-            const c: Kobo.Form.Choice = {
-              list_name,
-              name: _,
-              $autovalue: _,
-              $kuid: _,
-              label: [labels.choices[list_name][_]],
-            }
-            return c
-          })
-        }),
-      ],
+      survey: [...KoboMetaHelper.getMetaAsQuestion(labels), ...bundle.schema.survey],
+      choices: [...KoboMetaHelper.getMetaAsChoices(choices), ...(bundle.schema.choices ?? [])],
     }
     return {
       ...buildBundle({schema: upgradedSchema, langIndex: bundle.translate.langIndex}),

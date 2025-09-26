@@ -97,14 +97,14 @@ function computeFn(qName: string, conf: Ip.Dashboard.Widget.Config['PieChart']) 
 
 function PieChart({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
-  const {answers, schema} = useDashboardCreatorContext()
+  const {flatSubmissions, schema} = useDashboardCreatorContext()
   const [filterValue, filterBase] = useMemo(() => {
     return computeFn(widget.questionName, config)
   }, [widget.questionName, config])
 
   return (
     <Core.ChartPieWidgetBy<any>
-      data={answers as any}
+      data={flatSubmissions}
       dense={config.dense}
       property={widget.questionName}
       filter={filterValue}
@@ -116,7 +116,7 @@ function PieChart({widget}: {widget: Ip.Dashboard.Widget}) {
 }
 
 function BarChart({widget}: {widget: Ip.Dashboard.Widget}) {
-  const {answers, schema} = useDashboardCreatorContext()
+  const {flatSubmissions, schema} = useDashboardCreatorContext()
   const labels = useMemo(() => {
     const q = widget.questionName
     return schema.helper
@@ -125,7 +125,7 @@ function BarChart({widget}: {widget: Ip.Dashboard.Widget}) {
   }, [widget.questionName, schema])
   return (
     <Box sx={{overflowY: 'scroll'}}>
-      <Core.ChartBarMultipleByKey data={answers as any} label={labels} property={widget.questionName} />
+      <Core.ChartBarMultipleByKey data={flatSubmissions} label={labels} property={widget.questionName} />
     </Box>
   )
 }
