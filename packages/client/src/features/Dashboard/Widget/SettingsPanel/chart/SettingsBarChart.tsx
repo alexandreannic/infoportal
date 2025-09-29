@@ -12,6 +12,7 @@ import {
 } from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
 import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
 
 export function SettingsBarChart() {
   const {m} = useI18n()
@@ -58,9 +59,24 @@ export function SettingsBarChart() {
           />
         )}
       />
+      <WidgetSettingsFilterQuestion name="filter" form={form} />
       <SelectChoices value={[]} questionName={config.questionName} onChange={console.log} />
-      <Label uppercase></Label>
-      <Slider disabled={!choices} defaultValue={choices?.length} max={choices?.length ?? 1} valueLabelDisplay="auto" />
+      <Label>{m._dashboard.listLimit}</Label>
+      <Controller
+        name="limit"
+        control={form.control}
+        render={({field, fieldState}) => (
+          <Box sx={{px: 1}}>
+            <Slider
+              {...field}
+              disabled={!choices}
+              defaultValue={choices?.length}
+              max={choices?.length ?? 1}
+              valueLabelDisplay="auto"
+            />
+          </Box>
+        )}
+      />
     </Box>
   )
 }

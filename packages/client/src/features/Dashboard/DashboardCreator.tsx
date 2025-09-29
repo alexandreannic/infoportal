@@ -89,7 +89,7 @@ export function _DashboardCreator() {
   const queryWidgetUpdate = UseQueryDashboardWidget.update({workspaceId, dashboardId: dashboard.id})
 
   const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>(
-    '03fd30a5-eae9-45d9-9899-8847b7f34c6d' as any,
+    'f09e16c2-b77b-4985-9457-0d68967a0b88' as any,
   )
 
   const createWidget = async (form: WidgetCreateForm) => {

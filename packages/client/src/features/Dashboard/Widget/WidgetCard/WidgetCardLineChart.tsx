@@ -6,9 +6,10 @@ import {Core} from '@/shared'
 import {seq} from '@axanc/ts-utils'
 import {ChartLineCurve} from '@infoportal/client-core'
 
-function filterToFunction<T extends Record<string, any> = Record<string, any>>(
+export function filterToFunction<T extends Record<string, any> = Record<string, any>>(
   filter: Ip.Dashboard.Widget.ConfigFilter,
-): (_: T) => boolean | undefined {
+): undefined | ((_: T) => boolean | undefined) {
+  if (!filter.questionName) return
   const filterNumber = filter.number
   const filterChoice = filter.choices
   if (filterNumber)
@@ -22,7 +23,6 @@ function filterToFunction<T extends Record<string, any> = Record<string, any>>(
   if (filterChoice) {
     return (_: T) => filterChoice.includes(_[filter.questionName])
   }
-  return (_: T) => true
 }
 
 export const WidgetCardLineChart = ({widget}: {widget: Ip.Dashboard.Widget}) => {

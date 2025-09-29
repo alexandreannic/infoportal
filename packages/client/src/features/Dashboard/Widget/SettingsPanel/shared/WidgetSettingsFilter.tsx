@@ -10,6 +10,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
 import {Box, Icon, useTheme} from '@mui/material'
 import {styleUtils} from '@infoportal/client-core'
+import {Kobo} from 'kobo-sdk'
 
 const formName: Record<keyof Ip.Dashboard.Widget.ConfigFilter, keyof Ip.Dashboard.Widget.ConfigFilter> = {
   questionName: 'questionName',
@@ -17,7 +18,7 @@ const formName: Record<keyof Ip.Dashboard.Widget.ConfigFilter, keyof Ip.Dashboar
   choices: 'choices',
 }
 
-export function WidgetSettingsFilter<T extends Record<string, any>>({
+export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
   form,
   name,
 }: {
@@ -61,20 +62,38 @@ export function WidgetSettingsFilter<T extends Record<string, any>>({
           />
         )}
       />
-      {question &&
-        (question.type === 'select_one' || question.type === 'select_multiple' ? (
-          <Controller
-            name={`${name}.${formName.choices}` as any}
-            control={form.control}
-            render={({field}) => <SelectChoices {...field} questionName={question.name} label={m.select} />}
-          />
-        ) : (
-          <Controller
-            name={`${name}.${formName.number}` as any}
-            control={form.control}
-            render={({field}) => <RangeInput label={m.value} {...field} />}
-          />
-        ))}
+      <WidgetSettingsFilter question={question} form={form} name={name} />
     </Box>
+  )
+}
+
+export function WidgetSettingsFilter<T extends Record<string, any>>({
+  form,
+  name,
+  question,
+  label,
+}: {
+  form: UseFormReturn<T>
+  name: string
+  label?: string
+  question?: Kobo.Form.Question
+}) {
+  const {m} = useI18n()
+  if (!question) return <></>
+  if (question.type === 'select_one' || question.type === 'select_multiple') {
+    return (
+      <Controller
+        name={`${name}.${formName.choices}` as any}
+        control={form.control}
+        render={({field}) => <SelectChoices {...field} questionName={question.name} label={label ?? m.value} />}
+      />
+    )
+  }
+  return (
+    <Controller
+      name={`${name}.${formName.number}` as any}
+      control={form.control}
+      render={({field}) => <RangeInput label={label ?? m.value} {...field} />}
+    />
   )
 }

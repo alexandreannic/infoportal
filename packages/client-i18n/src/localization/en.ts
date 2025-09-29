@@ -310,6 +310,7 @@ export const en = Object.freeze({
     anErrorOccurred: 'An error occurred',
     create: 'Create',
     line: 'Line',
+    limit: 'Limit',
     label: 'Label',
     color: 'Color',
     proxy: 'Proxy',
@@ -330,7 +331,9 @@ export const en = Object.freeze({
       newLine: 'New line',
       showValue: 'Show value',
       showBase: 'Show base',
-      maxChoicesToDisplay: 'Maximum choices to display',
+      listLimit: 'List limit',
+      valueToDisplay: 'Value',
+      base: 'Base'
     },
     loading: 'Loading',
     price: 'Price',

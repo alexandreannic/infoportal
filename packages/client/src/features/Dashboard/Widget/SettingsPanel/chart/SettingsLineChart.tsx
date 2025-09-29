@@ -11,7 +11,7 @@ import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {Core} from '@/shared'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsSection'
-import {WidgetSettingsFilter} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
+import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
 import {Box} from '@mui/material'
 import {ColorPicker} from '@/features/Dashboard/Widget/SettingsPanel/shared/ColorPicker'
 
@@ -106,7 +106,7 @@ function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Wi
         render={({field, fieldState}) => <ColorPicker {...field} sx={{mb: 2}}/>}
       />
 
-      <WidgetSettingsFilter name={`lines.${index}.filter`} form={form} />
+      <WidgetSettingsFilterQuestion name={`lines.${index}.filter`} form={form} />
     </>
   )
 }

@@ -13,6 +13,10 @@ import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/Se
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
 import {RangeInput} from '@/features/Dashboard/Widget/SettingsPanel/shared/RangeInput'
+import {
+  WidgetSettingsFilter,
+  WidgetSettingsFilterQuestion,
+} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
 
 export function SettingsPieChart() {
   const {schema} = useDashboardCreatorContext()
@@ -53,47 +57,18 @@ export function SettingsPieChart() {
           />
         )}
       />
-      {question &&
-        (question.type === 'select_one' ? (
-          <>
-            <Controller
-              name="filterChoice"
-              control={form.control}
-              render={({field}) => (
-                <SelectChoices {...field} questionName={question.name} label={m.select} sx={{mb: 1}} />
-              )}
-            />
-
-            <Controller
-              name="filterChoiceBase"
-              control={form.control}
-              render={({field}) => <SelectChoices {...field} questionName={question.name} label={m.base} />}
-            />
-          </>
-        ) : (
-          <>
-            <Box>
-              <Controller
-                name="filterNumber"
-                control={form.control}
-                render={({field}) => <RangeInput label={m.value} {...field} />}
-              />
-              <Controller
-                name="filterNumberBase"
-                control={form.control}
-                render={({field}) => <RangeInput label={m.base} {...field} />}
-              />
-            </Box>
-          </>
-        ))}
-      <SwitchBox sx={{mt: 2, mb: 1}} {...form.register('showValue')} label={m._dashboard.showValue} />
+      <WidgetSettingsFilterQuestion form={form} name="filter" />
+      <WidgetSettingsFilter label={m._dashboard.valueToDisplay} form={form} question={question} name="filterValue" />
+      <WidgetSettingsFilter label={m._dashboard.base} form={form} question={question} name="filterBase" />
+      <SwitchBox sx={{mt: 2, mb: 1}} {...form.register('showValue')} size="small" label={m._dashboard.showValue} />
       <SwitchBox
+        size="small"
         disabled={!values.showValue}
         sx={{mb: 1}}
         {...form.register('showBase')}
         label={m._dashboard.showBase}
       />
-      <SwitchBox {...form.register('dense')} label={m.smaller} />
+      <SwitchBox {...form.register('dense')} size="small" label={m.smaller} />
     </>
   )
 }

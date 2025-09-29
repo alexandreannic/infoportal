@@ -4,6 +4,7 @@ import React, {useMemo} from 'react'
 import {Box} from '@mui/material'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
 import {Core} from '@/shared'
+import {filterToFunction} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardLineChart'
 
 export function WidgetCardBarChart({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
@@ -16,5 +17,9 @@ export function WidgetCardBarChart({widget}: {widget: Ip.Dashboard.Widget}) {
       .reduceObject<Record<string, string>>(_ => [_.name, schema.translate.choice(q, _.name)])
   }, [config.questionName, schema])
   if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
-  return <Core.ChartBarMultipleByKey data={flatSubmissions} label={labels} property={config.questionName} />
+  const data = useMemo(() => {
+    if (config.filter) return flatSubmissions.filter(filterToFunction(config.filter))
+    return flatSubmissions
+  }, [flatSubmissions])
+  return <Core.ChartBarMultipleByKey data={data} label={labels} limit={config.limit} property={config.questionName} />
 }

@@ -652,6 +652,7 @@ export namespace Ip {
         [Type.BarChart]: {
           questionName?: string
           selectedChoices?: string[]
+          filter: ConfigFilter
           base?: 'percentOfTotalAnswers' | 'percentOfTotalChoices'
           labels?: Record<string, string>
           limit?: number
@@ -661,10 +662,9 @@ export namespace Ip {
           questionName?: string
           showValue?: boolean
           showBase?: boolean
-          filterNumber?: {min?: number; max?: number}
-          filterNumberBase?: {min?: number; max?: number}
-          filterChoiceBase?: string[]
-          filterChoice?: string[]
+          filter: ConfigFilter
+          filterValue: Omit<ConfigFilter, 'questionName'>
+          filterBase: Omit<ConfigFilter, 'questionName'>
           dense?: boolean
         }
       }
