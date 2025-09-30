@@ -682,10 +682,14 @@ export namespace Ip {
           start?: Date
           end?: Date
         }
+        [Type.GeoPoint]: {
+          questionName?: string
+          filter?: ConfigFilter
+        }
         [Type.BarChart]: {
           questionName?: string
           selectedChoices?: string[]
-          filter: ConfigFilter
+          filter?: ConfigFilter
           base?: 'percentOfTotalAnswers' | 'percentOfTotalChoices'
           labels?: Record<string, string>
           limit?: number
@@ -695,9 +699,9 @@ export namespace Ip {
           questionName?: string
           showValue?: boolean
           showBase?: boolean
-          filter: ConfigFilter
-          filterValue: Omit<ConfigFilter, 'questionName'>
-          filterBase: Omit<ConfigFilter, 'questionName'>
+          filter?: ConfigFilter
+          filterValue?: Omit<ConfigFilter, 'questionName'>
+          filterBase?: Omit<ConfigFilter, 'questionName'>
           dense?: boolean
         }
       }
@@ -726,6 +730,7 @@ export namespace Ip {
         GeoChart: 'GeoChart',
         LineChart: 'LineChart',
         BarChart: 'BarChart',
+        GeoPoint: 'GeoPoint',
         Table: 'Table',
       } as const
     }

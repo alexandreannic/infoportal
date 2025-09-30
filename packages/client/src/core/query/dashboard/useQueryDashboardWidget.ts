@@ -62,7 +62,6 @@ export class UseQueryDashboardWidget {
       mutationFn: variables => {
         const query = apiv2.dashboard.widget.update({workspaceId, sectionId, ...variables})
         const key = queryKeys.dashboardWidget(workspaceId, dashboardId, sectionId)
-        console.log(key, variables)
         queryClient.setQueryData<Ip.Dashboard.Widget[]>(key, old => {
           return old?.map(_ => {
             if (_.id === variables.id) return {..._, ...variables}

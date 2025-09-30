@@ -4,11 +4,11 @@ import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardS
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 import {RangeInput} from '@/features/Dashboard/Widget/SettingsPanel/shared/RangeInput'
-import React, {useState} from 'react'
+import React from 'react'
 import {useQuestionInfo} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
-import {Box, Icon, useTheme} from '@mui/material'
+import {Box, BoxProps, Icon, SxProps, useTheme} from '@mui/material'
 import {styleUtils} from '@infoportal/client-core'
 import {Kobo} from 'kobo-sdk'
 
@@ -44,7 +44,9 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
       {...props}
     >
       <Core.Txt bold block sx={{display: 'flex', alignItems: 'center', mb: 1.5}}>
-        <Icon fontSize="small" sx={{mr: 0.5, color: t.vars.palette.text.secondary}}>filter_alt</Icon>
+        <Icon fontSize="small" sx={{mr: 0.5, color: t.vars.palette.text.secondary}}>
+          filter_alt
+        </Icon>
         {m.filters}
       </Core.Txt>
       <Controller

@@ -7,6 +7,7 @@ import {fnSwitch} from '@axanc/ts-utils'
 import {WidgetCardPieChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardPieChart'
 import {WidgetCardBarChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardBarChart'
 import {WidgetCardLineChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardLineChart'
+import {WidgetCardGeoPoint} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardGeoPoint'
 
 type Status = 'editing'
 
@@ -40,7 +41,6 @@ export const WidgetCard = memo(
             {widget.title}
           </Core.Txt>
         )}
-        <div>{widget.id}</div>
         <Box sx={{flex: 1}}>
           {fnSwitch(
             widget.type,
@@ -48,6 +48,7 @@ export const WidgetCard = memo(
               BarChart: <WidgetCardBarChart widget={widget} />,
               PieChart: <WidgetCardPieChart widget={widget} />,
               LineChart: <WidgetCardLineChart widget={widget} />,
+              GeoPoint: <WidgetCardGeoPoint widget={widget} />,
             },
             () => (
               <></>

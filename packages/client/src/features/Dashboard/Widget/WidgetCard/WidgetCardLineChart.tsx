@@ -7,7 +7,7 @@ import {seq} from '@axanc/ts-utils'
 import {ChartLineCurve} from '@infoportal/client-core'
 
 export function filterToFunction<T extends Record<string, any> = Record<string, any>>(
-  filter: Ip.Dashboard.Widget.ConfigFilter,
+  filter?: Ip.Dashboard.Widget.ConfigFilter,
 ): undefined | ((_: T) => boolean | undefined) {
   if (!filter?.questionName) return
   const filterNumber = filter.number

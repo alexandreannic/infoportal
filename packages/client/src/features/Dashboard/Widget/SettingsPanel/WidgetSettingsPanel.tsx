@@ -12,6 +12,7 @@ import {SettingsBarChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/
 import {SettingsPieChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsPieChart'
 import {SettingsLineChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsLineChart'
 import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
+import {SettingsGeoPoint} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsGeoPoint'
 
 export type WidgetUpdatePayload = Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'id' | 'dashboardId'>
 
@@ -35,6 +36,9 @@ export const getQuestionTypeByWidget = (type: Ip.Dashboard.Widget.Type): Kobo.Fo
     }
     case 'LineChart': {
       return ['date', 'datetime']
+    }
+    case 'GeoPoint': {
+      return ['geopoint']
     }
     case 'PieChart': {
       return ['select_one', 'integer', 'decimal']
@@ -135,6 +139,7 @@ export const WidgetCreatorFormPanel = ({
             BarChart: <SettingsBarChart />,
             PieChart: <SettingsPieChart />,
             LineChart: <SettingsLineChart />,
+            GeoPoint: <SettingsGeoPoint />,
           },
           () => (
             <></>

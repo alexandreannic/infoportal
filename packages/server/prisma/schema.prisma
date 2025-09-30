@@ -466,6 +466,7 @@ enum WidgetType {
   GeoChart
   LineChart
   BarChart
+  GeoPoint
   Table
 }
 

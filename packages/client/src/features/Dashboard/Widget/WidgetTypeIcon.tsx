@@ -6,6 +6,7 @@ export const widgetTypeToIcon = {
   [Ip.Dashboard.Widget.Type.PieChart]: 'data_usage',
   [Ip.Dashboard.Widget.Type.GeoChart]: 'map',
   [Ip.Dashboard.Widget.Type.LineChart]: 'line_axis',
+  [Ip.Dashboard.Widget.Type.GeoPoint]: 'location_on',
   // [Ip.Dashboard.Widget.Type.BarChart]: 'bar_chart',
   [Ip.Dashboard.Widget.Type.BarChart]: 'align_horizontal_left',
   [Ip.Dashboard.Widget.Type.Table]: 'table',

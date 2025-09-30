@@ -239,6 +239,7 @@ export const en = Object.freeze({
       [Ip.Dashboard.Widget.Type.GeoChart]: 'Geo Chart',
       [Ip.Dashboard.Widget.Type.LineChart]: 'Line Chart',
       [Ip.Dashboard.Widget.Type.BarChart]: 'Bar Chart',
+      [Ip.Dashboard.Widget.Type.GeoPoint]: 'Geo Point',
       [Ip.Dashboard.Widget.Type.Table]: 'Table',
     },
     signIn: 'Sign-in',
