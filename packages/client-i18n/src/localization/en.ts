@@ -328,6 +328,8 @@ export const en = Object.freeze({
     base: 'Base',
     new: 'New',
     smaller: 'Smaller',
+    properties: 'Properties',
+    customize: 'Customize',
     _dashboard: {
       newSection: 'New section',
       newLine: 'New line',

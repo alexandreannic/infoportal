@@ -8,7 +8,7 @@ import {
   getQuestionTypeByWidget,
   useQuestionInfo,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
@@ -17,6 +17,7 @@ import {
   WidgetSettingsFilter,
   WidgetSettingsFilterQuestion,
 } from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
+import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
 
 export function SettingsPieChart() {
   const {schema} = useDashboardEditorContext()
@@ -37,38 +38,57 @@ export function SettingsPieChart() {
 
   return (
     <>
-      <Controller
-        name="questionName"
-        control={form.control}
-        rules={{
-          required: true,
-        }}
-        render={({field, fieldState}) => (
-          <SelectQuestionInput
-            {...field}
-            onChange={(e, _) => field.onChange(_)}
-            schema={schema.schema}
-            questionTypeFilter={getQuestionTypeByWidget(widget.type)}
-            InputProps={{
-              label: m.question,
-              error: !!fieldState.error,
-              helperText: fieldState.error && m.required,
-            }}
-          />
-        )}
-      />
-      <WidgetSettingsFilterQuestion form={form} name="filter" />
-      <WidgetSettingsFilter label={m._dashboard.valueToDisplay} form={form} question={question} name="filterValue" />
-      <WidgetSettingsFilter label={m._dashboard.base} form={form} question={question} name="filterBase" />
-      <SwitchBox sx={{mt: 2, mb: 1}} {...form.register('showValue')} size="small" label={m._dashboard.showValue} />
-      <SwitchBox
-        size="small"
-        disabled={!values.showValue}
-        sx={{mb: 1}}
-        {...form.register('showBase')}
-        label={m._dashboard.showBase}
-      />
-      <SwitchBox {...form.register('dense')} size="small" label={m.smaller} />
+      <WidgetSettingsSection title={m.source}>
+        <Controller
+          name="questionName"
+          control={form.control}
+          rules={{
+            required: true,
+          }}
+          render={({field, fieldState}) => (
+            <SelectQuestionInput
+              {...field}
+              sx={{mb: 1}}
+              onChange={(e, _) => field.onChange(_)}
+              schema={schema.schema}
+              questionTypeFilter={getQuestionTypeByWidget(widget.type)}
+              InputProps={{
+                label: m.question,
+                error: !!fieldState.error,
+                helperText: null,
+              }}
+            />
+          )}
+        />
+        <WidgetSettingsFilterQuestion form={form} name="filter" />
+      </WidgetSettingsSection>
+      <WidgetSettingsSection title={m.properties}>
+        <WidgetSettingsFilter
+          sx={{mb: 1}}
+          label={m._dashboard.valueToDisplay}
+          form={form}
+          question={question}
+          name="filterValue"
+        />
+        <WidgetSettingsFilter
+          sx={{mb: 1}}
+          label={m._dashboard.base}
+          form={form}
+          question={question}
+          name="filterBase"
+        />
+      </WidgetSettingsSection>
+      <WidgetSettingsSection title={m.customize}>
+        <SwitchBox sx={{mb: 1}} {...form.register('showValue')} size="small" label={m._dashboard.showValue} />
+        <SwitchBox
+          size="small"
+          disabled={!values.showValue}
+          sx={{mb: 1}}
+          {...form.register('showBase')}
+          label={m._dashboard.showBase}
+        />
+        <SwitchBox {...form.register('dense')} size="small" label={m.smaller} />
+      </WidgetSettingsSection>
     </>
   )
 }

@@ -93,7 +93,6 @@ export const WidgetCreatorFormPanel = ({
       >
         <Core.PanelBody
           sx={{
-            mb: 1,
             p: padding,
             background: t.vars.palette.background.default,
             borderBottom: `1px solid ${t.vars.palette.divider}`,
@@ -130,19 +129,17 @@ export const WidgetCreatorFormPanel = ({
             onSubmit={_ => onChange({title: _})}
           />
         </Core.PanelBody>
-        <Core.PanelBody sx={{p: padding}}>
-          {fnSwitch(
-            widget.type,
-            {
-              BarChart: <SettingsBarChart />,
-              PieChart: <SettingsPieChart />,
-              LineChart: <SettingsLineChart />,
-            },
-            () => (
-              <></>
-            ),
-          )}
-        </Core.PanelBody>
+        {fnSwitch(
+          widget.type,
+          {
+            BarChart: <SettingsBarChart />,
+            PieChart: <SettingsPieChart />,
+            LineChart: <SettingsLineChart />,
+          },
+          () => (
+            <></>
+          ),
+        )}
       </Core.Panel>
     </Context.Provider>
   )

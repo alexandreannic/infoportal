@@ -10,7 +10,7 @@ import {seq, Seq} from '@axanc/ts-utils'
 import {
   WidgetCreatorFormPanel,
   WidgetUpdatePayload,
-} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import React, {useCallback, useMemo, useState} from 'react'
 import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
 import {KoboSchemaHelper} from 'infoportal-common'
@@ -93,8 +93,9 @@ export function _DashboardCreator() {
   const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id, sectionId})
   const queryWidgetUpdate = UseQueryDashboardWidget.update({workspaceId, dashboardId: dashboard.id, sectionId})
 
-  const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>()
-  // 'f09e16c2-b77b-4985-9457-0d68967a0b88' as any,
+  const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>(
+    '779af34c-3dbb-4e4c-ad2a-5a8ab72e7a58' as any,
+  )
 
   const createWidget = async (form: WidgetCreateForm) => {
     const maxY = Math.max(...widgets.map(w => w.position.y + w.position.h))
@@ -123,7 +124,6 @@ export function _DashboardCreator() {
   }, [])
 
   const layout = useMemo(() => {
-    console.log(widgets)
     return widgets.map(_ => ({i: _.id, ..._.position}))
   }, [widgets])
 

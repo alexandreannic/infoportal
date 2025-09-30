@@ -9,10 +9,11 @@ import {
   Label,
   useQuestionInfo,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
+import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
 
 export function SettingsBarChart() {
   const {m} = useI18n()
@@ -39,44 +40,51 @@ export function SettingsBarChart() {
 
   return (
     <Box>
-      <Controller
-        name="questionName"
-        control={form.control}
-        rules={{
-          required: true,
-        }}
-        render={({field, fieldState}) => (
-          <SelectQuestionInput
-            {...field}
-            onChange={(e, _) => field.onChange(_)}
-            schema={schema.schema}
-            questionTypeFilter={getQuestionTypeByWidget(widget.type)}
-            InputProps={{
-              label: m.question,
-              error: !!fieldState.error,
-              helperText: fieldState.error && m.required,
-            }}
-          />
-        )}
-      />
-      <WidgetSettingsFilterQuestion name="filter" form={form} />
-      <SelectChoices value={[]} questionName={config.questionName} onChange={console.log} />
-      <Label>{m._dashboard.listLimit}</Label>
-      <Controller
-        name="limit"
-        control={form.control}
-        render={({field, fieldState}) => (
-          <Box sx={{px: 1}}>
-            <Slider
+      <WidgetSettingsSection title={m.source}>
+        <Controller
+          name="questionName"
+          control={form.control}
+          rules={{
+            required: true,
+          }}
+          render={({field, fieldState}) => (
+            <SelectQuestionInput
               {...field}
-              disabled={!choices}
-              defaultValue={choices?.length}
-              max={choices?.length ?? 1}
-              valueLabelDisplay="auto"
+              sx={{mb: 1}}
+              onChange={(e, _) => field.onChange(_)}
+              schema={schema.schema}
+              questionTypeFilter={getQuestionTypeByWidget(widget.type)}
+              InputProps={{
+                label: m.question,
+                error: !!fieldState.error,
+                helperText: null,
+              }}
             />
-          </Box>
-        )}
-      />
+          )}
+        />
+        <WidgetSettingsFilterQuestion name="filter" form={form} sx={{mb: 1}} />
+      </WidgetSettingsSection>
+      <WidgetSettingsSection title={m.properties}>
+        <SelectChoices value={[]} questionName={config.questionName} sx={{mb: 1}} onChange={console.log} />
+      </WidgetSettingsSection>
+      <WidgetSettingsSection title={m.customize}>
+        <Label>{m._dashboard.listLimit}</Label>
+        <Controller
+          name="limit"
+          control={form.control}
+          render={({field, fieldState}) => (
+            <Box sx={{px: 1}}>
+              <Slider
+                {...field}
+                disabled={!choices}
+                defaultValue={choices?.length}
+                max={choices?.length ?? 1}
+                valueLabelDisplay="auto"
+              />
+            </Box>
+          )}
+        />
+      </WidgetSettingsSection>
     </Box>
   )
 }

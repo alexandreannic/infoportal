@@ -6,11 +6,11 @@ import {
   getQuestionTypeByWidget,
   useQuestionInfo,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {Core} from '@/shared'
-import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsSection'
+import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
 import {Box} from '@mui/material'
 import {ColorPicker} from '@/features/Dashboard/Widget/SettingsPanel/shared/ColorPicker'
@@ -40,7 +40,7 @@ export function SettingsLineChart() {
     <>
       {fields.map((field, index) => (
         <WidgetSettingsSection
-          title={m.line + ' ' + index}
+          title={m.line + ' ' + (index + 1)}
           key={field.id}
           action={<Core.IconBtn children="delete" onClick={() => remove(index)} />}
         >
@@ -79,10 +79,11 @@ function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Wi
             }}
             schema={schema.schema}
             questionTypeFilter={getQuestionTypeByWidget(widget.type)}
+            sx={{mb: 1}}
             InputProps={{
               label: m.question,
               error: !!fieldState.error,
-              helperText: fieldState.error && m.required,
+              helperText: null,
             }}
           />
         )}
@@ -94,19 +95,20 @@ function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Wi
           required: true,
         }}
         render={({field: {onChange, ...field}, fieldState}) => (
-          <Core.AsyncInput onSubmit={_ => onChange(_)} label={m.title} {...field} />
+          <Core.AsyncInput onSubmit={_ => onChange(_)} helperText={null} sx={{mb: 1}} label={m.title} {...field} />
         )}
       />
+
+      <WidgetSettingsFilterQuestion name={`lines.${index}.filter`} form={form} sx={{mb: 1}} />
+
       <Controller
         name={`lines.${index}.color`}
         control={form.control}
         rules={{
           required: true,
         }}
-        render={({field, fieldState}) => <ColorPicker {...field} sx={{mb: 2}}/>}
+        render={({field, fieldState}) => <ColorPicker {...field} value={field.value ?? ''} />}
       />
-
-      <WidgetSettingsFilterQuestion name={`lines.${index}.filter`} form={form} />
     </>
   )
 }

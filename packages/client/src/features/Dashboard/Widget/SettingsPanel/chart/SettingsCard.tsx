@@ -8,7 +8,7 @@ import {
   Label,
   useQuestionInfo,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import {Core} from '@/shared'
 import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 

@@ -1,6 +1,6 @@
 import {Box, SxProps, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
-import {Label} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
+import {Label} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import React from 'react'
 import {Core} from '@/shared'
 

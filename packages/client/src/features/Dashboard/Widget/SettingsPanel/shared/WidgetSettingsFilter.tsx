@@ -5,7 +5,7 @@ import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 import {RangeInput} from '@/features/Dashboard/Widget/SettingsPanel/shared/RangeInput'
 import React, {useState} from 'react'
-import {useQuestionInfo} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
+import {useQuestionInfo} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
 import {Box, Icon, useTheme} from '@mui/material'
@@ -21,7 +21,9 @@ const formName: Record<keyof Ip.Dashboard.Widget.ConfigFilter, keyof Ip.Dashboar
 export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
   form,
   name,
-}: {
+  sx,
+  ...props
+}: BoxProps & {
   name: string
   form: UseFormReturn<T>
 }) {
@@ -33,10 +35,16 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
 
   return (
     <Box
-      sx={{background: styleUtils(t).color.toolbar.default.background, p: 1, borderRadius: t.vars.shape.borderRadius}}
+      sx={{
+        background: styleUtils(t).color.toolbar.default.background,
+        p: 1,
+        borderRadius: t.vars.shape.borderRadius,
+        ...sx,
+      }}
+      {...props}
     >
       <Core.Txt bold block sx={{display: 'flex', alignItems: 'center', mb: 1.5}}>
-        <Icon sx={{mr: 0.5, color: t.vars.palette.text.secondary}}>filter_alt</Icon>
+        <Icon fontSize="small" sx={{mr: 0.5, color: t.vars.palette.text.secondary}}>filter_alt</Icon>
         {m.filters}
       </Core.Txt>
       <Controller
@@ -57,7 +65,7 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
             InputProps={{
               label: m.question,
               error: !!fieldState.error,
-              helperText: fieldState.error && m.required,
+              helperText: null,
             }}
           />
         )}
@@ -72,11 +80,13 @@ export function WidgetSettingsFilter<T extends Record<string, any>>({
   name,
   question,
   label,
+  sx,
 }: {
   form: UseFormReturn<T>
   name: string
   label?: string
   question?: Kobo.Form.Question
+  sx?: SxProps
 }) {
   const {m} = useI18n()
   if (!question) return <></>
@@ -85,7 +95,7 @@ export function WidgetSettingsFilter<T extends Record<string, any>>({
       <Controller
         name={`${name}.${formName.choices}` as any}
         control={form.control}
-        render={({field}) => <SelectChoices {...field} questionName={question.name} label={label ?? m.value} />}
+        render={({field}) => <SelectChoices {...field} sx={sx} questionName={question.name} label={label ?? m.value} />}
       />
     )
   }
@@ -93,7 +103,7 @@ export function WidgetSettingsFilter<T extends Record<string, any>>({
     <Controller
       name={`${name}.${formName.number}` as any}
       control={form.control}
-      render={({field}) => <RangeInput label={label ?? m.value} {...field} />}
+      render={({field}) => <RangeInput label={label ?? m.value} sx={sx} {...field} />}
     />
   )
 }

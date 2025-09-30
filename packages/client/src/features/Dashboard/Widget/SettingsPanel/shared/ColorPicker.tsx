@@ -34,7 +34,7 @@ export const ColorPicker = ({
   label?: string
   value?: string
   defaultValue?: string
-  onChange?: (value: string) => void
+  onChange?: (value: string | null) => void
 }) => {
   const {m} = useI18n()
   const t = useTheme()
@@ -42,8 +42,8 @@ export const ColorPicker = ({
   const isControlled = valueProp !== undefined
   const value = isControlled ? valueProp : uncontrolledValue
 
-  const handleSelect = (color: string) => {
-    if (!isControlled) setUncontrolledValue(color)
+  const handleSelect = (color: string | null) => {
+    if (!isControlled) setUncontrolledValue(color ?? '')
     onChange?.(color)
   }
   const colors = [
@@ -77,6 +77,15 @@ export const ColorPicker = ({
             gridTemplateColumns: 'repeat(6, 1fr)',
           }}
         >
+          <Core.Btn
+            onClick={() => handleSelect(null as any)}
+            variant="outlined"
+            size="small"
+            fullWidth
+            sx={{textAlign: 'center', gridColumn: '1/7'}}
+          >
+            {m.none}
+          </Core.Btn>
           {colors.map(color => (
             <Dot
               color={color}
@@ -109,7 +118,7 @@ export const ColorPicker = ({
         {...props}
       >
         {label ?? m.color}
-        <Dot color={value} />
+        {value && value !== '' && <Dot color={value} />}
       </Box>
     </Core.PopoverWrapper>
   )
