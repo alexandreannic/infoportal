@@ -610,8 +610,41 @@ export namespace Ip {
         isPublic: boolean
       }
     }
+
+    export type SectionId = Brand<string, 'SectionId'>
+    export type Section = {
+      id: SectionId
+      title: string
+      description?: string
+      createdAt: Date
+      dashboardId: DashboardId
+    }
+    export namespace Section {
+      export const map = (_: Partial<Record<keyof Section, any>>): Section => {
+        return _ as Section
+      }
+      export namespace Payload {
+        export type Search = {
+          workspaceId: WorkspaceId
+          dashboardId: DashboardId
+        }
+        export type Create = {
+          workspaceId: WorkspaceId
+          dashboardId: DashboardId
+          title: string
+          description?: string
+        }
+        export type Update = {
+          workspaceId: WorkspaceId
+          id: SectionId
+          title?: string
+          description?: string
+        }
+      }
+    }
+
     export type WidgetId = Brand<string, 'WidgetId'>
-    export type Widget = Omit<Prisma.Widget, 'title' | 'config' | 'id' | 'position'> & {
+    export type Widget = Omit<Prisma.DashboardWidget, 'title' | 'config' | 'id' | 'position'> & {
       title?: string
       config: any
       position: Widget.Position
@@ -670,15 +703,20 @@ export namespace Ip {
       }
 
       export namespace Payload {
+        export type Search = {
+          workspaceId: WorkspaceId
+          dashboardId?: Ip.DashboardId
+          sectionId?: Ip.Dashboard.SectionId
+        }
+
         export type Create = Omit<Widget, 'description' | 'id' | 'createdAt' | 'dashboardId'> & {
           description?: string
           workspaceId: WorkspaceId
-          dashboardId: DashboardId
+          sectionId: SectionId
         }
-        export type Update = Partial<Omit<Create, 'workspaceId' | 'dashboardId' | 'id'>> & {
+        export type Update = Partial<Omit<Create, 'workspaceId' | 'id'>> & {
+          id: WidgetId
           workspaceId: WorkspaceId
-          dashboardId: DashboardId
-          widgetId: WidgetId
         }
       }
       export type Type = Prisma.WidgetType

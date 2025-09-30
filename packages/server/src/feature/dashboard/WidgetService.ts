@@ -5,35 +5,27 @@ import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 export class WidgetService {
   constructor(private prisma: PrismaClient) {}
 
-  readonly getByDashboard = async ({
-    workspaceId,
-    dashboardId,
-  }: {
-    dashboardId: Ip.DashboardId
-    workspaceId: Ip.WorkspaceId
-  }): Promise<Ip.Dashboard.Widget[]> => {
-    return this.prisma.widget.findMany({where: {dashboardId}}).then(_ => _.map(prismaMapper.dashboard.mapWidget))
+  readonly getByDashboard = async ({sectionId}: Ip.Dashboard.Widget.Payload.Search): Promise<Ip.Dashboard.Widget[]> => {
+    return this.prisma.dashboardWidget.findMany({where: {sectionId}}).then(_ => _.map(prismaMapper.dashboard.mapWidget))
   }
 
   readonly remove = async ({
     workspaceId,
-    dashboardId,
-    widgetId,
+    id,
   }: {
-    widgetId: Ip.Dashboard.WidgetId
-    dashboardId: Ip.DashboardId
+    id: Ip.Dashboard.WidgetId
     workspaceId: Ip.WorkspaceId
   }): Promise<void> => {
-    await this.prisma.widget.delete({where: {id: widgetId}})
+    await this.prisma.dashboardWidget.delete({where: {id}})
   }
 
   readonly update = async ({
     workspaceId,
-    dashboardId,
-    widgetId,
+    sectionId,
+    id,
     ...data
   }: Ip.Dashboard.Widget.Payload.Update): Promise<Ip.Dashboard.Widget> => {
-    return this.prisma.widget.update({where: {id: widgetId}, data}).then(prismaMapper.dashboard.mapWidget)
+    return this.prisma.dashboardWidget.update({where: {id}, data}).then(prismaMapper.dashboard.mapWidget)
   }
 
   readonly create = async ({
@@ -41,7 +33,7 @@ export class WidgetService {
     workspaceId,
     ...data
   }: Ip.Dashboard.Widget.Payload.Create): Promise<Ip.Dashboard.Widget> => {
-    return this.prisma.widget
+    return this.prisma.dashboardWidget
       .create({
         data: {
           ...data,

@@ -7,23 +7,16 @@ import {z} from 'zod'
 const c = initContract()
 
 export const widgetContract = c.router({
-  getByDashboard: {
-    method: 'GET',
-    path: `/:workspaceId/dashboard/:dashboardId/widget`,
-    pathParams: z.object({
-      workspaceId: schema.workspaceId,
-      dashboardId: schema.dashboardId,
-    }),
+  search: {
+    method: 'POST',
+    path: `/dashboard/widget/search`,
+    body: c.type<Ip.Dashboard.Widget.Payload.Search>(),
     responses: {200: z.any() as z.ZodType<Ip.Dashboard.Widget[]>},
   },
   create: {
-    method: 'PUT',
-    path: `/:workspaceId/dashboard/:dashboardId/widget`,
-    body: c.type<Omit<Ip.Dashboard.Widget.Payload.Create, 'workspaceId' | 'dashboardId'>>(),
-    pathParams: z.object({
-      workspaceId: schema.workspaceId,
-      dashboardId: schema.dashboardId,
-    }),
+    method: 'POST',
+    path: `/dashboard/widget/create`,
+    body: c.type<Ip.Dashboard.Widget.Payload.Create>(),
     responses: {200: c.type<Ip.Dashboard.Widget>()},
     metadata: makeMeta({
       access: {
@@ -32,14 +25,9 @@ export const widgetContract = c.router({
     }),
   },
   update: {
-    method: 'PATCH',
-    path: `/:workspaceId/dashboard/:dashboardId/widget/:widgetId`,
-    body: c.type<Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'dashboardId' | 'widgetId'>>(),
-    pathParams: z.object({
-      workspaceId: schema.workspaceId,
-      dashboardId: schema.dashboardId,
-      widgetId: schema.widgetId,
-    }),
+    method: 'POST',
+    path: `/dashboard/widget/update`,
+    body: c.type<Ip.Dashboard.Widget.Payload.Update>(),
     responses: {200: c.type<Ip.Dashboard.Widget>()},
     metadata: makeMeta({
       access: {
@@ -48,12 +36,11 @@ export const widgetContract = c.router({
     }),
   },
   remove: {
-    method: 'DELETE',
-    path: `/:workspaceId/dashboard/:dashboardId/widget/:widgetId`,
-    pathParams: z.object({
+    method: 'POST',
+    path: `/dashboard/widget/remove`,
+    body: z.object({
       workspaceId: schema.workspaceId,
-      dashboardId: schema.dashboardId,
-      widgetId: schema.widgetId,
+      id: schema.widgetId,
     }),
     responses: {204: schema.emptyResult},
     metadata: makeMeta({
@@ -66,22 +53,19 @@ export const widgetContract = c.router({
 
 export const widgetClient = (client: TsRestClient) => {
   return {
-    getByDashboard: (params: {workspaceId: Ip.WorkspaceId; dashboardId: Ip.DashboardId}) =>
+    search: (body: Ip.Dashboard.Widget.Payload.Search) =>
       client.dashboard.widget
-        .getByDashboard({params})
+        .search({body})
         .then(map200)
         .then(_ => _.map(Ip.Dashboard.Widget.map)),
-    create: ({workspaceId, dashboardId, ...body}: Ip.Dashboard.Widget.Payload.Create) =>
-      client.dashboard.widget
-        .create({params: {workspaceId, dashboardId}, body})
-        .then(map200)
-        .then(Ip.Dashboard.Widget.map),
-    update: ({dashboardId, workspaceId, widgetId, ...body}: Ip.Dashboard.Widget.Payload.Update) =>
-      client.dashboard.widget
-        .update({params: {workspaceId, dashboardId, widgetId}, body})
-        .then(map200)
-        .then(Ip.Dashboard.Widget.map),
-    remove: (params: {dashboardId: Ip.DashboardId; workspaceId: Ip.WorkspaceId; widgetId: Ip.Dashboard.WidgetId}) =>
-      client.dashboard.widget.remove({params}).then(map204),
+
+    create: (body: Ip.Dashboard.Widget.Payload.Create) =>
+      client.dashboard.widget.create({body}).then(map200).then(Ip.Dashboard.Widget.map),
+
+    update: (body: Ip.Dashboard.Widget.Payload.Update) =>
+      client.dashboard.widget.update({body}).then(map200).then(Ip.Dashboard.Widget.map),
+
+    remove: (body: {workspaceId: Ip.WorkspaceId; id: Ip.Dashboard.WidgetId}) =>
+      client.dashboard.widget.remove({body}).then(map204),
   }
 }

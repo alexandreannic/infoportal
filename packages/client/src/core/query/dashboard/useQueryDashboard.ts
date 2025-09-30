@@ -11,8 +11,8 @@ export class UseQueryDashboard {
     const {apiv2} = useAppSettings()
     const {toastAndThrowHttpError} = useIpToast()
     return useQuery({
-      queryFn: () => apiv2.dashboard.getAll({workspaceId}).catch(toastAndThrowHttpError),
-      queryKey: queryKeys.dashboards(workspaceId),
+      queryFn: () => apiv2.dashboard.search({workspaceId}).catch(toastAndThrowHttpError),
+      queryKey: queryKeys.dashboard(workspaceId),
     })
   }
 
@@ -33,7 +33,7 @@ export class UseQueryDashboard {
     const queryClient = useQueryClient()
     return useMutation<Ip.Dashboard, ApiError, Omit<Ip.Dashboard.Payload.Create, 'workspaceId'>>({
       mutationFn: args => apiv2.dashboard.create({workspaceId, ...args}),
-      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboards(workspaceId)}),
+      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),
       onError: toastHttpError,
     })
   }

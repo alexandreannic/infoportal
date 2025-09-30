@@ -17,6 +17,7 @@ import {formActionLogContract} from './form/action/ContractFormActionLog.js'
 import {formActionReportContract} from './form/action/ContractFormActionReport.js'
 import {dashboardContract} from './dashboard/ContractDashboard.js'
 import {widgetContract} from './dashboard/ContractWidget.js'
+import {sectionContract} from './dashboard/ContractSection.js'
 
 export const ipContract = initContract().router({
   permission: permissionContract,
@@ -25,6 +26,7 @@ export const ipContract = initContract().router({
   group: groupContract,
   dashboard: {
     ...dashboardContract,
+    section: sectionContract,
     widget: widgetContract,
   },
   workspace: {

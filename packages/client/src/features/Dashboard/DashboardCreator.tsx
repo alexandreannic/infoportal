@@ -6,7 +6,7 @@ import 'react-grid-layout/css/styles.css'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
-import {UseQueryDashboard} from '@/core/query/useQueryDashboard'
+import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {seq, Seq} from '@axanc/ts-utils'
 import {
   WidgetCreatorFormPanel,
@@ -17,7 +17,7 @@ import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {DashboardHeader} from '@/features/Dashboard/DashboardHeader'
-import {UseQueryDashboardWidget} from '@/core/query/useQueryDashboardWidget'
+import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
 import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 

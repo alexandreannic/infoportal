@@ -36,7 +36,8 @@ import {FormActionRunner} from '../feature/form/action/executor/FormActionRunner
 import {FormActionRunningReportManager} from '../feature/form/action/executor/FormActionRunningReportManager.js'
 import {FormActionReportService} from '../feature/form/action/FormActionReportService.js'
 import {DashboardService} from '../feature/dashboard/DashboardService.js'
-import {WidgetService} from '../feature/dashboard/DashboardWidgetService.js'
+import {WidgetService} from '../feature/dashboard/WidgetService.js'
+import {SectionService} from '../feature/dashboard/SectionService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -170,6 +171,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const formActionReport = new FormActionReportService(prisma)
   const formActionLog = new FormActionLogService(prisma)
   const dashboard = new DashboardService(prisma)
+  const section = new SectionService(prisma)
   const widget = new WidgetService(prisma)
 
   const auth2 = async <T extends HandlerArgs>(args: T): Promise<Omit<T, 'req'> & {req: AuthRequest<T['req']>}> => {
@@ -298,35 +300,57 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({body}) => dashboard.checkSlug(body.slug))
           .then(ok200)
           .catch(handleError),
-      getAll: _ =>
+      search: _ =>
         auth2(_)
-          .then(({params}) => dashboard.getAll({...params}))
+          .then(({body}) => dashboard.getAll(body))
           .then(ok200)
           .catch(handleError),
       create: _ =>
         auth2(_)
-          .then(({params, body, req}) => dashboard.create({...params, ...body, createdBy: req.session.app.user.email}))
+          .then(({body, req}) => dashboard.create({...body, createdBy: req.session.app.user.email}))
           .then(ok200)
           .catch(handleError),
-      widget: {
-        getByDashboard: _ =>
+      section: {
+        search: _ =>
           auth2(_)
-            .then(({params}) => widget.getByDashboard(params))
+            .then(({body}) => section.search(body))
             .then(ok200)
             .catch(handleError),
         create: _ =>
           auth2(_)
-            .then(({params, body}) => widget.create({...params, ...body}))
+            .then(({body}) => section.create(body))
             .then(ok200)
             .catch(handleError),
         update: _ =>
           auth2(_)
-            .then(({params, body}) => widget.update({...params, ...body}))
+            .then(({body}) => section.update(body))
             .then(ok200)
             .catch(handleError),
         remove: _ =>
           auth2(_)
-            .then(({params}) => widget.remove(params))
+            .then(({body}) => section.remove(body))
+            .then(ok200)
+            .catch(handleError),
+      },
+      widget: {
+        search: _ =>
+          auth2(_)
+            .then(({body}) => widget.getByDashboard(body))
+            .then(ok200)
+            .catch(handleError),
+        create: _ =>
+          auth2(_)
+            .then(({body}) => widget.create(body))
+            .then(ok200)
+            .catch(handleError),
+        update: _ =>
+          auth2(_)
+            .then(({body}) => widget.update(body))
+            .then(ok200)
+            .catch(handleError),
+        remove: _ =>
+          auth2(_)
+            .then(({body}) => widget.remove(body))
             .then(ok204)
             .catch(handleError),
       },
