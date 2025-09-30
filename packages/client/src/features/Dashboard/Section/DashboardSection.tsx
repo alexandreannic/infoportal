@@ -1,11 +1,10 @@
-import {Core, Page} from '@/shared'
+import {Core} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import ReactGridLayout, {WidthProvider} from 'react-grid-layout'
 import {Box, Collapse, Icon, useTheme} from '@mui/material'
 import 'react-grid-layout/css/styles.css'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
-import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {seq, Seq} from '@axanc/ts-utils'
 import {
@@ -16,23 +15,25 @@ import React, {useCallback, useMemo, useState} from 'react'
 import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
-import {DashboardHeader} from '@/features/Dashboard/DashboardHeader'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
 import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {TabContent} from '@/shared/Tab/TabContent'
+import {dashboardRoute} from '@/features/Dashboard/Dashboard'
 
 const GridLayout = WidthProvider(ReactGridLayout)
 
-export const dashboardCreatorRoute = createRoute({
-  getParentRoute: () => workspaceRoute,
-  path: 'dashboard/$dashboardId/creator',
-  component: DashboardCreator,
+export const dashboardSectionRoute = createRoute({
+  getParentRoute: () => dashboardRoute,
+  path: 's/$sectionId',
+  component: DashboardSection,
 })
 
 const layoutWidth = 1200
 const sidePanelWidth = 300
 
 type Context = {
+  sectionId: Ip.Dashboard.SectionId
   workspaceId: Ip.WorkspaceId
   flatSubmissions: Seq<Record<string, any>>
   dashboard: Ip.Dashboard
@@ -41,24 +42,27 @@ type Context = {
 }
 
 const Context = React.createContext<Context>({} as Context)
-export const useDashboardCreatorContext = () => React.useContext(Context)
+export const useDashboardEditorContext = () => React.useContext(Context)
 
-export function DashboardCreator() {
+export function DashboardSection() {
   const {m} = useI18n()
-  const params = dashboardCreatorRoute.useParams()
+  const params = dashboardSectionRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
+  const sectionId = params.sectionId as Ip.Dashboard.SectionId
   const dashboardId = params.dashboardId as Ip.DashboardId
 
   const queryDashboard = UseQueryDashboard.getById({workspaceId, id: dashboardId})
   const querySchema = useQuerySchema({workspaceId, formId: queryDashboard.data?.sourceFormId})
   const querySubmissions = UseQuerySubmission.search({workspaceId, formId: queryDashboard.data?.sourceFormId})
-  const queryWidgets = UseQueryDashboardWidget.getByDashboard({workspaceId, dashboardId})
+  const queryWidgets = UseQueryDashboardWidget.search({workspaceId, dashboardId, sectionId})
+
   const schemaWithMeta = useMemo(() => {
     if (!querySchema.data) return
     return KoboSchemaHelper.upgradeIncludingMeta(querySchema.data, m._meta, {validationStatus: m.validation_})
   }, [querySchema.data])
+
   return (
-    <Page
+    <TabContent
       width="full"
       loading={
         queryWidgets.isLoading || querySubmissions.isLoading || queryDashboard.isLoading || querySchema.isLoading
@@ -68,6 +72,7 @@ export function DashboardCreator() {
         <Context.Provider
           value={{
             workspaceId,
+            sectionId,
             schema: schemaWithMeta,
             flatSubmissions: seq(querySubmissions.data.data.map(({answers, ...rest}) => ({...answers, ...rest}))),
             dashboard: queryDashboard.data,
@@ -77,20 +82,19 @@ export function DashboardCreator() {
           <_DashboardCreator />
         </Context.Provider>
       )}
-    </Page>
+    </TabContent>
   )
 }
 
 export function _DashboardCreator() {
   const t = useTheme()
   const {m} = useI18n()
-  const {workspaceId, schema, widgets, dashboard} = useDashboardCreatorContext()
-  const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id})
-  const queryWidgetUpdate = UseQueryDashboardWidget.update({workspaceId, dashboardId: dashboard.id})
+  const {workspaceId, schema, widgets, sectionId, dashboard} = useDashboardEditorContext()
+  const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id, sectionId})
+  const queryWidgetUpdate = UseQueryDashboardWidget.update({workspaceId, dashboardId: dashboard.id, sectionId})
 
-  const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>(
-    'f09e16c2-b77b-4985-9457-0d68967a0b88' as any,
-  )
+  const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>()
+  // 'f09e16c2-b77b-4985-9457-0d68967a0b88' as any,
 
   const createWidget = async (form: WidgetCreateForm) => {
     const maxY = Math.max(...widgets.map(w => w.position.y + w.position.h))
@@ -115,10 +119,11 @@ export function _DashboardCreator() {
   }, [widgets, editingWidgetId])
 
   const updateWidget = useCallback((id: Ip.Dashboard.WidgetId, values: WidgetUpdatePayload) => {
-    queryWidgetUpdate.mutateAsync({widgetId: id, ...values})
+    queryWidgetUpdate.mutateAsync({id, ...values})
   }, [])
 
   const layout = useMemo(() => {
+    console.log(widgets)
     return widgets.map(_ => ({i: _.id, ..._.position}))
   }, [widgets])
 
@@ -143,7 +148,6 @@ export function _DashboardCreator() {
             width: '100%',
           }}
         >
-          <DashboardHeader />
           <Box
             sx={{
               background: 'rgba(0,0,0,.04)',
@@ -157,6 +161,7 @@ export function _DashboardCreator() {
             <GridLayout
               onLayoutChange={layout => {
                 layout.forEach(({i, x, y, h, w}) => {
+                  console.log(i)
                   updateWidget(i as Ip.Dashboard.WidgetId, {position: {x, y, h, w}})
                 })
               }}

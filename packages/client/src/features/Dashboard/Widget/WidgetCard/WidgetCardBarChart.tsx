@@ -1,14 +1,14 @@
 import {Ip} from 'infoportal-api-sdk'
-import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
+import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import React, {useMemo} from 'react'
-import {Box} from '@mui/material'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
 import {Core} from '@/shared'
 import {filterToFunction} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardLineChart'
+import {map} from '@axanc/ts-utils'
 
 export function WidgetCardBarChart({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
-  const {flatSubmissions, schema} = useDashboardCreatorContext()
+  const {flatSubmissions, schema} = useDashboardEditorContext()
   const labels = useMemo(() => {
     const q = config.questionName
     if (!q) return {}
@@ -18,8 +18,7 @@ export function WidgetCardBarChart({widget}: {widget: Ip.Dashboard.Widget}) {
   }, [config.questionName, schema])
   if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
   const data = useMemo(() => {
-    if (config.filter) return flatSubmissions.filter(filterToFunction(config.filter))
-    return flatSubmissions
+    return map(filterToFunction(config.filter), flatSubmissions.filter) ?? flatSubmissions
   }, [flatSubmissions])
   return <Core.ChartBarMultipleByKey data={data} label={labels} limit={config.limit} property={config.questionName} />
 }

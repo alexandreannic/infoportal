@@ -11,7 +11,7 @@ import {
 } from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
 import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
-import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
+import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {RangeInput} from '@/features/Dashboard/Widget/SettingsPanel/shared/RangeInput'
 import {
   WidgetSettingsFilter,
@@ -19,7 +19,7 @@ import {
 } from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
 
 export function SettingsPieChart() {
-  const {schema} = useDashboardCreatorContext()
+  const {schema} = useDashboardEditorContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
   const {question} = useQuestionInfo(config.questionName)

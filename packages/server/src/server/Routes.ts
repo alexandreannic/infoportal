@@ -335,7 +335,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       widget: {
         search: _ =>
           auth2(_)
-            .then(({body}) => widget.getByDashboard(body))
+            .then(({body}) => widget.search(body))
             .then(ok200)
             .catch(handleError),
         create: _ =>

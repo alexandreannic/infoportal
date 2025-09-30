@@ -19,7 +19,10 @@ export class SectionService {
     return this.prisma.dashboardSection.update({where: {id}, data}).then(prismaMapper.dashboard.mapSection)
   }
 
-  readonly create = async ({...data}: Ip.Dashboard.Section.Payload.Create): Promise<Ip.Dashboard.Section> => {
+  readonly create = async ({
+    workspaceId,
+    ...data
+  }: Ip.Dashboard.Section.Payload.Create): Promise<Ip.Dashboard.Section> => {
     return this.prisma.dashboardSection
       .create({
         data,

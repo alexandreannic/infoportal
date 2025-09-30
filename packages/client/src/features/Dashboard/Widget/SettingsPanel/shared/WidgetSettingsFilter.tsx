@@ -1,6 +1,6 @@
 import {Controller, UseFormReturn} from 'react-hook-form'
 import {useI18n} from '@infoportal/client-i18n'
-import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
+import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 import {RangeInput} from '@/features/Dashboard/Widget/SettingsPanel/shared/RangeInput'
@@ -27,7 +27,7 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
 }) {
   const t = useTheme()
   const {m} = useI18n()
-  const {schema} = useDashboardCreatorContext()
+  const {schema} = useDashboardEditorContext()
   const questionName: string | undefined = form.watch(`${name}.${formName.questionName}` as any)
   const {choices, question} = useQuestionInfo(questionName)
 

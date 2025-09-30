@@ -59,7 +59,7 @@ export const DashboardCard = ({
       </Core.PanelBody>
       <Core.PanelFoot>
         <Link
-          to="/$workspaceId/dashboard/$dashboardId/creator"
+          to="/$workspaceId/dashboard/$dashboardId/edit"
           params={{workspaceId: workspace.id, dashboardId: dashboard.id}}
         >
           <Core.Btn icon="edit">{m.edit}</Core.Btn>

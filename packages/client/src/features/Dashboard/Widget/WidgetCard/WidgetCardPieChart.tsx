@@ -1,5 +1,5 @@
 import {Ip} from 'infoportal-api-sdk'
-import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
+import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import React, {useMemo} from 'react'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
 import {Core} from '@/shared'
@@ -8,7 +8,7 @@ import {map} from '@axanc/ts-utils'
 
 export function WidgetCardPieChart({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
-  const {flatSubmissions, schema} = useDashboardCreatorContext()
+  const {flatSubmissions, schema} = useDashboardEditorContext()
 
   const filteredData = useMemo(() => {
     return map(filterToFunction(config.filter), flatSubmissions.filter) ?? flatSubmissions

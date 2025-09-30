@@ -16,7 +16,7 @@ import {useEffect, useState} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import html2canvas from 'html2canvas'
 
-export const dashboardRoute = createRoute({
+export const dashboardsRoute = createRoute({
   getParentRoute: () => workspaceRoute,
   path: 'dashboard',
   component: Dashboards,
@@ -27,7 +27,7 @@ const gridSize: GridProps['size'] = {xs: 6, sm: 6, md: 4, lg: 3}
 export function Dashboards() {
   const {conf} = useAppSettings()
   const {m} = useI18n()
-  const params = dashboardRoute.useParams()
+  const params = dashboardsRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const queryWorkspace = UseQueryWorkspace.getById(workspaceId)
   const queryDashboards = UseQueryDashboard.getAll({workspaceId})

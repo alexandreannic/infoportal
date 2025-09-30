@@ -5,7 +5,8 @@ import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 export class WidgetService {
   constructor(private prisma: PrismaClient) {}
 
-  readonly getByDashboard = async ({sectionId}: Ip.Dashboard.Widget.Payload.Search): Promise<Ip.Dashboard.Widget[]> => {
+  readonly search = async ({sectionId}: Ip.Dashboard.Widget.Payload.Search): Promise<Ip.Dashboard.Widget[]> => {
+    console.log('dashboardWidget SEACH')
     return this.prisma.dashboardWidget.findMany({where: {sectionId}}).then(_ => _.map(prismaMapper.dashboard.mapWidget))
   }
 

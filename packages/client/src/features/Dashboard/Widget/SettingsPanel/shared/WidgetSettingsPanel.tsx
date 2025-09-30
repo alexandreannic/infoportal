@@ -4,7 +4,6 @@ import React, {RefObject, useRef} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, Icon, useTheme} from '@mui/material'
 import {fnSwitch} from '@axanc/ts-utils'
-import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
 import {widgetTypeToIcon} from '@/features/Dashboard/Widget/WidgetTypeIcon'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
 import {useIpToast} from '@/core/useToast'
@@ -12,8 +11,10 @@ import {Kobo} from 'kobo-sdk'
 import {SettingsBarChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsBarChart'
 import {SettingsPieChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsPieChart'
 import {SettingsLineChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsLineChart'
+import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 
-export type WidgetUpdatePayload = Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'widgetId' | 'dashboardId'>
+export type WidgetUpdatePayload = Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'id' | 'dashboardId'>
+
 type Context = {
   widget: Ip.Dashboard.Widget
   stepperRef: RefObject<Core.StepperHandle | null>
@@ -47,7 +48,7 @@ export const useQuestionInfo: {
   (_: string): {question: Kobo.Form.Question; choices: Kobo.Form.Choice[]}
   (_?: string): {question?: Kobo.Form.Question; choices?: Kobo.Form.Choice[]}
 } = (questionName?: string) => {
-  const {schema} = useDashboardCreatorContext()
+  const {schema} = useDashboardEditorContext()
   if (!questionName) return {question: undefined, choices: undefined}
   const question = schema.helper.questionIndex[questionName!]
   const choices = schema.helper.choicesIndex[question?.select_from_list_name!]
@@ -67,8 +68,8 @@ export const WidgetCreatorFormPanel = ({
   const stepperRef = useRef<Core.StepperHandle>(null)
   const {m} = useI18n()
   const t = useTheme()
-  const {workspaceId, dashboard, schema} = useDashboardCreatorContext()
-  const queryWidgetRemove = UseQueryDashboardWidget.remove({workspaceId, dashboardId: dashboard.id})
+  const {workspaceId, dashboard, sectionId, schema} = useDashboardEditorContext()
+  const queryWidgetRemove = UseQueryDashboardWidget.remove({workspaceId, dashboardId: dashboard.id, sectionId})
   const {toastSuccess} = useIpToast()
 
   return (
@@ -112,7 +113,7 @@ export const WidgetCreatorFormPanel = ({
               color="error"
               onClick={() =>
                 queryWidgetRemove
-                  .mutateAsync({widgetId: widget.id})
+                  .mutateAsync({id: widget.id})
                   .then(close)
                   .then(() => toastSuccess(m.successfullyDeleted))
               }
@@ -149,7 +150,7 @@ export const WidgetCreatorFormPanel = ({
 
 // function SelectChoices2() {
 //   const {m} = useI18n()
-//   const {schema} = useDashboardCreatorContext()
+//   const {schema} = useDashboardEditorContext()
 //   const {question, choices} = useQuestionInfo()
 //   return (
 //     <Core.MultipleChoices

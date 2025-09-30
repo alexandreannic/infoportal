@@ -7,7 +7,7 @@ import {
   useQuestionInfo,
   useWidgetSettingsContext,
 } from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsPanel'
-import {useDashboardCreatorContext} from '@/features/Dashboard/DashboardCreator'
+import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {Core} from '@/shared'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsSection'
@@ -16,7 +16,7 @@ import {Box} from '@mui/material'
 import {ColorPicker} from '@/features/Dashboard/Widget/SettingsPanel/shared/ColorPicker'
 
 export function SettingsLineChart() {
-  const {schema} = useDashboardCreatorContext()
+  const {schema} = useDashboardEditorContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['LineChart']
   const {m} = useI18n()
@@ -60,7 +60,7 @@ function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Wi
   const questionName = form.watch(`lines.${index}.questionName`)
 
   const {widget, onChange} = useWidgetSettingsContext()
-  const {schema} = useDashboardCreatorContext()
+  const {schema} = useDashboardEditorContext()
   const {choices, question} = useQuestionInfo(questionName)
 
   return (

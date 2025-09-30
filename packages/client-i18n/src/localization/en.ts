@@ -326,14 +326,16 @@ export const en = Object.freeze({
     occurrences: 'Occurrences',
     dashboard: 'Dashboard',
     base: 'Base',
+    new: 'New',
     smaller: 'Smaller',
     _dashboard: {
+      newSection: 'New section',
       newLine: 'New line',
       showValue: 'Show value',
       showBase: 'Show base',
       listLimit: 'List limit',
       valueToDisplay: 'Value',
-      base: 'Base'
+      base: 'Base',
     },
     loading: 'Loading',
     price: 'Price',

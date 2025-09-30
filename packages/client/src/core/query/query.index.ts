@@ -20,6 +20,8 @@ export const queryKeys = {
     concat(workspaceId, 'dashboard', dashboardId),
   dashboardSection: (workspaceId?: Ip.WorkspaceId, dashboardId?: Ip.DashboardId, sectionId?: Ip.Dashboard.SectionId) =>
     concat(workspaceId, 'dashboard', dashboardId, 'section', sectionId),
+  dashboardWidget: (workspaceId?: Ip.WorkspaceId, dashboardId?: Ip.DashboardId, sectionId?: Ip.Dashboard.SectionId) =>
+    concat(workspaceId, 'dashboard', dashboardId, 'section', sectionId, 'widget'),
   // dashboardWidget: (
   //   workspaceId?: Ip.WorkspaceId,
   //   dashboardId?: Ip.DashboardId,
