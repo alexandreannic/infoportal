@@ -1,6 +1,5 @@
 import {Controller, UseFormReturn} from 'react-hook-form'
 import {useI18n} from '@infoportal/client-i18n'
-import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 import {RangeInput} from '@/features/Dashboard/Widget/SettingsPanel/shared/RangeInput'
@@ -11,6 +10,7 @@ import {Core} from '@/shared'
 import {Box, BoxProps, Icon, SxProps, useTheme} from '@mui/material'
 import {styleUtils} from '@infoportal/client-core'
 import {Kobo} from 'kobo-sdk'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 const formName: Record<keyof Ip.Dashboard.Widget.ConfigFilter, keyof Ip.Dashboard.Widget.ConfigFilter> = {
   questionName: 'questionName',
@@ -27,9 +27,9 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
   name: string
   form: UseFormReturn<T>
 }) {
+  const {schema} = useDashboardContext()
   const t = useTheme()
   const {m} = useI18n()
-  const {schema} = useDashboardEditorContext()
   const questionName: string | undefined = form.watch(`${name}.${formName.questionName}` as any)
   const {choices, question} = useQuestionInfo(questionName)
 
@@ -72,7 +72,7 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
           />
         )}
       />
-      <WidgetSettingsFilter question={question} form={form} name={name} />
+      <WidgetSettingsFilter question={question} form={form} name={name} sx={{mt: 2}}/>
     </Box>
   )
 }

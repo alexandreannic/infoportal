@@ -1,5 +1,4 @@
 import {useI18n} from '@infoportal/client-i18n'
-import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect} from 'react'
@@ -14,10 +13,11 @@ import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/Se
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export function SettingsBarChart() {
   const {m} = useI18n()
-  const {schema} = useDashboardEditorContext()
+  const {schema} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
   const {question, choices} = useQuestionInfo(config.questionName)

@@ -1,5 +1,4 @@
 import {useI18n} from '@infoportal/client-i18n'
-import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {useForm} from 'react-hook-form'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect} from 'react'
@@ -11,10 +10,11 @@ import {
 } from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import {Core} from '@/shared'
 import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export function SettingsCard() {
   const {m} = useI18n()
-  const {schema} = useDashboardEditorContext()
+  const {schema} = useDashboardContext()
   const {question, choices} = useQuestionInfo()
   const {widget} = useWidgetSettingsContext()
   const barChartForm = useForm<Ip.Dashboard.Widget.Config['BarChart']>()

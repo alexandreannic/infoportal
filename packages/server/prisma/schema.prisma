@@ -444,10 +444,16 @@ model Dashboard {
   sections         DashboardSection[]
   sourceform       Form               @relation(fields: [sourceFormId], references: [id])
   sourceFormId     String             @db.VarChar(32)
-  isPublic         Boolean            @default(false)
   workspace        Workspace          @relation(fields: [workspaceId], references: [id])
   workspaceId      String             @db.Uuid
   deploymentStatus DeploymentStatus
+
+  isPublic              Boolean   @default(false)
+  start                 DateTime?
+  end                   DateTime?
+  filters               Json?
+  enableChartDownload   Boolean?
+  periodComparisonDelta Int?
 }
 
 model DashboardSection {
@@ -471,12 +477,12 @@ enum WidgetType {
 }
 
 model DashboardWidget {
-  id          String            @id @default(uuid())
+  id          String           @id @default(uuid())
   type        WidgetType
   title       String?
   description String?
   position    Json // { x: number; y: number; w: number; h: number } // grid layout
-  config      Json              @default("{}") // Record<String, any> // widget-specific options
-  section     DashboardSection? @relation(fields: [sectionId], references: [id])
-  sectionId   String?
+  config      Json             @default("{}") // Record<String, any> // widget-specific options
+  section     DashboardSection @relation(fields: [sectionId], references: [id])
+  sectionId   String
 }

@@ -5,13 +5,19 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
-import React, {useState} from 'react'
+import React, {useMemo, useState} from 'react'
 import {UseQueryDashboardSecion} from '@/core/query/dashboard/useQueryDashboardSection'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {dashboardSectionRoute} from '@/features/Dashboard/Section/DashboardSection'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {useEffectFn} from '@axanc/react-hooks'
 import {dashboardSettingsRoute} from '@/features/Dashboard/DashboardSettings'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
+import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
+import {seq} from '@axanc/ts-utils'
+import {DashboardContext} from '@/features/Dashboard/DashboardContext'
+import {KoboSchemaHelper} from 'infoportal-common'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -27,7 +33,20 @@ export function Dashboard() {
 
   const queryDashboard = UseQueryDashboard.getById({workspaceId, id: dashboardId})
   const queryDashboardSection = UseQueryDashboardSecion.search({workspaceId, dashboardId})
+  const querySchema = useQuerySchema({workspaceId, formId: queryDashboard.data?.sourceFormId})
+  const querySubmissions = UseQuerySubmission.search({workspaceId, formId: queryDashboard.data?.sourceFormId})
+  const queryWidgets = UseQueryDashboardWidget.search({workspaceId, dashboardId})
   const queryDashboardSectionCreate = UseQueryDashboardSecion.create({workspaceId, dashboardId})
+
+  const widgetsBySection = useMemo(() => {
+    if (!queryWidgets.data) return
+    return seq(queryWidgets.data).groupByToMap(_ => _.sectionId as Ip.Dashboard.SectionId)
+  }, [queryWidgets])
+
+  const schemaWithMeta = useMemo(() => {
+    if (!querySchema.data) return
+    return KoboSchemaHelper.upgradeIncludingMeta(querySchema.data, m._meta, {validationStatus: m.validation_})
+  }, [querySchema.data])
 
   const activeTab = ''
   const {setTitle} = useLayoutContext()
@@ -89,7 +108,19 @@ export function Dashboard() {
           <Tab icon={<Icon>add</Icon>} iconPosition="start" label={m.new} />
         </Core.Modal>
       </Tabs>
-      <Outlet />
+      {querySubmissions.data && widgetsBySection && queryWidgets.data && queryDashboard.data && schemaWithMeta && (
+        <DashboardContext
+          value={{
+            workspaceId,
+            widgetsBySection,
+            schema: schemaWithMeta,
+            flatSubmissions: seq(querySubmissions.data.data.map(({answers, ...rest}) => ({...answers, ...rest}))),
+            dashboard: queryDashboard.data,
+          }}
+        >
+          <Outlet />
+        </DashboardContext>
+      )}
     </Page>
   )
 }

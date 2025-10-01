@@ -1,14 +1,14 @@
 import {Ip} from 'infoportal-api-sdk'
-import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import React, {useMemo} from 'react'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
 import {Core} from '@/shared'
 import {filterToFunction} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardLineChart'
 import {map} from '@axanc/ts-utils'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export function WidgetCardBarChart({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
-  const {flatSubmissions, schema} = useDashboardEditorContext()
+  const {flatSubmissions, schema} = useDashboardContext()
 
   const labels = useMemo(() => {
     const q = config.questionName

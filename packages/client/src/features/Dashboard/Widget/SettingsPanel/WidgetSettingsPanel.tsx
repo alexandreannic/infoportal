@@ -11,9 +11,9 @@ import {Kobo} from 'kobo-sdk'
 import {SettingsBarChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsBarChart'
 import {SettingsPieChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsPieChart'
 import {SettingsLineChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsLineChart'
-import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {SettingsGeoPoint} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsGeoPoint'
 import {SettingsGeoChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsGeoChart'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export type WidgetUpdatePayload = Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'id' | 'dashboardId'>
 
@@ -56,7 +56,7 @@ export const useQuestionInfo: {
   (_: string): {question: Kobo.Form.Question; choices: Kobo.Form.Choice[]}
   (_?: string): {question?: Kobo.Form.Question; choices?: Kobo.Form.Choice[]}
 } = (questionName?: string) => {
-  const {schema} = useDashboardEditorContext()
+  const {schema} = useDashboardContext()
   if (!questionName) return {question: undefined, choices: undefined}
   const question = schema.helper.questionIndex[questionName!]
   const choices = schema.helper.choicesIndex[question?.select_from_list_name!]
@@ -65,10 +65,12 @@ export const useQuestionInfo: {
 
 const padding = 0.75
 export const WidgetCreatorFormPanel = ({
+  sectionId,
   onClose,
   widget,
   onChange,
 }: {
+  sectionId: Ip.Dashboard.SectionId
   widget: Ip.Dashboard.Widget
   onChange: (value: WidgetUpdatePayload) => void
   onClose: () => void
@@ -76,7 +78,7 @@ export const WidgetCreatorFormPanel = ({
   const stepperRef = useRef<Core.StepperHandle>(null)
   const {m} = useI18n()
   const t = useTheme()
-  const {workspaceId, dashboard, sectionId, schema} = useDashboardEditorContext()
+  const {workspaceId, dashboard, schema} = useDashboardContext()
   const queryWidgetRemove = UseQueryDashboardWidget.remove({workspaceId, dashboardId: dashboard.id, sectionId})
   const {toastSuccess} = useIpToast()
 

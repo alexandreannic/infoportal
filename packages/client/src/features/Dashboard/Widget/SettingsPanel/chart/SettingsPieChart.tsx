@@ -9,15 +9,15 @@ import {
   useWidgetSettingsContext,
 } from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
-import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {
   WidgetSettingsFilter,
   WidgetSettingsFilterQuestion,
 } from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export function SettingsPieChart() {
-  const {schema} = useDashboardEditorContext()
+  const {schema} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
   const {question} = useQuestionInfo(config.questionName)

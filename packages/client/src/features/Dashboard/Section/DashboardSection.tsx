@@ -5,21 +5,17 @@ import {Box, Collapse, Icon, useTheme} from '@mui/material'
 import 'react-grid-layout/css/styles.css'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
-import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
-import {seq, Seq} from '@axanc/ts-utils'
 import {
   WidgetCreatorFormPanel,
   WidgetUpdatePayload,
 } from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
 import React, {useCallback, useMemo, useState} from 'react'
 import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
-import {KoboSchemaHelper} from 'infoportal-common'
-import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
 import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {TabContent} from '@/shared/Tab/TabContent'
 import {dashboardRoute} from '@/features/Dashboard/Dashboard'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 const GridLayout = WidthProvider(ReactGridLayout)
 
@@ -32,64 +28,14 @@ export const dashboardSectionRoute = createRoute({
 const layoutWidth = 1200
 const sidePanelWidth = 300
 
-type Context = {
-  sectionId: Ip.Dashboard.SectionId
-  workspaceId: Ip.WorkspaceId
-  flatSubmissions: Seq<Record<string, any>>
-  dashboard: Ip.Dashboard
-  schema: KoboSchemaHelper.Bundle<true>
-  widgets: Ip.Dashboard.Widget[]
-}
-
-const Context = React.createContext<Context>({} as Context)
-export const useDashboardEditorContext = () => React.useContext(Context)
-
 export function DashboardSection() {
-  const {m} = useI18n()
-  const params = dashboardSectionRoute.useParams()
-  const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const sectionId = params.sectionId as Ip.Dashboard.SectionId
-  const dashboardId = params.dashboardId as Ip.DashboardId
-
-  const queryDashboard = UseQueryDashboard.getById({workspaceId, id: dashboardId})
-  const querySchema = useQuerySchema({workspaceId, formId: queryDashboard.data?.sourceFormId})
-  const querySubmissions = UseQuerySubmission.search({workspaceId, formId: queryDashboard.data?.sourceFormId})
-  const queryWidgets = UseQueryDashboardWidget.search({workspaceId, dashboardId, sectionId})
-
-  const schemaWithMeta = useMemo(() => {
-    if (!querySchema.data) return
-    return KoboSchemaHelper.upgradeIncludingMeta(querySchema.data, m._meta, {validationStatus: m.validation_})
-  }, [querySchema.data])
-
-  return (
-    <TabContent
-      width="full"
-      loading={
-        queryWidgets.isLoading || querySubmissions.isLoading || queryDashboard.isLoading || querySchema.isLoading
-      }
-    >
-      {querySubmissions.data && queryWidgets.data && queryDashboard.data && schemaWithMeta && (
-        <Context.Provider
-          value={{
-            workspaceId,
-            sectionId,
-            schema: schemaWithMeta,
-            flatSubmissions: seq(querySubmissions.data.data.map(({answers, ...rest}) => ({...answers, ...rest}))),
-            dashboard: queryDashboard.data,
-            widgets: queryWidgets.data,
-          }}
-        >
-          <_DashboardCreator />
-        </Context.Provider>
-      )}
-    </TabContent>
-  )
-}
-
-export function _DashboardCreator() {
   const t = useTheme()
   const {m} = useI18n()
-  const {workspaceId, schema, widgets, sectionId, dashboard} = useDashboardEditorContext()
+  const params = dashboardSectionRoute.useParams()
+  const sectionId = params.sectionId as Ip.Dashboard.SectionId
+  const {workspaceId, schema, widgetsBySection, dashboard} = useDashboardContext()
+  const widgets = widgetsBySection.get(sectionId) ?? []
+
   const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id, sectionId})
   const queryWidgetUpdate = UseQueryDashboardWidget.update({workspaceId, dashboardId: dashboard.id, sectionId})
 
@@ -128,7 +74,7 @@ export function _DashboardCreator() {
   }, [widgets])
 
   return (
-    <>
+    <TabContent width="full">
       <Box
         sx={{
           display: 'flex',
@@ -216,6 +162,7 @@ export function _DashboardCreator() {
           <Box sx={{height: '100%', width: sidePanelWidth}}>
             {editingWidget && (
               <WidgetCreatorFormPanel
+                sectionId={sectionId}
                 key={editingWidgetId}
                 widget={editingWidget}
                 onChange={(...args) => updateWidget(editingWidget.id, ...args)}
@@ -225,7 +172,7 @@ export function _DashboardCreator() {
           </Box>
         </Collapse>
       </Box>
-    </>
+    </TabContent>
   )
 }
 

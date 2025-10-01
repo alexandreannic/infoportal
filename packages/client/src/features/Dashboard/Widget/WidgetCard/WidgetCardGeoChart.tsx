@@ -1,15 +1,15 @@
 import {useTheme} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useMemo} from 'react'
-import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
 import {Core} from '@/shared'
 import {Obj} from '@axanc/ts-utils'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export const WidgetCardGeoChart = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoChart']
-  const {flatSubmissions, schema} = useDashboardEditorContext()
+  const {flatSubmissions, schema} = useDashboardContext()
 
   const data = useMemo(() => {
     if (!config.questionName) return []

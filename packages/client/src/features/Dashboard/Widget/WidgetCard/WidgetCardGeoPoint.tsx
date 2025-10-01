@@ -2,13 +2,13 @@ import {Box, useTheme} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect, useMemo} from 'react'
 import {initGoogleMaps} from '@/core/initGoogleMaps'
-import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export const WidgetCardGeoPoint = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoPoint']
-  const {flatSubmissions, schema} = useDashboardEditorContext()
+  const {flatSubmissions, schema} = useDashboardContext()
 
   const bubbles = useMemo(() => {
     if (!config.questionName) return

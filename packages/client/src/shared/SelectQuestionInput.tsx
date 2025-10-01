@@ -12,7 +12,7 @@ type Props = Omit<AutocompleteProps<string, false, any, any>, 'options' | 'rende
   schema?: Ip.Form.Schema
   loading?: boolean
   InputProps?: Core.InputProps
-  questionTypeFilter: Array<Kobo.Form.QuestionType>
+  questionTypeFilter?: Array<Kobo.Form.QuestionType>
   langIndex?: number
 }
 
@@ -20,7 +20,7 @@ export const SelectQuestionInput = ({
   langIndex = 0,
   schema,
   loading,
-  questionTypeFilter,
+  questionTypeFilter = [],
   value,
   onInputChange,
   InputProps,

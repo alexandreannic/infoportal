@@ -33,23 +33,25 @@ const DialogKoboRow = ({icon, children, active}: {icon: string; children: string
   )
 }
 
-const Row = ({
+export const SettingsRow = ({
   icon,
   label,
   desc,
   children,
+  action,
 }: {
-  icon: string
+  icon: string | ReactNode
   label: ReactNode
   desc?: ReactNode
-  children: ReactNode
+  children?: ReactNode
+  action?: ReactNode
 }) => {
   const t = useTheme()
   return (
     <Box
       display="flex"
       sx={{
-        '&:not(:last-of-type) .FormSettings-Row-Body': {
+        '&:not(:last-of-type) .Settings-Row-Body': {
           mb: 2,
           pb: 2,
           borderBottom: '1px solid',
@@ -57,19 +59,24 @@ const Row = ({
         },
       }}
     >
-      <Icon sx={{mt: 0.5, mr: 1.5, color: t.vars?.palette.text.secondary}}>{icon}</Icon>
-      <Box flex={1} display="flex" alignItems="center" className="FormSettings-Row-Body">
-        <Box flex={1}>
-          <Core.Txt bold block>
-            {label}
-          </Core.Txt>
-          {desc && (
-            <Core.Txt block color="hint">
-              {desc}
+      <Box sx={{mt: 0.5, mr: 1.5}}>
+        {typeof icon === 'string' ? <Icon sx={{color: t.vars?.palette.text.secondary}}>{icon}</Icon> : icon}
+      </Box>
+      <Box flex={1} className="Settings-Row-Body">
+        <Box flex={1} display="flex" alignItems="flex-start" sx={{mb: 2}}>
+          <Box flex={1}>
+            <Core.Txt bold block>
+              {label}
             </Core.Txt>
-          )}
+            {desc && (
+              <Core.Txt block color="hint">
+                {desc}
+              </Core.Txt>
+            )}
+          </Box>
+          <div>{action}</div>
         </Box>
-        <div>{children}</div>
+        {children}
       </Box>
     </Box>
   )
@@ -89,47 +96,60 @@ function FormSettings() {
     <TabContent width="xs">
       <Core.Panel>
         <Core.PanelBody>
-          <Row icon="category" label={m.category} desc={m._settings.setCategoryDesc}>
-            <SelectFormCategory
-              InputProps={{label: '', placeholder: '...'}}
-              sx={{minWidth: 150}}
-              workspaceId={workspaceId}
-              loading={queryUpdate.isPending}
-              value={form.category}
-              onChange={(e, value) => {
-                queryUpdate.mutateAsync({formId: form.id, category: value})
-              }}
-            />
-          </Row>
+          <SettingsRow
+            icon="category"
+            label={m.category}
+            desc={m._settings.setCategoryDesc}
+            action={
+              <SelectFormCategory
+                InputProps={{label: '', placeholder: '...'}}
+                sx={{minWidth: 150}}
+                workspaceId={workspaceId}
+                loading={queryUpdate.isPending}
+                value={form.category}
+                onChange={(e, value) => {
+                  queryUpdate.mutateAsync({formId: form.id, category: value})
+                }}
+              />
+            }
+          />
+
           {Ip.Form.isKobo(form) && (
-            <Row
+            <SettingsRow
               icon={assetStyle.icon[AssetType.kobo]}
               label={m._settings.connectedToKobo}
               desc={m._settings.connectedToKoboDesc}
-            >
-              {queryUpdateKoboConnexion.isPending && <CircularProgress size={24} />}
-              <Core.Modal
-                loading={queryUpdateKoboConnexion.isPending}
-                title={isConnectedToKobo ? m._settings.disconnectToKobo : m._settings.reconnectToKobo}
-                content={
-                  <Box>
-                    <DialogKoboRow icon="cloud_upload" children={m._settings.ipToKobo} active={isConnectedToKobo} />
-                    <DialogKoboRow icon="cloud_download" children={m._settings.koboToIp} active={isConnectedToKobo} />
-                    <Core.Alert severity="info" title={m._settings.koboDisconnectedNoteTitle}>
-                      {m._settings.koboDisconnectedNoteDesc}
-                    </Core.Alert>
-                  </Box>
-                }
-                onConfirm={async (e, close) => {
-                  await queryUpdateKoboConnexion.mutateAsync({formId: form.id, connected: !isConnectedToKobo})
-                  close()
-                }}
-              >
-                <Switch checked={isConnectedToKobo} disabled={queryUpdateKoboConnexion.isPending} />
-              </Core.Modal>
-            </Row>
+              action={
+                <>
+                  {queryUpdateKoboConnexion.isPending && <CircularProgress size={24} />}
+                  <Core.Modal
+                    loading={queryUpdateKoboConnexion.isPending}
+                    title={isConnectedToKobo ? m._settings.disconnectToKobo : m._settings.reconnectToKobo}
+                    content={
+                      <Box>
+                        <DialogKoboRow icon="cloud_upload" children={m._settings.ipToKobo} active={isConnectedToKobo} />
+                        <DialogKoboRow
+                          icon="cloud_download"
+                          children={m._settings.koboToIp}
+                          active={isConnectedToKobo}
+                        />
+                        <Core.Alert severity="info" title={m._settings.koboDisconnectedNoteTitle}>
+                          {m._settings.koboDisconnectedNoteDesc}
+                        </Core.Alert>
+                      </Box>
+                    }
+                    onConfirm={async (e, close) => {
+                      await queryUpdateKoboConnexion.mutateAsync({formId: form.id, connected: !isConnectedToKobo})
+                      close()
+                    }}
+                  >
+                    <Switch checked={isConnectedToKobo} disabled={queryUpdateKoboConnexion.isPending} />
+                  </Core.Modal>
+                </>
+              }
+            />
           )}
-          <Row
+          <SettingsRow
             icon="archive"
             label={m.archive}
             desc={
@@ -138,32 +158,40 @@ function FormSettings() {
                 {Ip.Form.isKobo(form) && <span style={{fontWeight: 'bold'}}>{m.archiveKoboFormDesc}</span>}
               </>
             }
-          >
-            <Core.Btn
-              loading={queryUpdate.pendingIds.has(form.id)}
-              icon={form.deploymentStatus === 'archived' ? 'unarchive' : 'archive'}
-              variant="outlined"
-              onClick={() => queryUpdate.mutateAsync({formId: form.id, archive: form.deploymentStatus !== 'archived'})}
-            >
-              {form.deploymentStatus === 'archived' ? m.unarchive : m.archive}
-            </Core.Btn>
-          </Row>
-          <Row icon="delete" label={m.deleteThisProject} desc={m.deleteThisProjectDesc}>
-            <Core.Modal
-              loading={queryRemove.pendingIds.has(form.id)}
-              title={m.deleteThisProject}
-              content={form.name}
-              onConfirm={async (e, close) => {
-                await queryRemove.mutateAsync(form.id)
-                close()
-                navigate({to: '/$workspaceId/form/list', params: {workspaceId}})
-              }}
-            >
-              <Core.Btn icon="delete" color="error" variant="outlined">
-                {m.delete}
+            action={
+              <Core.Btn
+                loading={queryUpdate.pendingIds.has(form.id)}
+                icon={form.deploymentStatus === 'archived' ? 'unarchive' : 'archive'}
+                variant="outlined"
+                onClick={() =>
+                  queryUpdate.mutateAsync({formId: form.id, archive: form.deploymentStatus !== 'archived'})
+                }
+              >
+                {form.deploymentStatus === 'archived' ? m.unarchive : m.archive}
               </Core.Btn>
-            </Core.Modal>
-          </Row>
+            }
+          />
+          <SettingsRow
+            icon="delete"
+            label={m.deleteThisProject}
+            desc={m.deleteThisProjectDesc}
+            action={
+              <Core.Modal
+                loading={queryRemove.pendingIds.has(form.id)}
+                title={m.deleteThisProject}
+                content={form.name}
+                onConfirm={async (e, close) => {
+                  await queryRemove.mutateAsync(form.id)
+                  close()
+                  navigate({to: '/$workspaceId/form/list', params: {workspaceId}})
+                }}
+              >
+                <Core.Btn icon="delete" color="error" variant="outlined">
+                  {m.delete}
+                </Core.Btn>
+              </Core.Modal>
+            }
+          />
         </Core.PanelBody>
       </Core.Panel>
     </TabContent>

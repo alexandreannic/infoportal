@@ -7,6 +7,11 @@ import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 export class DashboardService {
   constructor(private prisma: PrismaClient) {}
 
+  readonly getById = async ({id}: {id: Ip.DashboardId}): Promise<Ip.Dashboard | undefined> => {
+    return this.prisma.dashboard
+      .findUnique({where: {id}})
+      .then(_ => (_ ? prismaMapper.dashboard.mapDashboard(_) : undefined))
+  }
   readonly getAll = async ({workspaceId}: {workspaceId: Ip.WorkspaceId}): Promise<Ip.Dashboard[]> => {
     return this.prisma.dashboard.findMany({where: {workspaceId}}).then(_ => _.map(prismaMapper.dashboard.mapDashboard))
   }

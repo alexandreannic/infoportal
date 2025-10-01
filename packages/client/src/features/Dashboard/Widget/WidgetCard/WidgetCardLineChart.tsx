@@ -1,10 +1,10 @@
 import {Ip} from 'infoportal-api-sdk'
-import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
 import React, {useMemo} from 'react'
 import {Core} from '@/shared'
 import {seq} from '@axanc/ts-utils'
 import {ChartLineCurve} from '@infoportal/client-core'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export function filterToFunction<T extends Record<string, any> = Record<string, any>>(
   filter?: Ip.Dashboard.Widget.ConfigFilter,
@@ -27,7 +27,7 @@ export function filterToFunction<T extends Record<string, any> = Record<string, 
 
 export const WidgetCardLineChart = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const config = widget.config as Ip.Dashboard.Widget.Config['LineChart']
-  const {flatSubmissions, schema} = useDashboardEditorContext()
+  const {flatSubmissions, schema} = useDashboardContext()
 
   const filterFns = useMemo(() => {
     return config.lines?.map(_ => filterToFunction(_.filter)) ?? []

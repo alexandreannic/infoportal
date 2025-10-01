@@ -15,13 +15,14 @@ import {PeriodPickerProps} from './PeriodPicker'
 const shortcutsItems: PickersShortcutsItem<DateRange<Date>>[] = (() => {
   const today = new Date()
   const limit = 7
-  return Array.from({length: limit}, (_, i) => {
+  const months = Array.from({length: limit}, (_, i) => {
     const currentDate = subMonths(today, limit - 1 - i)
     return {
       label: format(currentDate, 'MMMM yyyy'),
       getValue: () => [startOfMonth(currentDate), endOfMonth(currentDate)],
     }
   })
+  return [...months, {label: 'Reset', getValue: () => [null, null] as any}]
 })()
 
 const toDateRange = (_?: [Date | undefined, Date | undefined]): DateRange<Date> => {

@@ -1,5 +1,4 @@
 import {Box} from '@mui/material'
-import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {
   getQuestionTypeByWidget,
   useWidgetSettingsContext,
@@ -11,10 +10,11 @@ import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/Settings
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
 import React, {useEffect} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export const SettingsGeoPoint = () => {
   const {m} = useI18n()
-  const {schema} = useDashboardEditorContext()
+  const {schema} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoPoint']
   const form = useForm<Ip.Dashboard.Widget.Config['GeoPoint']>({
