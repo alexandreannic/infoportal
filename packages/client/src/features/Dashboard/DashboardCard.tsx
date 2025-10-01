@@ -45,7 +45,7 @@ export const DashboardCard = ({
             backgroundColor: t.vars.palette.divider,
             borderRadius: t.vars.shape.borderRadius,
             flex: 1,
-            backgroundImage: `url(${img})`,
+            // backgroundImage: `url(${img})`,
             backgroundSize: `cover`,
           }}
         ></Box>

@@ -30,7 +30,6 @@ export const initGoogleMaps = async ({
   //   if (trys > 140) break
   // }
   await loadGoogleMaps(apiKey, ['places'])
-  console.log(google)
   // const ukraineCenter: google.maps.LatLngLiteral = {lat: 48.96008674231441, lng: 31.702957509661097}
   const map = new google.maps.Map(document.querySelector(domSelector) as HTMLElement, {
     mapId: mapId,

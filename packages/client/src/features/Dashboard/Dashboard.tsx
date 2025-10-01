@@ -54,9 +54,11 @@ export function Dashboard() {
             iconPosition="start"
             // sx={{minHeight: 34, py: 1}}
             component={Link}
-            value={dashboardSectionRoute.fullPath}
-            to={dashboardSectionRoute.fullPath}
-            params={{sectionId: _.id}}
+            {...({
+              value: dashboardSectionRoute.fullPath,
+              to: dashboardSectionRoute.fullPath,
+              params: {sectionId: _.id},
+            } as any)}
             label={_.title}
           />
         ))}

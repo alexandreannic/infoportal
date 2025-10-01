@@ -18,7 +18,8 @@ export function WidgetSettingsSection({
     <Box>
       <Box
         sx={{
-          p: 1,
+          py: .5,
+          px: 1,
           transition: t.transitions.create('background'),
           '&:hover': {
             background: styleUtils(t).color.toolbar.hover.background,

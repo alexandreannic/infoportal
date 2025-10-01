@@ -32,16 +32,16 @@ export function Dashboards() {
   const queryWorkspace = UseQueryWorkspace.getById(workspaceId)
   const queryDashboards = UseQueryDashboard.getAll({workspaceId})
   const [urls, setUrls] = useState<Record<Ip.DashboardId, string>>({})
-  useEffect(() => {
-    if (queryDashboards.data && queryWorkspace.data)
-      buildDashboardScreenshot({
-        baseUrl: conf.baseURL,
-        workspace: queryWorkspace.data,
-        dashboards: queryDashboards.data,
-      }).then(urls => {
-        setUrls(urls)
-      })
-  }, [queryWorkspace.data, queryDashboards.data])
+  // useEffect(() => {
+  //   if (queryDashboards.data && queryWorkspace.data)
+  //     buildDashboardScreenshot({
+  //       baseUrl: conf.baseURL,
+  //       workspace: queryWorkspace.data,
+  //       dashboards: queryDashboards.data,
+  //     }).then(urls => {
+  //       setUrls(urls)
+  //     })
+  // }, [queryWorkspace.data, queryDashboards.data])
 
   return (
     <Page width="md">

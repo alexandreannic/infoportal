@@ -161,7 +161,6 @@ export function _DashboardCreator() {
             <GridLayout
               onLayoutChange={layout => {
                 layout.forEach(({i, x, y, h, w}) => {
-                  console.log(i)
                   updateWidget(i as Ip.Dashboard.WidgetId, {position: {x, y, h, w}})
                 })
               }}

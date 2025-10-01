@@ -8,6 +8,7 @@ import {WidgetCardPieChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetC
 import {WidgetCardBarChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardBarChart'
 import {WidgetCardLineChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardLineChart'
 import {WidgetCardGeoPoint} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardGeoPoint'
+import {WidgetCardGeoChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardGeoChart'
 
 type Status = 'editing'
 
@@ -37,7 +38,7 @@ export const WidgetCard = memo(
         }}
       >
         {widget.type !== 'PieChart' && (
-          <Core.Txt truncate title={widget.title} block size="big" bold sx={{mb: 1}}>
+          <Core.Txt title={widget.title} block size="big" bold sx={{mb: 1}}>
             {widget.title}
           </Core.Txt>
         )}
@@ -49,6 +50,7 @@ export const WidgetCard = memo(
               PieChart: <WidgetCardPieChart widget={widget} />,
               LineChart: <WidgetCardLineChart widget={widget} />,
               GeoPoint: <WidgetCardGeoPoint widget={widget} />,
+              GeoChart: <WidgetCardGeoChart widget={widget} />,
             },
             () => (
               <></>

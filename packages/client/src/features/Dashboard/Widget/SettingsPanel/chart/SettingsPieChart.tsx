@@ -2,17 +2,14 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect} from 'react'
-import {Box} from '@mui/material'
 import {SwitchBox} from '@/shared/SwitchBox'
 import {
   getQuestionTypeByWidget,
   useQuestionInfo,
   useWidgetSettingsContext,
 } from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
-import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
-import {RangeInput} from '@/features/Dashboard/Widget/SettingsPanel/shared/RangeInput'
 import {
   WidgetSettingsFilter,
   WidgetSettingsFilterQuestion,
@@ -35,7 +32,7 @@ export function SettingsPieChart() {
   useEffect(() => {
     onChange({config: values})
   }, [values])
-
+  
   return (
     <>
       <WidgetSettingsSection title={m.source}>
@@ -49,7 +46,11 @@ export function SettingsPieChart() {
             <SelectQuestionInput
               {...field}
               sx={{mb: 1}}
-              onChange={(e, _) => field.onChange(_)}
+              onChange={(e, _) => {
+                field.onChange(_)
+                form.setValue('filterValue', undefined)
+                form.setValue('filterBase', undefined)
+              }}
               schema={schema.schema}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{

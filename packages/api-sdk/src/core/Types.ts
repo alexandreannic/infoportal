@@ -686,6 +686,11 @@ export namespace Ip {
           questionName?: string
           filter?: ConfigFilter
         }
+        [Type.GeoChart]: {
+          questionName?: string
+          filter?: ConfigFilter
+          countryIsoCode?: string
+        }
         [Type.BarChart]: {
           questionName?: string
           selectedChoices?: string[]

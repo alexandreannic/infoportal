@@ -13,6 +13,7 @@ import {SettingsPieChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/
 import {SettingsLineChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsLineChart'
 import {useDashboardEditorContext} from '@/features/Dashboard/Section/DashboardSection'
 import {SettingsGeoPoint} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsGeoPoint'
+import {SettingsGeoChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsGeoChart'
 
 export type WidgetUpdatePayload = Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'id' | 'dashboardId'>
 
@@ -32,16 +33,19 @@ export const getQuestionTypeByWidget = (type: Ip.Dashboard.Widget.Type): Kobo.Fo
       return []
     }
     case 'BarChart': {
-      return ['select_multiple', 'select_one']
+      return ['select_multiple', 'select_one', 'calculate']
     }
     case 'LineChart': {
-      return ['date', 'datetime']
+      return ['date', 'datetime', 'calculate']
     }
     case 'GeoPoint': {
       return ['geopoint']
     }
+    case 'GeoChart': {
+      return ['text', 'select_one', 'select_multiple', 'calculate']
+    }
     case 'PieChart': {
-      return ['select_one', 'integer', 'decimal']
+      return ['select_one', 'integer', 'decimal', 'calculate']
     }
     default: {
       return []
@@ -140,6 +144,7 @@ export const WidgetCreatorFormPanel = ({
             PieChart: <SettingsPieChart />,
             LineChart: <SettingsLineChart />,
             GeoPoint: <SettingsGeoPoint />,
+            GeoChart: <SettingsGeoChart />,
           },
           () => (
             <></>

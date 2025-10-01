@@ -89,6 +89,7 @@ export class SubmissionService {
               submissionTime: true,
               submittedBy: true,
               version: true,
+              isoCode: true,
               validationStatus: true,
               geolocation: true,
               answers: true,

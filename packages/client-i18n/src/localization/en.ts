@@ -233,6 +233,8 @@ export const en = Object.freeze({
     appSubTitle: 'InfoPortal',
     noDataAtm: 'No data at the moment',
     fileName: 'File name',
+    country: 'Country',
+    selectCountry: 'Select country',
     _widgetType: {
       [Ip.Dashboard.Widget.Type.Card]: 'Card',
       [Ip.Dashboard.Widget.Type.PieChart]: 'Pie Chart',
