@@ -3,10 +3,17 @@ import {useMemo, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
 import {IconBtn, Panel, PanelHead} from '../ui'
 import {lightenVar} from '../core'
+import * as path from 'node:path'
 
 const headers = ['Location', 'Submissions']
 
-export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: string; count: number}[]}) => {
+export const ChartGeo = ({
+  panelTitle,
+  data
+}: {
+  panelTitle: string;
+  data?: {iso: string; count: number}[]
+}) => {
   const t = useTheme()
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
 
@@ -45,8 +52,10 @@ export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: s
   const options: ChartWrapperOptions['options'] = useMemo(() => {
     const defaultOptions: ChartWrapperOptions['options'] = {
       backgroundColor: 'transparent',
-      datalessRegionColor:
-        t.palette.mode === 'dark' ? lightenVar(t.palette.background.default, 0.4) : t.palette.divider,
+      datalessRegionColor: 'transparent',
+
+      // datalessRegionColor:
+      //   t.palette.mode === 'dark' ? lightenVar(t.palette.background.default, 0.4) : t.palette.divider,
       legend: 'none',
       enableRegionInteractivity: true,
       chartArea: {
@@ -68,14 +77,23 @@ export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: s
   }, [selectedCountry, data])
 
   return (
-    <Panel>
-      <PanelHead>{panelTitle}</PanelHead>
-      <Box sx={{overflow: 'hidden', position: 'relative'}}>
+    // <Panel>
+    //   <PanelHead>{panelTitle}</PanelHead>
+      <Box
+        sx={{
+          overflow: 'hidden',
+          position: 'relative',
+          '& svg path[fill^="none"]': {
+            strokeWidth: 0,
+          },
+        }}
+      >
         <Chart
-          style={{marginTop: -40, marginBottom: -40}}
+          style={{border: '1x solid silver'}}
+          // style={{marginTop: -40, marginBottom: -40}}
           chartType="GeoChart"
           width="100%"
-          height="500px"
+          height="100%"
           data={formattedData ?? [headers]}
           options={options}
           chartEvents={[
@@ -103,6 +121,6 @@ export const ChartGeo = ({panelTitle, data}: {panelTitle: string; data?: {iso: s
           arrow_back
         </IconBtn>
       </Box>
-    </Panel>
+    // </Panel>
   )
 }

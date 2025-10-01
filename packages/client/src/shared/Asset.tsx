@@ -8,33 +8,33 @@ export type Asset = {
   category?: string
   createdAt: Date
   deploymentStatus?: Ip.Form.DeploymentStatus
-  type: Asset.Type
+  type: AssetType
 }
 
-export namespace Asset {
-  export enum Type {
-    internal = 'internal',
-    smart = 'smart',
-    kobo = 'kobo',
-  }
-  export const icon = {
-    [Type.internal]: 'content_paste',
-    [Type.kobo]: 'cloud_download',
-    [Type.smart]: 'dynamic_form',
-  }
+export enum AssetType {
+  internal = 'internal',
+  smart = 'smart',
+  kobo = 'kobo',
+}
 
-  export const color = {
-    [Type.internal]: '#FF9800',
-    [Type.kobo]: '#2196F3',
-    [Type.smart]: '#9C27B0',
-  }
+export const assetStyle = {
+  icon: {
+    [AssetType.internal]: 'content_paste',
+    [AssetType.kobo]: 'cloud_download',
+    [AssetType.smart]: 'dynamic_form',
+  },
+  color: {
+    [AssetType.internal]: '#FF9800',
+    [AssetType.kobo]: '#2196F3',
+    [AssetType.smart]: '#9C27B0',
+  },
+}
 
-  export const Icon = ({type, sx, ...props}: IconProps & {type: Type}) => {
-    const {m} = useI18n()
-    return (
-      <MuiIcon title={m.formSource_[type]} sx={{color: color[type], ...sx}} {...props}>
-        {icon[type]}
-      </MuiIcon>
-    )
-  }
+export const AssetIcon = ({type, sx, ...props}: IconProps & {type: AssetType}) => {
+  const {m} = useI18n()
+  return (
+    <MuiIcon title={m.formSource_[type]} sx={{color: assetStyle.color[type], ...sx}} {...props}>
+      {assetStyle.icon[type]}
+    </MuiIcon>
+  )
 }

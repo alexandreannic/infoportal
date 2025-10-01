@@ -14,7 +14,7 @@ export type KoboServer = {
 
 export type SubmissionMappedType = string | string[] | Date | number | undefined
 
-type SubmissionMapped = {
+export type SubmissionMapped = {
   [key: string]: SubmissionMappedType | SubmissionMapped[]
 }
 

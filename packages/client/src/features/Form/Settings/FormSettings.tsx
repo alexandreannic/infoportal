@@ -6,10 +6,9 @@ import {TabContent} from '@/shared/Tab/TabContent.js'
 import {Box, CircularProgress, Icon, Switch, useTheme} from '@mui/material'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {ReactNode} from 'react'
-import {Asset} from '@/shared/Asset.js'
+import {assetStyle, Asset, AssetType} from '@/shared/Asset.js'
 import {SelectFormCategory} from '@/shared/SelectFormCategory.js'
 import {Ip} from 'infoportal-api-sdk'
-import Type = Asset.Type
 
 export const formSettingsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -104,7 +103,7 @@ function FormSettings() {
           </Row>
           {Ip.Form.isKobo(form) && (
             <Row
-              icon={Asset.icon[Type.kobo]}
+              icon={assetStyle.icon[AssetType.kobo]}
               label={m._settings.connectedToKobo}
               desc={m._settings.connectedToKoboDesc}
             >

@@ -43,8 +43,6 @@
     "@types/winston-syslog": "^2.4.3",
     "@types/xlsx-populate": "git+https://github.com/JanLoebel/types-xlsx-populate.git",
     "filehound": "^1.17.6",
-    "infoportal-api-sdk": "1.0.0",
-    "@infoportal/action-compiler": "1.0.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
     "ts-jest": "^29.2.5",
@@ -56,7 +54,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
-    "@axanc/ts-utils": "2.4.1",
+    "@axanc/ts-utils": "2.4.2",
     "@azure/msal-common": "^15.4.0",
     "@azure/msal-node": "^3.4.1",
     "@microsoft/microsoft-graph-client": "^3.0.5",
@@ -79,6 +77,7 @@
     "express-session": "^1.18.0",
     "fetch-cookie": "^2.1.0",
     "googleapis": "^148.0.0",
+    "@infoportal/action-compiler": "1.0.0",
     "infoportal-api-sdk": "1.0.0",
     "infoportal-common": "1.0.0",
     "kobo-sdk": "^2.4.0",

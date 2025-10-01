@@ -1,8 +1,9 @@
 import {seq} from '@axanc/ts-utils'
-import {removeHtml} from '../../utils/Common.js'
 import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
+import {KoboMetaHelper} from './koboMetaHelper.js'
+import {removeHtml} from '../../utils/Common.js'
 
 export type KoboTranslateQuestion = (key: string) => string
 export type KoboTranslateChoice = (key: string, choice?: string) => string
@@ -10,6 +11,15 @@ export type KoboTranslateChoice = (key: string, choice?: string) => string
 export const ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['end_group', 'end_repeat', 'deviceid'])
 
 export namespace KoboSchemaHelper {
+  export interface Bundle<IncludeMeta extends boolean = false> {
+    includeMeta?: IncludeMeta
+    helper: Helper
+    schema: Ip.Form.Schema
+    schemaFlatAndSanitized: Kobo.Form.Question[]
+    schemaSanitized: Ip.Form.Schema
+    translate: Translation
+  }
+
   export const getLabel = (
     q: {
       name: string
@@ -24,14 +34,6 @@ export namespace KoboSchemaHelper {
 
   export type Helper = ReturnType<typeof buildHelper>
 
-  export interface Bundle {
-    helper: Helper
-    schema: Ip.Form.Schema
-    schemaFlatAndSanitized: Kobo.Form.Question[]
-    schemaSanitized: Ip.Form.Schema
-    translate: Translation
-  }
-
   const sanitizeQuestions = (questions: Kobo.Form.Question[]): Kobo.Form.Question[] => {
     return questions
       .filter(
@@ -45,7 +47,7 @@ export namespace KoboSchemaHelper {
       }))
   }
 
-  export const buildHelper = ({schema}: {schema: Ip.Form.Schema}) => {
+  const buildHelper = ({schema}: {schema: Ip.Form.Schema}) => {
     const groupHelper = new KoboSchemaRepeatHelper(schema.survey)
     const choicesIndex = seq(schema.choices).groupBy(_ => _.list_name)
     const questionIndex = seq([...schema.survey])
@@ -65,7 +67,7 @@ export namespace KoboSchemaHelper {
     }
   }
 
-  export const buildTranslation = ({
+  const buildTranslation = ({
     schema,
     langIndex,
     questionIndex,
@@ -74,6 +76,7 @@ export namespace KoboSchemaHelper {
     langIndex: number
     questionIndex: Helper['questionIndex']
   }): {
+    langIndex: number
     question: KoboTranslateQuestion
     choice: KoboTranslateChoice
   } => {
@@ -89,6 +92,7 @@ export namespace KoboSchemaHelper {
       choicesTranslation[choice.list_name][choice.name] = choice.label?.[langIndex] ?? choice.name
     })
     return {
+      langIndex,
       question: (questionName: string) => {
         return questionsTranslation[questionName]
       },
@@ -115,6 +119,22 @@ export namespace KoboSchemaHelper {
       },
       helper,
       translate,
+    }
+  }
+
+  export const upgradeIncludingMeta = (
+    bundle: Bundle,
+    labels: KoboMetaHelper.Labels,
+    choices: KoboMetaHelper.ChoicesLabel,
+  ): Bundle<true> => {
+    const upgradedSchema: Ip.Form.Schema = {
+      ...bundle.schema,
+      survey: [...KoboMetaHelper.getMetaAsQuestion(labels), ...bundle.schema.survey],
+      choices: [...KoboMetaHelper.getMetaAsChoices(choices), ...(bundle.schema.choices ?? [])],
+    }
+    return {
+      ...buildBundle({schema: upgradedSchema, langIndex: bundle.translate.langIndex}),
+      includeMeta: true,
     }
   }
 }

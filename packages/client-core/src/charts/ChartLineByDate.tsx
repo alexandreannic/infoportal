@@ -4,10 +4,11 @@ import React, {useMemo} from 'react'
 import {isDate} from 'infoportal-common'
 import {ChartLine, ChartLineProps} from './ChartLine'
 
-export type DateKeys<T> = {
+type DateKeys<T> = {
   [K in keyof T]: T[K] extends Date | undefined ? K : never
 }[keyof T]
 
+/** @deprecated rather use ChartLineByDateFiltered.tsx. Better API, better perf */
 export const ChartLineByDate = <T, K extends DateKeys<T>>({
   data,
   curves,

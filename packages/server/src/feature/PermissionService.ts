@@ -22,7 +22,7 @@ export class PermissionService {
     req: Request
   }) => {
     return this.checkPermissions({
-      workspaceId: req.params.workspaceId as Ip.WorkspaceId,
+      workspaceId: (req.params.workspaceId ?? req.body.workspaceId) as Ip.WorkspaceId,
       formId: PermissionService.searchWhereIsFormId(req),
       user: connectedUser,
       permissions,

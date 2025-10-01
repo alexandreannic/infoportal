@@ -21,8 +21,8 @@ export const ChartPieWidgetBy = <T,>({
   hideEvolution,
   ...props
 }: ChartPieWidgetProps<T> & {
-  filter: (_: T) => boolean
-  filterBase?: (_: T) => boolean
+  filter: (_: T) => boolean | undefined
+  filterBase?: (_: T) => boolean | undefined
 }) => {
   const percent = ({res, base}: {res: number; base: number}) => res / base
   const run = (d: Seq<T>) => {

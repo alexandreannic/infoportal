@@ -3,6 +3,7 @@ import {format} from 'date-fns'
 import React, {useMemo} from 'react'
 import {ChartLine, ChartLineData} from './ChartLine'
 
+/** @deprecated rather use ChartLineByDateFiltered.tsx. Better API, better perf */
 export const ChartLineByProperty = <
   T extends Record<string, any>,
   K extends KeyOfType<T, undefined | string>,

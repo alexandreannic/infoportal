@@ -15,6 +15,20 @@ export const queryKeys = {
   workspaceInvitation: (workspaceId?: Ip.WorkspaceId | 'me') => concat('workspace', 'invitation', workspaceId),
   workspaces: () => ['workspace'],
   originalEmail: () => ['originalEmail'],
+
+  dashboard: (workspaceId?: Ip.WorkspaceId, dashboardId?: Ip.DashboardId) =>
+    concat(workspaceId, 'dashboard', dashboardId),
+  dashboardSection: (workspaceId?: Ip.WorkspaceId, dashboardId?: Ip.DashboardId, sectionId?: Ip.Dashboard.SectionId) =>
+    concat(workspaceId, 'dashboard', dashboardId, 'section', sectionId),
+  dashboardWidget: (workspaceId?: Ip.WorkspaceId, dashboardId?: Ip.DashboardId, sectionId?: Ip.Dashboard.SectionId) =>
+    concat(workspaceId, 'dashboard', dashboardId, 'section', sectionId, 'widget'),
+  // dashboardWidget: (
+  //   workspaceId?: Ip.WorkspaceId,
+  //   dashboardId?: Ip.DashboardId,
+  //   sectionId?: Ip.Dashboard.SectionId,
+  //   widgetId?: Ip.Dashboard.WidgetId,
+  // ) => concat(workspaceId, 'dashboard', dashboardId, 'section', sectionId, 'widget', widgetId),
+
   koboForm: (serverId?: Ip.ServerId) => concat('koboForm', serverId),
   servers: (workspaceId?: Ip.WorkspaceId) => concat('servers', workspaceId),
   server: (workspaceId?: Ip.WorkspaceId, serverId?: Ip.ServerId) => concat('server', workspaceId, serverId),

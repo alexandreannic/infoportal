@@ -1,4 +1,4 @@
-import {Autocomplete, AutocompleteProps, Box, createFilterOptions} from '@mui/material'
+import {Autocomplete, AutocompleteProps, Box, CircularProgress, createFilterOptions} from '@mui/material'
 import {KoboTypeIcon} from '@infoportal/database-column'
 import {KoboSchemaHelper} from 'infoportal-common'
 import React, {useCallback, useMemo} from 'react'
@@ -6,10 +6,12 @@ import {map, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {Core} from '.'
+import {useI18n} from '@infoportal/client-i18n'
 
-type Props = Omit<AutocompleteProps<any, any, any, any>, 'options' | 'renderInput'> & {
-  schema: Ip.Form.Schema
-  InputProps: Core.InputProps
+type Props = Omit<AutocompleteProps<string, false, any, any>, 'options' | 'renderInput'> & {
+  schema?: Ip.Form.Schema
+  loading?: boolean
+  InputProps?: Core.InputProps
   questionTypeFilter: Array<Kobo.Form.QuestionType>
   langIndex?: number
 }
@@ -17,21 +19,23 @@ type Props = Omit<AutocompleteProps<any, any, any, any>, 'options' | 'renderInpu
 export const SelectQuestionInput = ({
   langIndex = 0,
   schema,
+  loading,
   questionTypeFilter,
   value,
   onInputChange,
   InputProps,
   onChange,
+  sx,
   ...props
 }: Props) => {
+  const {m} = useI18n()
   const questions = useMemo(() => {
-    return map(schema.survey, schema => schema.filter(_ => questionTypeFilter.includes(_.type)))
+    if (questionTypeFilter.length === 0) return schema?.survey
+    return map(schema?.survey, schema => schema.filter(_ => questionTypeFilter.includes(_.type)))
   }, [questionTypeFilter, schema])
 
   const questionIndex = useMemo(() => {
-    return seq(questions)
-      .compactBy('name')
-      .groupByFirst(_ => _.name)
+    return seq(questions).groupByFirst(_ => _.name)
   }, [schema])
 
   const filterOptions = useCallback(
@@ -53,6 +57,7 @@ export const SelectQuestionInput = ({
   return (
     <Autocomplete
       value={value}
+      loading={loading}
       onInputChange={(e, newInputValue, reason) => {
         if (reason === 'reset') {
           onInputChange?.(e, '', reason)
@@ -62,21 +67,25 @@ export const SelectQuestionInput = ({
       }}
       filterOptions={filterOptions(questionIndex)}
       onChange={(e, _, reason, details) => {
-        if (_) {
-          onChange?.(e, _, reason, details)
-          // accessForm.setValue('questionAnswer', [])
-        }
+        onChange?.(e, _, reason, details)
       }}
       options={questions?.map(_ => _.name!) ?? []}
       renderInput={({InputProps: renderInputProps, ...renderProps}) => (
         <Core.Input
           label={m.question}
+          sx={sx}
           {...renderInputProps}
           {...renderProps}
           {...InputProps}
-          endAdornment={loading ? <CircularProgress size={20} /> : undefined}
+          endAdornment={
+            <>
+              {loading ? <CircularProgress size={20} /> : undefined}
+              {renderInputProps.endAdornment}
+            </>
+          }
         />
       )}
+      renderValue={_ => KoboSchemaHelper.getLabel(questionIndex[_], langIndex).replace(/<[^>]+>/g, '') ?? _}
       renderOption={(props, option) => {
         return (
           <Box component="li" {...props} key={option}>

@@ -16,6 +16,9 @@ export const makeMeta = (_: Meta) => _
 export const schema = (() => {
   const c = initContract()
   return {
+    widgetId: z.string() as unknown as z.ZodType<Ip.Dashboard.WidgetId>,
+    dashboardId: z.string() as unknown as z.ZodType<Ip.DashboardId>,
+    sectionId: z.string() as unknown as z.ZodType<Ip.Dashboard.SectionId>,
     workspaceId: z.string() as unknown as z.ZodType<Ip.WorkspaceId>,
     workspaceInvitationId: z.string() as unknown as z.ZodType<Ip.Workspace.InvitationId>,
     uuid: z.string() as unknown as z.ZodType<Ip.Uuid>,

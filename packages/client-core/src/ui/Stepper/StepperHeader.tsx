@@ -21,6 +21,7 @@ export const StepperHeader = ({sx, steps, stepSize = 32, stepMargin = 8, hideLab
       sx={{
         display: 'flex',
         mb: 3,
+        mt: 1,
         justifyContent: 'center',
         ...sx,
       }}

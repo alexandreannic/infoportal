@@ -89,6 +89,7 @@ export class SubmissionService {
               submissionTime: true,
               submittedBy: true,
               version: true,
+              isoCode: true,
               validationStatus: true,
               geolocation: true,
               answers: true,
@@ -144,7 +145,9 @@ export class SubmissionService {
     author,
     isoCode,
     version,
+    geolocation,
   }: {
+    geolocation?: Ip.Geolocation
     version: string
     author?: string
     formId: Ip.FormId
@@ -156,6 +159,7 @@ export class SubmissionService {
       start: new Date(),
       end: new Date(),
       uuid: genUUID(),
+      geolocation,
       submissionTime: new Date(),
       version,
       isoCode,

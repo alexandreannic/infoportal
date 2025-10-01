@@ -105,6 +105,8 @@ export namespace Ip {
       user_canRead: boolean
       user_canConnectAs: boolean
       form_canGetAll: boolean
+      dashboard_canCreate: boolean
+      dashboard_canUpdate: boolean
     }
 
     export type Global = {
@@ -218,16 +220,7 @@ export namespace Ip {
   }
 
   // === Submission
-  export type Submission<T extends Record<string, any> = Record<string, any>> = Omit<
-    Prisma.FormSubmission,
-    'answers' | 'deletedBy' | 'deletedAt' | 'formId' | 'form' | 'histories'
-  > & {
-    id: SubmissionId
-    start?: Date | undefined
-    end?: Date | undefined
-    answers: T
-    attachments: Kobo.Submission.Attachment[]
-  }
+  export type Submission<T extends Record<string, any> = Record<string, any>> = Submission.Meta & {answers: T}
   export type SubmissionId = Brand<string, 'submissionId'>
   export namespace Submission {
     export const map = (_: Submission): Submission => {
@@ -258,19 +251,19 @@ export namespace Ip {
       start: Date
       /** Refresh whenever submission is updated */
       end: Date
+      originId?: string
       /** Set by Kobo Server, not editable */
-      submissionTime: Kobo.Submission['_submission_time']
-      version?: Kobo.Submission['__version__']
+      submissionTime: Date
+      version?: string
       attachments: Kobo.Submission.Attachment[]
       geolocation?: Geolocation
       isoCode?: string
-      id: Kobo.SubmissionId
-      uuid: Kobo.Submission['_uuid']
+      id: SubmissionId
+      uuid: Uuid
+      /** From Kobo, used to Sync */
       validationStatus?: Submission.Validation
       validatedBy?: Ip.User.Email
       submittedBy?: Ip.User.Email
-      lastValidatedTimestamp?: number
-      updatedAt?: Date
     }
 
     export namespace Payload {
@@ -591,5 +584,160 @@ export namespace Ip {
     export type CountUserByDate = {date: string; countCreatedAt: number; countLastConnectedCount: number}[]
     export type CountBy<K extends string> = Array<Record<K, string> & {count: number}>
     export type CountByKey = CountBy<'key'>
+  }
+
+  // === Dashboard
+  export type DashboardId = Brand<string, 'DashboardId'>
+  export type Dashboard = Omit<Prisma.Dashboard, 'sourceFormId' | 'id'> & {
+    id: DashboardId
+    sourceFormId: FormId
+  }
+
+  export namespace Dashboard {
+    export const buildPath = (workspace: Ip.Workspace, dashboard: Pick<Dashboard, 'slug'>) =>
+      '/' + workspace.slug + '/d/' + dashboard.slug
+
+    export const map = (_: Record<keyof Dashboard, any>): Dashboard => {
+      if (_.createdBy) _.createdBy = new Date(_.createdBy)
+      return _
+    }
+    export namespace Payload {
+      export type Create = {
+        workspaceId: Ip.WorkspaceId
+        name: string
+        slug: string
+        sourceFormId: Ip.FormId
+        isPublic: boolean
+      }
+    }
+
+    export type SectionId = Brand<string, 'SectionId'>
+    export type Section = {
+      id: SectionId
+      title: string
+      description?: string
+      createdAt: Date
+      dashboardId: DashboardId
+    }
+    export namespace Section {
+      export const map = (_: Partial<Record<keyof Section, any>>): Section => {
+        return _ as Section
+      }
+      export namespace Payload {
+        export type Search = {
+          workspaceId: WorkspaceId
+          dashboardId: DashboardId
+        }
+        export type Create = {
+          workspaceId: WorkspaceId
+          dashboardId: DashboardId
+          title: string
+          description?: string
+        }
+        export type Update = {
+          workspaceId: WorkspaceId
+          id: SectionId
+          title?: string
+          description?: string
+        }
+      }
+    }
+
+    export type WidgetId = Brand<string, 'WidgetId'>
+    export type Widget = Omit<Prisma.DashboardWidget, 'title' | 'config' | 'id' | 'position'> & {
+      title?: string
+      config: any
+      position: Widget.Position
+      id: WidgetId
+    }
+    export namespace Widget {
+      export const map = (_: Partial<Record<keyof Widget, any>>): Widget => {
+        return _ as Widget
+      }
+      export type Position = {
+        x: number
+        y: number
+        w: number
+        h: number
+      }
+
+      export type ConfigFilter = {
+        questionName: string
+        number?: {min?: number; max?: number}
+        choices?: string[]
+      }
+
+      export type Config = {
+        [Type.Card]: {
+          icon?: string
+          operation?: 'sum' | 'avg' | 'min' | 'max'
+        }
+        [Type.LineChart]: {
+          lines?: {
+            title?: string
+            questionName: string
+            color?: string
+            filter: ConfigFilter
+          }[]
+          start?: Date
+          end?: Date
+        }
+        [Type.GeoPoint]: {
+          questionName?: string
+          filter?: ConfigFilter
+        }
+        [Type.GeoChart]: {
+          questionName?: string
+          filter?: ConfigFilter
+          countryIsoCode?: string
+        }
+        [Type.BarChart]: {
+          questionName?: string
+          selectedChoices?: string[]
+          filter?: ConfigFilter
+          base?: 'percentOfTotalAnswers' | 'percentOfTotalChoices'
+          labels?: Record<string, string>
+          limit?: number
+          multiple?: boolean
+        }
+        [Type.PieChart]: {
+          questionName?: string
+          showValue?: boolean
+          showBase?: boolean
+          filter?: ConfigFilter
+          filterValue?: Omit<ConfigFilter, 'questionName'>
+          filterBase?: Omit<ConfigFilter, 'questionName'>
+          dense?: boolean
+        }
+      }
+
+      export namespace Payload {
+        export type Search = {
+          workspaceId: WorkspaceId
+          dashboardId?: Ip.DashboardId
+          sectionId?: Ip.Dashboard.SectionId
+        }
+
+        export type Create = Omit<Widget, 'description' | 'id' | 'createdAt' | 'dashboardId'> & {
+          description?: string
+          workspaceId: WorkspaceId
+          sectionId: SectionId
+        }
+        export type Update = Partial<Omit<Create, 'workspaceId' | 'id'>> & {
+          id: WidgetId
+          workspaceId: WorkspaceId
+        }
+      }
+      export type Type = Prisma.WidgetType
+      export const Type = {
+        Card: 'Card',
+        PieChart: 'PieChart',
+        GeoChart: 'GeoChart',
+        LineChart: 'LineChart',
+        BarChart: 'BarChart',
+        GeoPoint: 'GeoPoint',
+        Table: 'Table',
+      } as const
+    }
   }
 }

@@ -13,7 +13,7 @@ import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {UseQueryForm} from '@/core/query/useQueryForm'
-import {Asset} from '@/shared/Asset.js'
+import {Asset, assetStyle} from '@/shared/Asset.js'
 
 export const newFormRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -60,7 +60,13 @@ function NewForm() {
               key={asset}
               hideRadio
               value={asset}
-              title={<OptionBody color={Asset.color[asset]} icon={Asset.icon[asset]} label={m.formSource_[asset]} />}
+              title={
+                <OptionBody
+                  color={assetStyle.color[asset]}
+                  icon={assetStyle.icon[asset]}
+                  label={m.formSource_[asset]}
+                />
+              }
               sx={{flex: 1}}
             />
           ))}

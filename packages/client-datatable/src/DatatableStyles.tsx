@@ -135,11 +135,11 @@ export const DatatableGlobalStyles = () => (
         },
       },
 
-      '.react-resizable': {
+      '.dt .react-resizable': {
         position: 'relative',
       },
 
-      '.react-resizable-handle-se': {
+      '.dt .react-resizable-handle-se': {
         background: 'none',
         width: 4,
         cursor: 'ew-resize',

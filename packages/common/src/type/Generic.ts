@@ -1,5 +1,11 @@
 export type UUID = string
 
+export type PartialOnly<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+export type PartialExcept<T, K extends keyof T> = {
+  [P in K]-?: T[P] // required keys
+} & {
+  [P in Exclude<keyof T, K>]?: T[P]
+}
 export type ValueOf<T> = T[keyof T]
 
 export type KeyOf<T> = Extract<keyof T, string>

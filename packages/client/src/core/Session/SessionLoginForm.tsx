@@ -123,10 +123,10 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: Ip.User) => void
       >
         <IpLogo sx={{margin: 'auto', display: 'block', mb: 1}} height={60} />
         <Core.Txt sx={{textAlign: 'center'}} size="big" color="hint" block>
-          {m.subTitle}
+          {m.appSubTitle}
         </Core.Txt>
         <Core.Txt sx={{textAlign: 'center', mt: 1, mb: 2, fontSize: 40}} block>
-          {m.title}
+          {m.appTitle}
         </Core.Txt>
 
         <BtnLogin
