@@ -7,5 +7,5 @@ export const IpLogo = ({
 }: {
   height?: number
 } & BoxProps) => {
-  return <Box component="img" src="/ip-logo7.svg" height={height} alt="InfoPortal Logo" {...props} />
+  return <Box component="img" src="/ip-logo9.svg" height={height} alt="InfoPortal Logo" {...props} />
 }
