@@ -1,7 +1,7 @@
 import {useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
 import {State} from './reducer'
-import {Column, Row} from './types'
+import {Column, Row} from './types/index.js'
 import {Utils} from '../helper/utils'
 
 export type UseDatatableColumns<T extends Row> = ReturnType<typeof useDatatableColumns<T>>

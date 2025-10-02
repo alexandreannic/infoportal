@@ -5,7 +5,7 @@ import {useCtx} from '../core/DatatableContext'
 import {DatatableHeadSections} from './DatatableHeadSections'
 import {Popup} from '../core/reducer'
 import {TableIcon, TableIconBtn} from '../ui/TableIcon'
-import {Column} from '../core/types'
+import {Column} from '../core/types/index.js'
 
 export const DatatableHead = (
   props: DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLDivElement>['props'],

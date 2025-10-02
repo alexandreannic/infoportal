@@ -15,7 +15,7 @@ import {seq} from '@axanc/ts-utils'
 import {Popup} from '../core/reducer'
 import {useCtx} from '../core/DatatableContext'
 import {useConfig} from '../DatatableConfig'
-import {Option, Row} from '../core/types'
+import {Option, Row} from '../core/types/index.js'
 
 export const PopupStats = ({columnId, event}: Popup.StatsAgs) => {
   const dispatch = useCtx(_ => _.dispatch)

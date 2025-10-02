@@ -1,0 +1,158 @@
+import type * as Prisma from '@prisma/client'
+import {Brand} from './Common.js'
+import {FormId} from './Form.js'
+import {Workspace, WorkspaceId} from './Workspace.js'
+
+export type DashboardId = Brand<string, 'DashboardId'>
+export type Dashboard = Omit<Prisma.Dashboard, 'sourceFormId' | 'id'> & {
+  id: DashboardId
+  sourceFormId: FormId
+}
+
+export namespace Dashboard {
+  export const buildPath = (workspace: Workspace, dashboard: Pick<Dashboard, 'slug'>) =>
+    '/' + workspace.slug + '/d/' + dashboard.slug
+
+  export const map = (_: Record<keyof Dashboard, any>): Dashboard => {
+    if (_.createdBy) _.createdBy = new Date(_.createdBy)
+    return _
+  }
+  export namespace Payload {
+    export type Create = {
+      workspaceId: WorkspaceId
+      name: string
+      slug: string
+      sourceFormId: FormId
+      isPublic: boolean
+    }
+  }
+
+  export type SectionId = Brand<string, 'SectionId'>
+  export type Section = {
+    id: SectionId
+    title: string
+    description?: string
+    createdAt: Date
+    dashboardId: DashboardId
+  }
+  export namespace Section {
+    export const map = (_: Partial<Record<keyof Section, any>>): Section => {
+      return _ as Section
+    }
+    export namespace Payload {
+      export type Search = {
+        workspaceId: WorkspaceId
+        dashboardId: DashboardId
+      }
+      export type Create = {
+        workspaceId: WorkspaceId
+        dashboardId: DashboardId
+        title: string
+        description?: string
+      }
+      export type Update = {
+        workspaceId: WorkspaceId
+        id: SectionId
+        title?: string
+        description?: string
+      }
+    }
+  }
+
+  export type WidgetId = Brand<string, 'WidgetId'>
+  export type Widget = Omit<Prisma.DashboardWidget, 'title' | 'config' | 'id' | 'position'> & {
+    title?: string
+    config: any
+    position: Widget.Position
+    id: WidgetId
+  }
+  export namespace Widget {
+    export const map = (_: Partial<Record<keyof Widget, any>>): Widget => {
+      return _ as Widget
+    }
+    export type Position = {
+      x: number
+      y: number
+      w: number
+      h: number
+    }
+
+    export type ConfigFilter = {
+      questionName: string
+      number?: {min?: number; max?: number}
+      choices?: string[]
+    }
+
+    export type Config = {
+      [Type.Card]: {
+        icon?: string
+        operation?: 'sum' | 'avg' | 'min' | 'max'
+      }
+      [Type.LineChart]: {
+        lines?: {
+          title?: string
+          questionName: string
+          color?: string
+          filter: ConfigFilter
+        }[]
+        start?: Date
+        end?: Date
+      }
+      [Type.GeoPoint]: {
+        questionName?: string
+        filter?: ConfigFilter
+      }
+      [Type.GeoChart]: {
+        questionName?: string
+        filter?: ConfigFilter
+        countryIsoCode?: string
+      }
+      [Type.BarChart]: {
+        questionName?: string
+        selectedChoices?: string[]
+        filter?: ConfigFilter
+        base?: 'percentOfTotalAnswers' | 'percentOfTotalChoices'
+        labels?: Record<string, string>
+        limit?: number
+        multiple?: boolean
+      }
+      [Type.PieChart]: {
+        questionName?: string
+        showValue?: boolean
+        showBase?: boolean
+        filter?: ConfigFilter
+        filterValue?: Omit<ConfigFilter, 'questionName'>
+        filterBase?: Omit<ConfigFilter, 'questionName'>
+        dense?: boolean
+      }
+    }
+
+    export namespace Payload {
+      export type Search = {
+        workspaceId: WorkspaceId
+        dashboardId?: DashboardId
+        sectionId?: Dashboard.SectionId
+      }
+
+      export type Create = Omit<Widget, 'description' | 'id' | 'createdAt' | 'dashboardId'> & {
+        description?: string
+        workspaceId: WorkspaceId
+        sectionId: SectionId
+      }
+      export type Update = Partial<Omit<Create, 'workspaceId' | 'id'>> & {
+        id: WidgetId
+        workspaceId: WorkspaceId
+      }
+    }
+    export type Type = Prisma.WidgetType
+    export const Type = {
+      Card: 'Card',
+      PieChart: 'PieChart',
+      GeoChart: 'GeoChart',
+      LineChart: 'LineChart',
+      BarChart: 'BarChart',
+      GeoPoint: 'GeoPoint',
+      Table: 'Table',
+    } as const
+  }
+}

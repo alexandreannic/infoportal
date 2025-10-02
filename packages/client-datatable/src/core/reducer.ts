@@ -1,4 +1,4 @@
-import {Column, FilterValue, Props, Row, SortBy} from './types'
+import {Column, FilterValue, Props, Row, SortBy} from './types/index.js'
 import {KeyOf, mapFor} from '@axanc/ts-utils'
 import {OrderBy} from '@axanc/react-hooks'
 import {CSSProperties, ReactNode} from 'react'

@@ -1,5 +1,5 @@
-import {Ip} from './Types.js'
 import {KeyOf, Obj} from '@axanc/ts-utils'
+import {Ip} from '../type/index.js'
 
 type Level = Ip.AccessLevel
 const Level = Ip.AccessLevel
@@ -97,7 +97,7 @@ export namespace Permission {
     static readonly form = (
       user: Ip.User,
       workspaceAccess?: Ip.Workspace.Access | null,
-      formAccesses?: Ip.Form.Access[] | null,
+      formAccesses?: Ip.Access[] | null,
     ): Ip.Permission.Form => {
       return Obj.mapValues(permissionsMatrix.form, _ => {
         let userLevel
@@ -109,7 +109,7 @@ export namespace Permission {
     }
   }
 
-  export const computeFormAccesses = (accesses: Ip.Form.Access[]): Level | undefined => {
+  export const computeFormAccesses = (accesses: Ip.Access[]): Level | undefined => {
     const levels = new Set(accesses.map(a => a.level))
     if (levels.has(Level.Admin)) return Level.Admin
     if (levels.has(Level.Write)) return Level.Write

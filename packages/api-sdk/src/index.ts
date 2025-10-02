@@ -1,6 +1,6 @@
 export {ipContract} from './contract/Contract.js'
-export {Ip} from './core/Types.js'
-export {IpClient, buildIpClient} from './core/IpClient.js'
+export {Ip} from './type/index.js'
+export {IpClient, buildIpClient} from './core/Client.js'
 export {Meta} from './core/Schema.js'
 export {Permission} from './core/Permission.js'
 export {Paginate} from './core/Paginate.js'

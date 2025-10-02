@@ -1,6 +1,6 @@
 import {initContract} from '@ts-rest/core'
-import {Ip} from '../../core/Types.js'
-import {TsRestClient} from '../../core/IpClient.js'
+import {Ip} from '../../type/index.js'
+import {TsRestClient} from '../../core/Client.js'
 
 const c = initContract()
 

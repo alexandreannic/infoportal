@@ -2,7 +2,7 @@ import * as ExcelJS from 'exceljs'
 import {downloadBufferAsFile, extractInnerText} from '@infoportal/client-core/lib/core/utils.js'
 import {format} from 'date-fns'
 import {isValidElement} from 'react'
-import {Column} from './types'
+import {Column} from './types/index.js'
 
 export namespace DatatableXlsGenerator {
   export interface Params<T = any> {

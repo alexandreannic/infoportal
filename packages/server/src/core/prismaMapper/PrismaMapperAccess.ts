@@ -36,4 +36,4 @@ export const mapUser = <
 
 export const mapAccess = <T extends {id: string; filters: any}>(
   _: T,
-): T & {id: Ip.Form.AccessId; filters: Record<string, any>} => _ as any
+): T & {id: Ip.AccessId; filters: Record<string, any>} => _ as any

@@ -1,8 +1,8 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {makeMeta, schema} from '../../core/Schema.js'
-import {Ip} from '../../core/Types.js'
-import {map200, map204, TsRestClient} from '../../core/IpClient.js'
+import {Ip} from '../../type/index.js'
+import {map200, map204, TsRestClient} from '../../core/Client.js'
 import {Paginate} from '../../core/Paginate.js'
 import {KeyOf, map, Obj} from '@axanc/ts-utils'
 import {endOfDay, startOfDay} from 'date-fns'
@@ -82,6 +82,7 @@ export const contractFormSubmission = c.router({
       },
     }),
   },
+
   submit: {
     method: 'PUT',
     path: '/:workspaceId/form/:formId/submission',

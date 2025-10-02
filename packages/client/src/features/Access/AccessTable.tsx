@@ -27,7 +27,7 @@ export const AccessTable = ({
   const queryAccessRemove = UseQueryFormAccess.remove({workspaceId, formId})
   const querySchema = useQuerySchema({workspaceId, formId})
   return (
-    <Datatable.Component<Ip.Form.Access>
+    <Datatable.Component<Ip.Access>
       id="access"
       getRowKey={_ => _.id}
       loading={queryAccess.isLoading || queryAccessUpdate.isPending}
@@ -128,7 +128,7 @@ export const AccessTable = ({
                 head: '',
                 width: 40,
                 align: 'right',
-                renderQuick: (_: Ip.Form.Access) => {
+                renderQuick: (_: Ip.Access) => {
                   return (
                     <Datatable.IconBtn
                       disabled={_.email === user.email}

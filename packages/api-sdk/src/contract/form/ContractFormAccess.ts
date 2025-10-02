@@ -1,8 +1,8 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {makeMeta, schema} from '../../core/Schema.js'
-import {Ip} from '../../core/Types.js'
-import {map200, map204, TsRestClient} from '../../core/IpClient.js'
+import {Ip} from '../../type/index.js'
+import {map200, map204, TsRestClient} from '../../core/Client.js'
 
 const c = initContract()
 
@@ -10,10 +10,10 @@ export const formAccessContract = c.router({
   create: {
     method: 'PUT',
     path: `/:workspaceId/form/:formId/access`,
-    pathParams: c.type<Ip.Form.Access.Payload.PathParams>(),
-    body: c.type<Omit<Ip.Form.Access.Payload.Create, 'formId' | 'workspaceId'>>(),
+    pathParams: c.type<Ip.Access.Payload.PathParams>(),
+    body: c.type<Omit<Ip.Access.Payload.Create, 'formId' | 'workspaceId'>>(),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form.Access[]>,
+      200: z.any() as z.ZodType<Ip.Access[]>,
     },
     metadata: makeMeta({
       access: {
@@ -25,10 +25,10 @@ export const formAccessContract = c.router({
   update: {
     method: 'PATCH',
     path: `/:workspaceId/form/:formId/access/:id`,
-    pathParams: c.type<Ip.Form.Access.Payload.PathParams & {id: Ip.Form.AccessId}>(),
-    body: c.type<Omit<Ip.Form.Access.Payload.Update, 'id' | 'workspaceId' | 'formId'>>(),
+    pathParams: c.type<Ip.Access.Payload.PathParams & {id: Ip.AccessId}>(),
+    body: c.type<Omit<Ip.Access.Payload.Update, 'id' | 'workspaceId' | 'formId'>>(),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form.Access>,
+      200: z.any() as z.ZodType<Ip.Access>,
     },
     metadata: makeMeta({
       access: {
@@ -40,7 +40,7 @@ export const formAccessContract = c.router({
   remove: {
     method: 'DELETE',
     path: `/:workspaceId/form/:formId/access/:id`,
-    pathParams: c.type<Ip.Form.Access.Payload.PathParams & {id: Ip.Form.AccessId}>(),
+    pathParams: c.type<Ip.Access.Payload.PathParams & {id: Ip.AccessId}>(),
     responses: {
       204: schema.emptyResult,
     },
@@ -57,7 +57,7 @@ export const formAccessContract = c.router({
     pathParams: c.type<{workspaceId: Ip.WorkspaceId}>(),
     path: `/:workspaceId/access/search`,
     responses: {
-      200: z.any() as z.ZodType<Ip.Form.Access[]>,
+      200: z.any() as z.ZodType<Ip.Access[]>,
     },
     metadata: makeMeta({
       access: {
@@ -72,7 +72,7 @@ export const formAccessContract = c.router({
     pathParams: c.type<{workspaceId: Ip.WorkspaceId}>(),
     path: `/:workspaceId/access/search/me`,
     responses: {
-      200: z.any() as z.ZodType<Ip.Form.Access[]>,
+      200: z.any() as z.ZodType<Ip.Access[]>,
     },
     metadata: makeMeta({
       access: {
@@ -82,28 +82,28 @@ export const formAccessContract = c.router({
   },
 })
 
-const mapFormAccess = (_: Ip.Form.Access): Ip.Form.Access => {
+const mapFormAccess = (_: Ip.Access): Ip.Access => {
   _.createdAt = new Date(_.createdAt)
   if (_.updatedAt) _.updatedAt = new Date(_.updatedAt)
   return _
 }
 
-export const mapFormAccessNullable = (_?: Ip.Form.Access): undefined | Ip.Form.Access => {
+export const mapFormAccessNullable = (_?: Ip.Access): undefined | Ip.Access => {
   if (_) return mapFormAccess(_)
 }
 
 export const formAccessClient = (client: TsRestClient, baseUrl: string) => {
   return {
-    create: ({workspaceId, formId, ...body}: Ip.Form.Access.Payload.Create) =>
+    create: ({workspaceId, formId, ...body}: Ip.Access.Payload.Create) =>
       client.form.access
         .create({params: {workspaceId, formId}, body})
         .then(map200)
         .then(_ => _.map(mapFormAccess)),
 
-    update: ({workspaceId, id, formId, ...body}: Ip.Form.Access.Payload.Update) =>
+    update: ({workspaceId, id, formId, ...body}: Ip.Access.Payload.Update) =>
       client.form.access.update({params: {workspaceId, formId, id}, body}).then(map200).then(mapFormAccess),
 
-    remove: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId; id: Ip.Form.AccessId}) =>
+    remove: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId; id: Ip.AccessId}) =>
       client.form.access.remove({params}).then(map204),
 
     search: ({workspaceId, formId}: {formId?: Ip.FormId; workspaceId: Ip.WorkspaceId}) =>

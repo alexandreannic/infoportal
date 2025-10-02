@@ -4,7 +4,7 @@ import {Btn, IconBtn, Input, MultipleChoices, PanelBody, PanelFoot, PanelHead, P
 import {endOfDay} from 'date-fns'
 import {OrderBy} from '@axanc/react-hooks'
 import {seq} from '@axanc/ts-utils'
-import {FilterTypeMapping, Option, Row, SortBy} from '../core/types'
+import {FilterTypeMapping, Option, Row, SortBy} from '../core/types/index.js'
 import {useConfig} from '../DatatableConfig'
 import {useCtx} from '../core/DatatableContext'
 

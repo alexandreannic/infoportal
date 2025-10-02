@@ -2,7 +2,7 @@ import {Badge, Chip, Icon, IconButton, IconButtonProps, Switch, Tooltip} from '@
 import React, {useEffect, useMemo} from 'react'
 import {Alert, Btn, PopoverWrapper, Txt} from '@infoportal/client-core'
 import {useSetState} from '@axanc/react-hooks'
-import {Column} from './core/types'
+import {Column} from './core/types/index.js'
 import {useConfig} from './DatatableConfig'
 import {DatatableHeadIcon, DatatableHeadIconByType} from './head/DatatableHead'
 import {Datatable} from './Datatable'

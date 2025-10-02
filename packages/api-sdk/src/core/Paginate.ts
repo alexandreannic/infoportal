@@ -1,4 +1,4 @@
-import {Ip} from './Types.js'
+import {Ip} from '../type/index.js'
 
 export class Paginate {
   static readonly map =

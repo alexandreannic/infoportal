@@ -91,7 +91,7 @@ export class FormAccessService {
     workspaceId: Ip.WorkspaceId
     formId?: Ip.FormId
     user?: Ip.User
-  }): Promise<Ip.Form.Access[]> => {
+  }): Promise<Ip.Access[]> => {
     const [fromGroup, fromAccess] = await Promise.all([
       this.searchFromGroup({formId, workspaceId, user}),
       this.searchFromAccess({formId, workspaceId, user}),
@@ -112,7 +112,7 @@ export class FormAccessService {
     ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()) as any
   }
 
-  readonly create = (payload: Ip.Form.Access.Payload.Create): Promise<Ip.Form.Access[]> => {
+  readonly create = (payload: Ip.Access.Payload.Create): Promise<Ip.Access[]> => {
     return Promise.all(
       (payload.job ?? [undefined]).map(job =>
         this.prisma.formAccess.create({
@@ -125,10 +125,10 @@ export class FormAccessService {
           },
         }),
       ),
-    ) as Promise<Ip.Form.Access[]>
+    ) as Promise<Ip.Access[]>
   }
 
-  readonly update = ({id, ...data}: Ip.Form.Access.Payload.Update): Promise<Ip.Form.Access> => {
+  readonly update = ({id, ...data}: Ip.Access.Payload.Update): Promise<Ip.Access> => {
     return this.prisma.formAccess
       .update({
         where: {id},
@@ -145,7 +145,7 @@ export class FormAccessService {
     })
   }
 
-  readonly remove = async ({deletedByEmail, id}: {deletedByEmail: string; id: Ip.Form.AccessId}) => {
+  readonly remove = async ({deletedByEmail, id}: {deletedByEmail: string; id: Ip.AccessId}) => {
     const access = await this.prisma.formAccess.findFirst({
       select: {
         email: true,
