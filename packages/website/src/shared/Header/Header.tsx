@@ -9,7 +9,7 @@ export const Header = () => {
   return (
     <header className={style.root}>
       <Link href="/" className={style.rootLink}>
-        <Image src="/ip-logo9.svg" alt="InfoPortal Logo" height={40} width={40} />
+        <Image src="/ip-logo.svg" alt="InfoPortal Logo" height={40} width={40} />
         <b className={style.title}>InfoPortal</b>
       </Link>
       <nav className={style.nav}>

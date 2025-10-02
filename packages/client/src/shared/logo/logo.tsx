@@ -1,4 +1,4 @@
-import {Box, BoxProps} from '@mui/material'
+import {Box, BoxProps, useColorScheme} from '@mui/material'
 import React from 'react'
 
 export const IpLogo = ({
@@ -7,5 +7,14 @@ export const IpLogo = ({
 }: {
   height?: number
 } & BoxProps) => {
-  return <Box component="img" src="/ip-logo9.svg" height={height} alt="InfoPortal Logo" {...props} />
+  const {mode} = useColorScheme()
+  return (
+    <Box
+      component="img"
+      src={mode === 'dark' ? '/ip-logo-light.svg' : '/ip-logo.svg'}
+      height={height}
+      alt="InfoPortal Logo"
+      {...props}
+    />
+  )
 }

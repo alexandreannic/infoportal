@@ -12,6 +12,7 @@ import {CenteredContent} from '@/shared/CenteredContent'
 import {useGoogleLogin} from '@react-oauth/google'
 import {ButtonProps} from '@mui/material/Button'
 import {Ip} from 'infoportal-api-sdk'
+import {styleUtils} from '@infoportal/client-core'
 
 const BtnLogin = ({
   title,
@@ -122,20 +123,19 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: Ip.User) => void
         }}
       >
         <IpLogo sx={{margin: 'auto', display: 'block', mb: 1}} height={60} />
-        <Core.Txt
+        <Core.AnimatedText
           sx={{
+            display: 'block',
             color: t.vars.palette.primary.dark,
             letterSpacing: 3,
             fontFamily: 'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
             fontWeight: 'bold',
             textAlign: 'center',
+            fontSize: styleUtils(t).fontSize.big,
           }}
-          size="big"
-          color="hint"
-          block
-        >
-          {m.appSubTitle}
-        </Core.Txt>
+          hideCursorOnComplete={false}
+          text={m.appSubTitle}
+        />
         <Core.Txt sx={{textAlign: 'center', mt: 1, mb: 2, fontSize: 40}} block>
           {m.appTitle}
         </Core.Txt>

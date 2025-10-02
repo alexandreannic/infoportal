@@ -5,11 +5,14 @@ import {AppHeaderMenu} from '@/core/layout/AppHeaderMenu'
 import {Core} from '@/shared'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Obj} from '@axanc/ts-utils'
-import {Badge, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme} from '@mui/material'
+import {Badge, Box, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme} from '@mui/material'
 import {Link, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 import {appConfig} from '@/conf/AppConfig.js'
+import React from 'react'
+import {height} from '@mui/system'
+import {IpLogo} from '@/shared/logo/logo'
 
 interface Props extends BoxProps {
   workspaceId?: Ip.WorkspaceId
@@ -77,6 +80,8 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
               children="menu"
             />
           )}
+          <IpLogo height={30}/>
+          {/*<Box component="img" src="/ip-logo.svg" height={30} alt="InfoPortal Logo" {...props} />*/}
           <Core.Txt
             sx={{ml: 1, ...Core.styleUtils(t).truncate}}
             size="title"

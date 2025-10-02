@@ -11,6 +11,7 @@ export interface PageProps extends BoxProps {
   className?: any
   style?: object
   loading?: boolean
+  pending?: boolean
   children?: ReactNode
   animationDeps?: any[]
 }
@@ -74,7 +75,44 @@ export const PageLoader = () => {
   )
 }
 
-export const Page = ({children, sx, loading, animation = 'default', animationDeps = [], ...props}: PageProps) => {
+const Progress = ({sx, ...props}: BoxProps) => {
+  const t = useTheme()
+  return (
+    <Box
+      sx={{
+        background: t.palette.primary.main,
+        boxShadow: t => `0 0 10px ${t.palette.primary.main}, 0 0 5px ${t.palette.primary.main}`,
+        height: 2,
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        left: 0,
+        transition: t => t.transitions.create('all', {duration: 400}),
+        animation: 'grow 5s linear forwards', // duration=3s, adjust as needed
+        '@keyframes grow': {
+          from: {width: '0%'},
+          to: {width: '98%'},
+        },
+        // ...(!started && {
+        //   height: '0px !important',
+        // }),
+        ...sx,
+      }}
+      style={{width: 40 + '%'}}
+    />
+  )
+}
+
+export const Page = ({
+  children,
+  sx,
+  pending,
+  loading,
+  animation = 'default',
+  animationDeps = [],
+  ...props
+}: PageProps) => {
+  const t = useTheme()
   const widthStyle = usePageWidthStyle({width: props.width})
   const animationStyle = usePageAnimation({animation, animationDeps})
   return (
@@ -91,9 +129,12 @@ export const Page = ({children, sx, loading, animation = 'default', animationDep
           minHeight: 0,
           position: 'relative',
           mt: 1,
+          borderRadius: t.shape.borderRadius + 'px',
+          overflow: 'hidden',
           ...sx,
         }}
       >
+        {(loading || pending) && <Progress />}
         {loading ? <PagePlaceholder /> : children}
       </Box>
     </>
