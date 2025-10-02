@@ -1,5 +1,5 @@
 import {Core, Page} from '@/shared'
-import {createRoute, Link, Outlet} from '@tanstack/react-router'
+import {createRoute, Link, Outlet, useMatchRoute} from '@tanstack/react-router'
 import 'react-grid-layout/css/styles.css'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
@@ -25,6 +25,31 @@ export const dashboardRoute = createRoute({
   component: Dashboard,
 })
 
+const useActiveTab = ({
+  sections,
+  dashboardId,
+  workspaceId,
+}: {
+  dashboardId?: Ip.DashboardId
+  sections?: Ip.Dashboard.Section[]
+  workspaceId: Ip.WorkspaceId
+}) => {
+  const matchRoute = useMatchRoute()
+  const settingsMatch = matchRoute({
+    to: dashboardSettingsRoute.fullPath,
+    params: {workspaceId},
+    fuzzy: true,
+  })
+  if (settingsMatch) return 'settings'
+  return sections?.find(_ => {
+    return matchRoute({
+      to: '/$workspaceId/dashboard/$dashboardId/edit/s/$sectionId',
+      params: {workspaceId, dashboardId, sectionId: _.id},
+      fuzzy: true,
+    })
+  })?.id
+}
+
 export function Dashboard() {
   const {m} = useI18n()
   const params = dashboardRoute.useParams()
@@ -48,11 +73,12 @@ export function Dashboard() {
     return KoboSchemaHelper.upgradeIncludingMeta(querySchema.data, m._meta, {validationStatus: m.validation_})
   }, [querySchema.data])
 
-  const activeTab = ''
   const {setTitle} = useLayoutContext()
   const [newSectionName, setNewSectionName] = useState('')
 
   useEffectFn(queryDashboard.data, _ => setTitle(_.name))
+
+  const activeTab = useActiveTab({workspaceId, dashboardId, sections: queryDashboardSection.data})
 
   return (
     <Page width="full" loading={queryDashboardSection.isLoading || queryDashboard.isLoading}>
@@ -62,7 +88,7 @@ export function Dashboard() {
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           component={Link}
-          value={dashboardSettingsRoute.fullPath}
+          value="settings"
           to={dashboardSettingsRoute.fullPath}
           label={m.settings}
         />
@@ -74,7 +100,7 @@ export function Dashboard() {
             // sx={{minHeight: 34, py: 1}}
             component={Link}
             {...({
-              value: dashboardSectionRoute.fullPath,
+              value: _.id,
               to: dashboardSectionRoute.fullPath,
               params: {sectionId: _.id},
             } as any)}
@@ -105,7 +131,7 @@ export function Dashboard() {
             </>
           )}
         >
-          <Tab icon={<Icon>add</Icon>} iconPosition="start" label={m.new} />
+          <Core.Btn icon="add" sx={{textTransform: 'capitalize'}}>{m.new}</Core.Btn>
         </Core.Modal>
       </Tabs>
       {querySubmissions.data && widgetsBySection && queryWidgets.data && queryDashboard.data && schemaWithMeta && (
