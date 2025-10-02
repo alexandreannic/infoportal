@@ -16,6 +16,18 @@ export class DashboardService {
     return this.prisma.dashboard.findMany({where: {workspaceId}}).then(_ => _.map(prismaMapper.dashboard.mapDashboard))
   }
 
+  readonly update = async ({id, filters, ...data}: Ip.Dashboard.Payload.Update): Promise<Ip.Dashboard> => {
+    return this.prisma.dashboard
+      .update({
+        where: {id},
+        data: {
+          ...data,
+          filters: filters as any,
+        },
+      })
+      .then(prismaMapper.dashboard.mapDashboard)
+  }
+
   readonly create = async (data: Ip.Dashboard.Payload.Create & {createdBy: Ip.User.Email}): Promise<Ip.Dashboard> => {
     return this.prisma.dashboard
       .create({

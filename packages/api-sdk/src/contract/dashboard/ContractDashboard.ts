@@ -32,18 +32,17 @@ export const dashboardContract = c.router({
       },
     }),
   },
-  // update: {
-  //   method: 'POST',
-  //   path: `/dashboard/:id`,
-  //   pathParams: c.type<{id: Ip.WorkspaceId}>(),
-  //   body: c.type<Omit<Ip.Workspace.Payload.Update, 'id'>>(),
-  //   responses: {200: c.type<Ip.Workspace>()},
-  //   metadata: makeMeta({
-  //     access: {
-  //       dashboard: ['canUpdate'],
-  //     },
-  //   }),
-  // },
+  update: {
+    method: 'POST',
+    path: `/dashboard/update`,
+    body: c.type<Ip.Dashboard.Payload.Update>(),
+    responses: {200: c.type<Ip.Dashboard>()},
+    metadata: makeMeta({
+      access: {
+        workspace: ['dashboard_canUpdate'],
+      },
+    }),
+  },
   // remove: {
   //   method: 'POST',
   //   path: `/dashboard/:id`,
@@ -60,7 +59,7 @@ export const dashboardContract = c.router({
 export const dashboardClient = (client: TsRestClient) => {
   return {
     search: (body: {workspaceId: Ip.WorkspaceId}) => {
-     return  client.dashboard
+      return client.dashboard
         .search({body})
         .then(map200)
         .then(_ => _.map(Ip.Dashboard.map))
@@ -71,9 +70,9 @@ export const dashboardClient = (client: TsRestClient) => {
     create: (body: Ip.Dashboard.Payload.Create) => {
       return client.dashboard.create({body}).then(map200).then(Ip.Dashboard.map)
     },
-
-    // update: ({id, ...body}: Ip.Workspace.Payload.Update) =>
-    //   client.dashboard.update({params: {id}, body}).then(map200).then(Ip.Workspace.map),
+    update: (body: Ip.Dashboard.Payload.Update) => {
+      return client.dashboard.update({body}).then(map200).then(Ip.Dashboard.map)
+    },
     // remove: (id: Ip.Uuid) => client.dashboard.remove({params: {id}}).then(map204),
   }
 }

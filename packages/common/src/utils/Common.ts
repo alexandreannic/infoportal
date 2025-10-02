@@ -8,6 +8,19 @@ export const capitalize = (_: string) => {
   return _.charAt(0).toUpperCase() + _.slice(1)
 }
 
+export function diffObject<T extends Record<string, any>>(
+  obj1: T,
+  obj2: Partial<T>,
+): {hasChanged: boolean; changes: Partial<T>} {
+  const diff: Partial<T> = {}
+  for (const key of Object.keys(obj1) as (keyof T)[]) {
+    if (obj1[key] !== obj2[key]) {
+      diff[key] = obj1[key]
+    }
+  }
+  return {changes: diff, hasChanged: Object.keys(diff).length > 0}
+}
+
 export const toPercent = <T extends number | undefined>(
   value: T,
   fractionDigits = 1,

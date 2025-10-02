@@ -14,12 +14,14 @@ export const ListItem = ({
   title?: ReactNode
   desc?: ReactNode
   action?: ReactNode
-  icon: string
+  icon: string | ReactNode
 } & BoxProps) => {
   const t = useTheme()
   return (
     <Box sx={{display: 'flex', '&:not(:last-of-type)': {mb: 1.5}, ...sx}}>
-      <Icon sx={{mr: 1, mt: 0.25, color: t.vars.palette.text.secondary}}>{icon}</Icon>
+      <Box sx={{mr: 1, mt: 0}}>
+        {typeof icon === 'string' ? <Icon sx={{color: t.vars.palette.text.secondary}}>{icon}</Icon> : icon}
+      </Box>
       <Box sx={{flex: 1}}>
         {title && <Txt block>{title}</Txt>}
         {desc && (

@@ -5,6 +5,7 @@ import {Core} from '@/shared'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
 import {Link} from '@tanstack/react-router'
+import {PopoverShareLink} from '@/shared/PopoverShareLink'
 
 export const DashboardCard = ({
   img,
@@ -64,40 +65,7 @@ export const DashboardCard = ({
         >
           <Core.Btn icon="edit">{m.edit}</Core.Btn>
         </Link>
-        <Core.PopoverWrapper
-          content={close => (
-            <Box sx={{p: 2, maxWidth: 340}}>
-              <Core.Txt size="big" block bold sx={{mb: 1}}>
-                {m.copyLink}
-              </Core.Txt>
-              <Core.Input
-                readOnly
-                value={url}
-                sx={{mb: 0.5}}
-                helperText={null}
-                endAdornment={
-                  <Core.IconBtn
-                    children="content_copy"
-                    onClick={() => {
-                      navigator.clipboard.writeText(url)
-                      toastSuccess(m.copiedToClipboard)
-                    }}
-                  />
-                }
-              ></Core.Input>
-              <a href={url} target="_blank">
-                <Core.Txt noWrap link block>
-                  {url}
-                </Core.Txt>
-              </a>
-              <Core.Btn sx={{mt: 1}} onClick={close}>
-                {m.close}
-              </Core.Btn>
-            </Box>
-          )}
-        >
-          <Core.Btn icon="link">{m.copyLink}</Core.Btn>
-        </Core.PopoverWrapper>
+        <PopoverShareLink url={url} />
       </Core.PanelFoot>
     </Core.Panel>
   )

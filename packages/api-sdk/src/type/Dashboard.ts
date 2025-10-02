@@ -2,11 +2,13 @@ import type * as Prisma from '@prisma/client'
 import {Brand} from './Common.js'
 import {FormId} from './Form.js'
 import {Workspace, WorkspaceId} from './Workspace.js'
+import {User} from './User'
 
 export type DashboardId = Brand<string, 'DashboardId'>
-export type Dashboard = Omit<Prisma.Dashboard, 'sourceFormId' | 'id'> & {
+export type Dashboard = Omit<Prisma.Dashboard, 'createdBy'|'sourceFormId' | 'id'> & {
   id: DashboardId
   sourceFormId: FormId
+  createdBy: User.Email
 }
 
 export namespace Dashboard {
@@ -14,7 +16,7 @@ export namespace Dashboard {
     '/' + workspace.slug + '/d/' + dashboard.slug
 
   export const map = (_: Record<keyof Dashboard, any>): Dashboard => {
-    if (_.createdBy) _.createdBy = new Date(_.createdBy)
+    if (_.createdAt) _.createdAt = new Date(_.createdAt)
     return _
   }
   export namespace Payload {
@@ -25,6 +27,22 @@ export namespace Dashboard {
       sourceFormId: FormId
       isPublic: boolean
     }
+    export type Update = Pick<Dashboard, 'id' | 'workspaceId'> &
+      Partial<
+        Pick<
+          Dashboard,
+          | 'name'
+          // 'slug'|
+          | 'description'
+          | 'deploymentStatus'
+          | 'isPublic'
+          | 'start'
+          | 'end'
+          | 'filters'
+          | 'enableChartDownload'
+          | 'periodComparisonDelta'
+        >
+      >
   }
 
   export type SectionId = Brand<string, 'SectionId'>

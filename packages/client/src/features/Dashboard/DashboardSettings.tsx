@@ -1,15 +1,22 @@
 import {TabContent} from '@/shared/Tab/TabContent'
 import {createRoute} from '@tanstack/react-router'
 import {dashboardRoute} from '@/features/Dashboard/Dashboard'
-import {Core} from '@/shared'
+import {AppAvatar, Core} from '@/shared'
 import {SettingsRow} from '@/features/Form/Settings/FormSettings'
 import {useI18n} from '@infoportal/client-i18n'
-import {Icon, Switch} from '@mui/material'
+import {Box, Icon, Switch, useTheme} from '@mui/material'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
-import {useMemo} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import {Ip} from 'infoportal-api-sdk'
+import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
+import {useIpToast} from '@/core/useToast'
+import {useDebounce, useEffectFn} from '@axanc/react-hooks'
+import {diffObject} from 'infoportal-common'
+import {PopoverShareLink} from '@/shared/PopoverShareLink'
+import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {useAppSettings} from '@/core/context/ConfigContext'
 
 export const dashboardSettingsRoute = createRoute({
   getParentRoute: () => dashboardRoute,
@@ -19,15 +26,41 @@ export const dashboardSettingsRoute = createRoute({
 
 type SettingsForm = Pick<
   Ip.Dashboard,
-  'isPublic' | 'start' | 'end' | 'filters' | 'enableChartDownload' | 'periodComparisonDelta'
+  'isPublic' | 'name' | 'start' | 'end' | 'filters' | 'enableChartDownload' | 'periodComparisonDelta'
 >
 
 export function DashboardSettings() {
-  const {m} = useI18n()
-  const {schema, flatSubmissions} = useDashboardContext()
+  const {m, formatDate} = useI18n()
+  const t = useTheme()
+  const {conf} = useAppSettings()
+  const {toastLoading, toastSuccess} = useIpToast()
+  const {workspaceId, dashboard, schema, flatSubmissions} = useDashboardContext()
+  const queryWorkspace = UseQueryWorkspace.getById(workspaceId)
+  const queryUpdate = UseQueryDashboard.update({workspaceId})
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
 
-  const form = useForm<SettingsForm>()
+  const form = useForm<SettingsForm>({
+    defaultValues: {
+      name: dashboard.name,
+      isPublic: dashboard.isPublic,
+      start: dashboard.start,
+      end: dashboard.end,
+      filters: dashboard.filters,
+      enableChartDownload: dashboard.enableChartDownload,
+      periodComparisonDelta: dashboard.periodComparisonDelta,
+    },
+  })
   const values = useWatch({control: form.control})
+
+  useEffectFn(queryUpdate.isPending, _ => _ && toastLoading(m.savingEllipsis))
+  useEffectFn(queryUpdate.isSuccess, _ => _ && toastSuccess(m.successfullyEdited))
+
+  const debouncedValues = useDebounce(values, 500)
+
+  useEffect(() => {
+    if (diffObject(debouncedValues, dashboard).hasChanged)
+      queryUpdate.mutateAsync({id: dashboard.id, ...debouncedValues})
+  }, [debouncedValues])
 
   const {min, max} = useMemo(() => {
     let min = flatSubmissions[0].submissionTime.getTime()
@@ -40,8 +73,48 @@ export function DashboardSettings() {
     return {min: new Date(min), max: new Date(max)}
   }, [flatSubmissions])
 
+  const url =
+    queryWorkspace.data && conf
+      ? new URL(Ip.Dashboard.buildPath(queryWorkspace.data, dashboard), conf.baseURL).toString()
+      : undefined
+
   return (
     <TabContent width="xs">
+      <Core.Panel>
+        <Core.PanelHead action={url && <PopoverShareLink url={url} />}>
+          {isEditingTitle ? (
+            <Controller
+              control={form.control}
+              name="name"
+              render={({field}) => (
+                <Core.AsyncInput
+                  helperText={null}
+                  onClear={() => setIsEditingTitle(false)}
+                  value={field.value}
+                  onSubmit={_ => {
+                    field.onChange(_)
+                    setIsEditingTitle(false)
+                  }}
+                />
+              )}
+            />
+          ) : (
+            <>
+              {values.name}
+              <Core.IconBtn onClick={() => setIsEditingTitle(true)} sx={{color: t.vars.palette.text.secondary}}>
+                edit
+              </Core.IconBtn>
+            </>
+          )}
+        </Core.PanelHead>
+        <Core.PanelBody>
+          {dashboard.description && <Core.Txt color="hint">{dashboard.description}</Core.Txt>}
+          <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+            <Core.ListItem icon="calendar_today" title={formatDate(dashboard.createdAt)} />
+            <Core.ListItem icon={<AppAvatar email={dashboard.createdBy} size={24} />} title={dashboard.createdBy} />
+          </Box>
+        </Core.PanelBody>
+      </Core.Panel>
       <Core.Panel>
         <Core.PanelBody>
           <Controller
@@ -53,8 +126,8 @@ export function DashboardSettings() {
               return (
                 <SettingsRow
                   icon="date_range"
-                  label={m.period}
-                  desc={m._dashboard.periodDesc}
+                  label={m._dashboard.filterPeriod}
+                  desc={m._dashboard.filterPeriodDesc}
                   action={
                     <Core.PeriodPicker
                       min={min}

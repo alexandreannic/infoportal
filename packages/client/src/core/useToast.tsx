@@ -1,5 +1,6 @@
 import {Core} from '@/shared'
 import {appConfig} from '../conf/AppConfig'
+import {ToastOptions} from '@infoportal/client-core'
 
 export const useIpToast = () => {
   const toasts = Core.useToast()

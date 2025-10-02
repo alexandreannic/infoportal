@@ -5,6 +5,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {useMemo} from 'react'
+import {useI18n} from '@infoportal/client-i18n'
 
 export class UseQueryDashboard {
   static getAll = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
@@ -35,6 +36,18 @@ export class UseQueryDashboard {
       mutationFn: args => apiv2.dashboard.create({workspaceId, ...args}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),
       onError: toastHttpError,
+    })
+  }
+
+  static update = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+    const {m} = useI18n()
+    const {apiv2} = useAppSettings()
+    const {toastError} = useIpToast()
+    const queryClient = useQueryClient()
+    return useMutation<Ip.Dashboard, ApiError, Omit<Ip.Dashboard.Payload.Update, 'workspaceId'>>({
+      mutationFn: args => apiv2.dashboard.update({workspaceId, ...args}),
+      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),
+      onError: () => toastError(m.errorOnSave, {reloadBtn: true}),
     })
   }
 }

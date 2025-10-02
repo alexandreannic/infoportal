@@ -310,6 +310,11 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({body, req}) => dashboard.create({...body, createdBy: req.session.app.user.email}))
           .then(ok200)
           .catch(handleError),
+      update: _ =>
+        auth2(_)
+          .then(({body}) => dashboard.update(body))
+          .then(ok200)
+          .catch(handleError),
       section: {
         search: _ =>
           auth2(_)

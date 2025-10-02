@@ -67,7 +67,7 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: Ip.User) => void
   const {m} = useI18n()
   const {toastError} = useIpToast()
   const msal = useMsal()
-
+  const t = useTheme()
   const _saveSession = useAsync(
     mapPromise({
       promise: api.session.login,
@@ -122,7 +122,18 @@ export const SessionLoginForm = ({setSession}: {setSession: (_: Ip.User) => void
         }}
       >
         <IpLogo sx={{margin: 'auto', display: 'block', mb: 1}} height={60} />
-        <Core.Txt sx={{textAlign: 'center'}} size="big" color="hint" block>
+        <Core.Txt
+          sx={{
+            color: t.vars.palette.primary.dark,
+            letterSpacing: 3,
+            fontFamily: 'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          }}
+          size="big"
+          color="hint"
+          block
+        >
           {m.appSubTitle}
         </Core.Txt>
         <Core.Txt sx={{textAlign: 'center', mt: 1, mb: 2, fontSize: 40}} block>

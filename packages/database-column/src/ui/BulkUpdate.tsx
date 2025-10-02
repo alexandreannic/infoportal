@@ -68,7 +68,7 @@ const Base = ({
           sx={{mb: 1}}
           action={<Core.Btn onClick={() => setUpdatedCount(null)}>{m.change}</Core.Btn>}
         >
-          {m.successfullyEdited(updatedCount)}
+          {m.successfullyEditedRows(updatedCount)}
         </Alert>
       )}
       <Collapse in={!updatedCount}>

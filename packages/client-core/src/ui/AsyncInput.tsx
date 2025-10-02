@@ -18,6 +18,7 @@ type AsyncInputBase<T extends string | number = string | number> = {
   originalValue?: T | null
   onChange?: (val: T | undefined) => void
   onSubmit?: (val: T | undefined) => Promise<void> | void
+  onClear?: () => void
 } & Omit<InputProps, 'onSubmit' | 'onChange' | 'type' | 'value'>
 
 export function AsyncInput(props: AsyncInputBase<number> & {type: 'number'}): JSX.Element
@@ -25,6 +26,7 @@ export function AsyncInput(props: AsyncInputBase<string> & {type?: Exclude<Input
 
 export function AsyncInput({
   value: propValue,
+  onClear,
   originalValue = null,
   debounce = 0,
   onChange,
@@ -90,6 +92,7 @@ export function AsyncInput({
               onClick={() => {
                 setLocal(originalValue == null ? '' : String(originalValue))
                 onChange?.(undefined as any)
+                onClear?.()
               }}
             >
               clear

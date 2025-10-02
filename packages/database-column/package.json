@@ -23,7 +23,7 @@
     "@infoportal/client-datatable": "1.0.0",
     "infoportal-api-sdk": "1.0.0",
     "kobo-sdk": "^2.4.1",
-    "@axanc/react-hooks": "^1.14.0",
+    "@axanc/react-hooks": "^1.14.2",
     "@mui/material": "^7.3.1",
     "date-fns": "^4.1.0",
     "react": "19.1.0",

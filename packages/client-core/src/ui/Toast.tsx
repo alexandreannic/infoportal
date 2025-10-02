@@ -2,6 +2,7 @@
 import {createContext, ReactNode, useContext, useState} from 'react'
 import {
   Box,
+  Button,
   CircularProgress,
   Icon,
   IconButton,
@@ -10,6 +11,7 @@ import {
   SnackbarProps,
   useTheme,
 } from '@mui/material'
+import {IconBtn} from './IconBtn'
 
 const ToastContext = createContext<WithToast>({} as any)
 
@@ -18,6 +20,7 @@ type ToastType = 'error' | 'loading' | 'warning' | 'success' | 'info' | undefine
 export interface ToastOptions extends Pick<SnackbarProps, 'autoHideDuration' | 'action'> {
   onClose?: (event: any) => void
   keepOpenOnClickAway?: boolean
+  reloadBtn?: boolean
 }
 
 export interface ToastRef {
@@ -67,7 +70,7 @@ export const ToastProvider = ({children, vertical = 'bottom', horizontal = 'left
       case 'info':
         return <Icon sx={{color: t.vars.palette.info.main}}>info</Icon>
       case 'loading':
-        return <CircularProgress size={24} thickness={5} />
+        return <CircularProgress size={20} color="info" thickness={5} />
       default:
         return <></>
     }
@@ -110,7 +113,8 @@ export const ToastProvider = ({children, vertical = 'bottom', horizontal = 'left
         action={
           <>
             {options?.action}
-            <IconButton onClick={handleClose} color="inherit" size="large" sx={options?.action ? {ml: 1} : {}}>
+            {options?.reloadBtn && <IconBtn children="refresh" sx={{color: 'inherit'}} onClick={() => location.reload()} />}
+            <IconButton onClick={handleClose} sx={{color: 'inherit', ...(options?.action ? {ml: 1} : {})}}>
               <Icon>close</Icon>
             </IconButton>
           </>
