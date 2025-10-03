@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {UseCellSelection} from './useCellSelectionEngine'
-import {Column, Props, Row} from './types/index.js'
+import {Column, Props, Row} from './types.js'
 
 export type UseCellSelectionComputed = ReturnType<typeof useCellSelectionComputed>
 

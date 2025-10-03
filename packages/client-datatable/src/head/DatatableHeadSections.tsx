@@ -2,7 +2,7 @@ import {IconBtn, styleUtils} from '@infoportal/client-core'
 import {styled, useTheme} from '@mui/material'
 import {Obj, seq} from '@axanc/ts-utils'
 import {memo, useMemo} from 'react'
-import {Column} from '../core/types/index.js'
+import {Column} from '../core/types.js'
 
 export const primaryColors = [
   '#2196F3',

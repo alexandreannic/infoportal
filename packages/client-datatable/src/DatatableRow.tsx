@@ -1,7 +1,7 @@
 import {VirtualItem} from '@tanstack/react-virtual'
 import {Skeleton} from '@mui/material'
 import React, {memo} from 'react'
-import {Column, Props, Row} from './core/types/index.js'
+import {Column, Props, Row} from './core/types.js'
 import {VirtualCell} from './core/reducer'
 
 export const DatatableRow = memo(DatatableRow_, (prevProps, nextProps) => {

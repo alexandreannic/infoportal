@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo} from 'react'
 import {KeyOf, seq} from '@axanc/ts-utils'
-import {Column, Option, Row} from './types/index.js'
+import {Column, Option, Row} from './types.js'
 import {State} from './reducer'
 import {Utils} from '../helper/utils'
 

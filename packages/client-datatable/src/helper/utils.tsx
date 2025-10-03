@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react'
 import {Obj} from '@axanc/ts-utils'
-import {BlankValue, Column, Option, Row} from '../core/types/index.js'
+import {BlankValue, Column, Option, Row} from '../core/types.js'
 
 export class Utils {
   static readonly localStorageKey = {

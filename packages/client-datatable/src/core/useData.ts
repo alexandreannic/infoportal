@@ -1,7 +1,7 @@
 import {useCallback, useMemo} from 'react'
 import {multipleFilters, safeNumber} from 'infoportal-common'
 import {fnSwitch, KeyOf, map, Obj} from '@axanc/ts-utils'
-import {Column, Filters, FilterTypeMapping, Row, SortBy} from './types/index.js'
+import {Column, Filters, FilterTypeMapping, Row, SortBy} from './types.js'
 import {Utils} from '../helper/utils'
 
 export type UseData<T extends Row> = ReturnType<typeof useData<T>>
@@ -39,6 +39,7 @@ export const useData = <T extends Row>({
 
   const filteredAndSortedData = useMemo(() => {
     const filteredData = filterBy({data, filters: filters, colIndex: colIndex})
+    console.log(filters, data.length, filteredData.length)
     return (
       map(filteredData, sortBy, (d, sortBy) => {
         const col = colIndex[sortBy.column]
