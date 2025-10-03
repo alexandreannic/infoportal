@@ -7,13 +7,13 @@ import {ApiError} from '@/core/sdk/server/ApiClient'
 import {usePendingMutation} from '@/core/query/usePendingMutation'
 
 export class UseQueryDashboardWidget {
-  static search = (params: Ip.Dashboard.Widget.Payload.Search) => {
+  static search = (params: Omit<Ip.Dashboard.Widget.Payload.Search, 'sectionId'>) => {
     const {apiv2} = useAppSettings()
-    const {sectionId, dashboardId, workspaceId} = params
+    const {dashboardId, workspaceId} = params
     const {toastAndThrowHttpError} = useIpToast()
     return useQuery({
       queryFn: () => apiv2.dashboard.widget.search(params).catch(toastAndThrowHttpError),
-      queryKey: queryKeys.dashboardWidget(workspaceId, dashboardId, sectionId),
+      queryKey: queryKeys.dashboardWidget(workspaceId, dashboardId),
     })
   }
 
@@ -35,8 +35,7 @@ export class UseQueryDashboardWidget {
       Omit<Ip.Dashboard.Widget.Payload.Create, 'workspaceId' | 'sectionId'>
     >({
       mutationFn: args => apiv2.dashboard.widget.create({workspaceId, sectionId, ...args}),
-      onSuccess: () =>
-        queryClient.invalidateQueries({queryKey: queryKeys.dashboardWidget(workspaceId, dashboardId, sectionId)}),
+      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboardWidget(workspaceId, dashboardId)}),
       onError: toastHttpError,
     })
   }
@@ -61,7 +60,7 @@ export class UseQueryDashboardWidget {
       getId: _ => _.id,
       mutationFn: variables => {
         const query = apiv2.dashboard.widget.update({workspaceId, sectionId, ...variables})
-        const key = queryKeys.dashboardWidget(workspaceId, dashboardId, sectionId)
+        const key = queryKeys.dashboardWidget(workspaceId, dashboardId)
         queryClient.setQueryData<Ip.Dashboard.Widget[]>(key, old => {
           return old?.map(_ => {
             if (_.id === variables.id) return {..._, ...variables}
@@ -73,7 +72,7 @@ export class UseQueryDashboardWidget {
       onSuccess: (data, variables, context) => {},
       onError: e => {
         toastHttpError(e)
-        queryClient.invalidateQueries({queryKey: queryKeys.dashboardWidget(workspaceId, dashboardId, sectionId)})
+        queryClient.invalidateQueries({queryKey: queryKeys.dashboardWidget(workspaceId, dashboardId)})
       },
     })
   }
@@ -93,8 +92,7 @@ export class UseQueryDashboardWidget {
     return usePendingMutation<void, ApiError, {id: Ip.Dashboard.WidgetId}>({
       getId: _ => _.id,
       mutationFn: args => apiv2.dashboard.widget.remove({workspaceId, ...args}),
-      onSuccess: () =>
-        queryClient.invalidateQueries({queryKey: queryKeys.dashboardWidget(workspaceId, dashboardId, sectionId)}),
+      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboardWidget(workspaceId, dashboardId)}),
       onError: toastHttpError,
     })
   }
