@@ -9,6 +9,7 @@ import {WidgetCardBarChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetC
 import {WidgetCardLineChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardLineChart'
 import {WidgetCardGeoPoint} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardGeoPoint'
 import {WidgetCardGeoChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardGeoChart'
+import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 type Status = 'editing'
 
@@ -23,8 +24,10 @@ export const WidgetCard = memo(
     onClick: (_: Ip.Dashboard.WidgetId) => void
   }) => {
     const t = useTheme()
+    const {dashboard} = useDashboardContext()
     return (
       <Core.Panel
+        savableAsImg={dashboard.enableChartDownload}
         onClick={() => onClick(widget.id)}
         sx={{
           p: 1,

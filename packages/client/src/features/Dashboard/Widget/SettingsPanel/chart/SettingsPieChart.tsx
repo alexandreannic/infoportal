@@ -17,14 +17,14 @@ import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/s
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export function SettingsPieChart() {
-  const {schema} = useDashboardContext()
+  const {schema, dashboard} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
   const {question} = useQuestionInfo(config.questionName)
   const {m} = useI18n()
   const form = useForm<Ip.Dashboard.Widget.Config['PieChart']>({
     mode: 'onChange',
-    defaultValues: widget.config,
+    defaultValues: config,
   })
 
   const values = useWatch({control: form.control})
@@ -32,7 +32,7 @@ export function SettingsPieChart() {
   useEffect(() => {
     onChange({config: values})
   }, [values])
-  
+
   return (
     <>
       <WidgetSettingsSection title={m.source}>
@@ -87,6 +87,22 @@ export function SettingsPieChart() {
           sx={{mb: 1}}
           {...form.register('showBase')}
           label={m._dashboard.showBase}
+        />
+        <Controller
+          name="hideEvolution"
+          control={form.control}
+          render={({field}) => {
+            return (
+              <SwitchBox
+                checked={!field.value}
+                onChange={(e, checked) => field.onChange(!checked)}
+                disabled={!dashboard.periodComparisonDelta}
+                sx={{mb: 1}}
+                size="small"
+                label={m._dashboard.showEvolution}
+              />
+            )
+          }}
         />
         <SwitchBox {...form.register('dense')} size="small" label={m.smaller} />
       </WidgetSettingsSection>

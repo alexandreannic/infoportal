@@ -80,7 +80,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
               children="menu"
             />
           )}
-          <IpLogo height={30}/>
+          <IpLogo height={26}/>
           {/*<Box component="img" src="/ip-logo.svg" height={30} alt="InfoPortal Logo" {...props} />*/}
           <Core.Txt
             sx={{ml: 1, ...Core.styleUtils(t).truncate}}

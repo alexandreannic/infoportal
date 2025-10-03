@@ -337,6 +337,7 @@ export const en = Object.freeze({
     savingEllipsis: 'Saving...',
     customize: 'Customize',
     _dashboard: {
+      showEvolution: 'Show evolution',
       filterPeriod: 'Filter by date',
       filterPeriodDesc: 'Set the start and end dates that define the data range for this dashboard.',
       publicDesc: 'Make the dashboard accessible outside of the organization.',

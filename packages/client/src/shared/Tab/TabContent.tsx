@@ -23,16 +23,14 @@ export const TabContent = ({
     <Box
       className={'IpTabContent ' + (className ?? '')}
       sx={{
-        ...widthStyle,
         ...animationStyle,
-        minHeight: 0,
-        flex: 1,
-        mt: 1,
         overflowY: 'scroll',
-        ...sx,
+        flex: 1,
+        minHeight: 0,
+        mt: 1,
       }}
     >
-      <Box {...props} children={loading ? <PagePlaceholder /> : children} />
+      <Box sx={{...widthStyle, ...sx}} {...props} children={loading ? <PagePlaceholder /> : children} />
     </Box>
   )
 }

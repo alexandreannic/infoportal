@@ -151,6 +151,7 @@ export namespace Dashboard {
       }
       [Type.PieChart]: {
         questionName?: string
+        hideEvolution?: boolean
         showValue?: boolean
         showBase?: boolean
         filter?: ConfigFilter

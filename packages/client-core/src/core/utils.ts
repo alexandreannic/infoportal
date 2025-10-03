@@ -79,7 +79,6 @@ export const openCanvasInNewTab = (canvas: HTMLCanvasElement, name: string) => {
       const w = window.open(URL.createObjectURL(blob!), '_blank')!
       w.document.title = name
     })
-    document.body.appendChild(canvas)
   }, 1000)
 }
 
