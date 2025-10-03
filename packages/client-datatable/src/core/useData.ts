@@ -39,7 +39,6 @@ export const useData = <T extends Row>({
 
   const filteredAndSortedData = useMemo(() => {
     const filteredData = filterBy({data, filters: filters, colIndex: colIndex})
-    console.log(filters, data.length, filteredData.length)
     return (
       map(filteredData, sortBy, (d, sortBy) => {
         const col = colIndex[sortBy.column]
@@ -77,7 +76,7 @@ export const useData = <T extends Row>({
         return [...sorted]
       }) ?? filteredData
     )
-  }, [data, sortBy])
+  }, [data, filters, sortBy])
 
   return {
     filterExceptBy,
