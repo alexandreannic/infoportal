@@ -19,8 +19,8 @@ export function WidgetCardBarChart({widget}: {widget: Ip.Dashboard.Widget}) {
   }, [config.questionName, schema])
 
   const data = useMemo(() => {
-    return map(filterToFunction(config.filter), flatSubmissions.filter) ?? flatSubmissions
-  }, [flatSubmissions])
+    return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
+  }, [flatSubmissions, config.filter])
 
   if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
 

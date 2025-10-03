@@ -96,9 +96,9 @@ export const WidgetCreatorFormPanel = ({
           overflowY: 'scroll',
           height: '100%',
           ml: 1,
-          mr: -1,
-          borderBottomRightRadius: 0,
-          borderTopRightRadius: 0,
+          // mr: -1,
+          // borderBottomRightRadius: 0,
+          // borderTopRightRadius: 0,
         }}
       >
         <Core.PanelBody

@@ -4,15 +4,21 @@ import React, {useEffect, useMemo} from 'react'
 import {initGoogleMaps} from '@/core/initGoogleMaps'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {map} from '@axanc/ts-utils'
+import {filterToFunction} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardLineChart'
 
 export const WidgetCardGeoPoint = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoPoint']
   const {flatSubmissions, schema} = useDashboardContext()
 
+  const filteredData = useMemo(() => {
+    return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
+  }, [flatSubmissions, config.filter])
+
   const bubbles = useMemo(() => {
     if (!config.questionName) return
-    return flatSubmissions.map(_ => {
+    return filteredData.map(_ => {
       return {
         size: 10,
         label: _.id,
@@ -20,7 +26,7 @@ export const WidgetCardGeoPoint = ({widget}: {widget: Ip.Dashboard.Widget}) => {
         loc: _[config.questionName!],
       }
     })
-  }, [flatSubmissions])
+  }, [filteredData])
 
   useEffect(() => {
     if (!bubbles) return

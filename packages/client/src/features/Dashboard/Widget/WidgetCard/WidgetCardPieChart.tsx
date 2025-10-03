@@ -11,27 +11,26 @@ export function WidgetCardPieChart({widget}: {widget: Ip.Dashboard.Widget}) {
   const {flatSubmissions, flatSubmissionsDelta, schema} = useDashboardContext()
 
   const filteredData = useMemo(() => {
-    return map(filterToFunction(config.filter), flatSubmissions.filter) ?? flatSubmissions
-  }, [flatSubmissions])
+    return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
+  }, [flatSubmissions, config.filter])
 
   const filteredDataBefore = useMemo(() => {
     if (!flatSubmissionsDelta) return
-    return map(filterToFunction(config.filter), flatSubmissionsDelta.filter) ?? flatSubmissionsDelta
-  }, [flatSubmissionsDelta])
+    return map(filterToFunction(schema, config.filter), flatSubmissionsDelta.filter) ?? flatSubmissionsDelta
+  }, [flatSubmissionsDelta, config.filter])
 
   const filterValue = useMemo(() => {
     if (!config.questionName) return
-    return filterToFunction({questionName: config.questionName, ...config.filterValue})
+    return filterToFunction(schema, {questionName: config.questionName, ...config.filterValue})
   }, [config.filterValue])
 
   const filterBase = useMemo(() => {
     if (!config.questionName) return
-    return filterToFunction({questionName: config.questionName, ...config.filterBase})
+    return filterToFunction(schema, {questionName: config.questionName, ...config.filterBase})
   }, [config.filterBase])
 
   if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
 
-  console.log({filteredDataBefore, filteredData})
   return (
     <Core.ChartPieWidgetBy<any>
       title={widget.title}

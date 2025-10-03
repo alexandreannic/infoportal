@@ -20,12 +20,19 @@ export const TabContent = ({
   const widthStyle = usePageWidthStyle({width: props.width})
 
   return (
-    <Box className={'IpTabContent ' + (className ?? '')} sx={{overflowY: 'scroll'}}>
-      <Box
-        sx={{...widthStyle, ...animationStyle, minHeight: 0, flex: 1, mt: 1, ...sx}}
-        {...props}
-        children={loading ? <PagePlaceholder /> : children}
-      />
+    <Box
+      className={'IpTabContent ' + (className ?? '')}
+      sx={{
+        ...widthStyle,
+        ...animationStyle,
+        minHeight: 0,
+        flex: 1,
+        mt: 1,
+        overflowY: 'scroll',
+        ...sx,
+      }}
+    >
+      <Box {...props} children={loading ? <PagePlaceholder /> : children} />
     </Box>
   )
 }

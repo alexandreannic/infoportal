@@ -5,8 +5,10 @@ import {Core} from '@/shared'
 import {seq} from '@axanc/ts-utils'
 import {ChartLineCurve} from '@infoportal/client-core'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {KoboSchemaHelper} from 'infoportal-common'
 
 export function filterToFunction<T extends Record<string, any> = Record<string, any>>(
+  schema: KoboSchemaHelper.Bundle<true>,
   filter?: Ip.Dashboard.Widget.ConfigFilter,
 ): undefined | ((_: T) => boolean | undefined) {
   if (!filter?.questionName) return
@@ -14,14 +16,18 @@ export function filterToFunction<T extends Record<string, any> = Record<string, 
   const filterChoice = filter.choices
   if (filterNumber)
     return (_: T) => {
-      const value = _[filter.questionName]
+      const value = _[filter.questionName!]
       if (isNaN(value)) return false
       if (filterNumber.min && filterNumber.min > value) return false
       if (filterNumber.max && filterNumber.max < value) return false
       return true
     }
   if (filterChoice) {
-    return (_: T) => filterChoice.includes(_[filter.questionName])
+    if (!filterChoice || filterChoice.length === 0) return _ => true
+    const isMultiple = schema.helper.questionIndex[filter.questionName].type === 'select_multiple'
+    const set = new Set(filterChoice)
+    if (isMultiple) return (_: T) => _[filter.questionName!]?.some((_: string) => set.has(_))
+    return (_: T) => set.has(_[filter.questionName!])
   }
 }
 
@@ -30,7 +36,7 @@ export const WidgetCardLineChart = ({widget}: {widget: Ip.Dashboard.Widget}) => 
   const {flatSubmissions, schema} = useDashboardContext()
 
   const filterFns = useMemo(() => {
-    return config.lines?.map(_ => filterToFunction(_.filter)) ?? []
+    return config.lines?.map(_ => filterToFunction(schema, _.filter)) ?? []
   }, [config.lines])
 
   if (!config.lines || config.lines.length === 0) return <WidgetCardPlaceholder type={widget.type} />
