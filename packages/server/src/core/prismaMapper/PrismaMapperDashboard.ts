@@ -1,8 +1,35 @@
 import {Ip} from 'infoportal-api-sdk'
+import {Defined} from 'yup'
 
-export const mapDashboard = <T extends {id: string; sourceFormId: string; createdBy: string}>(
+export const mapDashboard = <
+  T extends {
+    id: string
+    workspaceId: string
+    start: Date | null
+    end: Date | null
+    filters: any | null
+    enableChartDownload: boolean | null
+    periodComparisonDelta: number | null
+    sourceFormId: string
+    description: string | null
+    createdBy: string
+  },
+>(
   _: T,
-): T & {id: Ip.DashboardId; sourceFormId: Ip.FormId; createdBy: Ip.User.Email} => _ as any
+): Defined<
+  T & {
+    id: Ip.DashboardId
+    workspaceId: Ip.WorkspaceId
+    sourceFormId: Ip.FormId
+    description?: string
+    createdBy: Ip.User.Email
+    start?: Date
+    end?: Date
+    filters?: Ip.Dashboard.Widget.ConfigFilter
+    enableChartDownload?: boolean
+    periodComparisonDelta?: number
+  }
+> => _ as any
 
 export const mapWidget = <T extends {id: string; title: string | null; position: any; config: any}>(
   _: T,

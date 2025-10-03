@@ -8,11 +8,16 @@ import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export function WidgetCardPieChart({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
-  const {flatSubmissions, schema} = useDashboardContext()
+  const {flatSubmissions, flatSubmissionsDelta, schema} = useDashboardContext()
 
   const filteredData = useMemo(() => {
     return map(filterToFunction(config.filter), flatSubmissions.filter) ?? flatSubmissions
   }, [flatSubmissions])
+
+  const filteredDataBefore = useMemo(() => {
+    if (!flatSubmissionsDelta) return
+    return map(filterToFunction(config.filter), flatSubmissionsDelta.filter) ?? flatSubmissionsDelta
+  }, [flatSubmissionsDelta])
 
   const filterValue = useMemo(() => {
     if (!config.questionName) return
@@ -26,10 +31,18 @@ export function WidgetCardPieChart({widget}: {widget: Ip.Dashboard.Widget}) {
 
   if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
 
+  console.log({filteredDataBefore, filteredData})
   return (
     <Core.ChartPieWidgetBy<any>
       title={widget.title}
       data={filteredData}
+      compare={
+        filteredDataBefore
+          ? {
+              before: filteredDataBefore,
+            }
+          : undefined
+      }
       dense={config.dense}
       property={config.questionName}
       filter={filterValue ?? (_ => true)}

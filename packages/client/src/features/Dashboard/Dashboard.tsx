@@ -5,7 +5,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
-import React, {useMemo, useState} from 'react'
+import React, {useState} from 'react'
 import {UseQueryDashboardSecion} from '@/core/query/dashboard/useQueryDashboardSection'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {dashboardSectionRoute} from '@/features/Dashboard/Section/DashboardSection'
@@ -15,9 +15,7 @@ import {dashboardSettingsRoute} from '@/features/Dashboard/DashboardSettings'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
-import {seq} from '@axanc/ts-utils'
-import {DashboardContext} from '@/features/Dashboard/DashboardContext'
-import {KoboSchemaHelper} from 'infoportal-common'
+import {DashboardProvider} from '@/features/Dashboard/DashboardContext'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -63,15 +61,9 @@ export function Dashboard() {
   const queryWidgets = UseQueryDashboardWidget.search({workspaceId, dashboardId})
   const queryDashboardSectionCreate = UseQueryDashboardSecion.create({workspaceId, dashboardId})
 
-  const widgetsBySection = useMemo(() => {
-    if (!queryWidgets.data) return
-    return seq(queryWidgets.data).groupByToMap(_ => _.sectionId as Ip.Dashboard.SectionId)
-  }, [queryWidgets])
-
-  const schemaWithMeta = useMemo(() => {
-    if (!querySchema.data) return
-    return KoboSchemaHelper.upgradeIncludingMeta(querySchema.data, m._meta, {validationStatus: m.validation_})
-  }, [querySchema.data])
+  const isLoading = [queryDashboard, queryDashboardSection, querySchema, querySubmissions, queryWidgets].some(
+    _ => _.isLoading,
+  )
 
   const {setTitle} = useLayoutContext()
   const [newSectionName, setNewSectionName] = useState('')
@@ -81,7 +73,7 @@ export function Dashboard() {
   const activeTab = useActiveTab({workspaceId, dashboardId, sections: queryDashboardSection.data})
 
   return (
-    <Page width="full" loading={queryDashboardSection.isLoading || queryDashboard.isLoading}>
+    <Page width="full" loading={isLoading}>
       <Tabs variant="scrollable" scrollButtons="auto" value={activeTab}>
         <Tab
           icon={<Icon>settings</Icon>}
@@ -95,9 +87,7 @@ export function Dashboard() {
         {queryDashboardSection.data?.map(_ => (
           <Tab
             key={_.id}
-            // icon={<Icon>{appConfig.icons.dataTable}</Icon>}
             iconPosition="start"
-            // sx={{minHeight: 34, py: 1}}
             component={Link}
             {...({
               value: _.id,
@@ -131,21 +121,21 @@ export function Dashboard() {
             </>
           )}
         >
-          <Core.Btn icon="add" sx={{textTransform: 'capitalize'}}>{m.new}</Core.Btn>
+          <Core.Btn icon="add" sx={{textTransform: 'capitalize'}}>
+            {m.new}
+          </Core.Btn>
         </Core.Modal>
       </Tabs>
-      {querySubmissions.data && widgetsBySection && queryWidgets.data && queryDashboard.data && schemaWithMeta && (
-        <DashboardContext
-          value={{
-            workspaceId,
-            widgetsBySection,
-            schema: schemaWithMeta,
-            flatSubmissions: seq(querySubmissions.data.data.map(({answers, ...rest}) => ({...answers, ...rest}))),
-            dashboard: queryDashboard.data,
-          }}
+      {querySubmissions.data && queryWidgets.data && queryWidgets.data && queryDashboard.data && querySchema.data && (
+        <DashboardProvider
+          workspaceId={workspaceId}
+          widgets={queryWidgets.data}
+          schema={querySchema.data}
+          submissions={querySubmissions.data.data}
+          dashboard={queryDashboard.data}
         >
           <Outlet />
-        </DashboardContext>
+        </DashboardProvider>
       )}
     </Page>
   )

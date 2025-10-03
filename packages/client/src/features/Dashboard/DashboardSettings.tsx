@@ -63,6 +63,7 @@ export function DashboardSettings() {
   }, [debouncedValues])
 
   const {min, max} = useMemo(() => {
+    if (!flatSubmissions || flatSubmissions.length === 0) return {}
     let min = flatSubmissions[0].submissionTime.getTime()
     let max = flatSubmissions[0].submissionTime.getTime()
     for (let i = 1; i < flatSubmissions.length - 1; i++) {
@@ -134,8 +135,8 @@ export function DashboardSettings() {
                       max={max}
                       value={[start, end]}
                       onChange={([newStart, newEnd]) => {
-                        form.setValue('start', newStart ?? null)
-                        form.setValue('end', newEnd ?? null)
+                        form.setValue('start', newStart)
+                        form.setValue('end', newEnd)
                       }}
                     />
                   }
@@ -156,12 +157,12 @@ export function DashboardSettings() {
                     checked={!!field.value}
                     onChange={(e, checked) => {
                       if (checked) form.setValue('filters', {})
-                      else form.resetField('filters')
+                      else form.setValue('filters', null as any)
                     }}
                   />
                 }
               >
-                {values.filters && <WidgetSettingsFilterQuestion name="" form={form} />}
+                {values.filters && <WidgetSettingsFilterQuestion name="filters" form={form} />}
               </SettingsRow>
             )}
           />
@@ -178,17 +179,18 @@ export function DashboardSettings() {
                     checked={!!field.value}
                     onChange={(e, checked) => {
                       if (checked) form.setValue('periodComparisonDelta', 90)
-                      else form.resetField('periodComparisonDelta')
+                      else form.setValue('periodComparisonDelta', null as any)
                     }}
                   />
                 }
               >
-                {values.periodComparisonDelta && (
+                {values.periodComparisonDelta !== undefined && values.periodComparisonDelta !== null && (
                   <Core.Input
                     helperText={null}
                     type="number"
                     label={m._dashboard.periodComparisonDeltaLabel}
                     {...field}
+                    onChange={e => field.onChange(+e.target.value)}
                   />
                 )}
               </SettingsRow>

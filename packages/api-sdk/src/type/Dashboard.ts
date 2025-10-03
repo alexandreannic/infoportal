@@ -1,22 +1,37 @@
 import type * as Prisma from '@prisma/client'
 import {Brand} from './Common.js'
-import {FormId} from './Form.js'
+import {Form, FormId} from './Form.js'
 import {Workspace, WorkspaceId} from './Workspace.js'
 import {User} from './User'
+import Widget = Dashboard.Widget
 
 export type DashboardId = Brand<string, 'DashboardId'>
-export type Dashboard = Omit<Prisma.Dashboard, 'createdBy'|'sourceFormId' | 'id'> & {
+export type Dashboard = {
   id: DashboardId
-  sourceFormId: FormId
+  slug: string
+  name: string
+  createdAt: Date
   createdBy: User.Email
+  sourceFormId: FormId
+  description?: string
+  workspaceId: WorkspaceId
+  deploymentStatus: Form.DeploymentStatus
+  isPublic: boolean
+  start?: Date
+  end?: Date
+  filters?: Widget.ConfigFilter
+  enableChartDownload?: boolean
+  periodComparisonDelta?: number
 }
 
 export namespace Dashboard {
   export const buildPath = (workspace: Workspace, dashboard: Pick<Dashboard, 'slug'>) =>
     '/' + workspace.slug + '/d/' + dashboard.slug
 
-  export const map = (_: Record<keyof Dashboard, any>): Dashboard => {
+  export const map = (_: any): Dashboard => {
     if (_.createdAt) _.createdAt = new Date(_.createdAt)
+    if (_.start) _.start = new Date(_.start)
+    if (_.end) _.end = new Date(_.end)
     return _
   }
   export namespace Payload {
@@ -96,7 +111,7 @@ export namespace Dashboard {
     }
 
     export type ConfigFilter = {
-      questionName: string
+      questionName?: string
       number?: {min?: number; max?: number}
       choices?: string[]
     }
