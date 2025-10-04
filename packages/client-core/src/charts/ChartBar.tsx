@@ -67,18 +67,25 @@ export const ChartBarContent = <K extends string>({
     sumValue,
     // base,
     percents,
+    percentsDelta,
   } = useMemo(() => {
     const values = Obj.values(data) as BarChartData[]
     const maxValue = Math.max(...values.map(_ => _.value))
     const sumValue = values.reduce((sum, _) => _.value + sum, 0)
     // const base = values[0]?.base ?? sumValue
     const percents = values.map(_ => (_.value / (_.base ?? sumValue)) * 100)
+    const percentsDelta = values.map((_, i) => {
+      if (!_.comparativeValue) return
+      const before = (_.comparativeValue / (_.base ?? sumValue)) * 100
+      return before - percents[i]
+    })
     return {
       values,
       maxValue,
       sumValue,
       // base,
       percents,
+      percentsDelta,
     }
   }, [data])
   const maxPercent = useMemo(() => Math.max(...percents), [percents])
@@ -157,11 +164,13 @@ export const ChartBarContent = <K extends string>({
                     {!item.disabled && (
                       <Box sx={{display: 'flex', textAlign: 'right'}}>
                         {!hideValue && (
-                          <Txt color="hint" sx={{minWidth: 52, flex: 1, mr: 2}}>
+                          <Txt color="hint" sx={{minWidth: 52, flex: 1, mr: 1}}>
                             {formatLargeNumber(item.value)}
                           </Txt>
                         )}
-                        {item.comparativeValue && <ComparativeValue value={item.comparativeValue} />}
+                        {percentsDelta[i] !== undefined && (
+                          <ComparativeValue sx={{minWidth: 66, mr: 1}} value={percentsDelta[i]} />
+                        )}
                         <Txt
                           sx={{
                             flex: 1,

@@ -2,12 +2,13 @@ import {Obj, seq, Seq} from '@axanc/ts-utils'
 import React, {ReactNode, useMemo} from 'react'
 import {Checkbox} from '@mui/material'
 import {ChartHelper} from './chartHelper'
-import {ChartBar} from './ChartBar'
+import {BarChartData, ChartBar} from './ChartBar'
 
 interface ChartBarBaseProps<D extends Record<string, any>, K extends string> {
   onClickData?: (_: K) => void
   checked?: Record<K, boolean>
   data: D[]
+  compareTo?: D[]
   limit?: number
   label?: Record<K, string>
   filterValue?: K[]
@@ -41,15 +42,13 @@ export const ChartBarBy = <D extends Record<string, any>, K extends string>({
   filterValue,
   displayOption,
   orderKeys,
+  compareTo,
   multiple,
 }: ChartBarByProps<D, K>) => {
-  const source = useMemo(() => {
-    return seq(data)
+  const computeData = (data: D[]) => {
+    const source = seq(data)
       .compact()
       .map(by as any)
-  }, [data, by])
-
-  const res = useMemo(() => {
     const helper = multiple
       ? ChartHelper.multiple<K>({
           data: source as Seq<K[]>,
@@ -64,7 +63,25 @@ export const ChartBarBy = <D extends Record<string, any>, K extends string>({
       .take(limit)
       .map(_ => (orderKeys ? Obj.sortManual(_, orderKeys) : _))
       .get()
+  }
+
+  const current = useMemo(() => {
+    return computeData(data)
   }, [data, by, label])
+
+  const before = useMemo(() => {
+    if (compareTo) return computeData(compareTo)
+  }, [compareTo, by, label])
+
+  const res: Record<K, BarChartData> = useMemo(() => {
+    if (!before) return current
+    return Obj.mapValues(current, (_, k) => {
+      return {
+        ..._,
+        comparativeValue: before[k].value,
+      }
+    })
+  }, [current, before])
 
   return (
     <ChartBar

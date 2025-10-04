@@ -8,7 +8,7 @@ import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export function WidgetCardBarChart({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
-  const {flatSubmissions, schema} = useDashboardContext()
+  const {flatSubmissions, flatSubmissionsDelta, schema} = useDashboardContext()
 
   const labels = useMemo(() => {
     const q = config.questionName
@@ -27,6 +27,7 @@ export function WidgetCardBarChart({widget}: {widget: Ip.Dashboard.Widget}) {
 
   return (
     <Core.ChartBarByKey
+      compareTo={config.showEvolution ? flatSubmissionsDelta : undefined}
       multiple={multiple}
       hideValue={!config.showValue}
       data={data}

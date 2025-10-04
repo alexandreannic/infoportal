@@ -84,6 +84,7 @@ export function SettingsBarChart() {
             </Box>
           )}
         />
+        <SwitchBox {...form.register('showEvolution')} size="small" label={m._dashboard.showEvolution} sx={{mb: 1}} />
         <SwitchBox {...form.register('showValue')} size="small" label={m._dashboard.showValue} />
       </WidgetSettingsSection>
     </Box>
