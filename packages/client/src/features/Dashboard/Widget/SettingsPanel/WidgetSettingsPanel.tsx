@@ -184,5 +184,5 @@ export const WidgetCreatorFormPanel = ({
 // }
 
 export function Label({sx, ...props}: Core.TxtProps) {
-  return <Core.Txt color="hint" size="small" sx={{mt: 1, ...sx}} block {...props} />
+  return <Core.Txt color="hint" size="small" sx={{...sx}} block {...props} />
 }

@@ -350,6 +350,9 @@ export const muiTheme = ({
             // boxShadow: theme.shadows[1],
             minHeight: 40,
           }),
+          list: {
+            height: '100%',
+          }
         },
       },
       MuiGrid: {

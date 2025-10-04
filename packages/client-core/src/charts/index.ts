@@ -12,9 +12,8 @@ export const chartConfig = {
 }
 
 export * from './ChartBar'
-export * from './ChartBarMultipleBy'
-export * from './ChartBarMultipleByKey'
-export * from './ChartBarSingleBy'
+export * from './ChartBarBy'
+export * from './ChartBarByKey'
 export * from './ChartBarStacked'
 export * from './ChartBarStackedSplit'
 export * from './ChartBarVertical'

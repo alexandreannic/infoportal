@@ -29,11 +29,9 @@ export const PopoverShareLink = ({url, children}: {url: string; children?: React
               />
             }
           ></Core.Input>
-          <a href={url} target="_blank">
-            <Core.Txt noWrap link block>
-              {url}
-            </Core.Txt>
-          </a>
+          <Core.Btn component="a" href={url} target="_blank" icon="open_in_new" sx={{mt: 1}} onClick={close}>
+            {m.open}
+          </Core.Btn>
           <Core.Btn sx={{mt: 1}} onClick={close}>
             {m.close}
           </Core.Btn>

@@ -14,6 +14,7 @@ import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {SwitchBox} from '@/shared/SwitchBox'
 
 export function SettingsBarChart() {
   const {m} = useI18n()
@@ -28,7 +29,6 @@ export function SettingsBarChart() {
 
   useEffect(() => {
     if (!question) return
-    form.setValue('multiple', question.type === 'select_one')
     if (!widget.title) onChange({title: schema.translate.question(question.name)})
   }, [question])
 
@@ -84,6 +84,7 @@ export function SettingsBarChart() {
             </Box>
           )}
         />
+        <SwitchBox {...form.register('showValue')} size="small" label={m._dashboard.showValue} />
       </WidgetSettingsSection>
     </Box>
   )

@@ -23,6 +23,16 @@ export function WidgetCardBarChart({widget}: {widget: Ip.Dashboard.Widget}) {
   }, [flatSubmissions, config.filter])
 
   if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
+  const multiple = schema.helper.questionIndex[config.questionName].type === 'select_multiple'
 
-  return <Core.ChartBarMultipleByKey data={data} label={labels} limit={config.limit} property={config.questionName} />
+  return (
+    <Core.ChartBarByKey
+      multiple={multiple}
+      hideValue={!config.showValue}
+      data={data}
+      label={labels}
+      limit={config.limit}
+      property={config.questionName}
+    />
+  )
 }

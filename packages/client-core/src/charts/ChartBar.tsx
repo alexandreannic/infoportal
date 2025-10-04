@@ -9,8 +9,10 @@ import {ChartDataVal} from './chartHelper'
 import {useI18n} from '@infoportal/client-i18n'
 import {alphaVar} from '../core/theme'
 import {LightTooltip, TooltipRow} from '../ui/LightTooltip'
+import {ComparativeValue} from './ComparativeValue'
 
 export interface BarChartData extends ChartDataVal {
+  comparativeValue?: number
   color?: string
   disabled?: boolean
 }
@@ -79,10 +81,6 @@ export const ChartBarContent = <K extends string>({
       percents,
     }
   }, [data])
-  // const values: HorizontalBarChartGoogleData[] = useMemo(() => Obj.values(data), [data])
-  // const maxValue = useMemo(() => Math.max(...values.map(_ => _.value)), [data])
-  // const sumValue = useMemo(() => values.reduce((sum, _) => _.value + sum, 0), [data])
-  // const percents = useMemo(() => values.map(_ => _.value / ((base ?? _.base) || sumValue) * 100), [data])
   const maxPercent = useMemo(() => Math.max(...percents), [percents])
   const [appeared, setAppeared] = useState<boolean>(false)
   useTimeout(() => setAppeared(true), 200)
@@ -159,10 +157,11 @@ export const ChartBarContent = <K extends string>({
                     {!item.disabled && (
                       <Box sx={{display: 'flex', textAlign: 'right'}}>
                         {!hideValue && (
-                          <Txt color="hint" sx={{flex: 1, mr: 2}}>
+                          <Txt color="hint" sx={{minWidth: 52, flex: 1, mr: 2}}>
                             {formatLargeNumber(item.value)}
                           </Txt>
                         )}
+                        {item.comparativeValue && <ComparativeValue value={item.comparativeValue} />}
                         <Txt
                           sx={{
                             flex: 1,

@@ -147,11 +147,12 @@ export namespace Dashboard {
         base?: 'percentOfTotalAnswers' | 'percentOfTotalChoices'
         labels?: Record<string, string>
         limit?: number
-        multiple?: boolean
+        showValue?: boolean
+        showEvolution?: boolean
       }
       [Type.PieChart]: {
         questionName?: string
-        hideEvolution?: boolean
+        showEvolution?: boolean
         showValue?: boolean
         showBase?: boolean
         filter?: ConfigFilter

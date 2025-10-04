@@ -89,13 +89,13 @@ export function SettingsPieChart() {
           label={m._dashboard.showBase}
         />
         <Controller
-          name="hideEvolution"
+          name="showEvolution"
           control={form.control}
           render={({field}) => {
             return (
               <SwitchBox
-                checked={!field.value}
-                onChange={(e, checked) => field.onChange(!checked)}
+                checked={field.value}
+                onChange={(e, checked) => field.onChange(checked)}
                 disabled={!dashboard.periodComparisonDelta}
                 sx={{mb: 1}}
                 size="small"

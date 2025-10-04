@@ -6,6 +6,7 @@ import {LightTooltip, TooltipRow} from '../ui/LightTooltip'
 import {Txt, TxtProps} from '../ui/Txt'
 import {ChartPie} from './ChartPie'
 import {useI18n} from '@infoportal/client-i18n'
+import {ComparativeValue} from './ComparativeValue'
 
 const previousPeriodDeltaDays = 90
 
@@ -117,32 +118,12 @@ export const ChartPieWidget = ({
               {renderPercent(value / base, true, fractionDigits)}
             </Txt>
             {evolution && (
-              <>
-                <Txt
-                  sx={{
-                    fontSize,
-                    color: t => (evolution > 0 ? t.vars.palette.success.main : t.vars.palette.error.main),
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Icon sx={{ml: 1}} fontSize="inherit">
-                    {evolution > 0 ? 'north' : 'south'}
-                  </Icon>
-                  <Box sx={{ml: 0.25}}>
-                    {evolution >= 0 && '+'}
-                    {(evolution * 100).toFixed(Math.abs(evolution) > 0.1 ? fractionDigits : 1)}
-                  </Box>
-                  {children}
-                </Txt>
-                {!hideIndicatorTooltip && (
-                  <Tooltip title={tooltip}>
-                    <Icon sx={{fontSize: '15px !important'}} color="disabled">
-                      info
-                    </Icon>
-                  </Tooltip>
-                )}
-              </>
+              <ComparativeValue
+                sx={{fontSize}}
+                value={evolution * 100}
+                tooltip={hideIndicatorTooltip ? undefined : tooltip}
+                fractionDigits={fractionDigits}
+              />
             )}
             {!!showValue && (
               <Txt color="disabled" sx={{ml: 0.5, fontWeight: '400'}}>

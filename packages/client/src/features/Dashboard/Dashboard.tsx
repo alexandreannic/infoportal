@@ -121,7 +121,7 @@ export function Dashboard() {
             </>
           )}
         >
-          <Core.Btn icon="add" sx={{textTransform: 'capitalize'}}>
+          <Core.Btn icon="add" sx={{ml: .5, my: .25, textTransform: 'capitalize'}}>
             {m.new}
           </Core.Btn>
         </Core.Modal>

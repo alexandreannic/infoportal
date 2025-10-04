@@ -46,12 +46,12 @@ export class ChartHelper<K extends string = string> {
 
   static readonly multiple = <K extends string>({
     data,
-    base = 'percentOfTotalAnswers',
+    displayOption = 'percentOfTotalAnswers',
     filterValue,
   }: {
     data: Seq<K[] | undefined>
     filterValue?: K[]
-    base?: 'percentOfTotalAnswers' | 'percentOfTotalChoices'
+    displayOption?: 'percentOfTotalAnswers' | 'percentOfTotalChoices'
   }): ChartHelper<K> => {
     const filteredData = data.compact().filter(_ => {
       return filterValue ? seq(_).intersect(filterValue).length === 0 : true
@@ -59,7 +59,7 @@ export class ChartHelper<K extends string = string> {
     const flatData: K[] = filteredData.flatMap(_ => _)
     const obj = seq(flatData).reduceObject<Record<K, number>>((_, acc) => [_!, (acc[_!] ?? 0) + 1])
     const baseCount = fnSwitch(
-      base!,
+      displayOption!,
       {
         percentOfTotalAnswers: filteredData.length,
         percentOfTotalChoices: flatData.length,
