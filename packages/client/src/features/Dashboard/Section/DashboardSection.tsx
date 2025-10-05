@@ -47,7 +47,7 @@ export function DashboardSection() {
     const maxY = Math.max(...widgets.map(w => w.position.y + w.position.h))
     const data = await queryWidgetCreate.mutateAsync({
       ...form,
-      title: schema.translate.question(form.questionName),
+      // title: schema.translate.question(form.questionName),
       config: {},
       position: {x: 0, y: maxY, w: 6, h: 5},
     })
@@ -143,7 +143,11 @@ export function DashboardSection() {
               <Core.Modal
                 overrideActions={null}
                 content={close => (
-                  <WidgetCreate close={close} loading={queryWidgetCreate.isPending} onSubmit={createWidget} />
+                  <WidgetCreate
+                    close={close}
+                    loading={queryWidgetCreate.isPending}
+                    onSubmit={_ => createWidget(_).then(close)}
+                  />
                 )}
               >
                 <Core.Btn
