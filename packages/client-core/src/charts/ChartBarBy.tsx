@@ -78,7 +78,7 @@ export const ChartBarBy = <D extends Record<string, any>, K extends string>({
     return Obj.mapValues(current, (_, k) => {
       return {
         ..._,
-        comparativeValue: before[k].value,
+        comparativeValue: before[k]?.value,
       }
     })
   }, [current, before])

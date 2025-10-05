@@ -2,7 +2,7 @@ import {CartesianGrid, LabelList, Legend, Line, LineChart, ResponsiveContainer, 
 import * as React from 'react'
 import {ReactNode, useState} from 'react'
 import {Box, BoxProps, Checkbox, Theme, useTheme} from '@mui/material'
-import {map, Obj} from '@axanc/ts-utils'
+import {map, Obj, seq} from '@axanc/ts-utils'
 import {styleUtils} from '../core/theme'
 import {addMonths, format, isBefore, parse} from 'date-fns'
 import {chartConfig} from './index'
@@ -37,10 +37,11 @@ export type ChartLineData = {
   values: Record<string, number>
 }
 
-const addMissingKeyMonths = <T extends ChartLineData[]>(arr: T): T => {
+const addMissingKeyMonths = <T extends ChartLineData[]>(arr: T, lines: string[]): T => {
   // const monthsList = Array.from({length: differenceInMonths(new Date(period.end), new Date(period.start)) + 1}, (_, i) =>
   //   format(addMonths(new Date(period.start), i), 'yyyy-MM')
   // )
+  const emptyValue = seq(lines).reduceObject<Record<string, 0>>(_ => [_, 0])
   const result: ChartLineData[] = []
   const otherKeys = Obj.keys(arr[0] ?? {}).filter(_ => _ !== 'name')
   for (let i = 0; i < arr.length; i++) {
@@ -53,7 +54,7 @@ const addMissingKeyMonths = <T extends ChartLineData[]>(arr: T): T => {
         currentDate = addMonths(currentDate, 1)
         const newItem: any = {name: format(currentDate, 'yyyy-MM')}
         otherKeys.forEach(k => {
-          newItem[k] = 0
+          newItem[k] = emptyValue
         })
         result.push(newItem)
       }
@@ -87,7 +88,7 @@ export const ChartLine = ({
 
   const cleanedData = React.useMemo(() => {
     if (!data) return []
-    if (fixMissingMonths) data = addMissingKeyMonths(data)
+    if (fixMissingMonths) data = addMissingKeyMonths(data, lines)
     return data.map(row => ({
       name: row.name,
       ...row.values,
@@ -124,10 +125,13 @@ export const ChartLine = ({
         sx={{
           height: height,
           ml: hideYTicks ? 0 : -2,
+          minHeight: 200,
+          display: 'flex',
+          flexDirection: 'column',
           ...sx,
         }}
       >
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" style={{flex: 1}}>
           <LineChart data={cleanedData}>
             <CartesianGrid strokeDasharray="1 1" strokeWidth={0.5} vertical={false} />
             {!hideLegend && <Legend {...commonLegendProps} />}
