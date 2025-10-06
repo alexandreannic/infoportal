@@ -1,6 +1,6 @@
 import {Box, Icon, useTheme} from '@mui/material'
 import {widgetTypeToIcon} from '@/features/Dashboard/Widget/WidgetTypeIcon'
-import React, {memo, useEffect} from 'react'
+import React, {memo} from 'react'
 import {Core} from '@/shared'
 import {Ip} from 'infoportal-api-sdk'
 import {fnSwitch} from '@axanc/ts-utils'
@@ -25,9 +25,9 @@ export const WidgetCard = memo(
   }) => {
     const t = useTheme()
     const {dashboard} = useDashboardContext()
-    return (
+    const content = (
       <Core.Panel
-        savableAsImg={dashboard.enableChartDownload}
+        className="WidgetCard"
         onClick={() => onClick(widget.id)}
         sx={{
           p: 1,
@@ -45,7 +45,7 @@ export const WidgetCard = memo(
             {widget.title}
           </Core.Txt>
         )}
-        <Box sx={{flex: 1}}>
+        <Box className="WidgetCard-content" sx={{flex: 1}}>
           {fnSwitch(
             widget.type,
             {
@@ -62,6 +62,19 @@ export const WidgetCard = memo(
         </Box>
       </Core.Panel>
     )
+
+    if (dashboard.enableChartFullSize || dashboard.enableChartDownload) {
+      return (
+        <Core.PanelFeatures
+          sx={{right: `calc(${t.vars.spacing} * 3)`}}
+          expendable={dashboard.enableChartFullSize}
+          savableAsImg={dashboard.enableChartDownload}
+        >
+          {content}
+        </Core.PanelFeatures>
+      )
+    }
+    return content
   },
 )
 
