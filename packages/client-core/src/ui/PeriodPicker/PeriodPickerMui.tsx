@@ -25,15 +25,15 @@ const shortcutsItems: PickersShortcutsItem<DateRange<Date>>[] = (() => {
   return [...months, {label: 'Reset', getValue: () => [null, null] as any}]
 })()
 
-const toDateRange = (_?: [Date | undefined, Date | undefined]): DateRange<Date> => {
+const toDateRange = (_?: [Date | null | undefined, Date | null | undefined]): DateRange<Date> => {
   const [start, end] = _ ?? []
   return [start ?? null, end ?? null]
 }
 
-const revertNulls = (_?: [Date | null, Date | null]): [Date | undefined, Date | undefined] => {
-  const [start, end] = _ ?? []
-  return [start ?? undefined, end ?? undefined]
-}
+// const revertNulls = (_?: [Date | null, Date | null]): [Date | undefined, Date | undefined] => {
+//   const [start, end] = _ ?? []
+//   return [start ?? undefined, end ?? undefined]
+// }
 
 type DateChangeHandler = (range: DateRange<Date>) => void
 
@@ -47,7 +47,8 @@ export const PeriodPickerMui = ({
   fullWidth = true,
   sx,
 }: PeriodPickerProps) => {
-  const handleChange: DateChangeHandler = (range: DateRange<Date>) => onChange(revertNulls(range))
+  const handleChange: DateChangeHandler = (range: DateRange<Date>) => onChange(range)
+  // const handleChange: DateChangeHandler = (range: DateRange<Date>) => onChange(revertNulls(range))
 
   return (
     <DateRangePicker

@@ -33,7 +33,8 @@ export function DashboardSection() {
   const {m} = useI18n()
   const params = dashboardSectionRoute.useParams()
   const sectionId = params.sectionId as Ip.Dashboard.SectionId
-  const {workspaceId, schema, widgetsBySection, dashboard} = useDashboardContext()
+  const {workspaceId, filters, setFilters, dataRange, effectiveDataRange, schema, widgetsBySection, dashboard} =
+    useDashboardContext()
   const widgets = widgetsBySection.get(sectionId) ?? []
 
   const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id, sectionId})
@@ -94,6 +95,28 @@ export function DashboardSection() {
             width: '100%',
           }}
         >
+          <Core.DebouncedInput<[Date | null, Date | null]>
+            debounce={800}
+            value={[filters.period.start, filters.period.end]}
+            onChange={([start, end]) => {
+              setFilters(prev => ({
+                ...prev,
+                period: {start: start ?? effectiveDataRange.start, end: end ?? effectiveDataRange.end},
+              }))
+            }}
+          >
+            {(value, onChange) => (
+              <Core.PeriodPicker
+                sx={{mt: 0, mb: 1, mr: 1}}
+                value={value}
+                onChange={onChange}
+                label={[m.start, m.endIncluded]}
+                min={effectiveDataRange.start}
+                max={effectiveDataRange.end}
+                fullWidth={false}
+              />
+            )}
+          </Core.DebouncedInput>
           <Box
             sx={{
               background: 'rgba(0,0,0,.04)',
@@ -118,7 +141,7 @@ export function DashboardSection() {
               draggableHandle=".drag-handle"
             >
               {widgets.map(widget => (
-                <div key={widget.id}>
+                <Box key={widget.id} sx={{height: '100%'}}>
                   <WidgetCard
                     onClick={selectWidget}
                     status={editingWidget?.id === widget.id ? 'editing' : undefined}
@@ -136,7 +159,7 @@ export function DashboardSection() {
                   >
                     drag_indicator
                   </Icon>
-                </div>
+                </Box>
               ))}
             </GridLayout>
             <Box sx={{p: 1, pt: 0}}>

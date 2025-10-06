@@ -1,5 +1,5 @@
 import type * as Prisma from '@prisma/client'
-import {Brand} from './Common.js'
+import {Brand, Nullable} from './Common.js'
 import {Form, FormId} from './Form.js'
 import {Workspace, WorkspaceId} from './Workspace.js'
 import {User} from './User'
@@ -21,6 +21,7 @@ export type Dashboard = {
   end?: Date
   filters?: Widget.ConfigFilter
   enableChartDownload?: boolean
+  enableChartFullSize?: boolean
   periodComparisonDelta?: number
 }
 
@@ -44,7 +45,7 @@ export namespace Dashboard {
     }
     export type Update = Pick<Dashboard, 'id' | 'workspaceId'> &
       Partial<
-        Pick<
+        Nullable<Pick<
           Dashboard,
           | 'name'
           // 'slug'|
@@ -57,7 +58,7 @@ export namespace Dashboard {
           | 'enableChartDownload'
           | 'periodComparisonDelta'
         >
-      >
+      >>
   }
 
   export type SectionId = Brand<string, 'SectionId'>

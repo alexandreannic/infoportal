@@ -1,5 +1,9 @@
 import type * as Prisma from '@prisma/client'
 
+export type Nullable<T> = {
+  [P in keyof T]: T[P] | null
+}
+
 export type NullToOptional<T> = {
   // keep required keys (no null)
   [K in keyof T as null extends T[K] ? never : K]: T[K] extends object ? NullToOptional<T[K]> : T[K]

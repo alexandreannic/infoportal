@@ -24,22 +24,17 @@ export const dashboardSettingsRoute = createRoute({
   component: DashboardSettings,
 })
 
-type SettingsForm = Pick<
-  Ip.Dashboard,
-  'isPublic' | 'name' | 'start' | 'end' | 'filters' | 'enableChartDownload' | 'periodComparisonDelta'
->
-
 export function DashboardSettings() {
   const {m, formatDate} = useI18n()
   const t = useTheme()
   const {conf} = useAppSettings()
   const {toastLoading, toastSuccess} = useIpToast()
-  const {workspaceId, dashboard, schema, flatSubmissions} = useDashboardContext()
+  const {workspaceId, dashboard, effectiveDataRange, dataRange, schema, flatSubmissions} = useDashboardContext()
   const queryWorkspace = UseQueryWorkspace.getById(workspaceId)
   const queryUpdate = UseQueryDashboard.update({workspaceId})
   const [isEditingTitle, setIsEditingTitle] = useState(false)
 
-  const form = useForm<SettingsForm>({
+  const form = useForm<Ip.Dashboard.Payload.Update>({
     defaultValues: {
       name: dashboard.name,
       isPublic: dashboard.isPublic,
@@ -62,18 +57,6 @@ export function DashboardSettings() {
       queryUpdate.mutateAsync({id: dashboard.id, ...debouncedValues})
   }, [debouncedValues])
 
-  const {min, max} = useMemo(() => {
-    if (!flatSubmissions || flatSubmissions.length === 0) return {}
-    let min = flatSubmissions[0].submissionTime.getTime()
-    let max = flatSubmissions[0].submissionTime.getTime()
-    for (let i = 1; i < flatSubmissions.length - 1; i++) {
-      const time = flatSubmissions[i].submissionTime.getTime()
-      if (min > time) min = time
-      else if (max < time) max = time
-    }
-    return {min: new Date(min), max: new Date(max)}
-  }, [flatSubmissions])
-
   const url =
     queryWorkspace.data && conf
       ? new URL(Ip.Dashboard.buildPath(queryWorkspace.data, dashboard), conf.baseURL).toString()
@@ -82,6 +65,9 @@ export function DashboardSettings() {
   return (
     <TabContent width="xs">
       <Core.Panel>
+        {JSON.stringify(dataRange)}
+        <br />
+        {JSON.stringify(effectiveDataRange)}
         <Core.PanelHead action={url && <PopoverShareLink url={url} />}>
           {isEditingTitle ? (
             <Controller
@@ -131,8 +117,8 @@ export function DashboardSettings() {
                   desc={m._dashboard.filterPeriodDesc}
                   action={
                     <Core.PeriodPicker
-                      min={min}
-                      max={max}
+                      min={dataRange.start}
+                      max={dataRange.end}
                       value={[start, end]}
                       onChange={([newStart, newEnd]) => {
                         form.setValue('start', newStart)
@@ -219,7 +205,7 @@ export function DashboardSettings() {
                 control={form.control}
                 name="isPublic"
                 render={({field}) => (
-                  <Switch checked={field.value} onChange={(e, checked) => field.onChange(checked)} />
+                  <Switch checked={!!field.value} onChange={(e, checked) => field.onChange(checked)} />
                 )}
               />
             }

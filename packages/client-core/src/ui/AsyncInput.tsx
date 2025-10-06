@@ -14,7 +14,7 @@ const useDebouncedValue = <T,>(value: T, delay: number) => {
 type AsyncInputBase<T extends string | number = string | number> = {
   loading?: boolean
   debounce?: number
-  value?: T
+  value?: T | null
   originalValue?: T | null
   onChange?: (val: T | undefined) => void
   onSubmit?: (val: T | undefined) => Promise<void> | void

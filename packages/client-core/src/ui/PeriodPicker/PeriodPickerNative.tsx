@@ -7,9 +7,9 @@ import {useI18n} from '@infoportal/client-i18n'
 export interface PeriodPickerNativeProps extends Omit<BoxProps, 'defaultValue' | 'onChange'> {
   min?: Date
   max?: Date
-  value?: [Date | undefined, Date | undefined]
+  value?: [Date | undefined | null, Date | undefined | null]
   defaultValue?: [Date | undefined, Date | undefined]
-  onChange: (_: [Date | undefined, Date | undefined]) => void
+  onChange: (_: [Date | null, Date | null]) => void
   label?: [string, string]
   fullWidth?: boolean
 }
