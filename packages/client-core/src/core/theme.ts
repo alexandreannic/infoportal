@@ -58,11 +58,11 @@ export const styleUtils = (t: Theme) => ({
   backdropFilter: 'blur(10px)',
   gridSpacing: 3 as any,
   fontSize: {
-    big: `calc(${t.typography.fontSize} * 1.15)`,
-    normal: `calc(${t.typography.fontSize})`,
-    small: `calc(${t.typography.fontSize} * 0.85)`,
-    title: `calc(${t.typography.fontSize} * 1.3)`,
-    bigTitle: `calc(${t.typography.fontSize} * 1.6)`,
+    big: `calc(${t.typography.fontSize}px * 1.15)`,
+    normal: t.typography.fontSize,
+    small: `calc(${t.typography.fontSize}px * 0.85)`,
+    title: `calc(${t.typography.fontSize}px * 1.3)`,
+    bigTitle: `calc(${t.typography.fontSize}px * 1.6)`,
   },
   color: {
     backgroundActive: {

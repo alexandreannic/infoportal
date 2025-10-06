@@ -1,14 +1,16 @@
 import * as React from 'react'
-import {forwardRef} from 'react'
-import {PanelBody} from './PanelBody'
+import {ForwardedRef, forwardRef} from 'react'
+import {PanelBody, PanelBodyProps} from './PanelBody'
 import {Panel, PanelProps} from './Panel'
 
-export type PanelWBodyProps = PanelProps
+export type PanelWBodyProps = PanelProps & {
+  BodyProps?: PanelBodyProps
+}
 
-export const PanelWBody = forwardRef(({children, title, ...other}: PanelWBodyProps, ref: any) => {
+export const PanelWBody = forwardRef(({BodyProps, children, title, ...other}: PanelWBodyProps, ref: ForwardedRef<any>) => {
   return (
-    <Panel title={title} {...other}>
-      <PanelBody>{children}</PanelBody>
+    <Panel title={title} {...other} ref={ref}>
+      <PanelBody {...BodyProps}>{children}</PanelBody>
     </Panel>
   )
 })

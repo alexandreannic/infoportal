@@ -7,7 +7,6 @@ import {Box, BoxProps, CircularProgress, Grid, Icon, useTheme} from '@mui/materi
 import {Obj, seq} from '@axanc/ts-utils'
 import {UseQueryForm} from '@/core/query/useQueryForm.js'
 import {useSetState} from '@axanc/react-hooks'
-import {SlideWidget} from '@/shared/PdfLayout/PdfSlide.js'
 import {appConfig} from '@/conf/AppConfig.js'
 import {useI18n} from '@infoportal/client-i18n'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
@@ -19,6 +18,7 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext.js'
 import {openCanvasInNewTab, statusConfig} from '@infoportal/client-core'
 import html2canvas from 'html2canvas'
 import {content} from 'html2canvas/dist/types/css/property-descriptors/content'
+import {PanelWidget} from '@/shared/PdfLayout/PanelWidget'
 
 export const overviewRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -114,14 +114,14 @@ function Overview() {
   )
 
   const widgetSubmissionsCount = (
-    <SlideWidget title={m.submissions} icon={appConfig.icons.submission}>
+    <PanelWidget title={m.submissions} icon={appConfig.icons.submission}>
       {formatLargeNumber(submissionsCount)}
-    </SlideWidget>
+    </PanelWidget>
   )
   const formsCount = (
-    <SlideWidget title={m.forms} icon={appConfig.icons.database}>
+    <PanelWidget title={m.forms} icon={appConfig.icons.database}>
       {formatLargeNumber(queryForms.data?.length)}
-    </SlideWidget>
+    </PanelWidget>
   )
 
   const formsLinkedToKobo = useMemo(() => {
@@ -130,9 +130,9 @@ function Overview() {
     const base = queryForms.data.length ?? 1
     if (value === 0) {
       return (
-        <SlideWidget title={m.users} icon={appConfig.icons.users}>
+        <PanelWidget title={m.users} icon={appConfig.icons.users}>
           {formatLargeNumber(queryUsers.data?.length)}
-        </SlideWidget>
+        </PanelWidget>
       )
     }
     return (
