@@ -80,14 +80,33 @@ export function SettingsPieChart() {
         />
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.customize}>
-        <SwitchBox sx={{mb: 1}} {...form.register('showValue')} size="small" label={m._dashboard.showValue} />
-        <SwitchBox
-          size="small"
-          disabled={!values.showValue}
-          sx={{mb: 1}}
-          {...form.register('showBase')}
-          label={m._dashboard.showBase}
+        <Controller
+          name="showValue"
+          control={form.control}
+          render={({field, fieldState}) => (
+            <SwitchBox
+              checked={field.value}
+              onChange={(e, checked) => field.onChange(checked)}
+              size="small"
+              label={m._dashboard.showValue}
+              sx={{mb: 1}}
+            />
+          )}
         />
+        <Controller
+          name="showBase"
+          control={form.control}
+          render={({field, fieldState}) => (
+            <SwitchBox
+              checked={field.value}
+              onChange={(e, checked) => field.onChange(checked)}
+              size="small"
+              label={m._dashboard.showBase}
+              sx={{mb: 1}}
+            />
+          )}
+        />
+
         <Controller
           name="showEvolution"
           control={form.control}
@@ -104,7 +123,19 @@ export function SettingsPieChart() {
             )
           }}
         />
-        <SwitchBox {...form.register('dense')} size="small" label={m.smaller} />
+        <Controller
+          name="dense"
+          control={form.control}
+          render={({field, fieldState}) => (
+            <SwitchBox
+              checked={field.value}
+              onChange={(e, checked) => field.onChange(checked)}
+              size="small"
+              label={m.smaller}
+              sx={{mb: 1}}
+            />
+          )}
+        />
       </WidgetSettingsSection>
     </>
   )

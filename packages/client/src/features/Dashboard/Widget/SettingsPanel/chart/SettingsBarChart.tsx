@@ -24,7 +24,10 @@ export function SettingsBarChart() {
   const {question, choices} = useQuestionInfo(config.questionName)
   const form = useForm<Ip.Dashboard.Widget.Config['BarChart']>({
     mode: 'onChange',
-    defaultValues: widget.config,
+    defaultValues: {
+      ...widget.config,
+      showEvolution: config.showEvolution ?? true,
+    },
   })
 
   useEffect(() => {
@@ -84,8 +87,32 @@ export function SettingsBarChart() {
             </Box>
           )}
         />
-        <SwitchBox {...form.register('showEvolution')} size="small" label={m._dashboard.showEvolution} sx={{mb: 1}} />
-        <SwitchBox {...form.register('showValue')} size="small" label={m._dashboard.showValue} />
+        <Controller
+          name="showEvolution"
+          control={form.control}
+          render={({field, fieldState}) => (
+            <SwitchBox
+              checked={field.value}
+              onChange={(e, checked) => field.onChange(checked)}
+              size="small"
+              label={m._dashboard.showEvolution}
+              sx={{mb: 1}}
+            />
+          )}
+        />
+        <Controller
+          name="showValue"
+          control={form.control}
+          render={({field, fieldState}) => (
+            <SwitchBox
+              checked={field.value}
+              onChange={(e, checked) => field.onChange(checked)}
+              size="small"
+              label={m._dashboard.showValue}
+              sx={{mb: 1}}
+            />
+          )}
+        />
       </WidgetSettingsSection>
     </Box>
   )

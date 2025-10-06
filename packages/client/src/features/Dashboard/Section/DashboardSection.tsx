@@ -135,7 +135,7 @@ export function DashboardSection() {
               }}
               layout={layout}
               margin={[8, 8]}
-              rowHeight={30}
+              rowHeight={10}
               width={layoutWidth}
               cols={12}
               draggableHandle=".drag-handle"

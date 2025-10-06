@@ -36,15 +36,15 @@ export const ComparativeValue = ({
       >
         <Icon sx={{ml: 1, width: 24}} fontSize="inherit">
           {fnSwitch(type, {
-            // equal: 'equal',
+            equal: 'equal',
             more: 'north',
             less: 'south',
           }, () => '')}
         </Icon>
         <Box sx={{ml: 0.25}}>
           {value > 0 && '+'}
-          {value === 0 && '='}
-          {value.toFixed(value >= 10 ? fractionDigits : 1)}
+          {/*{value === 0 && '='}*/}
+          {value !== 0 && value.toFixed(value >= 10 ? fractionDigits : 1)}
         </Box>
         {children}
       </Txt>
