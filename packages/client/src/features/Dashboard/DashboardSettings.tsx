@@ -34,13 +34,14 @@ export function DashboardSettings() {
   const queryUpdate = UseQueryDashboard.update({workspaceId})
   const [isEditingTitle, setIsEditingTitle] = useState(false)
 
-  const form = useForm<Ip.Dashboard.Payload.Update>({
+  const form = useForm<Omit<Ip.Dashboard.Payload.Update, 'id' | 'workspaceId'>>({
     defaultValues: {
       name: dashboard.name,
       isPublic: dashboard.isPublic,
       start: dashboard.start,
       end: dashboard.end,
       filters: dashboard.filters,
+      enableChartFullSize: dashboard.enableChartFullSize,
       enableChartDownload: dashboard.enableChartDownload,
       periodComparisonDelta: dashboard.periodComparisonDelta,
     },
@@ -65,9 +66,6 @@ export function DashboardSettings() {
   return (
     <TabContent width="xs">
       <Core.Panel>
-        {JSON.stringify(dataRange)}
-        <br />
-        {JSON.stringify(effectiveDataRange)}
         <Core.PanelHead action={url && <PopoverShareLink url={url} />}>
           {isEditingTitle ? (
             <Controller

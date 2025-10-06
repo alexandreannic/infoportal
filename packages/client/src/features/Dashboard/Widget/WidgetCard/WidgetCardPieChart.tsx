@@ -36,7 +36,7 @@ export function WidgetCardPieChart({widget}: {widget: Ip.Dashboard.Widget}) {
       title={widget.title}
       data={filteredData}
       compare={
-        filteredDataBefore && !config.hideEvolution
+        filteredDataBefore && config.showEvolution
           ? {
               before: filteredDataBefore,
             }

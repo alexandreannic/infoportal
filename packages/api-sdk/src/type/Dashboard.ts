@@ -45,20 +45,23 @@ export namespace Dashboard {
     }
     export type Update = Pick<Dashboard, 'id' | 'workspaceId'> &
       Partial<
-        Nullable<Pick<
-          Dashboard,
-          | 'name'
-          // 'slug'|
-          | 'description'
-          | 'deploymentStatus'
-          | 'isPublic'
-          | 'start'
-          | 'end'
-          | 'filters'
-          | 'enableChartDownload'
-          | 'periodComparisonDelta'
+        Nullable<
+          Pick<
+            Dashboard,
+            | 'name'
+            // 'slug'|
+            | 'description'
+            | 'deploymentStatus'
+            | 'isPublic'
+            | 'start'
+            | 'end'
+            | 'filters'
+            | 'enableChartDownload'
+            | 'enableChartFullSize'
+            | 'periodComparisonDelta'
+          >
         >
-      >>
+      >
   }
 
   export type SectionId = Brand<string, 'SectionId'>

@@ -9,7 +9,7 @@ export interface PeriodPickerNativeProps extends Omit<BoxProps, 'defaultValue' |
   max?: Date
   value?: [Date | undefined | null, Date | undefined | null]
   defaultValue?: [Date | undefined, Date | undefined]
-  onChange: (_: [Date | null, Date | null]) => void
+  onChange: (_: [Date | null | undefined, Date | null | undefined]) => void
   label?: [string, string]
   fullWidth?: boolean
 }

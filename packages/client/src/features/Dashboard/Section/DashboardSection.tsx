@@ -95,7 +95,7 @@ export function DashboardSection() {
             width: '100%',
           }}
         >
-          <Core.DebouncedInput<[Date | null, Date | null]>
+          <Core.DebouncedInput<[Date | null | undefined, Date | null | undefined]>
             debounce={800}
             value={[filters.period.start, filters.period.end]}
             onChange={([start, end]) => {
