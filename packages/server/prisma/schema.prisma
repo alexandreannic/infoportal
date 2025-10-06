@@ -453,6 +453,7 @@ model Dashboard {
   end                   DateTime?
   filters               Json?
   enableChartDownload   Boolean?
+  enableChartFullSize   Boolean?
   periodComparisonDelta Int?
 }
 

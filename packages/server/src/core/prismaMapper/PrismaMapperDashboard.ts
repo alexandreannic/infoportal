@@ -8,6 +8,7 @@ export const mapDashboard = <
     start: Date | null
     end: Date | null
     filters: any | null
+    enableChartFullSize: boolean | null
     enableChartDownload: boolean | null
     periodComparisonDelta: number | null
     sourceFormId: string
@@ -26,6 +27,7 @@ export const mapDashboard = <
     start?: Date
     end?: Date
     filters?: Ip.Dashboard.Widget.ConfigFilter
+    enableChartFullSize?: boolean
     enableChartDownload?: boolean
     periodComparisonDelta?: number
   }

@@ -2,6 +2,7 @@ import * as React from 'react'
 import {forwardRef, ReactNode} from 'react'
 import {Box, Card, CardProps, LinearProgress, useTheme} from '@mui/material'
 import {PanelHead} from './PanelHead'
+import {PanelOutsideTitle} from './PanelOutsideTitle'
 
 export interface PanelProps extends Omit<CardProps, 'title'> {
   loading?: boolean
@@ -9,12 +10,13 @@ export interface PanelProps extends Omit<CardProps, 'title'> {
   stretch?: boolean
   elevation?: number
   title?: ReactNode
+  outsideTitle?: ReactNode
 }
 
 export const Panel = forwardRef(
-  ({elevation, hoverable, loading, children, stretch, sx, title, ...other}: PanelProps, ref: any) => {
+  ({elevation, outsideTitle, hoverable, loading, children, stretch, sx, title, ...other}: PanelProps, ref: any) => {
     const t = useTheme()
-    return (
+    const content = (
       <Card
         ref={ref}
         elevation={elevation}
@@ -49,5 +51,13 @@ export const Panel = forwardRef(
         {children}
       </Card>
     )
+    if (outsideTitle)
+      return (
+        <>
+          <PanelOutsideTitle>{outsideTitle}</PanelOutsideTitle>
+          {content}
+        </>
+      )
+    return content
   },
 )

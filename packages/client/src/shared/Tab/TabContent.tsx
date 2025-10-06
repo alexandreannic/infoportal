@@ -27,7 +27,8 @@ export const TabContent = ({
         overflowY: 'scroll',
         flex: 1,
         minHeight: 0,
-        mt: 1,
+        mt: .25,
+        pt: .75,
       }}
     >
       <Box sx={{...widthStyle, ...sx}} {...props} children={loading ? <PagePlaceholder /> : children} />

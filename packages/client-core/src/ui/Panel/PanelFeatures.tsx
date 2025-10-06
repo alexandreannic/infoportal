@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {cloneElement, useRef, useState, ReactElement, useEffect, ReactNode} from 'react'
-import {Box, useTheme, SxProps} from '@mui/material'
+import {Box, useTheme, SxProps, Modal} from '@mui/material'
 import html2canvas from 'html2canvas'
 import {IconBtn} from '../IconBtn'
 import {openCanvasInNewTab} from '../../core'
@@ -66,33 +66,75 @@ export const PanelFeatures = ({children, expendable, savableAsImg, sx}: PanelFea
     </Box>
   )
 
-  return cloneElement(children, {
+  const base = cloneElement(children, {
     ref: contentRef,
     className: `panel-root ${children.props.className ?? ''}`,
     sx: {
       ...children.props.sx,
       position: 'relative',
-      ...(expanded && {
-        zIndex: 9999,
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        m: 0,
-        p: 2,
-        bgcolor: t.palette.background.default,
-        overflow: 'auto',
-      }),
-      '&:hover .panel-features': {
-        display: 'flex',
-      },
+      '&:hover .panel-features': {display: 'flex'},
     },
     children: (
       <>
         {children.props.children}
-        {(expendable || savableAsImg) && toolbar}
+        {(!expanded && (expendable || savableAsImg)) && toolbar}
       </>
     ),
   })
+
+  return (
+    <>
+      {base}
+      {expendable && (
+        <Modal open={expanded} onClose={() => setExpanded(false)} closeAfterTransition sx={{zIndex: 9999, p: 2}}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              overflow: 'auto',
+              bgcolor: t.palette.background.default,
+              display: 'flex',
+              flexDirection: 'column',
+              p: 2,
+            }}
+          >
+            {cloneElement(base, {
+              sx: {
+                ...base.props.sx,
+                m: 0,
+                flex: 1,
+                boxShadow: 'none',
+              },
+              children: (
+                <>
+                  {base.props.children}
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      display: 'flex',
+                      gap: 1,
+                    }}
+                  >
+                    <IconBtn size="small" sx={{color: t.palette.text.disabled}} onClick={() => setExpanded(false)}>
+                      fullscreen_exit
+                    </IconBtn>
+                    {savableAsImg && (
+                      <IconBtn size="small" sx={{color: t.palette.text.disabled}} onClick={saveAsImg}>
+                        download
+                      </IconBtn>
+                    )}
+                  </Box>
+                </>
+              ),
+            })}
+          </Box>
+        </Modal>
+      )}
+    </>
+  )
 }

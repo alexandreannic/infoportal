@@ -43,25 +43,19 @@ export namespace Dashboard {
       sourceFormId: FormId
       isPublic: boolean
     }
-    export type Update = Pick<Dashboard, 'id' | 'workspaceId'> &
-      Partial<
-        Nullable<
-          Pick<
-            Dashboard,
-            | 'name'
-            // 'slug'|
-            | 'description'
-            | 'deploymentStatus'
-            | 'isPublic'
-            | 'start'
-            | 'end'
-            | 'filters'
-            | 'enableChartDownload'
-            | 'enableChartFullSize'
-            | 'periodComparisonDelta'
-          >
-        >
-      >
+    export type Update = {
+      id: Dashboard['id']
+      workspaceId: Dashboard['workspaceId']
+      deploymentStatus?: Dashboard['deploymentStatus']
+      name?: Dashboard['name']
+      description?: Dashboard['description'] | null
+      start?: Dashboard['start'] | null
+      end?: Dashboard['end'] | null
+      filters?: Dashboard['filters'] | null
+      enableChartDownload?: Dashboard['enableChartDownload'] | null
+      enableChartFullSize?: Dashboard['enableChartFullSize'] | null
+      periodComparisonDelta?: Dashboard['periodComparisonDelta'] | null
+    }
   }
 
   export type SectionId = Brand<string, 'SectionId'>
