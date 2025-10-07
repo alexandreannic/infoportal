@@ -273,10 +273,13 @@ function Overview() {
 
   const submissionsByUser = useMemo(() => {
     if (!querySubmissionsByUser.data) return
-    console.log(includeKoboAccounts)
-    const dataFiltered = includeKoboAccounts
-      ? querySubmissionsByUser.data
-      : querySubmissionsByUser.data.filter(_ => !Ip.User.isKoboUserName(_.key))
+
+    const hasKoboAccounts = querySubmissionsByUser.data.some(_ => Ip.User.isKoboUserName(_.key))
+
+    const dataFiltered =
+      hasKoboAccounts && includeKoboAccounts
+        ? querySubmissionsByUser.data
+        : querySubmissionsByUser.data.filter(_ => !Ip.User.isKoboUserName(_.key))
     const byUser = seq(dataFiltered).groupByFirst(_ => _.key)
     const data = new Obj(byUser)
       .mapValues(_ => {
@@ -301,22 +304,19 @@ function Overview() {
       <Core.Panel>
         <Core.PanelHead
           action={
-            <SwitchBox
-              size="small"
-              value={includeKoboAccounts}
-              onChange={(e, c) => setIncludeKoboAccounts(c)}
-              label={m._overview.includeKoboUsers}
-            />
+            hasKoboAccounts && (
+              <SwitchBox
+                size="small"
+                value={includeKoboAccounts}
+                onChange={(e, c) => setIncludeKoboAccounts(c)}
+                label={m._overview.includeKoboUsers}
+              />
+            )
           }
         >
           {m.submissionsByUser + ` (${querySubmissionsByUser.data?.length})`}
         </Core.PanelHead>
         <Core.PanelBody>
-          {querySubmissionsByUser.data?.some(_ => _.key && _.key.length > 1 && !_.key.includes('@')) && (
-            <Core.Alert sx={{mb: 1}} severity="info">
-              {m.includeKoboAccountNames}
-            </Core.Alert>
-          )}
           <ViewMoreDiv>
             <Core.ChartBar dense data={data} />
           </ViewMoreDiv>
