@@ -6,7 +6,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {Box, BoxProps, CircularProgress, Grid, Icon, useTheme} from '@mui/material'
 import {Obj, seq} from '@axanc/ts-utils'
 import {UseQueryForm} from '@/core/query/useQueryForm.js'
-import {useSetState} from '@axanc/react-hooks'
+import {usePersistentState, useSetState} from '@axanc/react-hooks'
 import {appConfig} from '@/conf/AppConfig.js'
 import {useI18n} from '@infoportal/client-i18n'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
@@ -19,6 +19,7 @@ import {openCanvasInNewTab, statusConfig} from '@infoportal/client-core'
 import html2canvas from 'html2canvas'
 import {content} from 'html2canvas/dist/types/css/property-descriptors/content'
 import {PanelWidget} from '@/shared/PdfLayout/PanelWidget'
+import {SwitchBox} from '@/shared/SwitchBox'
 
 export const overviewRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -71,6 +72,9 @@ function Overview() {
   const {setTitle} = useLayoutContext()
   const workspaceId = overviewRoute.useParams().workspaceId as Ip.WorkspaceId
 
+  const [includeKoboAccounts, setIncludeKoboAccounts] = usePersistentState(false, {
+    storageKey: 'Overview-includeKoboAccounts',
+  })
   useEffect(() => {
     setTitle(m.overview)
   }, [])
@@ -124,20 +128,46 @@ function Overview() {
     </PanelWidget>
   )
 
-  const formsLinkedToKobo = useMemo(() => {
+  const formsImportedToKoboCount = useMemo(() => {
+    return queryForms.data?.count(_ => Ip.Form.isKobo(_)) ?? 0
+  }, [queryForms.data])
+
+  const formsImportedFromKobo = useMemo(() => {
     if (!queryForms.data) return <Core.Panel sx={{height: '100%'}} />
-    const value = queryForms.data.count(_ => !!_.kobo) ?? 0
     const base = queryForms.data.length ?? 1
-    if (value === 0) {
-      return (
-        <PanelWidget title={m.users} icon={appConfig.icons.users}>
-          {formatLargeNumber(queryUsers.data?.length)}
-        </PanelWidget>
-      )
-    }
     return (
       <Core.Panel sx={{height: '100%', py: 1, px: 2, display: 'flex', alignItems: 'center'}}>
-        <Core.ChartPieWidget title={m.connectedToKobo} dense showValue showBase value={value} base={base} />
+        <Core.ChartPieWidget
+          title={m.ImportedFromKobo}
+          dense
+          showValue
+          showBase
+          value={formsImportedToKoboCount}
+          base={base}
+        />
+      </Core.Panel>
+    )
+  }, [formsImportedToKoboCount])
+
+  const formsLinkedToKobo = useMemo(() => {
+    if (!queryForms.data) return <Core.Panel sx={{height: '100%'}} />
+    const value = queryForms.data.count(_ => Ip.Form.isConnectedToKobo(_)) ?? 0
+    const base = queryForms.data.length ?? 1
+    //     <PanelWidget title={m.users} icon={appConfig.icons.users}>
+    //       {formatLargeNumber(queryUsers.data?.length)}
+    //     </PanelWidget>
+    return (
+      <Core.Panel sx={{height: '100%', py: 1, px: 2, display: 'flex', alignItems: 'center'}}>
+        <Core.ChartPieWidget
+          title={m.connectedToKobo}
+          fractionDigits={0}
+          evolution={value - formsImportedToKoboCount}
+          dense
+          showValue
+          showBase
+          value={value}
+          base={base}
+        />
       </Core.Panel>
     )
   }, [queryForms.data])
@@ -161,10 +191,9 @@ function Overview() {
   )
 
   const map = (
-    <Core.ChartGeo
-      panelTitle={m.submissionsByLocation}
-      data={queryUsersByIsoCode.data?.map(_ => ({iso: _.key, count: _.count}))}
-    />
+    <Core.Panel title={m.submissionsByLocation}>
+      <Core.ChartGeo data={queryUsersByIsoCode.data?.map(_ => ({iso: _.key, count: _.count}))} />
+    </Core.Panel>
   )
   const submissionByTime = useMemo(() => {
     if (!querySubmissionByMonth.data) return
@@ -236,7 +265,7 @@ function Overview() {
       }
     })
     return (
-      <Core.PanelWBody title={m.users}>
+      <Core.PanelWBody title={`${m.users} (${queryUsers.data?.length ?? '-'})`}>
         <Core.ChartLine hideLabelToggle hideLegend data={data} />
       </Core.PanelWBody>
     )
@@ -244,7 +273,11 @@ function Overview() {
 
   const submissionsByUser = useMemo(() => {
     if (!querySubmissionsByUser.data) return
-    const byUser = seq(querySubmissionsByUser.data).groupByFirst(_ => _.key)
+    console.log(includeKoboAccounts)
+    const dataFiltered = includeKoboAccounts
+      ? querySubmissionsByUser.data
+      : querySubmissionsByUser.data.filter(_ => !Ip.User.isKoboUserName(_.key))
+    const byUser = seq(dataFiltered).groupByFirst(_ => _.key)
     const data = new Obj(byUser)
       .mapValues(_ => {
         return {
@@ -265,18 +298,32 @@ function Overview() {
       })
       .get()
     return (
-      <Core.PanelWBody title={m.submissionsByUser + ` (${querySubmissionsByUser.data?.length})`}>
-        {querySubmissionsByUser.data?.some(_ => _.key && _.key.length > 1 && !_.key.includes('@')) && (
-          <Core.Alert sx={{mb: 1}} severity="info">
-            {m.includeKoboAccountNames}
-          </Core.Alert>
-        )}
-        <ViewMoreDiv>
-          <Core.ChartBar dense data={data} />
-        </ViewMoreDiv>
-      </Core.PanelWBody>
+      <Core.Panel>
+        <Core.PanelHead
+          action={
+            <SwitchBox
+              size="small"
+              value={includeKoboAccounts}
+              onChange={(e, c) => setIncludeKoboAccounts(c)}
+              label={m._overview.includeKoboUsers}
+            />
+          }
+        >
+          {m.submissionsByUser + ` (${querySubmissionsByUser.data?.length})`}
+        </Core.PanelHead>
+        <Core.PanelBody>
+          {querySubmissionsByUser.data?.some(_ => _.key && _.key.length > 1 && !_.key.includes('@')) && (
+            <Core.Alert sx={{mb: 1}} severity="info">
+              {m.includeKoboAccountNames}
+            </Core.Alert>
+          )}
+          <ViewMoreDiv>
+            <Core.ChartBar dense data={data} />
+          </ViewMoreDiv>
+        </Core.PanelBody>
+      </Core.Panel>
     )
-  }, [querySubmissionsByUser.data])
+  }, [includeKoboAccounts, querySubmissionsByUser.data])
 
   return (
     <Page width="lg">
@@ -305,10 +352,9 @@ function Overview() {
       />
       <Grid container>
         <Grid size={{xs: 12, sm: 6}}>
-          <Grid container sx={{mb: 1}}>
-            <Grid size={{xs: 6, sm: 4}}>{widgetSubmissionsCount}</Grid>
-            <Grid size={{xs: 6, sm: 4}}>{formsCount}</Grid>
-            <Grid size={{xs: 6, sm: 4}}>{formsLinkedToKobo}</Grid>
+          <Grid container>
+            <Grid size={{xs: 6, sm: 6}}>{widgetSubmissionsCount}</Grid>
+            <Grid size={{xs: 6, sm: 6}}>{formsCount}</Grid>
           </Grid>
           {pieChartValidation}
           {submissionByTime}
@@ -316,6 +362,10 @@ function Overview() {
           {submissionsByCategory}
         </Grid>
         <Grid size={{xs: 12, sm: 6}}>
+          <Grid container>
+            <Grid size={{xs: 6, sm: 6}}>{formsImportedFromKobo}</Grid>
+            <Grid size={{xs: 6, sm: 6}}>{formsLinkedToKobo}</Grid>
+          </Grid>
           {map}
           {usersByDate}
           {submissionsByUser}

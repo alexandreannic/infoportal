@@ -138,6 +138,7 @@ export const en = Object.freeze({
     submissionsByUser: 'Submissions by user',
     submissionsByForm: 'Submissions by form',
     connectedToKobo: 'Connected to Kobo',
+    ImportedFromKobo: 'Connected to Kobo',
     includeKoboAccountNames: "Include KoboToolbox account's name",
     copyLink: 'Copy link',
     copyResponderLink: 'Copy responder link',
@@ -508,6 +509,9 @@ export const en = Object.freeze({
     documentation: 'Documentation',
     general: 'General',
     email: 'Email',
+    _overview: {
+      includeKoboUsers: 'Include Kobo user names',
+    },
     _settings: {
       setCategoryDesc: 'Type something and press Enter to create a new category.',
       connectedToKobo: 'Connected to Kobo',

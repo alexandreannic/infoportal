@@ -46,6 +46,7 @@ export namespace Dashboard {
     export type Update = {
       id: Dashboard['id']
       workspaceId: Dashboard['workspaceId']
+      isPublic?: Dashboard['isPublic']
       deploymentStatus?: Dashboard['deploymentStatus']
       name?: Dashboard['name']
       description?: Dashboard['description'] | null
