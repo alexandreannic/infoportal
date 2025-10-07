@@ -72,7 +72,7 @@ export const ChartGeo = ({
       legend: 'none',
       enableRegionInteractivity: true,
       chartArea: {width: '100%', height: '10%', top: 10, bottom: 10, left: 10, right: 10},
-      colorAxis: {colors: [lighten(t.palette.primary.light, 0.7), t.palette.primary.dark]},
+      colorAxis: {colors: [lighten(t.palette.primary.light, 0.65), t.palette.primary.dark]},
       ...(selectedCountry && {
         displayMode: 'regions',
         region: selectedCountry,

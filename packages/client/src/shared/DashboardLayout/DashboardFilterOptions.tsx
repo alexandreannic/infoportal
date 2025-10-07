@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {ReactNode, useCallback} from 'react'
 import {BoxProps, Checkbox, FormControlLabel, FormGroup} from '@mui/material'
 import {DashboardFilterLabel} from './DashboardFilterLabel'
 import {useI18n} from '@infoportal/client-i18n'
@@ -53,15 +53,19 @@ export const DashboardFilterOptions = ({
     <DashboardFilterLabel
       icon={icon}
       active={value.length > 0}
-      label={
-        <>
-          {value.length > 0 ? valuesLabel()[0] : label}
-          {value.length > 1 && <>&nbsp;+ {value.length - 1}</>}
-        </>
-      }
+      label={<DashboardFilterValue label={label} values={valuesLabel()} />}
       children={open => open && <DashboardFilterOptionsContent {...props} value={value} onChange={onChange} />}
       {...props}
     />
+  )
+}
+
+export const DashboardFilterValue = ({values, label}: {label: string; values: ReactNode[]}) => {
+  return (
+    <>
+      {values.length > 0 ? values[0] : label}
+      {values.length > 1 && <>&nbsp;+ {values.length - 1}</>}
+    </>
   )
 }
 

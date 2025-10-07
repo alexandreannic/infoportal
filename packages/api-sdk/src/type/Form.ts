@@ -52,9 +52,9 @@ export namespace Form {
 
   export type Type = Prisma.FormType
   export const Type = {
+    internal: 'internal',
     kobo: 'kobo',
     smart: 'smart',
-    internal: 'internal',
   } as const
 
   export namespace Payload {

@@ -3,23 +3,20 @@ import {createRoute} from '@tanstack/react-router'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {useQueryMetrics} from '@/core/query/useQueryMetrics.js'
 import {Ip} from 'infoportal-api-sdk'
-import {Box, BoxProps, CircularProgress, Grid, Icon, useTheme} from '@mui/material'
+import {Box, Grid, useTheme} from '@mui/material'
 import {Obj, seq} from '@axanc/ts-utils'
 import {UseQueryForm} from '@/core/query/useQueryForm.js'
-import {usePersistentState, useSetState} from '@axanc/react-hooks'
+import {usePersistentState} from '@axanc/react-hooks'
 import {appConfig} from '@/conf/AppConfig.js'
 import {useI18n} from '@infoportal/client-i18n'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
-import {useEffect, useMemo, useRef, useState} from 'react'
-import {toPercent} from 'infoportal-common'
+import {useEffect, useMemo, useState} from 'react'
 import {addDays, subYears} from 'date-fns'
-import {DataFilterLayout} from '@/shared/DataFilter/DataFilterLayout.js'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext.js'
-import {openCanvasInNewTab, statusConfig} from '@infoportal/client-core'
-import html2canvas from 'html2canvas'
-import {content} from 'html2canvas/dist/types/css/property-descriptors/content'
 import {PanelWidget} from '@/shared/PdfLayout/PanelWidget'
 import {SwitchBox} from '@/shared/SwitchBox'
+import {PieChartStatus} from '@/features/Overview/PieChartStatus'
+import {OverviewFiltersBar} from '@/features/Overview/OverviewFiltersBar'
 
 export const overviewRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -27,43 +24,11 @@ export const overviewRoute = createRoute({
   component: Overview,
 })
 
-const PieChartStatus = ({
-  percent,
-  validation,
-  ...props
-}: {percent: number; validation: Ip.Submission.Validation} & BoxProps) => {
-  const {m} = useI18n()
-  const t = useTheme()
-  const type = Ip.Submission.validationToStatus[validation]
-  const style = statusConfig[type ?? 'disabled']
-  return (
-    <Box {...props}>
-      <Box sx={{position: 'relative'}}>
-        <Box
-          sx={{
-            zIndex: 1000,
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            right: 0,
-            left: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Icon sx={{color: style.color(t)}}>{style.icon}</Icon>
-        </Box>
-        <Core.ChartPie percent={percent} color={style.color(t)} size={55} sx={{margin: 'auto'}} />
-      </Box>
-      <Core.Txt block bold size="big" sx={{mt: 0.5, lineHeight: 1, textAlign: 'center'}}>
-        {toPercent(percent)}
-      </Core.Txt>
-      <Core.Txt block color="hint" size="small" sx={{textAlign: 'center'}}>
-        {validation ?? m.blank}
-      </Core.Txt>
-    </Box>
-  )
+export type OverviewFilters = {
+  period: Partial<Ip.Period>
+  folderNames: string[]
+  formIds: Ip.FormId[]
+  formTypes: Ip.Form.Type[]
 }
 
 function Overview() {
@@ -75,25 +40,34 @@ function Overview() {
   const [includeKoboAccounts, setIncludeKoboAccounts] = usePersistentState(false, {
     storageKey: 'Overview-includeKoboAccounts',
   })
+
   useEffect(() => {
     setTitle(m.overview)
   }, [])
 
-  const selectedFormsSet = useSetState<Ip.FormId>()
-  const today = new Date()
-  const defaultaPeriod = {
-    start: subYears(today, 1),
-    end: addDays(today, 1),
-  }
-  const [period, setPeriod] = useState<Partial<Ip.Period>>(defaultaPeriod)
+  const today = useMemo(() => new Date(), [])
+
+  const defaultFilters = useMemo(() => {
+    return {
+      period: {
+        start: subYears(today, 1),
+        end: addDays(today, 1),
+      },
+      folderNames: [],
+      formIds: [],
+      formTypes: [Ip.Form.Type.internal, Ip.Form.Type.kobo],
+    }
+  }, [])
+
+  const [filters, setFilters] = useState<OverviewFilters>(defaultFilters)
 
   const queryUsers = UseQueryUser.getAll(workspaceId)
   const queryForms = UseQueryForm.getAccessibles(workspaceId)
   const queryMetrics = useQueryMetrics({
     workspaceId,
-    formIds: selectedFormsSet.toArray,
-    start: period.start,
-    end: period.end,
+    formIds: filters.formIds,
+    start: filters.period.start,
+    end: filters.period.end,
   })
   const querySubmissionByMonth = queryMetrics.getSubmissionsByMonth
   const querySubmissionsByForm = queryMetrics.getSubmissionsByForm
@@ -117,28 +91,37 @@ function Overview() {
     [querySubmissionByMonth.data],
   )
 
+  const filteredForms = useMemo(() => {
+    return queryForms.data?.filter((_: Ip.Form) => {
+      if (filters.folderNames.length > 0 && !filters.folderNames.includes(_.category ?? '')) return false
+      if (filters.formTypes.length > 0 && !filters.formTypes.includes(_.type)) return false
+      return true
+    })
+  }, [queryForms.data, filters.folderNames, filters.formTypes])
+
   const widgetSubmissionsCount = (
-    <PanelWidget title={m.submissions} icon={appConfig.icons.submission}>
+    <PanelWidget sx={{height: '100%'}} title={m.submissions} icon={appConfig.icons.submission}>
       {formatLargeNumber(submissionsCount)}
     </PanelWidget>
   )
+
   const formsCount = (
-    <PanelWidget title={m.forms} icon={appConfig.icons.database}>
-      {formatLargeNumber(queryForms.data?.length)}
+    <PanelWidget sx={{height: '100%'}} title={m.forms} icon={appConfig.icons.database}>
+      {formatLargeNumber(filters.formIds.length)}
     </PanelWidget>
   )
 
   const formsImportedToKoboCount = useMemo(() => {
-    return queryForms.data?.count(_ => Ip.Form.isKobo(_)) ?? 0
-  }, [queryForms.data])
+    return filteredForms?.count(_ => Ip.Form.isKobo(_)) ?? 0
+  }, [filteredForms])
 
   const formsImportedFromKobo = useMemo(() => {
-    if (!queryForms.data) return <Core.Panel sx={{height: '100%'}} />
-    const base = queryForms.data.length ?? 1
+    if (!filteredForms) return <Core.Panel sx={{height: '100%'}} />
+    const base = filteredForms.length ?? 1
     return (
       <Core.Panel sx={{height: '100%', py: 1, px: 2, display: 'flex', alignItems: 'center'}}>
         <Core.ChartPieWidget
-          title={m.ImportedFromKobo}
+          title={m.importedFromKobo}
           dense
           showValue
           showBase
@@ -150,9 +133,9 @@ function Overview() {
   }, [formsImportedToKoboCount])
 
   const formsLinkedToKobo = useMemo(() => {
-    if (!queryForms.data) return <Core.Panel sx={{height: '100%'}} />
-    const value = queryForms.data.count(_ => Ip.Form.isConnectedToKobo(_)) ?? 0
-    const base = queryForms.data.length ?? 1
+    if (!filteredForms) return <Core.Panel sx={{height: '100%'}} />
+    const value = filteredForms.count(_ => Ip.Form.isConnectedToKobo(_)) ?? 0
+    const base = filteredForms.length ?? 1
     //     <PanelWidget title={m.users} icon={appConfig.icons.users}>
     //       {formatLargeNumber(queryUsers.data?.length)}
     //     </PanelWidget>
@@ -170,7 +153,7 @@ function Overview() {
         />
       </Core.Panel>
     )
-  }, [queryForms.data])
+  }, [filteredForms])
 
   const pieChartValidation = (
     <Core.Panel>
@@ -230,14 +213,14 @@ function Overview() {
             <Core.ChartBar
               dense
               data={data}
-              checked={selectedFormsSet.toArray}
-              onClickData={_ => selectedFormsSet.toggle(_)}
+              // checked={selectedFormsSet.toArray}
+              // onClickData={_ => selectedFormsSet.toggle(_)}
             />
           </ViewMoreDiv>
         </Core.PanelBody>
       </Core.Panel>
     )
-  }, [querySubmissionsByForm.data, formIndex, selectedFormsSet])
+  }, [querySubmissionsByForm.data, formIndex, filters])
 
   const submissionsByCategory = useMemo(() => {
     const byKey = seq(querySubmissionsByCategory.data).groupByFirst(_ => _.key)
@@ -326,46 +309,28 @@ function Overview() {
   }, [includeKoboAccounts, querySubmissionsByUser.data])
 
   return (
-    <Page width="lg">
-      <DataFilterLayout
-        hidePopup
-        onClear={() => {
-          selectedFormsSet.clear()
-          setPeriod(defaultaPeriod)
-        }}
-        filters={{}}
-        setFilters={console.log}
-        shapes={{}}
-        after={loading && <CircularProgress size={30} />}
-        before={
-          <Core.PeriodPicker
-            sx={{mt: 0, mb: 0, mr: 1}}
-            value={[period.start, period.end]}
-            onChange={([start, end]) => {
-              setPeriod(prev => ({...prev, start: start ?? undefined, end: end ?? undefined}))
-            }}
-            label={[m.start, m.endIncluded]}
-            max={addDays(new Date(), 1)}
-            fullWidth={false}
-          />
-        }
+    <Page width="lg" pending={loading}>
+      <OverviewFiltersBar
+        onClear={() => setFilters(defaultFilters)}
+        filteredForms={filteredForms}
+        forms={queryForms.data}
+        filters={filters}
+        setFilters={setFilters}
       />
       <Grid container>
+        <Grid container size={{xs: 12}}>
+          <Grid size={{xs: 6, sm: 3}}>{widgetSubmissionsCount}</Grid>
+          <Grid size={{xs: 6, sm: 3}}>{formsCount}</Grid>
+          <Grid size={{xs: 6, sm: 3}}>{formsImportedFromKobo}</Grid>
+          <Grid size={{xs: 6, sm: 3}}>{formsLinkedToKobo}</Grid>
+        </Grid>
         <Grid size={{xs: 12, sm: 6}}>
-          <Grid container>
-            <Grid size={{xs: 6, sm: 6}}>{widgetSubmissionsCount}</Grid>
-            <Grid size={{xs: 6, sm: 6}}>{formsCount}</Grid>
-          </Grid>
           {pieChartValidation}
           {submissionByTime}
           {submissionsByForm}
           {submissionsByCategory}
         </Grid>
         <Grid size={{xs: 12, sm: 6}}>
-          <Grid container>
-            <Grid size={{xs: 6, sm: 6}}>{formsImportedFromKobo}</Grid>
-            <Grid size={{xs: 6, sm: 6}}>{formsLinkedToKobo}</Grid>
-          </Grid>
           {map}
           {usersByDate}
           {submissionsByUser}

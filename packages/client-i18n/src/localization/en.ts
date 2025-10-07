@@ -138,7 +138,7 @@ export const en = Object.freeze({
     submissionsByUser: 'Submissions by user',
     submissionsByForm: 'Submissions by form',
     connectedToKobo: 'Connected to Kobo',
-    ImportedFromKobo: 'Connected to Kobo',
+    importedFromKobo: 'Imported from Kobo',
     includeKoboAccountNames: "Include KoboToolbox account's name",
     copyLink: 'Copy link',
     copyResponderLink: 'Copy responder link',
@@ -404,6 +404,8 @@ export const en = Object.freeze({
     submit: 'Submit',
     newForm: 'New form',
     retry: 'Retry',
+    folder: 'Folder',
+    folders: 'Folders',
     formSource_: {
       [Ip.Form.Type.smart]: 'Smart database',
       [Ip.Form.Type.kobo]: 'Imported from KoboToolbox',
