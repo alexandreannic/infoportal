@@ -8,7 +8,6 @@ import {useQuestionInfo} from '@/features/Dashboard/Widget/SettingsPanel/WidgetS
 import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
 import {Box, BoxProps, Icon, SxProps, useTheme} from '@mui/material'
-import {styleUtils} from '@infoportal/client-core'
 import {Kobo} from 'kobo-sdk'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
@@ -36,7 +35,7 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
   return (
     <Box
       sx={{
-        background: styleUtils(t).color.toolbar.default.background,
+        ...Core.styleUtils(t).color.toolbar.default,
         p: 1,
         borderRadius: t.vars.shape.borderRadius,
         ...sx,
@@ -72,7 +71,7 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
           />
         )}
       />
-      <WidgetSettingsFilter question={question} form={form} name={name} sx={{mt: 2}}/>
+      <WidgetSettingsFilter question={question} form={form} name={name} sx={{mt: 2}} />
     </Box>
   )
 }

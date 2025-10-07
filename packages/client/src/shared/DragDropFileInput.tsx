@@ -1,7 +1,6 @@
 import {Alert, Box, Chip, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {useCallback, useState} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
-import {styleUtils} from '@/core/theme'
 import {Core} from '@/shared'
 
 export function DragDropFileInput({
@@ -51,12 +50,10 @@ export function DragDropFileInput({
   return (
     <Box
       sx={{
+        ...Core.styleUtils(t).color.toolbar.default,
         borderRadius: t.vars.shape.borderRadius,
         p: 3,
         border: '2px dashed',
-        backgroundColor: isDragActive
-          ? t.vars.palette.primary.light
-          : (styleUtils(t).color.toolbar.default.background as string) /** TODO Check typing error*/,
         borderColor: error ? 'primary.error.main' : isDragActive ? 'primary.main' : t.vars.palette.divider,
         textAlign: 'center',
         cursor: 'pointer',

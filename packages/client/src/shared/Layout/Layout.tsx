@@ -51,8 +51,8 @@ const LayoutUsingContext = ({sidebar, header, children}: Pick<LayoutProps, 'side
             px: 1,
             transition: t => t.transitions.create('all'),
             position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
+            // display: 'flex',
+            // flexDirection: 'column',
             marginTop: -6,
             paddingTop: 6,
           }}
