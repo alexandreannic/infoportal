@@ -1,14 +1,10 @@
-import {Box, Icon, Tooltip} from '@mui/material'
+import {Box, Icon} from '@mui/material'
 import React, {ReactNode, useEffect, useRef} from 'react'
 import {toPercent, uppercaseHandlingAcronyms} from 'infoportal-common'
-import {PanelProps} from '../ui/Panel/Panel'
-import {LightTooltip, TooltipRow} from '../ui/LightTooltip'
-import {Txt, TxtProps} from '../ui/Txt'
+import {LightTooltip, PanelProps, TooltipRow, Txt, TxtProps} from '../ui'
 import {ChartPie} from './ChartPie'
 import {useI18n} from '@infoportal/client-i18n'
 import {ComparativeValue} from './ComparativeValue'
-
-const previousPeriodDeltaDays = 90
 
 export interface ChartPieIndicatorProps extends Omit<PanelProps, 'title'> {
   fractionDigits?: number
@@ -21,9 +17,8 @@ export interface ChartPieIndicatorProps extends Omit<PanelProps, 'title'> {
   showValue?: boolean
   showBase?: boolean
   evolution?: number
-  tooltip?: string
+  evolutionTooltip?: string
   color?: string
-  hideIndicatorTooltip?: boolean
 }
 
 export const ChartPieTitle = ({
@@ -65,6 +60,7 @@ export const ChartPieWidget = ({
   titleIcon,
   title,
   evolution,
+  evolutionTooltip,
   noWrap,
   children,
   dense,
@@ -72,8 +68,6 @@ export const ChartPieWidget = ({
   showValue,
   showBase,
   base,
-  hideIndicatorTooltip,
-  tooltip = `Compare to ${previousPeriodDeltaDays} days ago`,
   fractionDigits = 0,
   sx,
   color,
@@ -120,8 +114,8 @@ export const ChartPieWidget = ({
             {evolution && (
               <ComparativeValue
                 sx={{fontSize}}
-                value={evolution * 100}
-                tooltip={hideIndicatorTooltip ? undefined : tooltip}
+                value={evolution}
+                tooltip={evolutionTooltip}
                 fractionDigits={fractionDigits}
               />
             )}

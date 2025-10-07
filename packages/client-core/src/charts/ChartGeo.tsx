@@ -1,118 +1,120 @@
 import {Chart, ChartWrapperOptions} from 'react-google-charts'
-import {useMemo, useState} from 'react'
-import {Box, useTheme} from '@mui/material'
-import {IconBtn, Panel, PanelHead} from '../ui'
-import {lightenVar} from '../core'
-import * as path from 'node:path'
+import {useMemo, useState, useEffect} from 'react'
+import {Box, lighten, useColorScheme, useTheme} from '@mui/material'
+import {IconBtn} from '../ui'
+import json from '../core/chartGeoData.json'
+
+export type CountryCode = keyof typeof json
 
 const headers = ['Location', 'Submissions']
 
+function groupGeoData(data: {iso: string; count: number}[]) {
+  const countries = new Map<CountryCode, number>()
+  const regions = new Map<string, Map<string, number>>()
+  for (const {iso, count} of data) {
+    const [country] = iso.split('-') as [CountryCode]
+    if (!country) continue
+    countries.set(country, (countries.get(country) ?? 0) + count)
+    const regionMap = regions.get(country) ?? new Map()
+    regionMap.set(iso, (regionMap.get(iso) ?? 0) + count)
+    regions.set(country, regionMap)
+  }
+  return {countries, regions}
+}
+
 export const ChartGeo = ({
-  panelTitle,
-  data
+  fixCountry,
+  data = [],
 }: {
-  panelTitle: string;
+  fixCountry?: CountryCode
   data?: {iso: string; count: number}[]
 }) => {
+  const {mode} = useColorScheme()
   const t = useTheme()
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
+  const [selectedCountry, setSelectedCountry] = useState<CountryCode | null>(null)
+  const datalessRegionColor = selectedCountry ? 'transparent' : mode === 'dark' ? '#2b3c4f' : '#e0e0e0'
+
+  useEffect(() => {
+    if (fixCountry) setSelectedCountry(fixCountry)
+  }, [fixCountry])
 
   const {countries, regions} = useMemo(() => {
-    const countries: Map<string, number> = new Map()
-    const regions: Map<string, Map<string, number>> = new Map()
-    data?.forEach(_ => {
-      const country = _.iso.split('-')[0]
-      if (!country) return
-
-      if (!countries.has(country)) countries.set(country, 0)
-      countries.set(country, countries.get(country)! + _.count)
-
-      if (!regions.has(country)) regions.set(country, new Map())
-      const regionMap = regions.get(country)!
-
-      if (!regionMap.has(_.iso)) regionMap.set(_.iso, 0)
-      regionMap.set(_.iso, regionMap.get(_.iso)! + _.count)
-    })
-    if (countries.size === 1) {
-      setSelectedCountry(countries.keys().toArray()[0])
+    const grouped = groupGeoData(data)
+    if (selectedCountry) {
+      const regionData = json[selectedCountry]?.regions
+      if (regionData) {
+        const old = grouped.regions.get(selectedCountry) ?? new Map()
+        const newRegionMap = new Map(old)
+        for (const key of Object.keys(regionData)) {
+          if (!newRegionMap.has(key)) newRegionMap.set(key, 0)
+        }
+        const newRegions = new Map(grouped.regions)
+        newRegions.set(selectedCountry, newRegionMap)
+        grouped.regions = newRegions
+      }
     }
-    return {countries, regions}
+    return grouped
   }, [data])
 
+  useEffect(() => {
+    if (!fixCountry && countries.size === 1) setSelectedCountry([...countries.keys()][0])
+  }, [countries, fixCountry])
+
   const formattedData = useMemo(() => {
-    if (!data) return
-    if (selectedCountry) {
-      const regionsData = regions.get(selectedCountry)
-      if (!regionsData) return [headers]
-      return [headers, ...regionsData.entries()]
-    }
-    return [headers, ...countries.entries()]
-  }, [selectedCountry, data])
+    const source = selectedCountry ? regions.get(selectedCountry) : countries
+    return [headers, ...(source ? Array.from(source.entries()) : [])]
+  }, [selectedCountry, countries, regions])
 
-  const options: ChartWrapperOptions['options'] = useMemo(() => {
-    const defaultOptions: ChartWrapperOptions['options'] = {
+  const options: ChartWrapperOptions['options'] = useMemo(
+    () => ({
       backgroundColor: 'transparent',
-      datalessRegionColor: 'transparent',
-
-      // datalessRegionColor:
-      //   t.palette.mode === 'dark' ? lightenVar(t.palette.background.default, 0.4) : t.palette.divider,
+      datalessRegionColor,
       legend: 'none',
       enableRegionInteractivity: true,
-      chartArea: {
-        height: '10%',
-        width: '100%',
-        top: 10,
-        bottom: 10,
-        left: 10,
-        right: 10,
-      },
-      colorAxis: {colors: [t.palette.primary.light, t.palette.primary.dark]},
-    }
-    if (selectedCountry) {
-      defaultOptions.displayMode = 'regions'
-      defaultOptions.region = selectedCountry
-      defaultOptions.resolution = 'provinces'
-    }
-    return defaultOptions
-  }, [selectedCountry, data])
+      chartArea: {width: '100%', height: '10%', top: 10, bottom: 10, left: 10, right: 10},
+      colorAxis: {colors: [lighten(t.palette.primary.light, 0.7), t.palette.primary.dark]},
+      ...(selectedCountry && {
+        displayMode: 'regions',
+        region: selectedCountry,
+        resolution: 'provinces',
+      }),
+    }),
+    [datalessRegionColor, selectedCountry, t],
+  )
 
   return (
-    // <Panel>
-    //   <PanelHead>{panelTitle}</PanelHead>
-      <Box
-        sx={{
-          overflow: 'hidden',
-          position: 'relative',
-          '& svg path[fill^="none"]': {
-            strokeWidth: 0,
-          },
-        }}
-      >
-        <Chart
-          style={{border: '1x solid silver'}}
-          // style={{marginTop: -40, marginBottom: -40}}
-          chartType="GeoChart"
-          width="100%"
-          height="100%"
-          data={formattedData ?? [headers]}
-          options={options}
-          chartEvents={[
-            {
-              eventName: 'select',
-              callback: ({chartWrapper}) => {
-                if (!chartWrapper) return
-                const chart = chartWrapper.getChart()
-                const selection = chart.getSelection()
-                if (selection.length > 0) {
-                  const selectedRow = selection[0].row
-                  const countryCode = formattedData![selectedRow + 1][0]
-                  setSelectedCountry(countryCode ? countryCode + '' : null)
-                }
-              },
+    <Box
+      sx={{
+        overflow: 'hidden',
+        position: 'relative',
+        '& svg path': {stroke: t.vars.palette.background.paper, strokeWidth: 1.2},
+        // [`& svg path[fill^="${datalessRegionColor}"]`]: {stroke: t.vars.palette.background.paper, strokeWidth: 1},
+        '& svg path[fill^="none"]': {strokeWidth: 0},
+      }}
+    >
+      <Chart
+        chartType="GeoChart"
+        width="100%"
+        height="100%"
+        data={formattedData}
+        options={options}
+        chartEvents={[
+          {
+            eventName: 'select',
+            callback: ({chartWrapper}) => {
+              if (fixCountry) return
+              const chart = chartWrapper?.getChart()
+              const sel = chart?.getSelection?.()
+              if (sel?.length) {
+                const row = sel[0].row
+                const code = formattedData[row + 1][0] as CountryCode | undefined
+                setSelectedCountry(code || null)
+              }
             },
-          ]}
-          // mapsApiKey=""
-        />
+          },
+        ]}
+      />
+      {!fixCountry && (
         <IconBtn
           color="primary"
           onClick={() => setSelectedCountry(null)}
@@ -120,7 +122,7 @@ export const ChartGeo = ({
         >
           arrow_back
         </IconBtn>
-      </Box>
-    // </Panel>
+      )}
+    </Box>
   )
 }

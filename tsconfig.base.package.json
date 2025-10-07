@@ -6,6 +6,9 @@
     "moduleResolution": "bundler",
     "jsx": "preserve",
     "sourceMap": true,
-    "incremental": true
+    "incremental": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   }
 }

@@ -27,5 +27,5 @@ export const WidgetCardGeoChart = ({widget}: {widget: Ip.Dashboard.Widget}) => {
 
   if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
 
-  return <Core.ChartGeoIso2 data={data} country={config.countryIsoCode as any} />
+  return <Core.ChartGeo data={data} fixCountry={config.countryIsoCode as any} />
 }

@@ -3,7 +3,7 @@ import {Autocomplete} from '@mui/material'
 import countries from '../core/chartGeoData.json'
 import {CountryFlag} from './CountryFlag'
 import {Input} from './Input'
-import {Country} from '../charts'
+import {Country} from '../core'
 
 const countryOptions = Object.entries(countries).map(([code, {name}]) => ({
   code,

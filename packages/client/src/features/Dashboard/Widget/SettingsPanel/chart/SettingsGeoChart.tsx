@@ -9,8 +9,9 @@ import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/Settings
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
 import React, {useEffect} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
-import {Country, SelectCountry} from '@infoportal/client-core'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {Core} from '@/shared'
+import type {Country} from '@infoportal/client-core'
 
 export const SettingsGeoChart = () => {
   const {m} = useI18n()
@@ -59,7 +60,7 @@ export const SettingsGeoChart = () => {
           name="countryIsoCode"
           control={form.control}
           render={({field, fieldState}) => (
-            <SelectCountry {...field} label={m.country} value={field.value as Country} onChange={field.onChange} />
+            <Core.SelectCountry {...field} label={m.country} value={field.value as Country} onChange={field.onChange} />
           )}
         />
       </WidgetSettingsSection>

@@ -44,7 +44,7 @@ export const ComparativeValue = ({
         <Box sx={{ml: 0.25}}>
           {value > 0 && '+'}
           {/*{value === 0 && '='}*/}
-          {value !== 0 && value.toFixed(value >= 10 ? fractionDigits : 1)}
+          {value !== 0 && value.toFixed(Math.abs(value) > 1 ? fractionDigits : 1)}
         </Box>
         {children}
       </Txt>
