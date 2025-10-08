@@ -44,7 +44,6 @@ const Tr = styled('div')(({theme}) => ({
   display: 'contents',
   cursor: 'pointer',
   fontSize: styleUtils(theme).fontSize.small,
-
   '&:hover .DtHeadSectionCell-Th': {
     height: 32,
   },

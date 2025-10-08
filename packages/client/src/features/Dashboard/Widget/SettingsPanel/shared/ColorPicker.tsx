@@ -1,7 +1,6 @@
 import {Core} from '@/shared'
 import {Box, BoxProps, useTheme} from '@mui/material'
 import {useState} from 'react'
-import {styleUtils} from '@infoportal/client-core'
 import {useI18n} from '@infoportal/client-i18n'
 
 const Dot = ({color, selected, sx, ...props}: BoxProps & {color: string; selected?: boolean}) => {
@@ -107,8 +106,8 @@ export const ColorPicker = ({
           width: '100%',
           m: 0,
           px: 1,
-          borderRadius: styleUtils(t).color.input.default.borderRadius,
-          minHeight: styleUtils(t).color.input.default.minHeight,
+          borderRadius: Core.styleUtils(t).color.input.default.borderRadius,
+          minHeight: Core.styleUtils(t).color.input.default.minHeight,
           border: '1px solid',
           borderColor: t.vars.palette.divider,
           justifyContent: 'space-between',
