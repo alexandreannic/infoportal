@@ -23,14 +23,9 @@ export const initGoogleMaps = async ({
     desc: string
   }[]
 }) => {
-  // let trys = 0
-  // while (typeof (window as any).google === 'undefined') {
-  //   await sleep(200 + 100 * trys)
-  //   trys++
-  //   if (trys > 140) break
-  // }
   await loadGoogleMaps(apiKey, ['places'])
   // const ukraineCenter: google.maps.LatLngLiteral = {lat: 48.96008674231441, lng: 31.702957509661097}
+  console.log(document.querySelector(domSelector))
   const map = new google.maps.Map(document.querySelector(domSelector) as HTMLElement, {
     mapId: mapId,
     // center: ukraineCenter,
@@ -99,6 +94,16 @@ const loadGoogleMaps = (apiKey: string, libraries: string[] = []) => {
   return new Promise<void>((resolve, reject) => {
     if (typeof google !== 'undefined' && google.maps) {
       resolve()
+      return
+    }
+    const existingScript = document.querySelector<HTMLScriptElement>(
+      'script[src*="maps.googleapis.com/maps/api/js"]'
+    )
+    if (existingScript) {
+      existingScript.addEventListener('load', () => resolve())
+      existingScript.addEventListener('error', () =>
+        reject('Google Maps failed to load')
+      )
       return
     }
     const script = document.createElement('script')
