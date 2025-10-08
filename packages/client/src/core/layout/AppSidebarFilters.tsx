@@ -115,7 +115,7 @@ export const AppSidebarFilters = ({
 
     const filteredForms = seq(filteredByName)
       .filter(_ => (_.type && assetTypes.includes(_.type)) || assetTypes.length === 0)
-      .filter(_ => (_.category && categories.includes(_.category)) || categories.length === 0)
+      .filter(_ => categories.includes(_.category ?? '') || categories.length === 0)
       .filter(_ => (_.deploymentStatus && statuses.includes(_.deploymentStatus)) || statuses.length === 0)
 
     onFilterChanges(filteredForms)
@@ -123,7 +123,7 @@ export const AppSidebarFilters = ({
 
   const formCategories = useMemo(() => {
     return seq(assets)
-      .map(_ => _.category ?? '')
+      .map(_ => _.category ?? m.none)
       .distinct(_ => _)
   }, [assets])
 
@@ -151,7 +151,19 @@ export const AppSidebarFilters = ({
             name="category"
             control={searchForm.control}
             render={({field}) => (
-              <Core.SelectMultiple {...field} options={formCategories.get()} label={m.category} sx={{mt: 0.5}} />
+              <Core.SelectMultiple
+                {...field}
+                placeholder={m.folders}
+                InputProps={{
+                  startAdornment: (
+                    <Icon sx={{mr: 1}} color="disabled">
+                      folder
+                    </Icon>
+                  ),
+                }}
+                options={formCategories.get()}
+                sx={{mt: 0.5}}
+              />
             )}
           />
           <Box sx={{mt: 0.5, display: 'flex'}}>

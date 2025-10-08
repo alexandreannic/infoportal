@@ -117,6 +117,7 @@ export const muiTheme = ({
   spacing = defaultSpacing,
   fontSize = 14,
 }: AppThemeParams = {}): Theme => {
+  const lineHeight = '1.5'
   const defaultRadius = 12
   const fontFamily = '"Open Sans", sans-serif'
   const colorSecondary = {
@@ -256,7 +257,7 @@ export const muiTheme = ({
             height: '100vh',
             margin: 0,
             fontSize: '1rem',
-            lineHeight: '1.5',
+            lineHeight,
             boxSizing: 'border-box',
             background: 'url(/bg2.png)',
             backgroundSize: 'cover',
@@ -332,6 +333,11 @@ export const muiTheme = ({
           },
         },
       },
+      MuiInputBase: {
+        styleOverrides: {
+          root: {lineHeight},
+        },
+      },
       MuiTabs: {
         styleOverrides: {
           indicator: ({theme}) => ({
@@ -352,7 +358,7 @@ export const muiTheme = ({
           }),
           list: {
             height: '100%',
-          }
+          },
         },
       },
       MuiGrid: {

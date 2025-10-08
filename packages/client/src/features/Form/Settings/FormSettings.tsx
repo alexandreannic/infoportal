@@ -97,8 +97,8 @@ function FormSettings() {
       <Core.Panel>
         <Core.PanelBody>
           <SettingsRow
-            icon="category"
-            label={m.category}
+            icon="folder"
+            label={m.folder}
             desc={m._settings.setCategoryDesc}
             action={
               <SelectFormCategory

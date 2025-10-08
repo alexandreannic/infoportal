@@ -515,7 +515,7 @@ export const en = Object.freeze({
       includeKoboUsers: 'Include Kobo user names',
     },
     _settings: {
-      setCategoryDesc: 'Type something and press Enter to create a new category.',
+      setCategoryDesc: 'Type something and press Enter to create a new folder.',
       connectedToKobo: 'Connected to Kobo',
       connectedToKoboDesc: 'The database is automatically synchronized whenever submissions are made in Kobo.',
       ipToKobo: 'Updating submissions from Kobo are sent are automatically sent to Kobo.',
