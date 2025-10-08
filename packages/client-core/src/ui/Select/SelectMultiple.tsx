@@ -1,4 +1,15 @@
-import {Checkbox, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SxProps, Theme} from '@mui/material'
+import {
+  Checkbox,
+  FormControl,
+  InputLabel,
+  InputProps,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SxProps,
+  Theme,
+  Typography,
+} from '@mui/material'
 import React, {forwardRef, ReactNode, useMemo, useState} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {makeSx} from '../../core/theme'
@@ -19,6 +30,7 @@ export interface IpSelectMultipleProps<T extends string | number = string> {
   sx?: SxProps<Theme>
   defaultValue?: T[]
   value?: T[]
+  InputProps?: InputProps
   onChange: (t: T[], e: any) => void
 }
 
@@ -32,7 +44,17 @@ const style = makeSx({
 const IGNORED_VALUE_FOR_SELECT_ALL_ITEM = 'IGNORED_VALUE'
 
 function SelectMultipleInner<T extends string | number>(
-  {showUndefinedOption, label, id, onChange, sx, value = [], ...props}: IpSelectMultipleProps<T>,
+  {
+    showUndefinedOption,
+    placeholder,
+    label,
+    id,
+    InputProps,
+    onChange,
+    sx,
+    value = [],
+    ...props
+  }: IpSelectMultipleProps<T>,
   ref: any,
 ) {
   const {m} = useI18n()
@@ -68,9 +90,11 @@ function SelectMultipleInner<T extends string | number>(
         id={id}
         defaultValue={props.defaultValue}
         multiple={true}
-        renderValue={(v: T[]) =>
-          options.find(_ => v.includes(_.value))?.children + (v.length > 1 ? ` +${v.length - 1}  selected` : '')
-        }
+        displayEmpty
+        renderValue={(v: T[]) => {
+          if (placeholder && value.length === 0) return <Typography color="textDisabled">{placeholder}</Typography>
+          return options.find(_ => v.includes(_.value))?.children + (v.length > 1 ? ` +${v.length - 1}  selected` : '')
+        }}
         onChange={e => {
           if (e.target.value.includes(IGNORED_VALUE_FOR_SELECT_ALL_ITEM as any)) return
           const newValue = e.target.value as T[]
@@ -80,6 +104,7 @@ function SelectMultipleInner<T extends string | number>(
         input={
           <OutlinedInput
             label={label}
+            {...InputProps}
             // endAdornment={
             //   <CircularProgress size={24} color="secondary"/>
           />
