@@ -1,13 +1,13 @@
 import {useTheme} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useMemo} from 'react'
-import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
+import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/Card/CardWidget'
 import {Core} from '@/shared'
 import {map, Obj} from '@axanc/ts-utils'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
-import {filterToFunction} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardLineChart'
+import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
 
-export const WidgetCardGeoChart = ({widget}: {widget: Ip.Dashboard.Widget}) => {
+export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoChart']
   const {flatSubmissions, schema} = useDashboardContext()

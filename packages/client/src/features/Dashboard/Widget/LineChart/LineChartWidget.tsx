@@ -1,5 +1,5 @@
 import {Ip} from 'infoportal-api-sdk'
-import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
+import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/Card/CardWidget'
 import React, {useMemo} from 'react'
 import {Core} from '@/shared'
 import {seq} from '@axanc/ts-utils'
@@ -31,7 +31,7 @@ export function filterToFunction<T extends Record<string, any> = Record<string, 
   }
 }
 
-export const WidgetCardLineChart = ({widget}: {widget: Ip.Dashboard.Widget}) => {
+export const LineChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const config = widget.config as Ip.Dashboard.Widget.Config['LineChart']
   const {flatSubmissions, schema} = useDashboardContext()
 

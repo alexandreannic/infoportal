@@ -4,16 +4,17 @@ import React, {memo} from 'react'
 import {Core} from '@/shared'
 import {Ip} from 'infoportal-api-sdk'
 import {fnSwitch} from '@axanc/ts-utils'
-import {WidgetCardPieChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardPieChart'
-import {WidgetCardBarChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardBarChart'
-import {WidgetCardLineChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardLineChart'
-import {WidgetCardGeoPoint} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardGeoPoint'
-import {WidgetCardGeoChart} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardGeoChart'
+import {PieChartWidget} from '@/features/Dashboard/Widget/PieChart/PieChartWidget'
+import {BarChartWidget} from '@/features/Dashboard/Widget/BarChart/BarChartWidget'
+import {LineChartWidget} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
+import {GeoPointWidget} from '@/features/Dashboard/Widget/GeoPoint/GeoPointWidget'
+import {GeoChartWidget} from '@/features/Dashboard/Widget/GeoChart/GeoChartWidget'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {TableWidget} from '@/features/Dashboard/Widget/Table/TableWidget'
 
 type Status = 'editing'
 
-export const WidgetCard = memo(
+export const CardWidget = memo(
   ({
     status,
     widget,
@@ -49,11 +50,12 @@ export const WidgetCard = memo(
           {fnSwitch(
             widget.type,
             {
-              BarChart: <WidgetCardBarChart widget={widget} />,
-              PieChart: <WidgetCardPieChart widget={widget} />,
-              LineChart: <WidgetCardLineChart widget={widget} />,
-              GeoPoint: <WidgetCardGeoPoint widget={widget} />,
-              GeoChart: <WidgetCardGeoChart widget={widget} />,
+              Table: <TableWidget widget={widget} />,
+              BarChart: <BarChartWidget widget={widget} />,
+              PieChart: <PieChartWidget widget={widget} />,
+              LineChart: <LineChartWidget widget={widget} />,
+              GeoPoint: <GeoPointWidget widget={widget} />,
+              GeoChart: <GeoChartWidget widget={widget} />,
             },
             () => (
               <></>

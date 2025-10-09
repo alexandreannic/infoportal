@@ -8,9 +8,9 @@ import {Ip} from 'infoportal-api-sdk'
 import {
   WidgetCreatorFormPanel,
   WidgetUpdatePayload,
-} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import React, {useCallback, useMemo, useState} from 'react'
-import {WidgetCard} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
+import {CardWidget} from '@/features/Dashboard/Widget/Card/CardWidget'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
 import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
 import {TabContent} from '@/shared/Tab/TabContent'
@@ -142,7 +142,7 @@ export function DashboardSection() {
             >
               {widgets.map(widget => (
                 <Box key={widget.id} sx={{height: '100%'}}>
-                  <WidgetCard
+                  <CardWidget
                     onClick={selectWidget}
                     status={editingWidget?.id === widget.id ? 'editing' : undefined}
                     widget={widget}

@@ -1,26 +1,26 @@
-import {
-  getQuestionTypeByWidget,
-  useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
-import {Ip} from 'infoportal-api-sdk'
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
-import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
-import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
+import {getQuestionTypeByWidget, useWidgetSettingsContext} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
+import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import React, {useEffect} from 'react'
+import {Box} from '@mui/material'
+import {Ip} from 'infoportal-api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
-import {Core} from '@/shared'
-import type {Country} from '@infoportal/client-core'
 
-export const SettingsGeoChart = () => {
+export function TableSettings() {
   const {m} = useI18n()
   const {schema} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
-  const config = widget.config as Ip.Dashboard.Widget.Config['GeoChart']
-  const form = useForm<Ip.Dashboard.Widget.Config['GeoChart']>({
+  const config = widget.config as Ip.Dashboard.Widget.Config['Table']
+
+  const form = useForm<Ip.Dashboard.Widget.Config['Table']>({
     mode: 'onChange',
-    defaultValues: config,
+    defaultValues: {
+      ...config,
+      row: config.row ?? {},
+      column: config.column ?? {},
+    },
   })
 
   const values = useWatch({control: form.control})
@@ -30,10 +30,10 @@ export const SettingsGeoChart = () => {
   }, [values])
 
   return (
-    <>
-      <WidgetSettingsSection title={m.source}>
+    <Box>
+      <WidgetSettingsSection title={m.column}>
         <Controller
-          name="questionName"
+          name="row.questionName"
           control={form.control}
           rules={{
             required: true,
@@ -43,7 +43,7 @@ export const SettingsGeoChart = () => {
               {...field}
               sx={{mb: 1}}
               onChange={(e, _) => field.onChange(_)}
-              schema={schema.schema}
+              schema={schema}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
                 label: m.question,
@@ -53,17 +53,30 @@ export const SettingsGeoChart = () => {
             />
           )}
         />
-        <WidgetSettingsFilterQuestion form={form} name="filter" />
       </WidgetSettingsSection>
-      <WidgetSettingsSection title={m.properties}>
+      <WidgetSettingsSection title={m.row}>
         <Controller
-          name="countryIsoCode"
+          name="row.questionName"
           control={form.control}
+          rules={{
+            required: true,
+          }}
           render={({field, fieldState}) => (
-            <Core.SelectCountry {...field} label={m.country} value={field.value as Country} onChange={field.onChange} />
+            <SelectQuestionInput
+              {...field}
+              sx={{mb: 1}}
+              onChange={(e, _) => field.onChange(_)}
+              schema={schema}
+              questionTypeFilter={getQuestionTypeByWidget(widget.type)}
+              InputProps={{
+                label: m.question,
+                error: !!fieldState.error,
+                helperText: null,
+              }}
+            />
           )}
         />
       </WidgetSettingsSection>
-    </>
+    </Box>
   )
 }

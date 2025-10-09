@@ -1,10 +1,10 @@
 import {Controller, UseFormReturn} from 'react-hook-form'
 import {useI18n} from '@infoportal/client-i18n'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
-import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
-import {RangeInput} from '@/features/Dashboard/Widget/SettingsPanel/shared/RangeInput'
+import {SelectChoices} from '@/features/Dashboard/Widget/shared/SelectChoices'
+import {RangeInput} from '@/features/Dashboard/Widget/shared/RangeInput'
 import React from 'react'
-import {useQuestionInfo} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+import {useQuestionInfo} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
 import {Box, BoxProps, Icon, SxProps, useTheme} from '@mui/material'
@@ -61,7 +61,7 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
               field.onChange(_)
               form.setValue(`${name}.${formName.choices}` as any, [] as any)
             }}
-            schema={schema.schema}
+            schema={schema}
             questionTypeFilter={['select_multiple', 'select_one', 'decimal', 'integer']}
             InputProps={{
               label: m.question,

@@ -2,17 +2,17 @@ import {Box} from '@mui/material'
 import {
   getQuestionTypeByWidget,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Ip} from 'infoportal-api-sdk'
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
-import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
-import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
+import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
+import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import React, {useEffect} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
-export const SettingsGeoPoint = () => {
+export const GeoPointSettings = () => {
   const {m} = useI18n()
   const {schema} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
@@ -42,7 +42,7 @@ export const SettingsGeoPoint = () => {
               {...field}
               sx={{mb: 1}}
               onChange={(e, _) => field.onChange(_)}
-              schema={schema.schema}
+              schema={schema}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
                 label: m.question,

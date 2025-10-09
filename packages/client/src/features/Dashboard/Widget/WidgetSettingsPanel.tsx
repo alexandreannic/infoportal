@@ -8,12 +8,13 @@ import {widgetTypeToIcon} from '@/features/Dashboard/Widget/WidgetTypeIcon'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
 import {useIpToast} from '@/core/useToast'
 import {Kobo} from 'kobo-sdk'
-import {SettingsBarChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsBarChart'
-import {SettingsPieChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsPieChart'
-import {SettingsLineChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsLineChart'
-import {SettingsGeoPoint} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsGeoPoint'
-import {SettingsGeoChart} from '@/features/Dashboard/Widget/SettingsPanel/chart/SettingsGeoChart'
+import {BarChartSettings} from '@/features/Dashboard/Widget/BarChart/BarChartSettings'
+import {PieChartSettings} from '@/features/Dashboard/Widget/PieChart/PieChartSettings'
+import {LineChartSettings} from '@/features/Dashboard/Widget/LineChart/LineChartSettings'
+import {GeoPointSettings} from '@/features/Dashboard/Widget/GeoPoint/GeoPointSettings'
+import {GeoChartSettings} from '@/features/Dashboard/Widget/GeoChart/GeoChartSettings'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {TableSettings} from '@/features/Dashboard/Widget/Table/TableSettings'
 
 export type WidgetUpdatePayload = Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'id' | 'dashboardId'>
 
@@ -46,6 +47,10 @@ export const getQuestionTypeByWidget = (type: Ip.Dashboard.Widget.Type): Kobo.Fo
     }
     case 'PieChart': {
       return ['select_one', 'integer', 'decimal', 'calculate']
+    }
+    case 'Table': {
+      return ['select_one']
+      // return ['select_one', 'integer', 'decimal', 'calculate']
     }
     default: {
       return []
@@ -142,11 +147,12 @@ export const WidgetCreatorFormPanel = ({
         {fnSwitch(
           widget.type,
           {
-            BarChart: <SettingsBarChart />,
-            PieChart: <SettingsPieChart />,
-            LineChart: <SettingsLineChart />,
-            GeoPoint: <SettingsGeoPoint />,
-            GeoChart: <SettingsGeoChart />,
+            Table: <TableSettings />,
+            BarChart: <BarChartSettings />,
+            PieChart: <PieChartSettings />,
+            LineChart: <LineChartSettings />,
+            GeoPoint: <GeoPointSettings />,
+            GeoChart: <GeoChartSettings />,
           },
           () => (
             <></>

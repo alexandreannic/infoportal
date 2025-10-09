@@ -6,16 +6,16 @@ import {
   getQuestionTypeByWidget,
   useQuestionInfo,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {Core} from '@/shared'
-import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
-import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
+import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
+import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {Box} from '@mui/material'
-import {ColorPicker} from '@/features/Dashboard/Widget/SettingsPanel/shared/ColorPicker'
+import {ColorPicker} from '@/features/Dashboard/Widget/shared/ColorPicker'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
-export function SettingsLineChart() {
+export function LineChartSettings() {
   const {schema} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['LineChart']
@@ -77,7 +77,7 @@ function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Wi
             onChange={(e, _) => {
               field.onChange(_)
             }}
-            schema={schema.schema}
+            schema={schema}
             questionTypeFilter={getQuestionTypeByWidget(widget.type)}
             sx={{mb: 1}}
             InputProps={{

@@ -7,12 +7,12 @@ import {
   Label,
   useQuestionInfo,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Core} from '@/shared'
-import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
+import {SelectChoices} from '@/features/Dashboard/Widget/shared/SelectChoices'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
-export function SettingsCard() {
+export function CardSettings() {
   const {m} = useI18n()
   const {schema} = useDashboardContext()
   const {question, choices} = useQuestionInfo()

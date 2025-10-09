@@ -1,12 +1,12 @@
 import {Ip} from 'infoportal-api-sdk'
 import React, {useMemo} from 'react'
-import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
+import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/Card/CardWidget'
 import {Core} from '@/shared'
-import {filterToFunction} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardLineChart'
+import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
 import {map} from '@axanc/ts-utils'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
-export function WidgetCardPieChart({widget}: {widget: Ip.Dashboard.Widget}) {
+export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
   const {flatSubmissions, flatSubmissionsDelta, schema} = useDashboardContext()
 

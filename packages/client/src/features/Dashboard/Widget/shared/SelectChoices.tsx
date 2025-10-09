@@ -1,6 +1,6 @@
 import {SxProps} from '@mui/material'
 import React, {useMemo} from 'react'
-import {useQuestionInfo, useWidgetSettingsContext} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+import {useQuestionInfo, useWidgetSettingsContext} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Core} from '@/shared'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 

@@ -8,15 +8,15 @@ import {
   Label,
   useQuestionInfo,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
-import {SelectChoices} from '@/features/Dashboard/Widget/SettingsPanel/shared/SelectChoices'
+} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
+import {SelectChoices} from '@/features/Dashboard/Widget/shared/SelectChoices'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
-import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
-import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
+import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
+import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {SwitchBox} from '@/shared/SwitchBox'
 
-export function SettingsBarChart() {
+export function BarChartSettings() {
   const {m} = useI18n()
   const {schema} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
@@ -55,7 +55,7 @@ export function SettingsBarChart() {
               {...field}
               sx={{mb: 1}}
               onChange={(e, _) => field.onChange(_)}
-              schema={schema.schema}
+              schema={schema}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
                 label: m.question,

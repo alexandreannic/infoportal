@@ -7,16 +7,16 @@ import {
   getQuestionTypeByWidget,
   useQuestionInfo,
   useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/SettingsPanel/WidgetSettingsPanel'
+} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {
   WidgetSettingsFilter,
   WidgetSettingsFilterQuestion,
-} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsFilter'
-import {WidgetSettingsSection} from '@/features/Dashboard/Widget/SettingsPanel/shared/WidgetSettingsSection'
+} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
+import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
-export function SettingsPieChart() {
+export function PieChartSettings() {
   const {schema, dashboard} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
@@ -51,7 +51,7 @@ export function SettingsPieChart() {
                 form.setValue('filterValue', undefined)
                 form.setValue('filterBase', undefined)
               }}
-              schema={schema.schema}
+              schema={schema}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
                 label: m.question,

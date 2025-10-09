@@ -139,6 +139,16 @@ export namespace Dashboard {
         filter?: ConfigFilter
         countryIsoCode?: string
       }
+      [Type.Table]: {
+        column: {
+          questionName: string
+          groupsIfTypeNumber?: number[][]
+        }
+        row: {
+          questionName: string
+          groupsIfTypeNumber?: number[][]
+        }
+      }
       [Type.BarChart]: {
         questionName?: string
         selectedChoices?: string[]

@@ -2,12 +2,12 @@ import {Box, useTheme} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect, useMemo} from 'react'
 import {initGoogleMaps} from '@/core/initGoogleMaps'
-import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/WidgetCard/WidgetCard'
+import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/Card/CardWidget'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {map} from '@axanc/ts-utils'
-import {filterToFunction} from '@/features/Dashboard/Widget/WidgetCard/WidgetCardLineChart'
+import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
 
-export const WidgetCardGeoPoint = ({widget}: {widget: Ip.Dashboard.Widget}) => {
+export const GeoPointWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoPoint']
   const {flatSubmissions, schema} = useDashboardContext()
