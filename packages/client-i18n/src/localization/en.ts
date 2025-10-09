@@ -103,6 +103,7 @@ export const en = Object.freeze({
       backToFormSelection: 'Select new form',
     },
     column: 'Column',
+    row: 'Row',
     name: 'Name',
     by: 'By',
     createdByAt: (by: string, at: string) => `Created by ${by} at ${at}`,
