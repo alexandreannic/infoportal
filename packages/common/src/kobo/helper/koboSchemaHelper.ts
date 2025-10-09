@@ -21,12 +21,13 @@ export namespace KoboSchemaHelper {
   }
 
   export const getLabel = (
-    q: {
+    q?: {
       name: string
       label?: string[]
     },
     langIndex?: number,
   ): string => {
+    if (!q) return ''
     return q.label !== undefined ? ((q.label as any)[langIndex as any] ?? q.name) : q.name
   }
 
@@ -112,7 +113,7 @@ export namespace KoboSchemaHelper {
     })
     return {
       schema: schema,
-      schemaFlatAndSanitized: sanitizeQuestions(helper.group.questionsFlat),
+      schemaFlatAndSanitized: sanitizeQuestions(helper.group.questionsDepth0),
       schemaSanitized: {
         ...schema,
         survey: sanitizeQuestions(schema.survey),

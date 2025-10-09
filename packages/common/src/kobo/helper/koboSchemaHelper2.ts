@@ -40,7 +40,7 @@ class KoboSchemaHelper2<IncludeMeta extends boolean = false> {
     questionIndex: this.helper.questionIndex,
   })
 
-  public schemaFlatAndSanitized = this.sanitizeQuestions(this.helper.group.questionsFlat)
+  public schemaFlatAndSanitized = this.sanitizeQuestions(this.helper.group.questionsDepth0)
 
   public schemaSanitized = {
     ...this.schema,

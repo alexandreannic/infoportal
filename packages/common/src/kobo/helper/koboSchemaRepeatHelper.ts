@@ -12,62 +12,83 @@ export type KoboGroupInfo = {
 
 export class KoboSchemaRepeatHelper {
   static readonly $xpathSeparator = '/'
-  readonly schemaIndex: Record<string, Kobo.Form.Question[]> = {}
-  /** Questions except `begin_repeat` */
-  readonly questionsFlat: Kobo.Form.Question[] = []
-  private readonly infosIndex: Record<string, KoboGroupInfo>
+
+  /** Questions not inside any repeat */
+  readonly questionsDepth0: Kobo.Form.Question[] = []
   readonly size: number
 
-  private readonly getInfo = (path: string): KoboGroupInfo => {
-    const items = path.split(KoboSchemaRepeatHelper.$xpathSeparator)
-    return {
-      name: items[items.length - 1],
-      path,
-      pathArr: items,
-      depth: items.length,
-      questions: this.schemaIndex[path],
-    }
-  }
+  private readonly questionsByGroupPath: Record<string, Kobo.Form.Question[]> = {}
+  private readonly groupByPath: Record<string, KoboGroupInfo> = {}
+  private readonly groupByName: Record<string, KoboGroupInfo> = {}
+  private readonly groupByQuestionName: Record<string, KoboGroupInfo> = {}
 
   constructor(survey: Kobo.Form['content']['survey']) {
-    let depth: string[] = []
-    survey.forEach(q => {
-      if (q.type === 'end_repeat') depth.pop()
+    const depthStack: string[] = []
+
+    for (const q of survey) {
+      if (q.type === 'end_repeat') {
+        depthStack.pop()
+        continue
+      }
+
       if (!ignoredColType.has(q.type)) {
-        if (depth.length === 0) this.questionsFlat.push(q)
-        else {
-          const repeatPathWithoutSection = depth.join('/')
-          if (this.schemaIndex[repeatPathWithoutSection] === undefined) this.schemaIndex[repeatPathWithoutSection] = []
-          this.schemaIndex[repeatPathWithoutSection].push(q)
+        if (depthStack.length === 0) {
+          this.questionsDepth0.push(q)
+        } else {
+          const path = depthStack.join(KoboSchemaRepeatHelper.$xpathSeparator)
+          ;(this.questionsByGroupPath[path] ??= []).push(q)
         }
       }
-      if (q.type === 'begin_repeat') depth.push(q.name)
-    })
-    const keys = Object.keys(this.schemaIndex)
-    this.size = keys.length
-    this.infosIndex = Obj.mapValues(this.schemaIndex, (v, k) => this.getInfo(k))
+
+      if (q.type === 'begin_repeat') {
+        depthStack.push(q.name)
+      }
+    }
+
+    for (const [path, questions] of Object.entries(this.questionsByGroupPath)) {
+      const pathArr = path.split(KoboSchemaRepeatHelper.$xpathSeparator)
+      const groupInfo: KoboGroupInfo = {
+        name: pathArr.at(-1)!,
+        path,
+        pathArr,
+        depth: pathArr.length,
+        questions,
+      }
+
+      this.groupByPath[path] = groupInfo
+      this.groupByName[groupInfo.name] = groupInfo
+
+      for (const q of questions) {
+        this.groupByQuestionName[q.name] = groupInfo
+      }
+    }
+
+    this.size = Object.keys(this.groupByPath).length
   }
 
-  readonly getByPath = (path: string): KoboGroupInfo | undefined => {
-    return this.infosIndex[path]
+  getByPath(path: string) {
+    return this.groupByPath[path]
   }
 
-  readonly getByName = (name: string): KoboGroupInfo | undefined => {
-    return Obj.values(this.infosIndex).find(_ => _.pathArr.includes(name))
+  getByName(name: string) {
+    return this.groupByName[name]
   }
 
-  readonly search = ({
+  getByQuestionName(qName: string): KoboGroupInfo | undefined {
+    return this.groupByQuestionName[qName]
+  }
+
+  search({
     exactName,
     depth,
   }: {
-    // exactPath?: string,
     exactName?: string
     depth?: number
-  } = {}): KoboGroupInfo[] => {
-    return Obj.values(this.infosIndex).filter(info => {
-      if (depth && depth !== info.depth) return false
+  } = {}) {
+    return Object.values(this.groupByPath).filter(info => {
+      if (depth !== undefined && info.depth !== depth) return false
       if (exactName && !info.pathArr.includes(exactName)) return false
-      return info
+      return true
     })
   }
 }
