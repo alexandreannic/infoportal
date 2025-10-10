@@ -12,6 +12,7 @@ export const DatatableToolbar = ({rowVirtualizer}: {rowVirtualizer: Virtualizer<
   const {m, formatLargeNumber} = useConfig()
   const t = useTheme()
 
+  const moduleColumnsToggle = useCtx(_ => _.module?.columnsToggle)
   const header = useCtx(_ => _.header)
   const columns = useCtx(_ => _.columns)
   const dispatch = useCtx(_ => _.dispatch)
@@ -33,17 +34,19 @@ export const DatatableToolbar = ({rowVirtualizer}: {rowVirtualizer: Virtualizer<
       <Box sx={{flex: 1, display: 'flex', alignItems: 'center'}}>
         {typeof header === 'function'
           ? header({
-            data: data ?? [],
-            filteredAndSortedData: dataFilteredAndSorted ?? [],
-          })
+              data: data ?? [],
+              filteredAndSortedData: dataFilteredAndSorted ?? [],
+            })
           : header}
       </Box>
       <Box sx={{marginLeft: 'auto'}}>
-        <DatatableColumnToggle
-          columns={columns.all}
-          hiddenColumns={columns.all.map(_ => _.id).filter(_ => !columns.visible.map(_ => _.id).includes(_))}
-          onChange={hiddenColumns => dispatch({type: 'SET_HIDDEN_COLUMNS', hiddenColumns})}
-        />
+        {moduleColumnsToggle?.enabled && (
+          <DatatableColumnToggle
+            columns={columns.all}
+            hiddenColumns={columns.all.map(_ => _.id).filter(_ => !columns.visible.map(_ => _.id).includes(_))}
+            onChange={hiddenColumns => dispatch({type: 'SET_HIDDEN_COLUMNS', hiddenColumns})}
+          />
+        )}
         <Badge
           badgeContent={filterCount}
           color="primary"
@@ -53,7 +56,7 @@ export const DatatableToolbar = ({rowVirtualizer}: {rowVirtualizer: Virtualizer<
             rowVirtualizer.scrollToIndex(0)
           }}
         >
-          <IconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount}/>
+          <IconBtn children="filter_alt_off" tooltip={m.clearFilter} disabled={!filterCount} />
         </Badge>
         {/*<Txt bold color="hint" sx={{mr: 0.5}}>*/}
         {/*  {formatLargeNumber(dataFilteredAndSorted.length)}*/}

@@ -14,7 +14,7 @@ import {TableWidget} from '@/features/Dashboard/Widget/Table/TableWidget'
 
 type Status = 'editing'
 
-export const CardWidget = memo(
+export const Widget = memo(
   ({
     status,
     widget,
@@ -31,7 +31,7 @@ export const CardWidget = memo(
         className="WidgetCard"
         onClick={() => onClick(widget.id)}
         sx={{
-          p: 1,
+          p: widget.type === 'Table' ? 0 : 1,
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
@@ -41,7 +41,7 @@ export const CardWidget = memo(
           borderColor: status === 'editing' ? t.vars.palette.primary.main : 'transparent',
         }}
       >
-        {widget.type !== 'PieChart' && (
+        {widget.type !== 'PieChart' && widget.type !== 'Table' && (
           <Core.Txt title={widget.title} block size="big" bold sx={{mb: 1}}>
             {widget.title}
           </Core.Txt>

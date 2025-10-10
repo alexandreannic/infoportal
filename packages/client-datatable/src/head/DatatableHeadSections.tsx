@@ -78,33 +78,36 @@ function DatatableHeadSections_({
   return (
     <Tr>
       {groups.length > 1 &&
-        groups.map(([group, cols], i) => (
-          <Th
-            className="DtHeadSectionCell-Th"
-            key={group}
-            style={{
-              gridColumn: groupSpans[i],
-              // i !== groups.length - 1 ? `${prevSpan ? prevSpan + 1 : 1} / span ${cols.length}` : undefined,
-              color: t.palette.getContrastText(primaryColors[i % primaryColors.length]),
-              background: primaryColors[i % primaryColors.length],
-            }}
-          >
-            <Content title={group} className="DtHeadSectionCell-Content">
-              <BtnHide
-                sx={{
-                  mr: 0.5,
-                  color: t.palette.getContrastText(primaryColors[i % primaryColors.length]),
-                }}
-                size="small"
-                color="primary"
-                onClick={() => onHideColumns(cols.map(_ => _.id))}
-              >
-                visibility_off
-              </BtnHide>
-              {group}
-            </Content>
-          </Th>
-        ))}
+        groups.map(([group, cols], i) => {
+          const color = cols[0]?.group?.color ?? primaryColors[i % primaryColors.length]
+          return (
+            <Th
+              className="DtHeadSectionCell-Th"
+              key={group}
+              style={{
+                gridColumn: groupSpans[i],
+                // i !== groups.length - 1 ? `${prevSpan ? prevSpan + 1 : 1} / span ${cols.length}` : undefined,
+                color: t.palette.getContrastText(color),
+                background: color,
+              }}
+            >
+              <Content title={group} className="DtHeadSectionCell-Content">
+                <BtnHide
+                  sx={{
+                    mr: 0.5,
+                    color: t.palette.getContrastText(primaryColors[i % primaryColors.length]),
+                  }}
+                  size="small"
+                  color="primary"
+                  onClick={() => onHideColumns(cols.map(_ => _.id))}
+                >
+                  visibility_off
+                </BtnHide>
+                {group}
+              </Content>
+            </Th>
+          )
+        })}
     </Tr>
   )
 }

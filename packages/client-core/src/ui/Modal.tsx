@@ -27,6 +27,7 @@ export interface ModalProps
   onClick?: EventHandler<SyntheticEvent<any>>
   PaperProps?: Partial<PaperProps>
   loading?: boolean
+  closeOnClickAway?: boolean
   overrideActions?:
     | null
     | ((_: {
@@ -49,6 +50,7 @@ export const Modal = ({
   onConfirm,
   onClick,
   onOpen,
+  closeOnClickAway,
   onClose,
   confirmDisabled,
   loading,
@@ -98,7 +100,7 @@ export const Modal = ({
           open()
         },
       })}
-      <Dialog open={isOpen} {...props} PaperProps={PaperProps}>
+      <Dialog open={isOpen} {...props} PaperProps={PaperProps} onClose={closeOnClickAway ? close : undefined}>
         {loading && (
           <LinearProgress
             sx={{

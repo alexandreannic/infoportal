@@ -115,6 +115,8 @@ export namespace Dashboard {
       choices?: string[]
     }
 
+    export type NumberRange = {min: number; max: number}
+
     export type Config = {
       [Type.Card]: {
         icon?: string
@@ -142,11 +144,11 @@ export namespace Dashboard {
       [Type.Table]: {
         column: {
           questionName: string
-          groupsIfTypeNumber?: number[][]
+          rangesIfTypeNumber?: NumberRange[]
         }
         row: {
           questionName: string
-          groupsIfTypeNumber?: number[][]
+          rangesIfTypeNumber?: NumberRange[]
         }
       }
       [Type.BarChart]: {

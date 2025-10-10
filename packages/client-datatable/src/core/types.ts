@@ -73,10 +73,10 @@ export interface Props<T extends Row, K extends string = string> {
     columnsToggle?: {
       enabled: boolean
       disableAutoSave?: boolean
-      hidden: string[]
+      hidden?: string[]
     }
     cellSelection?: {
-      enabled: true
+      enabled: boolean
       mode?: 'cell' | 'col' | 'free' | 'row' | 'row-or-cell'
       renderComponentOnRowSelected?: ({rowIds}: {rowIds: string[]}) => ReactNode
     }

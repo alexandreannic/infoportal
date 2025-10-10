@@ -49,8 +49,7 @@ export const getQuestionTypeByWidget = (type: Ip.Dashboard.Widget.Type): Kobo.Fo
       return ['select_one', 'integer', 'decimal', 'calculate']
     }
     case 'Table': {
-      return ['select_one']
-      // return ['select_one', 'integer', 'decimal', 'calculate']
+      return ['select_one', 'integer', 'decimal']
     }
     default: {
       return []

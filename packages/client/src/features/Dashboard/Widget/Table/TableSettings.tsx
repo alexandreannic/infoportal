@@ -7,6 +7,10 @@ import {Box} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {RangeTableEditor} from '@/features/Dashboard/Widget/Table/RangeTableEditor'
+import {Kobo} from 'kobo-sdk'
+
+export const questionTypeNumbers = new Set<Kobo.Form.QuestionType>(['integer', 'decimal'])
 
 export function TableSettings() {
   const {m} = useI18n()
@@ -33,7 +37,7 @@ export function TableSettings() {
     <Box>
       <WidgetSettingsSection title={m.column}>
         <Controller
-          name="row.questionName"
+          name="column.questionName"
           control={form.control}
           rules={{
             required: true,
@@ -53,6 +57,16 @@ export function TableSettings() {
             />
           )}
         />
+        {questionTypeNumbers.has(schema.helper.questionIndex[values.column?.questionName!]?.type) && (
+          <Controller
+            name="column.rangesIfTypeNumber"
+            control={form.control}
+            rules={{
+              required: true,
+            }}
+            render={({field, fieldState}) => <RangeTableEditor value={field.value} onChange={field.onChange} />}
+          />
+        )}
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.row}>
         <Controller
@@ -76,6 +90,16 @@ export function TableSettings() {
             />
           )}
         />
+        {questionTypeNumbers.has(schema.helper.questionIndex[values.row?.questionName!]?.type) && (
+          <Controller
+            name="row.rangesIfTypeNumber"
+            control={form.control}
+            rules={{
+              required: true,
+            }}
+            render={({field, fieldState}) => <RangeTableEditor value={field.value} onChange={field.onChange} />}
+          />
+        )}{' '}
       </WidgetSettingsSection>
     </Box>
   )

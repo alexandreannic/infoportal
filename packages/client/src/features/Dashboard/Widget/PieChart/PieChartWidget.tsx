@@ -1,6 +1,6 @@
 import {Ip} from 'infoportal-api-sdk'
 import React, {useMemo} from 'react'
-import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/Card/CardWidget'
+import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/Widget'
 import {Core} from '@/shared'
 import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
 import {map} from '@axanc/ts-utils'

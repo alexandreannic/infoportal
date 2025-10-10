@@ -12,14 +12,14 @@ export const DatatableHead = (
 ) => {
   const dispatch = useCtx(_ => _.dispatch)
   const columns = useCtx(_ => _.columns.visible)
-  const moduleColumnsToggle = useCtx(_ => _.module?.columnsToggle ?? {enabled: true})
+  const moduleColumnsResize = useCtx(_ => _.module?.columnsResize ?? {enabled: true})
   const colWidths = useCtx(_ => _.columns.widths)
   const sortBy = useCtx(_ => _.state.sortBy)
   const filters = useCtx(_ => _.state.filters)
   const selectColumn = useCtx(_ => _.cellSelection.selectColumn)
 
   const Cell = useMemo(() => {
-    if (moduleColumnsToggle?.enabled) return ResizableCell
+    if (moduleColumnsResize?.enabled) return ResizableCell
     return ({children}: any) => <div className="dth">{children}</div>
   }, [])
 
