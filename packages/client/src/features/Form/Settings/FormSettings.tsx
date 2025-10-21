@@ -63,8 +63,8 @@ export const SettingsRow = ({
         {typeof icon === 'string' ? <Icon sx={{color: t.vars?.palette.text.secondary}}>{icon}</Icon> : icon}
       </Box>
       <Box flex={1} className="Settings-Row-Body">
-        <Box flex={1} display="flex" alignItems="flex-start" sx={{mb: 2}}>
-          <Box flex={1}>
+        <Box flex={1} display="flex" alignItems="flex-start">
+          <Box flex={1} sx={{alignSelf: 'center'}}>
             <Core.Txt bold block>
               {label}
             </Core.Txt>

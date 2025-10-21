@@ -9,11 +9,13 @@ export class DashboardService {
 
   readonly getById = async ({id}: {id: Ip.DashboardId}): Promise<Ip.Dashboard | undefined> => {
     return this.prisma.dashboard
-      .findUnique({where: {id}})
+      .findUnique({where: {id, deletedAt: null}})
       .then(_ => (_ ? prismaMapper.dashboard.mapDashboard(_) : undefined))
   }
   readonly getAll = async ({workspaceId}: {workspaceId: Ip.WorkspaceId}): Promise<Ip.Dashboard[]> => {
-    return this.prisma.dashboard.findMany({where: {workspaceId}}).then(_ => _.map(prismaMapper.dashboard.mapDashboard))
+    return this.prisma.dashboard
+      .findMany({where: {workspaceId, deletedAt: null}})
+      .then(_ => _.map(prismaMapper.dashboard.mapDashboard))
   }
 
   readonly update = async ({id, workspaceId, filters, ...data}: Ip.Dashboard.Payload.Update): Promise<Ip.Dashboard> => {
@@ -26,6 +28,20 @@ export class DashboardService {
         },
       })
       .then(prismaMapper.dashboard.mapDashboard)
+  }
+
+  readonly remove = async ({
+    id,
+    workspaceId,
+    deletedBy,
+  }: Ip.Dashboard.Payload.Delete & {deletedBy: Ip.User.Email}): Promise<void> => {
+    await this.prisma.dashboard.update({
+      where: {id},
+      data: {
+        deletedBy,
+        deletedAt: new Date(),
+      },
+    })
   }
 
   readonly create = async (data: Ip.Dashboard.Payload.Create & {createdBy: Ip.User.Email}): Promise<Ip.Dashboard> => {

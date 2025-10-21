@@ -6,7 +6,6 @@ export class WidgetService {
   constructor(private prisma: PrismaClient) {}
 
   readonly search = async ({sectionId}: Ip.Dashboard.Widget.Payload.Search): Promise<Ip.Dashboard.Widget[]> => {
-    console.log('dashboardWidget SEACH')
     return this.prisma.dashboardWidget.findMany({where: {sectionId}}).then(_ => _.map(prismaMapper.dashboard.mapWidget))
   }
 

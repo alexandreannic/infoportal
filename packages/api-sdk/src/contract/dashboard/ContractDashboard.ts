@@ -1,6 +1,6 @@
 import {initContract} from '@ts-rest/core'
 import {Ip} from '../../type/index.js'
-import {map200, TsRestClient} from '../../core/Client.js'
+import {map200, map204, TsRestClient} from '../../core/Client.js'
 import {makeMeta, schema} from '../../core/Schema.js'
 import {z} from 'zod'
 
@@ -43,17 +43,17 @@ export const dashboardContract = c.router({
       },
     }),
   },
-  // remove: {
-  //   method: 'POST',
-  //   path: `/dashboard/:id`,
-  //   pathParams: c.type<{id: Ip.Uuid}>(),
-  //   responses: {204: schema.emptyResult},
-  //   metadata: makeMeta({
-  //     access: {
-  //       dashboard: ['canDelete'],
-  //     },
-  //   }),
-  // },
+  remove: {
+    method: 'POST',
+    path: `/dashboard/delete`,
+    body: c.type<Ip.Dashboard.Payload.Delete>(),
+    responses: {204: schema.emptyResult},
+    metadata: makeMeta({
+      access: {
+        workspace: ['dashboard_canDelete'],
+      },
+    }),
+  },
 })
 
 export const dashboardClient = (client: TsRestClient) => {
@@ -73,6 +73,6 @@ export const dashboardClient = (client: TsRestClient) => {
     update: (body: Ip.Dashboard.Payload.Update) => {
       return client.dashboard.update({body}).then(map200).then(Ip.Dashboard.map)
     },
-    // remove: (id: Ip.Uuid) => client.dashboard.remove({params: {id}}).then(map204),
+    remove: (body: Ip.Dashboard.Payload.Delete) => client.dashboard.remove({body}).then(map204),
   }
 }

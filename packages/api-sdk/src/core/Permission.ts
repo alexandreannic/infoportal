@@ -38,6 +38,7 @@ export namespace Permission {
       form_canGetAll: Level.Admin,
       dashboard_canCreate: Level.Write,
       dashboard_canUpdate: Level.Write,
+      dashboard_canDelete: Level.Write,
     }),
     form: define<Ip.Permission.Form>({
       canGet: Level.Read,

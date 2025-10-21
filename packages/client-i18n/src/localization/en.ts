@@ -338,7 +338,10 @@ export const en = Object.freeze({
     period: 'Period',
     savingEllipsis: 'Saving...',
     customize: 'Customize',
+    dangerZone: 'Danger zone',
     _dashboard: {
+      deleteThis: 'Delete this dashboard',
+      deleteThisDesc: 'Once you delete a dashboard, there is no going back. Please be certain.',
       ranges: 'Ranges',
       addRange: 'Range',
       showEvolution: 'Show evolution',

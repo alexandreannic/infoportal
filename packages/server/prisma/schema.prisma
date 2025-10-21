@@ -455,6 +455,9 @@ model Dashboard {
   enableChartDownload   Boolean?
   enableChartFullSize   Boolean?
   periodComparisonDelta Int?
+
+  deletedAt DateTime?
+  deletedBy String?
 }
 
 model DashboardSection {

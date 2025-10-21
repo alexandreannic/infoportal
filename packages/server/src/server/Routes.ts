@@ -315,6 +315,11 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({body}) => dashboard.update(body))
           .then(ok200)
           .catch(handleError),
+      remove: _ =>
+        auth2(_)
+          .then(({body, req}) => dashboard.remove({...body, deletedBy: req.session.app.user.email}))
+          .then(ok204)
+          .catch(handleError),
       section: {
         search: _ =>
           auth2(_)

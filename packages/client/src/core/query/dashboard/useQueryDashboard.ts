@@ -6,6 +6,7 @@ import {queryKeys} from '@/core/query/query.index'
 import {ApiError} from '@/core/sdk/server/ApiClient'
 import {useMemo} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
+import {usePendingMutation} from '@/core/query/usePendingMutation'
 
 export class UseQueryDashboard {
   static getAll = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
@@ -46,6 +47,19 @@ export class UseQueryDashboard {
     const queryClient = useQueryClient()
     return useMutation<Ip.Dashboard, ApiError, Omit<Ip.Dashboard.Payload.Update, 'workspaceId'>>({
       mutationFn: args => apiv2.dashboard.update({workspaceId, ...args}),
+      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),
+      onError: () => toastError(m.errorOnSave, {reloadBtn: true}),
+    })
+  }
+
+  static remove = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+    const {m} = useI18n()
+    const {apiv2} = useAppSettings()
+    const {toastError} = useIpToast()
+    const queryClient = useQueryClient()
+    return usePendingMutation<void, ApiError, Omit<Ip.Dashboard.Payload.Delete, 'workspaceId'>>({
+      getId: _ => _.id,
+      mutationFn: args => apiv2.dashboard.remove({workspaceId, ...args}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),
       onError: () => toastError(m.errorOnSave, {reloadBtn: true}),
     })

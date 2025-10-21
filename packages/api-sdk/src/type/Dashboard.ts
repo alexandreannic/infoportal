@@ -36,6 +36,10 @@ export namespace Dashboard {
     return _
   }
   export namespace Payload {
+    export type Delete = {
+      workspaceId: WorkspaceId
+      id: Dashboard['id']
+    }
     export type Create = {
       workspaceId: WorkspaceId
       name: string

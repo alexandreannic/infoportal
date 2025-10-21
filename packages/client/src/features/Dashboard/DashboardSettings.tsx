@@ -1,5 +1,5 @@
 import {TabContent} from '@/shared/Tab/TabContent'
-import {createRoute} from '@tanstack/react-router'
+import {createRoute, useNavigate} from '@tanstack/react-router'
 import {dashboardRoute} from '@/features/Dashboard/Dashboard'
 import {AppAvatar, Core} from '@/shared'
 import {SettingsRow} from '@/features/Form/Settings/FormSettings'
@@ -17,6 +17,7 @@ import {diffObject} from 'infoportal-common'
 import {PopoverShareLink} from '@/shared/PopoverShareLink'
 import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useAppSettings} from '@/core/context/ConfigContext'
+import {UseQueryPermission} from '@/core/query/useQueryPermission'
 
 export const dashboardSettingsRoute = createRoute({
   getParentRoute: () => dashboardRoute,
@@ -32,6 +33,10 @@ export function DashboardSettings() {
   const {workspaceId, dashboard, effectiveDataRange, dataRange, schema, flatSubmissions} = useDashboardContext()
   const queryWorkspace = UseQueryWorkspace.getById(workspaceId)
   const queryUpdate = UseQueryDashboard.update({workspaceId})
+  const queryRemove = UseQueryDashboard.remove({workspaceId})
+  const queryPermission = UseQueryPermission.workspace({workspaceId})
+  const navigate = useNavigate()
+
   const [isEditingTitle, setIsEditingTitle] = useState(false)
 
   const form = useForm<Omit<Ip.Dashboard.Payload.Update, 'id' | 'workspaceId'>>({
@@ -228,6 +233,29 @@ export function DashboardSettings() {
           }
         />
       </Core.PanelWBody>
+      {queryPermission.data?.dashboard_canDelete && (
+        <Core.PanelWBody outsideTitle={m.dangerZone}>
+          <SettingsRow
+            icon="delete"
+            label={m._dashboard.deleteThis}
+            desc={m._dashboard.deleteThisDesc}
+            action={
+              <Core.Modal
+                loading={queryRemove.pendingIds.has(dashboard.id)}
+                title={m._dashboard.deleteThis}
+                content={dashboard.name}
+                onConfirm={async (e, close) => {
+                  await queryRemove.mutateAsync({id: dashboard.id})
+                  close()
+                  navigate({to: '/$workspaceId/dashboard', params: {workspaceId}})
+                }}
+              >
+                <Core.Btn variant="outlined" icon="delete" color="error" children={m.delete} />
+              </Core.Modal>
+            }
+          />
+        </Core.PanelWBody>
+      )}
     </TabContent>
   )
 }

@@ -75,15 +75,6 @@ export function Dashboard() {
   return (
     <Page width="full" loading={isLoading}>
       <Tabs variant="scrollable" scrollButtons="auto" value={activeTab}>
-        <Tab
-          icon={<Icon>settings</Icon>}
-          iconPosition="start"
-          sx={{minHeight: 34, py: 1}}
-          component={Link}
-          value="settings"
-          to={dashboardSettingsRoute.fullPath}
-          label={m.settings}
-        />
         {queryDashboardSection.data?.map(_ => (
           <Tab
             key={_.id}
@@ -121,10 +112,19 @@ export function Dashboard() {
             </>
           )}
         >
-          <Core.Btn icon="add" sx={{ml: .5, my: .25, textTransform: 'capitalize'}}>
+          <Core.Btn icon="add" sx={{ml: 0.5, my: 0.25, textTransform: 'capitalize'}}>
             {m.new}
           </Core.Btn>
         </Core.Modal>
+        <Tab
+          icon={<Icon>settings</Icon>}
+          iconPosition="start"
+          sx={{marginLeft: 'auto', mr: 0.5, minHeight: 34, py: 1, maxWidth: 50}} //,  }}
+          component={Link}
+          value="settings"
+          to={dashboardSettingsRoute.fullPath}
+          // label={m.settings}
+        />
       </Tabs>
       {querySubmissions.data && queryWidgets.data && queryWidgets.data && queryDashboard.data && querySchema.data && (
         <DashboardProvider

@@ -58,6 +58,7 @@ import {KeyOf} from '@axanc/ts-utils'
       form_canGetAll: boolean
       dashboard_canCreate: boolean
       dashboard_canUpdate: boolean
+      dashboard_canDelete: boolean
     }
 
     export type Global = {
