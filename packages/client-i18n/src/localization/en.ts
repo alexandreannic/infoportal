@@ -340,6 +340,9 @@ export const en = Object.freeze({
     customize: 'Customize',
     dangerZone: 'Danger zone',
     _dashboard: {
+      operation: 'Operation',
+      selectMaterialIcons: 'Icons',
+      selectMaterialIconsDesc: 'Search icon and paste the <b>Icon name</b> from',
       deleteThis: 'Delete this dashboard',
       deleteThisDesc: 'Once you delete a dashboard, there is no going back. Please be certain.',
       ranges: 'Ranges',

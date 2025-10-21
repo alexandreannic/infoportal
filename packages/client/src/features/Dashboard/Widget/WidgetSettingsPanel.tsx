@@ -15,6 +15,7 @@ import {GeoPointSettings} from '@/features/Dashboard/Widget/GeoPoint/GeoPointSet
 import {GeoChartSettings} from '@/features/Dashboard/Widget/GeoChart/GeoChartSettings'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {TableSettings} from '@/features/Dashboard/Widget/Table/TableSettings'
+import {CardSettings} from '@/features/Dashboard/Widget/Card/CardSettings'
 
 export type WidgetUpdatePayload = Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'id' | 'dashboardId'>
 
@@ -30,9 +31,6 @@ export const useWidgetSettingsContext = () => React.useContext(Context)
 
 export const getQuestionTypeByWidget = (type: Ip.Dashboard.Widget.Type): Kobo.Form.QuestionType[] => {
   switch (type) {
-    case 'Card': {
-      return []
-    }
     case 'BarChart': {
       return ['select_multiple', 'select_one', 'calculate']
     }
@@ -50,6 +48,9 @@ export const getQuestionTypeByWidget = (type: Ip.Dashboard.Widget.Type): Kobo.Fo
     }
     case 'Table': {
       return ['select_one', 'integer', 'decimal']
+    }
+    case 'Card': {
+      return ['integer', 'decimal', 'calculate']
     }
     default: {
       return []
@@ -152,6 +153,7 @@ export const WidgetCreatorFormPanel = ({
             LineChart: <LineChartSettings />,
             GeoPoint: <GeoPointSettings />,
             GeoChart: <GeoChartSettings />,
+            Card: <CardSettings />,
           },
           () => (
             <></>

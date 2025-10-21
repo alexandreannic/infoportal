@@ -11,6 +11,7 @@ import {GeoPointWidget} from '@/features/Dashboard/Widget/GeoPoint/GeoPointWidge
 import {GeoChartWidget} from '@/features/Dashboard/Widget/GeoChart/GeoChartWidget'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {TableWidget} from '@/features/Dashboard/Widget/Table/TableWidget'
+import {CardWidget} from '@/features/Dashboard/Widget/Card/CardWidget'
 
 type Status = 'editing'
 
@@ -56,6 +57,7 @@ export const Widget = memo(
               LineChart: <LineChartWidget widget={widget} />,
               GeoPoint: <GeoPointWidget widget={widget} />,
               GeoChart: <GeoChartWidget widget={widget} />,
+              Card: <CardWidget widget={widget} />,
             },
             () => (
               <></>

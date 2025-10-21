@@ -31,6 +31,9 @@ export const appConfig = {
   sentry: {
     dsn: e()(Env.VITE_SENTRY_DNS),
   },
+  externalLink: {
+    materialIcons: 'https://fonts.google.com/icons',
+  },
   gooogle: {
     clientId: e(required)(Env.VITE_GOOGLE_CLIENT_ID),
     apiKey: e(required)(Env.VITE_GOOGLE_MAPS_API_KEY),

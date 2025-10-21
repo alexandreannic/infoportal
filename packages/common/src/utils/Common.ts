@@ -4,6 +4,11 @@ import {addMonths, differenceInMonths, isAfter, isBefore, startOfMonth} from 'da
 
 export const generateId = () => ('' + Math.random()).split('.')[1]
 
+export const toInt = (v: any): number | undefined => {
+  const n = Number(v)
+  return Number.isInteger(n) ? n : undefined
+}
+
 export const capitalize = (_: string) => {
   return _.charAt(0).toUpperCase() + _.slice(1)
 }

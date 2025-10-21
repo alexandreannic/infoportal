@@ -1,9 +1,10 @@
 import {useI18n} from '@infoportal/client-i18n'
-import {useForm} from 'react-hook-form'
+import {Controller, useForm, useWatch} from 'react-hook-form'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect} from 'react'
-import {Box, Slider} from '@mui/material'
+import {Box, Icon, Slider} from '@mui/material'
 import {
+  getQuestionTypeByWidget,
   Label,
   useQuestionInfo,
   useWidgetSettingsContext,
@@ -11,22 +12,100 @@ import {
 import {Core} from '@/shared'
 import {SelectChoices} from '@/features/Dashboard/Widget/shared/SelectChoices'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
+import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
+import {Obj} from '@axanc/ts-utils'
+import {MuiIconSelector} from '@/features/Dashboard/Widget/shared/MuiIconSelector'
 
 export function CardSettings() {
   const {m} = useI18n()
   const {schema} = useDashboardContext()
-  const {question, choices} = useQuestionInfo()
-  const {widget} = useWidgetSettingsContext()
-  const barChartForm = useForm<Ip.Dashboard.Widget.Config['BarChart']>()
+  const {widget, onChange} = useWidgetSettingsContext()
+  const form = useForm<Ip.Dashboard.Widget.Config['Card']>({
+    mode: 'onChange',
+    defaultValues: {
+      ...widget.config,
+    },
+  })
+  const values = useWatch({control: form.control})
 
-  if (!question) {
-    return <Core.Alert severity="error" title={m.anErrorOccurred} />
+  useEffect(() => {
+    onChange({config: values})
+  }, [values])
+
+  const actions = {
+    count: {icon: 'numbers', label: m.count},
+    sum: {icon: 'functions', label: m.sum},
+    avg: {icon: 'point_scan', label: m.average},
+    min: {icon: 'arrow_downward', label: m.min},
+    max: {icon: 'arrow_upward', label: m.max},
   }
 
   return (
     <Box>
-      <SelectChoices value={[]} onChange={console.log} />
-      <Label uppercase></Label>
+      <WidgetSettingsSection title={m.source}>
+        <Controller
+          name="operation"
+          control={form.control}
+          rules={{
+            required: true,
+          }}
+          render={({field, fieldState}) => (
+            <Core.SelectSingle
+              {...field}
+              sx={{mb: 2}}
+              label={m._dashboard.operation}
+              hideNullOption
+              options={Obj.entries(actions).map(([operation, _]) => ({
+                value: operation,
+                children: (
+                  <>
+                    <Icon
+                      fontSize="small"
+                      color="disabled"
+                      children={_.icon}
+                      sx={{width: 40, textAlign: 'center', ml: -1.5}}
+                    />
+                    {_.label}
+                  </>
+                ),
+              }))}
+            />
+          )}
+        />
+        {values.operation && values.operation !== 'count' && (
+          <Controller
+            name="questionName"
+            control={form.control}
+            rules={{
+              required: true,
+            }}
+            render={({field, fieldState}) => (
+              <SelectQuestionInput
+                {...field}
+                sx={{mb: 1}}
+                onChange={(e, _) => field.onChange(_)}
+                schema={schema}
+                questionTypeFilter={getQuestionTypeByWidget(widget.type)}
+                InputProps={{
+                  label: m.question,
+                  error: !!fieldState.error,
+                  helperText: null,
+                }}
+              />
+            )}
+          />
+        )}
+        <WidgetSettingsFilterQuestion name="filter" form={form} sx={{mb: 1}} />
+      </WidgetSettingsSection>
+      <WidgetSettingsSection title={m.customize}>
+        <Controller
+          name="icon"
+          control={form.control}
+          render={({field, fieldState}) => <MuiIconSelector {...field} />}
+        />
+      </WidgetSettingsSection>
     </Box>
   )
 }

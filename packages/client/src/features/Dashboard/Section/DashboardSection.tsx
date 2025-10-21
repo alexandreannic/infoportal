@@ -175,7 +175,7 @@ export function DashboardSection() {
                   icon="add"
                   fullWidth
                   variant="outlined"
-                  sx={{border: '2px dashed', borderColor: t.vars.palette.divider}}
+                  sx={{border: '1px dashed', borderColor: t.vars.palette.divider}}
                 >
                   {m.create}
                 </Core.Btn>

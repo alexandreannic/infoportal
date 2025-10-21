@@ -123,8 +123,11 @@ export namespace Dashboard {
 
     export type Config = {
       [Type.Card]: {
+        filter?: ConfigFilter
         icon?: string
-        operation?: 'sum' | 'avg' | 'min' | 'max'
+        operation?: 'sum' | 'avg' | 'min' | 'max' | 'count'
+        questionName?: string
+        iconName?: string
       }
       [Type.LineChart]: {
         lines?: {
