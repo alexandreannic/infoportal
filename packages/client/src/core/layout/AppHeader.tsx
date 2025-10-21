@@ -39,12 +39,11 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
       <AppHeaderContainer
         component="header"
         sx={{
-          minHeight: 44,
-          px: 2,
-          py: 0.5,
+          minHeight: 39,
+          px: 1,
           display: 'flex',
           alignItems: 'center',
-          background: Core.alphaVar(t.vars.palette.background.paper, .35),
+          background: Core.alphaVar(t.vars.palette.background.paper, 0.35),
           // position: 'fixed',
           // top: 0,
           // right: 0,
@@ -80,7 +79,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
               children="menu"
             />
           )}
-          <IpLogo height={26}/>
+          <IpLogo height={26} />
           {/*<Box component="img" src="/ip-logo.svg" height={30} alt="InfoPortal Logo" {...props} />*/}
           <Core.Txt
             sx={{ml: 1, ...Core.styleUtils(t).truncate}}
@@ -101,7 +100,16 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             value={workspaceId}
             hideNullOption
             onChange={_ => navigate({to: '/$workspaceId/overview', params: {workspaceId: _}})}
-            sx={{width: 200, mr: 0.5}}
+            sx={{
+              width: 200,
+              mr: 0.5,
+              mt: '-1px',
+              height: 32,
+              '& .MuiSelect-select': {
+                paddingTop: '6px',
+                paddingBottom: '6px',
+              },
+            }}
             options={(queryWorkspaces.data ?? []).map(_ => ({
               value: _.id,
               children: (

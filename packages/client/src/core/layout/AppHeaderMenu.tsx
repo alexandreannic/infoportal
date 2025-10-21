@@ -87,7 +87,7 @@ export const AppHeaderMenu = ({
   }
   return (
     <>
-      <AppAvatar size={36} email={me.email} onClick={e => setAnchorEl(e.currentTarget)} {...props} />
+      <AppAvatar size={32} email={me.email} onClick={e => setAnchorEl(e.currentTarget)} {...props} />
       <Popover
         anchorEl={anchorEl}
         anchorOrigin={{
