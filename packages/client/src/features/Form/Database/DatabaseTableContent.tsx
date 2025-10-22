@@ -26,6 +26,7 @@ import {buildDbColumns, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
 import {useKoboDialogs} from '@/features/Form/Database/useKoboDialogs'
 import {useFormContext} from '@/features/Form/Form'
+import {SelectLangIndex} from '@/shared/SelectLangIndex'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -233,16 +234,7 @@ export const DatabaseTableContent = ({
           header={params => (
             <>
               <DatabaseViewBtn sx={{mr: 1}} view={ctx.view} onClick={() => setViewEditorOpen(_ => !_)} />
-              <Core.SelectSingle<number>
-                hideNullOption
-                sx={{maxWidth: 128, mr: 1}}
-                value={langIndex}
-                onChange={setLangIndex}
-                options={[
-                  {children: 'XML', value: -1},
-                  ...schema.schemaSanitized.translations.map((_, i) => ({children: _, value: i})),
-                ]}
-              />
+              <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
               {schema.helper.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
               {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 

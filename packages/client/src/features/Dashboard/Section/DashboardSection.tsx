@@ -13,6 +13,7 @@ import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/Widget
 import {TabContent} from '@/shared/Tab/TabContent'
 import {dashboardRoute} from '@/features/Dashboard/Dashboard'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {SelectLangIndex} from '@/shared/SelectLangIndex'
 
 const GridLayout = WidthProvider(ReactGridLayout)
 
@@ -30,8 +31,20 @@ export function DashboardSection() {
   const {m} = useI18n()
   const params = dashboardSectionRoute.useParams()
   const sectionId = params.sectionId as Ip.Dashboard.SectionId
-  const {workspaceId, filters, setFilters, dataRange, effectiveDataRange, schema, widgetsBySection, dashboard} =
-    useDashboardContext()
+  const {langIndex, setLangIndex} = useDashboardContext()
+
+  const {
+    workspaceId,
+    filters,
+    // langIndex,
+    // setLangIndex,
+    setFilters,
+    dataRange,
+    effectiveDataRange,
+    schema,
+    widgetsBySection,
+    dashboard,
+  } = useDashboardContext()
   const widgets = widgetsBySection.get(sectionId) ?? []
 
   const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id, sectionId})
@@ -112,6 +125,7 @@ export function DashboardSection() {
               />
             )}
           </Core.DebouncedInput>
+          <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
           <Box
             sx={{
               background: 'rgba(0,0,0,.04)',

@@ -1,4 +1,4 @@
-import {Controller, UseFormReturn} from 'react-hook-form'
+import {Controller, UseFormReturn, useWatch} from 'react-hook-form'
 import {useI18n} from '@infoportal/client-i18n'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {SelectChoices} from '@/features/Dashboard/Widget/shared/SelectChoices'
@@ -10,6 +10,7 @@ import {Core} from '@/shared'
 import {Box, BoxProps, Icon, SxProps, useTheme} from '@mui/material'
 import {Kobo} from 'kobo-sdk'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {styleUtils} from '@infoportal/client-core'
 
 const formName: Record<keyof Ip.Dashboard.Widget.ConfigFilter, keyof Ip.Dashboard.Widget.ConfigFilter> = {
   questionName: 'questionName',
@@ -32,6 +33,21 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
   const questionName: string | undefined = form.watch(`${name}.${formName.questionName}` as any)
   const {choices, question} = useQuestionInfo(questionName)
 
+  const values = useWatch({control: form.control})
+
+  if (!values[name]) {
+    return (
+      <Core.Btn
+        icon="add"
+        sx={{borderStyle: 'dashed', borderRadius: styleUtils(t).color.input.default.borderRadius}}
+        fullWidth
+        variant="outlined"
+        onClick={() => form.setValue(name as any, {} as any)}
+      >
+        {m.addFilter}
+      </Core.Btn>
+    )
+  }
   return (
     <Box
       sx={{
@@ -42,11 +58,19 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
       }}
       {...props}
     >
-      <Core.Txt bold block sx={{display: 'flex', alignItems: 'center', mb: 1.5}}>
+      <Core.Txt bold block sx={{display: 'flex', alignItems: 'center', mb: 0.5}}>
         <Icon fontSize="small" sx={{mr: 0.5, color: t.vars.palette.text.secondary}}>
           filter_alt
         </Icon>
         {m.filters}
+        <Core.IconBtn
+          size="small"
+          sx={{marginLeft: 'auto'}}
+          color="error"
+          onClick={() => form.setValue(name as any, null as any)}
+        >
+          delete
+        </Core.IconBtn>
       </Core.Txt>
       <Controller
         name={`${name}.${formName.questionName}` as any}

@@ -213,6 +213,7 @@ const KoboAnswerQuestionView = ({
       t,
     })
   }, [schema.schemaSanitized, langIndex])
+
   switch (questionSchema.type) {
     case 'begin_group': {
       return (

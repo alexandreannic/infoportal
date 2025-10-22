@@ -84,7 +84,7 @@ export function CardSettings() {
             render={({field, fieldState}) => (
               <SelectQuestionInput
                 {...field}
-                sx={{mb: 1}}
+                sx={{mb: 1.5}}
                 onChange={(e, _) => field.onChange(_)}
                 schema={schema}
                 questionTypeFilter={getQuestionTypeByWidget(widget.type)}

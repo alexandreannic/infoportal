@@ -90,7 +90,6 @@ function SelectMultipleInner<T extends string | number>(
         id={id}
         defaultValue={props.defaultValue}
         multiple={true}
-        displayEmpty
         renderValue={(v: T[]) => {
           if (placeholder && value.length === 0) return <Typography color="textDisabled">{placeholder}</Typography>
           return options.find(_ => v.includes(_.value))?.children + (v.length > 1 ? ` +${v.length - 1}  selected` : '')
