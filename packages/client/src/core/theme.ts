@@ -3,42 +3,6 @@ import {createTheme, SxProps, Theme} from '@mui/material'
 import {Core} from '@/shared'
 import {alphaVar, colorPrimary} from '@infoportal/client-core'
 
-export const sxUtils = Core.makeSx({
-  fontBig: {
-    fontSize: t => `calc(${t.typography.fontSize}px * 1.15)`,
-  },
-  fontNormal: {
-    fontSize: t => t.typography.fontSize,
-  },
-  fontSmall: {
-    fontSize: t => `calc(${t.typography.fontSize}px * 0.85)`,
-  },
-  fontTitle: {
-    fontSize: t => `calc(${t.typography.fontSize}px * 1.3)`,
-  },
-  fontBigTitle: {
-    fontSize: t => `calc(${t.typography.fontSize}px * 1.6)`,
-  },
-  tdActions: {
-    textAlign: 'right',
-  },
-  truncate: {
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-  } as const,
-  inlineIcon: {
-    display: 'inline !important',
-    fontSize: 'inherit',
-    lineHeight: 1,
-    verticalAlign: 'text-top',
-  },
-  divider: {
-    mt: 2,
-    mb: 2,
-  },
-} as const)
-
 export const defaultSpacing = 8
 
 export type AppThemeParams = {
@@ -253,7 +217,6 @@ export const muiTheme = ({
         styleOverrides: {
           root: {
             fontWeight: 'bold',
-            // borderRadius: 20,
           },
           outlinedPrimary: ({theme}) => ({
             borderColor: theme.vars.palette.divider,
@@ -338,13 +301,6 @@ export const muiTheme = ({
             // backgroundColor: 'rgba(255, 255, 255, 0.02)',
             // backgroundColor: 'rgba(0, 0, 0, 0.3)',
           },
-        },
-      },
-      MuiChip: {
-        styleOverrides: {
-          outlined: ({theme}) => ({
-            borderColor: theme.vars.palette.divider,
-          }),
         },
       },
       MuiMenuItem: {

@@ -129,7 +129,7 @@ export const Page = ({
           minHeight: 0,
           position: 'relative',
           mt: 1,
-          borderRadius: t.shape.borderRadius + 'px',
+          // borderRadius: t.shape.borderRadius + 'px',
           overflow: 'hidden',
           ...sx,
         }}

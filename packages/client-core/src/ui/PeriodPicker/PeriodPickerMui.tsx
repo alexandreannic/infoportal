@@ -1,16 +1,10 @@
 import React from 'react'
-import {
-  DateRange,
-  DateRangePicker,
-  PickersShortcutsItem,
-  SingleInputDateRangeField,
-  useDateRangeManager,
-} from '@mui/x-date-pickers-pro'
+import {DateRange, DateRangePicker, PickersShortcutsItem, SingleInputDateRangeField} from '@mui/x-date-pickers-pro'
 // import {unstable_useMultiInputDateRangeField as useMultiInputDateRangeField} from '@mui/x-date-pickers-pro/MultiInputDateRangeField'
-import {unstable_useMultiInputRangeField as useMultiInputDateRangeField} from '@mui/x-date-pickers-pro/hooks'
-import {Box, TextField} from '@mui/material'
 import {endOfMonth, format, startOfMonth, subMonths} from 'date-fns'
 import {PeriodPickerProps} from './PeriodPicker'
+import {styleUtils} from '../../core'
+import {useTheme} from '@mui/material'
 
 const shortcutsItems: PickersShortcutsItem<DateRange<Date>>[] = (() => {
   const today = new Date()
@@ -48,8 +42,7 @@ export const PeriodPickerMui = ({
   sx,
 }: PeriodPickerProps) => {
   const handleChange: DateChangeHandler = (range: DateRange<Date>) => onChange(range)
-  // const handleChange: DateChangeHandler = (range: DateRange<Date>) => onChange(revertNulls(range))
-
+  const t = useTheme()
   return (
     <DateRangePicker
       minDate={min}
@@ -64,7 +57,15 @@ export const PeriodPickerMui = ({
           size: 'small',
           variant: 'outlined',
           margin: 'dense',
-          sx: {minWidth: 218, ...sx},
+          sx: {
+            '& .MuiPickersOutlinedInput-notchedOutline': {
+              borderRadius: '6px',
+              borderColor: styleUtils(t).color.input.default.borderColor,
+            },
+            minWidth: 218,
+            ...sx,
+            borderRadius: 0,
+          },
           fullWidth,
         },
         shortcuts: {items: shortcutsItems},
@@ -73,108 +74,108 @@ export const PeriodPickerMui = ({
     />
   )
 }
-
-const BrowserMultiInputDateRangeField = React.forwardRef<HTMLDivElement, any>((props, ref) => {
-  const {
-    slotProps,
-    value,
-    defaultValue,
-    format,
-    onChange,
-    readOnly,
-    disabled,
-    onError,
-    fullWidth,
-    shouldDisableDate,
-    minDate,
-    maxDate,
-    disableFuture,
-    disablePast,
-    sx,
-    selectedSections,
-    onSelectedSectionsChange,
-    className,
-  } = props
-
-  const {inputRef: startInputRef, ...startTextFieldProps} = slotProps?.textField || {}
-  const {inputRef: endInputRef, ...endTextFieldProps} = slotProps?.textField || {}
-  const manager = useDateRangeManager(props)
-  const {
-    startTextField: {sectionListRef: startRef, ...startDateProps},
-    endTextField: {sectionListRef: endRef, ...endDateProps},
-  } = useMultiInputDateRangeField({
-    internalProps: {
-      value,
-      defaultValue,
-      format,
-      onChange,
-      readOnly,
-      disabled,
-      onError,
-      shouldDisableDate,
-      minDate,
-      maxDate,
-      disableFuture,
-      disablePast,
-      selectedSections,
-      onSelectedSectionsChange,
-    },
-    rootProps: {
-      startInputRef,
-      endInputRef,
-    },
-    manager,
-    startTextFieldProps,
-    endTextFieldProps,
-  })
-
-  return (
-    <Box
-      ref={ref}
-      className={className}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        ...(fullWidth && {width: '100%'}),
-        ...sx,
-      }}
-    >
-      <TextField
-        type="text"
-        margin="dense"
-        variant="outlined"
-        fullWidth
-        size="small"
-        sx={{minWidth: 115, marginRight: '-1px'}}
-        slotProps={{
-          inputLabel: {shrink: true},
-          input: {
-            ...startDateProps.InputProps,
-            sx: {borderBottomRightRadius: 0, borderTopRightRadius: 0},
-          },
-        }}
-        {...startDateProps}
-        inputRef={startRef}
-      />
-      <TextField
-        type="text"
-        margin="dense"
-        variant="outlined"
-        fullWidth
-        size="small"
-        sx={{minWidth: 115}}
-        slotProps={{
-          inputLabel: {shrink: true},
-          input: {
-            ...endDateProps.InputProps,
-            sx: {borderBottomLeftRadius: 0, borderTopLeftRadius: 0},
-          },
-        }}
-        {...endDateProps}
-        inputRef={endRef}
-      />
-    </Box>
-  )
-})
-
-BrowserMultiInputDateRangeField.displayName = 'BrowserMultiInputDateRangeField'
+//
+// const BrowserMultiInputDateRangeField = React.forwardRef<HTMLDivElement, any>((props, ref) => {
+//   const {
+//     slotProps,
+//     value,
+//     defaultValue,
+//     format,
+//     onChange,
+//     readOnly,
+//     disabled,
+//     onError,
+//     fullWidth,
+//     shouldDisableDate,
+//     minDate,
+//     maxDate,
+//     disableFuture,
+//     disablePast,
+//     sx,
+//     selectedSections,
+//     onSelectedSectionsChange,
+//     className,
+//   } = props
+//
+//   const {inputRef: startInputRef, ...startTextFieldProps} = slotProps?.textField || {}
+//   const {inputRef: endInputRef, ...endTextFieldProps} = slotProps?.textField || {}
+//   const manager = useDateRangeManager(props)
+//   const {
+//     startTextField: {sectionListRef: startRef, ...startDateProps},
+//     endTextField: {sectionListRef: endRef, ...endDateProps},
+//   } = useMultiInputDateRangeField({
+//     internalProps: {
+//       value,
+//       defaultValue,
+//       format,
+//       onChange,
+//       readOnly,
+//       disabled,
+//       onError,
+//       shouldDisableDate,
+//       minDate,
+//       maxDate,
+//       disableFuture,
+//       disablePast,
+//       selectedSections,
+//       onSelectedSectionsChange,
+//     },
+//     rootProps: {
+//       startInputRef,
+//       endInputRef,
+//     },
+//     manager,
+//     startTextFieldProps,
+//     endTextFieldProps,
+//   })
+//
+//   return (
+//     <Box
+//       ref={ref}
+//       className={className}
+//       sx={{
+//         display: 'flex',
+//         alignItems: 'center',
+//         ...(fullWidth && {width: '100%'}),
+//         ...sx,
+//       }}
+//     >
+//       <TextField
+//         type="text"
+//         margin="dense"
+//         variant="outlined"
+//         fullWidth
+//         size="small"
+//         sx={{minWidth: 115, marginRight: '-1px'}}
+//         slotProps={{
+//           inputLabel: {shrink: true},
+//           input: {
+//             ...startDateProps.InputProps,
+//             sx: {borderBottomRightRadius: 0, borderTopRightRadius: 0},
+//           },
+//         }}
+//         {...startDateProps}
+//         inputRef={startRef}
+//       />
+//       <TextField
+//         type="text"
+//         margin="dense"
+//         variant="outlined"
+//         fullWidth
+//         size="small"
+//         sx={{minWidth: 115}}
+//         slotProps={{
+//           inputLabel: {shrink: true},
+//           input: {
+//             ...endDateProps.InputProps,
+//             sx: {borderBottomLeftRadius: 0, borderTopLeftRadius: 0},
+//           },
+//         }}
+//         {...endDateProps}
+//         inputRef={endRef}
+//       />
+//     </Box>
+//   )
+// })
+//
+// BrowserMultiInputDateRangeField.displayName = 'BrowserMultiInputDateRangeField'
