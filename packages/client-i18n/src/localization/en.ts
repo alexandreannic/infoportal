@@ -238,6 +238,7 @@ export const en = Object.freeze({
     country: 'Country',
     selectCountry: 'Select country',
     _widgetType: {
+      [Ip.Dashboard.Widget.Type.Alert]: 'Paragraph',
       [Ip.Dashboard.Widget.Type.Card]: 'Card',
       [Ip.Dashboard.Widget.Type.PieChart]: 'Pie Chart',
       [Ip.Dashboard.Widget.Type.GeoChart]: 'Geo Chart',
@@ -340,6 +341,7 @@ export const en = Object.freeze({
     customize: 'Customize',
     dangerZone: 'Danger zone',
     _dashboard: {
+      canBeHidden: 'Can be hidden',
       operation: 'Operation',
       selectMaterialIcons: 'Icons',
       selectMaterialIconsDesc: 'Search icon and paste the <b>Icon name</b> from',

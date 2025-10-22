@@ -16,6 +16,7 @@ import {GeoChartSettings} from '@/features/Dashboard/Widget/GeoChart/GeoChartSet
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {TableSettings} from '@/features/Dashboard/Widget/Table/TableSettings'
 import {CardSettings} from '@/features/Dashboard/Widget/Card/CardSettings'
+import {AlertSettings} from '@/features/Dashboard/Widget/Alert/AlertSettings'
 
 export type WidgetUpdatePayload = Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'id' | 'dashboardId'>
 
@@ -155,6 +156,7 @@ export const WidgetCreatorFormPanel = ({
             GeoPoint: <GeoPointSettings />,
             GeoChart: <GeoChartSettings />,
             Card: <CardSettings />,
+            Alert: <AlertSettings />,
           },
           () => (
             <></>

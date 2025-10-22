@@ -122,6 +122,12 @@ export namespace Dashboard {
     export type NumberRange = {min: number; max: number}
 
     export type Config = {
+      [Type.Alert]: {
+        content?: string
+        type?: 'error' | 'warning' | 'info' | 'success'
+        canHide?: boolean
+        iconName?: string
+      }
       [Type.Card]: {
         filter?: ConfigFilter
         icon?: string
@@ -199,6 +205,7 @@ export namespace Dashboard {
     }
     export type Type = Prisma.WidgetType
     export const Type = {
+      Alert: 'Alert',
       Card: 'Card',
       PieChart: 'PieChart',
       GeoChart: 'GeoChart',
