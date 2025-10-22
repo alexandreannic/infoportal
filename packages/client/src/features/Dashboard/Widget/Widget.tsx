@@ -12,6 +12,7 @@ import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {TableWidget} from '@/features/Dashboard/Widget/Table/TableWidget'
 import {CardWidget} from '@/features/Dashboard/Widget/Card/CardWidget'
 import {AlertWidget} from '@/features/Dashboard/Widget/Alert/AlertWidget'
+import {WidgetErrorBoundary} from '@/features/Dashboard/Widget/shared/WidgetErrorBoundary'
 
 type Status = 'editing'
 
@@ -43,24 +44,26 @@ export const Widget = memo(
           // borderColor: status === 'editing' ? t.vars.palette.primary.main : 'transparent',
         }}
       >
-        <Box className="WidgetCard-content" sx={{flex: 1}}>
-          {fnSwitch(
-            widget.type,
-            {
-              Table: <TableWidget widget={widget} />,
-              BarChart: <BarChartWidget widget={widget} />,
-              PieChart: <PieChartWidget widget={widget} />,
-              LineChart: <LineChartWidget widget={widget} />,
-              GeoPoint: <GeoPointWidget widget={widget} />,
-              GeoChart: <GeoChartWidget widget={widget} />,
-              Card: <CardWidget widget={widget} />,
-              Alert: <AlertWidget widget={widget} />,
-            },
-            () => (
-              <></>
-            ),
-          )}
-        </Box>
+        <WidgetErrorBoundary>
+          <Box className="WidgetCard-content" sx={{flex: 1}}>
+            {fnSwitch(
+              widget.type,
+              {
+                Table: <TableWidget widget={widget} />,
+                BarChart: <BarChartWidget widget={widget} />,
+                PieChart: <PieChartWidget widget={widget} />,
+                LineChart: <LineChartWidget widget={widget} />,
+                GeoPoint: <GeoPointWidget widget={widget} />,
+                GeoChart: <GeoChartWidget widget={widget} />,
+                Card: <CardWidget widget={widget} />,
+                Alert: <AlertWidget widget={widget} />,
+              },
+              () => (
+                <></>
+              ),
+            )}
+          </Box>
+        </WidgetErrorBoundary>
       </Core.Panel>
     )
 
