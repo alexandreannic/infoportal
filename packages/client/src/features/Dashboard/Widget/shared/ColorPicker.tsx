@@ -1,7 +1,8 @@
 import {Core} from '@/shared'
-import {Box, BoxProps, useTheme} from '@mui/material'
-import {useState} from 'react'
+import {Box, BoxProps, Theme, useTheme} from '@mui/material'
+import {useMemo, useState} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
+import {useMap} from '@axanc/react-hooks'
 
 const Dot = ({color, selected, sx, ...props}: BoxProps & {color: string; selected?: boolean}) => {
   const t = useTheme()
@@ -22,14 +23,37 @@ const Dot = ({color, selected, sx, ...props}: BoxProps & {color: string; selecte
   )
 }
 
+const defaultColors = (t: Theme) => [
+  t.palette.primary.dark,
+  t.palette.primary.main,
+  t.palette.primary.light,
+  t.palette.info.dark,
+  t.palette.info.main,
+  t.palette.info.light,
+  t.palette.success.dark,
+  t.palette.success.main,
+  t.palette.success.light,
+  t.palette.warning.dark,
+  t.palette.warning.main,
+  t.palette.warning.light,
+  t.palette.error.dark,
+  t.palette.error.main,
+  t.palette.error.light,
+  t.palette.text.primary,
+  t.palette.text.secondary,
+  t.palette.text.disabled,
+]
+
 export const ColorPicker = ({
   value: valueProp,
   defaultValue,
   onChange,
   label,
+  colors = defaultColors,
   sx,
   ...props
 }: BoxProps & {
+  colors?: (t: Theme) => (string | {value: string; color: string})[]
   label?: string
   value?: string
   defaultValue?: string
@@ -45,26 +69,18 @@ export const ColorPicker = ({
     if (!isControlled) setUncontrolledValue(color ?? '')
     onChange?.(color)
   }
-  const colors = [
-    t.palette.primary.dark,
-    t.palette.primary.main,
-    t.palette.primary.light,
-    t.palette.info.dark,
-    t.palette.info.main,
-    t.palette.info.light,
-    t.palette.success.dark,
-    t.palette.success.main,
-    t.palette.success.light,
-    t.palette.warning.dark,
-    t.palette.warning.main,
-    t.palette.warning.light,
-    t.palette.error.dark,
-    t.palette.error.main,
-    t.palette.error.light,
-    t.palette.text.primary,
-    t.palette.text.secondary,
-    t.palette.text.disabled,
-  ]
+
+  const colorsMapped: {value: string; color: string}[] = useMemo(() => {
+    return colors(t).map(_ => {
+      if (typeof _ === 'string') return {value: _, color: _}
+      return _
+    })
+  }, [colors, t])
+
+  const selectedColor = useMemo(() => {
+    return colorsMapped.find(_ => _.value === value)?.color
+  }, [value, colorsMapped])
+
   return (
     <Core.PopoverWrapper
       content={close => (
@@ -85,17 +101,19 @@ export const ColorPicker = ({
           >
             {m.none}
           </Core.Btn>
-          {colors.map(color => (
-            <Dot
-              color={color}
-              key={color}
-              onClick={() => {
-                handleSelect(color)
-                close()
-              }}
-              selected={value === color}
-            />
-          ))}
+          {colorsMapped.map(color => {
+            return (
+              <Dot
+                color={color.color}
+                key={color.value}
+                onClick={() => {
+                  handleSelect(color.value)
+                  close()
+                }}
+                selected={value === color.value}
+              />
+            )
+          })}
         </Box>
       )}
     >
@@ -117,7 +135,7 @@ export const ColorPicker = ({
         {...props}
       >
         {label ?? m.color}
-        {value && value !== '' && <Dot color={value} />}
+        {selectedColor && selectedColor !== '' && <Dot color={selectedColor} />}
       </Box>
     </Core.PopoverWrapper>
   )

@@ -69,6 +69,7 @@ export const useQuestionInfo: {
 }
 
 const padding = 0.75
+
 export const WidgetCreatorFormPanel = ({
   sectionId,
   onClose,
@@ -189,7 +190,3 @@ export const WidgetCreatorFormPanel = ({
 //     </Core.MultipleChoices>
 //   )
 // }
-
-export function Label({sx, ...props}: Core.TxtProps) {
-  return <Core.Txt color="hint" size="small" sx={{...sx}} block {...props} />
-}

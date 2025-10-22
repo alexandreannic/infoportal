@@ -27,35 +27,39 @@ export const PanelWidget = ({
         minHeight: 76,
         // minHeight: 82.52,
         width: '100%',
-        textAlign: 'center',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         '&:last-child': {
           mr: 0,
         },
         ...sx,
       }}
     >
-      <Core.Txt block color="hint" bold sx={{lineHeight: 1, mb: 0.5, mt: -0.5}}>
-        {uppercaseHandlingAcronyms(title)}
-      </Core.Txt>
-      <Box
-        sx={{
-          lineHeight: 1,
-          fontWeight: t => t.typography.fontWeightBold,
-          fontSize: '1.7em',
-          display: 'inline-flex',
-          alignItems: 'center',
-          minHeight: 32,
-        }}
-      >
-        {icon &&
-          (typeof icon === 'string' ? (
-            <Icon color="disabled" sx={{mr: 1}} fontSize="large">
-              {icon}
-            </Icon>
-          ) : (
-            icon
-          ))}
-        {children}
+      <Box sx={{textAlign: 'center', width: '100%'}}>
+        <Core.Txt block color="hint" bold sx={{lineHeight: 1, mb: 0.5, mt: -0.5}}>
+          {uppercaseHandlingAcronyms(title)}
+        </Core.Txt>
+        <Box
+          sx={{
+            lineHeight: 1,
+            fontWeight: t => t.typography.fontWeightBold,
+            fontSize: '1.7em',
+            display: 'inline-flex',
+            alignItems: 'center',
+            minHeight: 32,
+          }}
+        >
+          {icon &&
+            (typeof icon === 'string' ? (
+              <Icon color="disabled" sx={{mr: 1}} fontSize="large">
+                {icon}
+              </Icon>
+            ) : (
+              icon
+            ))}
+          {children}
+        </Box>
       </Box>
     </Core.PanelWBody>
   )

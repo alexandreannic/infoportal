@@ -1,5 +1,4 @@
-import {Box, Icon, useTheme} from '@mui/material'
-import {widgetTypeToIcon} from '@/features/Dashboard/Widget/WidgetTypeIcon'
+import {Box, useTheme} from '@mui/material'
 import React, {memo} from 'react'
 import {Core} from '@/shared'
 import {Ip} from 'infoportal-api-sdk'
@@ -12,6 +11,7 @@ import {GeoChartWidget} from '@/features/Dashboard/Widget/GeoChart/GeoChartWidge
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {TableWidget} from '@/features/Dashboard/Widget/Table/TableWidget'
 import {CardWidget} from '@/features/Dashboard/Widget/Card/CardWidget'
+import {AlertWidget} from '@/features/Dashboard/Widget/Alert/AlertWidget'
 
 type Status = 'editing'
 
@@ -27,26 +27,22 @@ export const Widget = memo(
   }) => {
     const t = useTheme()
     const {dashboard} = useDashboardContext()
+
     const content = (
       <Core.Panel
         className="WidgetCard"
         onClick={() => onClick(widget.id)}
         sx={{
-          p: widget.type === 'Table' ? 0 : 1,
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
           transition: t.transitions.create('box-shadow'),
-          boxShadow: status === 'editing' ? t.vars.shadows[2] : undefined,
-          border: '2px solid',
-          borderColor: status === 'editing' ? t.vars.palette.primary.main : 'transparent',
+          boxShadow: status === 'editing' ? theme => `0 0 0 2px ${theme.palette.primary.main}` : undefined,
+          // boxShadow: status === 'editing' ? t.shadows[10] : undefined,
+          // border: '2px solid',
+          // borderColor: status === 'editing' ? t.vars.palette.primary.main : 'transparent',
         }}
       >
-        {widget.type !== 'PieChart' && widget.type !== 'Table' && (
-          <Core.Txt title={widget.title} block size="big" bold sx={{mb: 1}}>
-            {widget.title}
-          </Core.Txt>
-        )}
         <Box className="WidgetCard-content" sx={{flex: 1}}>
           {fnSwitch(
             widget.type,
@@ -58,6 +54,7 @@ export const Widget = memo(
               GeoPoint: <GeoPointWidget widget={widget} />,
               GeoChart: <GeoChartWidget widget={widget} />,
               Card: <CardWidget widget={widget} />,
+              Alert: <AlertWidget widget={widget} />,
             },
             () => (
               <></>
@@ -81,13 +78,3 @@ export const Widget = memo(
     return content
   },
 )
-
-export function WidgetCardPlaceholder({type}: {type: Ip.Dashboard.Widget.Type}) {
-  return (
-    <Box sx={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-      <Icon sx={{fontSize: '3.5em'}} color="disabled">
-        {widgetTypeToIcon[type]}
-      </Icon>
-    </Box>
-  )
-}

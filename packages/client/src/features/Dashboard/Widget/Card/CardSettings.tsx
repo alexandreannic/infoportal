@@ -5,7 +5,6 @@ import React, {useEffect} from 'react'
 import {Box, Icon, Slider} from '@mui/material'
 import {
   getQuestionTypeByWidget,
-  Label,
   useQuestionInfo,
   useWidgetSettingsContext,
 } from '@/features/Dashboard/Widget/WidgetSettingsPanel'
@@ -16,7 +15,8 @@ import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import {Obj} from '@axanc/ts-utils'
-import {MuiIconSelector} from '@/features/Dashboard/Widget/shared/MuiIconSelector'
+import {MaterialIconSelector} from '@/features/Dashboard/Widget/shared/MaterialIconSelector'
+import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 
 export function CardSettings() {
   const {m} = useI18n()
@@ -103,7 +103,7 @@ export function CardSettings() {
         <Controller
           name="icon"
           control={form.control}
-          render={({field, fieldState}) => <MuiIconSelector {...field} />}
+          render={({field, fieldState}) => <MaterialIconSelector {...field} />}
         />
       </WidgetSettingsSection>
     </Box>

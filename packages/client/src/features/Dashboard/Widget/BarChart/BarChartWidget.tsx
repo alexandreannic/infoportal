@@ -1,10 +1,12 @@
 import {Ip} from 'infoportal-api-sdk'
 import React, {useMemo} from 'react'
-import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/Widget'
 import {Core} from '@/shared'
 import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
 import {map} from '@axanc/ts-utils'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
+import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
+import {Box} from '@mui/material'
 
 export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
@@ -26,14 +28,17 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const multiple = schema.helper.questionIndex[config.questionName].type === 'select_multiple'
 
   return (
-    <Core.ChartBarByKey
-      compareTo={config.showEvolution ? flatSubmissionsDelta : undefined}
-      multiple={multiple}
-      hideValue={!config.showValue}
-      data={data}
-      label={labels}
-      limit={config.limit}
-      property={config.questionName}
-    />
+    <Box sx={{p: 1}}>
+      <WidgetTitle>{widget.title}</WidgetTitle>
+      <Core.ChartBarByKey
+        compareTo={config.showEvolution ? flatSubmissionsDelta : undefined}
+        multiple={multiple}
+        hideValue={!config.showValue}
+        data={data}
+        label={labels}
+        limit={config.limit}
+        property={config.questionName}
+      />
+    </Box>
   )
 }

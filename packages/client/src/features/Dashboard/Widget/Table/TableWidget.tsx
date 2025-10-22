@@ -1,5 +1,4 @@
 import {Ip} from 'infoportal-api-sdk'
-import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/Widget'
 import React, {useMemo} from 'react'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {Core, Datatable} from '@/shared'
@@ -8,6 +7,7 @@ import {Obj} from '@axanc/ts-utils'
 import {useTheme} from '@mui/material'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
+import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 
 type Data = {row: string; groups: Record<string, number>}
 

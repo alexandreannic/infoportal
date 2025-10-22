@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
 import {Box, Table, TableBody, TableCell, TableRow, TextField, useTheme} from '@mui/material'
 import {Core} from '@/shared'
-import {Label} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {useI18n} from '@infoportal/client-i18n'
 import {styleUtils} from '@infoportal/client-core'
+import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 
 export type Range = {
   min: number
@@ -54,7 +54,7 @@ export function RangeTableEditor({value = [], onChange}: Props) {
         borderRadius: styleUtils(t).color.input.default.borderRadius,
       }}
     >
-      <Label sx={{p: 1}}>{m._dashboard.ranges}</Label>
+      <WidgetLabel sx={{p: 1}}>{m._dashboard.ranges}</WidgetLabel>
       <Table
         size="small"
         sx={{

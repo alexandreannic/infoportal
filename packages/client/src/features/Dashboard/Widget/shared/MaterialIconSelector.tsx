@@ -1,16 +1,17 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Core} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'
-import {Icon} from '@mui/material'
+import {Icon, SxProps} from '@mui/material'
 
 type Props = {
   value?: string
   onChange?: (v: string) => void
   error?: boolean
   helperText?: string | null
+  sx?: SxProps
 }
 
-export const MaterialIconSelector = ({value = '', onChange, error, helperText}: Props) => {
+export const MaterialIconSelector = ({sx, value = '', onChange, error, helperText}: Props) => {
   const {conf} = useAppSettings()
   const {m} = useI18n()
 
@@ -26,6 +27,7 @@ export const MaterialIconSelector = ({value = '', onChange, error, helperText}: 
         helperText ?? (
           <>
             <Core.Txt
+              component="span"
               size="small"
               block
               color="hint"
@@ -42,7 +44,7 @@ export const MaterialIconSelector = ({value = '', onChange, error, helperText}: 
           {value ?? 'help_outline'}
         </Icon>
       }
-      sx={{mb: 0.5}}
+      sx={sx}
     />
   )
 }

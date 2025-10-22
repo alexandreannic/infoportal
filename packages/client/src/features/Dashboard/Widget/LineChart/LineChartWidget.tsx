@@ -1,11 +1,13 @@
 import {Ip} from 'infoportal-api-sdk'
-import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/Widget'
 import React, {useMemo} from 'react'
 import {Core} from '@/shared'
 import {seq} from '@axanc/ts-utils'
 import {ChartLineCurve} from '@infoportal/client-core'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {KoboSchemaHelper} from 'infoportal-common'
+import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
+import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
+import {Box} from '@mui/material'
 
 export function filterToFunction<T extends Record<string, any> = Record<string, any>>(
   schema: KoboSchemaHelper.Bundle<true>,
@@ -41,18 +43,21 @@ export const LineChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
 
   if (!config.lines || config.lines.length === 0) return <WidgetCardPlaceholder type={widget.type} />
   return (
-    <Core.ChartLineByDateFiltered
-      start={config.start}
-      end={config.end}
-      data={flatSubmissions}
-      curves={seq(config.lines).reduceObject<Record<string, ChartLineCurve>>((line, acc, i) => [
-        line.title ?? schema.translate.question(line.questionName),
-        {
-          getDate: _ => _[line.questionName],
-          filter: filterFns[i],
-          color: line.color,
-        },
-      ])}
-    />
+    <Box sx={{p: 1}}>
+      <WidgetTitle>{widget.title}</WidgetTitle>
+      <Core.ChartLineByDateFiltered
+        start={config.start}
+        end={config.end}
+        data={flatSubmissions}
+        curves={seq(config.lines).reduceObject<Record<string, ChartLineCurve>>((line, acc, i) => [
+          line.title ?? schema.translate.question(line.questionName),
+          {
+            getDate: _ => _[line.questionName],
+            filter: filterFns[i],
+            color: line.color,
+          },
+        ])}
+      />
+    </Box>
   )
 }

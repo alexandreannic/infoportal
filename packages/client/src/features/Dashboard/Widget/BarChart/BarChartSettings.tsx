@@ -5,7 +5,6 @@ import React, {useEffect} from 'react'
 import {Box, Slider} from '@mui/material'
 import {
   getQuestionTypeByWidget,
-  Label,
   useQuestionInfo,
   useWidgetSettingsContext,
 } from '@/features/Dashboard/Widget/WidgetSettingsPanel'
@@ -15,6 +14,7 @@ import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/W
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {SwitchBox} from '@/shared/SwitchBox'
+import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 
 export function BarChartSettings() {
   const {m} = useI18n()
@@ -71,7 +71,7 @@ export function BarChartSettings() {
         <SelectChoices value={[]} questionName={config.questionName} sx={{mb: 1}} onChange={console.log} />
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.customize}>
-        <Label>{m._dashboard.listLimit}</Label>
+        <WidgetLabel>{m._dashboard.listLimit}</WidgetLabel>
         <Controller
           name="limit"
           control={form.control}

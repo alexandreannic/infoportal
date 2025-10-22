@@ -27,7 +27,7 @@ export function WidgetCreate({
     <Core.RadioGroup<Ip.Dashboard.Widget.Type> onChange={_ => onSubmit({type: _})} inline sx={{mb: 2}}>
       {Obj.keys(Ip.Dashboard.Widget.Type).map(_ => (
         <Core.RadioGroupItem key={_} hideRadio value={_}>
-          <WidgetTypeIcon type={_} sx={{my: 1, fontSize: '3em'}} />
+          <WidgetTypeIcon color="action" type={_} sx={{my: 1, fontSize: '2em'}} />
         </Core.RadioGroupItem>
       ))}
     </Core.RadioGroup>

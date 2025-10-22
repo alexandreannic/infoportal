@@ -1,8 +1,8 @@
 import {Box, SxProps, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
-import {Label} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import React from 'react'
 import {Core} from '@/shared'
+import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 
 export function RangeInput({
   value = {},
@@ -19,7 +19,7 @@ export function RangeInput({
   const {m} = useI18n()
   return (
     <Box sx={sx}>
-      {label && <Label>{label}</Label>}
+      {label && <WidgetLabel>{label}</WidgetLabel>}
       <Box sx={{display: 'flex', alignItems: 'center', gap: t.vars.spacing}}>
         <Core.AsyncInput
           placeholder={m.min}
