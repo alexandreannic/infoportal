@@ -1,23 +1,9 @@
-import {DialogAnswerEdit} from '@/features/Form/dialogs/DialogAnswerEdit'
-import {DialogAnswerView} from '@/features/Form/dialogs/DialogAnswerView'
 import {useDialogs} from '@toolpad/core'
-import {create} from 'zustand'
-import {useQuerySchema} from '../query/useQuerySchema'
-import {Ip} from 'infoportal-api-sdk'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {DialogAnswerView} from '@/features/Form/dialogs/DialogAnswerView'
+import {DialogAnswerEdit} from '@/features/Form/dialogs/DialogAnswerEdit'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
-
-type LangIndex = {
-  langIndex: number
-  setLangIndex: (value: number) => void
-}
-
-export const useLangIndex = create<LangIndex>(set => ({
-  langIndex: 0, // default value
-  setLangIndex: value =>
-    set(state => ({
-      langIndex: value,
-    })),
-}))
+import {Ip} from 'infoportal-api-sdk'
 
 export interface OpenModalProps {
   submission: Submission

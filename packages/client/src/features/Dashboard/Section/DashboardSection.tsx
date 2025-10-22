@@ -37,9 +37,7 @@ export function DashboardSection() {
   const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id, sectionId})
   const queryWidgetUpdate = UseQueryDashboardWidget.update({workspaceId, dashboardId: dashboard.id, sectionId})
 
-  const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>(
-    '779af34c-3dbb-4e4c-ad2a-5a8ab72e7a58' as any,
-  )
+  const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>()
 
   const createWidget = async (form: WidgetCreateForm) => {
     const maxY = Math.max(...widgets.map(w => w.position.y + w.position.h))

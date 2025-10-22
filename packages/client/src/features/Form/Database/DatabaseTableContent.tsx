@@ -10,7 +10,7 @@ import {DatabaseTableProps} from '@/features/Form/Database/DatabaseTable'
 import {generateEmptyXlsTemplate} from '@/features/Form/Database/generateEmptyXlsFile'
 import {databaseKoboDisplayBuilder} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {DatabaseViewBtn, DatabaseViewEditor} from '@/features/Form/Database/view/DatabaseView'
-import {useKoboDialogs, useLangIndex} from '@/core/store/useLangIndex'
+import {useLangIndex} from '@/core/store/useLangIndex'
 import {Alert, AlertProps, Box, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from 'infoportal-common'
 import {useMemo, useState} from 'react'
@@ -25,6 +25,7 @@ import {DatabaseToolbarContainer} from '@/features/Form/Database/DatabaseToolbar
 import {useAsync} from '@axanc/react-hooks'
 import {buildDbColumns, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
+import {useKoboDialogs} from '@/features/Form/Database/useKoboDialogs'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
