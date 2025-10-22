@@ -1,8 +1,6 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
-import {useLangIndex} from '@/core/store/useLangIndex'
 import {Core} from '@/shared'
 import {Page} from '@/shared/Page'
 import {map, seq} from '@axanc/ts-utils'
@@ -22,10 +20,9 @@ import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
-import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link} from '@tanstack/react-router'
-import {formRoute} from '@/features/Form/Form'
+import {formRoute, useFormContext} from '@/features/Form/Form'
 import {buildDbColumns} from '@infoportal/database-column'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/core/KoboAttachmentUrl.js'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate.js'
@@ -45,24 +42,23 @@ function DatabaseAnswerView() {
     answerId: Ip.SubmissionId
   }
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
-  const queryForm = UseQueryForm.get({formId, workspaceId})
+  const {schema, form} = useFormContext()
   const queryAnswers = UseQuerySubmission.search({formId, workspaceId})
-  const querySchema = useQuerySchema({workspaceId, formId})
 
   const answer = useMemo(() => {
     return queryAnswers.find(answerId)
   }, [formId, queryAnswers.data])
 
   return (
-    <Page>
-      {queryForm.isLoading || queryAnswers.isLoading || querySchema.isLoading ? (
+    <Page width="xs">
+      {queryAnswers.isLoading ? (
         <>
           <Skeleton />
           <Skeleton />
           <Skeleton />
         </>
       ) : (
-        (map(answer, querySchema.data, (a, schema) => (
+        (map(answer, a => (
           <Core.Panel>
             <Core.PanelHead
               action={
@@ -78,7 +74,7 @@ function DatabaseAnswerView() {
                 </Box>
               }
             >
-              {queryForm.data?.name}
+              {form.name}
               <br />
               <Core.Txt sx={{color: t => t.vars.palette.info.main}}>{answerId}</Core.Txt>
             </Core.PanelHead>
@@ -159,7 +155,6 @@ const KoboAnswerFormView = ({
   answer: Submission
   formId: Ip.FormId
 }) => {
-  console.log(schema)
   return (
     <Box>
       {seq(schema.schemaSanitized.survey)
@@ -198,7 +193,7 @@ const KoboAnswerQuestionView = ({
   questionSchema: NonNullableKey<Kobo.Form.Question, 'name'>
   answer: Submission
 }) => {
-  const langIndex = useLangIndex()
+  const {langIndex} = useFormContext()
   const {formatDateTime} = useI18n()
   const {m} = useI18n()
   const t = useTheme()

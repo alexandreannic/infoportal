@@ -1,3 +1,4 @@
+- SchemaBundle is poorly deigned, sometimes I only need it to get questionIndex but since it's cached based on langIndex I may be rebuilding it for nothing
 - Use i18n package in client-core and client-datatable and remove Translation
 - Move API Error to API-SDK
 - We cannot add kobo form twice, but what if the kobo form is "disconnected"? 

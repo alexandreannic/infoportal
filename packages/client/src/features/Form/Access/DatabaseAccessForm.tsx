@@ -21,7 +21,7 @@ interface Form extends IAccessForm {
 export const DatabaseAccessForm = ({
   formId,
   children,
-  form,
+  schema,
   workspaceId,
   onAdded,
 }: {
@@ -29,10 +29,10 @@ export const DatabaseAccessForm = ({
   children: ReactElement
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
-  form: Ip.Form.Schema
+  schema: KoboSchemaHelper.Bundle
 }) => {
   const langIndex = 0
-  const survey = form.survey
+  const survey = schema.schema.survey
 
   const {m} = useI18n()
   const queryAccessCreate = UseQueryFormAccess.create({workspaceId, formId})
@@ -43,7 +43,7 @@ export const DatabaseAccessForm = ({
     return seq(survey)
       .compactBy('name')
       .groupByFirst(_ => _.name)
-  }, [form])
+  }, [schema])
 
   const submit = ({selectBy, question, questionAnswer, ...f}: Form) => {
     queryAccessCreate
@@ -76,7 +76,7 @@ export const DatabaseAccessForm = ({
                 <SelectQuestionInput
                   {...field}
                   langIndex={langIndex}
-                  schema={form}
+                  schema={schema}
                   questionTypeFilter={['calculate', 'text', 'select_multiple', 'select_one']}
                   InputProps={{
                     label: m.question,
@@ -107,7 +107,7 @@ export const DatabaseAccessForm = ({
                         <SelectChoiceInput
                           {...field}
                           langIndex={langIndex}
-                          schema={form}
+                          schema={schema.schema}
                           questionName={questionName}
                           onReset={() => accessForm.setValue('questionAnswer', [])}
                           onChange={(e, _) => _ && field.onChange(_)}

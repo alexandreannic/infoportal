@@ -10,7 +10,6 @@ import {DatabaseTableProps} from '@/features/Form/Database/DatabaseTable'
 import {generateEmptyXlsTemplate} from '@/features/Form/Database/generateEmptyXlsFile'
 import {databaseKoboDisplayBuilder} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {DatabaseViewBtn, DatabaseViewEditor} from '@/features/Form/Database/view/DatabaseView'
-import {useLangIndex} from '@/core/store/useLangIndex'
 import {Alert, AlertProps, Box, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from 'infoportal-common'
 import {useMemo, useState} from 'react'
@@ -26,6 +25,7 @@ import {useAsync} from '@axanc/react-hooks'
 import {buildDbColumns, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
 import {useKoboDialogs} from '@/features/Form/Database/useKoboDialogs'
+import {useFormContext} from '@/features/Form/Form'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -51,9 +51,8 @@ export const DatabaseTableContent = ({
 }: Pick<DatabaseTableProps, 'workspaceId' | 'onFiltersChange' | 'onDataChange'>) => {
   const {m} = useI18n()
   const t = useTheme()
-  const langIndex = useLangIndex(_ => _.langIndex)
-  const setLangIndex = useLangIndex(_ => _.setLangIndex)
   const navigate = useNavigate()
+  const {schema, langIndex, setLangIndex} = useFormContext()
   const ctx = useDatabaseKoboTableContext()
   const dialog = useKoboDialogs({workspaceId, formId: ctx.form.id})
   const connectedUsers = useFormSocket({workspaceId, formId: ctx.form.id})
@@ -87,7 +86,7 @@ export const DatabaseTableContent = ({
       isReadonly: !ctx.canEdit,
       getRow: (_: Submission) => _.answers,
       formId: ctx.form.id,
-      schema: ctx.schema,
+      schema,
       externalFilesIndex: ctx.externalFilesIndex,
       onRepeatGroupClick,
       t,
@@ -99,13 +98,13 @@ export const DatabaseTableContent = ({
       workspaceId,
       data: ctx.data ?? [],
       formId: ctx.form.id,
-      schema: ctx.schema,
+      schema: schema,
       onRepeatGroupClick,
       display: ctx.groupDisplay.get,
       m,
       t,
     }).transformColumns(schemaColumns)
-  }, [ctx.data, ctx.schema.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
+  }, [ctx.data, schema.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const base = buildDbColumns.meta.all({
@@ -142,8 +141,8 @@ export const DatabaseTableContent = ({
   }
 
   const handleGenerateTemplate = async () => {
-    if (ctx.schema && ctx.form) {
-      await generateEmptyXlsTemplate(ctx.schema, ctx.form.name + '_Template')
+    if (schema && ctx.form) {
+      await generateEmptyXlsTemplate(schema, ctx.form.name + '_Template')
     }
   }
 
@@ -210,12 +209,12 @@ export const DatabaseTableContent = ({
           //     : undefined
           // }
           // exportAdditionalSheets={data => {
-          //   return ctx.schema.helper.group.search().map(group => {
+          //   return schema.helper.group.search().map(group => {
           //     const cols = getColumnsForRepeatGroup({
           //       formId: ctx.form.id,
           //       t,
           //       m,
-          //       schema: ctx.schema,
+          //       schema: schema,
           //       groupName: group.name,
           //     })
           //     return {
@@ -241,10 +240,10 @@ export const DatabaseTableContent = ({
                 onChange={setLangIndex}
                 options={[
                   {children: 'XML', value: -1},
-                  ...ctx.schema.schemaSanitized.translations.map((_, i) => ({children: _, value: i})),
+                  ...schema.schemaSanitized.translations.map((_, i) => ({children: _, value: i})),
                 ]}
               />
-              {ctx.schema.helper.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
+              {schema.helper.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
               {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 
               <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>

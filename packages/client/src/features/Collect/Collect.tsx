@@ -1,6 +1,6 @@
 import {createRoute} from '@tanstack/react-router'
 import {rootRoute} from '@/Router'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {useQuerySchema, useQuerySchemaBundle} from '@/core/query/useQuerySchema'
 import {XlsFormFiller} from 'xls-form-filler'
 import {Core, Page} from '@/shared'
 import {UseQueryForm} from '@/core/query/useQueryForm'
@@ -48,7 +48,7 @@ function Collect() {
               onSubmit={_ =>
                 querySubmit.mutateAsync({formId, workspaceId, geolocation, ..._}).then(() => toastSuccess(''))
               }
-              survey={querySchema.data.schema}
+              survey={querySchema.data}
             />
           </Core.PanelBody>
         </Core.Panel>

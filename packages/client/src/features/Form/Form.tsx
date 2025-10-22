@@ -1,10 +1,10 @@
 import {appConfig} from '@/conf/AppConfig'
 import {useI18n} from '@infoportal/client-i18n'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {useQuerySchemaBundle} from '@/core/query/useQuerySchema'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon, Tab, Tabs} from '@mui/material'
-import {createContext, useContext, useEffect, useMemo} from 'react'
-import {createRoute, Link, Outlet, useMatches, useNavigate, useRouterState,} from '@tanstack/react-router'
+import {createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
+import {createRoute, Link, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
@@ -36,25 +36,28 @@ export const useDefaultTabRedirect = ({
   currentFullPath,
   workspaceId,
   formId,
+  isLoading,
+  isResolved,
 }: {
+  isLoading?: boolean
+  isResolved?: boolean
   currentFullPath: string
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
 }) => {
   const navigate = useNavigate()
   const pathname = useRouterState({select: s => s.location.pathname})
-  const querySchema = useQuerySchema({formId, workspaceId})
 
   useEffect(() => {
-    if (querySchema.isLoading) return
+    if (isLoading) return
     if (currentFullPath == formRoute.fullPath) {
-      if (querySchema.data) {
+      if (isResolved) {
         navigate({to: '/$workspaceId/form/$formId/answers', params: {workspaceId, formId}})
       } else {
         navigate({to: '/$workspaceId/form/$formId/formCreator', params: {workspaceId, formId}})
       }
     }
-  }, [currentFullPath, pathname, querySchema.isLoading])
+  }, [currentFullPath, pathname, isLoading])
 }
 
 /**
@@ -68,8 +71,10 @@ const useActiveTab = (currentFullPath: string, basePaths: string[]) => {
 export type FormContext = {
   workspaceId: Ip.WorkspaceId
   form: Ip.Form
-  schema?: KoboSchemaHelper.Bundle
+  schema: KoboSchemaHelper.Bundle
   permission: Ip.Permission.Form
+  langIndex: number
+  setLangIndex: Dispatch<SetStateAction<number>>
 }
 
 const Context = createContext<FormContext>({} as FormContext)
@@ -81,8 +86,9 @@ function Form() {
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
   const currentFullPath = useMatches().slice(-1)[0].fullPath
+  const [langIndex, setLangIndex] = useState(0)
 
-  const querySchema = useQuerySchema({formId, workspaceId})
+  const querySchema = useQuerySchemaBundle({formId, workspaceId, langIndex})
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
 
@@ -99,12 +105,19 @@ function Form() {
     return schema?.helper.group.search().map(_ => _.name)
   }, [schema])
 
-  useDefaultTabRedirect({workspaceId, formId, currentFullPath})
+  useDefaultTabRedirect({
+    workspaceId,
+    formId,
+    currentFullPath,
+    isResolved: !!querySchema.data,
+    isLoading: querySchema.isLoading,
+  })
+
   const outlet = useMemo(() => {
     if (queryForm.isLoading || querySchema.isLoading || queryPermission.isLoading) {
       return <Page width="full" loading={true} />
     }
-    if (!queryForm.data || !queryPermission.data) {
+    if (!queryForm.data || !querySchema.data || !queryPermission.data) {
       return <>Error</>
     }
 
@@ -112,6 +125,8 @@ function Form() {
       <Context.Provider
         value={{
           workspaceId,
+          langIndex,
+          setLangIndex,
           form: queryForm.data,
           schema: querySchema.data,
           permission: queryPermission.data,

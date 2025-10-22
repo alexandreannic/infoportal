@@ -1,4 +1,4 @@
-import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState} from 'react'
+import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
 import {
   FetchParams,
   useAsync,
@@ -17,10 +17,10 @@ import {UseDatabaseView, useDatabaseView} from '@/features/Form/Database/view/us
 import {DatabaseDisplay} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {Ip} from 'infoportal-api-sdk'
 import {ExternalFilesChoices, KoboExternalFilesIndex} from '@infoportal/database-column'
+import {useFormContext} from '@/features/Form/Form'
 
 export interface DatabaseContext {
   refetch: (p?: FetchParams) => Promise<void>
-  schema: KoboSchemaHelper.Bundle
   form: Ip.Form
   permission: Ip.Permission.Form
   canEdit: boolean
@@ -39,7 +39,6 @@ const Context = React.createContext({} as DatabaseContext)
 export const useDatabaseKoboTableContext = () => useContext<DatabaseContext>(Context)
 
 export const DatabaseKoboTableProvider = (props: {
-  schema: KoboSchemaHelper.Bundle
   dataFilter?: (_: Submission) => boolean
   children: ReactNode
   loading?: boolean
@@ -51,10 +50,11 @@ export const DatabaseKoboTableProvider = (props: {
   const {form, data, children, refetch} = props
   const {api} = useAppSettings()
   const [indexExternalFiles, setIndexExternalFiles] = useState<KoboExternalFilesIndex>()
+  const {schema} = useFormContext()
 
   const fetcherExternalFiles = useFetcher<() => Promise<{file: string; csv: string}[]>>(() => {
     return Promise.all(
-      (props.schema.schema.files ?? []).map(file =>
+      (schema.schema.files ?? []).map(file =>
         api.koboApi
           .proxy({method: 'GET', url: file.content, formId: form.id})
           .then((csv: string) => ({file: file.metadata.filename, csv}))
@@ -80,7 +80,7 @@ export const DatabaseKoboTableProvider = (props: {
         ),
       )
     })
-  }, [props.schema.schema])
+  }, [schema.schema])
 
   const asyncRefresh = useAsync(async () => {
     await api.koboApi.synchronizeAnswers(form.id)
@@ -101,7 +101,7 @@ export const DatabaseKoboTableProvider = (props: {
   const view = useDatabaseView(form.id)
   const groupDisplay = useObjectState<DatabaseDisplay>({
     repeatAs: undefined,
-    repeatGroupName: props.schema.helper.group.search({depth: 1})?.[0]?.name,
+    repeatGroupName: schema.helper.group.search({depth: 1})?.[0]?.name,
   })
 
   return (

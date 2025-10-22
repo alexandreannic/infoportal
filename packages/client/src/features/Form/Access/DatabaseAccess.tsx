@@ -26,7 +26,7 @@ function DatabaseAccess() {
             isAdmin={permission.access_canEdit}
             header={
               permission.access_canAdd && (
-                <DatabaseAccessForm workspaceId={workspaceId} formId={form.id} form={schema.schema}>
+                <DatabaseAccessForm workspaceId={workspaceId} formId={form.id} schema={schema}>
                   <Core.Btn sx={{mr: 1}} variant="outlined" icon="person_add">
                     {m.grantAccess}
                   </Core.Btn>

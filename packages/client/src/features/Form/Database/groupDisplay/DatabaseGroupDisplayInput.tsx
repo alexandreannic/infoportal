@@ -3,11 +3,13 @@ import {Box, Icon, useTheme} from '@mui/material'
 import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
 import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '@/shared'
+import {useFormContext} from '@/features/Form/Form'
 
 export const DatabaseGroupDisplayInput = (props: Core.BtnProps) => {
   const t = useTheme()
   const {m} = useI18n()
-  const {schema, groupDisplay} = useDatabaseKoboTableContext()
+  const {schema} = useFormContext()
+  const {groupDisplay} = useDatabaseKoboTableContext()
   return (
     <Core.PopoverWrapper
       content={() => (

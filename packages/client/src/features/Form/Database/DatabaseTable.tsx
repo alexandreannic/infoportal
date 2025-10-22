@@ -88,7 +88,6 @@ const DatabaseTable = ({
       {map(queryForm.data, querySchema.data, (form, schema) => (
         <DatabaseKoboTableProvider
           form={form}
-          schema={schema}
           dataFilter={dataFilter}
           refetch={refetch}
           loading={loading}

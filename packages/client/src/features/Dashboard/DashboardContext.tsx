@@ -7,6 +7,8 @@ import {subDays} from 'date-fns'
 import {schema} from 'activityinfo-sdk/schema'
 
 type Context = {
+  langIndex: number
+  setLangIndex: Dispatch<SetStateAction<number>>
   filters: Filters
   setFilters: Dispatch<SetStateAction<Filters>>
   dataRange: Ip.Period
@@ -37,12 +39,13 @@ export const DashboardProvider = ({
 }: {
   workspaceId: Ip.WorkspaceId
   dashboard: Ip.Dashboard
-  schema: KoboSchemaHelper.Bundle
+  schema: Ip.Form.Schema
   widgets: Ip.Dashboard.Widget[]
   submissions: Ip.Submission[]
   children: ReactNode
 }) => {
   const {m} = useI18n()
+  const [langIndex, setLangIndex] = useState(0)
 
   const dataRange = useMemo(() => {
     if (submissions.length === 0) return {start: new Date(), end: new Date()}
@@ -69,7 +72,8 @@ export const DashboardProvider = ({
   }, [widgets])
 
   const schemaWithMeta = useMemo(() => {
-    return KoboSchemaHelper.upgradeIncludingMeta(schema, m._meta, {validationStatus: m.validation_})
+    const bundle = KoboSchemaHelper.buildBundle({schema, langIndex})
+    return KoboSchemaHelper.withMeta(bundle, m._meta, {validationStatus: m.validation_})
   }, [schema])
 
   const flatSubmissions = useMemo(() => {
@@ -115,6 +119,8 @@ export const DashboardProvider = ({
         flatSubmissionsDelta,
         dashboard,
         flatSubmissionByRepeatGroup,
+        langIndex,
+        setLangIndex,
       }}
     >
       {children}

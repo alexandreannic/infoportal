@@ -25,10 +25,10 @@ export namespace KoboSchemaHelper {
       name: string
       label?: string[]
     },
-    langIndex?: number,
+    langIndex: number = 0,
   ): string => {
     if (!q) return ''
-    return q.label !== undefined ? ((q.label as any)[langIndex as any] ?? q.name) : q.name
+    return q.label !== undefined ? ((q.label as any)[langIndex] ?? q.name) : q.name
   }
 
   export type Translation = ReturnType<typeof buildTranslation>
@@ -123,7 +123,7 @@ export namespace KoboSchemaHelper {
     }
   }
 
-  export const upgradeIncludingMeta = (
+  export const withMeta = (
     bundle: Bundle,
     labels: KoboMetaHelper.Labels,
     choices: KoboMetaHelper.ChoicesLabel,

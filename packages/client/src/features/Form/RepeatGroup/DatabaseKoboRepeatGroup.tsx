@@ -1,6 +1,6 @@
 import {Messages, useI18n} from '@infoportal/client-i18n'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {useQuerySchemaBundle} from '@/core/query/useQuerySchema'
 import {Core, Datatable} from '@/shared'
 import {map} from '@axanc/ts-utils'
 import {Theme, useTheme} from '@mui/material'
@@ -9,7 +9,7 @@ import {useMemo} from 'react'
 import {Ip} from 'infoportal-api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
-import {formRoute} from '@/features/Form/Form'
+import {formRoute, useFormContext} from '@/features/Form/Form'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {buildDbColumns, defaultColWidth, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
@@ -32,8 +32,9 @@ function DatabaseKoboRepeatContainer() {
     group: string
   }
   const {id, index} = databaseKoboRepeatRoute.useSearch()
+  const {langIndex} = useFormContext()
 
-  const querySchema = useQuerySchema({workspaceId, formId})
+  const querySchema = useQuerySchemaBundle({workspaceId, formId, langIndex})
 
   return (
     <TabContent width="full" sx={{p: 0, pb: 0, mb: 0}} animationDeps={[formId]} loading={querySchema.isLoading}>

@@ -12,7 +12,7 @@ import {dashboardSectionRoute} from '@/features/Dashboard/Section/DashboardSecti
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {useEffectFn} from '@axanc/react-hooks'
 import {dashboardSettingsRoute} from '@/features/Dashboard/DashboardSettings'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
+import {useQuerySchema, useQuerySchemaBundle} from '@/core/query/useQuerySchema'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
 import {DashboardProvider} from '@/features/Dashboard/DashboardContext'

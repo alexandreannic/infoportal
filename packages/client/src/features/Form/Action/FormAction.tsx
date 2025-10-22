@@ -3,7 +3,7 @@ import {Core} from '@/shared/index.js'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {useMemo} from 'react'
-import {useQuerySchema} from '@/core/query/useQuerySchema.js'
+import {useQuerySchemaBundle} from '@/core/query/useQuerySchema.js'
 import {KoboInterfaceBuilder} from 'infoportal-common'
 import {map} from '@axanc/ts-utils'
 import {FormActionEditor} from '@/features/Form/Action/FormActionEditor.js'
@@ -29,7 +29,7 @@ const useBuildInterface = ({
   workspaceId: Ip.WorkspaceId
   formId?: Ip.FormId
 }) => {
-  const querySchema = useQuerySchema({workspaceId, formId})
+  const querySchema = useQuerySchemaBundle({workspaceId, formId, langIndex: 0})
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const data = useMemo(() => {
     if (!querySchema.data || !queryForm.data) return
