@@ -36,6 +36,12 @@ export function AsyncInput({
   ...props
 }: AsyncInputBase<any> & {type?: string}) {
   const [local, setLocal] = useState(propValue === undefined || propValue === null ? '' : String(propValue))
+
+  useEffect(() => {
+    const next = propValue === undefined || propValue === null ? '' : String(propValue)
+    setLocal(next)
+  }, [propValue])
+
   const debounced = useDebouncedValue(local, debounce)
 
   const convert = useCallback(

@@ -55,7 +55,7 @@ export const muiTheme = ({
             default: '#fff',
             // default: 'rgba(221, 231, 248, 0.6)',
             // default: 'rgba(255, 255, 255, 0.6)',
-            paper: 'rgba(255, 255, 255, 0.65)',
+            paper: 'rgba(255, 255, 255, 0.6)',
           },
         },
       },
@@ -238,6 +238,18 @@ export const muiTheme = ({
       MuiInputBase: {
         styleOverrides: {
           root: {lineHeight},
+        },
+      },
+      MuiAutocomplete: {
+        styleOverrides: {
+          root: {
+            '& .MuiOutlinedInput-root.MuiInputBase-sizeSmall': {
+              paddingLeft: '14px', // match regular input left padding
+            },
+            '& .MuiOutlinedInput-root': {
+              paddingLeft: '14px', // match regular input left padding
+            },
+          },
         },
       },
       MuiTabs: {
