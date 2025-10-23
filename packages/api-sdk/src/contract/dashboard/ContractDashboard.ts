@@ -7,6 +7,12 @@ import {z} from 'zod'
 const c = initContract()
 
 export const dashboardContract = c.router({
+  publish: {
+    method: 'POST',
+    path: '/dashboard/publish',
+    body: c.type<Ip.Dashboard.Payload.Publish>(),
+    responses: {204: schema.emptyResult},
+  },
   search: {
     method: 'POST',
     path: `/dashboard/search`,
@@ -74,5 +80,6 @@ export const dashboardClient = (client: TsRestClient) => {
       return client.dashboard.update({body}).then(map200).then(Ip.Dashboard.map)
     },
     remove: (body: Ip.Dashboard.Payload.Delete) => client.dashboard.remove({body}).then(map204),
+    publish: (body: Ip.Dashboard.Payload.Publish) => client.dashboard.publish({body}).then(map204),
   }
 }

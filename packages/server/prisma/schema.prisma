@@ -458,6 +458,17 @@ model Dashboard {
 
   deletedAt DateTime?
   deletedBy String?
+
+  published   DashboardPublished? @relation(fields: [publishedId], references: [id])
+  publishedId String?             @unique
+}
+
+model DashboardPublished {
+  id          String     @id @default(uuid())
+  snapshot    Json
+  publishedAt DateTime   @default(now())
+  publishedBy String
+  dashboard   Dashboard?
 }
 
 model DashboardSection {

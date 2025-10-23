@@ -38,7 +38,12 @@ export const PopoverShareLink = ({url, children}: {url: string; children?: React
         </Box>
       )}
     >
-      {children ?? <Core.Btn icon="share">{m.share}</Core.Btn>}
+      {children ?? <BtnShare />}
     </Core.PopoverWrapper>
   )
+}
+
+export const BtnShare = (props: Core.BtnProps) => {
+  const {m} = useI18n()
+  return <Core.Btn icon="share" children={m.share} {...props} />
 }

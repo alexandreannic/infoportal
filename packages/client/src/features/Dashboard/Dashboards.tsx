@@ -56,12 +56,12 @@ export function Dashboards() {
               <CardAdd icon={appConfig.icons.dashboard} title={m.createDashboard} />
             </Core.Modal>
           </Grid>
-          {map(queryDashboards.data, queryWorkspace.data, (dashboards, workspace) =>
-            dashboards.map(_ => (
+          {queryDashboards.data &&
+            queryDashboards.data.map(_ => (
               <Grid size={gridSize} key={_.id}>
-                <DashboardCard dashboard={_} workspace={workspace} img={urls[_.id]} />
+                <DashboardCard dashboard={_} workspaceId={workspaceId} img={urls[_.id]} />
               </Grid>
-            )),
+            )
           )}
           {queryDashboards.isLoading && (
             <Grid size={gridSize}>

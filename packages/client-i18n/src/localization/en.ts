@@ -154,6 +154,7 @@ export const en = Object.freeze({
     answer: 'Answer',
     calculations: 'Calculations',
     value: 'Value',
+    publish: 'Publish',
     addFilter: 'Add filter',
     addUser: 'Add user',
     percent: 'Percent',

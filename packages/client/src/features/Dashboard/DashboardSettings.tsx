@@ -18,6 +18,8 @@ import {PopoverShareLink} from '@/shared/PopoverShareLink'
 import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
+import {useGetDashboardLink} from '@/features/Dashboard/useGetDashboardLink'
+import {Txt} from '@infoportal/client-core'
 
 export const dashboardSettingsRoute = createRoute({
   getParentRoute: () => dashboardRoute,
@@ -28,10 +30,8 @@ export const dashboardSettingsRoute = createRoute({
 export function DashboardSettings() {
   const {m, formatDate} = useI18n()
   const t = useTheme()
-  const {conf} = useAppSettings()
   const {toastLoading, toastSuccess} = useIpToast()
   const {workspaceId, dashboard, effectiveDataRange, dataRange, schema, flatSubmissions} = useDashboardContext()
-  const queryWorkspace = UseQueryWorkspace.getById(workspaceId)
   const queryUpdate = UseQueryDashboard.update({workspaceId})
   const queryRemove = UseQueryDashboard.remove({workspaceId})
   const queryPermission = UseQueryPermission.workspace({workspaceId})
@@ -63,10 +63,7 @@ export function DashboardSettings() {
       queryUpdate.mutateAsync({id: dashboard.id, ...debouncedValues})
   }, [debouncedValues])
 
-  const url =
-    queryWorkspace.data && conf
-      ? new URL(Ip.Dashboard.buildPath(queryWorkspace.data, dashboard), conf.baseURL).toString()
-      : undefined
+  const url = useGetDashboardLink({workspaceId, dashboardId: dashboard.id}).absolute
 
   return (
     <TabContent width="xs">
@@ -97,10 +94,10 @@ export function DashboardSettings() {
             </>
           )}
         </Core.PanelHead>
-        <Core.PanelBody>
+        <Core.PanelBody sx={{pt: 0}}>
           {dashboard.description && <Core.Txt color="hint">{dashboard.description}</Core.Txt>}
           <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-            <Core.ListItem icon="calendar_today" title={formatDate(dashboard.createdAt)} />
+            <Txt color="hint">{m.created}: {formatDate(dashboard.createdAt)}</Txt>
             <Core.ListItem icon={<AppAvatar email={dashboard.createdBy} size={24} />} title={dashboard.createdBy} />
           </Box>
         </Core.PanelBody>
@@ -151,7 +148,7 @@ export function DashboardSettings() {
                 />
               }
             >
-              {values.filters && <WidgetSettingsFilterQuestion name="filters" form={form} />}
+              {values.filters && <WidgetSettingsFilterQuestion name="filters" form={form} sx={{mt: 1}}/>}
             </SettingsRow>
           )}
         />
@@ -180,6 +177,7 @@ export function DashboardSettings() {
                 <Core.Input
                   helperText={null}
                   type="number"
+                  sx={{mt: 1}}
                   label={m._dashboard.periodComparisonDeltaLabel}
                   {...field}
                   onChange={e => field.onChange(+e.target.value)}

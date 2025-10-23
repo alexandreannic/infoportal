@@ -11,6 +11,7 @@ export type Dashboard = {
   slug: string
   name: string
   createdAt: Date
+  isPublished?: boolean
   createdBy: User.Email
   sourceFormId: FormId
   description?: string
@@ -26,7 +27,7 @@ export type Dashboard = {
 }
 
 export namespace Dashboard {
-  export const buildPath = (workspace: Workspace, dashboard: Pick<Dashboard, 'slug'>) =>
+  export const buildPath = (workspace: Pick<Workspace, 'slug'>, dashboard: Pick<Dashboard, 'slug'>) =>
     '/' + workspace.slug + '/d/' + dashboard.slug
 
   export const map = (_: any): Dashboard => {
@@ -40,6 +41,7 @@ export namespace Dashboard {
       workspaceId: WorkspaceId
       id: Dashboard['id']
     }
+    export type Publish = Delete
     export type Create = {
       workspaceId: WorkspaceId
       name: string

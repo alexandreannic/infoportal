@@ -18,6 +18,17 @@ export class UseQueryDashboard {
     })
   }
 
+  static publish = ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
+    const {toastHttpError} = useIpToast()
+    const {apiv2} = useAppSettings()
+    const queryClient = useQueryClient()
+    return useMutation({
+      mutationFn: () => apiv2.dashboard.publish({workspaceId, id}),
+      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),
+      onError: toastHttpError,
+    })
+  }
+
   static getById = ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
     const query = this.getAll({workspaceId})
     const data = useMemo(() => {

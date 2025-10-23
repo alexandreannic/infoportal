@@ -12,10 +12,12 @@ import {dashboardSectionRoute} from '@/features/Dashboard/Section/DashboardSecti
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {useEffectFn} from '@axanc/react-hooks'
 import {dashboardSettingsRoute} from '@/features/Dashboard/DashboardSettings'
-import {useQuerySchema, useQuerySchemaBundle} from '@/core/query/useQuerySchema'
+import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
 import {DashboardProvider} from '@/features/Dashboard/DashboardContext'
+import {BtnShare, PopoverShareLink} from '@/shared/PopoverShareLink'
+import {useGetDashboardLink} from '@/features/Dashboard/useGetDashboardLink'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -54,6 +56,8 @@ export function Dashboard() {
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const dashboardId = params.dashboardId as Ip.DashboardId
 
+  const dashboardUrl = useGetDashboardLink({workspaceId, dashboardId}).absolute ?? '...'
+  const queryDashboardPublish = UseQueryDashboard.publish({workspaceId, id: dashboardId})
   const queryDashboard = UseQueryDashboard.getById({workspaceId, id: dashboardId})
   const queryDashboardSection = UseQueryDashboardSecion.search({workspaceId, dashboardId})
   const querySchema = useQuerySchema({workspaceId, formId: queryDashboard.data?.sourceFormId})
@@ -119,12 +123,24 @@ export function Dashboard() {
         <Tab
           icon={<Icon>settings</Icon>}
           iconPosition="start"
-          sx={{marginLeft: 'auto', mr: 0.5, minHeight: 34, py: 1, maxWidth: 50}} //,  }}
+          sx={{marginLeft: 'auto', mr: .75, minHeight: 34, py: 1, maxWidth: 50}} //,  }}
           component={Link}
           value="settings"
           to={dashboardSettingsRoute.fullPath}
           // label={m.settings}
         />
+        <PopoverShareLink url={dashboardUrl}>
+          <BtnShare disabled={!dashboardUrl || !queryDashboard.data || !queryDashboard.data.isPublished} sx={{height: 36, alignSelf: 'center', mr: 0.5}} />
+        </PopoverShareLink>
+        <Core.Btn
+          onClick={() => queryDashboardPublish.mutate()}
+          loading={queryDashboardPublish.isPending}
+          variant="contained"
+          icon="rocket_launch"
+          sx={{boxShadow: 'none !important', height: 36, alignSelf: 'center', mr: 0.5}}
+        >
+          {m.publish}
+        </Core.Btn>
       </Tabs>
       {querySubmissions.data && queryWidgets.data && queryWidgets.data && queryDashboard.data && querySchema.data && (
         <DashboardProvider

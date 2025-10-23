@@ -6,20 +6,20 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
 import {Link} from '@tanstack/react-router'
 import {PopoverShareLink} from '@/shared/PopoverShareLink'
+import {useGetDashboardLink} from '@/features/Dashboard/useGetDashboardLink'
 
 export const DashboardCard = ({
   img,
-  workspace,
+  workspaceId,
   dashboard,
 }: {
   img: string
-  workspace: Ip.Workspace
+  workspaceId: Ip.WorkspaceId
   dashboard: Ip.Dashboard
 }) => {
-  const {conf} = useAppSettings()
   const {m, formatDate} = useI18n()
   const t = useTheme()
-  const url = new URL(Ip.Dashboard.buildPath(workspace, dashboard), conf.baseURL).toString()
+  const link = useGetDashboardLink({workspaceId, dashboardId: dashboard.id})
   const {toastSuccess} = useIpToast()
 
   return (
@@ -61,11 +61,11 @@ export const DashboardCard = ({
       <Core.PanelFoot>
         <Link
           to="/$workspaceId/dashboard/$dashboardId/edit/settings"
-          params={{workspaceId: workspace.id, dashboardId: dashboard.id}}
+          params={{workspaceId: workspaceId, dashboardId: dashboard.id}}
         >
           <Core.Btn icon="edit">{m.edit}</Core.Btn>
         </Link>
-        <PopoverShareLink url={url} />
+        <PopoverShareLink url={link.absolute} />
       </Core.PanelFoot>
     </Core.Panel>
   )
