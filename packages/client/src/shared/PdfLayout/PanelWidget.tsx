@@ -3,40 +3,49 @@ import {Box, Icon, useTheme} from '@mui/material'
 import {uppercaseHandlingAcronyms} from 'infoportal-common'
 import {Core} from '@/shared'
 
-export const PanelWidget = ({
-  sx,
-  children,
-  title,
-  icon,
-  ...props
-}: Omit<Core.PanelProps, 'title' | 'expendable' | 'savableAsImg'> & {
+type PanelWidgetProps = Omit<Core.PanelProps, 'title' | 'expendable' | 'savableAsImg'> & {
   icon?: string | ReactNode
   title: string
-}) => {
+}
+
+export const PanelWidget = ({sx, ...props}: PanelWidgetProps) => {
   const t = useTheme()
   return (
-    <Core.PanelWBody
-      {...props}
-      BodyProps={{
-        sx: {
-          px: 0.25,
-          pb: t.vars.spacing + ' !important',
-        },
-      }}
+    <Core.Panel
       sx={{
-        minHeight: 76,
-        // minHeight: 82.52,
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        height: '100%',
+        px: 0.25,
+        // pb: t.vars.spacing + ' !important',
         '&:last-child': {
           mr: 0,
         },
         ...sx,
       }}
     >
-      <Box sx={{textAlign: 'center', width: '100%'}}>
+      <PanelWidgetContent {...props} />
+    </Core.Panel>
+  )
+}
+
+export const PanelWidgetContent = ({sx, title, icon, children}: PanelWidgetProps) => {
+  return (
+    <Box
+      className="PanelWidgetContent"
+      sx={{
+        minHeight: 76,
+        height: '100%',
+        // minHeight: 82.52,
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Box
+        sx={{
+          textAlign: 'center',
+        }}
+      >
         <Core.Txt block color="hint" bold sx={{lineHeight: 1, mb: 0.5, mt: -0.5}}>
           {uppercaseHandlingAcronyms(title)}
         </Core.Txt>
@@ -61,6 +70,6 @@ export const PanelWidget = ({
           {children}
         </Box>
       </Box>
-    </Core.PanelWBody>
+    </Box>
   )
 }

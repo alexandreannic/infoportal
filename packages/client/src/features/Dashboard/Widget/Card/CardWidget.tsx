@@ -5,7 +5,7 @@ import {map} from '@axanc/ts-utils'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {toInt} from 'infoportal-common'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
-import {PanelWidget} from '@/shared/PdfLayout/PanelWidget'
+import {PanelWidget, PanelWidgetContent} from '@/shared/PdfLayout/PanelWidget'
 import {useI18n} from '@infoportal/client-i18n'
 
 export function CardWidget({widget}: {widget: Ip.Dashboard.Widget}) {
@@ -41,11 +41,11 @@ export function CardWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     }
   }, [data, config.questionName, config.operation])
 
-  if (value === undefined) return <WidgetCardPlaceholder type={widget.type}/>
+  if (value === undefined) return <WidgetCardPlaceholder type={widget.type} />
 
   return (
-    <PanelWidget icon={config.icon} title={widget.i18n_title?.[langIndex] ?? ''} sx={{height: '100%'}}>
+    <PanelWidgetContent icon={config.icon} title={widget.i18n_title?.[langIndex] ?? ''} sx={{height: '100%'}}>
       {formatLargeNumber(value, {maximumFractionDigits: 2})}
-    </PanelWidget>
+    </PanelWidgetContent>
   )
 }
