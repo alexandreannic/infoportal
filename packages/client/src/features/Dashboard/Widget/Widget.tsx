@@ -45,7 +45,7 @@ export const Widget = memo(
         }}
       >
         <WidgetErrorBoundary>
-          <Box className="WidgetCard-content" sx={{flex: 1}}>
+          <Box className="WidgetCard-content" sx={{flex: 1, minHeight: 0}}>
             {fnSwitch(
               widget.type,
               {

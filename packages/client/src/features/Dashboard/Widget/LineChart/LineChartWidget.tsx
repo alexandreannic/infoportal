@@ -43,7 +43,7 @@ export const LineChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
 
   if (!config.lines || config.lines.length === 0) return <WidgetCardPlaceholder type={widget.type} />
   return (
-    <Box sx={{p: 1}}>
+    <Box sx={{p: 1, minHeight: 0, height: '100%'}}>
       <WidgetTitle>{widget.i18n_title?.[langIndex]}</WidgetTitle>
       <Core.ChartLineByDateFiltered
         start={config.start}

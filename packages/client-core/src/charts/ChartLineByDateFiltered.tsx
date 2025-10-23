@@ -36,14 +36,13 @@ export const ChartLineByDateFiltered = <T,>({
   tick = 'month',
   ...props
 }: {
-  height?: number
   curves: Record<string, ChartLineCurve<T>>
   label?: string | string[]
   data: T[]
   start?: Date
   end?: Date
   tick?: 'month' | 'year' | 'day'
-} & Pick<ChartLineProps, 'hideYTicks' | 'colors' | 'sx'>) => {
+} & Pick<ChartLineProps, 'height' | 'hideYTicks' | 'colors' | 'sx'>) => {
   const curve = useMemo(() => {
     const res: Record<string, Record<string, number>> = {}
     const invalidDates: {row: T; date?: any}[] = []
@@ -83,13 +82,9 @@ export const ChartLineByDateFiltered = <T,>({
     return Obj.values(curves).map(_ => _.color)
   }, [curves])
 
-  return (
-    <>
-      <ChartLine {...props} fixMissingMonths hideLabelToggle={true} data={curve} colors={() => colors} />
-      {/*<Txt color="hint" size="small" sx={{display: 'flex', justifyContent: 'space-between'}}>*/}
-      {/*{map(curve.head, start => <Box>{start.label}</Box>)}*/}
-      {/*{map(_.last, end => <Box>{format(new Date(end.label), 'LLL yyyy')}</Box>)}*/}
-      {/*</Txt>*/}
-    </>
-  )
+  return <ChartLine {...props} fixMissingMonths hideLabelToggle={true} data={curve} colors={() => colors} />
+  // {/*<Txt color="hint" size="small" sx={{display: 'flex', justifyContent: 'space-between'}}>*/}
+  // {/*{map(curve.head, start => <Box>{start.label}</Box>)}*/}
+  // {/*{map(_.last, end => <Box>{format(new Date(end.label), 'LLL yyyy')}</Box>)}*/}
+  // {/*</Txt>*/}
 }
