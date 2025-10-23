@@ -9,7 +9,7 @@ import {Box} from '@mui/material'
 
 export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
-  const {flatSubmissions, flatSubmissionsDelta, schema} = useDashboardContext()
+  const {flatSubmissions, flatSubmissionsDelta, langIndex, schema} = useDashboardContext()
 
   const filteredData = useMemo(() => {
     return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
@@ -30,18 +30,18 @@ export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     return filterToFunction(schema, {questionName: config.questionName, ...config.filterBase})
   }, [config.filterBase])
 
-  if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
+  if (!config.questionName) return <WidgetCardPlaceholder type={widget.type}/>
 
   return (
     <Box sx={{p: 1, display: 'flex', alignItems: 'center', height: '100%'}}>
       <Core.ChartPieWidgetBy<any>
-        title={widget.title}
+        title={widget.i18n_title?.[langIndex]}
         data={filteredData}
         compare={
           filteredDataBefore && config.showEvolution
             ? {
-                before: filteredDataBefore,
-              }
+              before: filteredDataBefore,
+            }
             : undefined
         }
         dense={config.dense}

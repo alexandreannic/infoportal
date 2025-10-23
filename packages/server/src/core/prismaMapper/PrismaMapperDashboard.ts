@@ -19,23 +19,23 @@ export const mapDashboard = <
   _: T,
 ): Defined<
   T & {
-    id: Ip.DashboardId
-    workspaceId: Ip.WorkspaceId
-    sourceFormId: Ip.FormId
-    description?: string
-    createdBy: Ip.User.Email
-    start?: Date
-    end?: Date
-    filters?: Ip.Dashboard.Widget.ConfigFilter
-    enableChartFullSize?: boolean
-    enableChartDownload?: boolean
-    periodComparisonDelta?: number
-  }
+  id: Ip.DashboardId
+  workspaceId: Ip.WorkspaceId
+  sourceFormId: Ip.FormId
+  description?: string
+  createdBy: Ip.User.Email
+  start?: Date
+  end?: Date
+  filters?: Ip.Dashboard.Widget.ConfigFilter
+  enableChartFullSize?: boolean
+  enableChartDownload?: boolean
+  periodComparisonDelta?: number
+}
 > => _ as any
 
-export const mapWidget = <T extends {id: string; title: string | null; position: any; config: any}>(
+export const mapWidget = <T extends {id: string; i18n_title: string[] | null; position: any; config: any}>(
   _: T,
-): T & {id: Ip.Dashboard.WidgetId; position: Ip.Dashboard.Widget.Position; title?: string; config: any} => _ as any
+): T & {id: Ip.Dashboard.WidgetId; position: Ip.Dashboard.Widget.Position; i18n_title?: string[]; config: any} => _ as any
 
 export const mapSection = <
   T extends {id: string; dashboardId: string; title: string | null; description: string | null},

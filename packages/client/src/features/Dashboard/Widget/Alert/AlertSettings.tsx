@@ -22,6 +22,7 @@ import {SwitchBox} from '@/shared/SwitchBox'
 
 export function AlertSettings() {
   const {m} = useI18n()
+  const {langIndex} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const form = useForm<Ip.Dashboard.Widget.Config['Alert']>({
     mode: 'onChange',
@@ -39,7 +40,8 @@ export function AlertSettings() {
     <Box>
       <WidgetSettingsSection title={m.customize}>
         <Controller
-          name="content"
+          key={langIndex}
+          name={`i18n_content.${langIndex}`}
           control={form.control}
           render={({field, fieldState}) => (
             <Core.AsyncInput

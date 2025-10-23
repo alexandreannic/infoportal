@@ -9,12 +9,13 @@ import {useI18n} from '@infoportal/client-i18n'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {RangeTableEditor} from '@/features/Dashboard/Widget/Table/RangeTableEditor'
 import {Kobo} from 'kobo-sdk'
+import {Core} from '@/shared'
 
 export const questionTypeNumbers = new Set<Kobo.Form.QuestionType>(['integer', 'decimal'])
 
 export function TableSettings() {
   const {m} = useI18n()
-  const {schema} = useDashboardContext()
+  const {schema, langIndex} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['Table']
 
@@ -33,6 +34,7 @@ export function TableSettings() {
     onChange({config: values})
   }, [values])
 
+  console.log(values)
   return (
     <Box>
       <WidgetSettingsSection title={m.column}>
@@ -46,7 +48,15 @@ export function TableSettings() {
             <SelectQuestionInput
               {...field}
               sx={{mb: 1}}
-              onChange={(e, _) => field.onChange(_)}
+              onChange={(e, value) => {
+                field.onChange(value)
+                const path = `column.i18n_label` as const
+                const current = form.getValues(path)
+                if (value && (!current || current.every(_ => !_))) {
+                  const labels = schema.helper.questionIndex[value]?.label ?? []
+                  form.setValue('column.i18n_label', labels, {shouldDirty: true})
+                }
+              }}
               schema={schema}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
@@ -54,6 +64,22 @@ export function TableSettings() {
                 error: !!fieldState.error,
                 helperText: null,
               }}
+            />
+          )}
+        />
+        <Controller
+          name={`column.i18n_label.${langIndex}`}
+          control={form.control}
+          key={langIndex}
+          render={({field: {onChange, ...field}, fieldState}) => (
+            <Core.AsyncInput
+              key={langIndex}
+              originalValue={config.column?.i18n_label?.[langIndex]}
+              onSubmit={_ => onChange(_)}
+              helperText={null}
+              sx={{mb: 1}}
+              label={m.title}
+              {...field}
             />
           )}
         />
@@ -79,7 +105,15 @@ export function TableSettings() {
             <SelectQuestionInput
               {...field}
               sx={{mb: 1}}
-              onChange={(e, _) => field.onChange(_)}
+              onChange={(e, value) => {
+                field.onChange(value)
+                const path = `row.i18n_label` as const
+                const current = form.getValues(path)
+                if (value && (current ?? []).filter(_ => !!_).length === 0) {
+                  const labels = schema.helper.questionIndex[value]?.label
+                  form.setValue(path, labels, {shouldDirty: true})
+                }
+              }}
               schema={schema}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
@@ -88,6 +122,14 @@ export function TableSettings() {
                 helperText: null,
               }}
             />
+          )}
+        />
+        <Controller
+          name={`row.i18n_label.${langIndex}`}
+          key={langIndex}
+          control={form.control}
+          render={({field: {onChange, ...field}, fieldState}) => (
+            <Core.AsyncInput onSubmit={_ => onChange(_)} helperText={null} sx={{mb: 1}} label={m.title} {...field} />
           )}
         />
         {questionTypeNumbers.has(schema.helper.questionIndex[values.row?.questionName!]?.type) && (

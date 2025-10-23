@@ -74,7 +74,7 @@ export const DashboardProvider = ({
   const schemaWithMeta = useMemo(() => {
     const bundle = KoboSchemaHelper.buildBundle({schema, langIndex})
     return KoboSchemaHelper.withMeta(bundle, m._meta, {validationStatus: m.validation_})
-  }, [schema])
+  }, [schema, langIndex])
 
   const flatSubmissions = useMemo(() => {
     return seq(

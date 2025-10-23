@@ -15,13 +15,14 @@ import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSe
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {SwitchBox} from '@/shared/SwitchBox'
 import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
+import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 
 export function BarChartSettings() {
   const {m} = useI18n()
   const {schema} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
-  const {question, choices} = useQuestionInfo(config.questionName)
+  const {choices} = useQuestionInfo(config.questionName)
   const form = useForm<Ip.Dashboard.Widget.Config['BarChart']>({
     mode: 'onChange',
     defaultValues: {
@@ -30,10 +31,7 @@ export function BarChartSettings() {
     },
   })
 
-  useEffect(() => {
-    if (!question) return
-    if (!widget.title) onChange({title: schema.translate.question(question.name)})
-  }, [question])
+  useEffectSetTitle(config.questionName)
 
   const values = useWatch({control: form.control})
 
@@ -65,10 +63,10 @@ export function BarChartSettings() {
             />
           )}
         />
-        <WidgetSettingsFilterQuestion name="filter" form={form} sx={{mb: 1}} />
+        <WidgetSettingsFilterQuestion name="filter" form={form} sx={{mb: 1}}/>
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.properties}>
-        <SelectChoices value={[]} questionName={config.questionName} sx={{mb: 1}} onChange={console.log} />
+        <SelectChoices value={[]} questionName={config.questionName} sx={{mb: 1}} onChange={console.log}/>
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.customize}>
         <WidgetLabel>{m._dashboard.listLimit}</WidgetLabel>

@@ -4,13 +4,14 @@ import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartW
 import {map} from '@axanc/ts-utils'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {toInt} from 'infoportal-common'
-import {Box, Icon} from '@mui/material'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {PanelWidget} from '@/shared/PdfLayout/PanelWidget'
+import {useI18n} from '@infoportal/client-i18n'
 
 export function CardWidget({widget}: {widget: Ip.Dashboard.Widget}) {
+  const {formatLargeNumber} = useI18n()
   const config = widget.config as Ip.Dashboard.Widget.Config['Card']
-  const {flatSubmissions, flatSubmissionsDelta, schema} = useDashboardContext()
+  const {flatSubmissions, langIndex, flatSubmissionsDelta, schema} = useDashboardContext()
 
   const data = useMemo(() => {
     return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
@@ -40,11 +41,11 @@ export function CardWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     }
   }, [data, config.questionName, config.operation])
 
-  if (value === undefined) return <WidgetCardPlaceholder type={widget.type} />
+  if (value === undefined) return <WidgetCardPlaceholder type={widget.type}/>
 
   return (
-    <PanelWidget icon={config.icon} title={widget.title ?? ''} sx={{height: '100%'}}>
-      {value.toFixed(2)}
+    <PanelWidget icon={config.icon} title={widget.i18n_title?.[langIndex] ?? ''} sx={{height: '100%'}}>
+      {formatLargeNumber(value, {maximumFractionDigits: 2})}
     </PanelWidget>
   )
 }

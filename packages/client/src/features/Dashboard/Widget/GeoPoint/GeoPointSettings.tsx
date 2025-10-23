@@ -11,6 +11,7 @@ import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSe
 import React, {useEffect} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 
 export const GeoPointSettings = () => {
   const {m} = useI18n()
@@ -21,6 +22,8 @@ export const GeoPointSettings = () => {
     mode: 'onChange',
     defaultValues: config,
   })
+
+  useEffectSetTitle(config.questionName)
 
   const values = useWatch({control: form.control})
 

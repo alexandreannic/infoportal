@@ -56,7 +56,7 @@ export function DashboardSection() {
     const maxY = Math.max(...widgets.map(w => w.position.y + w.position.h))
     const data = await queryWidgetCreate.mutateAsync({
       ...form,
-      // title: schema.translate.question(form.questionName),
+      i18n_title: [],
       config: {},
       position: {x: 0, y: maxY, w: 6, h: 10},
     })
@@ -125,7 +125,7 @@ export function DashboardSection() {
               />
             )}
           </Core.DebouncedInput>
-          <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
+          <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex}/>
           <Box
             sx={{
               background: 'rgba(0,0,0,.04)',
@@ -173,6 +173,7 @@ export function DashboardSection() {
             </GridLayout>
             <Box sx={{p: 1, pt: 0}}>
               <Core.Modal
+                loading={queryWidgetCreate.isPending}
                 closeOnClickAway
                 overrideActions={null}
                 content={close => (

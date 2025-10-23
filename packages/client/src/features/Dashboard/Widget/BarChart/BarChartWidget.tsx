@@ -10,7 +10,7 @@ import {Box} from '@mui/material'
 
 export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
-  const {flatSubmissions, flatSubmissionsDelta, schema} = useDashboardContext()
+  const {flatSubmissions, langIndex, flatSubmissionsDelta, schema} = useDashboardContext()
 
   const labels = useMemo(() => {
     const q = config.questionName
@@ -24,12 +24,12 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
   }, [flatSubmissions, config.filter])
 
-  if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
+  if (!config.questionName) return <WidgetCardPlaceholder type={widget.type}/>
   const multiple = schema.helper.questionIndex[config.questionName].type === 'select_multiple'
 
   return (
     <Box sx={{p: 1}}>
-      <WidgetTitle>{widget.title}</WidgetTitle>
+      <WidgetTitle>{widget.i18n_title?.[langIndex]}</WidgetTitle>
       <Core.ChartBarByKey
         compareTo={config.showEvolution ? flatSubmissionsDelta : undefined}
         multiple={multiple}

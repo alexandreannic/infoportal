@@ -12,6 +12,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {Core} from '@/shared'
 import type {Country} from '@infoportal/client-core'
+import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 
 export const GeoChartSettings = () => {
   const {m} = useI18n()
@@ -23,6 +24,8 @@ export const GeoChartSettings = () => {
     defaultValues: config,
   })
 
+  useEffectSetTitle(config.questionName)
+  
   const values = useWatch({control: form.control})
 
   useEffect(() => {
@@ -53,14 +56,14 @@ export const GeoChartSettings = () => {
             />
           )}
         />
-        <WidgetSettingsFilterQuestion form={form} name="filter" />
+        <WidgetSettingsFilterQuestion form={form} name="filter"/>
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.properties}>
         <Controller
           name="countryIsoCode"
           control={form.control}
           render={({field, fieldState}) => (
-            <Core.SelectCountry {...field} label={m.country} value={field.value as Country} onChange={field.onChange} />
+            <Core.SelectCountry {...field} label={m.country} value={field.value as Country} onChange={field.onChange}/>
           )}
         />
       </WidgetSettingsSection>

@@ -15,6 +15,7 @@ import {
 } from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 
 export function PieChartSettings() {
   const {schema, dashboard} = useDashboardContext()
@@ -26,6 +27,8 @@ export function PieChartSettings() {
     mode: 'onChange',
     defaultValues: config,
   })
+
+  useEffectSetTitle(config.questionName)
 
   const values = useWatch({control: form.control})
 
@@ -61,7 +64,7 @@ export function PieChartSettings() {
             />
           )}
         />
-        <WidgetSettingsFilterQuestion form={form} name="filter" />
+        <WidgetSettingsFilterQuestion form={form} name="filter"/>
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.properties}>
         <WidgetSettingsFilter

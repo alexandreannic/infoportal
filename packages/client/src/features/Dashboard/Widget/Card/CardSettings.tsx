@@ -2,32 +2,31 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect} from 'react'
-import {Box, Icon, Slider} from '@mui/material'
-import {
-  getQuestionTypeByWidget,
-  useQuestionInfo,
-  useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
+import {Box, Icon} from '@mui/material'
+import {getQuestionTypeByWidget, useWidgetSettingsContext,} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Core} from '@/shared'
-import {SelectChoices} from '@/features/Dashboard/Widget/shared/SelectChoices'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import {Obj} from '@axanc/ts-utils'
 import {MaterialIconSelector} from '@/features/Dashboard/Widget/shared/MaterialIconSelector'
-import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
+import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 
 export function CardSettings() {
   const {m} = useI18n()
   const {schema} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
+  const config = widget.config as Ip.Dashboard.Widget.Config['Card']
   const form = useForm<Ip.Dashboard.Widget.Config['Card']>({
     mode: 'onChange',
     defaultValues: {
       ...widget.config,
     },
   })
+
+  useEffectSetTitle(config.questionName)
+
   const values = useWatch({control: form.control})
 
   useEffect(() => {
@@ -84,8 +83,7 @@ export function CardSettings() {
             render={({field, fieldState}) => (
               <SelectQuestionInput
                 {...field}
-                sx={{mb: 1.5}}
-                onChange={(e, _) => field.onChange(_)}
+                sx={{mb: 1.5}} onChange={(e, _) => field.onChange(_)}
                 schema={schema}
                 questionTypeFilter={getQuestionTypeByWidget(widget.type)}
                 InputProps={{
@@ -97,7 +95,7 @@ export function CardSettings() {
             )}
           />
         )}
-        <WidgetSettingsFilterQuestion name="filter" form={form} sx={{mb: 1}} />
+        <WidgetSettingsFilterQuestion name="filter" form={form} sx={{mb: 1}}/>
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.customize}>
         <Controller

@@ -8,6 +8,7 @@ import {useTheme} from '@mui/material'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {Kobo} from 'kobo-sdk'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
+import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 
 type Data = {row: string; groups: Record<string, number>}
 
@@ -27,10 +28,10 @@ const makeMapper = ({
   question: Kobo.Form.Question
   ranges?: Ip.Dashboard.Widget.NumberRange[]
 }): ((value: string | number) => string) => {
-  const type = schema.helper.questionIndex[question.name].type
+  const type = schema.helper.questionIndex[question.name]?.type
   return questionTypeNumbers.has(type)
     ? value => mapToRange(value as number, ranges)
-    : value => schema.translate.choice(question.name, value as string) ?? '-'
+    : value => schema.translate.langIndex + ' . ' + (schema.translate.choice(question.name, value as string) ?? '-')
 }
 
 const sortByRanges = <T extends string | {row: string}>({
@@ -57,20 +58,24 @@ const sortByRanges = <T extends string | {row: string}>({
 export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['Table']
-  const {flatSubmissions, flatSubmissionByRepeatGroup, dashboard, schema} = useDashboardContext()
+  const {flatSubmissions, langIndex, flatSubmissionByRepeatGroup, dashboard, schema} = useDashboardContext()
 
   const {column, row} = useMemo(() => {
     const colKey = config.column?.questionName
     const rowKey = config.row?.questionName
     return {
-      column: {
-        ...schema.helper.questionIndex[colKey],
-        group: schema.helper.group.getByQuestionName(colKey),
-      },
-      row: {
-        ...schema.helper.questionIndex[rowKey],
-        group: schema.helper.group.getByQuestionName(rowKey),
-      },
+      column: colKey
+        ? {
+            ...schema.helper.questionIndex[colKey],
+            group: schema.helper.group.getByQuestionName(colKey),
+          }
+        : undefined,
+      row: rowKey
+        ? {
+            ...schema.helper.questionIndex[rowKey],
+            group: schema.helper.group.getByQuestionName(rowKey),
+          }
+        : undefined,
     }
   }, [config.column?.questionName, config.row?.questionName])
 
@@ -92,8 +97,8 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     const grouped: Record<string, Record<string, number>> = {}
     const columnSet = new Set<string>()
 
-    const mapCol = makeMapper({question: column, schema, ranges: config.column.rangesIfTypeNumber})
-    const mapRow = makeMapper({question: row, schema, ranges: config.row.rangesIfTypeNumber})
+    const mapCol = makeMapper({question: column, schema, ranges: config.column?.rangesIfTypeNumber})
+    const mapRow = makeMapper({question: row, schema, ranges: config.row?.rangesIfTypeNumber})
 
     for (const item of relatedSubmissions) {
       const colValue = mapCol(item[column.name])
@@ -103,11 +108,11 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
       grouped[rowValue][colValue] = (grouped[rowValue][colValue] ?? 0) + 1
     }
 
-    const columnsSorted = sortByRanges({items: Array.from(columnSet), ranges: config.column.rangesIfTypeNumber})
+    const columnsSorted = sortByRanges({items: Array.from(columnSet), ranges: config.column?.rangesIfTypeNumber})
 
     const dataSorted = sortByRanges({
       items: Obj.entries(grouped).map(([row, groups]) => ({row, groups})),
-      ranges: config.row.rangesIfTypeNumber,
+      ranges: config.row?.rangesIfTypeNumber,
       getKey: _ => _.row,
     })
 
@@ -115,7 +120,7 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
       data: dataSorted,
       columns: columnsSorted,
     }
-  }, [relatedSubmissions, config])
+  }, [relatedSubmissions, schema, config])
 
   if (!config.column?.questionName || !config.row?.questionName) return <WidgetCardPlaceholder type={widget.type} />
 
@@ -123,7 +128,7 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     <Datatable.Component
       id={'widget-' + widget.id}
       data={data}
-      header={<Core.PanelTitle>{widget.title}</Core.PanelTitle>}
+      header={<WidgetTitle>{widget.i18n_title?.[langIndex]}</WidgetTitle>}
       getRowKey={_ => '' + _.row}
       rowHeight={32}
       module={{
@@ -135,22 +140,22 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
       columns={[
         {
           id: 'row',
-          head: '',
+          head: schema.translate.question(config.row.questionName),
           type: 'select_one',
           renderQuick: _ => _.row,
-          group: {
-            color: t.palette.divider,
-            id: config.row.questionName,
-            label: schema.translate.question(config.row.questionName),
-          },
+          // group: {
+          //   color: t.palette.divider,
+          //   id: config.row.questionName,
+          //   label: schema.translate.question(config.row.questionName),
+          // },
         },
         ...(columns ?? []).map(_ => {
           return {
-            group: {
-              color: t.palette.divider,
-              id: config.column.questionName,
-              label: schema.translate.question(config.column.questionName),
-            },
+            // group: {
+            //   color: t.palette.divider,
+            //   id: config.column.questionName,
+            //   label: schema.translate.question(config.column.questionName),
+            // },
             type: 'number',
             id: _,
             head: _,

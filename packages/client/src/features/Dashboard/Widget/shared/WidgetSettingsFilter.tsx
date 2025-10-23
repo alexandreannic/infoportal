@@ -39,7 +39,7 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
     return (
       <Core.Btn
         icon="add"
-        sx={{borderStyle: 'dashed', borderRadius: styleUtils(t).color.input.default.borderRadius}}
+        sx={{...sx, borderStyle: 'dashed', borderRadius: styleUtils(t).color.input.default.borderRadius}}
         fullWidth
         variant="outlined"
         onClick={() => form.setValue(name as any, {} as any)}
@@ -95,7 +95,7 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
           />
         )}
       />
-      <WidgetSettingsFilter question={question} form={form} name={name} sx={{mt: 2}} />
+      <WidgetSettingsFilter question={question} form={form} name={name} sx={{mt: 2}}/>
     </Box>
   )
 }
@@ -120,7 +120,7 @@ export function WidgetSettingsFilter<T extends Record<string, any>>({
       <Controller
         name={`${name}.${formName.choices}` as any}
         control={form.control}
-        render={({field}) => <SelectChoices {...field} sx={sx} questionName={question.name} label={label ?? m.value} />}
+        render={({field}) => <SelectChoices {...field} sx={sx} questionName={question.name} label={label ?? m.value}/>}
       />
     )
   }

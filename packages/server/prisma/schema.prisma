@@ -484,7 +484,7 @@ enum WidgetType {
 model DashboardWidget {
   id          String           @id @default(uuid())
   type        WidgetType
-  title       String?
+  i18n_title  String[]
   description String?
   position    Json // { x: number; y: number; w: number; h: number } // grid layout
   config      Json             @default("{}") // Record<String, any> // widget-specific options

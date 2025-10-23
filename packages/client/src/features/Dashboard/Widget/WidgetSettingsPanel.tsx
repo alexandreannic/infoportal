@@ -3,7 +3,7 @@ import {Ip} from 'infoportal-api-sdk'
 import React, {RefObject, useRef} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, Icon, useTheme} from '@mui/material'
-import {fnSwitch} from '@axanc/ts-utils'
+import {fnSwitch, map} from '@axanc/ts-utils'
 import {widgetTypeToIcon} from '@/features/Dashboard/Widget/WidgetTypeIcon'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
 import {useIpToast} from '@/core/useToast'
@@ -85,7 +85,7 @@ export const WidgetCreatorFormPanel = ({
   const stepperRef = useRef<Core.StepperHandle>(null)
   const {m} = useI18n()
   const t = useTheme()
-  const {workspaceId, dashboard, schema} = useDashboardContext()
+  const {workspaceId, langIndex, dashboard, schema} = useDashboardContext()
   const queryWidgetRemove = UseQueryDashboardWidget.remove({workspaceId, dashboardId: dashboard.id, sectionId})
   const {toastSuccess} = useIpToast()
 
@@ -139,24 +139,31 @@ export const WidgetCreatorFormPanel = ({
             <Core.IconBtn onClick={onClose}>close</Core.IconBtn>
           </Box>
           <Core.AsyncInput
+            key={widget.i18n_title?.[langIndex]}
             helperText={null}
-            value={widget.title}
-            originalValue={widget.title}
+            value={widget.i18n_title?.[langIndex]}
+            originalValue={widget.i18n_title?.[langIndex]}
             label={m.title}
-            onSubmit={_ => onChange({title: _})}
+            onSubmit={_ => {
+              if (widget.i18n_title) {
+                widget.i18n_title[langIndex] = _ ?? ''
+              }
+              onChange({i18n_title: widget.i18n_title})
+            }
+            }
           />
         </Core.PanelBody>
         {fnSwitch(
           widget.type,
           {
-            Table: <TableSettings />,
-            BarChart: <BarChartSettings />,
-            PieChart: <PieChartSettings />,
-            LineChart: <LineChartSettings />,
-            GeoPoint: <GeoPointSettings />,
-            GeoChart: <GeoChartSettings />,
-            Card: <CardSettings />,
-            Alert: <AlertSettings />,
+            Table: <TableSettings/>,
+            BarChart: <BarChartSettings/>,
+            PieChart: <PieChartSettings/>,
+            LineChart: <LineChartSettings/>,
+            GeoPoint: <GeoPointSettings/>,
+            GeoChart: <GeoChartSettings/>,
+            Card: <CardSettings/>,
+            Alert: <AlertSettings/>,
           },
           () => (
             <></>

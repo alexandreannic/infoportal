@@ -97,7 +97,7 @@ export namespace Dashboard {
 
   export type WidgetId = Brand<string, 'WidgetId'>
   export type Widget = Omit<Prisma.DashboardWidget, 'title' | 'config' | 'id' | 'position'> & {
-    title?: string
+    i18n_title?: string[]
     config: any
     position: Widget.Position
     id: WidgetId
@@ -123,7 +123,7 @@ export namespace Dashboard {
 
     export type Config = {
       [Type.Alert]: {
-        content?: string
+        i18n_content?: string[]
         type?: 'error' | 'warning' | 'info' | 'success'
         canHide?: boolean
         iconName?: string
@@ -137,7 +137,7 @@ export namespace Dashboard {
       }
       [Type.LineChart]: {
         lines?: {
-          title?: string
+          i18n_label?: string[]
           questionName: string
           color?: string
           filter: ConfigFilter
@@ -155,11 +155,13 @@ export namespace Dashboard {
         countryIsoCode?: string
       }
       [Type.Table]: {
-        column: {
+        column?: {
           questionName: string
+          i18n_label?: string[]
           rangesIfTypeNumber?: NumberRange[]
         }
-        row: {
+        row?: {
+          i18n_label?: string[]
           questionName: string
           rangesIfTypeNumber?: NumberRange[]
         }

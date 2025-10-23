@@ -56,7 +56,7 @@ export const Widget = memo(
                 GeoPoint: <GeoPointWidget widget={widget} />,
                 GeoChart: <GeoChartWidget widget={widget} />,
                 Card: <CardWidget widget={widget} />,
-                Alert: <AlertWidget widget={widget} />,
+                Alert: <AlertWidget isEditing={status === 'editing'} widget={widget} />,
               },
               () => (
                 <></>

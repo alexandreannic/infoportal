@@ -35,7 +35,7 @@ export function filterToFunction<T extends Record<string, any> = Record<string, 
 
 export const LineChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const config = widget.config as Ip.Dashboard.Widget.Config['LineChart']
-  const {flatSubmissions, schema} = useDashboardContext()
+  const {flatSubmissions, langIndex, schema} = useDashboardContext()
 
   const filterFns = useMemo(() => {
     return config.lines?.map(_ => filterToFunction(schema, _.filter)) ?? []
@@ -44,13 +44,13 @@ export const LineChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   if (!config.lines || config.lines.length === 0) return <WidgetCardPlaceholder type={widget.type} />
   return (
     <Box sx={{p: 1}}>
-      <WidgetTitle>{widget.title}</WidgetTitle>
+      <WidgetTitle>{widget.i18n_title?.[langIndex]}</WidgetTitle>
       <Core.ChartLineByDateFiltered
         start={config.start}
         end={config.end}
         data={flatSubmissions}
         curves={seq(config.lines).reduceObject<Record<string, ChartLineCurve>>((line, acc, i) => [
-          line.title ?? schema.translate.question(line.questionName),
+          line.i18n_label?.[langIndex] ?? schema.translate.question(line.questionName),
           {
             getDate: _ => _[line.questionName],
             filter: filterFns[i],
