@@ -145,10 +145,11 @@ export const WidgetCreatorFormPanel = ({
             originalValue={widget.i18n_title?.[langIndex]}
             label={m.title}
             onSubmit={value => {
-              const i18n_title = (widget.i18n_title ?? new Array(langIndex)).map((_, i) => {
-                if (i === langIndex) return value ?? ''
-                return _
-              })
+              const prev = widget.i18n_title ?? []
+              const next = [...prev]
+              while (next.length <= langIndex) next.push('')
+              next[langIndex] = value ?? ''
+              const i18n_title = next
               onChange({i18n_title})
             }}
           />

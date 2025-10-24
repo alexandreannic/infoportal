@@ -12,7 +12,8 @@ export type UseFlattenRepeatGroupData = ReturnType<typeof useFlattenRepeatGroupD
 export const useFlattenRepeatGroupData = (schema: KoboSchemaHelper.Bundle<any>) => {
   const cache = useRef(new WeakMap<any[], Map<string, Seq<Answers>>>())
 
-  const flattenByGroupName = (data: Seq<Answers>, groupName: string): Seq<Answers> => {
+  const flattenByGroupName = (data: Seq<Answers>, groupName?: string): Seq<Answers> => {
+    if (!groupName) return data
     return data.flatMap(record => {
       const repeats: object[] = (record as any)[groupName] ?? []
       return repeats.map(rep => ({
