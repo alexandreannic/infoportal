@@ -27,7 +27,7 @@ export function LineChartSettings() {
   })
 
   const values = useWatch({control: form.control})
-
+  
   useEffect(() => {
     onChange({config: values})
   }, [values])

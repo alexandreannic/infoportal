@@ -42,7 +42,7 @@ export const ChartLineByDateFiltered = <T,>({
   start?: Date
   end?: Date
   tick?: 'month' | 'year' | 'day'
-} & Pick<ChartLineProps, 'height' | 'hideYTicks' | 'colors' | 'sx'>) => {
+} & Pick<ChartLineProps, 'height' | 'distinctYAxis' | 'hideYTicks' | 'colors' | 'sx'>) => {
   const curve = useMemo(() => {
     const res: Record<string, Record<string, number>> = {}
     const invalidDates: {row: T; date?: any}[] = []

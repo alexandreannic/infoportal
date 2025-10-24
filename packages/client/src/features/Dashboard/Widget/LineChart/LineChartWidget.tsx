@@ -1,7 +1,7 @@
 import {Ip} from 'infoportal-api-sdk'
 import React, {useMemo} from 'react'
 import {Core} from '@/shared'
-import {seq} from '@axanc/ts-utils'
+import {Obj, seq} from '@axanc/ts-utils'
 import {ChartLineCurve} from '@infoportal/client-core'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {KoboSchemaHelper} from 'infoportal-common'

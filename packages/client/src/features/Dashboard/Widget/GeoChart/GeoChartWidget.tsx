@@ -6,11 +6,12 @@ import {map, Obj} from '@axanc/ts-utils'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
+import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 
 export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoChart']
-  const {flatSubmissions, schema} = useDashboardContext()
+  const {flatSubmissions, langIndex, schema} = useDashboardContext()
 
   const filteredData = useMemo(() => {
     return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
@@ -32,5 +33,10 @@ export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
 
   if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
 
-  return <Core.ChartGeo data={data} country={config.countryIsoCode as any} />
+  return (
+    <>
+      <WidgetTitle sx={{mx: 1, mt: 1,}}>{widget.i18n_title?.[langIndex]}</WidgetTitle>
+      <Core.ChartGeo data={data} country={config.countryIsoCode as any} />
+    </>
+  )
 }
