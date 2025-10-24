@@ -144,26 +144,26 @@ export const WidgetCreatorFormPanel = ({
             value={widget.i18n_title?.[langIndex]}
             originalValue={widget.i18n_title?.[langIndex]}
             label={m.title}
-            onSubmit={_ => {
-              if (widget.i18n_title) {
-                widget.i18n_title[langIndex] = _ ?? ''
-              }
-              onChange({i18n_title: widget.i18n_title})
-            }
-            }
+            onSubmit={value => {
+              const i18n_title = (widget.i18n_title ?? new Array(langIndex)).map((_, i) => {
+                if (i === langIndex) return value ?? ''
+                return _
+              })
+              onChange({i18n_title})
+            }}
           />
         </Core.PanelBody>
         {fnSwitch(
           widget.type,
           {
-            Table: <TableSettings/>,
-            BarChart: <BarChartSettings/>,
-            PieChart: <PieChartSettings/>,
-            LineChart: <LineChartSettings/>,
-            GeoPoint: <GeoPointSettings/>,
-            GeoChart: <GeoChartSettings/>,
-            Card: <CardSettings/>,
-            Alert: <AlertSettings/>,
+            Table: <TableSettings />,
+            BarChart: <BarChartSettings />,
+            PieChart: <PieChartSettings />,
+            LineChart: <LineChartSettings />,
+            GeoPoint: <GeoPointSettings />,
+            GeoChart: <GeoChartSettings />,
+            Card: <CardSettings />,
+            Alert: <AlertSettings />,
           },
           () => (
             <></>
