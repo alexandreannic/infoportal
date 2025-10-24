@@ -14,7 +14,7 @@ import {CardWidget} from '@/features/Dashboard/Widget/Card/CardWidget'
 import {AlertWidget} from '@/features/Dashboard/Widget/Alert/AlertWidget'
 import {WidgetErrorBoundary} from '@/features/Dashboard/Widget/shared/WidgetErrorBoundary'
 
-type Status = 'editing'
+type Status = 'editing' | 'selected'
 
 export const Widget = memo(
   ({
@@ -24,7 +24,7 @@ export const Widget = memo(
   }: {
     status?: Status
     widget: Ip.Dashboard.Widget
-    onClick: (_: Ip.Dashboard.WidgetId) => void
+    onClick?: (_: Ip.Dashboard.WidgetId) => void
   }) => {
     const t = useTheme()
     const {dashboard} = useDashboardContext()
@@ -32,7 +32,7 @@ export const Widget = memo(
     const content = (
       <Core.Panel
         className="WidgetCard"
-        onClick={() => onClick(widget.id)}
+        onClick={() => onClick?.(widget.id)}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -53,10 +53,16 @@ export const Widget = memo(
                 BarChart: <BarChartWidget widget={widget} />,
                 PieChart: <PieChartWidget widget={widget} />,
                 LineChart: <LineChartWidget widget={widget} />,
-                GeoPoint: <GeoPointWidget widget={widget} />,
+                GeoPoint: (
+                  <GeoPointWidget
+                    widget={widget}
+                    onEdit={() => onClick?.(widget.id)}
+                    isEditing={status === 'selected'}
+                  />
+                ),
                 GeoChart: <GeoChartWidget widget={widget} />,
                 Card: <CardWidget widget={widget} />,
-                Alert: <AlertWidget isEditing={status === 'editing'} widget={widget} />,
+                Alert: <AlertWidget isEditing={status === 'editing' || status === 'selected'} widget={widget} />,
               },
               () => (
                 <></>

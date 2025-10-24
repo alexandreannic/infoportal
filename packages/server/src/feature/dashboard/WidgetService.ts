@@ -5,8 +5,13 @@ import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 export class WidgetService {
   constructor(private prisma: PrismaClient) {}
 
-  readonly search = async ({sectionId}: Ip.Dashboard.Widget.Payload.Search): Promise<Ip.Dashboard.Widget[]> => {
-    return this.prisma.dashboardWidget.findMany({where: {sectionId}}).then(_ => _.map(prismaMapper.dashboard.mapWidget))
+  readonly search = async ({
+    sectionId,
+    dashboardId,
+  }: Ip.Dashboard.Widget.Payload.Search): Promise<Ip.Dashboard.Widget[]> => {
+    return this.prisma.dashboardWidget
+      .findMany({where: {section: {dashboardId}, sectionId}})
+      .then(_ => _.map(prismaMapper.dashboard.mapWidget))
   }
 
   readonly remove = async ({

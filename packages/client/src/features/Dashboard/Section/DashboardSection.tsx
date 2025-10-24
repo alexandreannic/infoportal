@@ -6,7 +6,7 @@ import 'react-grid-layout/css/styles.css'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {WidgetCreatorFormPanel, WidgetUpdatePayload} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
-import React, {useCallback, useMemo, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {Widget} from '@/features/Dashboard/Widget/Widget'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
 import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
@@ -125,7 +125,7 @@ export function DashboardSection() {
               />
             )}
           </Core.DebouncedInput>
-          <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex}/>
+          <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
           <Box
             sx={{
               background: 'rgba(0,0,0,.04)',
@@ -153,7 +153,7 @@ export function DashboardSection() {
                 <Box key={widget.id} sx={{height: '100%'}}>
                   <Widget
                     onClick={selectWidget}
-                    status={editingWidget?.id === widget.id ? 'editing' : undefined}
+                    status={editingWidget?.id === widget.id ? 'editing' : 'selected'}
                     widget={widget}
                   />
                   <Icon

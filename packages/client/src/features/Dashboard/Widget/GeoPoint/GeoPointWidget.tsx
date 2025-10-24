@@ -6,8 +6,17 @@ import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {map} from '@axanc/ts-utils'
 import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
+import {Core} from '@/shared'
 
-export const GeoPointWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
+export const GeoPointWidget = ({
+  widget,
+  onEdit,
+  isEditing,
+}: {
+  onEdit?: () => void
+  isEditing?: boolean
+  widget: Ip.Dashboard.Widget
+}) => {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoPoint']
   const {flatSubmissions, schema} = useDashboardContext()
@@ -41,9 +50,22 @@ export const GeoPointWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
 
   return (
     <Box
-      sx={{mb: -1, mx: -1, height: `calc(${t.vars.spacing} * 2 + 100%)`, width: `calc(${t.vars.spacing} * 2 + 100%)`}}
-      onClick={e => e.stopPropagation()}
-      id={`widget-` + widget.id}
-    />
+      sx={{
+        mb: -1,
+        mx: -1,
+        height: `calc(${t.vars.spacing} * 2 + 100%)`,
+        width: `calc(${t.vars.spacing} * 2 + 100%)`,
+      }}
+    >
+      <Box sx={{height: '100%', width: '100%'}} onClick={e => e.stopPropagation()} id={`widget-` + widget.id}></Box>
+      {isEditing && (
+        <Core.IconBtn
+          children="edit"
+          onClick={onEdit}
+          size="large"
+          sx={{background: 'rgba(0,0,0,.2)', position: 'absolute', top: 'calc(50% - 22px)', left: 'calc(50% - 22px)'}}
+        />
+      )}
+    </Box>
   )
 }
