@@ -68,7 +68,8 @@ export function AsyncInput({
 
   const triggerSubmit = useCallback(() => {
     if (onSubmit) {
-      onSubmit(convert(local) as any)
+      const value = convert(local)
+      if (value) onSubmit(convert(local))
     }
   }, [local, convert, onSubmit])
 
