@@ -5,7 +5,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {UseQueryDashboardSecion} from '@/core/query/dashboard/useQueryDashboardSection'
 import {Icon, Tab, Tabs} from '@mui/material'
 import {dashboardSectionRoute} from '@/features/Dashboard/Section/DashboardSection'
@@ -123,14 +123,17 @@ export function Dashboard() {
         <Tab
           icon={<Icon>settings</Icon>}
           iconPosition="start"
-          sx={{marginLeft: 'auto', mr: .75, minHeight: 34, py: 1, maxWidth: 50}} //,  }}
+          sx={{marginLeft: 'auto', mr: 0.75, minHeight: 34, py: 1, maxWidth: 50}} //,  }}
           component={Link}
           value="settings"
           to={dashboardSettingsRoute.fullPath}
           // label={m.settings}
         />
         <PopoverShareLink url={dashboardUrl}>
-          <BtnShare disabled={!dashboardUrl || !queryDashboard.data || !queryDashboard.data.isPublished} sx={{height: 36, alignSelf: 'center', mr: 0.5}} />
+          <BtnShare
+            disabled={!dashboardUrl || !queryDashboard.data || !queryDashboard.data.isPublished}
+            sx={{height: 36, alignSelf: 'center', mr: 0.5}}
+          />
         </PopoverShareLink>
         <Core.Btn
           onClick={() => queryDashboardPublish.mutate()}

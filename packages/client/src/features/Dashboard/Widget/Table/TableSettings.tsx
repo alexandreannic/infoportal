@@ -34,7 +34,6 @@ export function TableSettings() {
     onChange({config: values})
   }, [values])
 
-  console.log(values)
   return (
     <Box>
       <WidgetSettingsSection title={m.column}>

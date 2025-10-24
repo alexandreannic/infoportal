@@ -9,16 +9,18 @@ import {Box} from '@mui/material'
 
 export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
-  const {flatSubmissions, flatSubmissionsDelta, langIndex, schema} = useDashboardContext()
+  const {flatSubmissions, flattenRepeatGroupData, flatSubmissionsDelta, langIndex, schema} = useDashboardContext()
 
   const filteredData = useMemo(() => {
-    return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
-  }, [flatSubmissions, config.filter])
+    const d = flattenRepeatGroupData.flattenIfRepeatGroup(flatSubmissions, config.questionName)
+    return map(filterToFunction(schema, config.filter), d.filter) ?? d
+  }, [flatSubmissions, config.questionName, config.filter])
 
   const filteredDataBefore = useMemo(() => {
     if (!flatSubmissionsDelta) return
-    return map(filterToFunction(schema, config.filter), flatSubmissionsDelta.filter) ?? flatSubmissionsDelta
-  }, [flatSubmissionsDelta, config.filter])
+    const d = flattenRepeatGroupData.flattenIfRepeatGroup(flatSubmissionsDelta, config.questionName)
+    return map(filterToFunction(schema, config.filter), d.filter) ?? d
+  }, [flatSubmissionsDelta, config.questionName, config.filter])
 
   const filterValue = useMemo(() => {
     if (!config.questionName) return
@@ -30,7 +32,7 @@ export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     return filterToFunction(schema, {questionName: config.questionName, ...config.filterBase})
   }, [config.filterBase])
 
-  if (!config.questionName) return <WidgetCardPlaceholder type={widget.type}/>
+  if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
 
   return (
     <Box sx={{p: 1, display: 'flex', alignItems: 'center', height: '100%'}}>
@@ -40,8 +42,8 @@ export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
         compare={
           filteredDataBefore && config.showEvolution
             ? {
-              before: filteredDataBefore,
-            }
+                before: filteredDataBefore,
+              }
             : undefined
         }
         dense={config.dense}

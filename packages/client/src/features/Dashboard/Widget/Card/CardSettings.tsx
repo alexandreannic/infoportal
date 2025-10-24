@@ -3,7 +3,7 @@ import {Controller, useForm, useWatch} from 'react-hook-form'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect} from 'react'
 import {Box, Icon} from '@mui/material'
-import {getQuestionTypeByWidget, useWidgetSettingsContext,} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
+import {getQuestionTypeByWidget, useWidgetSettingsContext} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Core} from '@/shared'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
@@ -83,7 +83,8 @@ export function CardSettings() {
             render={({field, fieldState}) => (
               <SelectQuestionInput
                 {...field}
-                sx={{mb: 1.5}} onChange={(e, _) => field.onChange(_)}
+                sx={{mb: 1.5}}
+                onChange={(e, _) => field.onChange(_)}
                 schema={schema}
                 questionTypeFilter={getQuestionTypeByWidget(widget.type)}
                 InputProps={{
@@ -95,7 +96,7 @@ export function CardSettings() {
             )}
           />
         )}
-        <WidgetSettingsFilterQuestion name="filter" form={form} sx={{mb: 1}}/>
+        <WidgetSettingsFilterQuestion name="filter" form={form} sx={{mb: 1}} />
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.customize}>
         <Controller

@@ -1,12 +1,17 @@
-import React, {Dispatch, ReactNode, SetStateAction, useCallback, useMemo, useState} from 'react'
+import React, {Dispatch, ReactNode, SetStateAction, useCallback, useMemo, useRef, useState} from 'react'
 import {Ip} from 'infoportal-api-sdk'
 import {seq, Seq} from '@axanc/ts-utils'
 import {KoboSchemaHelper, PeriodHelper} from 'infoportal-common'
 import {useI18n} from '@infoportal/client-i18n'
 import {subDays} from 'date-fns'
 import {schema} from 'activityinfo-sdk/schema'
+import {UseFlattenRepeatGroupData, useFlattenRepeatGroupData} from '@/features/Dashboard/useGetDataByRepeatGroup'
+
+// TODO this type could be globalized. It's maybe defined somewhere already
+export type Answers = Ip.Submission.Meta & Record<string, any>
 
 type Context = {
+  flattenRepeatGroupData: UseFlattenRepeatGroupData
   langIndex: number
   setLangIndex: Dispatch<SetStateAction<number>>
   filters: Filters
@@ -14,10 +19,9 @@ type Context = {
   dataRange: Ip.Period
   effectiveDataRange: Ip.Period
   workspaceId: Ip.WorkspaceId
-  flatSubmissions: Seq<Ip.Submission.Meta & Record<string, any>>
-  flatSubmissionsDelta?: Seq<Ip.Submission.Meta & Record<string, any>>
+  flatSubmissions: Seq<Answers>
+  flatSubmissionsDelta?: Seq<Answers>
   dashboard: Ip.Dashboard
-  flatSubmissionByRepeatGroup: (repeatGroup: string) => Seq<Ip.Submission.Meta & Record<string, any>>
   schema: KoboSchemaHelper.Bundle<true>
   widgetsBySection: Map<Ip.Dashboard.SectionId, Ip.Dashboard.Widget[]>
 }
@@ -84,19 +88,6 @@ export const DashboardProvider = ({
     )
   }, [submissions, filters])
 
-  const flatSubmissionByRepeatGroup = useCallback(
-    (repeatGroup: string) => {
-      return flatSubmissions.flatMap(_ => {
-        const group: object[] = (_ as any)[repeatGroup] ?? []
-        return group.map(group => ({
-          ..._,
-          ...group,
-        }))
-      })
-    },
-    [flatSubmissions],
-  )
-
   // TODO Cache
   const flatSubmissionsDelta = useMemo(() => {
     if (!dashboard.periodComparisonDelta) return
@@ -105,9 +96,12 @@ export const DashboardProvider = ({
     )
   }, [flatSubmissions, effectiveDataRange.end])
 
+  const flattenRepeatGroupData = useFlattenRepeatGroupData(schemaWithMeta)
+
   return (
     <DashboardContext
       value={{
+        flattenRepeatGroupData,
         filters,
         setFilters,
         dataRange,
@@ -118,7 +112,6 @@ export const DashboardProvider = ({
         flatSubmissions,
         flatSubmissionsDelta,
         dashboard,
-        flatSubmissionByRepeatGroup,
         langIndex,
         setLangIndex,
       }}

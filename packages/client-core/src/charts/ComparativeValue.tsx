@@ -36,7 +36,7 @@ export const ComparativeValue = ({
       >
         <Icon sx={{ml: 1, width: 24}} fontSize="inherit">
           {fnSwitch(type, {
-            equal: 'equal',
+            // equal: 'equal',
             more: 'north',
             less: 'south',
           }, () => '')}

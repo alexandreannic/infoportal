@@ -32,7 +32,7 @@ const makeMapper = ({
   if (!type) return () => '?'
   return questionTypeNumbers.has(type)
     ? value => mapToRange(value as number, ranges)
-    : value => schema.translate.langIndex + ' . ' + (schema.translate.choice(question.name, value as string) ?? '-')
+    : value => schema.translate.choice(question.name, value as string) ?? '-'
 }
 
 const sortByRanges = <T extends string | {row: string}>({
@@ -59,7 +59,7 @@ const sortByRanges = <T extends string | {row: string}>({
 export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['Table']
-  const {flatSubmissions, langIndex, flatSubmissionByRepeatGroup, dashboard, schema} = useDashboardContext()
+  const {flatSubmissions, langIndex, flattenRepeatGroupData, dashboard, schema} = useDashboardContext()
 
   const {column, row} = useMemo(() => {
     const colKey = config.column?.questionName
@@ -89,8 +89,7 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
         `Questions ${column.name} and ${row.name} of Form ${dashboard.sourceFormId} are in different begin_repeat section.`,
       )
     }
-    const repeatGroup = column.group ?? row.group
-    return repeatGroup ? flatSubmissionByRepeatGroup(repeatGroup.name) : flatSubmissions
+    return flattenRepeatGroupData.flattenByGroupName(flatSubmissions, column.group?.name ?? row.group?.name)
   }, [flatSubmissions, column, row])
 
   const {data, columns} = useMemo(() => {
