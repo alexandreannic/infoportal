@@ -27,6 +27,7 @@ import {dashboardsRoute} from '@/features/Dashboard/Dashboards'
 import {dashboardSectionRoute} from '@/features/Dashboard/Section/DashboardSection'
 import {dashboardRoute} from '@/features/Dashboard/Dashboard'
 import {dashboardSettingsRoute} from '@/features/Dashboard/DashboardSettings'
+import {dashboardRenderRoute} from '@/features/Dashboard/Render/DashboardRender'
 
 export const rootRoute = createRootRoute({
   component: App,
@@ -35,6 +36,7 @@ export const rootRoute = createRootRoute({
 const tsRoutes = [
   collectRoute,
   workspacesRoute,
+  dashboardRenderRoute,
   workspaceRoute.addChildren([
     dashboardsRoute,
     dashboardRoute.addChildren([dashboardSettingsRoute, dashboardSectionRoute]),

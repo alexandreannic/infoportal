@@ -12,6 +12,30 @@ export class DashboardService {
       .findUnique({where: {id, deletedAt: null}})
       .then(_ => (_ ? prismaMapper.dashboard.mapDashboard(_) : undefined))
   }
+
+  readonly getPublished = async ({
+    workspaceSlug,
+    dashboardSlug,
+  }: {
+    workspaceSlug: string
+    dashboardSlug: string
+  }): Promise<any> => {
+    return this.prisma.dashboard
+      .findFirst({
+        include: {
+          published: {select: {snapshot: true}},
+        },
+        where: {workspace: {slug: workspaceSlug}, slug: dashboardSlug, publishedId: {not: null}, deletedAt: null},
+      })
+      .then(_ => {
+        if (!_) return
+        return {
+          ..._,
+          snapshot: _.published!.snapshot,
+        }
+      })
+  }
+
   readonly getAll = async ({workspaceId}: {workspaceId: Ip.WorkspaceId}): Promise<Ip.Dashboard[]> => {
     return this.prisma.dashboard
       .findMany({
@@ -44,6 +68,7 @@ export class DashboardService {
     const dashboard = await this.prisma.dashboard.findFirstOrThrow({where: {id}, select: {id: true, publishedId: true}})
     const snapshot = await this.prisma.dashboardSection.findMany({
       select: {title: true, description: true, widgets: true},
+      where: {dashboardId: id},
     })
     if (dashboard?.publishedId) await this.prisma.dashboardPublished.delete({where: {id: dashboard.publishedId}})
     await this.prisma.dashboardPublished.create({

@@ -13,6 +13,15 @@ export const dashboardContract = c.router({
     body: c.type<Ip.Dashboard.Payload.Publish>(),
     responses: {204: schema.emptyResult},
   },
+  getPublished: {
+    method: 'POST',
+    path: `/dashboard/getPublished`,
+    body: z.object({
+      workspaceSlug: z.string(),
+      dashboardSlug: z.string(),
+    }),
+    responses: {200: z.any() as z.ZodType<Ip.DashboardWithSnapshot>},
+  },
   search: {
     method: 'POST',
     path: `/dashboard/search`,
@@ -80,6 +89,10 @@ export const dashboardClient = (client: TsRestClient) => {
       return client.dashboard.update({body}).then(map200).then(Ip.Dashboard.map)
     },
     remove: (body: Ip.Dashboard.Payload.Delete) => client.dashboard.remove({body}).then(map204),
+
     publish: (body: Ip.Dashboard.Payload.Publish) => client.dashboard.publish({body}).then(map204),
+
+    getBySlug: (body: {workspaceSlug: string; dashboardSlug: string}) =>
+      client.dashboard.getPublished({body}).then(map200),
   }
 }

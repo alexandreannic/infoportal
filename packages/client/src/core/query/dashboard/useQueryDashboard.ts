@@ -7,6 +7,7 @@ import {ApiError} from '@/core/sdk/server/ApiClient'
 import {useMemo} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {usePendingMutation} from '@/core/query/usePendingMutation'
+import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
 
 export class UseQueryDashboard {
   static getAll = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
@@ -26,6 +27,16 @@ export class UseQueryDashboard {
       mutationFn: () => apiv2.dashboard.publish({workspaceId, id}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),
       onError: toastHttpError,
+    })
+  }
+
+  static getPublished = ({workspaceSlug, dashboardSlug}: {workspaceSlug: string; dashboardSlug: string}) => {
+    const {apiv2} = useAppSettings()
+    return useQuery({
+      queryKey: queryKeys.dashboardBySlug(workspaceSlug, dashboardSlug),
+      queryFn: async () => {
+        return apiv2.dashboard.getBySlug({workspaceSlug, dashboardSlug})
+      },
     })
   }
 

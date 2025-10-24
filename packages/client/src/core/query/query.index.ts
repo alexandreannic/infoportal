@@ -16,6 +16,8 @@ export const queryKeys = {
   workspaces: () => ['workspace'],
   originalEmail: () => ['originalEmail'],
 
+  dashboardBySlug: (workspaceSlug?: string, dashboardSlug?: string) =>
+    concat('dashboardBySlug', workspaceSlug, dashboardSlug),
   dashboard: (workspaceId?: Ip.WorkspaceId, dashboardId?: Ip.DashboardId) =>
     concat(workspaceId, 'dashboard', dashboardId),
   dashboardSection: (workspaceId?: Ip.WorkspaceId, dashboardId?: Ip.DashboardId, sectionId?: Ip.Dashboard.SectionId) =>

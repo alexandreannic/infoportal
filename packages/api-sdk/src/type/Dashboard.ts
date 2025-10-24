@@ -1,9 +1,8 @@
 import type * as Prisma from '@prisma/client'
-import {Brand, Nullable} from './Common.js'
+import {Brand} from './Common.js'
 import {Form, FormId} from './Form.js'
 import {Workspace, WorkspaceId} from './Workspace.js'
 import {User} from './User'
-import Widget = Dashboard.Widget
 
 export type DashboardId = Brand<string, 'DashboardId'>
 export type Dashboard = {
@@ -20,15 +19,23 @@ export type Dashboard = {
   isPublic: boolean
   start?: Date
   end?: Date
-  filters?: Widget.ConfigFilter
+  filters?: Dashboard.Widget.ConfigFilter
   enableChartDownload?: boolean
   enableChartFullSize?: boolean
   periodComparisonDelta?: number
 }
 
+export type DashboardWithSnapshot = Dashboard & {
+  snapshot: DashboardSnapshot
+}
+
+export type DashboardSnapshot = (Dashboard.Section & {
+  widgets: Dashboard.Widget[]
+})[]
+
 export namespace Dashboard {
   export const buildPath = (workspace: Pick<Workspace, 'slug'>, dashboard: Pick<Dashboard, 'slug'>) =>
-    '/' + workspace.slug + '/d/' + dashboard.slug
+    '/d/' + workspace.slug + '/' + dashboard.slug
 
   export const map = (_: any): Dashboard => {
     if (_.createdAt) _.createdAt = new Date(_.createdAt)
