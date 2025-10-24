@@ -126,6 +126,7 @@ export namespace Dashboard {
       questionName?: string
       number?: {min?: number; max?: number}
       choices?: string[]
+      date?: [Date | undefined, Date | undefined]
     }
 
     export type NumberRange = {min: number; max: number}

@@ -4,7 +4,7 @@ import {Core} from '@/shared'
 import {Obj, seq} from '@axanc/ts-utils'
 import {ChartLineCurve} from '@infoportal/client-core'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
-import {KoboSchemaHelper} from 'infoportal-common'
+import {isDate, KoboSchemaHelper, PeriodHelper} from 'infoportal-common'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 import {Box} from '@mui/material'
@@ -16,6 +16,14 @@ export function filterToFunction<T extends Record<string, any> = Record<string, 
   if (!filter?.questionName) return
   const filterNumber = filter.number
   const filterChoice = filter.choices
+  const filterDate = filter.date
+  if (filterDate) {
+    return (_: T) => {
+      const value = _[filter.questionName!]
+      if (!isDate(value)) return false
+      return PeriodHelper.isDateIn({start: filterDate?.[0], end: filterDate?.[1]}, value)
+    }
+  }
   if (filterNumber)
     return (_: T) => {
       const value = _[filter.questionName!]
