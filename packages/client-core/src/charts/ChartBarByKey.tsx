@@ -18,7 +18,6 @@ type ChartBarByKeyProps<D extends Record<string, any>, R extends string> = Omit<
 
 export const ChartBarByKey = <D extends Record<string, any>, R extends string>({
   property,
-  multiple,
   ...props
 }: ChartBarByKeyProps<D, R>) => {
   return <ChartBarBy by={_ => (_ as any)[property]} {...(props as any)} />

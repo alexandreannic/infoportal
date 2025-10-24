@@ -45,7 +45,7 @@ export const getQuestionTypeByWidget = (type: Ip.Dashboard.Widget.Type): Kobo.Fo
       return ['text', 'select_one', 'select_multiple', 'calculate']
     }
     case 'PieChart': {
-      return ['select_one', 'integer', 'decimal', 'calculate']
+      return ['select_one', 'select_multiple', 'integer', 'decimal', 'calculate']
     }
     case 'Table': {
       return ['select_one', 'integer', 'decimal']

@@ -162,6 +162,7 @@ export namespace Dashboard {
         questionName?: string
         filter?: ConfigFilter
         countryIsoCode?: string
+        mapping?: Record<string, string>
       }
       [Type.Table]: {
         column?: {

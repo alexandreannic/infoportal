@@ -19,7 +19,12 @@ export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const data = useMemo(() => {
     if (!config.questionName) return []
     const record = filteredData.groupByAndApply(
-      _ => _[config.questionName!],
+      _ => {
+        const value = _[config.questionName!]
+        const mappedValue = config.mapping?.[value]
+        if (mappedValue && mappedValue !== '') return mappedValue
+        return value
+      },
       _ => _.length,
     )
     return Obj.entries(record).map(([iso, count]) => ({iso, count}))
@@ -27,5 +32,5 @@ export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
 
   if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
 
-  return <Core.ChartGeo data={data} fixCountry={config.countryIsoCode as any} />
+  return <Core.ChartGeo data={data} country={config.countryIsoCode as any} />
 }

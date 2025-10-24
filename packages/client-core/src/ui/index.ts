@@ -1,3 +1,5 @@
+import {SelectGeoIso} from './SelectGeoIso'
+
 export * from './Panel/index'
 export * from './RadioGroup/index'
 export * from './Stepper/index'
@@ -7,6 +9,7 @@ export * from './PeriodPicker/PeriodPicker'
 export * from './Modal'
 export * from './ListItem'
 export * from './SelectCountry'
+export * from './SelectGeoIso'
 export * from './Txt'
 export * from './IconBtn'
 export * from './BasicDialog'

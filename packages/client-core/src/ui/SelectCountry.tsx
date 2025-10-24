@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Autocomplete} from '@mui/material'
+import {Autocomplete, AutocompleteProps} from '@mui/material'
 import countries from '../core/chartGeoData.json'
 import {CountryFlag} from './CountryFlag'
 import {Input} from './Input'
@@ -14,7 +14,8 @@ export function SelectCountry({
   value,
   label,
   onChange,
-}: {
+  ...props
+}: Omit<AutocompleteProps<any, any, any, any>, 'options' | 'renderOption' | 'renderInput'> & {
   label?: string
   value?: Country
   onChange: (_: Country | null) => void
@@ -40,6 +41,7 @@ export function SelectCountry({
           label={label}
         />
       )}
+      {...props}
     />
   )
 }

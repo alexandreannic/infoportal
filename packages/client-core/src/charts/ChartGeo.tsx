@@ -8,35 +8,31 @@ export type CountryCode = keyof typeof json
 
 const headers = ['Location', 'Submissions']
 
-function groupGeoData(data: {iso: string; count: number}[]) {
-  const countries = new Map<CountryCode, number>()
-  const regions = new Map<string, Map<string, number>>()
-  for (const {iso, count} of data) {
-    const [country] = iso.split('-') as [CountryCode]
-    if (!country) continue
-    countries.set(country, (countries.get(country) ?? 0) + count)
-    const regionMap = regions.get(country) ?? new Map()
-    regionMap.set(iso, (regionMap.get(iso) ?? 0) + count)
-    regions.set(country, regionMap)
-  }
-  return {countries, regions}
-}
-
 export const ChartGeo = ({
-  fixCountry,
-  data = [],
+  country,
+  data: unfixedData = [],
 }: {
-  fixCountry?: CountryCode
+  country?: CountryCode
   data?: {iso: string; count: number}[]
 }) => {
+  const data = useMemo(() => {
+    if (!country) return unfixedData
+    return unfixedData.map(_ => {
+      return {
+        ..._,
+        iso: normalizeIsoRegion(_.iso),
+      }
+    })
+  }, [unfixedData])
+
   const {mode} = useColorScheme()
   const t = useTheme()
   const [selectedCountry, setSelectedCountry] = useState<CountryCode | null>(null)
   const datalessRegionColor = selectedCountry ? 'transparent' : mode === 'dark' ? '#2b3c4f' : '#e0e0e0'
 
   useEffect(() => {
-    if (fixCountry) setSelectedCountry(fixCountry)
-  }, [fixCountry])
+    if (country) setSelectedCountry(country)
+  }, [country])
 
   const {countries, regions} = useMemo(() => {
     const grouped = groupGeoData(data)
@@ -54,11 +50,11 @@ export const ChartGeo = ({
       }
     }
     return grouped
-  }, [data])
+  }, [selectedCountry, data])
 
   useEffect(() => {
-    if (!fixCountry && countries.size === 1) setSelectedCountry([...countries.keys()][0])
-  }, [countries, fixCountry])
+    if (!country && countries.size === 1) setSelectedCountry([...countries.keys()][0])
+  }, [countries, country])
 
   const formattedData = useMemo(() => {
     const source = selectedCountry ? regions.get(selectedCountry) : countries
@@ -72,7 +68,13 @@ export const ChartGeo = ({
       legend: 'none',
       enableRegionInteractivity: true,
       chartArea: {width: '100%', height: '10%', top: 10, bottom: 10, left: 10, right: 10},
-      colorAxis: {colors: [lighten(t.palette.primary.light, 0.65), t.palette.primary.dark]},
+      colorAxis: {
+        colors: [
+          mode === 'dark' ? '#2b3c4f' : '#e0e0e0',
+          // lighten(t.palette.primary.light, 0.65),
+          t.palette.primary.dark,
+        ],
+      },
       ...(selectedCountry && {
         displayMode: 'regions',
         region: selectedCountry,
@@ -102,7 +104,7 @@ export const ChartGeo = ({
           {
             eventName: 'select',
             callback: ({chartWrapper}) => {
-              if (fixCountry) return
+              if (country) return
               const chart = chartWrapper?.getChart()
               const sel = chart?.getSelection?.()
               if (sel?.length) {
@@ -114,7 +116,7 @@ export const ChartGeo = ({
           },
         ]}
       />
-      {!fixCountry && (
+      {!country && (
         <IconBtn
           color="primary"
           onClick={() => setSelectedCountry(null)}
@@ -125,4 +127,29 @@ export const ChartGeo = ({
       )}
     </Box>
   )
+}
+
+function groupGeoData(data: {iso: string; count: number}[]) {
+  const countries = new Map<CountryCode, number>()
+  const regions = new Map<string, Map<string, number>>()
+  for (const {iso, count} of data) {
+    const [country] = iso.split('-') as [CountryCode]
+    if (!country) continue
+    countries.set(country, (countries.get(country) ?? 0) + count)
+    const regionMap = regions.get(country) ?? new Map()
+    regionMap.set(iso, (regionMap.get(iso) ?? 0) + count)
+    regions.set(country, regionMap)
+  }
+  return {countries, regions}
+}
+
+function normalizeIsoRegion(code: string): string {
+  if (!code) return code
+  const normalized = code.trim().toUpperCase()
+  const match = normalized.match(/^([A-Z]{2,3})[-_ ]?(\d{1,3})$/)
+  if (match) {
+    const [, country, region] = match
+    return `${country}-${region}`
+  }
+  return normalized
 }

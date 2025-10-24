@@ -78,6 +78,7 @@ export const en = Object.freeze({
     choices: 'Choices',
     edit: 'Edit',
     type: 'Type',
+    mapping: 'Mapping',
     editKobo: `Edit (⚠️. Requires appropriate KoboToolbox permissions).`,
     editForm: `Edit`,
     apply: 'Apply',
