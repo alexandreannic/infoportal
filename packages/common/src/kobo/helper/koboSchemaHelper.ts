@@ -53,11 +53,12 @@ export namespace KoboSchemaHelper {
     const choicesIndex = seq(schema.choices).groupBy(_ => _.list_name)
     const questionIndex = seq([...schema.survey])
       .compactBy('name')
-      .reduceObject<Record<string, Kobo.Form.Question>>(_ => [_.name, _])
+      .reduceObject<Record<string, undefined | Kobo.Form.Question>>(_ => [_.name, _])
 
     const getOptionsByQuestionName = (qName: string) => {
-      const listName = questionIndex[qName].select_from_list_name
-      return choicesIndex[listName!]
+      const listName = questionIndex[qName]?.select_from_list_name
+      if (!listName) return
+      return choicesIndex[listName]
     }
 
     return {

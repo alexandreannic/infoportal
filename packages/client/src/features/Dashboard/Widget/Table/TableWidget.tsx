@@ -29,6 +29,7 @@ const makeMapper = ({
   ranges?: Ip.Dashboard.Widget.NumberRange[]
 }): ((value: string | number) => string) => {
   const type = schema.helper.questionIndex[question.name]?.type
+  if (!type) return () => '?'
   return questionTypeNumbers.has(type)
     ? value => mapToRange(value as number, ranges)
     : value => schema.translate.langIndex + ' . ' + (schema.translate.choice(question.name, value as string) ?? '-')
@@ -63,19 +64,20 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const {column, row} = useMemo(() => {
     const colKey = config.column?.questionName
     const rowKey = config.row?.questionName
+
+    const getQuestion = (key?: string) => {
+      if (!key) return
+      const question = schema.helper.questionIndex[key]
+      if (question) {
+        return {
+          ...question,
+          group: schema.helper.group.getByQuestionName(key),
+        }
+      }
+    }
     return {
-      column: colKey
-        ? {
-            ...schema.helper.questionIndex[colKey],
-            group: schema.helper.group.getByQuestionName(colKey),
-          }
-        : undefined,
-      row: rowKey
-        ? {
-            ...schema.helper.questionIndex[rowKey],
-            group: schema.helper.group.getByQuestionName(rowKey),
-          }
-        : undefined,
+      column: getQuestion(colKey),
+      row: getQuestion(rowKey),
     }
   }, [config.column?.questionName, config.row?.questionName])
 

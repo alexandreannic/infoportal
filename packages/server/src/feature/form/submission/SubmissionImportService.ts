@@ -71,7 +71,7 @@ export class SubmissionImportService {
     const dates: Set<Kobo.Form.QuestionType> = new Set(['date', 'today', 'start', 'end', 'datetime'])
     return data.map(d => {
       return Obj.map(d, (k, v) => {
-        if (dates.has(schemaHelper.helper.questionIndex[k]?.type)) {
+        if (dates.has(schemaHelper.helper.questionIndex[k]?.type!)) {
           return [k, SubmissionImportService.stupidMicrosoftDateToJSDate(v)]
         }
         return [k, v]

@@ -56,10 +56,11 @@ export const SelectQuestionInput = ({
     (
       index: Record<
         string,
-        {
-          name: string
-          label?: string[]
-        }
+        | undefined
+        | {
+            name: string
+            label?: string[]
+          }
       >,
     ) =>
       createFilterOptions({
@@ -129,7 +130,7 @@ export const SelectQuestionInput = ({
         const isInRepeatGroup = !!schema?.helper.group.getByQuestionName(option)
         return (
           <Box component="li" {...props} key={option} sx={isInRepeatGroup ? optionInRepeatStyle(t) : undefined}>
-            <KoboTypeIcon children={questionIndex[option].type} sx={{ml: -0.5, mr: 1}} />
+            <KoboTypeIcon children={questionIndex[option]?.type} sx={{ml: -0.5, mr: 1}} />
             <div>
               <Core.Txt block>
                 {KoboSchemaHelper.getLabel(questionIndex[option], langIndex).replace(/<[^>]+>/g, '') ?? option}

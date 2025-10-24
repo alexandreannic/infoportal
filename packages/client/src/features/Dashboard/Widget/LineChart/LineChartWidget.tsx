@@ -26,7 +26,7 @@ export function filterToFunction<T extends Record<string, any> = Record<string, 
     }
   if (filterChoice) {
     if (!filterChoice || filterChoice.length === 0) return _ => true
-    const isMultiple = schema.helper.questionIndex[filter.questionName].type === 'select_multiple'
+    const isMultiple = schema.helper.questionIndex[filter.questionName]?.type === 'select_multiple'
     const set = new Set(filterChoice)
     if (isMultiple) return (_: T) => _[filter.questionName!]?.some((_: string) => set.has(_))
     return (_: T) => set.has(_[filter.questionName!])

@@ -83,7 +83,7 @@ export function TableSettings() {
             />
           )}
         />
-        {questionTypeNumbers.has(schema.helper.questionIndex[values.column?.questionName!]?.type) && (
+        {questionTypeNumbers.has(schema.helper.questionIndex[values.column?.questionName!]?.type!) && (
           <Controller
             name="column.rangesIfTypeNumber"
             control={form.control}
@@ -132,7 +132,7 @@ export function TableSettings() {
             <Core.AsyncInput onSubmit={_ => onChange(_)} helperText={null} sx={{mb: 1}} label={m.title} {...field} />
           )}
         />
-        {questionTypeNumbers.has(schema.helper.questionIndex[values.row?.questionName!]?.type) && (
+        {questionTypeNumbers.has(schema.helper.questionIndex[values.row?.questionName!]?.type!) && (
           <Controller
             name="row.rangesIfTypeNumber"
             control={form.control}

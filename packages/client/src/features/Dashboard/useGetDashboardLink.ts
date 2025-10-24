@@ -2,8 +2,6 @@ import {Ip} from 'infoportal-api-sdk'
 import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {Dashboard} from 'infoportal-api-sdk/lib/type/Dashboard'
-import {Workspace} from 'infoportal-api-sdk/lib/type/Workspace'
 
 export const useGetDashboardLink = ({
   workspaceId,

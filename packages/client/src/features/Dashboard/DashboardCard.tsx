@@ -65,7 +65,7 @@ export const DashboardCard = ({
         >
           <Core.Btn icon="edit">{m.edit}</Core.Btn>
         </Link>
-        <PopoverShareLink url={link.absolute} />
+        <PopoverShareLink url={link.absolute ?? '...'} />
       </Core.PanelFoot>
     </Core.Panel>
   )

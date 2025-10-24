@@ -33,8 +33,9 @@ export const KoboTypeIcon = ({
   children,
   ...props
 }: {
-  children: Kobo.Form.QuestionType
+  children?: Kobo.Form.QuestionType
 } & Pick<IconProps, 'sx' | 'color'>) => {
+  if (!children) return undefined
   return (
     <Datatable.HeadIcon children={fnSwitch(children, koboIconMap, () => 'short_text')} tooltip={children} {...props} />
   )

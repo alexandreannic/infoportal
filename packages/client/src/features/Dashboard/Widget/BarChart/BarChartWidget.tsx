@@ -15,17 +15,20 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const labels = useMemo(() => {
     const q = config.questionName
     if (!q) return {}
-    return schema.helper
-      .getOptionsByQuestionName(q)
-      .reduceObject<Record<string, string>>(_ => [_.name, schema.translate.choice(q, _.name)])
+    const choices = schema.helper.getOptionsByQuestionName(q)
+    if (!choices) return {}
+    return choices.reduceObject<Record<string, string>>(_ => [_.name, schema.translate.choice(q, _.name)])
   }, [config.questionName, schema])
 
   const data = useMemo(() => {
     return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
   }, [flatSubmissions, config.filter])
 
-  if (!config.questionName) return <WidgetCardPlaceholder type={widget.type}/>
-  const multiple = schema.helper.questionIndex[config.questionName].type === 'select_multiple'
+  if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
+  const question = schema.helper.questionIndex[config.questionName]
+
+  if (!question) return <WidgetCardPlaceholder type={widget.type} />
+  const multiple = question.type === 'select_multiple'
 
   return (
     <Box sx={{p: 1}}>
