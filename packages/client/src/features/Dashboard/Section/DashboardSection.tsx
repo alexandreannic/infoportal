@@ -150,8 +150,9 @@ export function DashboardSection() {
               draggableHandle=".drag-handle"
             >
               {widgets.map(widget => (
-                <Box key={widget.id} sx={{height: '100%'}}>
+                <Box key={widget.id} height="100%">
                   <Widget
+                    dashboard={dashboard}
                     onClick={selectWidget}
                     status={editingWidget?.id === widget.id ? 'editing' : 'selected'}
                     widget={widget}

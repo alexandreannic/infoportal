@@ -8,7 +8,6 @@ import {BarChartWidget} from '@/features/Dashboard/Widget/BarChart/BarChartWidge
 import {LineChartWidget} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
 import {GeoPointWidget} from '@/features/Dashboard/Widget/GeoPoint/GeoPointWidget'
 import {GeoChartWidget} from '@/features/Dashboard/Widget/GeoChart/GeoChartWidget'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {TableWidget} from '@/features/Dashboard/Widget/Table/TableWidget'
 import {CardWidget} from '@/features/Dashboard/Widget/Card/CardWidget'
 import {AlertWidget} from '@/features/Dashboard/Widget/Alert/AlertWidget'
@@ -21,14 +20,14 @@ export const Widget = memo(
     status,
     widget,
     onClick,
+    dashboard,
   }: {
+    dashboard: Ip.Dashboard
     status?: Status
     widget: Ip.Dashboard.Widget
     onClick?: (_: Ip.Dashboard.WidgetId) => void
   }) => {
     const t = useTheme()
-    const {dashboard} = useDashboardContext()
-
     const content = (
       <Core.Panel
         className="WidgetCard"
