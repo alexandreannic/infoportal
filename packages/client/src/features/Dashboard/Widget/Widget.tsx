@@ -59,7 +59,7 @@ export const Widget = memo(
                     isEditing={status === 'selected'}
                   />
                 ),
-                GeoChart: <GeoChartWidget widget={widget} />,
+                GeoChart: <GeoChartWidget key={JSON.stringify(widget.position)} widget={widget} />,
                 Card: <CardWidget widget={widget} />,
                 Alert: <AlertWidget isEditing={status === 'editing' || status === 'selected'} widget={widget} />,
               },
