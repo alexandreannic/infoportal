@@ -1,7 +1,7 @@
 import {orange, red} from '@mui/material/colors'
 import {createTheme, SxProps, Theme} from '@mui/material'
 import {Core} from '@/shared'
-import {alphaVar, colorPrimary} from '@infoportal/client-core'
+import {alphaVar, colorPrimary, styleUtils} from '@infoportal/client-core'
 
 export const defaultSpacing = 8
 
@@ -278,6 +278,34 @@ export const muiTheme = ({
       MuiGrid: {
         defaultProps: {
           spacing: 1,
+        },
+      },
+      MuiSlider: {
+        styleOverrides: {
+          root: ({theme}) => ({
+            borderRadius: styleUtils(theme).color.input.default.borderRadius,
+            height: 22,
+            padding: 0,
+            //   '&:active .MuiSlider-thumb': {
+            //     width: 2,
+            //     height: 28,
+            //   },
+          }),
+          thumb: ({theme}) => ({
+            background: 'transparent',
+            '&:before': {
+              boxShadow: 'none',
+            },
+            // '&:active': {
+            //   width: 2,
+            //   height: 28,
+            // },
+            // transition: theme.transitions.create('height'),
+            // width: 5,
+            // height: 22,
+            // borderRadius: 4,
+            // WebkitMask: 'radial-gradient(circle 4px at center, transparent 99%, black 100%)',
+          }),
         },
       },
       MuiTab: {
