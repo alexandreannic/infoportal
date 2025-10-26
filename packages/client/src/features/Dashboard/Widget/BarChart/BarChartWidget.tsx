@@ -3,7 +3,7 @@ import React, {useMemo} from 'react'
 import {Core} from '@/shared'
 import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
 import {map} from '@axanc/ts-utils'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {Answers, useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 import {Box} from '@mui/material'
@@ -24,23 +24,38 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
   }, [flatSubmissions, config.filter])
 
-  if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
-  const question = schema.helper.questionIndex[config.questionName]
+  const question = schema.helper.questionIndex[config.questionName!]
+  const multiple = question?.type === 'select_multiple'
 
-  if (!question) return <WidgetCardPlaceholder type={widget.type} />
-  const multiple = question.type === 'select_multiple'
+  const hiddenChoices = useMemo(() => {
+    return config.hiddenChoices?.map(_ => (config.mapping ?? {})[_]?.[langIndex] ?? _)
+  }, [config.hiddenChoices, langIndex, config.mapping])
+
+  const by = useMemo(() => {
+    if (!config.questionName) return
+    return config.mapping
+      ? (_: Answers) => {
+          const value = _[config.questionName!]
+          if (multiple) return (value as string[])?.map(v => config.mapping?.[v]?.[langIndex] ?? v)
+          return config.mapping?.[value]?.[langIndex] ?? value
+        }
+      : (_: Answers) => _[config.questionName!]
+  }, [config.mapping, langIndex, config.questionName])
+
+  if (!config.questionName || !question) return <WidgetCardPlaceholder type={widget.type} />
 
   return (
     <Box sx={{p: 1}}>
       <WidgetTitle>{widget.i18n_title?.[langIndex]}</WidgetTitle>
-      <Core.ChartBarByKey
+      <Core.ChartBarBy
         compareTo={config.showEvolution ? flatSubmissionsDelta : undefined}
         multiple={multiple}
         hideValue={!config.showValue}
         data={data}
         label={labels}
         limit={config.limit}
-        property={config.questionName}
+        filterValue={hiddenChoices}
+        by={by!}
       />
     </Box>
   )

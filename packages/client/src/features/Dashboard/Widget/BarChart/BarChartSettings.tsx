@@ -2,13 +2,12 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect} from 'react'
-import {Box, Slider} from '@mui/material'
+import {Box, InputBase, Checkbox, Slider} from '@mui/material'
 import {
   getQuestionTypeByWidget,
   useQuestionInfo,
   useWidgetSettingsContext,
 } from '@/features/Dashboard/Widget/WidgetSettingsPanel'
-import {SelectChoices} from '@/features/Dashboard/Widget/shared/SelectChoices'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
@@ -16,10 +15,12 @@ import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {SwitchBox} from '@/shared/SwitchBox'
 import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
+import {ChoiceMapper, ChoicesMapperPanel} from '@/features/Dashboard/Widget/shared/ChoicesMapper'
+import {Core} from '@/shared'
 
 export function BarChartSettings() {
   const {m} = useI18n()
-  const {schema} = useDashboardContext()
+  const {schema, langIndex} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
   const {choices} = useQuestionInfo(config.questionName)
@@ -63,10 +64,7 @@ export function BarChartSettings() {
             />
           )}
         />
-        <WidgetSettingsFilterQuestion name="filter" form={form} sx={{mb: 1}}/>
-      </WidgetSettingsSection>
-      <WidgetSettingsSection title={m.properties}>
-        <SelectChoices value={[]} questionName={config.questionName} sx={{mb: 1}} onChange={console.log}/>
+        <WidgetSettingsFilterQuestion name="filter" form={form} sx={{mb: 1}} />
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.customize}>
         <WidgetLabel>{m._dashboard.listLimit}</WidgetLabel>
@@ -74,15 +72,14 @@ export function BarChartSettings() {
           name="limit"
           control={form.control}
           render={({field, fieldState}) => (
-            <Box sx={{px: 1}}>
-              <Slider
-                {...field}
-                disabled={!choices}
-                defaultValue={choices?.length}
-                max={choices?.length ?? 1}
-                valueLabelDisplay="auto"
-              />
-            </Box>
+            <Slider
+              {...field}
+              disabled={!choices}
+              defaultValue={choices?.length}
+              max={choices?.length ?? 1}
+              valueLabelDisplay="auto"
+              sx={{mb: 1}}
+            />
           )}
         />
         <Controller
@@ -112,6 +109,54 @@ export function BarChartSettings() {
           )}
         />
       </WidgetSettingsSection>
+      {config.questionName && (
+        <WidgetSettingsSection title={m.mapping}>
+          <ChoicesMapperPanel>
+            {choices?.map((choice, i) => (
+              <ChoiceMapper
+                key={choice.name + langIndex}
+                question={config.questionName!}
+                choice={choice}
+                before={
+                  <Controller
+                    control={form.control}
+                    name={`hiddenChoices`}
+                    render={({field}) => {
+                      const selected = field.value ?? []
+                      const toggle = (name: string, checked: boolean) => {
+                        const next = checked ? [...selected, name] : selected.filter(v => v !== name)
+                        field.onChange(next)
+                      }
+                      return (
+                        <Checkbox
+                          size="small"
+                          checked={!selected.includes(choice.name)}
+                          onChange={e => toggle(choice.name, !e.target.checked)}
+                        />
+                      )
+                    }}
+                  />
+                }
+              >
+                <Controller
+                  control={form.control}
+                  name={`mapping.${choice.name}.${langIndex}`}
+                  render={({field}) => (
+                    <InputBase
+                      {...field}
+                      onChange={e => {
+                        field.onChange(e.target.value)
+                      }}
+                      value={field.value ?? ''}
+                      endAdornment={<Core.IconBtn children="clear" size="small" onClick={() => field.onChange(null)} />}
+                    />
+                  )}
+                />
+              </ChoiceMapper>
+            ))}
+          </ChoicesMapperPanel>
+        </WidgetSettingsSection>
+      )}
     </Box>
   )
 }

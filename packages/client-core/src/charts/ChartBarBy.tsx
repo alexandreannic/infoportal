@@ -67,11 +67,11 @@ export const ChartBarBy = <D extends Record<string, any>, K extends string>({
 
   const current = useMemo(() => {
     return computeData(data)
-  }, [data, by, label])
+  }, [data, by, label, displayOption, multiple, orderKeys, limit, filterValue])
 
   const before = useMemo(() => {
     if (compareTo) return computeData(compareTo)
-  }, [compareTo, by, label])
+  }, [compareTo, by, label, displayOption, multiple, orderKeys, limit, filterValue])
 
   const res: Record<K, BarChartData> = useMemo(() => {
     if (!before) return current

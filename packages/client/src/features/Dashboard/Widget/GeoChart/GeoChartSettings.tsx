@@ -12,14 +12,13 @@ import React, {useEffect} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {Core} from '@/shared'
-import {Country, CountryCode, SelectGeoIso, styleUtils} from '@infoportal/client-core'
+import {Country, SelectGeoIso} from '@infoportal/client-core'
 import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
-import {Box, Icon, InputBase, useTheme} from '@mui/material'
-import {Kobo} from 'kobo-sdk'
+import {InputBase} from '@mui/material'
+import {ChoiceMapper, ChoicesMapperPanel} from '@/features/Dashboard/Widget/shared/ChoicesMapper'
 import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 
 export const GeoChartSettings = () => {
-  const t = useTheme()
   const {m} = useI18n()
   const {schema} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
@@ -81,76 +80,40 @@ export const GeoChartSettings = () => {
         {config.questionName && (
           <>
             <WidgetLabel>{m.mapping}</WidgetLabel>
-            <Box
-              sx={{
-                border: '1px solid',
-                borderColor: t.vars.palette.divider,
-                borderRadius: styleUtils(t).color.input.default.borderRadius,
-              }}
-            >
-              {choices?.map(choice => (
-                <Controller
-                  key={choice.name}
-                  name={`mapping.${choice.name}`}
-                  control={form.control}
-                  render={({field}) => (
-                    <ChoiceMapper
-                      {...field}
-                      countryCode={values.countryIsoCode as CountryCode}
-                      choice={choice}
-                      question={config.questionName!}
-                    />
-                  )}
-                />
-              ))}
-            </Box>
+            <Controller
+              control={form.control}
+              name="mapping"
+              render={({field}) => (
+                <ChoicesMapperPanel {...field}>
+                  {choices?.map((choice, i) => (
+                    <ChoiceMapper choice={choice} question={config.questionName!} key={choice.name}>
+                      <Controller
+                        name={`mapping.${choice.name}`}
+                        control={form.control}
+                        render={({field}) => (
+                          <SelectGeoIso
+                            {...field}
+                            fullWidth
+                            countryCode={config.countryIsoCode}
+                            renderInput={params => (
+                              <InputBase
+                                fullWidth
+                                {...params.InputProps}
+                                inputProps={params.inputProps}
+                                ref={params.InputProps.ref}
+                              />
+                            )}
+                          />
+                        )}
+                      />
+                    </ChoiceMapper>
+                  ))}
+                </ChoicesMapperPanel>
+              )}
+            />
           </>
         )}
       </WidgetSettingsSection>
     </>
-  )
-}
-
-function ChoiceMapper({
-  countryCode,
-  question,
-  choice,
-  onChange,
-  value = '',
-}: {
-  value?: string
-  onChange: (_: string | null) => void
-  question: string
-  countryCode?: CountryCode
-  choice: Kobo.Form.Choice
-}) {
-  const {schema} = useDashboardContext()
-  const t = useTheme()
-  return (
-    <Box
-      sx={{
-        '&:not(:last-of-type)': {
-          borderBottom: '1px solid',
-          borderColor: t.vars.palette.divider,
-        },
-        display: 'flex',
-        alignItems: 'center',
-        gap: 1,
-        px: 0.5,
-        // mb: 0.5,
-      }}
-    >
-      <InputBase value={schema.translate.choice(question, choice.name)} title={choice.name} />
-      <Icon color="disabled">arrow_forward</Icon>
-      <SelectGeoIso
-        fullWidth
-        value={value}
-        countryCode={countryCode}
-        onChange={onChange}
-        renderInput={params => (
-          <InputBase fullWidth {...params.InputProps} inputProps={params.inputProps} ref={params.InputProps.ref} />
-        )}
-      />
-    </Box>
   )
 }
