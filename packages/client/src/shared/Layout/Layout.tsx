@@ -48,7 +48,8 @@ const LayoutUsingContext = ({sidebar, header, children}: Pick<LayoutProps, 'side
           sx={{
             overflowY: 'scroll',
             flex: 1,
-            px: 1,
+            pr: .5,
+            pl: 1,
             transition: t => t.transitions.create('all'),
             position: 'relative',
             // display: 'flex',
