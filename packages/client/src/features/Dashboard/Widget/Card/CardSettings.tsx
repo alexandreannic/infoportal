@@ -15,7 +15,7 @@ import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSet
 
 export function CardSettings() {
   const {m} = useI18n()
-  const {schema} = useDashboardContext()
+  const schema = useDashboardContext(_ => _.schema)
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['Card']
   const form = useForm<Ip.Dashboard.Widget.Config['Card']>({

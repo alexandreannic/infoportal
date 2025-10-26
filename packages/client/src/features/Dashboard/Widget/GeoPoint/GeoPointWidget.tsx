@@ -19,7 +19,9 @@ export const GeoPointWidget = ({
 }) => {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoPoint']
-  const {flatSubmissions, schema} = useDashboardContext()
+
+  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
+  const schema = useDashboardContext(_ => _.schema)
 
   const filteredData = useMemo(() => {
     return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions

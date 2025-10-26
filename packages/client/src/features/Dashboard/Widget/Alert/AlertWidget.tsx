@@ -6,7 +6,7 @@ import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export function AlertWidget({widget, isEditing}: {isEditing?: boolean; widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['Alert']
-  const {langIndex} = useDashboardContext()
+  const langIndex = useDashboardContext(_ => _.langIndex)
 
   return (
     <Core.Alert

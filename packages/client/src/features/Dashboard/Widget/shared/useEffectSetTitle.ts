@@ -3,7 +3,7 @@ import {useWidgetSettingsContext} from '@/features/Dashboard/Widget/WidgetSettin
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export const useEffectSetTitle = (questionName?: string) => {
-  const {schema} = useDashboardContext()
+  const schema = useDashboardContext(_ => _.schema)
   const {widget, onChange} = useWidgetSettingsContext()
   useEffect(() => {
     if (!questionName) return

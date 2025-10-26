@@ -62,7 +62,7 @@ export const useQuestionInfo: {
   (_: string): {question: Kobo.Form.Question; choices: Kobo.Form.Choice[]}
   (_?: string): {question?: Kobo.Form.Question; choices?: Kobo.Form.Choice[]}
 } = (questionName?: string) => {
-  const {schema} = useDashboardContext()
+  const schema = useDashboardContext(_ => _.schema)
   if (!questionName) return {question: undefined, choices: undefined}
   const question = schema.helper.questionIndex[questionName!]
   const choices = schema.helper.choicesIndex[question?.select_from_list_name!]
@@ -85,7 +85,9 @@ export const WidgetCreatorFormPanel = ({
   const stepperRef = useRef<Core.StepperHandle>(null)
   const {m} = useI18n()
   const t = useTheme()
-  const {workspaceId, langIndex, dashboard, schema} = useDashboardContext()
+  const workspaceId = useDashboardContext(_ => _.workspaceId)
+  const langIndex = useDashboardContext(_ => _.langIndex)
+  const dashboard = useDashboardContext(_ => _.dashboard)
   const queryWidgetRemove = UseQueryDashboardWidget.remove({workspaceId, dashboardId: dashboard.id, sectionId})
   const {toastSuccess} = useIpToast()
 

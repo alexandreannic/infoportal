@@ -32,7 +32,7 @@ export function ChoiceMapper({
   question: string
   choice: Kobo.Form.Choice
 }) {
-  const {schema} = useDashboardContext()
+  const schema = useDashboardContext(_ => _.schema)
   const t = useTheme()
   return (
     <Box

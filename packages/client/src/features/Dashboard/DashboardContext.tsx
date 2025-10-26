@@ -1,16 +1,16 @@
-import React, {Dispatch, ReactNode, SetStateAction, useCallback, useMemo, useRef, useState} from 'react'
+import React, {Dispatch, ReactNode, SetStateAction, useMemo, useState} from 'react'
 import {Ip} from 'infoportal-api-sdk'
 import {seq, Seq} from '@axanc/ts-utils'
 import {KoboSchemaHelper, PeriodHelper} from 'infoportal-common'
 import {useI18n} from '@infoportal/client-i18n'
 import {subDays} from 'date-fns'
-import {schema} from 'activityinfo-sdk/schema'
 import {UseFlattenRepeatGroupData, useFlattenRepeatGroupData} from '@/features/Dashboard/useGetDataByRepeatGroup'
+import {useContextSelector, createContext} from 'use-context-selector'
 
 // TODO this type could be globalized. It's maybe defined somewhere already
 export type Answers = Ip.Submission.Meta & Record<string, any>
 
-type Context = {
+type DashboardContext = {
   flattenRepeatGroupData: UseFlattenRepeatGroupData
   langIndex: number
   setLangIndex: Dispatch<SetStateAction<number>>
@@ -30,8 +30,11 @@ type Filters = {
   period: Ip.Period
 }
 
-const DashboardContext = React.createContext<Context>({} as Context)
-export const useDashboardContext = () => React.useContext(DashboardContext)
+const Context = createContext<DashboardContext>({} as DashboardContext)
+
+export const useDashboardContext = <Selected extends any>(selector: (_: DashboardContext) => Selected): Selected => {
+  return useContextSelector(Context, selector)
+}
 
 export const DashboardProvider = ({
   children,
@@ -99,7 +102,7 @@ export const DashboardProvider = ({
   const flattenRepeatGroupData = useFlattenRepeatGroupData(schemaWithMeta)
 
   return (
-    <DashboardContext
+    <Context.Provider
       value={{
         flattenRepeatGroupData,
         filters,
@@ -117,6 +120,6 @@ export const DashboardProvider = ({
       }}
     >
       {children}
-    </DashboardContext>
+    </Context.Provider>
   )
 }

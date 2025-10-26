@@ -11,7 +11,11 @@ import {useI18n} from '@infoportal/client-i18n'
 export function CardWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const {formatLargeNumber} = useI18n()
   const config = widget.config as Ip.Dashboard.Widget.Config['Card']
-  const {flatSubmissions, langIndex, flattenRepeatGroupData, schema} = useDashboardContext()
+
+  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
+  const langIndex = useDashboardContext(_ => _.langIndex)
+  const flattenRepeatGroupData = useDashboardContext(_ => _.flattenRepeatGroupData)
+  const schema = useDashboardContext(_ => _.schema)
 
   const data = useMemo(() => {
     const d = flattenRepeatGroupData.flattenIfRepeatGroup(flatSubmissions, config.questionName)

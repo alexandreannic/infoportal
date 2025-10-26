@@ -10,7 +10,11 @@ import {Box} from '@mui/material'
 
 export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
-  const {flatSubmissions, langIndex, flatSubmissionsDelta, schema} = useDashboardContext()
+
+  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
+  const langIndex = useDashboardContext(_ => _.langIndex)
+  const flatSubmissionsDelta = useDashboardContext(_ => _.flatSubmissionsDelta)
+  const schema = useDashboardContext(_ => _.schema)
 
   const labels = useMemo(() => {
     const q = config.questionName

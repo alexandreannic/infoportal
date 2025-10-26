@@ -31,20 +31,19 @@ export function DashboardSection() {
   const {m} = useI18n()
   const params = dashboardSectionRoute.useParams()
   const sectionId = params.sectionId as Ip.Dashboard.SectionId
-  const {langIndex, setLangIndex} = useDashboardContext()
 
   const {
+    langIndex,
+    setLangIndex,
     workspaceId,
     filters,
-    // langIndex,
-    // setLangIndex,
     setFilters,
-    dataRange,
     effectiveDataRange,
     schema,
     widgetsBySection,
     dashboard,
-  } = useDashboardContext()
+  } = useDashboardContext(_ => _)
+
   const widgets = widgetsBySection.get(sectionId) ?? []
 
   const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id, sectionId})

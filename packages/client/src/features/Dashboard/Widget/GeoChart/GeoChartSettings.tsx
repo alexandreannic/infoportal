@@ -20,7 +20,8 @@ import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 
 export const GeoChartSettings = () => {
   const {m} = useI18n()
-  const {schema} = useDashboardContext()
+  const schema = useDashboardContext(_ => _.schema)
+
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoChart']
   const form = useForm<Ip.Dashboard.Widget.Config['GeoChart']>({

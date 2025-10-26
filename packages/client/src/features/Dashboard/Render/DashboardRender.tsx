@@ -94,7 +94,7 @@ export function DashboardRender() {
             icon: 'rocket_launch',
             name: section.id,
             title: section.title,
-            component: () => <Section widgets={section.widgets} />,
+            component: () => <Section dashboard={queryDashboard.data} widgets={section.widgets} />,
           }
         })}
       />
@@ -102,7 +102,7 @@ export function DashboardRender() {
   )
 }
 
-function Section({widgets}: {widgets: Ip.Dashboard.Widget[]}) {
+function Section({widgets, dashboard}: {dashboard: Ip.Dashboard; widgets: Ip.Dashboard.Widget[]}) {
   const layout = useMemo(() => {
     return widgets.map(_ => ({i: _.id, ..._.position}))
   }, [widgets])
@@ -122,7 +122,7 @@ function Section({widgets}: {widgets: Ip.Dashboard.Widget[]}) {
     >
       {widgets.map(widget => (
         <div key={widget.id} style={{height: '100%'}}>
-          <Widget key={widget.id} widget={widget} />
+          <Widget key={widget.id} dashboard={dashboard} widget={widget} />
         </div>
       ))}
     </GridLayout>

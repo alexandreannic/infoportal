@@ -28,7 +28,7 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
   name: string
   form: UseFormReturn<T>
 }) {
-  const {schema} = useDashboardContext()
+  const schema = useDashboardContext(_ => _.schema)
   const t = useTheme()
   const {m} = useI18n()
   const questionName: string | undefined = form.watch(`${name}.${formName.questionName}` as any)

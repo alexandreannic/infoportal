@@ -15,7 +15,8 @@ export const questionTypeNumbers = new Set<Kobo.Form.QuestionType>(['integer', '
 
 export function TableSettings() {
   const {m} = useI18n()
-  const {schema, langIndex} = useDashboardContext()
+  const schema = useDashboardContext(_ => _.schema)
+  const langIndex = useDashboardContext(_ => _.langIndex)
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['Table']
 

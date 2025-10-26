@@ -1,6 +1,6 @@
 import {SxProps} from '@mui/material'
 import React, {useMemo} from 'react'
-import {useQuestionInfo, useWidgetSettingsContext} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
+import {useQuestionInfo} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Core} from '@/shared'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
@@ -18,7 +18,7 @@ export function SelectChoices({
   label?: string
 }) {
   const {choices} = useQuestionInfo(questionName)
-  const {schema} = useDashboardContext()
+  const schema = useDashboardContext(_ => _.schema)
   const options = useMemo(() => {
     if (!questionName || !choices) return []
     return choices?.map(_ => ({value: _.name, children: schema.translate.choice(questionName, _.name)}))

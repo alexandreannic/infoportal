@@ -1,8 +1,4 @@
-import {Box} from '@mui/material'
-import {
-  getQuestionTypeByWidget,
-  useWidgetSettingsContext,
-} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
+import {getQuestionTypeByWidget, useWidgetSettingsContext} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Ip} from 'infoportal-api-sdk'
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
@@ -15,7 +11,9 @@ import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSet
 
 export const GeoPointSettings = () => {
   const {m} = useI18n()
-  const {schema} = useDashboardContext()
+
+  const schema = useDashboardContext(_ => _.schema)
+
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoPoint']
   const form = useForm<Ip.Dashboard.Widget.Config['GeoPoint']>({

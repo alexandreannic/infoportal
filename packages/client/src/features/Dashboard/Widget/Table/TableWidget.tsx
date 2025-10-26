@@ -59,7 +59,11 @@ const sortByRanges = <T extends string | {row: string}>({
 export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['Table']
-  const {flatSubmissions, langIndex, flattenRepeatGroupData, dashboard, schema} = useDashboardContext()
+  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
+  const langIndex = useDashboardContext(_ => _.langIndex)
+  const flattenRepeatGroupData = useDashboardContext(_ => _.flattenRepeatGroupData)
+  const dashboard = useDashboardContext(_ => _.dashboard)
+  const schema = useDashboardContext(_ => _.schema)
 
   const {column, row} = useMemo(() => {
     const colKey = config.column?.questionName

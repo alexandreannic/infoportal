@@ -18,7 +18,9 @@ import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 
 export function PieChartSettings() {
-  const {schema, dashboard} = useDashboardContext()
+  const schema = useDashboardContext(_ => _.schema)
+  const dashboard = useDashboardContext(_ => _.dashboard)
+
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
   const {question} = useQuestionInfo(config.questionName)
@@ -64,7 +66,7 @@ export function PieChartSettings() {
             />
           )}
         />
-        <WidgetSettingsFilterQuestion form={form} name="filter"/>
+        <WidgetSettingsFilterQuestion form={form} name="filter" />
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.properties}>
         <WidgetSettingsFilter

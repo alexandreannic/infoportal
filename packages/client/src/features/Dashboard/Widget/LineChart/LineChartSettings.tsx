@@ -18,7 +18,6 @@ import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 export function LineChartSettings() {
   const {m} = useI18n()
   const t = useTheme()
-  const {schema} = useDashboardContext()
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['LineChart']
   const form = useForm<Ip.Dashboard.Widget.Config['LineChart']>({
@@ -27,7 +26,7 @@ export function LineChartSettings() {
   })
 
   const values = useWatch({control: form.control})
-  
+
   useEffect(() => {
     onChange({config: values})
   }, [values])
@@ -43,13 +42,26 @@ export function LineChartSettings() {
         <WidgetSettingsSection
           title={m.line + ' ' + (index + 1)}
           key={field.id}
-          action={<Core.IconBtn children="delete" onClick={() => remove(index)}/>}
+          action={<Core.IconBtn children="delete" onClick={() => remove(index)} />}
         >
-          <Line form={form} index={index}/>
+          <Line form={form} index={index} />
         </WidgetSettingsSection>
       ))}
-      <Box sx={{borderTop: '1px solid', borderColor: t.vars.palette.divider, display: 'flex', justifyContent: 'center', p: 1}}>
-        <Core.IconBtn onClick={() => append({})} color="primary" sx={{border: '1px dashed', borderColor: t.vars.palette.divider,}} tooltip={m._dashboard.newLine}>
+      <Box
+        sx={{
+          borderTop: '1px solid',
+          borderColor: t.vars.palette.divider,
+          display: 'flex',
+          justifyContent: 'center',
+          p: 1,
+        }}
+      >
+        <Core.IconBtn
+          onClick={() => append({})}
+          color="primary"
+          sx={{border: '1px dashed', borderColor: t.vars.palette.divider}}
+          tooltip={m._dashboard.newLine}
+        >
           add
         </Core.IconBtn>
       </Box>
@@ -62,8 +74,10 @@ function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Wi
   const questionName = form.watch(`lines.${index}.questionName`)
 
   const {widget, onChange} = useWidgetSettingsContext()
-  const {schema, langIndex} = useDashboardContext()
   const {choices, question} = useQuestionInfo(questionName)
+
+  const schema = useDashboardContext(_ => _.schema)
+  const langIndex = useDashboardContext(_ => _.langIndex)
 
   return (
     <>
@@ -108,7 +122,7 @@ function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Wi
         )}
       />
 
-      <WidgetSettingsFilterQuestion name={`lines.${index}.filter`} form={form} sx={{mb: 1}}/>
+      <WidgetSettingsFilterQuestion name={`lines.${index}.filter`} form={form} sx={{mb: 1}} />
 
       <Controller
         name={`lines.${index}.color`}
@@ -116,7 +130,7 @@ function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Wi
         rules={{
           required: true,
         }}
-        render={({field, fieldState}) => <ColorPicker {...field} value={field.value ?? ''}/>}
+        render={({field, fieldState}) => <ColorPicker {...field} value={field.value ?? ''} />}
       />
     </>
   )

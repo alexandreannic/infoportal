@@ -22,7 +22,7 @@ import {SwitchBox} from '@/shared/SwitchBox'
 
 export function AlertSettings() {
   const {m} = useI18n()
-  const {langIndex} = useDashboardContext()
+  const langIndex = useDashboardContext(_ => _.langIndex)
   const {widget, onChange} = useWidgetSettingsContext()
   const form = useForm<Ip.Dashboard.Widget.Config['Alert']>({
     mode: 'onChange',

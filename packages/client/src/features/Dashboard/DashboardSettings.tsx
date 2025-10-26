@@ -31,7 +31,11 @@ export function DashboardSettings() {
   const {m, formatDate} = useI18n()
   const t = useTheme()
   const {toastLoading, toastSuccess} = useIpToast()
-  const {workspaceId, dashboard, effectiveDataRange, dataRange, schema, flatSubmissions} = useDashboardContext()
+
+  const workspaceId = useDashboardContext(_ => _.workspaceId)
+  const dashboard = useDashboardContext(_ => _.dashboard)
+  const dataRange = useDashboardContext(_ => _.dataRange)
+
   const queryUpdate = UseQueryDashboard.update({workspaceId})
   const queryRemove = UseQueryDashboard.remove({workspaceId})
   const queryPermission = UseQueryPermission.workspace({workspaceId})
@@ -97,7 +101,9 @@ export function DashboardSettings() {
         <Core.PanelBody sx={{pt: 0}}>
           {dashboard.description && <Core.Txt color="hint">{dashboard.description}</Core.Txt>}
           <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-            <Txt color="hint">{m.created}: {formatDate(dashboard.createdAt)}</Txt>
+            <Txt color="hint">
+              {m.created}: {formatDate(dashboard.createdAt)}
+            </Txt>
             <Core.ListItem icon={<AppAvatar email={dashboard.createdBy} size={24} />} title={dashboard.createdBy} />
           </Box>
         </Core.PanelBody>
@@ -148,7 +154,7 @@ export function DashboardSettings() {
                 />
               }
             >
-              {values.filters && <WidgetSettingsFilterQuestion name="filters" form={form} sx={{mt: 1}}/>}
+              {values.filters && <WidgetSettingsFilterQuestion name="filters" form={form} sx={{mt: 1}} />}
             </SettingsRow>
           )}
         />

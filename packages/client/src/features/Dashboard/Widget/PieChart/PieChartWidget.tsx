@@ -9,7 +9,12 @@ import {Box} from '@mui/material'
 
 export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
-  const {flatSubmissions, flattenRepeatGroupData, flatSubmissionsDelta, langIndex, schema} = useDashboardContext()
+
+  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
+  const flattenRepeatGroupData = useDashboardContext(_ => _.flattenRepeatGroupData)
+  const flatSubmissionsDelta = useDashboardContext(_ => _.flatSubmissionsDelta)
+  const langIndex = useDashboardContext(_ => _.langIndex)
+  const schema = useDashboardContext(_ => _.schema)
 
   const filteredData = useMemo(() => {
     const d = flattenRepeatGroupData.flattenIfRepeatGroup(flatSubmissions, config.questionName)

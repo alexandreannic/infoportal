@@ -43,7 +43,10 @@ export function filterToFunction<T extends Record<string, any> = Record<string, 
 
 export const LineChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const config = widget.config as Ip.Dashboard.Widget.Config['LineChart']
-  const {flatSubmissions, langIndex, schema} = useDashboardContext()
+
+  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
+  const langIndex = useDashboardContext(_ => _.langIndex)
+  const schema = useDashboardContext(_ => _.schema)
 
   const filterFns = useMemo(() => {
     return config.lines?.map(_ => filterToFunction(schema, _.filter)) ?? []

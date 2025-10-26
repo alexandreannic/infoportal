@@ -11,7 +11,10 @@ import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoChart']
-  const {flatSubmissions, langIndex, schema} = useDashboardContext()
+
+  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
+  const langIndex = useDashboardContext(_ => _.langIndex)
+  const schema = useDashboardContext(_ => _.schema)
 
   const filteredData = useMemo(() => {
     return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
@@ -35,7 +38,7 @@ export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
 
   return (
     <>
-      <WidgetTitle sx={{mx: 1, mt: 1,}}>{widget.i18n_title?.[langIndex]}</WidgetTitle>
+      <WidgetTitle sx={{mx: 1, mt: 1}}>{widget.i18n_title?.[langIndex]}</WidgetTitle>
       <Core.ChartGeo data={data} country={config.countryIsoCode as any} />
     </>
   )
