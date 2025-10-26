@@ -37,7 +37,7 @@ export function WidgetSettingsSection({
         {action && <Box sx={{marginLeft: 'auto'}}>{action}</Box>}
       </Box>
       <Collapse in={open}>
-        <Box sx={{mb: 1, mt: 1, p: 1}}>{children}</Box>
+        <Box sx={{mb: 1, p: 1}}>{children}</Box>
       </Collapse>
     </Box>
   )

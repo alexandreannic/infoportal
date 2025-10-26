@@ -24,7 +24,7 @@ export const TabContent = ({
       className={'IpTabContent ' + (className ?? '')}
       sx={{
         ...animationStyle,
-        overflowY: 'scroll',
+        // overflowY: 'scroll', // I removed this so WidgetSettingsPanel can be sticky
         flex: 1,
         minHeight: 0,
         mt: .25,

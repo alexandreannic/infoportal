@@ -130,7 +130,7 @@ export const Page = ({
           position: 'relative',
           mt: 1,
           // borderRadius: t.shape.borderRadius + 'px',
-          overflow: 'hidden',
+          // overflow: 'hidden', // I removed this so WidgetSettingsPanel can be sticky
           ...sx,
         }}
       >

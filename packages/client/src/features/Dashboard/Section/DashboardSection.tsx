@@ -197,7 +197,13 @@ export function DashboardSection() {
             </Box>
           </Box>
         </Box>
-        <Collapse sx={{height: '100%'}} in={!!editingWidget} orientation="horizontal" mountOnEnter unmountOnExit>
+        <Collapse
+          sx={{height: '100%', position: 'sticky', top: t.vars.spacing}}
+          in={!!editingWidget}
+          orientation="horizontal"
+          mountOnEnter
+          unmountOnExit
+        >
           <Box sx={{height: '100%', width: sidePanelWidth}}>
             {editingWidget && (
               <WidgetCreatorFormPanel

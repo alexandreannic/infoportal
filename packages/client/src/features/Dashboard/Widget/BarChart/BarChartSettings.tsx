@@ -74,6 +74,11 @@ export function BarChartSettings() {
           render={({field, fieldState}) => (
             <Slider
               {...field}
+              value={field.value ?? choices?.length}
+              onChange={(e, value) => {
+                if (choices && value === choices?.length) field.onChange(null)
+                else field.onChange(value)
+              }}
               disabled={!choices}
               defaultValue={choices?.length}
               max={choices?.length ?? 1}
