@@ -10,7 +10,7 @@ export class Utils {
   // static readonly FILTER_BLANK_TEXT = 'FILTER_BLANK_TEXT_someRandomTextToAvoidCollision_9fa3'
   static readonly buildColumns = <T extends Row = Row>(_: Column.Props<T>[]) => _
 
-  static readonly blank: BlankValue = ''
+  static readonly blank: BlankValue = '\u200B'
   static readonly blankLabel = (<i>BLANK</i>)
   static readonly blankOption: Option = {value: Utils.blank, label: Utils.blankLabel}
 

@@ -37,7 +37,7 @@ export const ChartPieWidgetBy = <T,>({
     if (compare) {
       return {
         before: run(compare.before),
-        now: compare.now ? run(compare.now) : undefined,
+        now: compare.now ? run(compare.now) : run(data),
       }
     }
   }, [compare, filter, filterBase])

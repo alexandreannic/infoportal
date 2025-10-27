@@ -7,6 +7,7 @@ import {Answers, useDashboardContext} from '@/features/Dashboard/DashboardContex
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 import {Box} from '@mui/material'
+import {Datatable} from '@/shared'
 
 export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
@@ -39,11 +40,14 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     if (!config.questionName) return
     return config.mapping
       ? (_: Answers) => {
-          const value = _[config.questionName!]
-          if (multiple) return (value as string[])?.map(v => config.mapping?.[v]?.[langIndex] ?? v)
+          const value = _[config.questionName!] ?? Datatable.Utils.blank
+          if (multiple) {
+            const safeValue = value && !Array.isArray(value) ? [value] : value
+            return (safeValue as string[])?.map(v => config.mapping?.[v]?.[langIndex] ?? v)
+          }
           return config.mapping?.[value]?.[langIndex] ?? value
         }
-      : (_: Answers) => _[config.questionName!]
+      : (_: Answers) => _[config.questionName!] ?? Datatable.Utils.blank
   }, [config.mapping, langIndex, config.questionName])
 
   if (!config.questionName || !question) return <WidgetCardPlaceholder type={widget.type} />

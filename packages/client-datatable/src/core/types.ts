@@ -14,7 +14,7 @@ export type HeaderParams<T extends Row> = {
 
 export type FilterValue = FilterTypeMapping[keyof FilterTypeMapping]
 
-export type BlankValue = ''
+export type BlankValue = '\u200B'
 
 export type Filters<T extends Row> = Partial<Record<KeyOf<T>, FilterValue>>
 

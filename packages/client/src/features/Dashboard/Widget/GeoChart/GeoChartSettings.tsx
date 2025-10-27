@@ -86,10 +86,10 @@ export const GeoChartSettings = () => {
               name="mapping"
               render={({field}) => (
                 <ChoicesMapperPanel {...field}>
-                  {choices?.map((choice, i) => (
-                    <ChoiceMapper choice={choice} question={config.questionName!} key={choice.name}>
+                  {choices?.map(_ => _.name).map((choiceName, i) => (
+                    <ChoiceMapper choiceName={choiceName} question={config.questionName!} key={choiceName}>
                       <Controller
-                        name={`mapping.${choice.name}`}
+                        name={`mapping.${choiceName}`}
                         control={form.control}
                         render={({field}) => (
                           <SelectGeoIso

@@ -37,7 +37,7 @@ export const Widget = memo(
           flexDirection: 'column',
           height: '100%',
           transition: t.transitions.create('box-shadow'),
-          boxShadow: status === 'editing' ? theme => `0 0 0 2px ${theme.palette.primary.main}` : undefined,
+          boxShadow: status === 'editing' ? theme => `0 0 0 2px ${theme.vars.palette.primary.main}` : undefined,
           // boxShadow: status === 'editing' ? t.shadows[10] : undefined,
           // border: '2px solid',
           // borderColor: status === 'editing' ? t.vars.palette.primary.main : 'transparent',

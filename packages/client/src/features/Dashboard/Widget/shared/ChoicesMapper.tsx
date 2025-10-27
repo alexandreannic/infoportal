@@ -24,13 +24,13 @@ export function ChoicesMapperPanel({children, sx, ...props}: BoxProps) {
 export function ChoiceMapper({
   before,
   question,
-  choice,
+  choiceName,
   children,
 }: {
   before?: ReactNode
   children: ReactNode
   question: string
-  choice: Kobo.Form.Choice
+  choiceName: string
 }) {
   const schema = useDashboardContext(_ => _.schema)
   const t = useTheme()
@@ -49,8 +49,8 @@ export function ChoiceMapper({
       }}
     >
       {before}
-      <Txt truncate title={choice.name} color="hint" sx={{flex: 1}}>
-        {schema.translate.choice(question, choice.name)}
+      <Txt truncate title={choiceName} color="hint" sx={{flex: 1}}>
+        {schema.translate.choice(question, choiceName)}
       </Txt>
       <Icon color="disabled">arrow_forward</Icon>
       <Box sx={{flex: 1}}>{children}</Box>

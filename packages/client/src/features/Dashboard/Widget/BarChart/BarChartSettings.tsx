@@ -16,7 +16,7 @@ import {SwitchBox} from '@/shared/SwitchBox'
 import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 import {ChoiceMapper, ChoicesMapperPanel} from '@/features/Dashboard/Widget/shared/ChoicesMapper'
-import {Core} from '@/shared'
+import {Core, Datatable} from '@/shared'
 
 export function BarChartSettings() {
   const {m} = useI18n()
@@ -115,14 +115,14 @@ export function BarChartSettings() {
           )}
         />
       </WidgetSettingsSection>
-      {config.questionName && (
+      {config.questionName && choices && (
         <WidgetSettingsSection title={m.mapping}>
           <ChoicesMapperPanel>
-            {choices?.map((choice, i) => (
+            {[...choices.map(_ => _.name), Datatable.Utils.blank]?.map((choiceName, i) => (
               <ChoiceMapper
-                key={choice.name + langIndex}
+                key={choiceName + langIndex}
                 question={config.questionName!}
-                choice={choice}
+                choiceName={choiceName}
                 before={
                   <Controller
                     control={form.control}
@@ -136,8 +136,8 @@ export function BarChartSettings() {
                       return (
                         <Checkbox
                           size="small"
-                          checked={!selected.includes(choice.name)}
-                          onChange={e => toggle(choice.name, !e.target.checked)}
+                          checked={!selected.includes(choiceName)}
+                          onChange={e => toggle(choiceName, !e.target.checked)}
                         />
                       )
                     }}
@@ -146,7 +146,7 @@ export function BarChartSettings() {
               >
                 <Controller
                   control={form.control}
-                  name={`mapping.${choice.name}.${langIndex}`}
+                  name={`mapping.${choiceName}.${langIndex}`}
                   render={({field}) => (
                     <InputBase
                       {...field}
