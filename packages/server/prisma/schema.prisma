@@ -114,7 +114,7 @@ model Form {
   referencedBy     FormAction[]            @relation("TargetFormToAction")
   actionsReport    FormActionReport[]
   kobo             FormKoboInfo?
-  Dashboard        Dashboard[]
+  dashboard        Dashboard[]
 
   @@index([category])
 }

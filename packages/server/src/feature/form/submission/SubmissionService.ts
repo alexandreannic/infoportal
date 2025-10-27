@@ -341,14 +341,29 @@ export class SubmissionService {
          WHERE id IN (${SubmissionService.safeIds(answerIds).join(',')})
         `,
       ),
-      this.isConnectedToKobo(formId)
-        .then(isConnected => {
-          if (!isConnected) return
-          return this.sdkGenerator.getBy.formId(formId)
+      await this.prisma.$executeRaw`
+        UPDATE "FormSubmission"
+        SET answers = CASE
+          WHEN ${answer} IS NULL OR ${answer} = '' THEN answers - ${question}
+          ELSE jsonb_set(answers, '{${question}}', to_jsonb(${answer}::text))
+        END
+        WHERE id IN (${Prisma.join(answerIds)})
+      `,
+      this.isConnectedToKobo(formId).then(async isConnected => {
+        if (!isConnected) return
+        const sdk = await this.sdkGenerator.getBy.formId(formId)
+        if (!sdk) throw new HttpError.NotFound(`KoboSdk not found for Form ${formId}`)
+        const [koboSubmissionIds, koboFormId] = await Promise.all([
+          this.getKoboSubmissionIds({submissionIds: answerIds}).then(_ => _.filter(_ => _ !== null)),
+          this.form.getKoboIdByFormId(formId),
+        ])
+        if (!koboFormId) throw new HttpError.NotFound(`Kobo formId not found for form ${formId}`)
+        return sdk.v2.submission.update({
+          formId: koboFormId,
+          submissionIds: koboSubmissionIds,
+          data: {[question]: answer},
         })
-        .then(sdk => {
-          sdk?.v2.submission.update({formId, submissionIds: answerIds, data: {[question]: answer}})
-        }),
+      }),
     ])
     this.event.emit(IpEvent.SUBMISSION_EDITED, {formId, submissionIds: answerIds, question, answer})
     return answerIds.map(id => ({id, status: 'success'}))
@@ -375,43 +390,45 @@ export class SubmissionService {
           end: new Date(),
         },
       }),
-      await this.isConnectedToKobo(formId)
-        .then(isConnected => {
-          if (!isConnected) return
-          return this.sdkGenerator.getBy.formId(formId)
-        })
-        .then(sdk => {
-          if (!sdk) return
-          if (mappedValidation._validation_status) {
-            return Promise.all([
-              sdk.v2.submission.updateValidation({
-                formId,
-                submissionIds: answerIds,
-                status: mappedValidation._validation_status,
-              }),
-              sdk.v2.submission.update({
-                formId,
-                submissionIds: answerIds,
-                data: {[KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: null},
-              }),
-            ])
-          } else {
-            return Promise.all([
-              sdk.v2.submission.update({
-                formId,
-                submissionIds: answerIds,
-                data: {
-                  [KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: mappedValidation._IP_VALIDATION_STATUS_EXTRA,
-                },
-              }),
-              sdk.v2.submission.updateValidation({
-                formId,
-                submissionIds: answerIds,
-                status: Kobo.Submission.Validation.no_status,
-              }),
-            ])
-          }
-        }),
+      await this.isConnectedToKobo(formId).then(async isConnected => {
+        if (!isConnected) return
+        const sdk = await this.sdkGenerator.getBy.formId(formId)
+        if (!sdk) throw new HttpError.NotFound(`KoboSdk not found for Form ${formId}`)
+        const [koboSubmissionIds, koboFormId] = await Promise.all([
+          this.getKoboSubmissionIds({submissionIds: answerIds}).then(_ => _.filter(_ => _ !== null)),
+          this.form.getKoboIdByFormId(formId),
+        ])
+        if (!koboFormId) throw new HttpError.NotFound(`Kobo formId not found for Form ${formId}`)
+        if (mappedValidation._validation_status) {
+          return Promise.all([
+            sdk.v2.submission.updateValidation({
+              formId: koboFormId,
+              submissionIds: koboSubmissionIds,
+              status: mappedValidation._validation_status,
+            }),
+            sdk.v2.submission.update({
+              formId: koboFormId,
+              submissionIds: koboSubmissionIds,
+              data: {[KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: null},
+            }),
+          ])
+        } else {
+          return Promise.all([
+            sdk.v2.submission.update({
+              formId: koboFormId,
+              submissionIds: koboSubmissionIds,
+              data: {
+                [KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: mappedValidation._IP_VALIDATION_STATUS_EXTRA,
+              },
+            }),
+            sdk.v2.submission.updateValidation({
+              formId: koboFormId,
+              submissionIds: koboSubmissionIds,
+              status: Kobo.Submission.Validation.no_status,
+            }),
+          ])
+        }
+      }),
       this.history.create({
         type: 'validation',
         formId,
@@ -423,5 +440,11 @@ export class SubmissionService {
     ])
     this.event.emit(IpEvent.SUBMISSION_EDITED_VALIDATION, {formId, submissionIds: answerIds, status})
     return answerIds.map(id => ({id, status: 'success'}))
+  }
+
+  private getKoboSubmissionIds = ({submissionIds}: {submissionIds: Ip.SubmissionId[]}) => {
+    return this.prisma.formSubmission
+      .findMany({select: {originId: true}, where: {id: {in: submissionIds}}})
+      .then(_ => _.map(_ => _.originId))
   }
 }

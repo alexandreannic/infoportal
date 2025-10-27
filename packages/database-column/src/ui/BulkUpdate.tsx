@@ -90,7 +90,18 @@ const Base = ({
               }
               case 'select_multiple': {
                 return (
-                  <Core.RadioGroup dense multiple value={value ?? []} onChange={_ => setValue(_)}>
+                  <Core.RadioGroup
+                    dense
+                    multiple
+                    value={value ?? []}
+                    onChange={newValue => {
+                      if (newValue?.some(_ => _ === null)) {
+                        setValue([null])
+                      } else {
+                        setValue(newValue)
+                      }
+                    }}
+                  >
                     {_options}
                   </Core.RadioGroup>
                 )
