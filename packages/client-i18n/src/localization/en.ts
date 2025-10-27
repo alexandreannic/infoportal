@@ -97,6 +97,7 @@ export const en = Object.freeze({
     connectAs: 'Connect as',
     wait: 'Wait',
     skip: 'Skip',
+    deleteSection: 'Delete section',
     _builder: {
       diffTimeout: 'Calculating changes is taking too long. Are you sure you have uploaded the good form?',
       alertPreviouslyKoboForm: `This form was originally imported from Kobo. It's no longer connected. Any version you publish here here won’t update Kobo.`,

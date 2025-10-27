@@ -66,8 +66,9 @@ export class UseQueryDashboardSecion {
     return usePendingMutation<void, ApiError, {id: Ip.Dashboard.SectionId}>({
       getId: _ => _.id,
       mutationFn: args => apiv2.dashboard.section.remove({workspaceId, ...args}),
-      onSuccess: (data, variables) =>
-        queryClient.invalidateQueries({queryKey: queryKeys.dashboardSection(workspaceId, dashboardId, variables.id)}),
+      onSuccess: (data, variables) => {
+        queryClient.invalidateQueries({queryKey: queryKeys.dashboardSection(workspaceId, dashboardId)})
+      },
       onError: toastHttpError,
     })
   }

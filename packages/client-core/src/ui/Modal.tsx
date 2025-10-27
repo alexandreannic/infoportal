@@ -100,7 +100,13 @@ export const Modal = ({
           open()
         },
       })}
-      <Dialog open={isOpen} {...props} PaperProps={PaperProps} onClose={closeOnClickAway ? close : undefined}>
+      <Dialog
+        onKeyDown={handleKeypress}
+        open={isOpen}
+        {...props}
+        PaperProps={PaperProps}
+        onClose={closeOnClickAway ? close : undefined}
+      >
         {loading && (
           <LinearProgress
             sx={{

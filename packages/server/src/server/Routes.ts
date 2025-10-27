@@ -349,7 +349,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         remove: _ =>
           auth2(_)
             .then(({body}) => section.remove(body))
-            .then(ok200)
+            .then(ok204)
             .catch(handleError),
       },
       widget: {

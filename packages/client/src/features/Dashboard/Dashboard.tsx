@@ -1,5 +1,5 @@
 import {Core, Page} from '@/shared'
-import {createRoute, Link, Outlet, useMatchRoute} from '@tanstack/react-router'
+import {createRoute, Link, Outlet, useMatchRoute, useNavigate} from '@tanstack/react-router'
 import 'react-grid-layout/css/styles.css'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
@@ -18,6 +18,7 @@ import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardW
 import {DashboardProvider} from '@/features/Dashboard/DashboardContext'
 import {BtnShare, PopoverShareLink} from '@/shared/PopoverShareLink'
 import {useGetDashboardLink} from '@/features/Dashboard/useGetDashboardLink'
+import {useTheme} from '@mui/material'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -51,6 +52,7 @@ const useActiveTab = ({
 }
 
 export function Dashboard() {
+  const t = useTheme()
   const {m} = useI18n()
   const params = dashboardRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
@@ -65,6 +67,8 @@ export function Dashboard() {
   const queryWidgets = UseQueryDashboardWidget.search({workspaceId, dashboardId})
   const queryDashboardSectionCreate = UseQueryDashboardSecion.create({workspaceId, dashboardId})
 
+  const navigate = useNavigate()
+
   const isLoading = [queryDashboard, queryDashboardSection, querySchema, querySubmissions, queryWidgets].some(
     _ => _.isLoading,
   )
@@ -77,7 +81,7 @@ export function Dashboard() {
   const activeTab = useActiveTab({workspaceId, dashboardId, sections: queryDashboardSection.data})
 
   return (
-    <Page width="full" loading={isLoading}>
+    <Page width="full" loading={isLoading} sx={{height: `calc(100% - ${t.vars.spacing})`}}>
       <Tabs variant="scrollable" scrollButtons="auto" value={activeTab}>
         {queryDashboardSection.data?.map(_ => (
           <Tab
@@ -95,25 +99,24 @@ export function Dashboard() {
         <Core.Modal
           title={m._dashboard.newSection}
           loading={queryDashboardSectionCreate.isPending}
-          overrideActions={null}
+          confirmLabel={m.create}
+          onConfirm={async (e, close) => {
+            const newSection = await queryDashboardSectionCreate.mutateAsync({title: newSectionName})
+            close()
+            setNewSectionName('')
+            navigate({
+              to: '/$workspaceId/dashboard/$dashboardId/edit/s/$sectionId',
+              params: {workspaceId, dashboardId, sectionId: newSection.id},
+            })
+          }}
           content={close => (
-            <>
-              <Core.Input
-                sx={{mt: 0.5}}
-                value={newSectionName}
-                onChange={_ => setNewSectionName(_.target.value)}
-                label={m.name}
-              />
-              <Core.Btn onClick={close} children={m.close} />
-              <Core.Btn
-                children={m.create}
-                onClick={async () => {
-                  await queryDashboardSectionCreate.mutateAsync({title: newSectionName})
-                  close()
-                  setNewSectionName('')
-                }}
-              />
-            </>
+            <Core.Input
+              sx={{mt: 1}}
+              autoFocus
+              value={newSectionName}
+              onChange={_ => setNewSectionName(_.target.value)}
+              label={m.name}
+            />
           )}
         >
           <Core.Btn icon="add" sx={{ml: 0.5, my: 0.25, textTransform: 'capitalize'}}>
@@ -145,17 +148,23 @@ export function Dashboard() {
           {m.publish}
         </Core.Btn>
       </Tabs>
-      {querySubmissions.data && queryWidgets.data && queryWidgets.data && queryDashboard.data && querySchema.data && (
-        <DashboardProvider
-          workspaceId={workspaceId}
-          widgets={queryWidgets.data}
-          schema={querySchema.data}
-          submissions={querySubmissions.data.data}
-          dashboard={queryDashboard.data}
-        >
-          <Outlet />
-        </DashboardProvider>
-      )}
+      {querySubmissions.data &&
+        queryDashboardSection.data &&
+        queryWidgets.data &&
+        queryWidgets.data &&
+        queryDashboard.data &&
+        querySchema.data && (
+          <DashboardProvider
+            workspaceId={workspaceId}
+            widgets={queryWidgets.data}
+            schema={querySchema.data}
+            submissions={querySubmissions.data.data}
+            dashboard={queryDashboard.data}
+            sections={queryDashboardSection.data}
+          >
+            <Outlet />
+          </DashboardProvider>
+        )}
     </Page>
   )
 }

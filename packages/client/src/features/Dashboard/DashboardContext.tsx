@@ -5,7 +5,7 @@ import {KoboSchemaHelper, PeriodHelper} from 'infoportal-common'
 import {useI18n} from '@infoportal/client-i18n'
 import {subDays} from 'date-fns'
 import {UseFlattenRepeatGroupData, useFlattenRepeatGroupData} from '@/features/Dashboard/useGetDataByRepeatGroup'
-import {useContextSelector, createContext} from 'use-context-selector'
+import {createContext, useContextSelector} from 'use-context-selector'
 
 // TODO this type could be globalized. It's maybe defined somewhere already
 export type Answers = Ip.Submission.Meta & Record<string, any>
@@ -24,6 +24,7 @@ type DashboardContext = {
   dashboard: Ip.Dashboard
   schema: KoboSchemaHelper.Bundle<true>
   widgetsBySection: Map<Ip.Dashboard.SectionId, Ip.Dashboard.Widget[]>
+  sections: Ip.Dashboard.Section[]
 }
 
 type Filters = {
@@ -40,10 +41,12 @@ export const DashboardProvider = ({
   children,
   workspaceId,
   dashboard,
+  sections,
   schema,
   widgets,
   submissions,
 }: {
+  sections: Ip.Dashboard.Section[]
   workspaceId: Ip.WorkspaceId
   dashboard: Ip.Dashboard
   schema: Ip.Form.Schema
@@ -116,6 +119,7 @@ export const DashboardProvider = ({
         flatSubmissionsDelta,
         dashboard,
         langIndex,
+        sections,
         setLangIndex,
       }}
     >
