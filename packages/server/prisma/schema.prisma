@@ -447,6 +447,7 @@ model Dashboard {
   workspace        Workspace          @relation(fields: [workspaceId], references: [id])
   workspaceId      String             @db.Uuid
   deploymentStatus DeploymentStatus
+  theme            Json               @default("{}")
 
   isPublic              Boolean   @default(false)
   start                 DateTime?

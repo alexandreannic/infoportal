@@ -1,11 +1,12 @@
-import React, {Dispatch, ReactNode, SetStateAction, useMemo, useState} from 'react'
-import {Ip} from 'infoportal-api-sdk'
+import {UseFlattenRepeatGroupData, useFlattenRepeatGroupData} from '@/features/Dashboard/useGetDataByRepeatGroup'
 import {seq, Seq} from '@axanc/ts-utils'
-import {KoboSchemaHelper, PeriodHelper} from 'infoportal-common'
 import {useI18n} from '@infoportal/client-i18n'
 import {subDays} from 'date-fns'
-import {UseFlattenRepeatGroupData, useFlattenRepeatGroupData} from '@/features/Dashboard/useGetDataByRepeatGroup'
+import {Ip} from 'infoportal-api-sdk'
+import {KoboSchemaHelper, PeriodHelper} from 'infoportal-common'
+import {Dispatch, ReactNode, SetStateAction, useMemo, useState} from 'react'
 import {createContext, useContextSelector} from 'use-context-selector'
+import {UseDashboardFormEdit, useDashboardFormEdit} from './useDashboardFormEdit'
 
 // TODO this type could be globalized. It's maybe defined somewhere already
 export type Answers = Ip.Submission.Meta & Record<string, any>
@@ -25,6 +26,7 @@ type DashboardContext = {
   schema: KoboSchemaHelper.Bundle<true>
   widgetsBySection: Map<Ip.Dashboard.SectionId, Ip.Dashboard.Widget[]>
   sections: Ip.Dashboard.Section[]
+  updateForm: UseDashboardFormEdit
 }
 
 type Filters = {
@@ -104,9 +106,12 @@ export const DashboardProvider = ({
 
   const flattenRepeatGroupData = useFlattenRepeatGroupData(schemaWithMeta)
 
+  const updateForm = useDashboardFormEdit({workspaceId, dashboard})
+
   return (
     <Context.Provider
       value={{
+        updateForm,
         flattenRepeatGroupData,
         filters,
         setFilters,

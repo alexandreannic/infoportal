@@ -28,7 +28,7 @@ export const DashboardHeader = ({
           transition: t => t.transitions.create('all'),
           pl: 2,
           zIndex: 2,
-          background: t => t.vars.palette.background.default,
+          // background: t => t.vars.palette.background.default,
           pt: 2,
           width: '100%',
         }}

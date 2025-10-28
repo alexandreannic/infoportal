@@ -1,5 +1,6 @@
 import {UseQueryDashboardSecion} from '@/core/query/dashboard/useQueryDashboardSection'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
+import {muiTheme} from '@/core/theme'
 import {dashboardRoute} from '@/features/Dashboard/Dashboard'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {Widget} from '@/features/Dashboard/Widget/Widget'
@@ -11,7 +12,7 @@ import {SelectLangIndex} from '@/shared/SelectLangIndex'
 import {TabContent} from '@/shared/Tab/TabContent'
 import {alphaVar} from '@infoportal/client-core'
 import {useI18n} from '@infoportal/client-i18n'
-import {Box, Collapse, Icon, useTheme} from '@mui/material'
+import {Box, Collapse, Icon, Theme, ThemeProvider, useTheme} from '@mui/material'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {useCallback, useMemo, useState} from 'react'
@@ -73,6 +74,13 @@ export function DashboardSection() {
     return widgets.map(_ => ({i: _.id, ..._.position}))
   }, [widgets])
 
+  const theme: Theme = useMemo(() => {
+    return muiTheme({
+      cssVarPrefix: 'dashboard',
+      ...dashboard.theme,
+    })
+  }, [dashboard.theme])
+
   if (!sections.some(_ => _.id === sectionId)) return <NotFoundContent sx={{height: '100%'}} />
 
   return (
@@ -87,99 +95,101 @@ export function DashboardSection() {
           flexDirection: 'row',
         }}
       >
-        <Box
-          sx={{
-            flex: 1,
-            margin: '0 auto',
-            mb: 1,
-            maxWidth: layoutWidth,
-            width: '100%',
-          }}
-        >
-          <Core.DebouncedInput<[Date | null | undefined, Date | null | undefined]>
-            debounce={800}
-            value={[filters.period.start, filters.period.end]}
-            onChange={([start, end]) => {
-              setFilters(prev => ({
-                ...prev,
-                period: {start: start ?? effectiveDataRange.start, end: end ?? effectiveDataRange.end},
-              }))
-            }}
-          >
-            {(value, onChange) => (
-              <Core.PeriodPicker
-                sx={{mt: 0, mb: 1, mr: 1}}
-                value={value}
-                onChange={onChange}
-                label={[m.start, m.endIncluded]}
-                min={effectiveDataRange.start}
-                max={effectiveDataRange.end}
-                fullWidth={false}
-              />
-            )}
-          </Core.DebouncedInput>
-          <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
+        <ThemeProvider theme={theme}>
           <Box
             sx={{
-              background: alphaVar(t.vars.palette.text.disabled, 0.025),
-              borderRadius: `calc(${t.vars.shape.borderRadius} + 4px)`,
-              '.react-grid-item.react-grid-placeholder': {
-                background: t.vars.palette.primary.light,
-                borderRadius: t.vars.shape.borderRadius,
-              },
+              flex: 1,
+              margin: '0 auto',
+              mb: 1,
+              maxWidth: layoutWidth,
+              width: '100%',
             }}
           >
-            <GridLayout
-              onLayoutChange={layout => {
-                layout.forEach(({i, x, y, h, w}) => {
-                  updateWidget(i as Ip.Dashboard.WidgetId, {position: {x, y, h, w}})
-                })
+            <Core.DebouncedInput<[Date | null | undefined, Date | null | undefined]>
+              debounce={800}
+              value={[filters.period.start, filters.period.end]}
+              onChange={([start, end]) => {
+                setFilters(prev => ({
+                  ...prev,
+                  period: {start: start ?? effectiveDataRange.start, end: end ?? effectiveDataRange.end},
+                }))
               }}
-              layout={layout}
-              margin={[8, 8]}
-              rowHeight={10}
-              width={layoutWidth}
-              cols={12}
-              draggableHandle=".drag-handle"
             >
-              {widgets.map(widget => (
-                <Box key={widget.id} height="100%">
-                  <Widget
-                    dashboard={dashboard}
-                    onClick={selectWidget}
-                    status={editingWidget?.id === widget.id ? 'editing' : 'selected'}
-                    widget={widget}
-                  />
-                  <Icon
-                    fontSize="small"
-                    sx={{
-                      position: 'absolute',
-                      top: `calc(${t.vars.spacing} / 2)`,
-                      right: `calc(${t.vars.spacing} / 2)`,
-                      color: t.vars.palette.text.secondary,
-                    }}
-                    className="drag-handle"
-                  >
-                    drag_indicator
-                  </Icon>
-                </Box>
-              ))}
-            </GridLayout>
-            <CreateSectionBtn
+              {(value, onChange) => (
+                <Core.PeriodPicker
+                  sx={{mt: 0, mb: 1, mr: 1}}
+                  value={value}
+                  onChange={onChange}
+                  label={[m.start, m.endIncluded]}
+                  min={effectiveDataRange.start}
+                  max={effectiveDataRange.end}
+                  fullWidth={false}
+                />
+              )}
+            </Core.DebouncedInput>
+            <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
+            <Box
+              sx={{
+                background: dashboard.theme.bgColor ?? alphaVar(t.vars.palette.text.disabled, 0.025),
+                borderRadius: `calc(${t.vars.shape.borderRadius} + 4px)`,
+                '.react-grid-item.react-grid-placeholder': {
+                  background: t.vars.palette.primary.light,
+                  borderRadius: t.vars.shape.borderRadius,
+                },
+              }}
+            >
+              <GridLayout
+                onLayoutChange={layout => {
+                  layout.forEach(({i, x, y, h, w}) => {
+                    updateWidget(i as Ip.Dashboard.WidgetId, {position: {x, y, h, w}})
+                  })
+                }}
+                layout={layout}
+                margin={[8, 8]}
+                rowHeight={10}
+                width={layoutWidth}
+                cols={12}
+                draggableHandle=".drag-handle"
+              >
+                {widgets.map(widget => (
+                  <Box key={widget.id} height="100%">
+                    <Widget
+                      dashboard={dashboard}
+                      onClick={selectWidget}
+                      status={editingWidget?.id === widget.id ? 'editing' : 'selected'}
+                      widget={widget}
+                    />
+                    <Icon
+                      fontSize="small"
+                      sx={{
+                        position: 'absolute',
+                        top: `calc(${t.vars.spacing} / 2)`,
+                        right: `calc(${t.vars.spacing} / 2)`,
+                        color: t.vars.palette.text.secondary,
+                      }}
+                      className="drag-handle"
+                    >
+                      drag_indicator
+                    </Icon>
+                  </Box>
+                ))}
+              </GridLayout>
+              <CreateSectionBtn
+                sectionId={sectionId}
+                dashboardId={dashboard.id}
+                workspaceId={workspaceId}
+                onCreate={_ => setEditingWidgetId(_)}
+                widgets={widgets}
+              />
+            </Box>
+            <DeleteSectionBtn
+              sections={sections}
               sectionId={sectionId}
               dashboardId={dashboard.id}
               workspaceId={workspaceId}
-              onCreate={_ => setEditingWidgetId(_)}
-              widgets={widgets}
             />
           </Box>
-          <DeleteSectionBtn
-            sections={sections}
-            sectionId={sectionId}
-            dashboardId={dashboard.id}
-            workspaceId={workspaceId}
-          />
-        </Box>
+        </ThemeProvider>
         <Collapse
           sx={{height: '100%', position: 'sticky', top: t.vars.spacing}}
           in={!!editingWidget}

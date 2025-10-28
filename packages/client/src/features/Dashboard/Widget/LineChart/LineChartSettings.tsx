@@ -12,7 +12,7 @@ import {Core} from '@/shared'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {Box, useTheme} from '@mui/material'
-import {ColorPicker} from '@/features/Dashboard/Widget/shared/ColorPicker'
+import {ColorPickerLimited} from '@/features/Dashboard/Widget/shared/ColorPickerLimited'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export function LineChartSettings() {
@@ -130,7 +130,7 @@ function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Wi
         rules={{
           required: true,
         }}
-        render={({field, fieldState}) => <ColorPicker {...field} value={field.value ?? ''} />}
+        render={({field, fieldState}) => <ColorPickerLimited {...field} value={field.value ?? ''} />}
       />
     </>
   )

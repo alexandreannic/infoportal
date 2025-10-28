@@ -1,120 +1,35 @@
+import React from 'react'
+import {HexColorPicker} from 'react-colorful'
+import {Box, InputBase, SxProps, useTheme} from '@mui/material'
 import {Core} from '@/shared'
-import {Box, BoxProps, Theme, useTheme} from '@mui/material'
-import {useMemo, useState} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
-import {useMap} from '@axanc/react-hooks'
+import {DotColor} from './ColorPickerLimited'
 
-const Dot = ({color, selected, sx, ...props}: BoxProps & {color: string; selected?: boolean}) => {
-  const t = useTheme()
-  return (
-    <Box
-      {...props}
-      sx={{
-        height: 22,
-        width: 22,
-        borderRadius: 22,
-        background: color,
-        border: '2px solid',
-        borderColor: selected ? t.vars.palette.background.paper : color,
-        boxShadow: selected ? `0 0 0 2px ${color}` : undefined,
-        ...sx,
-      }}
-    />
-  )
+type Rgba = {r: number; g: number; b: number; a: number}
+
+export interface ColorPickerProps {
+  value?: string
+  label?: string
+  onChange: (color: string) => void
+  sx?: SxProps
 }
 
-const defaultColors = (t: Theme) => [
-  t.palette.primary.dark,
-  t.palette.primary.main,
-  t.palette.primary.light,
-  t.palette.info.dark,
-  t.palette.info.main,
-  t.palette.info.light,
-  t.palette.success.dark,
-  t.palette.success.main,
-  t.palette.success.light,
-  t.palette.warning.dark,
-  t.palette.warning.main,
-  t.palette.warning.light,
-  t.palette.error.dark,
-  t.palette.error.main,
-  t.palette.error.light,
-  t.palette.text.primary,
-  t.palette.text.secondary,
-  t.palette.text.disabled,
-]
-
-export const ColorPicker = ({
-  value: valueProp,
-  defaultValue,
-  onChange,
-  label,
-  colors = defaultColors,
-  sx,
-  ...props
-}: BoxProps & {
-  colors?: (t: Theme) => (string | {value: string; color: string})[]
-  label?: string
-  value?: string
-  defaultValue?: string
-  onChange?: (value: string | null) => void
-}) => {
-  const {m} = useI18n()
+export function ColorPicker({label, value, sx, onChange}: ColorPickerProps) {
+  // const colorObj = React.useMemo(() => parseRgbaString(value), [value])
   const t = useTheme()
-  const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue ?? '')
-  const isControlled = valueProp !== undefined
-  const value = isControlled ? valueProp : uncontrolledValue
-
-  const handleSelect = (color: string | null) => {
-    if (!isControlled) setUncontrolledValue(color ?? '')
-    onChange?.(color)
-  }
-
-  const colorsMapped: {value: string; color: string}[] = useMemo(() => {
-    return colors(t).map(_ => {
-      if (typeof _ === 'string') return {value: _, color: _}
-      return _
-    })
-  }, [colors, t])
-
-  const selectedColor = useMemo(() => {
-    return colorsMapped.find(_ => _.value === value)?.color
-  }, [value, colorsMapped])
-
+  const {m} = useI18n()
   return (
     <Core.PopoverWrapper
       content={close => (
-        <Box
-          sx={{
-            p: 1,
-            display: 'grid',
-            gap: '0.5rem',
-            gridTemplateColumns: 'repeat(6, 1fr)',
-          }}
-        >
-          <Core.Btn
-            onClick={() => handleSelect(null as any)}
-            variant="outlined"
-            size="small"
+        <>
+          <HexColorPicker color={value} onChange={value => onChange(value)} />
+          <InputBase
+            value={value}
+            onChange={e => onChange(e.target.value)}
             fullWidth
-            sx={{textAlign: 'center', gridColumn: '1/7'}}
-          >
-            {m.none}
-          </Core.Btn>
-          {colorsMapped.map(color => {
-            return (
-              <Dot
-                color={color.color}
-                key={color.value}
-                onClick={() => {
-                  handleSelect(color.value)
-                  close()
-                }}
-                selected={value === color.value}
-              />
-            )
-          })}
-        </Box>
+            slotProps={{input: {sx: {textAlign: 'center'}}}}
+          />
+        </>
       )}
     >
       <Box
@@ -132,11 +47,21 @@ export const ColorPicker = ({
           cursor: 'pointer',
           ...sx,
         }}
-        {...props}
       >
         {label ?? m.color}
-        {selectedColor && selectedColor !== '' && <Dot color={selectedColor} />}
+        {value && value !== '' && <DotColor color={value} />}
       </Box>
     </Core.PopoverWrapper>
   )
 }
+
+// function rgbaToString({r, g, b, a}: Rgba): string {
+//   return `rgba(${r}, ${g}, ${b}, ${a})`
+// }
+
+// function parseRgbaString(value?: string): Rgba {
+//   const match = value?.match(/rgba?\((\d+), ?(\d+), ?(\d+)(?:, ?([\d.]+))?\)/)
+//   if (!match) return {r: 0, g: 0, b: 0, a: 1}
+//   const [, r, g, b, a] = match
+//   return {r: +r, g: +g, b: +b, a: a ? +a : 1}
+// }

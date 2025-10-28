@@ -10,14 +10,15 @@ import {useGetDashboardLink} from '@/features/Dashboard/useGetDashboardLink'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {Core, Page} from '@/shared'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
-import {BtnShare, PopoverShareLink} from '@/shared/PopoverShareLink'
+import {PopoverShareLink} from '@/shared/PopoverShareLink'
 import {useEffectFn} from '@axanc/react-hooks'
 import {useI18n} from '@infoportal/client-i18n'
-import {Icon, Tab, Tabs, useTheme} from '@mui/material'
+import {Box, Collapse, Icon, Tab, Tabs, useTheme} from '@mui/material'
 import {createRoute, Link, Outlet, useMatchRoute, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {useState} from 'react'
 import 'react-grid-layout/css/styles.css'
+import {DashboardTheme} from './DashboardTheme'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -67,6 +68,8 @@ export function Dashboard() {
   const queryDashboardSectionCreate = UseQueryDashboardSecion.create({workspaceId, dashboardId})
 
   const navigate = useNavigate()
+
+  const [isEditingDesign, setIsEditingDesign] = useState(false)
 
   const isLoading = [queryDashboard, queryDashboardSection, querySchema, querySubmissions, queryWidgets].some(
     _ => _.isLoading,
@@ -125,16 +128,25 @@ export function Dashboard() {
         <Tab
           icon={<Icon>settings</Icon>}
           iconPosition="start"
-          sx={{marginLeft: 'auto', mr: 0.75, minHeight: 34, py: 1, maxWidth: 50}} //,  }}
+          sx={{mr: 0.75, marginLeft: 'auto', minHeight: 34, py: 1, maxWidth: 50}} //,  }}
           component={Link}
           value="settings"
           to={dashboardSettingsRoute.fullPath}
           // label={m.settings}
         />
+        <Core.IconBtn
+          sx={{mr: 0.5}}
+          onClick={() => setIsEditingDesign(_ => !_)}
+          color={isEditingDesign ? 'primary' : undefined}
+        >
+          format_paint
+        </Core.IconBtn>
         <PopoverShareLink url={dashboardUrl}>
-          <BtnShare
+          <Core.IconBtn
+            tooltip={m.share}
+            children="share"
             disabled={!dashboardUrl || !queryDashboard.data || !queryDashboard.data.isPublished}
-            sx={{height: 36, alignSelf: 'center', mr: 0.5}}
+            sx={{height: 36, alignSelf: 'center', mr: 1}}
           />
         </PopoverShareLink>
         <Core.Btn
@@ -147,23 +159,38 @@ export function Dashboard() {
           {m.publish}
         </Core.Btn>
       </Tabs>
-      {querySubmissions.data &&
-        queryDashboardSection.data &&
-        queryWidgets.data &&
-        queryWidgets.data &&
-        queryDashboard.data &&
-        querySchema.data && (
-          <DashboardProvider
-            workspaceId={workspaceId}
-            widgets={queryWidgets.data}
-            schema={querySchema.data}
-            submissions={querySubmissions.data.data}
-            dashboard={queryDashboard.data}
-            sections={queryDashboardSection.data}
-          >
-            <Outlet />
-          </DashboardProvider>
-        )}
+      <Box sx={{display: 'flex'}}>
+        {querySubmissions.data &&
+          queryDashboardSection.data &&
+          queryWidgets.data &&
+          queryWidgets.data &&
+          queryDashboard.data &&
+          querySchema.data && (
+            <DashboardProvider
+              workspaceId={workspaceId}
+              widgets={queryWidgets.data}
+              schema={querySchema.data}
+              submissions={querySubmissions.data.data}
+              dashboard={queryDashboard.data}
+              sections={queryDashboardSection.data}
+            >
+              <>
+                <Outlet />
+                <Collapse
+                  sx={{height: '100%', position: 'sticky', top: t.vars.spacing}}
+                  in={!!isEditingDesign}
+                  orientation="horizontal"
+                  mountOnEnter
+                  unmountOnExit
+                >
+                  <Core.Panel sx={{width: 300, m: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0, mr: 0}}>
+                    <DashboardTheme />
+                  </Core.Panel>
+                </Collapse>
+              </>
+            </DashboardProvider>
+          )}
+      </Box>
     </Page>
   )
 }

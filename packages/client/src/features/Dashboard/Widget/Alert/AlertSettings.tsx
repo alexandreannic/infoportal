@@ -17,7 +17,7 @@ import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSe
 import {Obj} from '@axanc/ts-utils'
 import {MaterialIconSelector} from '@/features/Dashboard/Widget/shared/MaterialIconSelector'
 import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
-import {ColorPicker} from '@/features/Dashboard/Widget/shared/ColorPicker'
+import {ColorPickerLimited} from '@/features/Dashboard/Widget/shared/ColorPickerLimited'
 import {SwitchBox} from '@/shared/SwitchBox'
 
 export function AlertSettings() {
@@ -59,7 +59,7 @@ export function AlertSettings() {
           name="type"
           control={form.control}
           render={({field, fieldState}) => (
-            <ColorPicker
+            <ColorPickerLimited
               {...field}
               sx={{mb: 2}}
               colors={t => [

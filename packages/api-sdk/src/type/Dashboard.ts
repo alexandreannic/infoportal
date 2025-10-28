@@ -23,6 +23,7 @@ export type Dashboard = {
   enableChartDownload?: boolean
   enableChartFullSize?: boolean
   periodComparisonDelta?: number
+  theme: Dashboard.Theme
 }
 
 export type DashboardWithSnapshot = Dashboard & {
@@ -43,6 +44,21 @@ export namespace Dashboard {
     if (_.end) _.end = new Date(_.end)
     return _
   }
+
+  export type Theme = {
+    colorPrimary?: string
+    borderRadius?: number
+    fontFamily?: string
+    spacing?: number
+    cardElevation?: number
+    cardBorderSize?: number
+    cardBorderColor?: string
+    cardBgColor?: string
+    cardBlur?: number
+    cardOpacity?: number
+    bgColor?: string
+  }
+
   export namespace Payload {
     export type Delete = {
       workspaceId: WorkspaceId
@@ -64,6 +80,7 @@ export namespace Dashboard {
       name?: Dashboard['name']
       description?: Dashboard['description'] | null
       start?: Dashboard['start'] | null
+      theme?: Dashboard['theme'] | null
       end?: Dashboard['end'] | null
       filters?: Dashboard['filters'] | null
       enableChartDownload?: Dashboard['enableChartDownload'] | null

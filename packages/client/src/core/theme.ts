@@ -1,37 +1,66 @@
 import {orange, red} from '@mui/material/colors'
-import {createTheme, SxProps, Theme} from '@mui/material'
+import {alpha, createTheme, SxProps, Theme} from '@mui/material'
 import {Core} from '@/shared'
-import {alphaVar, colorPrimary, styleUtils} from '@infoportal/client-core'
+import {alphaVar, styleUtils} from '@infoportal/client-core'
 
 export const defaultSpacing = 8
 
 export type AppThemeParams = {
-  mainColor?: string
   fontSize?: number
   cardElevation?: number
+  cardBorderSize?: number
+  cardBorderColor?: string
+  cardBgColor?: string
+  cardBlur?: number
+  cardOpacity?: number
   dark?: boolean
   spacing?: number
+  colorPrimary?: string
+  colorSecondary?: string
+  cssVarPrefix?: string
+  borderRadius?: number
+  bgColor?: string
+}
+
+export const defaultThemeParams = {
+  colorPrimary: Core.colorPrimary['500'], // '#c9000a',
+  colorSecondary: '#1a73e8',
+  dark: false,
+  cardElevation: 0,
+  borderRadius: 12,
+  spacing: 8,
+  fontSize: 14,
+  cardBorderSize: 0,
+  cardBorderColor: undefined,
+  cardBgColor: '#fff',
+  cardBlur: 10,
+  cardOpacity: 6,
+  bgColor: '#edf2faff',
 }
 
 export const muiTheme = ({
-  // mainColor = '#0073e6', // '#c9000a',
-  dark,
-  cardElevation,
-  spacing = defaultSpacing,
-  fontSize = 14,
+  colorPrimary = defaultThemeParams.colorPrimary,
+  colorSecondary = defaultThemeParams.colorSecondary,
+  cardElevation = defaultThemeParams.cardElevation,
+  borderRadius = defaultThemeParams.borderRadius,
+  spacing = defaultThemeParams.spacing,
+  fontSize = defaultThemeParams.fontSize,
+  dark = defaultThemeParams.dark,
+  cardOpacity = defaultThemeParams.cardOpacity,
+  cardBorderSize = defaultThemeParams.cardBorderSize,
+  cardBorderColor = defaultThemeParams.cardBorderColor,
+  cardBgColor = defaultThemeParams.cardBgColor,
+  cardBlur = defaultThemeParams.cardBlur,
+  bgColor = defaultThemeParams.bgColor,
+  cssVarPrefix,
 }: AppThemeParams = {}): Theme => {
   const lineHeight = '1.5'
-  const defaultRadius = 12
   const fontFamily = '"Open Sans", sans-serif'
-  const colorSecondary = {
-    main: '#1a73e8',
-    light: Core.lightenVar('#1a73e8', 0.3),
-    dark: Core.darkenVar('#1a73e8', 0.3),
-  }
 
   return createTheme({
     defaultColorScheme: dark ? 'dark' : 'light',
     cssVariables: {
+      cssVarPrefix,
       colorSchemeSelector: 'class',
     },
     shadows: Core.lightShadows as any,
@@ -44,18 +73,18 @@ export const muiTheme = ({
           },
           warning: orange,
           // success: green,
-          primary: colorPrimary,
-          secondary: colorSecondary,
+          primary: {main: colorPrimary},
+          secondary: {main: colorSecondary},
           error: red,
           action: {
             focus: Core.alphaVar(colorPrimary['500'], 0.1),
             focusOpacity: 0.1,
           },
           background: {
-            default: '#fff',
+            default: bgColor,
             // default: 'rgba(221, 231, 248, 0.6)',
             // default: 'rgba(255, 255, 255, 0.6)',
-            paper: 'rgba(255, 255, 255, 0.6)',
+            paper: alpha(cardBgColor, cardOpacity / 10),
           },
         },
       },
@@ -63,11 +92,11 @@ export const muiTheme = ({
         palette: {
           warning: orange,
           // success: green,
-          primary: Core.colorPrimary,
-          secondary: colorSecondary,
+          primary: {main: colorPrimary},
+          secondary: {main: colorSecondary},
           error: red,
           action: {
-            focus: Core.alphaVar(Core.colorPrimary['500'], 0.1),
+            focus: Core.alphaVar(colorPrimary['500'], 0.1),
             focusOpacity: 0.1,
           },
           background: {
@@ -78,7 +107,7 @@ export const muiTheme = ({
       },
     },
     shape: {
-      borderRadius: defaultRadius,
+      borderRadius,
     },
     typography: {
       fontSize,
@@ -164,9 +193,7 @@ export const muiTheme = ({
             boxSizing: 'border-box',
             background: 'url(/bg2.png)',
             backgroundSize: 'cover',
-            ...t.applyStyles('dark', {
-              background: 'var(--mui-palette-background-default)',
-            }),
+            backgroundColor: 'var(--mui-palette-background-default)',
             // Dark mode override
             // '[data-mui-color-scheme="dark"] &': {},
             // background: 'linear-gradient(to bottom, #c8e6f9, #f2f4fb)',
@@ -201,7 +228,7 @@ export const muiTheme = ({
           '.ip-border': {
             overflow: 'hidden',
             border: `1px solid ${t.vars.palette.divider}`,
-            borderRadius: defaultRadius,
+            borderRadius,
           },
           ...tableTheme(t),
         }),
@@ -228,11 +255,11 @@ export const muiTheme = ({
           elevation: cardElevation ?? 0,
         },
         styleOverrides: {
-          root: {
-            border: 'none',
+          root: ({theme}) => ({
+            border: cardBorderSize ? `${cardBorderSize}px solid` : 'none',
+            borderColor: cardBorderColor ?? theme.vars.palette.divider,
             // border: `1px solid ${theme.vars.palette.divider}`,
-            //       borderRadius: defaultRadius,
-          },
+          }),
         },
       },
       MuiInputBase: {
@@ -325,7 +352,7 @@ export const muiTheme = ({
       MuiPaper: {
         styleOverrides: {
           root: ({theme}) => ({
-            backdropFilter: Core.styleUtils(theme).backdropFilter,
+            backdropFilter: cardBlur ? `blur(${cardBlur}px)` : Core.styleUtils(theme).backdropFilter,
             background: theme.vars.palette.background.paper,
           }),
         },
@@ -364,17 +391,17 @@ export const muiTheme = ({
       MuiDialogTitle: {
         styleOverrides: {
           root: {
-            paddingRight: defaultSpacing * 2,
-            paddingLeft: defaultSpacing * 2,
-            paddingBottom: defaultSpacing,
+            paddingRight: spacing * 2,
+            paddingLeft: spacing * 2,
+            paddingBottom: spacing,
           },
         },
       },
       MuiDialogContent: {
         styleOverrides: {
           root: {
-            paddingRight: defaultSpacing * 2,
-            paddingLeft: defaultSpacing * 2,
+            paddingRight: spacing * 2,
+            paddingLeft: spacing * 2,
           },
         },
       },

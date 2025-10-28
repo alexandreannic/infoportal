@@ -32,6 +32,7 @@ export function DashboardSettings() {
   const t = useTheme()
   const {toastLoading, toastSuccess} = useIpToast()
 
+  const {form, values} = useDashboardContext(_ => _.updateForm)
   const workspaceId = useDashboardContext(_ => _.workspaceId)
   const dashboard = useDashboardContext(_ => _.dashboard)
   const dataRange = useDashboardContext(_ => _.dataRange)
@@ -43,29 +44,8 @@ export function DashboardSettings() {
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
 
-  const form = useForm<Omit<Ip.Dashboard.Payload.Update, 'id' | 'workspaceId'>>({
-    defaultValues: {
-      name: dashboard.name,
-      isPublic: dashboard.isPublic,
-      start: dashboard.start,
-      end: dashboard.end,
-      filters: dashboard.filters,
-      enableChartFullSize: dashboard.enableChartFullSize,
-      enableChartDownload: dashboard.enableChartDownload,
-      periodComparisonDelta: dashboard.periodComparisonDelta,
-    },
-  })
-  const values = useWatch({control: form.control})
-
   useEffectFn(queryUpdate.isPending, _ => _ && toastLoading(m.savingEllipsis))
   useEffectFn(queryUpdate.isSuccess, _ => _ && toastSuccess(m.successfullyEdited))
-
-  const debouncedValues = useDebounce(values, 500)
-
-  useEffect(() => {
-    if (diffObject(debouncedValues, dashboard).hasChanged)
-      queryUpdate.mutateAsync({id: dashboard.id, ...debouncedValues})
-  }, [debouncedValues])
 
   const url = useGetDashboardLink({workspaceId, dashboardId: dashboard.id}).absolute
 

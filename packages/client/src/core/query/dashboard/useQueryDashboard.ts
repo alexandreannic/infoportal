@@ -67,7 +67,8 @@ export class UseQueryDashboard {
     const {apiv2} = useAppSettings()
     const {toastError} = useIpToast()
     const queryClient = useQueryClient()
-    return useMutation<Ip.Dashboard, ApiError, Omit<Ip.Dashboard.Payload.Update, 'workspaceId'>>({
+    return usePendingMutation<Ip.Dashboard, ApiError, Omit<Ip.Dashboard.Payload.Update, 'workspaceId'>>({
+      getId: _ => _.id,
       mutationFn: args => apiv2.dashboard.update({workspaceId, ...args}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),
       onError: () => toastError(m.errorOnSave, {reloadBtn: true}),
