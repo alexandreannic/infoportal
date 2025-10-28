@@ -1,22 +1,22 @@
-import {Core} from '@/shared'
-import {createRoute, useNavigate} from '@tanstack/react-router'
-import ReactGridLayout, {WidthProvider} from 'react-grid-layout'
-import {Box, Collapse, Icon, useTheme} from '@mui/material'
-import 'react-grid-layout/css/styles.css'
-import {useI18n} from '@infoportal/client-i18n'
-import {Ip} from 'infoportal-api-sdk'
-import {WidgetCreatorFormPanel, WidgetUpdatePayload} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
-import React, {useCallback, useMemo, useState} from 'react'
-import {Widget} from '@/features/Dashboard/Widget/Widget'
+import {UseQueryDashboardSecion} from '@/core/query/dashboard/useQueryDashboardSection'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
-import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
-import {TabContent} from '@/shared/Tab/TabContent'
 import {dashboardRoute} from '@/features/Dashboard/Dashboard'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
-import {SelectLangIndex} from '@/shared/SelectLangIndex'
-import {alphaVar} from '@infoportal/client-core'
-import {UseQueryDashboardSecion} from '@/core/query/dashboard/useQueryDashboardSection'
+import {Widget} from '@/features/Dashboard/Widget/Widget'
+import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
+import {WidgetCreatorFormPanel, WidgetUpdatePayload} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
+import {Core} from '@/shared'
 import {NotFoundContent} from '@/shared/PageNotFound'
+import {SelectLangIndex} from '@/shared/SelectLangIndex'
+import {TabContent} from '@/shared/Tab/TabContent'
+import {alphaVar} from '@infoportal/client-core'
+import {useI18n} from '@infoportal/client-i18n'
+import {Box, Collapse, Icon, useTheme} from '@mui/material'
+import {createRoute, useNavigate} from '@tanstack/react-router'
+import {Ip} from 'infoportal-api-sdk'
+import {useCallback, useMemo, useState} from 'react'
+import ReactGridLayout, {WidthProvider} from 'react-grid-layout'
+import 'react-grid-layout/css/styles.css'
 
 const GridLayout = WidthProvider(ReactGridLayout)
 
@@ -34,7 +34,6 @@ export function DashboardSection() {
   const {m} = useI18n()
   const params = dashboardSectionRoute.useParams()
   const sectionId = params.sectionId as Ip.Dashboard.SectionId
-  const navigate = useNavigate()
 
   const {
     langIndex,
@@ -51,22 +50,9 @@ export function DashboardSection() {
 
   const widgets = widgetsBySection.get(sectionId) ?? []
 
-  const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboard.id, sectionId})
   const queryWidgetUpdate = UseQueryDashboardWidget.update({workspaceId, dashboardId: dashboard.id, sectionId})
-  const querySectionRemove = UseQueryDashboardSecion.remove({workspaceId, dashboardId: dashboard.id})
 
   const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>()
-
-  const createWidget = async (form: WidgetCreateForm) => {
-    const maxY = Math.max(...widgets.map(w => w.position.y + w.position.h))
-    const data = await queryWidgetCreate.mutateAsync({
-      ...form,
-      i18n_title: [],
-      config: {},
-      position: {x: 0, y: maxY, w: 6, h: 10},
-    })
-    setEditingWidgetId(data.id)
-  }
 
   const selectWidget = useCallback(
     (id: Ip.Dashboard.WidgetId) => {
@@ -88,21 +74,6 @@ export function DashboardSection() {
   }, [widgets])
 
   if (!sections.some(_ => _.id === sectionId)) return <NotFoundContent sx={{height: '100%'}} />
-
-  const navigateToDefaultRoute = (deletedSectionId: Ip.Dashboard.SectionId) => {
-    const firstSection = sections.filter(_ => _.id !== deletedSectionId)[0]
-    if (firstSection) {
-      navigate({
-        to: '/$workspaceId/dashboard/$dashboardId/edit/s/$sectionId',
-        params: {workspaceId, dashboardId: dashboard.id, sectionId: firstSection.id},
-      })
-    } else {
-      navigate({
-        to: '/$workspaceId/dashboard/$dashboardId/edit/settings',
-        params: {workspaceId, dashboardId: dashboard.id},
-      })
-    }
-  }
 
   return (
     <TabContent width="full">
@@ -194,46 +165,20 @@ export function DashboardSection() {
                 </Box>
               ))}
             </GridLayout>
-            <Box sx={{p: 1, pt: 0}}>
-              <Core.Modal
-                loading={queryWidgetCreate.isPending}
-                closeOnClickAway
-                overrideActions={null}
-                content={close => (
-                  <WidgetCreate
-                    close={close}
-                    loading={queryWidgetCreate.isPending}
-                    onSubmit={_ => createWidget(_).then(close)}
-                  />
-                )}
-              >
-                <Core.Btn
-                  icon="add"
-                  fullWidth
-                  variant="outlined"
-                  sx={{border: '1px dashed', borderColor: t.vars.palette.divider}}
-                >
-                  {m.create}
-                </Core.Btn>
-              </Core.Modal>
-            </Box>
+            <CreateSectionBtn
+              sectionId={sectionId}
+              dashboardId={dashboard.id}
+              workspaceId={workspaceId}
+              onCreate={_ => setEditingWidgetId(_)}
+              widgets={widgets}
+            />
           </Box>
-          <Box sx={{display: 'flex', justifyContent: 'center', mt: 2}}>
-            <Core.Modal
-              loading={querySectionRemove.pendingIds.has(sectionId)}
-              title={m.deleteSection}
-              onConfirm={(e, close) =>
-                querySectionRemove
-                  .mutateAsync({id: sectionId})
-                  .then(close)
-                  .then(() => navigateToDefaultRoute(sectionId))
-              }
-            >
-              <Core.Btn color="error" icon="delete" variant="outlined">
-                {m.deleteSection}
-              </Core.Btn>
-            </Core.Modal>
-          </Box>
+          <DeleteSectionBtn
+            sections={sections}
+            sectionId={sectionId}
+            dashboardId={dashboard.id}
+            workspaceId={workspaceId}
+          />
         </Box>
         <Collapse
           sx={{height: '100%', position: 'sticky', top: t.vars.spacing}}
@@ -259,21 +204,104 @@ export function DashboardSection() {
   )
 }
 
-// function CreateWidgetBtn({loading}: {loading?: boolean}) {
-//   const {m} = useI18n()
-//   return (
-//     <Core.Modal
-//       overrideActions={null}
-//       content={close => <WidgetCreate close={close} loading={queryWidgetCreate.isPending} onSubmit={createWidget} />}
-//     >
-//       <Core.Btn
-//         icon="add"
-//         fullWidth
-//         variant="outlined"
-//         sx={{border: '2px dashed', borderColor: t.vars.palette.divider}}
-//       >
-//         {m.create}
-//       </Core.Btn>
-//     </Core.Modal>
-//   )
-// }
+function CreateSectionBtn({
+  sectionId,
+  workspaceId,
+  dashboardId,
+  widgets,
+  onCreate,
+}: {
+  workspaceId: Ip.WorkspaceId
+  dashboardId: Ip.DashboardId
+  sectionId: Ip.Dashboard.SectionId
+  widgets: Ip.Dashboard.Widget[]
+  onCreate: (_: Ip.Dashboard.WidgetId) => void
+}) {
+  const {m} = useI18n()
+  const t = useTheme()
+  const queryWidgetCreate = UseQueryDashboardWidget.create({workspaceId, dashboardId: dashboardId, sectionId})
+
+  const createWidget = async (form: WidgetCreateForm) => {
+    const maxY = Math.max(...widgets.map(w => w.position.y + w.position.h))
+    const data = await queryWidgetCreate.mutateAsync({
+      ...form,
+      i18n_title: [],
+      config: {},
+      position: {x: 0, y: maxY, w: 6, h: 10},
+    })
+    onCreate(data.id)
+  }
+  return (
+    <Core.Modal
+      loading={queryWidgetCreate.isPending}
+      closeOnClickAway
+      overrideActions={null}
+      content={close => (
+        <WidgetCreate close={close} loading={queryWidgetCreate.isPending} onSubmit={_ => createWidget(_).then(close)} />
+      )}
+    >
+      <Core.Btn
+        icon="add"
+        variant="outlined"
+        sx={{
+          m: 1,
+          mt: 0,
+          width: `calc(100% - ${t.vars.spacing} * 2)`,
+          border: '1px dashed',
+          borderColor: t.vars.palette.divider,
+        }}
+      >
+        {m.create}
+      </Core.Btn>
+    </Core.Modal>
+  )
+}
+
+function DeleteSectionBtn({
+  sectionId,
+  workspaceId,
+  dashboardId,
+  sections,
+}: {
+  workspaceId: Ip.WorkspaceId
+  dashboardId: Ip.DashboardId
+  sectionId: Ip.Dashboard.SectionId
+  sections: Ip.Dashboard.Section[]
+}) {
+  const querySectionRemove = UseQueryDashboardSecion.remove({workspaceId, dashboardId})
+  const navigate = useNavigate()
+  const {m} = useI18n()
+  const navigateToDefaultRoute = (deletedSectionId: Ip.Dashboard.SectionId) => {
+    const firstSection = sections.filter(_ => _.id !== deletedSectionId)[0]
+    if (firstSection) {
+      navigate({
+        to: '/$workspaceId/dashboard/$dashboardId/edit/s/$sectionId',
+        params: {workspaceId, dashboardId: dashboardId, sectionId: firstSection.id},
+      })
+    } else {
+      navigate({
+        to: '/$workspaceId/dashboard/$dashboardId/edit/settings',
+        params: {workspaceId, dashboardId: dashboardId},
+      })
+    }
+  }
+
+  return (
+    <Box sx={{display: 'flex', justifyContent: 'center', mt: 2}}>
+      <Core.Modal
+        loading={querySectionRemove.pendingIds.has(sectionId)}
+        title={m.deleteSection}
+        onConfirm={(e, close) =>
+          querySectionRemove
+            .mutateAsync({id: sectionId})
+            .then(close)
+            .then(() => navigateToDefaultRoute(sectionId))
+        }
+      >
+        <Core.Btn color="error" icon="delete" variant="outlined">
+          {m.deleteSection}
+        </Core.Btn>
+      </Core.Modal>
+    </Box>
+  )
+}
