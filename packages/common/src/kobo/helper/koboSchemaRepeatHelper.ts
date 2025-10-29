@@ -18,9 +18,9 @@ export class KoboSchemaRepeatHelper {
   readonly size: number
 
   private readonly questionsByGroupPath: Record<string, Kobo.Form.Question[]> = {}
-  private readonly groupByPath: Record<string, KoboGroupInfo> = {}
-  private readonly groupByName: Record<string, KoboGroupInfo> = {}
-  private readonly groupByQuestionName: Record<string, KoboGroupInfo> = {}
+  private readonly groupByPath: Record<string, KoboGroupInfo | undefined> = {}
+  private readonly groupByName: Record<string, KoboGroupInfo | undefined> = {}
+  private readonly groupByQuestionName: Record<string, KoboGroupInfo | undefined> = {}
 
   constructor(survey: Kobo.Form['content']['survey']) {
     const depthStack: string[] = []
@@ -85,10 +85,12 @@ export class KoboSchemaRepeatHelper {
     exactName?: string
     depth?: number
   } = {}) {
-    return Object.values(this.groupByPath).filter(info => {
-      if (depth !== undefined && info.depth !== depth) return false
-      if (exactName && !info.pathArr.includes(exactName)) return false
-      return true
-    })
+    return Object.values(this.groupByPath)
+      .filter(_ => _ !== undefined)
+      .filter(info => {
+        if (depth !== undefined && info.depth !== depth) return false
+        if (exactName && !info.pathArr.includes(exactName)) return false
+        return true
+      })
   }
 }
