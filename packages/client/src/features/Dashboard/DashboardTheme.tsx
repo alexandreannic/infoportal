@@ -7,6 +7,7 @@ import {useDashboardContext} from './DashboardContext'
 import {ColorPicker} from '../../shared/customInput/ColorPicker'
 import {SliderNumberInput} from '../../shared/customInput/SliderNumberInput'
 import {WidgetSettingsSection} from './Widget/shared/WidgetSettingsSection'
+import {defaultThemeParams} from '@/core/theme'
 
 export function DashboardTheme() {
   const {form, values} = useDashboardContext(_ => _.updateForm)
@@ -94,7 +95,8 @@ export function DashboardTheme() {
         variant="outlined"
         icon="settings_backup_restore"
         onClick={() => {
-          form.resetField('theme')
+          // TODO Better to reset to {} but it fails to refresh input.
+          form.setValue('theme', defaultThemeParams, {shouldDirty: true})
         }}
       >
         {m.resetDefault}

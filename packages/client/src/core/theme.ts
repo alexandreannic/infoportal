@@ -31,7 +31,7 @@ export const defaultThemeParams = {
   borderRadius: 12,
   spacing: 8,
   fontSize: 14,
-  fontFamily: '"Open Sans", sans-serif',
+  fontFamily: 'Open Sans',
   cardElevation: 0,
   cardBorderSize: 0,
   cardBorderColor: undefined,

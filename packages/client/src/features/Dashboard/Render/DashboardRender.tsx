@@ -13,6 +13,9 @@ import {DashboardProvider} from '@/features/Dashboard/DashboardContext'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {Core} from '@/shared'
+import {GlobalStyles, Theme, ThemeProvider} from '@mui/material'
+import {muiTheme} from '@/core/theme'
+import {fontFamily, fontSize} from '@mui/system'
 
 const GridLayout = WidthProvider(ReactGridLayout)
 
@@ -39,66 +42,89 @@ export function DashboardRender() {
   })
 
   const queries = [queryDashboard, querySchema, querySubmissions]
+  const dashboard = queryDashboard.data
+
+  const theme: Theme = useMemo(() => {
+    if (!dashboard) return muiTheme()
+    return muiTheme({
+      cssVarPrefix: 'dashboard',
+      ...dashboard.theme,
+    })
+  }, [dashboard?.theme])
 
   if (queries.some(_ => _.error)) {
     return <Core.Fender type="error" />
   }
-  if (!queryDashboard.data || !querySchema.data || !querySubmissions.data) return 'Loading...'
+
+  if (!dashboard || !querySchema.data || !querySubmissions.data) return 'Loading...'
+
   return (
-    <DashboardProvider
-      workspaceId={workspaceId}
-      widgets={queryDashboard.data.snapshot.flatMap(_ => _.widgets)}
-      schema={querySchema.data}
-      submissions={querySubmissions.data.data}
-      dashboard={queryDashboard.data}
-    >
-      <DashboardLayout
-        loading={queryDashboard.isLoading}
-        title={queryDashboard.data?.name ?? ''}
-        subTitle={queryDashboard.data?.description ?? ''}
-        header={
-          <DataFilterLayout
-            filters={{}}
-            setFilters={console.log}
-            shapes={{}}
-            hidePopup
-            sx={{mb: 0}}
-            onClear={() => {
-              // ctx.setPeriod(ctx.periodDefault)
-              // ctx.setFilterOptions({})
-            }}
-            // shapes={ctx.filterShape}
-            // data={ctx.data}
-            // filters={ctx.filterOptions}
-            // setFilters={ctx.setFilterOptions}
-            before={
-              <PeriodPicker
-                sx={{mt: 0, mb: 0, mr: 1}}
-                value={[filters.period.start, filters.period.end]}
-                onChange={([start, end]) => {
-                  setFilters(prev => ({
-                    ...prev,
-                    period: {start: start!, end: end!},
-                  }))
-                }}
-                label={[m.start, m.endIncluded]}
-                // min={ctx.fetcherPeriod.get?.start}
-                // max={ctx.fetcherPeriod.get?.end}
-                fullWidth={false}
-              />
-            }
-          />
-        }
-        sections={queryDashboard.data?.snapshot.map(section => {
-          return {
-            icon: 'rocket_launch',
-            name: section.id,
-            title: section.title,
-            component: () => <Section dashboard={queryDashboard.data} widgets={section.widgets} />,
-          }
+    <ThemeProvider theme={theme}>
+      <GlobalStyles
+        styles={t => ({
+          body: {
+            fontFamily: dashboard.theme.fontFamily,
+            fontSize: dashboard.theme.fontSize,
+            background: dashboard.theme.bgColor,
+          },
         })}
       />
-    </DashboardProvider>
+      <DashboardProvider
+        workspaceId={workspaceId}
+        widgets={dashboard.snapshot.flatMap(_ => _.widgets)}
+        schema={querySchema.data}
+        submissions={querySubmissions.data.data}
+        dashboard={dashboard}
+        sections={dashboard.snapshot}
+      >
+        <DashboardLayout
+          loading={queryDashboard.isLoading}
+          title={dashboard?.name ?? ''}
+          subTitle={dashboard?.description ?? ''}
+          header={
+            <DataFilterLayout
+              filters={{}}
+              setFilters={console.log}
+              shapes={{}}
+              hidePopup
+              sx={{mb: 0}}
+              onClear={() => {
+                // ctx.setPeriod(ctx.periodDefault)
+                // ctx.setFilterOptions({})
+              }}
+              // shapes={ctx.filterShape}
+              // data={ctx.data}
+              // filters={ctx.filterOptions}
+              // setFilters={ctx.setFilterOptions}
+              before={
+                <PeriodPicker
+                  sx={{mt: 0, mb: 0, mr: 1}}
+                  value={[filters.period.start, filters.period.end]}
+                  onChange={([start, end]) => {
+                    setFilters(prev => ({
+                      ...prev,
+                      period: {start: start!, end: end!},
+                    }))
+                  }}
+                  label={[m.start, m.endIncluded]}
+                  // min={ctx.fetcherPeriod.get?.start}
+                  // max={ctx.fetcherPeriod.get?.end}
+                  fullWidth={false}
+                />
+              }
+            />
+          }
+          sections={dashboard?.snapshot.map(section => {
+            return {
+              icon: 'rocket_launch',
+              name: section.id,
+              title: section.title,
+              component: () => <Section dashboard={dashboard} widgets={section.widgets} />,
+            }
+          })}
+        />
+      </DashboardProvider>
+    </ThemeProvider>
   )
 }
 
