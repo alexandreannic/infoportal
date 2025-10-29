@@ -143,6 +143,10 @@ export function DashboardSection() {
               <GridLayout
                 onLayoutChange={layout => {
                   layout.forEach(({i, x, y, h, w}) => {
+                    const widget = widgets?.find(_ => _.id === i)
+                    if (!widget) return
+                    const p = widget.position
+                    if (p.x === x && p.y === y && p.h === h && p.w === w) return
                     updateWidget(i as Ip.Dashboard.WidgetId, {position: {x, y, h, w}})
                   })
                 }}

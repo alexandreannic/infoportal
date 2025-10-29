@@ -1,10 +1,9 @@
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {defaultThemeParams} from '@/core/theme'
+import {useEffectSkipFirst} from '@/shared/useEffectSkipFirst'
 import {useDebounce} from '@axanc/react-hooks'
 import {useTheme} from '@emotion/react'
 import {Ip} from 'infoportal-api-sdk'
-import {diffObject} from 'infoportal-common'
-import {useEffect} from 'react'
 import {useForm, useWatch} from 'react-hook-form'
 
 export type UseDashboardFormEdit = ReturnType<typeof useDashboardFormEdit>
@@ -35,9 +34,8 @@ export const useDashboardFormEdit = ({
   const values = useWatch({control: form.control})
   const debouncedValues = useDebounce(values, 1000)
 
-  useEffect(() => {
-    if (diffObject(debouncedValues, dashboard).hasChanged)
-      queryUpdate.mutateAsync({id: dashboard.id, ...debouncedValues})
+  useEffectSkipFirst(() => {
+    queryUpdate.mutateAsync({id: dashboard.id, ...debouncedValues})
   }, [debouncedValues])
 
   return {form, values}

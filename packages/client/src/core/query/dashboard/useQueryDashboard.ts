@@ -1,13 +1,12 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {useIpToast} from '@/core/useToast'
-import {Ip} from 'infoportal-api-sdk'
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
-import {ApiError} from '@/core/sdk/server/ApiClient'
-import {useMemo} from 'react'
-import {useI18n} from '@infoportal/client-i18n'
 import {usePendingMutation} from '@/core/query/usePendingMutation'
-import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {ApiError} from '@/core/sdk/server/ApiClient'
+import {useIpToast} from '@/core/useToast'
+import {useI18n} from '@infoportal/client-i18n'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
+import {Ip} from 'infoportal-api-sdk'
+import {useMemo} from 'react'
 
 export class UseQueryDashboard {
   static getAll = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
@@ -20,12 +19,13 @@ export class UseQueryDashboard {
   }
 
   static publish = ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
-    const {toastHttpError} = useIpToast()
+    const {toastHttpError, toastSuccess} = useIpToast()
     const {apiv2} = useAppSettings()
-    const queryClient = useQueryClient()
     return useMutation({
       mutationFn: () => apiv2.dashboard.publish({workspaceId, id}),
-      onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),
+      onSuccess: () => {
+        // queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)})
+      },
       onError: toastHttpError,
     })
   }

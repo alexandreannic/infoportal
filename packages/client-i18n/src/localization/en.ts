@@ -348,6 +348,7 @@ export const en = Object.freeze({
     dangerZone: 'Danger zone',
     font: 'Font',
     _dashboard: {
+      successfullyPublished: 'Successfully published!',
       theme: {
         primaryColor: 'Color',
         borderRadius: 'Border Radius',

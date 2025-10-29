@@ -19,6 +19,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {useState} from 'react'
 import 'react-grid-layout/css/styles.css'
 import {DashboardTheme} from './DashboardTheme'
+import {useIpToast} from '@/core/useToast'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -57,6 +58,7 @@ export function Dashboard() {
   const params = dashboardRoute.useParams()
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const dashboardId = params.dashboardId as Ip.DashboardId
+  const {toastSuccess} = useIpToast()
 
   const dashboardUrl = useGetDashboardLink({workspaceId, dashboardId}).absolute ?? '...'
   const queryDashboardPublish = UseQueryDashboard.publish({workspaceId, id: dashboardId})
@@ -150,7 +152,17 @@ export function Dashboard() {
           />
         </PopoverShareLink>
         <Core.Btn
-          onClick={() => queryDashboardPublish.mutate()}
+          onClick={() =>
+            queryDashboardPublish.mutateAsync().then(() => {
+              toastSuccess(m._dashboard.successfullyPublished, {
+                action: (
+                  <Core.Btn href={dashboardUrl} icon="open_in_new" target="_blank">
+                    {m.open}
+                  </Core.Btn>
+                ),
+              })
+            })
+          }
           loading={queryDashboardPublish.isPending}
           variant="contained"
           icon="rocket_launch"

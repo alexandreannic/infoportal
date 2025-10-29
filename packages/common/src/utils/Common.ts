@@ -13,7 +13,7 @@ export const capitalize = (_: string) => {
   return _.charAt(0).toUpperCase() + _.slice(1)
 }
 
-export function diffObject<T extends Record<string, any>>(
+export function shallowDiffObject<T extends Record<string, any>>(
   obj1: T,
   obj2: Partial<T>,
 ): {hasChanged: boolean; changes: Partial<T>} {
