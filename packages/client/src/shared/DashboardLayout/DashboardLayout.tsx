@@ -1,14 +1,13 @@
-import React, {ReactNode, useEffect, useState} from 'react'
-import {Box, Collapse, LinearProgress, Typography} from '@mui/material'
-import {useSetState} from '@axanc/react-hooks'
+import {Core} from '@/shared'
+import {DashboardHeader} from '@/shared/DashboardLayout/DashboardHeader'
 import {Layout} from '@/shared/Layout/Layout'
 import {Sidebar, SidebarItem} from '@/shared/Layout/Sidebar'
-import {DashboardHeader} from '@/shared/DashboardLayout/DashboardHeader'
 import {Page} from '@/shared/Page'
+import {useSetState} from '@axanc/react-hooks'
 import {map} from '@axanc/ts-utils'
-import {useI18n} from '@infoportal/client-i18n'
-import {appConfig} from '@/conf/AppConfig'
-import {Core} from '@/shared'
+import {Box, Collapse, LinearProgress, Typography} from '@mui/material'
+import React, {ReactNode, useEffect, useState} from 'react'
+import {useInView} from 'react-intersection-observer'
 
 const dashboardHeaderId = 'aa-header-id'
 
@@ -36,19 +35,15 @@ const style = Core.makeSx({
   },
 })
 
-const spyTitles = (sections: string[], fn: (sectionName: string) => void) => {
-  const sections$ = sections.map(_ => document.getElementById(_))
-  const set = () => {
-    const index = sections$.findIndex(_ => window.scrollY >= (_?.offsetTop ?? -1) - 140)
-    fn(sections[index])
-  }
-  window.addEventListener('scroll', set)
-  set()
+type Section = {
+  icon?: string
+  name: string
+  title: ReactNode
+  component: () => React.JSX.Element
 }
 
 export const DashboardLayout = ({
   sections,
-  hideEuLogo,
   header,
   action,
   loading = false,
@@ -57,7 +52,6 @@ export const DashboardLayout = ({
   beforeSection,
   subTitle,
 }: {
-  hideEuLogo?: boolean
   pageWidth?: number
   action?: ReactNode
   loading: boolean
@@ -65,32 +59,16 @@ export const DashboardLayout = ({
   subTitle?: string
   header?: ReactNode
   beforeSection?: ReactNode
-  sections?: {
-    icon?: string
-    name: string
-    title: ReactNode
-    component: () => React.JSX.Element
-  }[]
+  sections?: Section[]
 }) => {
   const [activeSection, setActiveSection] = useState(sections?.[0]?.name ?? '')
   const hiddenSections = useSetState()
-  const {m} = useI18n()
+
   useEffect(() => {
     if (!sections) return
     if (sections.length === 0) return
-    spyTitles(sections.map(_ => _.name).reverse(), (s: string) => {
-      if (s && s !== activeSection) {
-        setActiveSection(s)
-      }
-    })
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault()
-        // @ts-ignore
-        document.querySelector(this.getAttribute('href')).scrollIntoView({behavior: 'smooth'})
-      })
-    })
   }, [sections])
+
   return (
     <>
       {loading && <LinearProgress sx={{position: 'fixed', top: 0, right: 0, left: 0}} />}
@@ -99,9 +77,22 @@ export const DashboardLayout = ({
           <DashboardHeader action={action} header={header} title={title} subTitle={subTitle} id={dashboardHeaderId} />
         }
         sidebar={map(sections, _ => (
-          <Sidebar headerId={dashboardHeaderId} showThemeToggle>
+          <Sidebar
+            elevation={null}
+            headerId={dashboardHeaderId}
+            showThemeToggle
+            sx={{background: 'none', boxShadow: 'none'}}
+          >
             {_.map(s => (
-              <SidebarItem icon={s.icon} key={s.name} href={'#' + s.name} active={activeSection === s.name}>
+              <SidebarItem
+                icon={s.icon}
+                key={s.name}
+                href={'#' + s.name}
+                active={activeSection === s.name}
+                onClick={() => {
+                  document.getElementById(s.name)?.scrollIntoView({behavior: 'smooth'})
+                }}
+              >
                 {s.title}
               </SidebarItem>
             ))}
@@ -111,24 +102,54 @@ export const DashboardLayout = ({
         <Page width={pageWidth} sx={{mb: 2}}>
           {beforeSection}
           {sections?.map(s => (
-            <Box key={s.name}>
-              <Typography
-                id={s.name}
-                variant="h2"
-                sx={Core.combineSx(style.sectionTitle, hiddenSections.has(s.name) && style.sectionShrinked)}
-              >
-                {s.title}
-                <Core.IconBtn
-                  children="expand_less"
-                  sx={Core.combineSx(style.iconExpand, hiddenSections.has(s.name) && style.iconExpendShrinked)}
-                  onClick={() => hiddenSections.toggle(s.name)}
-                />
-              </Typography>
-              <Collapse in={!hiddenSections.has(s.name)}>{s.component()}</Collapse>
-            </Box>
+            <Section
+              key={s.name}
+              section={s}
+              onToggleHidden={() => hiddenSections.toggle(s.name)}
+              onVisible={() => setActiveSection(s.name)}
+              hidden={hiddenSections.has(s.name)}
+            />
           ))}
         </Page>
       </Layout>
     </>
+  )
+}
+
+function Section({
+  section,
+  hidden,
+  onToggleHidden,
+  onVisible,
+}: {
+  onVisible: () => void
+  hidden?: boolean
+  onToggleHidden: () => void
+  section: Section
+}) {
+  const {ref, inView} = useInView({
+    threshold: 0.5,
+  })
+
+  React.useEffect(() => {
+    if (inView) onVisible()
+  }, [inView])
+
+  return (
+    <Box key={section.name} ref={ref}>
+      <Typography
+        id={section.name}
+        variant="h2"
+        sx={Core.combineSx(style.sectionTitle, hidden && style.sectionShrinked)}
+      >
+        {section.title}
+        <Core.IconBtn
+          children="expand_less"
+          sx={Core.combineSx(style.iconExpand, hidden && style.iconExpendShrinked)}
+          onClick={onToggleHidden}
+        />
+      </Typography>
+      <Collapse in={!hidden}>{section.component()}</Collapse>
+    </Box>
   )
 }

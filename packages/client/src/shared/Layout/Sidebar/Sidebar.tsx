@@ -15,9 +15,11 @@ export const Sidebar = ({
   showThemeToggle,
   sx,
   id = 'app-sidebar-id',
+  elevation = 5,
   headerId = 'app-header',
   ...props
 }: BoxProps & {
+  elevation?: number | null
   showThemeToggle?: boolean
   headerId?: string
 }) => {
@@ -45,7 +47,7 @@ export const Sidebar = ({
       PaperProps={{
         id,
         sx: {
-          boxShadow: t.vars.shadows[5],
+          boxShadow: elevation ? t.vars.shadows[elevation] : undefined,
           width: sidebarOpen ? sidebarWidth : '0px',
           transition: t.transitions.create('all') + ' !important',
           m: 1,

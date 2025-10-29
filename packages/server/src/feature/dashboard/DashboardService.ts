@@ -48,12 +48,19 @@ export class DashboardService {
       )
   }
 
-  readonly update = async ({id, workspaceId, filters, ...data}: Ip.Dashboard.Payload.Update): Promise<Ip.Dashboard> => {
+  readonly update = async ({
+    id,
+    workspaceId,
+    filters,
+    theme,
+    ...data
+  }: Ip.Dashboard.Payload.Update): Promise<Ip.Dashboard> => {
     return this.prisma.dashboard
       .update({
         where: {id},
         data: {
           ...data,
+          theme: theme as any,
           filters: filters as any,
         },
       })
@@ -67,7 +74,7 @@ export class DashboardService {
   }: Ip.Dashboard.Payload.Publish & {publishedBy: Ip.User.Email}) => {
     const dashboard = await this.prisma.dashboard.findFirstOrThrow({where: {id}, select: {id: true, publishedId: true}})
     const snapshot = await this.prisma.dashboardSection.findMany({
-      select: {title: true, description: true, widgets: true},
+      select: {id: true, title: true, description: true, widgets: true},
       where: {dashboardId: id},
     })
     if (dashboard?.publishedId) await this.prisma.dashboardPublished.delete({where: {id: dashboard.publishedId}})
