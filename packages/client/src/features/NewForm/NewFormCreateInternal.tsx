@@ -3,7 +3,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from 'infoportal-api-sdk'
 import {Grid} from '@mui/material'
 import {Core} from '@/shared'
-import {SelectFormCategory} from '@/shared/SelectFormCategory.js'
+import {SelectFormCategory} from '@/shared/customInput/SelectFormCategory.js'
 
 type Form = {
   name: string

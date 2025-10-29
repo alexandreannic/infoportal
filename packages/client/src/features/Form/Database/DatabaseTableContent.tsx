@@ -26,7 +26,7 @@ import {buildDbColumns, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
 import {useKoboDialogs} from '@/features/Form/Database/useKoboDialogs'
 import {useFormContext} from '@/features/Form/Form'
-import {SelectLangIndex} from '@/shared/SelectLangIndex'
+import {SelectLangIndex} from '@/shared/customInput/SelectLangIndex'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()

@@ -14,7 +14,7 @@ import {useEffect, useMemo, useState} from 'react'
 import {addDays, subYears} from 'date-fns'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext.js'
 import {PanelWidget} from '@/shared/PdfLayout/PanelWidget'
-import {SwitchBox} from '@/shared/SwitchBox'
+import {SwitchBox} from '@/shared/customInput/SwitchBox'
 import {PieChartStatus} from '@/features/Overview/PieChartStatus'
 import {OverviewFiltersBar} from '@/features/Overview/OverviewFiltersBar'
 

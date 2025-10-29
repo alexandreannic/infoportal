@@ -12,7 +12,7 @@ import {KoboSchemaHelper} from 'infoportal-common'
 import React, {useCallback, useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
-import {Core} from '.'
+import {Core} from '../index'
 import {useI18n} from '@infoportal/client-i18n'
 import {darkenVar} from '@infoportal/client-core'
 

@@ -5,7 +5,7 @@ import {
 } from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Ip} from 'infoportal-api-sdk'
 import {Controller, useForm, useWatch} from 'react-hook-form'
-import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {SelectQuestionInput} from '@/shared/customInput/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import React, {useEffect} from 'react'

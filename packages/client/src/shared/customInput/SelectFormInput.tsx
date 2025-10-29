@@ -4,7 +4,7 @@ import React, {useMemo, useState} from 'react'
 import {Asset, AssetIcon, AssetType} from '@/shared/Asset'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters'
 import {DeploymentStatusIcon} from '@/shared/DeploymentStatus'
-import {Core} from '.'
+import {Core} from '../index'
 
 export function SelectFormInput({
   workspaceId,

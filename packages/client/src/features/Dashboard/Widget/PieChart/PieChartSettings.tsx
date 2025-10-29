@@ -2,13 +2,13 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {Ip} from 'infoportal-api-sdk'
 import React, {useEffect} from 'react'
-import {SwitchBox} from '@/shared/SwitchBox'
+import {SwitchBox} from '@/shared/customInput/SwitchBox'
 import {
   getQuestionTypeByWidget,
   useQuestionInfo,
   useWidgetSettingsContext,
 } from '@/features/Dashboard/Widget/WidgetSettingsPanel'
-import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {SelectQuestionInput} from '@/shared/customInput/SelectQuestionInput'
 import {
   WidgetSettingsFilter,
   WidgetSettingsFilterQuestion,

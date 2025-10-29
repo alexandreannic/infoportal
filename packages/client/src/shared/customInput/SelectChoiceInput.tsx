@@ -3,7 +3,7 @@ import {KoboSchemaHelper} from 'infoportal-common'
 import React, {useCallback, useMemo} from 'react'
 import {Ip} from 'infoportal-api-sdk'
 import {Kobo} from 'kobo-sdk'
-import {Core} from '.'
+import {Core} from '../index'
 import {seq} from '@axanc/ts-utils'
 
 type Props = Omit<AutocompleteProps<string, true, false, true>, 'options' | 'renderInput'> & {

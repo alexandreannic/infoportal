@@ -8,11 +8,11 @@ import {
   useQuestionInfo,
   useWidgetSettingsContext,
 } from '@/features/Dashboard/Widget/WidgetSettingsPanel'
-import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {SelectQuestionInput} from '@/shared/customInput/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
-import {SwitchBox} from '@/shared/SwitchBox'
+import {SwitchBox} from '@/shared/customInput/SwitchBox'
 import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 import {ChoiceMapper, ChoicesMapperPanel} from '@/features/Dashboard/Widget/shared/ChoicesMapper'

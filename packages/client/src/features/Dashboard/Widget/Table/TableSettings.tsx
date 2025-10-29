@@ -1,5 +1,5 @@
 import {Controller, useForm, useWatch} from 'react-hook-form'
-import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {SelectQuestionInput} from '@/shared/customInput/SelectQuestionInput'
 import {getQuestionTypeByWidget, useWidgetSettingsContext} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import React, {useEffect} from 'react'

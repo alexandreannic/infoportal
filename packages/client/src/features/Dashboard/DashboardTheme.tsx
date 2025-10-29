@@ -1,11 +1,11 @@
 import {Core} from '@/shared'
-import {FontSelect} from '@/shared/SelectFont'
+import {FontSelect} from '@/shared/customInput/SelectFont'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, useTheme} from '@mui/material'
 import {Controller} from 'react-hook-form'
 import {useDashboardContext} from './DashboardContext'
-import {ColorPicker} from './Widget/shared/ColorPicker'
-import {SliderNumberInput} from './Widget/shared/SliderNumberInput'
+import {ColorPicker} from '../../shared/customInput/ColorPicker'
+import {SliderNumberInput} from '../../shared/customInput/SliderNumberInput'
 import {WidgetSettingsSection} from './Widget/shared/WidgetSettingsSection'
 
 export function DashboardTheme() {

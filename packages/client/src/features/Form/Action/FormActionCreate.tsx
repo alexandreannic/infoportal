@@ -7,7 +7,7 @@ import {Box, CircularProgress, DialogActions} from '@mui/material'
 import {Core} from '@/shared/index.js'
 import {useI18n} from '@infoportal/client-i18n'
 import {Obj} from '@axanc/ts-utils'
-import {SelectFormInput} from '@/shared/SelectFormInput'
+import {SelectFormInput} from '@/shared/customInput/SelectFormInput'
 
 type Form = Omit<Ip.Form.Action.Payload.Create, 'body' | 'workspaceId' | 'formId'>
 

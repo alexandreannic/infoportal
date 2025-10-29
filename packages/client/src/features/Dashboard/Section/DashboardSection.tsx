@@ -8,7 +8,7 @@ import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/Widget
 import {WidgetCreatorFormPanel, WidgetUpdatePayload} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Core} from '@/shared'
 import {NotFoundContent} from '@/shared/PageNotFound'
-import {SelectLangIndex} from '@/shared/SelectLangIndex'
+import {SelectLangIndex} from '@/shared/customInput/SelectLangIndex'
 import {TabContent} from '@/shared/Tab/TabContent'
 import {alphaVar} from '@infoportal/client-core'
 import {useI18n} from '@infoportal/client-i18n'

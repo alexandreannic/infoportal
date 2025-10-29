@@ -10,8 +10,8 @@ import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {UseQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboTypeIcon} from '@infoportal/database-column'
-import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
-import {SelectChoiceInput} from '@/shared/SelectChoiceInput'
+import {SelectQuestionInput} from '@/shared/customInput/SelectQuestionInput'
+import {SelectChoiceInput} from '@/shared/customInput/SelectChoiceInput'
 
 interface Form extends IAccessForm {
   question?: string

@@ -7,12 +7,12 @@ import {
   useQuestionInfo,
   useWidgetSettingsContext,
 } from '@/features/Dashboard/Widget/WidgetSettingsPanel'
-import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {SelectQuestionInput} from '@/shared/customInput/SelectQuestionInput'
 import {Core} from '@/shared'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {Box, useTheme} from '@mui/material'
-import {ColorPickerLimited} from '@/features/Dashboard/Widget/shared/ColorPickerLimited'
+import {ColorPickerLimited} from '@/shared/customInput/ColorPickerLimited'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 
 export function LineChartSettings() {

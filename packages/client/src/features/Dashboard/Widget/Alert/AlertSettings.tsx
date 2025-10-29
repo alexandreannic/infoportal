@@ -11,14 +11,14 @@ import {
 import {Core} from '@/shared'
 import {SelectChoices} from '@/features/Dashboard/Widget/shared/SelectChoices'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
-import {SelectQuestionInput} from '@/shared/SelectQuestionInput'
+import {SelectQuestionInput} from '@/shared/customInput/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import {Obj} from '@axanc/ts-utils'
 import {MaterialIconSelector} from '@/features/Dashboard/Widget/shared/MaterialIconSelector'
 import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
-import {ColorPickerLimited} from '@/features/Dashboard/Widget/shared/ColorPickerLimited'
-import {SwitchBox} from '@/shared/SwitchBox'
+import {ColorPickerLimited} from '@/shared/customInput/ColorPickerLimited'
+import {SwitchBox} from '@/shared/customInput/SwitchBox'
 
 export function AlertSettings() {
   const {m} = useI18n()

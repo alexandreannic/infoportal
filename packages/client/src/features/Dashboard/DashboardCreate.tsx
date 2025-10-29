@@ -9,8 +9,8 @@ import {useFetcher} from '@axanc/react-hooks'
 import {Core} from '@/shared'
 import {Ip} from 'infoportal-api-sdk'
 import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
-import {SwitchBox} from '@/shared/SwitchBox'
-import {SelectFormInput} from '@/shared/SelectFormInput'
+import {SwitchBox} from '@/shared/customInput/SwitchBox'
+import {SelectFormInput} from '@/shared/customInput/SelectFormInput'
 
 type Form = {
   slug: string
