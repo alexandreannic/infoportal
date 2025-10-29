@@ -346,12 +346,14 @@ export const en = Object.freeze({
     customize: 'Customize',
     resetDefault: 'Restore Default',
     dangerZone: 'Danger zone',
+    font: 'Font',
     _dashboard: {
       theme: {
         primaryColor: 'Color',
         borderRadius: 'Border Radius',
         elevation: 'Elevation',
         fontFamily: 'Font Family',
+        fontSize: 'Font Size',
         spacing: 'Spacing',
         cardBorderSize: 'Border Size',
         cardBorderColor: 'Border Color',

@@ -98,6 +98,8 @@ export function DashboardSection() {
         <ThemeProvider theme={theme}>
           <Box
             sx={{
+              fontFamily: dashboard.theme?.fontFamily,
+              fontSize: dashboard.theme?.fontSize,
               flex: 1,
               margin: '0 auto',
               mb: 1,

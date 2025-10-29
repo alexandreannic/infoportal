@@ -7,35 +7,37 @@ export const defaultSpacing = 8
 
 export type AppThemeParams = {
   fontSize?: number
+  fontFamily?: string
   cardElevation?: number
   cardBorderSize?: number
   cardBorderColor?: string
   cardBgColor?: string
   cardBlur?: number
   cardOpacity?: number
-  dark?: boolean
   spacing?: number
+  borderRadius?: number
   colorPrimary?: string
   colorSecondary?: string
-  cssVarPrefix?: string
-  borderRadius?: number
   bgColor?: string
+  cssVarPrefix?: string
+  dark?: boolean
 }
 
 export const defaultThemeParams = {
   colorPrimary: Core.colorPrimary['500'], // '#c9000a',
   colorSecondary: '#1a73e8',
+  bgColor: '#edf2faff',
   dark: false,
-  cardElevation: 0,
   borderRadius: 12,
   spacing: 8,
   fontSize: 14,
+  fontFamily: '"Open Sans", sans-serif',
+  cardElevation: 0,
   cardBorderSize: 0,
   cardBorderColor: undefined,
   cardBgColor: '#fff',
   cardBlur: 10,
   cardOpacity: 6,
-  bgColor: '#edf2faff',
 }
 
 export const muiTheme = ({
@@ -45,6 +47,7 @@ export const muiTheme = ({
   borderRadius = defaultThemeParams.borderRadius,
   spacing = defaultThemeParams.spacing,
   fontSize = defaultThemeParams.fontSize,
+  fontFamily = defaultThemeParams.fontFamily,
   dark = defaultThemeParams.dark,
   cardOpacity = defaultThemeParams.cardOpacity,
   cardBorderSize = defaultThemeParams.cardBorderSize,
@@ -55,7 +58,6 @@ export const muiTheme = ({
   cssVarPrefix,
 }: AppThemeParams = {}): Theme => {
   const lineHeight = '1.5'
-  const fontFamily = '"Open Sans", sans-serif'
 
   return createTheme({
     defaultColorScheme: dark ? 'dark' : 'light',
@@ -186,6 +188,7 @@ export const muiTheme = ({
             display: 'none',
           },
           body: {
+            fontFamily,
             height: '100vh',
             margin: 0,
             fontSize: '1rem',

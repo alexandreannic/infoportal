@@ -1,4 +1,5 @@
 import {Core} from '@/shared'
+import {FontSelect} from '@/shared/SelectFont'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, useTheme} from '@mui/material'
 import {Controller} from 'react-hook-form'
@@ -22,16 +23,28 @@ export function DashboardTheme() {
         <Controller
           control={form.control}
           name="theme.bgColor"
-          render={({field}) => <ColorPicker label={m._dashboard.theme.bgColor} {...field} />}
+          render={({field}) => <ColorPicker label={m._dashboard.theme.bgColor} {...field} sx={{mb: 2}} />}
         />
         <Controller
           control={form.control}
           name="theme.spacing"
-          render={({field}) => (
-            <SliderNumberInput label={m._dashboard.theme.spacing} sx={{mt: 2}} min={0} max={30} {...field} />
-          )}
+          render={({field}) => <SliderNumberInput label={m._dashboard.theme.spacing} min={0} max={30} {...field} />}
         />
       </WidgetSettingsSection>
+
+      <WidgetSettingsSection title={m.font}>
+        <Controller
+          control={form.control}
+          name="theme.fontFamily"
+          render={({field}) => <FontSelect {...(field as any)} sx={{mb: 2}} />}
+        />
+        <Controller
+          control={form.control}
+          name="theme.fontSize"
+          render={({field}) => <SliderNumberInput label={m._dashboard.theme.fontSize} min={5} max={30} {...field} />}
+        />
+      </WidgetSettingsSection>
+
       <WidgetSettingsSection title={m.card}>
         <Controller
           control={form.control}

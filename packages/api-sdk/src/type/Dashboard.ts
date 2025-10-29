@@ -49,14 +49,15 @@ export namespace Dashboard {
     colorPrimary?: string
     borderRadius?: number
     fontFamily?: string
+    fontSize?: number
     spacing?: number
+    bgColor?: string
     cardElevation?: number
     cardBorderSize?: number
     cardBorderColor?: string
     cardBgColor?: string
     cardBlur?: number
     cardOpacity?: number
-    bgColor?: string
   }
 
   export namespace Payload {
