@@ -1,7 +1,7 @@
 import {useCallback, useMemo} from 'react'
 import {multipleFilters, safeNumber} from 'infoportal-common'
 import {fnSwitch, KeyOf, map, Obj} from '@axanc/ts-utils'
-import {Column, Filters, FilterTypeMapping, Row, SortBy} from './types.js'
+import {Column, Filters, FilterTypeMapping, FilterValue, Row, SortBy} from './types.js'
 import {Utils} from '../helper/utils'
 
 export type UseData<T extends Row> = ReturnType<typeof useData<T>>
@@ -92,7 +92,7 @@ const filterBy = <T extends Row>({
 }: {
   data: T[]
   filters: Filters<T>
-  colIndex: Record<KeyOf<T>, Column.InnerProps<T>>
+  colIndex: Record<KeyOf<T>, Pick<Column.InnerProps<T>, 'type' | 'render'>>
 }) => {
   return multipleFilters(
     data,
@@ -100,71 +100,93 @@ const filterBy = <T extends Row>({
       const filter = filters[k]
       const col = colIndex[k]
       if (col === undefined || filter === undefined) return
-      switch (col.type) {
-        case 'id': {
-          const typedFilter = filter as FilterTypeMapping['id']
-          const filteredIds = typedFilter.split(/\s/)
-          return row => {
-            let v = col.render(row).value as string | undefined
-            if (v === undefined) return false
-            if (filteredIds.length === 1) return v.includes(filteredIds[0])
-            if (filteredIds.length > 1) return filteredIds.includes(v)
-            return false
-          }
-        }
-        case 'date': {
-          const typedFilter = filter as FilterTypeMapping['date']
-          return row => {
-            let v = col.render(row).value as Date | undefined
-            if (v === undefined) return false
-            if (!((v as any) instanceof Date)) {
-              console.warn(`Value of ${String(k)} is`, v, `but Date expected.`)
-              v = new Date(v)
-              // throw new Error(`Value of ${String(k)} is ${v} but Date expected.`)
-            }
-            const [min, max] = typedFilter
-            return (!min || v.getTime() >= min.getTime()) && (!max || v.getTime() <= max.getTime())
-          }
-        }
-        case 'select_one': {
-          const typedFilter = filter as FilterTypeMapping['select_one']
-          return row => {
-            const v = col.render(row).value as string
-            if (v === undefined) return false
-            return typedFilter.includes(v)
-          }
-        }
-        case 'select_multiple': {
-          const typedFilter = filter as FilterTypeMapping['select_multiple']
-          return row => {
-            const v = col.render(row).value as string[]
-            return v.some(_ => typedFilter.includes(_))
-          }
-        }
-        case 'number': {
-          const typedFilter = filter as FilterTypeMapping['number']
-          return row => {
-            const v = col.render(row).value as number | undefined
-            const min = typedFilter[0] as number | undefined
-            const max = typedFilter[1] as number | undefined
-            return v !== undefined && (max === undefined || v <= max) && (min === undefined || v >= min)
-          }
-        }
-        default: {
-          if (!col.type) return
-          const typedFilter = filter as FilterTypeMapping['string']
-          return row => {
-            const v = col.render(row).value
-            if (v === Utils.blank && typedFilter?.filterBlank !== false) return false
-            if (typedFilter?.value === undefined) return true
-            if (typeof v !== 'string' && typeof v !== 'number') {
-              console.warn('Value of ${String(k)} is', v)
-              throw new Error(`Value of ${String(k)} is ${v} but expected string.`)
-            }
-            return ('' + v).toLowerCase().includes(typedFilter.value.toLowerCase())
-          }
-        }
-      }
+      return filterByColumn({
+        type: col.type,
+        getValue: row => col.render(row).value,
+        columnId: k,
+        filter,
+      })
     }),
   )
+}
+
+export const filterByColumn = <T extends Row>({
+  filter,
+  getValue,
+  columnId,
+  type,
+}: {
+  columnId: string
+  filter: FilterValue
+  getValue: (_: T) => any
+  type?: Column.Type
+}) => {
+  switch (type) {
+    case 'id': {
+      const typedFilter = filter as FilterTypeMapping['id']
+      const filteredIds = typedFilter.split(/\s/)
+      return (row: T) => {
+        let v = getValue(row) as string | undefined
+        if (v === undefined) return false
+        if (filteredIds.length === 1) return v.includes(filteredIds[0])
+        if (filteredIds.length > 1) return filteredIds.includes(v)
+        return false
+      }
+    }
+    case 'date': {
+      const typedFilter = filter as FilterTypeMapping['date']
+      return (row: T) => {
+        let v = getValue(row) as Date | undefined
+        if (v === undefined) return false
+        if (!((v as any) instanceof Date)) {
+          console.warn(`Value of ${String(columnId)} is`, v, `but Date expected.`)
+          v = new Date(v)
+          // throw new Error(`Value of ${String(k)} is ${v} but Date expected.`)
+        }
+        const [min, max] = typedFilter
+        return (!min || v.getTime() >= min.getTime()) && (!max || v.getTime() <= max.getTime())
+      }
+    }
+    case 'select_one': {
+      const typedFilter = filter as FilterTypeMapping['select_one']
+      console.log('so', typedFilter)
+      if (typedFilter.length === 0) return
+      return (row: T) => {
+        const v = getValue(row) as string
+        if (v === undefined) return false
+        return typedFilter.includes(v)
+      }
+    }
+    case 'select_multiple': {
+      const typedFilter = filter as FilterTypeMapping['select_multiple']
+      if (typedFilter.length === 0) return
+      return (row: T) => {
+        const v = getValue(row) as string[]
+        return v.some(_ => typedFilter.includes(_))
+      }
+    }
+    case 'number': {
+      const typedFilter = filter as FilterTypeMapping['number']
+      return (row: T) => {
+        const v = getValue(row) as number | undefined
+        const min = typedFilter[0] as number | undefined
+        const max = typedFilter[1] as number | undefined
+        return v !== undefined && (max === undefined || v <= max) && (min === undefined || v >= min)
+      }
+    }
+    default: {
+      if (!type) return
+      const typedFilter = filter as FilterTypeMapping['string']
+      return (row: T) => {
+        const v = getValue(row)
+        if (v === Utils.blank && typedFilter?.filterBlank !== false) return false
+        if (typedFilter?.value === undefined) return true
+        if (typeof v !== 'string' && typeof v !== 'number') {
+          console.warn('Value of ${String(k)} is', v)
+          throw new Error(`Value of ${String(columnId)} is ${v} but expected string.`)
+        }
+        return ('' + v).toLowerCase().includes(typedFilter.value.toLowerCase())
+      }
+    }
+  }
 }

@@ -22,8 +22,12 @@ export const GeoPointWidget = ({
   const filterFns = useDashboardContext(_ => _.data.filterFns)
 
   const filteredData = useMemo(() => {
-    return getFilteredData([filterFns.byPeriodCurrent, filterFns.byWidgetFilter(config.filter)])
-  }, [getFilteredData, config.filter, filterFns.byPeriodCurrent, filterFns.byWidgetFilter])
+    return getFilteredData([
+      filterFns.byPeriodCurrent,
+      filterFns.byWidgetFilter(config.filter),
+      filterFns.byDashboardFilter(),
+    ])
+  }, [getFilteredData, config.filter, filterFns.byDashboardFilter, filterFns.byPeriodCurrent, filterFns.byWidgetFilter])
 
   const bubbles = useMemo(() => {
     if (!config.questionName) return

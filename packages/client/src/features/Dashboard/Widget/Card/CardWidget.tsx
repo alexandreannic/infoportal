@@ -16,9 +16,20 @@ export function CardWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const flattenRepeatGroupData = useDashboardContext(_ => _.flattenRepeatGroupData)
 
   const data = useMemo(() => {
-    const d = getFilteredData([filterFns.byPeriodCurrent, filterFns.byWidgetFilter(config.filter)])
+    const d = getFilteredData([
+      filterFns.byPeriodCurrent,
+      filterFns.byWidgetFilter(config.filter),
+      filterFns.byDashboardFilter(),
+    ])
     return flattenRepeatGroupData.flattenIfRepeatGroup(d, config.questionName)
-  }, [getFilteredData, filterFns.byPeriodCurrent, filterFns.byWidgetFilter, config.questionName, config.filter])
+  }, [
+    getFilteredData,
+    filterFns.byPeriodCurrent,
+    filterFns.byWidgetFilter,
+    filterFns.byDashboardFilter,
+    config.questionName,
+    config.filter,
+  ])
 
   const value = useMemo(() => {
     if (config.operation === 'count') return data.length

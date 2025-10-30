@@ -15,7 +15,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Box, Collapse, Icon, Theme, ThemeProvider, useTheme} from '@mui/material'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
-import {useCallback, useMemo, useState} from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import ReactGridLayout, {WidthProvider} from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 
@@ -129,6 +129,8 @@ export function DashboardSection() {
               )}
             </Core.DebouncedInput>
             <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
+            {JSON.stringify(filter.get)}
+            <Core.IconBtn children="filter_list_off" tooltip={m.clearFilter} onClick={() => filter.reset()} />
             <Box
               sx={{
                 background: dashboard.theme.bgColor ?? alphaVar(t.vars.palette.text.disabled, 0.025),

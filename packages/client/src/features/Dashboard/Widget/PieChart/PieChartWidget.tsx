@@ -14,15 +14,37 @@ export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const langIndex = useDashboardContext(_ => _.langIndex)
 
   const filteredData = useMemo(() => {
-    const d = getFilteredData([filterFns.byPeriodCurrent, filterFns.byWidgetFilter(config.filter)])
+    const d = getFilteredData([
+      filterFns.byPeriodCurrent,
+      filterFns.byWidgetFilter(config.filter),
+      filterFns.byDashboardFilter(),
+    ])
     return flattenRepeatGroupData.flattenIfRepeatGroup(d, config.questionName)
-  }, [getFilteredData, filterFns.byPeriodCurrent, filterFns.byWidgetFilter, config.questionName, config.filter])
+  }, [
+    getFilteredData,
+    filterFns.byPeriodCurrent,
+    filterFns.byDashboardFilter,
+    filterFns.byWidgetFilter,
+    config.questionName,
+    config.filter,
+  ])
 
   const filteredDataDelta = useMemo(() => {
     if (!filterFns.byPeriodCurrentDelta) return
-    const d = getFilteredData([filterFns.byPeriodCurrentDelta, filterFns.byWidgetFilter(config.filter)])
+    const d = getFilteredData([
+      filterFns.byPeriodCurrentDelta,
+      filterFns.byWidgetFilter(config.filter),
+      filterFns.byDashboardFilter(),
+    ])
     return flattenRepeatGroupData.flattenIfRepeatGroup(d, config.questionName)
-  }, [getFilteredData, filterFns.byPeriodCurrentDelta, filterFns.byWidgetFilter, config.questionName, config.filter])
+  }, [
+    getFilteredData,
+    filterFns.byPeriodCurrentDelta,
+    filterFns.byWidgetFilter,
+    filterFns.byDashboardFilter,
+    config.questionName,
+    config.filter,
+  ])
 
   const filterValue = useMemo(() => {
     if (!config.questionName) return

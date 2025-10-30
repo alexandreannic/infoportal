@@ -1,5 +1,6 @@
 import {Answers, DashboardContext} from '@/features/Dashboard/DashboardContext'
-import {Seq} from '@axanc/ts-utils'
+import {fnSwitch, Seq} from '@axanc/ts-utils'
+import {filterByColumn} from '@infoportal/client-datatable'
 import {subDays} from 'date-fns'
 import {Ip} from 'infoportal-api-sdk'
 import {isDate, KoboSchemaHelper, PeriodHelper} from 'infoportal-common'
@@ -77,12 +78,67 @@ function useFiltersFn({dashboard, schema, filters: dashboardFilters}: Omit<Props
     },
     [schema],
   )
+  const byDashboardFilter = useCallback(
+    ({excludedQuestion}: {excludedQuestion?: string} = {}) => {
+      const filtersCopy = {...dashboardFilters.questions}
+      if (excludedQuestion) delete (filtersCopy as any)[excludedQuestion]
+      const all = Object.keys(filtersCopy).map(questionName => {
+        console.log({
+          columnId: questionName,
+          getValue: (row: any) => row[questionName],
+          type: fnSwitch(
+            schema.helper.questionIndex[questionName]?.type!,
+            {
+              today: 'date',
+              start: 'date',
+              end: 'date',
+              datetime: 'date',
+              date: 'date',
+              select_one_from_file: 'select_one',
+              select_one: 'select_one',
+              select_multiple: 'select_multiple',
+              integer: 'number',
+              decimal: 'number',
+            },
+            () => 'string',
+          ),
+          filter: (filtersCopy as any)[questionName],
+        })
+        return filterByColumn<Answers>({
+          columnId: questionName,
+          getValue: row => row[questionName],
+          type: fnSwitch(
+            schema.helper.questionIndex[questionName]?.type!,
+            {
+              today: 'date',
+              start: 'date',
+              end: 'date',
+              datetime: 'date',
+              date: 'date',
+              select_one_from_file: 'select_one',
+              select_one: 'select_one',
+              select_multiple: 'select_multiple',
+              integer: 'number',
+              decimal: 'number',
+            },
+            () => 'string',
+          ),
+          filter: (filtersCopy as any)[questionName],
+        })
+      })
+      return (row: Answers) => {
+        return all.filter(_ => _ !== undefined).every(_ => _(row))
+      }
+    },
+    [dashboardFilters],
+  )
 
   return {
     byPeriod,
     byPeriodCurrent,
     byPeriodCurrentDelta,
     byWidgetFilter,
+    byDashboardFilter,
   }
 }
 

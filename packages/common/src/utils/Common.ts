@@ -96,17 +96,13 @@ export const makeid = (length = 14) => {
   return result
 }
 
-export const multipleFilters = <T>(
+export function multipleFilters<T>(
   list: T[],
-  filters: Array<undefined | boolean | ((value: T, index: number, array: T[]) => boolean)>,
-) => {
-  if (filters.length === 0) return list
-  return list.filter((t: T, index: number, array: T[]) =>
-    filters
-      .filter(filter => filter instanceof Function)
-      // @ts-ignore
-      .every(filter => filter(t, index, array)),
-  )
+  filters: Array<((value: T, index: number, array: T[]) => boolean) | false | undefined | null>,
+): T[] {
+  const activeFilters = filters.filter((f): f is (value: T, i: number, a: T[]) => boolean => typeof f === 'function')
+  if (activeFilters.length === 0) return list
+  return list.filter((item, i, arr) => activeFilters.every(fn => fn(item, i, arr)))
 }
 
 export const forceArrayStringInference = <T extends string>(a: T[]) => a

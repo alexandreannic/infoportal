@@ -68,8 +68,12 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const schema = useDashboardContext(_ => _.schema)
 
   const filteredData = useMemo(() => {
-    return getFilteredData([filterFns.byPeriodCurrent, filterFns.byWidgetFilter(config.filter)])
-  }, [getFilteredData, config.filter, filterFns.byPeriodCurrent, filterFns.byWidgetFilter])
+    return getFilteredData([
+      filterFns.byPeriodCurrent,
+      filterFns.byWidgetFilter(config.filter),
+      filterFns.byDashboardFilter(),
+    ])
+  }, [getFilteredData, config.filter, filterFns.byPeriodCurrent, filterFns.byWidgetFilter, filterFns.byDashboardFilter])
 
   const {column, row} = useMemo(() => {
     const colKey = config.column?.questionName

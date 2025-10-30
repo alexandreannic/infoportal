@@ -14,8 +14,12 @@ export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const langIndex = useDashboardContext(_ => _.langIndex)
 
   const filteredData = useMemo(() => {
-    return getFilteredData([filterFns.byPeriodCurrent, filterFns.byWidgetFilter(config.filter)])
-  }, [getFilteredData, config.filter, filterFns.byPeriodCurrent, filterFns.byWidgetFilter])
+    return getFilteredData([
+      filterFns.byPeriodCurrent,
+      filterFns.byWidgetFilter(config.filter),
+      filterFns.byDashboardFilter(),
+    ])
+  }, [getFilteredData, filterFns.byDashboardFilter, config.filter, filterFns.byPeriodCurrent, filterFns.byWidgetFilter])
 
   const data = useMemo(() => {
     if (!config.questionName) return []

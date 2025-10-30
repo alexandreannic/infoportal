@@ -25,12 +25,33 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   }, [config.questionName, schema])
 
   const filteredData = useMemo(() => {
-    return getFilteredData([filterFns.byPeriodCurrent, filterFns.byWidgetFilter(config.filter)])
-  }, [getFilteredData, config.filter, filterFns.byPeriodCurrent, filterFns.byWidgetFilter])
+    return getFilteredData([
+      filterFns.byPeriodCurrent,
+      filterFns.byWidgetFilter(config.filter),
+      filterFns.byDashboardFilter({excludedQuestion: config.questionName}),
+    ])
+  }, [
+    getFilteredData,
+    config.questionName,
+    config.filter,
+    filterFns.byDashboardFilter,
+    filterFns.byPeriodCurrent,
+    filterFns.byWidgetFilter,
+  ])
 
   const dataDelta = useMemo(() => {
-    return getFilteredData([filterFns.byPeriodCurrentDelta, filterFns.byWidgetFilter(config.filter)])
-  }, [getFilteredData, config.filter, filterFns.byWidgetFilter, filterFns.byPeriodCurrentDelta])
+    return getFilteredData([
+      filterFns.byPeriodCurrentDelta,
+      filterFns.byWidgetFilter(config.filter),
+      filterFns.byDashboardFilter({excludedQuestion: config.questionName}),
+    ])
+  }, [
+    getFilteredData,
+    config.filter,
+    filterFns.byWidgetFilter,
+    filterFns.byDashboardFilter,
+    filterFns.byPeriodCurrentDelta,
+  ])
 
   const question = schema.helper.questionIndex[config.questionName!]
   const multiple = question?.type === 'select_multiple'
@@ -53,14 +74,13 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
       : (_: Answers) => _[config.questionName!] ?? Datatable.Utils.blank
   }, [config.mapping, langIndex, config.questionName])
 
-  const handleFilter = useCallback(
+  const handleChoiceClick = useCallback(
     (key: string) => {
       if (config.mapping) {
-        console.log(key, config.mapping)
         const values = Object.entries(config.mapping)
           .filter(([choiceName, mappedValues]) => mappedValues?.[langIndex] === key)
           .map(_ => _[0])
-        updateFilter(config.questionName!, values)
+        updateFilter(config.questionName!, values.length === 0 ? [key] : values)
       } else {
         updateFilter(config.questionName!, [key])
       }
@@ -75,7 +95,7 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
       <WidgetTitle>{widget.i18n_title?.[langIndex]}</WidgetTitle>
       <Core.ChartBarBy
         checked={filter.questions[config.questionName]}
-        onClickData={handleFilter}
+        onClickData={handleChoiceClick}
         compareTo={config.showEvolution ? dataDelta : undefined}
         multiple={multiple}
         hideValue={!config.showValue}
