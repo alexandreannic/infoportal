@@ -1,55 +1,26 @@
-import {Ip} from 'infoportal-api-sdk'
-import React, {useMemo} from 'react'
-import {Core} from '@/shared'
-import {Obj, seq} from '@axanc/ts-utils'
-import {ChartLineCurve} from '@infoportal/client-core'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
-import {isDate, KoboSchemaHelper, PeriodHelper} from 'infoportal-common'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
+import {Core} from '@/shared'
+import {seq} from '@axanc/ts-utils'
+import {ChartLineCurve} from '@infoportal/client-core'
 import {Box} from '@mui/material'
-
-export function filterToFunction<T extends Record<string, any> = Record<string, any>>(
-  schema: KoboSchemaHelper.Bundle<true>,
-  filter?: Ip.Dashboard.Widget.ConfigFilter,
-): undefined | ((_: T) => boolean | undefined) {
-  if (!filter?.questionName) return
-  const filterNumber = filter.number
-  const filterChoice = filter.choices
-  const filterDate = filter.date
-  if (filterDate) {
-    return (_: T) => {
-      const value = _[filter.questionName!]
-      if (!isDate(value)) return false
-      return PeriodHelper.isDateIn({start: filterDate?.[0], end: filterDate?.[1]}, value)
-    }
-  }
-  if (filterNumber)
-    return (_: T) => {
-      const value = _[filter.questionName!]
-      if (isNaN(value)) return false
-      if (filterNumber.min && filterNumber.min > value) return false
-      if (filterNumber.max && filterNumber.max < value) return false
-      return true
-    }
-  if (filterChoice) {
-    if (!filterChoice || filterChoice.length === 0) return _ => true
-    const isMultiple = schema.helper.questionIndex[filter.questionName]?.type === 'select_multiple'
-    const set = new Set(filterChoice)
-    if (isMultiple) return (_: T) => _[filter.questionName!]?.some((_: string) => set.has(_))
-    return (_: T) => set.has(_[filter.questionName!])
-  }
-}
+import {Ip} from 'infoportal-api-sdk'
+import {useMemo} from 'react'
 
 export const LineChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const config = widget.config as Ip.Dashboard.Widget.Config['LineChart']
 
-  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
+  const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
+  const filterFns = useDashboardContext(_ => _.data.filterFns)
   const langIndex = useDashboardContext(_ => _.langIndex)
   const schema = useDashboardContext(_ => _.schema)
 
-  const filterFns = useMemo(() => {
-    return config.lines?.map(_ => filterToFunction(schema, _.filter)) ?? []
+  const data = useMemo(() => {
+    return getFilteredData([filterFns.byPeriodCurrent])
+  }, [getFilteredData])
+  const lineFilters = useMemo(() => {
+    return config.lines?.map(_ => filterFns.byWidgetFilter(_.filter)) ?? []
   }, [config.lines])
 
   if (!config.lines || config.lines.length === 0) return <WidgetCardPlaceholder type={widget.type} />
@@ -59,12 +30,12 @@ export const LineChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
       <Core.ChartLineByDateFiltered
         start={config.start}
         end={config.end}
-        data={flatSubmissions}
+        data={data}
         curves={seq(config.lines).reduceObject<Record<string, ChartLineCurve>>((line, acc, i) => [
           line.i18n_label?.[langIndex] ?? schema.translate.question(line.questionName),
           {
             getDate: _ => _[line.questionName],
-            filter: filterFns[i],
+            filter: lineFilters[i],
             color: line.color,
           },
         ])}

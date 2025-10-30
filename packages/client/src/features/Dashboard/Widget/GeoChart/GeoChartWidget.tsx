@@ -1,24 +1,21 @@
-import {useTheme} from '@mui/material'
-import {Ip} from 'infoportal-api-sdk'
-import React, {useMemo} from 'react'
-import {Core} from '@/shared'
-import {map, Obj} from '@axanc/ts-utils'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
-import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
+import {Core} from '@/shared'
+import {Obj} from '@axanc/ts-utils'
+import {Ip} from 'infoportal-api-sdk'
+import {useMemo} from 'react'
 
 export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
-  const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoChart']
 
-  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
+  const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
+  const filterFns = useDashboardContext(_ => _.data.filterFns)
   const langIndex = useDashboardContext(_ => _.langIndex)
-  const schema = useDashboardContext(_ => _.schema)
 
   const filteredData = useMemo(() => {
-    return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
-  }, [flatSubmissions, config.filter])
+    return getFilteredData([filterFns.byPeriodCurrent, filterFns.byWidgetFilter(config.filter)])
+  }, [getFilteredData, config.filter, filterFns.byPeriodCurrent, filterFns.byWidgetFilter])
 
   const data = useMemo(() => {
     if (!config.questionName) return []

@@ -1,20 +1,19 @@
-import {Ip} from 'infoportal-api-sdk'
-import React, {useMemo} from 'react'
-import {Core} from '@/shared'
-import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
-import {map} from '@axanc/ts-utils'
 import {Answers, useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
+import {Core, Datatable} from '@/shared'
 import {Box} from '@mui/material'
-import {Datatable} from '@/shared'
+import {Ip} from 'infoportal-api-sdk'
+import {useCallback, useMemo} from 'react'
 
 export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
 
-  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
+  const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
+  const filterFns = useDashboardContext(_ => _.data.filterFns)
   const langIndex = useDashboardContext(_ => _.langIndex)
-  const flatSubmissionsDelta = useDashboardContext(_ => _.flatSubmissionsDelta)
+  const filter = useDashboardContext(_ => _.filter.get)
+  const updateFilter = useDashboardContext(_ => _.filter.updateQuestion)
   const schema = useDashboardContext(_ => _.schema)
 
   const labels = useMemo(() => {
@@ -25,9 +24,13 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     return choices.reduceObject<Record<string, string>>(_ => [_.name, schema.translate.choice(q, _.name)])
   }, [config.questionName, schema])
 
-  const data = useMemo(() => {
-    return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
-  }, [flatSubmissions, config.filter])
+  const filteredData = useMemo(() => {
+    return getFilteredData([filterFns.byPeriodCurrent, filterFns.byWidgetFilter(config.filter)])
+  }, [getFilteredData, config.filter, filterFns.byPeriodCurrent, filterFns.byWidgetFilter])
+
+  const dataDelta = useMemo(() => {
+    return getFilteredData([filterFns.byPeriodCurrentDelta, filterFns.byWidgetFilter(config.filter)])
+  }, [getFilteredData, config.filter, filterFns.byWidgetFilter, filterFns.byPeriodCurrentDelta])
 
   const question = schema.helper.questionIndex[config.questionName!]
   const multiple = question?.type === 'select_multiple'
@@ -50,16 +53,33 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
       : (_: Answers) => _[config.questionName!] ?? Datatable.Utils.blank
   }, [config.mapping, langIndex, config.questionName])
 
+  const handleFilter = useCallback(
+    (key: string) => {
+      if (config.mapping) {
+        console.log(key, config.mapping)
+        const values = Object.entries(config.mapping)
+          .filter(([choiceName, mappedValues]) => mappedValues?.[langIndex] === key)
+          .map(_ => _[0])
+        updateFilter(config.questionName!, values)
+      } else {
+        updateFilter(config.questionName!, [key])
+      }
+    },
+    [config.questionName!, config.mapping],
+  )
+
   if (!config.questionName || !question) return <WidgetCardPlaceholder type={widget.type} />
 
   return (
     <Box sx={{p: 1}}>
       <WidgetTitle>{widget.i18n_title?.[langIndex]}</WidgetTitle>
       <Core.ChartBarBy
-        compareTo={config.showEvolution ? flatSubmissionsDelta : undefined}
+        checked={filter.questions[config.questionName]}
+        onClickData={handleFilter}
+        compareTo={config.showEvolution ? dataDelta : undefined}
         multiple={multiple}
         hideValue={!config.showValue}
-        data={data}
+        data={filteredData}
         label={labels}
         limit={config.limit}
         filterValue={hiddenChoices}

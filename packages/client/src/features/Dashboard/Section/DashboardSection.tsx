@@ -40,8 +40,7 @@ export function DashboardSection() {
     langIndex,
     setLangIndex,
     workspaceId,
-    filters,
-    setFilters,
+    filter,
     effectiveDataRange,
     schema,
     sections,
@@ -109,9 +108,9 @@ export function DashboardSection() {
           >
             <Core.DebouncedInput<[Date | null | undefined, Date | null | undefined]>
               debounce={800}
-              value={[filters.period.start, filters.period.end]}
+              value={[filter.get.period.start, filter.get.period.end]}
               onChange={([start, end]) => {
-                setFilters(prev => ({
+                filter.set(prev => ({
                   ...prev,
                   period: {start: start ?? effectiveDataRange.start, end: end ?? effectiveDataRange.end},
                 }))

@@ -1,36 +1,31 @@
+import {UseDashboardFilters, useDashboardFilters} from '@/features/Dashboard/useDashboardFilters'
 import {UseFlattenRepeatGroupData, useFlattenRepeatGroupData} from '@/features/Dashboard/useGetDataByRepeatGroup'
-import {seq, Seq} from '@axanc/ts-utils'
+import {seq} from '@axanc/ts-utils'
 import {useI18n} from '@infoportal/client-i18n'
-import {subDays} from 'date-fns'
 import {Ip} from 'infoportal-api-sdk'
-import {KoboSchemaHelper, PeriodHelper} from 'infoportal-common'
+import {KoboSchemaHelper} from 'infoportal-common'
 import {Dispatch, ReactNode, SetStateAction, useMemo, useState} from 'react'
 import {createContext, useContextSelector} from 'use-context-selector'
+import {UseDashboardFilteredDataCache, useDashboardFilteredDataCache} from './useDashboardData'
 import {UseDashboardFormEdit, useDashboardFormEdit} from './useDashboardFormEdit'
 
 // TODO this type could be globalized. It's maybe defined somewhere already
 export type Answers = Ip.Submission.Meta & Record<string, any>
 
-type DashboardContext = {
+export type DashboardContext = {
   flattenRepeatGroupData: UseFlattenRepeatGroupData
   langIndex: number
   setLangIndex: Dispatch<SetStateAction<number>>
-  filters: Filters
-  setFilters: Dispatch<SetStateAction<Filters>>
+  filter: UseDashboardFilters
   dataRange: Ip.Period
   effectiveDataRange: Ip.Period
   workspaceId: Ip.WorkspaceId
-  flatSubmissions: Seq<Answers>
-  flatSubmissionsDelta?: Seq<Answers>
+  data: UseDashboardFilteredDataCache
   dashboard: Ip.Dashboard
   schema: KoboSchemaHelper.Bundle<true>
   widgetsBySection: Map<Ip.Dashboard.SectionId, Ip.Dashboard.Widget[]>
   sections: Ip.Dashboard.Section[]
   updateForm: UseDashboardFormEdit
-}
-
-type Filters = {
-  period: Ip.Period
 }
 
 const Context = createContext<DashboardContext>({} as DashboardContext)
@@ -75,34 +70,21 @@ export const DashboardProvider = ({
     return {start: dashboard.start ?? dataRange.start, end: dashboard.end ?? dataRange.end}
   }, [dashboard.start, dashboard.end, dataRange])
 
-  const [filters, setFilters] = useState<Filters>({
-    period: {start: effectiveDataRange.start, end: effectiveDataRange.end},
-  })
-
-  const widgetsBySection = useMemo(() => {
-    return seq(widgets).groupByToMap(_ => _.sectionId as Ip.Dashboard.SectionId)
-  }, [widgets])
+  const dataSource = useMemo(() => {
+    return seq(submissions).map(({answers, ...rest}) => ({...answers, ...rest}))
+  }, [submissions])
 
   const schemaWithMeta = useMemo(() => {
     const bundle = KoboSchemaHelper.buildBundle({schema, langIndex})
     return KoboSchemaHelper.withMeta(bundle, m._meta, {validationStatus: m.validation_})
   }, [schema, langIndex])
 
-  const flatSubmissions = useMemo(() => {
-    return seq(
-      submissions
-        .filter(_ => PeriodHelper.isDateIn(filters.period, _.submissionTime))
-        .map(({answers, ...rest}) => ({...answers, ...rest})),
-    )
-  }, [submissions, filters])
+  const filter = useDashboardFilters({defaultPeriod: effectiveDataRange})
+  const data = useDashboardFilteredDataCache({data: dataSource, schema: schemaWithMeta, filters: filter.get, dashboard})
 
-  // TODO Cache
-  const flatSubmissionsDelta = useMemo(() => {
-    if (!dashboard.periodComparisonDelta) return
-    return flatSubmissions.filter(_ =>
-      PeriodHelper.isDateIn({end: subDays(effectiveDataRange.end, dashboard.periodComparisonDelta!)}, _.submissionTime),
-    )
-  }, [flatSubmissions, effectiveDataRange.end])
+  const widgetsBySection = useMemo(() => {
+    return seq(widgets).groupByToMap(_ => _.sectionId as Ip.Dashboard.SectionId)
+  }, [widgets])
 
   const flattenRepeatGroupData = useFlattenRepeatGroupData(schemaWithMeta)
 
@@ -113,15 +95,13 @@ export const DashboardProvider = ({
       value={{
         updateForm,
         flattenRepeatGroupData,
-        filters,
-        setFilters,
         dataRange,
+        filter,
         effectiveDataRange,
         workspaceId,
         widgetsBySection,
         schema: schemaWithMeta,
-        flatSubmissions,
-        flatSubmissionsDelta,
+        data,
         dashboard,
         langIndex,
         sections,

@@ -1,40 +1,37 @@
-import {Ip} from 'infoportal-api-sdk'
-import React, {useMemo} from 'react'
-import {Core} from '@/shared'
-import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
-import {map} from '@axanc/ts-utils'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
+import {Core} from '@/shared'
 import {Box} from '@mui/material'
+import {Ip} from 'infoportal-api-sdk'
+import {useMemo} from 'react'
 
 export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
 
-  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
+  const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
+  const filterFns = useDashboardContext(_ => _.data.filterFns)
   const flattenRepeatGroupData = useDashboardContext(_ => _.flattenRepeatGroupData)
-  const flatSubmissionsDelta = useDashboardContext(_ => _.flatSubmissionsDelta)
   const langIndex = useDashboardContext(_ => _.langIndex)
-  const schema = useDashboardContext(_ => _.schema)
 
   const filteredData = useMemo(() => {
-    const d = flattenRepeatGroupData.flattenIfRepeatGroup(flatSubmissions, config.questionName)
-    return map(filterToFunction(schema, config.filter), d.filter) ?? d
-  }, [flatSubmissions, config.questionName, config.filter])
+    const d = getFilteredData([filterFns.byPeriodCurrent, filterFns.byWidgetFilter(config.filter)])
+    return flattenRepeatGroupData.flattenIfRepeatGroup(d, config.questionName)
+  }, [getFilteredData, filterFns.byPeriodCurrent, filterFns.byWidgetFilter, config.questionName, config.filter])
 
-  const filteredDataBefore = useMemo(() => {
-    if (!flatSubmissionsDelta) return
-    const d = flattenRepeatGroupData.flattenIfRepeatGroup(flatSubmissionsDelta, config.questionName)
-    return map(filterToFunction(schema, config.filter), d.filter) ?? d
-  }, [flatSubmissionsDelta, config.questionName, config.filter])
+  const filteredDataDelta = useMemo(() => {
+    if (!filterFns.byPeriodCurrentDelta) return
+    const d = getFilteredData([filterFns.byPeriodCurrentDelta, filterFns.byWidgetFilter(config.filter)])
+    return flattenRepeatGroupData.flattenIfRepeatGroup(d, config.questionName)
+  }, [getFilteredData, filterFns.byPeriodCurrentDelta, filterFns.byWidgetFilter, config.questionName, config.filter])
 
   const filterValue = useMemo(() => {
     if (!config.questionName) return
-    return filterToFunction(schema, {questionName: config.questionName, ...config.filterValue})
+    return filterFns.byWidgetFilter({questionName: config.questionName, ...config.filterValue})
   }, [config.filterValue])
 
   const filterBase = useMemo(() => {
     if (!config.questionName) return
-    return filterToFunction(schema, {questionName: config.questionName, ...config.filterBase})
+    return filterFns.byWidgetFilter({questionName: config.questionName, ...config.filterBase})
   }, [config.filterBase])
 
   if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
@@ -45,9 +42,9 @@ export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
         title={widget.i18n_title?.[langIndex]}
         data={filteredData}
         compare={
-          filteredDataBefore && config.showEvolution
+          filteredDataDelta && config.showEvolution
             ? {
-                before: filteredDataBefore,
+                before: filteredDataDelta,
               }
             : undefined
         }

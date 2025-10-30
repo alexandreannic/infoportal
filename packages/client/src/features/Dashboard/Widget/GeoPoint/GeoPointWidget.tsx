@@ -1,12 +1,10 @@
-import {Box, useTheme} from '@mui/material'
-import {Ip} from 'infoportal-api-sdk'
-import React, {useEffect, useMemo} from 'react'
 import {initGoogleMaps} from '@/core/initGoogleMaps'
 import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
-import {map} from '@axanc/ts-utils'
-import {filterToFunction} from '@/features/Dashboard/Widget/LineChart/LineChartWidget'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {Core} from '@/shared'
+import {Box, useTheme} from '@mui/material'
+import {Ip} from 'infoportal-api-sdk'
+import {useEffect, useMemo} from 'react'
 
 export const GeoPointWidget = ({
   widget,
@@ -20,12 +18,12 @@ export const GeoPointWidget = ({
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoPoint']
 
-  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
-  const schema = useDashboardContext(_ => _.schema)
+  const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
+  const filterFns = useDashboardContext(_ => _.data.filterFns)
 
   const filteredData = useMemo(() => {
-    return map(filterToFunction(schema, config.filter), flatSubmissions.filter) ?? flatSubmissions
-  }, [flatSubmissions, config.filter])
+    return getFilteredData([filterFns.byPeriodCurrent, filterFns.byWidgetFilter(config.filter)])
+  }, [getFilteredData, config.filter, filterFns.byPeriodCurrent, filterFns.byWidgetFilter])
 
   const bubbles = useMemo(() => {
     if (!config.questionName) return

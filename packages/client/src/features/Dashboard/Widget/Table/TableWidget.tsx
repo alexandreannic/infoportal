@@ -59,11 +59,17 @@ const sortByRanges = <T extends string | {row: string}>({
 export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const t = useTheme()
   const config = widget.config as Ip.Dashboard.Widget.Config['Table']
-  const flatSubmissions = useDashboardContext(_ => _.flatSubmissions)
   const langIndex = useDashboardContext(_ => _.langIndex)
   const flattenRepeatGroupData = useDashboardContext(_ => _.flattenRepeatGroupData)
+
+  const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
+  const filterFns = useDashboardContext(_ => _.data.filterFns)
   const dashboard = useDashboardContext(_ => _.dashboard)
   const schema = useDashboardContext(_ => _.schema)
+
+  const filteredData = useMemo(() => {
+    return getFilteredData([filterFns.byPeriodCurrent, filterFns.byWidgetFilter(config.filter)])
+  }, [getFilteredData, config.filter, filterFns.byPeriodCurrent, filterFns.byWidgetFilter])
 
   const {column, row} = useMemo(() => {
     const colKey = config.column?.questionName
@@ -93,8 +99,8 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
         `Questions ${column.name} and ${row.name} of Form ${dashboard.sourceFormId} are in different begin_repeat section.`,
       )
     }
-    return flattenRepeatGroupData.flattenByGroupName(flatSubmissions, column.group?.name ?? row.group?.name)
-  }, [flatSubmissions, column, row])
+    return flattenRepeatGroupData.flattenByGroupName(filteredData, column.group?.name ?? row.group?.name)
+  }, [filteredData, column, row])
 
   const {data, columns} = useMemo(() => {
     if (!column || !row) return {data: [], columns: []}
