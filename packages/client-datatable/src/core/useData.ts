@@ -99,7 +99,7 @@ const filterBy = <T extends Row>({
     Obj.keys(filters).map((k, i) => {
       const filter = filters[k]
       const col = colIndex[k]
-      if (col === undefined || filter === undefined) return
+      if (col === undefined) return
       return filterByColumn({
         type: col.type,
         getValue: row => col.render(row).value,
@@ -121,13 +121,14 @@ export const filterByColumn = <T extends Row>({
   getValue: (_: T) => any
   type?: Column.Type
 }) => {
+  if (filter === undefined) return
   switch (type) {
     case 'id': {
       const typedFilter = filter as FilterTypeMapping['id']
       const filteredIds = typedFilter.split(/\s/)
       return (row: T) => {
         let v = getValue(row) as string | undefined
-        if (v === undefined) return false
+        if (v === undefined || v === null) return false
         if (filteredIds.length === 1) return v.includes(filteredIds[0])
         if (filteredIds.length > 1) return filteredIds.includes(v)
         return false
@@ -137,7 +138,7 @@ export const filterByColumn = <T extends Row>({
       const typedFilter = filter as FilterTypeMapping['date']
       return (row: T) => {
         let v = getValue(row) as Date | undefined
-        if (v === undefined) return false
+        if (v === undefined || v === null) return false
         if (!((v as any) instanceof Date)) {
           console.warn(`Value of ${String(columnId)} is`, v, `but Date expected.`)
           v = new Date(v)
@@ -149,11 +150,10 @@ export const filterByColumn = <T extends Row>({
     }
     case 'select_one': {
       const typedFilter = filter as FilterTypeMapping['select_one']
-      console.log('so', typedFilter)
       if (typedFilter.length === 0) return
       return (row: T) => {
         const v = getValue(row) as string
-        if (v === undefined) return false
+        if (v === undefined || v === null) return false
         return typedFilter.includes(v)
       }
     }
@@ -162,6 +162,7 @@ export const filterByColumn = <T extends Row>({
       if (typedFilter.length === 0) return
       return (row: T) => {
         const v = getValue(row) as string[]
+        if (v === undefined || v === null) return false
         return v.some(_ => typedFilter.includes(_))
       }
     }
@@ -169,6 +170,7 @@ export const filterByColumn = <T extends Row>({
       const typedFilter = filter as FilterTypeMapping['number']
       return (row: T) => {
         const v = getValue(row) as number | undefined
+        if (v === undefined || v === null) return false
         const min = typedFilter[0] as number | undefined
         const max = typedFilter[1] as number | undefined
         return v !== undefined && (max === undefined || v <= max) && (min === undefined || v >= min)
@@ -179,7 +181,7 @@ export const filterByColumn = <T extends Row>({
       const typedFilter = filter as FilterTypeMapping['string']
       return (row: T) => {
         const v = getValue(row)
-        if (v === Utils.blank && typedFilter?.filterBlank !== false) return false
+        if (v === undefined || v === null || (v === Utils.blank && typedFilter?.filterBlank !== false)) return false
         if (typedFilter?.value === undefined) return true
         if (typeof v !== 'string' && typeof v !== 'number') {
           console.warn('Value of ${String(k)} is', v)
