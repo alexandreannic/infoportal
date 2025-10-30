@@ -1,18 +1,18 @@
 import {Obj, seq, Seq} from '@axanc/ts-utils'
-import React, {ReactNode, useMemo} from 'react'
-import {Checkbox} from '@mui/material'
-import {ChartHelper} from './chartHelper'
+import {useMemo} from 'react'
 import {BarChartData, ChartBar} from './ChartBar'
+import {ChartHelper} from './chartHelper'
 
 interface ChartBarBaseProps<D extends Record<string, any>, K extends string> {
   onClickData?: (_: K) => void
-  checked?: Record<K, boolean>
+  checked?: K[]
   data: D[]
   compareTo?: D[]
   limit?: number
   label?: Record<K, string>
   filterValue?: K[]
   orderKeys?: K[]
+  /** @deprecated */
   onToggle?: (_: K) => void
   hideValue?: boolean
   displayOption?: undefined
@@ -36,7 +36,7 @@ export const ChartBarBy = <D extends Record<string, any>, K extends string>({
   limit,
   onClickData,
   checked,
-  onToggle,
+  // onToggle,
   label,
   hideValue,
   filterValue,
@@ -88,19 +88,20 @@ export const ChartBarBy = <D extends Record<string, any>, K extends string>({
       hideValue={hideValue}
       data={res}
       onClickData={_ => onClickData?.(_)}
-      labels={
-        !onToggle
-          ? undefined
-          : seq(Obj.keys(res)).reduceObject<Record<string, ReactNode>>(option => [
-              option,
-              <Checkbox
-                key={option}
-                size="small"
-                checked={checked?.[option] ?? false}
-                onChange={() => onToggle(option)}
-              />,
-            ])
-      }
+      checked={checked}
+      // labels={
+      //   !onToggle
+      //     ? undefined
+      //     : seq(Obj.keys(res)).reduceObject<Record<string, ReactNode>>(option => [
+      //         option,
+      //         <Checkbox
+      //           key={option}
+      //           size="small"
+      //           checked={checked?.[option] ?? false}
+      //           onChange={() => onToggle(option)}
+      //         />,
+      //       ])
+      // }
     />
   )
 }

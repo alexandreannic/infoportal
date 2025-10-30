@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {ReactNode, useMemo, useState} from 'react'
-import {Box, Checkbox, Icon, TooltipProps} from '@mui/material'
+import {Box, Checkbox, Icon, TooltipProps, useTheme} from '@mui/material'
 import {useTimeout} from '@axanc/react-hooks'
 import {Obj} from '@axanc/ts-utils'
 import {toPercent} from 'infoportal-common'
@@ -19,6 +19,7 @@ export interface BarChartData extends ChartDataVal {
 
 interface Props<K extends string> {
   checked?: K[]
+  showCheckBox?: boolean
   onClickData?: (_: K, item: BarChartData) => void
   showLastBorder?: boolean
   hideValue?: boolean
@@ -33,6 +34,7 @@ interface Props<K extends string> {
 
 export const ChartBar = <K extends string>(props: Props<K>) => {
   const {m} = useI18n()
+  const t = useTheme()
   return props.data ? (
     <ChartBarContent {...props} data={props.data!} />
   ) : (
@@ -40,7 +42,7 @@ export const ChartBar = <K extends string>(props: Props<K>) => {
       sx={{
         textAlign: 'center',
         mt: 2,
-        color: t => t.vars.palette.text.disabled,
+        color: t.vars.palette.text.disabled,
       }}
     >
       <Icon sx={{fontSize: '3em !important'}}>block</Icon>
@@ -58,9 +60,11 @@ export const ChartBarContent = <K extends string>({
   barHeight = 2,
   hideValue,
   checked,
+  showCheckBox,
   onClickData,
   showLastBorder,
 }: Omit<Props<K>, 'data'> & {data: NonNullable<Props<K>['data']>}) => {
+  const t = useTheme()
   const {
     values,
     maxValue,
@@ -108,6 +112,7 @@ export const ChartBarContent = <K extends string>({
       )}
       {Obj.entries(data).map(([k, item], i) => {
         const percentOfMax = 100 * (item.base ? percents[i] / maxPercent : item.value / maxValue)
+        const isSelected = checked?.includes(k)
         return (
           <TooltipWrapper item={item} base={item.base ?? sumValue} sumValue={sumValue} key={i}>
             <Box sx={{display: 'flex', alignItems: 'center'}} onClick={() => onClickData?.(k, item)}>
@@ -128,13 +133,14 @@ export const ChartBarContent = <K extends string>({
                       : {
                           mb: i === values.length - 1 ? 0 : 1,
                           borderBottom:
-                            i === values.length - 1 && !showLastBorder
-                              ? 'none'
-                              : t => `1px solid ${t.vars.palette.divider}`,
-                          transition: t => t.transitions.create('background'),
+                            i === values.length - 1 && !showLastBorder ? 'none' : `1px solid ${t.vars.palette.divider}`,
+                          transition: t.transitions.create('background'),
                           '&:hover': {
-                            background: t => alphaVar(item.color ?? t.vars.palette.primary.main, 0.1),
+                            background: alphaVar(item.color ?? t.vars.palette.primary.main, 0.18),
                           },
+                          ...(isSelected && {
+                            background: alphaVar(item.color ?? t.vars.palette.primary.main, 0.14),
+                          }),
                         }),
                   }}
                 >
@@ -151,7 +157,9 @@ export const ChartBarContent = <K extends string>({
                   >
                     <Txt sx={{p: 0, pr: 0.5, flex: 1}} truncate>
                       <Txt block truncate>
-                        {checked && <Checkbox sx={{padding: 0.5, mr: 1}} size="small" checked={checked.includes(k)} />}
+                        {showCheckBox && (
+                          <Checkbox sx={{padding: 0.5, mr: 1}} size="small" checked={checked?.includes(k)} />
+                        )}
                         {(labels && labels[k]) ?? item.label ?? k}
                       </Txt>
                       {(item.desc || descs) && (
@@ -175,8 +183,8 @@ export const ChartBarContent = <K extends string>({
                           sx={{
                             flex: 1,
                             minWidth: 52,
-                            color: t => t.vars.palette.primary.main,
-                            fontWeight: t => t.typography.fontWeightBold,
+                            color: t.vars.palette.primary.main,
+                            fontWeight: t.typography.fontWeightBold,
                           }}
                         >
                           {percents[i].toFixed(1)}%
@@ -186,12 +194,12 @@ export const ChartBarContent = <K extends string>({
                   </Box>
                   <Box
                     sx={{
-                      transition: t => t.transitions.create('width', {duration: 800, delay: 0}),
+                      transition: t.transitions.create('width', {duration: 800, delay: 0}),
                       width: 0,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'flex-end',
-                      borderBottom: t => `${barHeight}px solid ${t.vars.palette.primary.main}`,
+                      borderBottom: `${barHeight}px solid ${t.vars.palette.primary.main}`,
                     }}
                     style={{
                       width: appeared ? `calc(${percentOfMax * 0.9}%)` : 0,
