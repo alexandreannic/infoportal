@@ -66,12 +66,8 @@ export const styleUtils = (t: Theme) => ({
   },
   color: {
     backgroundActive: {
-      background:
-        t.palette.mode === 'dark'
-          ? `color-mix(in srgb, var(--mui-palette-primary-dark) 40%, white 70%)`
-          : `color-mix(in srgb, var(--mui-palette-primary-light) 90%, white 60%)`,
-      // ? darken(alpha(t.vars.palette.primary.dark, 0.4), 0.7)
-      // : lighten(alpha(t.vars.palette.primary.light, 0.9), 0.6),
+      background: alphaVar(t.vars.palette.primary.main, 0.18),
+      borderColor: alphaVar(t.vars.palette.primary.main, 0.17),
       backdropFilter: 'blur(6px)',
     },
     toolbar: {

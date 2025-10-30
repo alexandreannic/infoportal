@@ -68,7 +68,7 @@ export const DashboardHeader = ({
           </Box>
         </Box>
       </Box>
-      <AppHeaderContainer id={id}>{header}</AppHeaderContainer>
+      <AppHeaderContainer id={id} sx={{pb: .5}}>{header}</AppHeaderContainer>
     </>
   )
 }

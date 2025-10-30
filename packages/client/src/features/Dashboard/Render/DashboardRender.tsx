@@ -1,23 +1,23 @@
-import {createRoute} from '@tanstack/react-router'
-import {rootRoute} from '@/Router'
-import {PeriodPicker} from '@infoportal/client-core'
-import {DataFilterLayout} from '@/shared/DataFilter/DataFilterLayout'
-import {useI18n} from '@infoportal/client-i18n'
-import {Ip} from 'infoportal-api-sdk'
-import React, {useMemo, useState} from 'react'
-import {DashboardLayout} from '@/shared/DashboardLayout/DashboardLayout'
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
-import {Widget} from '@/features/Dashboard/Widget/Widget'
-import ReactGridLayout, {WidthProvider} from 'react-grid-layout'
-import {Answers, DashboardProvider} from '@/features/Dashboard/DashboardContext'
-import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {CenteredContent, Core} from '@/shared'
-import {GlobalStyles, Theme, ThemeProvider} from '@mui/material'
-import {muiTheme} from '@/core/theme'
-import {fontFamily, fontSize} from '@mui/system'
 import {KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
+import {muiTheme} from '@/core/theme'
+import {DashboardProvider, useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {Widget} from '@/features/Dashboard/Widget/Widget'
+import {rootRoute} from '@/Router'
+import {CenteredContent, Core} from '@/shared'
+import {SelectLangIndex} from '@/shared/customInput/SelectLangIndex'
+import {DashboardLayout} from '@/shared/DashboardLayout/DashboardLayout'
+import {DataFilterLayout} from '@/shared/DataFilter/DataFilterLayout'
+import {PeriodPicker} from '@infoportal/client-core'
+import {useI18n} from '@infoportal/client-i18n'
+import {Badge, Box, GlobalStyles, Theme, ThemeProvider} from '@mui/material'
+import {createRoute} from '@tanstack/react-router'
+import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
+import React, {useMemo} from 'react'
+import ReactGridLayout, {WidthProvider} from 'react-grid-layout'
+import {DashboardRenderFilterChips} from './DashboardRenderFilterChips'
 
 const GridLayout = WidthProvider(ReactGridLayout)
 
@@ -27,13 +27,8 @@ export const dashboardRenderRoute = createRoute({
   component: DashboardRender,
 })
 
-type Filters = {
-  period: Ip.Period
-}
-
 export function DashboardRender() {
   const {workspaceSlug, dashboardSlug} = dashboardRenderRoute.useParams()
-  const {m} = useI18n()
   const queryDashboard = UseQueryDashboard.getPublished({workspaceSlug, dashboardSlug})
   const workspaceId = '1783255f-564c-4286-9338-a4d77bb912f6' as Ip.WorkspaceId
   const querySubmissions = UseQueryDashboard.getProtectedSubmission({workspaceSlug, dashboardSlug})
@@ -46,10 +41,6 @@ export function DashboardRender() {
       return KoboMapper.mapSubmissionBySchema(schemaHelper.helper.questionIndex, _)
     })
   }, [querySubmissions.data, querySchema.data])
-
-  const [filters, setFilters] = useState<Filters>({
-    period: {start: new Date(), end: new Date()},
-  })
 
   const queries = [queryDashboard, querySchema, querySubmissions]
   const dashboard = queryDashboard.data
@@ -92,54 +83,64 @@ export function DashboardRender() {
         dashboard={dashboard}
         sections={dashboard.snapshot}
       >
-        <DashboardLayout
-          loading={queryDashboard.isLoading}
-          title={dashboard?.name ?? ''}
-          subTitle={dashboard?.description ?? ''}
-          header={
-            <DataFilterLayout
-              filters={{}}
-              setFilters={console.log}
-              shapes={{}}
-              hidePopup
-              sx={{mb: 0}}
-              onClear={() => {
-                // ctx.setPeriod(ctx.periodDefault)
-                // ctx.setFilterOptions({})
-              }}
-              // shapes={ctx.filterShape}
-              // data={ctx.data}
-              // filters={ctx.filterOptions}
-              // setFilters={ctx.setFilterOptions}
-              before={
-                <PeriodPicker
-                  sx={{mt: 0, mb: 0, mr: 1}}
-                  value={[filters.period.start, filters.period.end]}
-                  onChange={([start, end]) => {
-                    setFilters(prev => ({
-                      ...prev,
-                      period: {start: start!, end: end!},
-                    }))
-                  }}
-                  label={[m.start, m.endIncluded]}
-                  // min={ctx.fetcherPeriod.get?.start}
-                  // max={ctx.fetcherPeriod.get?.end}
-                  fullWidth={false}
-                />
-              }
-            />
-          }
-          sections={dashboard?.snapshot.map(section => {
-            return {
-              icon: 'rocket_launch',
-              name: section.id,
-              title: section.title,
-              component: () => <Section dashboard={dashboard} widgets={section.widgets} />,
-            }
-          })}
-        />
+        <WithContext snapshot={dashboard.snapshot} />
       </DashboardProvider>
     </ThemeProvider>
+  )
+}
+
+function WithContext({snapshot}: {snapshot: Ip.DashboardWithSnapshot['snapshot']}) {
+  const {m} = useI18n()
+
+  const dashboard = useDashboardContext(_ => _.dashboard)
+  const filters = useDashboardContext(_ => _.filter.get)
+  const resetFilters = useDashboardContext(_ => _.filter.reset)
+  const setFilters = useDashboardContext(_ => _.filter.set)
+  const schema = useDashboardContext(_ => _.schema)
+  const langIndex = useDashboardContext(_ => _.langIndex)
+  const setLangIndex = useDashboardContext(_ => _.setLangIndex)
+
+  return (
+    <DashboardLayout
+      loading={false}
+      title={dashboard.name ?? ''}
+      subTitle={dashboard.description ?? ''}
+      header={
+        <>
+          <PeriodPicker
+            sx={{mt: 0, mb: 0, mr: 1}}
+            value={[filters.period.start, filters.period.end]}
+            onChange={([start, end]) => {
+              setFilters(prev => ({
+                ...prev,
+                period: {start: start!, end: end!},
+              }))
+            }}
+            label={[m.start, m.endIncluded]}
+            min={filters.period.start}
+            max={filters.period.end}
+            fullWidth={false}
+          />
+          <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
+          <DashboardRenderFilterChips />
+          <Badge
+            color="primary"
+            sx={{marginLeft: 'auto'}}
+            overlap="circular"
+            badgeContent={Object.keys(filters.questions).length}
+          >
+            <Core.IconBtn children="filter_list_off" tooltip={m.clearFilter} onClick={resetFilters} />
+          </Badge>
+        </>
+      }
+      sections={snapshot.map(section => {
+        return {
+          name: section.id,
+          title: section.title,
+          component: () => <Section dashboard={dashboard} widgets={section.widgets} />,
+        }
+      })}
+    />
   )
 }
 

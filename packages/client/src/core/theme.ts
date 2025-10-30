@@ -338,6 +338,13 @@ export const muiTheme = ({
           }),
         },
       },
+      MuiChip: {
+        styleOverrides: {
+          outlined: ({theme}) => ({
+            ...styleUtils(theme).color.backgroundActive,
+          }),
+        },
+      },
       MuiTab: {
         defaultProps: {
           disableRipple: true,
