@@ -1,11 +1,16 @@
 import {PrismaClient} from '@prisma/client'
-import {slugify} from 'infoportal-common'
+import {KoboMetaHelper, KoboSchemaHelper, slugify} from 'infoportal-common'
 import {genShortid} from '../../helper/Utils.js'
-import {Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from 'infoportal-api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
+import {FormService} from '../form/FormService.js'
+import {seq} from '@axanc/ts-utils'
 
 export class DashboardService {
-  constructor(private prisma: PrismaClient) {}
+  constructor(
+    private prisma: PrismaClient,
+    private form = new FormService(prisma),
+  ) {}
 
   readonly getById = async ({id}: {id: Ip.DashboardId}): Promise<Ip.Dashboard | undefined> => {
     return this.prisma.dashboard
@@ -34,6 +39,98 @@ export class DashboardService {
           snapshot: _.published!.snapshot,
         }
       })
+  }
+
+  readonly getProtectedSubmission = async ({
+    workspaceSlug,
+    dashboardSlug,
+  }: {
+    workspaceSlug: string
+    dashboardSlug: string
+  }): Promise<any[]> => {
+    const dashboard = await this.prisma.dashboard.findFirstOrThrow({
+      where: {workspace: {slug: workspaceSlug}, slug: dashboardSlug},
+      select: {sourceFormId: true, sections: {select: {widgets: {select: {type: true, config: true}}}}},
+    })
+    const widgets = dashboard.sections.flatMap(_ => _.widgets)
+    const schema = await this.form.getSchema({formId: dashboard.sourceFormId as Ip.FormId})
+    if (!schema) throw new HttpError.NotFound()
+    const {metaKeys, questionNames} = this.collectDashboardQuestions({schema, widgets})
+    const selectParts = [
+      ...metaKeys.map(k => `"${k}"`),
+      // ...questionNames.map(k => `answers->'${k}' AS "${k}"`)
+      `jsonb_build_object(
+          ${questionNames.map(k => `'${k}', answers->'${k}'`).join(',\n    ')}
+        ) AS answers`,
+    ]
+    return this.prisma.$queryRawUnsafe(
+      `
+        SELECT ${selectParts.join(', ')}
+        FROM "FormSubmission"
+        WHERE "formId" = $1
+    `,
+      dashboard.sourceFormId,
+    )
+  }
+
+  private collectDashboardQuestions = ({
+    widgets,
+    schema,
+  }: {
+    schema: Ip.Form.Schema
+    widgets: Pick<Ip.Dashboard.Widget, 'type' | 'config'>[]
+  }) => {
+    const schemaHelper = KoboSchemaHelper.buildBundle({schema})
+    const keys = widgets
+      .flatMap(_ => {
+        switch (_.type) {
+          case 'Card': {
+            const config = _.config as Ip.Dashboard.Widget.Config['Card']
+            return [config.questionName, config.filter?.questionName]
+          }
+          case 'BarChart': {
+            const config = _.config as Ip.Dashboard.Widget.Config['BarChart']
+            return [config.questionName]
+          }
+          case 'LineChart': {
+            const config = _.config as Ip.Dashboard.Widget.Config['LineChart']
+            return config.lines?.flatMap(_ => [_.questionName, _.filter?.questionName])
+          }
+          case 'GeoChart': {
+            const config = _.config as Ip.Dashboard.Widget.Config['GeoChart']
+            return [config.questionName, config.filter?.questionName]
+          }
+          case 'GeoPoint': {
+            const config = _.config as Ip.Dashboard.Widget.Config['GeoPoint']
+            return [config.filter?.questionName, config.questionName]
+          }
+          case 'Table': {
+            const config = _.config as Ip.Dashboard.Widget.Config['Table']
+            return [config.column?.questionName, config.row?.questionName, config.filter?.questionName]
+          }
+          case 'PieChart': {
+            const config = _.config as Ip.Dashboard.Widget.Config['PieChart']
+            return [config.filter?.questionName, config.questionName]
+          }
+          default: {
+            return []
+          }
+        }
+      })
+      .filter(_ => _ !== undefined)
+      .map(_ => {
+        const repeatGroup = schemaHelper.helper.group.getByQuestionName(_)
+        return repeatGroup?.name ?? _
+      })
+      .map(_ => {
+        if (!/^[a-zA-Z0-9_]+$/.test(_)) throw new HttpError.BadRequest(`Unsafe JSON key: ${_}`)
+        return _
+      })
+    const columnsAlways: (keyof Ip.Submission.Meta)[] = ['id', 'end', 'start', 'submissionTime']
+    return {
+      metaKeys: seq([...columnsAlways, ...keys.filter(_ => KoboMetaHelper.isMeta(_))]).distinct(_ => _),
+      questionNames: keys.filter(_ => !KoboMetaHelper.isMeta(_)),
+    }
   }
 
   readonly getAll = async ({workspaceId}: {workspaceId: Ip.WorkspaceId}): Promise<Ip.Dashboard[]> => {

@@ -168,7 +168,7 @@ export namespace Dashboard {
           i18n_label?: string[]
           questionName: string
           color?: string
-          filter: ConfigFilter
+          filter?: ConfigFilter
         }[]
         start?: Date
         end?: Date
@@ -184,6 +184,7 @@ export namespace Dashboard {
         mapping?: Record<string, string>
       }
       [Type.Table]: {
+        filter?: ConfigFilter
         column?: {
           questionName: string
           i18n_label?: string[]

@@ -16,6 +16,8 @@ export const queryKeys = {
   workspaces: () => ['workspace'],
   originalEmail: () => ['originalEmail'],
 
+  dasboardProtectedSubmission: (workspaceSlug?: string, dashboardSlug?: string) =>
+    concat('dasboardProtectedSubmission', workspaceSlug, dashboardSlug),
   dashboardBySlug: (workspaceSlug?: string, dashboardSlug?: string) =>
     concat('dashboardBySlug', workspaceSlug, dashboardSlug),
   dashboard: (workspaceId?: Ip.WorkspaceId, dashboardId?: Ip.DashboardId) =>

@@ -9,13 +9,15 @@ import {DashboardLayout} from '@/shared/DashboardLayout/DashboardLayout'
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {Widget} from '@/features/Dashboard/Widget/Widget'
 import ReactGridLayout, {WidthProvider} from 'react-grid-layout'
-import {DashboardProvider} from '@/features/Dashboard/DashboardContext'
+import {Answers, DashboardProvider} from '@/features/Dashboard/DashboardContext'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
-import {Core} from '@/shared'
+import {CenteredContent, Core} from '@/shared'
 import {GlobalStyles, Theme, ThemeProvider} from '@mui/material'
 import {muiTheme} from '@/core/theme'
 import {fontFamily, fontSize} from '@mui/system'
+import {KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
+import {KoboSchemaHelper} from 'infoportal-common'
 
 const GridLayout = WidthProvider(ReactGridLayout)
 
@@ -34,8 +36,16 @@ export function DashboardRender() {
   const {m} = useI18n()
   const queryDashboard = UseQueryDashboard.getPublished({workspaceSlug, dashboardSlug})
   const workspaceId = '1783255f-564c-4286-9338-a4d77bb912f6' as Ip.WorkspaceId
-  const querySubmissions = UseQuerySubmission.search({workspaceId, formId: queryDashboard.data?.sourceFormId})
+  const querySubmissions = UseQueryDashboard.getProtectedSubmission({workspaceSlug, dashboardSlug})
   const querySchema = useQuerySchema({workspaceId, formId: queryDashboard.data?.sourceFormId})
+
+  const mappedSubmissions = useMemo(() => {
+    if (!querySubmissions.data || !querySchema.data) return
+    const schemaHelper = KoboSchemaHelper.buildBundle({schema: querySchema.data})
+    return querySubmissions.data.map(_ => {
+      return KoboMapper.mapSubmissionBySchema(schemaHelper.helper.questionIndex, _)
+    })
+  }, [querySubmissions.data, querySchema.data])
 
   const [filters, setFilters] = useState<Filters>({
     period: {start: new Date(), end: new Date()},
@@ -56,7 +66,12 @@ export function DashboardRender() {
     return <Core.Fender type="error" />
   }
 
-  if (!dashboard || !querySchema.data || !querySubmissions.data) return 'Loading...'
+  if (!dashboard || !querySchema.data || !mappedSubmissions)
+    return (
+      <CenteredContent>
+        <Core.Fender type="loading" />
+      </CenteredContent>
+    )
 
   return (
     <ThemeProvider theme={theme}>
@@ -73,7 +88,7 @@ export function DashboardRender() {
         workspaceId={workspaceId}
         widgets={dashboard.snapshot.flatMap(_ => _.widgets)}
         schema={querySchema.data}
-        submissions={querySubmissions.data.data}
+        submissions={mappedSubmissions}
         dashboard={dashboard}
         sections={dashboard.snapshot}
       >

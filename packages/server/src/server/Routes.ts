@@ -300,6 +300,11 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({body}) => dashboard.checkSlug(body.slug))
           .then(ok200)
           .catch(handleError),
+      getProtectedSubmission: _ =>
+        auth2(_)
+          .then(({body}) => dashboard.getProtectedSubmission(body))
+          .then(ok200)
+          .catch(handleError),
       search: _ =>
         auth2(_)
           .then(({body}) => dashboard.getAll(body))

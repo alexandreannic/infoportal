@@ -22,6 +22,15 @@ export const dashboardContract = c.router({
     }),
     responses: {200: z.any() as z.ZodType<Ip.DashboardWithSnapshot>},
   },
+  getProtectedSubmission: {
+    method: 'POST',
+    path: `/dashboard/getProtectedSubmission`,
+    body: z.object({
+      workspaceSlug: z.string(),
+      dashboardSlug: z.string(),
+    }),
+    responses: {200: z.any() as z.ZodType<Ip.Submission[]>},
+  },
   search: {
     method: 'POST',
     path: `/dashboard/search`,
@@ -94,5 +103,11 @@ export const dashboardClient = (client: TsRestClient) => {
 
     getBySlug: (body: {workspaceSlug: string; dashboardSlug: string}) =>
       client.dashboard.getPublished({body}).then(map200),
+
+    getProtectedSubmission: (body: {workspaceSlug: string; dashboardSlug: string}) =>
+      client.dashboard
+        .getProtectedSubmission({body})
+        .then(map200)
+        .then(_ => _.map(Ip.Submission.map)),
   }
 }

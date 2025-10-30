@@ -30,6 +30,16 @@ export class UseQueryDashboard {
     })
   }
 
+  static getProtectedSubmission = ({workspaceSlug, dashboardSlug}: {workspaceSlug: string; dashboardSlug: string}) => {
+    const {apiv2} = useAppSettings()
+    return useQuery({
+      queryKey: queryKeys.dasboardProtectedSubmission(workspaceSlug, dashboardSlug),
+      queryFn: async () => {
+        return apiv2.dashboard.getProtectedSubmission({workspaceSlug, dashboardSlug})
+      },
+    })
+  }
+
   static getPublished = ({workspaceSlug, dashboardSlug}: {workspaceSlug: string; dashboardSlug: string}) => {
     const {apiv2} = useAppSettings()
     return useQuery({
