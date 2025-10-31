@@ -7,19 +7,20 @@ import {Widget} from '@/features/Dashboard/Widget/Widget'
 import {WidgetCreate, WidgetCreateForm} from '@/features/Dashboard/Widget/WidgetCreate'
 import {WidgetCreatorFormPanel, WidgetUpdatePayload} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Core} from '@/shared'
-import {NotFoundContent} from '@/shared/PageNotFound'
 import {SelectLangIndex} from '@/shared/customInput/SelectLangIndex'
+import {NotFoundContent} from '@/shared/PageNotFound'
 import {TabContent} from '@/shared/Tab/TabContent'
 import {alphaVar} from '@infoportal/client-core'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, Collapse, Icon, Theme, ThemeProvider, useTheme} from '@mui/material'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
-import React, {useCallback, useMemo, useState} from 'react'
-import ReactGridLayout, {WidthProvider} from 'react-grid-layout'
+import {useCallback, useMemo, useState} from 'react'
+import {Responsive, WidthProvider} from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
+import {useGridLayout} from './useGridLayout'
 
-const GridLayout = WidthProvider(ReactGridLayout)
+const GridLayout = WidthProvider(Responsive)
 
 export const dashboardSectionRoute = createRoute({
   getParentRoute: () => dashboardRoute,
@@ -27,7 +28,6 @@ export const dashboardSectionRoute = createRoute({
   component: DashboardSection,
 })
 
-const layoutWidth = 1200
 const sidePanelWidth = 300
 
 export function DashboardSection() {
@@ -69,9 +69,7 @@ export function DashboardSection() {
     queryWidgetUpdate.mutateAsync({id, ...values})
   }, [])
 
-  const layout = useMemo(() => {
-    return widgets.map(_ => ({i: _.id, ..._.position}))
-  }, [widgets])
+  const layout = useGridLayout(widgets)
 
   const theme: Theme = useMemo(() => {
     return muiTheme({
@@ -102,7 +100,7 @@ export function DashboardSection() {
               flex: 1,
               margin: '0 auto',
               mb: 1,
-              maxWidth: layoutWidth,
+              maxWidth: layout.width,
               width: '100%',
             }}
           >
@@ -129,7 +127,6 @@ export function DashboardSection() {
               )}
             </Core.DebouncedInput>
             <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
-            {JSON.stringify(filter.get)}
             <Core.IconBtn children="filter_list_off" tooltip={m.clearFilter} onClick={() => filter.reset()} />
             <Box
               sx={{
@@ -141,46 +138,45 @@ export function DashboardSection() {
                 },
               }}
             >
-              <GridLayout
-                onLayoutChange={layout => {
-                  layout.forEach(({i, x, y, h, w}) => {
-                    const widget = widgets?.find(_ => _.id === i)
-                    if (!widget) return
-                    const p = widget.position
-                    if (p.x === x && p.y === y && p.h === h && p.w === w) return
-                    updateWidget(i as Ip.Dashboard.WidgetId, {position: {x, y, h, w}})
-                  })
-                }}
-                layout={layout}
-                margin={[8, 8]}
-                rowHeight={10}
-                width={layoutWidth}
-                cols={12}
-                draggableHandle=".drag-handle"
-              >
-                {widgets.map(widget => (
-                  <Box key={widget.id} height="100%">
-                    <Widget
-                      dashboard={dashboard}
-                      onClick={selectWidget}
-                      status={editingWidget?.id === widget.id ? 'editing' : 'selected'}
-                      widget={widget}
-                    />
-                    <Icon
-                      fontSize="small"
-                      sx={{
-                        position: 'absolute',
-                        top: `calc(${t.vars.spacing} / 2)`,
-                        right: `calc(${t.vars.spacing} / 2)`,
-                        color: t.vars.palette.text.secondary,
-                      }}
-                      className="drag-handle"
-                    >
-                      drag_indicator
-                    </Icon>
-                  </Box>
-                ))}
-              </GridLayout>
+              <Box sx={{position: 'relative'}}>
+                <GridResponsiveDivider />
+                <GridLayout
+                  onLayoutChange={layout => {
+                    layout.forEach(({i, x, y, h, w}) => {
+                      const widget = widgets?.find(_ => _.id === i)
+                      if (!widget) return
+                      const p = widget.position
+                      if (p.x === x && p.y === y && p.h === h && p.w === w) return
+                      updateWidget(i as Ip.Dashboard.WidgetId, {position: {x, y, h, w}})
+                    })
+                  }}
+                  {...layout}
+                  draggableHandle=".drag-handle"
+                >
+                  {widgets.map(widget => (
+                    <Box key={widget.id} height="100%">
+                      <Widget
+                        dashboard={dashboard}
+                        onClick={selectWidget}
+                        status={editingWidget?.id === widget.id ? 'editing' : 'selected'}
+                        widget={widget}
+                      />
+                      <Icon
+                        fontSize="small"
+                        sx={{
+                          position: 'absolute',
+                          top: `calc(${t.vars.spacing} / 2)`,
+                          right: `calc(${t.vars.spacing} / 2)`,
+                          color: t.vars.palette.text.secondary,
+                        }}
+                        className="drag-handle"
+                      >
+                        drag_indicator
+                      </Icon>
+                    </Box>
+                  ))}
+                </GridLayout>
+              </Box>
               <CreateSectionBtn
                 sectionId={sectionId}
                 dashboardId={dashboard.id}
@@ -320,5 +316,22 @@ function DeleteSectionBtn({
         </Core.Btn>
       </Core.Modal>
     </Box>
+  )
+}
+
+function GridResponsiveDivider() {
+  const t = useTheme()
+  return (
+    <Box
+      sx={{
+        width: '1px',
+        border: '1px dashed',
+        borderColor: t.vars.palette.divider,
+        position: 'absolute',
+        right: '50%',
+        top: t.vars.spacing,
+        bottom: t.vars.spacing,
+      }}
+    />
   )
 }

@@ -8,18 +8,18 @@ import {rootRoute} from '@/Router'
 import {CenteredContent, Core} from '@/shared'
 import {SelectLangIndex} from '@/shared/customInput/SelectLangIndex'
 import {DashboardLayout} from '@/shared/DashboardLayout/DashboardLayout'
-import {DataFilterLayout} from '@/shared/DataFilter/DataFilterLayout'
 import {PeriodPicker} from '@infoportal/client-core'
 import {useI18n} from '@infoportal/client-i18n'
-import {Badge, Box, GlobalStyles, Theme, ThemeProvider} from '@mui/material'
+import {Badge, GlobalStyles, Theme, ThemeProvider} from '@mui/material'
 import {createRoute} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
-import React, {useMemo} from 'react'
-import ReactGridLayout, {WidthProvider} from 'react-grid-layout'
+import {useMemo} from 'react'
+import {Responsive, WidthProvider} from 'react-grid-layout'
+import {useGridLayout} from '../Section/useGridLayout'
 import {DashboardRenderFilterChips} from './DashboardRenderFilterChips'
 
-const GridLayout = WidthProvider(ReactGridLayout)
+const GridLayout = WidthProvider(Responsive)
 
 export const dashboardRenderRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -145,22 +145,17 @@ function WithContext({snapshot}: {snapshot: Ip.DashboardWithSnapshot['snapshot']
 }
 
 function Section({widgets, dashboard}: {dashboard: Ip.Dashboard; widgets: Ip.Dashboard.Widget[]}) {
-  const layout = useMemo(() => {
-    return widgets.map(_ => ({i: _.id, ..._.position}))
-  }, [widgets])
+  const layout = useGridLayout(widgets)
 
   return (
     <GridLayout
-      layout={layout}
       isDraggable={false}
       isResizable={false}
       isDroppable={false}
       isBounded={false}
-      margin={[8, 8]}
-      rowHeight={10}
+      {...layout}
       style={{margin: -8}}
-      width={1200}
-      cols={12}
+      // cols={12}
     >
       {widgets.map(widget => (
         <div key={widget.id} style={{height: '100%'}}>
