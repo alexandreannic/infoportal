@@ -5,7 +5,7 @@ import {Obj} from '@axanc/ts-utils'
 
 export type Filters = {
   period: Ip.Period
-  questions: Record<string, string[]>
+  questions: Record<string, undefined | string[]>
 }
 
 export type UseDashboardFilters = ReturnType<typeof useDashboardFilters>
@@ -19,7 +19,7 @@ export const useDashboardFilters = ({defaultPeriod}: {defaultPeriod: Ip.Period})
   const [dirtyFilters, setFilters] = useState<Filters>(defaultFilters)
 
   const filters: Filters = useMemo(() => {
-    const cleanedQuestions = Obj.filterValue(dirtyFilters.questions, _ => _?.length > 0)
+    const cleanedQuestions = Obj.filterValue(dirtyFilters.questions, _ => !!_ && _.length > 0)
     return {
       ...dirtyFilters,
       questions: cleanedQuestions,

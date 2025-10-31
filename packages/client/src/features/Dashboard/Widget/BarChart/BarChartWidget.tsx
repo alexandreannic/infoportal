@@ -5,6 +5,7 @@ import {Core, Datatable} from '@/shared'
 import {Box} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import {useCallback, useMemo} from 'react'
+import {normalizeIsoRegion} from '@infoportal/client-core'
 
 export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
@@ -13,13 +14,17 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const filterFns = useDashboardContext(_ => _.data.filterFns)
   const langIndex = useDashboardContext(_ => _.langIndex)
   const filter = useDashboardContext(_ => _.filter.get)
-  const updateFilter = useDashboardContext(_ => _.filter.updateQuestion)
+  const updateQuestion = useDashboardContext(_ => _.filter.updateQuestion)
   const schema = useDashboardContext(_ => _.schema)
+
+  const choices = useMemo(() => {
+    if (!config.questionName) return
+    return schema.helper.getOptionsByQuestionName(config.questionName)
+  }, [config.questionName])
 
   const labels = useMemo(() => {
     const q = config.questionName
     if (!q) return {}
-    const choices = schema.helper.getOptionsByQuestionName(q)
     if (!choices) return {}
     return choices.reduceObject<Record<string, string>>(_ => [_.name, schema.translate.choice(q, _.name)])
   }, [config.questionName, schema])
@@ -80,9 +85,9 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
         const values = Object.entries(config.mapping)
           .filter(([choiceName, mappedValues]) => mappedValues?.[langIndex] === key)
           .map(_ => _[0])
-        updateFilter(config.questionName!, values.length === 0 ? [key] : values)
+        updateQuestion(config.questionName!, values.length === 0 ? [key] : values)
       } else {
-        updateFilter(config.questionName!, [key])
+        updateQuestion(config.questionName!, [key])
       }
     },
     [config.questionName!, config.mapping],

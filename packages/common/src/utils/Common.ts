@@ -13,6 +13,20 @@ export const capitalize = (_: string) => {
   return _.charAt(0).toUpperCase() + _.slice(1)
 }
 
+export const inferNullableFn = <T, R>(
+  fn: (_: T) => R,
+): {
+  (_: T): R
+  (_?: undefined): undefined
+  (_?: T): R | undefined
+} => {
+  // @ts-ignore
+  return (_?: T) => {
+    if (_) return fn(_)
+    return undefined
+  }
+}
+
 export function shallowDiffObject<T extends Record<string, any>>(
   obj1: T,
   obj2: Partial<T>,

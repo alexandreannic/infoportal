@@ -1,20 +1,41 @@
 import {Chart, ChartWrapperOptions} from 'react-google-charts'
-import {useMemo, useState, useEffect} from 'react'
-import {Box, lighten, useColorScheme, useTheme} from '@mui/material'
+import {useEffect, useMemo, useState} from 'react'
+import {Box, useColorScheme, useTheme} from '@mui/material'
 import {IconBtn} from '../ui'
 import json from '../core/chartGeoData.json'
+import {inferNullableFn} from 'infoportal-common'
 
 export type CountryCode = keyof typeof json
 
-const headers = ['Location', 'Submissions']
+const isIsoCountry = (iso: string) => !iso.includes('-')
+
+const getCountryCodeFromIso = (iso: string): CountryCode | undefined => {
+  const [country] = iso.split('-') as [CountryCode]
+  return country
+}
+
+const getIsoLabel = (iso: string) => {
+  const isCountry = isIsoCountry(iso)
+  if (isCountry) return (json as any)[iso]?.name
+  const country = getCountryCodeFromIso(iso)
+  if (country) return (json as any)[country]?.regions[iso]
+}
 
 export const ChartGeo = ({
   country,
   data: unfixedData = [],
+  onRegionClick,
+  selected: unfixedSelected = [],
+  dataLabel,
 }: {
+  dataLabel?: string
+  selected?: string[]
+  onRegionClick: (_: string) => void
   country?: CountryCode
   data?: {iso: string; count: number}[]
 }) => {
+  const headers = ['Location', dataLabel ?? '#', {role: 'tooltip'}]
+
   const data = useMemo(() => {
     if (!country) return unfixedData
     return unfixedData.map(_ => {
@@ -25,6 +46,7 @@ export const ChartGeo = ({
     })
   }, [unfixedData])
 
+  const selectedRegions = useMemo(() => unfixedSelected.map(normalizeIsoRegion), [unfixedSelected])
   const {mode} = useColorScheme()
   const t = useTheme()
   const [selectedCountry, setSelectedCountry] = useState<CountryCode | null>(null)
@@ -58,8 +80,20 @@ export const ChartGeo = ({
 
   const formattedData = useMemo(() => {
     const source = selectedCountry ? regions.get(selectedCountry) : countries
-    return [headers, ...(source ? Array.from(source.entries()) : [])]
-  }, [selectedCountry, countries, regions])
+    if (!source) return [headers]
+
+    const rows = Array.from(source.entries())
+    const max = Math.max(...rows.map(row => row[1]))
+    const mappedRows = rows.map(([iso, count]) => {
+      const isSelected = selectedRegions.includes(iso)
+      return [
+        iso,
+        isSelected ? max * 3 + count : count,
+        `${getIsoLabel(iso)} - ${dataLabel ? dataLabel + ': ' : ''} ${count}`,
+      ]
+    })
+    return [headers, ...mappedRows]
+  }, [selectedCountry, countries, regions, selectedRegions, t, mode])
 
   const options: ChartWrapperOptions['options'] = useMemo(
     () => ({
@@ -104,14 +138,19 @@ export const ChartGeo = ({
           {
             eventName: 'select',
             callback: ({chartWrapper}) => {
-              if (country) return
-              const chart = chartWrapper?.getChart()
-              const sel = chart?.getSelection?.()
-              if (sel?.length) {
-                const row = sel[0].row
-                const code = formattedData[row + 1][0] as CountryCode | undefined
-                setSelectedCountry(code || null)
-              }
+              if (!chartWrapper) return
+              const chart = chartWrapper.getChart()
+              const selection = chart.getSelection()
+
+              if (!selection.length) return
+
+              const dataTable = chartWrapper.getDataTable()!
+              const row = selection[0].row
+              const iso = dataTable.getValue(row, 0) as string | null
+              const count = dataTable.getValue(row, 1) as number
+              if (!iso || count) return
+              if (isIsoCountry(iso)) setSelectedCountry(iso as CountryCode)
+              else onRegionClick(iso)
             },
           },
         ]}
@@ -133,7 +172,7 @@ function groupGeoData(data: {iso: string; count: number}[]) {
   const countries = new Map<CountryCode, number>()
   const regions = new Map<string, Map<string, number>>()
   for (const {iso, count} of data) {
-    const [country] = iso.split('-') as [CountryCode]
+    const country = getCountryCodeFromIso(iso)
     if (!country) continue
     countries.set(country, (countries.get(country) ?? 0) + count)
     const regionMap = regions.get(country) ?? new Map()
@@ -143,7 +182,7 @@ function groupGeoData(data: {iso: string; count: number}[]) {
   return {countries, regions}
 }
 
-function normalizeIsoRegion(code: string): string {
+export const normalizeIsoRegion = inferNullableFn((code: string): string => {
   if (!code) return code
   const normalized = code.trim().toUpperCase()
   const match = normalized.match(/^([A-Z]{2,3})[-_ ]?(\d{1,3})$/)
@@ -152,4 +191,4 @@ function normalizeIsoRegion(code: string): string {
     return `${country}-${region}`
   }
   return normalized
-}
+})
