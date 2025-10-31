@@ -2,7 +2,7 @@ import {FormSubmission, Prisma, PrismaClient} from '@prisma/client'
 import {Ip} from 'infoportal-api-sdk'
 import {FormService} from './form/FormService.js'
 import {duration, fnSwitch, Seq, seq} from '@axanc/ts-utils'
-import {app} from '../index.js'
+import {app, AppCacheKey} from '../index.js'
 import {UserService} from './user/UserService.js'
 
 type Filters = {
@@ -23,8 +23,9 @@ export class MetricsService {
   ) {}
 
   private readonly getAllowedFormIds = app.cache.request({
-    key: 'allowedFormIds',
+    key: AppCacheKey.AllowedFormIds,
     ttlMs: duration(1, 'minute'),
+    genIndex: _ => _.user.email,
     fn: (props: {workspaceId: Ip.WorkspaceId; user: Ip.User}): Promise<Seq<Ip.FormId>> => {
       return this.form.getByUser(props).then(_ => seq(_).map(_ => _.id))
     },

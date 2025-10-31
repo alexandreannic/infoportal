@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "infoportal-api-sdk": "1.0.0",
-    "@axanc/ts-utils": "^2.4.1",
+    "@axanc/ts-utils": "2.4.3",
     "date-fns": "^4.1.0",
     "react": "19.1.0",
     "react-dom": "19.1.0"

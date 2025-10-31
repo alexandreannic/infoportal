@@ -15,6 +15,7 @@ import {FormActionRunner} from './feature/form/action/executor/FormActionRunner.
 export type AppLogger = WinstonLogger
 
 export enum AppCacheKey {
+  AllowedFormIds= 'AllowedFormIds',
   Users = 'Users',
   Meta = 'Meta',
   KoboAnswers = 'KoboAnswers',
