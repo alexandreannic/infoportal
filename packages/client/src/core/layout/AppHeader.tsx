@@ -13,6 +13,7 @@ import {appConfig} from '@/conf/AppConfig.js'
 import React from 'react'
 import {height} from '@mui/system'
 import {IpLogo} from '@/shared/logo/logo'
+import {ToggleSidebarButton} from '@/core/layout/ToggleSidebarButton'
 
 interface Props extends BoxProps {
   workspaceId?: Ip.WorkspaceId
@@ -63,22 +64,7 @@ export const AppHeader = ({workspaceId, children, sx, id = 'aa-header-id', ...pr
             width: '100%',
           }}
         >
-          {showSidebarButton && (
-            <Core.IconBtn
-              size="small"
-              sx={{
-                mr: 1,
-                border: t => `2px solid ${t.vars.palette.primary.main}`,
-                background: t => (sidebarOpen ? 'none' : Core.alphaVar(t.vars.palette.primary.main, 0.1)),
-                color: t => t.vars.palette.primary.main,
-                '&:hover': {
-                  background: t => Core.alphaVar(t.vars.palette.primary.main, 0.1),
-                },
-              }}
-              onClick={() => setSidebarOpen(_ => !_)}
-              children="menu"
-            />
-          )}
+          {showSidebarButton && <ToggleSidebarButton />}
           <IpLogo height={26} />
           {/*<Box component="img" src="/ip-logo.svg" height={30} alt="InfoPortal Logo" {...props} />*/}
           <Core.Txt

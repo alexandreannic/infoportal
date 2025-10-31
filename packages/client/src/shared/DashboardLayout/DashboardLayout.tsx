@@ -1,39 +1,18 @@
 import {Core} from '@/shared'
 import {DashboardHeader} from '@/shared/DashboardLayout/DashboardHeader'
-import {Layout} from '@/shared/Layout/Layout'
 import {Sidebar, SidebarItem} from '@/shared/Layout/Sidebar'
 import {Page} from '@/shared/Page'
 import {useSetState} from '@axanc/react-hooks'
 import {map} from '@axanc/ts-utils'
 import {Box, Collapse, LinearProgress, Typography} from '@mui/material'
 import React, {ReactNode, useEffect, useState} from 'react'
+import {LayoutProvider} from '@/shared/Layout/LayoutContext'
 import {useInView} from 'react-intersection-observer'
 
-const dashboardHeaderId = 'aa-header-id'
+const headerHeight = 60
+const subHeaderHeight = 48
 
-const style = Core.makeSx({
-  sectionTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    pt: 1,
-    background: 'none',
-    marginTop: '-30px',
-    paddingTop: '70px',
-    mb: 2,
-    transition: t => t.transitions.create('all'),
-  },
-  sectionShrinked: {
-    mb: 0,
-  },
-  iconExpand: {
-    transition: t => t.transitions.create('all'),
-    ml: 1,
-    color: t => t.vars.palette.text.disabled,
-  },
-  iconExpendShrinked: {
-    transform: 'rotate(180deg)',
-  },
-})
+const dashboardHeaderId = 'aa-header-id'
 
 type Section = {
   icon?: string
@@ -70,18 +49,25 @@ export const DashboardLayout = ({
   }, [sections])
 
   return (
-    <>
+    <LayoutProvider title={title} showSidebarButton>
       {loading && <LinearProgress sx={{position: 'fixed', top: 0, right: 0, left: 0}} />}
-      <Layout
-        header={
-          <DashboardHeader action={action} header={header} title={title} subTitle={subTitle} id={dashboardHeaderId} />
-        }
-        sidebar={map(sections, _ => (
+      <DashboardHeader
+        action={action}
+        subHeaderHeight={subHeaderHeight}
+        header={header}
+        title={title}
+        subTitle={subTitle}
+        id={dashboardHeaderId}
+        height={headerHeight}
+      />
+      <Box sx={{display: 'flex', alignItems: 'flex-start'}}>
+        {map(sections, _ => (
           <Sidebar
+            stickyOffset={subHeaderHeight}
             elevation={null}
             headerId={dashboardHeaderId}
             showThemeToggle
-            sx={{background: 'none', boxShadow: 'none'}}
+            sx={{background: 'none'}}
           >
             {_.map(s => (
               <SidebarItem
@@ -98,7 +84,6 @@ export const DashboardLayout = ({
             ))}
           </Sidebar>
         ))}
-      >
         <Page width={pageWidth} sx={{mb: 2}}>
           {beforeSection}
           {sections?.map(s => (
@@ -111,12 +96,40 @@ export const DashboardLayout = ({
             />
           ))}
         </Page>
-      </Layout>
-    </>
+      </Box>
+    </LayoutProvider>
   )
 }
 
-function Section({
+const style = Core.makeSx({
+  root: {
+    // mb: 5,
+    // pt: 1,
+  },
+  sectionTitle: {
+    display: 'flex',
+    alignItems: 'center',
+    pt: 1,
+    background: 'none',
+    // marginTop: -subHeaderHeight + 'px',
+    // paddingTop: subHeaderHeight + 'px',
+    mb: 2,
+    transition: t => t.transitions.create('all'),
+  },
+  sectionShrinked: {
+    mb: 0,
+  },
+  iconExpand: {
+    transition: t => t.transitions.create('all'),
+    ml: 1,
+    color: t => t.vars.palette.text.disabled,
+  },
+  iconExpendShrinked: {
+    transform: 'rotate(180deg)',
+  },
+})
+
+export function Section({
   section,
   hidden,
   onToggleHidden,
@@ -136,7 +149,7 @@ function Section({
   }, [inView])
 
   return (
-    <Box key={section.name} ref={ref}>
+    <Box key={section.name} ref={ref} sx={style.root}>
       <Typography
         id={section.name}
         variant="h2"

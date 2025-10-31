@@ -4,15 +4,21 @@ import React, {ReactNode} from 'react'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {AppHeaderContainer} from '@/core/layout/AppHeaderContainer'
 import {Core} from '@/shared'
+import {alphaVar} from '@infoportal/client-core'
+import {ToggleSidebarButton} from '@/core/layout/ToggleSidebarButton'
 
 export const DashboardHeader = ({
   title,
   subTitle,
   action,
   header,
+  subHeaderHeight,
   id,
+  height,
   ...props
 }: Omit<BoxProps, 'title'> & {
+  height?: number
+  subHeaderHeight?: number
   title: ReactNode
   subTitle: ReactNode
   action?: ReactNode
@@ -24,51 +30,38 @@ export const DashboardHeader = ({
   return (
     <>
       <Box
+        component="header"
         sx={{
           transition: t => t.transitions.create('all'),
-          pl: 2,
+          pl: 1,
           zIndex: 2,
-          // background: t => t.vars.palette.background.default,
-          pt: 2,
+          height,
+          display: 'flex',
+          alignItems: 'center',
           width: '100%',
+          backdropFilter: 'blur(10px)',
+          background: alphaVar(t.vars.palette.background.paper, 0.1),
         }}
         {...props}
       >
-        <Box className="header_content">
-          <Box sx={{display: 'flex', alignItems: 'center', mb: 1}}>
-            {showSidebarButton && (
-              <Core.IconBtn
-                size="small"
-                sx={{
-                  alignSelf: 'start',
-                  mr: 2,
-                  border: `2px solid ${t.vars.palette.primary.main}`,
-                  background: sidebarOpen ? 'none' : Core.alphaVar(t.vars.palette.primary.main, 0.1),
-                  color: t.vars.palette.primary.main,
-                  '&:hover': {
-                    background: Core.alphaVar(t.vars.palette.primary.main, 0.1),
-                  },
-                }}
-                onClick={() => setSidebarOpen(_ => !_)}
-                children="menu"
-              />
-            )}
-            <Box className="header_title" sx={{mb: 1, flex: 1, whiteSpace: 'nowrap'}}>
-              <Box sx={{display: 'flex', alignItems: 'center', mr: 2}}>
-                <Typography className="header_title_main" variant="h1" sx={{flex: 1}}>
-                  {title}
-                </Typography>
-                <Box sx={{ml: 'auto', mr: 2}}>{action}</Box>
-                <IpLogo height={24} />
-              </Box>
-              <Typography className="header_title_sub" variant="subtitle1" sx={{color: t.vars.palette.text.secondary}}>
-                {subTitle}
+        <Box className="header_content" sx={{display: 'flex', alignItems: 'center'}}>
+          {showSidebarButton && <ToggleSidebarButton sx={{mr: 2}} />}
+          <Box className="header_title" sx={{flex: 1, whiteSpace: 'nowrap'}}>
+            <Box sx={{display: 'flex', alignItems: 'center', mr: 2}}>
+              <Typography className="header_title_main" variant="h1" sx={{flex: 1}}>
+                {title}
               </Typography>
+              <Box sx={{ml: 'auto', mr: 2}}>{action}</Box>
             </Box>
+            <Typography className="header_title_sub" variant="subtitle1" sx={{color: t.vars.palette.text.secondary}}>
+              {subTitle}
+            </Typography>
           </Box>
         </Box>
       </Box>
-      <AppHeaderContainer id={id} sx={{pb: .5}}>{header}</AppHeaderContainer>
+      <AppHeaderContainer id={id} sx={{height: subHeaderHeight}}>
+        {header}
+      </AppHeaderContainer>
     </>
   )
 }

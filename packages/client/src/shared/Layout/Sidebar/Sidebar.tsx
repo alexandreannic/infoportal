@@ -17,8 +17,10 @@ export const Sidebar = ({
   id = 'app-sidebar-id',
   elevation = 5,
   headerId = 'app-header',
+  stickyOffset,
   ...props
 }: BoxProps & {
+  stickyOffset?: number
   elevation?: number | null
   showThemeToggle?: boolean
   headerId?: string
@@ -34,6 +36,8 @@ export const Sidebar = ({
         maxHeight: '100%',
         width: sidebarOpen ? `calc(${sidebarWidth}px + ${t.vars.spacing})` : '0px',
         transition: t.transitions.create('all') + ' !important',
+        position: stickyOffset ? 'sticky' : undefined,
+        top: stickyOffset,
       }}
       ModalProps={{
         // hideBackdrop: true,

@@ -53,14 +53,13 @@ export const AppHeaderContainer = forwardRef(({children, sx, ...props}: BoxProps
           position: 'sticky',
           top: 0,
           zIndex: 2,
-          px: 2,
+          px: 1,
           display: 'flex',
           backdropFilter: 'blur(12px)',
           alignItems: 'center',
           // Because on Windows, sticky-header is not working properly
           boxShadow: t.vars.shadows[2],
           // mb: 2,
-          pl: 2,
           ...sx,
         }}
       >
