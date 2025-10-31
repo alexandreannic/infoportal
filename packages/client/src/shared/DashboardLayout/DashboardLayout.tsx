@@ -84,7 +84,7 @@ export const DashboardLayout = ({
             ))}
           </Sidebar>
         ))}
-        <Page width={pageWidth} sx={{mb: 2}}>
+        <Page width={pageWidth} sx={{mb: 2, px: 1}}>
           {beforeSection}
           {sections?.map(s => (
             <Section
@@ -103,16 +103,16 @@ export const DashboardLayout = ({
 
 const style = Core.makeSx({
   root: {
-    // mb: 5,
-    // pt: 1,
+    mb: 5,
+    pt: 1,
   },
   sectionTitle: {
     display: 'flex',
     alignItems: 'center',
     pt: 1,
     background: 'none',
-    // marginTop: -subHeaderHeight + 'px',
-    // paddingTop: subHeaderHeight + 'px',
+    marginTop: -subHeaderHeight + 'px',
+    paddingTop: subHeaderHeight + 'px',
     mb: 2,
     transition: t => t.transitions.create('all'),
   },

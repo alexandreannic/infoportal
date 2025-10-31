@@ -8,7 +8,7 @@ import {
   useTheme,
 } from '@mui/material'
 import {colorRepeatedQuestionHeader, KoboTypeIcon} from '@infoportal/database-column'
-import {KoboSchemaHelper} from 'infoportal-common'
+import {KoboSchemaHelper, removeHtml} from 'infoportal-common'
 import React, {useCallback, useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
@@ -95,21 +95,24 @@ export const SelectQuestionInput = ({
       groupBy={_ => {
         return schema?.helper.group.getByQuestionName(_)?.name ?? ''
       }}
-      renderGroup={params => (
-        <li key={params.key}>
-          <div
-            style={{
-              fontWeight: 600,
-              fontSize: 13,
-              padding: '4px 10px',
-              background: 'rgba(0,0,0,0.04)',
-            }}
-          >
-            {schema?.translate.question(params.group)}
-          </div>
-          <ul style={{paddingLeft: 0, margin: 0}}>{params.children}</ul>
-        </li>
-      )}
+      renderGroup={params => {
+        const label = schema?.translate.question(params.group)
+        return (
+          <li key={params.key} title={label}>
+            <div
+              style={{
+                fontWeight: 600,
+                fontSize: 13,
+                padding: '4px 10px',
+                background: 'rgba(0,0,0,0.04)',
+              }}
+            >
+              {label}
+            </div>
+            <ul style={{paddingLeft: 0, margin: 0}}>{params.children}</ul>
+          </li>
+        )
+      }}
       renderInput={({InputProps: renderInputProps, ...renderProps}) => (
         <Core.Input
           label={m.question}
@@ -128,13 +131,18 @@ export const SelectQuestionInput = ({
       renderValue={_ => KoboSchemaHelper.getLabel(questionIndex[_], langIndex).replace(/<[^>]+>/g, '') ?? _}
       renderOption={(props, option) => {
         const isInRepeatGroup = !!schema?.helper.group.getByQuestionName(option)
+        const label = removeHtml(schema?.translate.question(option))
         return (
-          <Box component="li" {...props} key={option} sx={isInRepeatGroup ? optionInRepeatStyle(t) : undefined}>
+          <Box
+            component="li"
+            {...props}
+            key={option}
+            sx={isInRepeatGroup ? optionInRepeatStyle(t) : undefined}
+            title={label}
+          >
             <KoboTypeIcon children={questionIndex[option]?.type} sx={{ml: -0.5, mr: 1}} />
             <div>
-              <Core.Txt block>
-                {KoboSchemaHelper.getLabel(questionIndex[option], langIndex).replace(/<[^>]+>/g, '') ?? option}
-              </Core.Txt>
+              <Core.Txt block>{label ?? option}</Core.Txt>
               <Core.Txt color="disabled">{option}</Core.Txt>
             </div>
           </Box>

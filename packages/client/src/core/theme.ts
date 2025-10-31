@@ -26,7 +26,7 @@ export type AppThemeParams = {
 export const defaultThemeParams = {
   colorPrimary: Core.colorPrimary['500'], // '#c9000a',
   colorSecondary: '#1a73e8',
-  bgColor: '#edf2faff',
+  bgColor: undefined, //'#edf2faff',
   dark: false,
   borderRadius: 12,
   spacing: 8,
@@ -197,6 +197,9 @@ export const muiTheme = ({
             background: 'url(/bg2.png)',
             backgroundSize: 'cover',
             backgroundColor: 'var(--mui-palette-background-default)',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+            backgroundPosition: 'center',
             // Dark mode override
             // '[data-mui-color-scheme="dark"] &': {},
             // background: 'linear-gradient(to bottom, #c8e6f9, #f2f4fb)',

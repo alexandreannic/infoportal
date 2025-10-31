@@ -10,10 +10,12 @@ export function SliderNumberInput({
   disabled,
   min,
   max,
+  defaultValue,
   onChange,
   sx,
   ...props
 }: Pick<SliderProps, 'disabled' | 'min' | 'max' | 'sx'> & {
+  defaultValue?: number
   value?: number
   onChange: (e: any, value?: number) => void
   label?: string
@@ -40,6 +42,7 @@ export function SliderNumberInput({
       <Box sx={{px: t.vars.spacing, display: 'flex', alignItems: 'center'}}>
         <InputLabel sx={{ml: 0.5}}>{label}</InputLabel>
         <InputBase
+          defaultValue={defaultValue}
           disabled={disabled}
           inputRef={inputRef}
           onFocus={() => setFocused(true)}
@@ -54,6 +57,7 @@ export function SliderNumberInput({
         />
       </Box>
       <Slider
+        defaultValue={defaultValue}
         sx={{
           height: sliderHeight,
           position: 'absolute',

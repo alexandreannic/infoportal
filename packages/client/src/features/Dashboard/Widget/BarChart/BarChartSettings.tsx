@@ -17,6 +17,7 @@ import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 import {ChoiceMapper, ChoicesMapperPanel} from '@/features/Dashboard/Widget/shared/ChoicesMapper'
 import {Core, Datatable} from '@/shared'
+import {SliderNumberInput} from '@/shared/customInput/SliderNumberInput'
 
 export function BarChartSettings() {
   const {m} = useI18n()
@@ -68,13 +69,13 @@ export function BarChartSettings() {
         <WidgetSettingsFilterQuestion name="filter" form={form} sx={{mb: 1}} />
       </WidgetSettingsSection>
       <WidgetSettingsSection title={m.customize}>
-        <WidgetLabel>{m._dashboard.listLimit}</WidgetLabel>
         <Controller
           name="limit"
           control={form.control}
           render={({field, fieldState}) => (
-            <Slider
+            <SliderNumberInput
               {...field}
+              label={m._dashboard.listLimit}
               value={field.value ?? choices?.length}
               onChange={(e, value) => {
                 if (choices && value === choices?.length) field.onChange(null)
@@ -83,7 +84,6 @@ export function BarChartSettings() {
               disabled={!choices}
               defaultValue={choices?.length}
               max={choices?.length ?? 1}
-              valueLabelDisplay="auto"
               sx={{mb: 1}}
             />
           )}

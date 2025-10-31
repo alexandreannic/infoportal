@@ -1,6 +1,12 @@
 import {Core} from '@/shared'
-import React from 'react'
+import {removeHtml} from 'infoportal-common'
+import {useMemo} from 'react'
 
-export const WidgetTitle = ({sx, ...props}: Core.TxtProps) => {
-  return <Core.Txt title={props.children as string} block size="big" bold sx={{mb: 1, ...sx}} {...props} />
+export const WidgetTitle = ({sx, children, ...props}: Omit<Core.TxtProps, 'children'> & {children: string}) => {
+  const title = useMemo(() => removeHtml(children), [children])
+  return (
+    <Core.Txt title={title} block size="big" bold sx={{mb: 1, ...sx}} {...props}>
+      {removeHtml(title)}
+    </Core.Txt>
+  )
 }

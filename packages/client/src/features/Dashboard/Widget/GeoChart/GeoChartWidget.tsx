@@ -68,6 +68,7 @@ export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
       return config.mapping?.[_] ?? _
     })
   }, [filters])
+
   if (!config.questionName) return <WidgetCardPlaceholder type={widget.type} />
 
   return (

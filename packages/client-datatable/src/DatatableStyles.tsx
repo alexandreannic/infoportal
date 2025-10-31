@@ -34,6 +34,9 @@ export const DatatableGlobalStyles = () => (
         top: 0,
         left: 0,
         width: '100%',
+        '&:last-of-type .dtd': {
+          borderBottom: 'none',
+        },
       },
 
       '.dtd': {
