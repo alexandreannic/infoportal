@@ -148,7 +148,7 @@ export const ChartGeo = ({
               const row = selection[0].row
               const iso = dataTable.getValue(row, 0) as string | null
               const count = dataTable.getValue(row, 1) as number
-              if (!iso || count) return
+              if (!iso || !count) return
               if (isIsoCountry(iso)) setSelectedCountry(iso as CountryCode)
               else onRegionClick?.(iso)
             },

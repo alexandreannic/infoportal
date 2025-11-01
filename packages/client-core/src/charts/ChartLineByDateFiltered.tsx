@@ -50,7 +50,8 @@ export const ChartLineByDateFiltered = <T,>({
       Obj.entries(curves).forEach(([q, {getDate, filter}]) => {
         const date = map(getDate(row), _ => (typeof _ === 'string' ? new Date(_) : _)) as Date | undefined
         try {
-          if (!date || !isDate(date)) throw Error('Invalid date')
+          if (!date) return
+          if (!isDate(date)) throw Error('Invalid date')
           const formattedDate = formatDateByTick(date, tick)
           if (!PeriodHelper.isDateIn({start: start, end: end}, date)) return
 
