@@ -13,7 +13,7 @@ import {PieChartSettings} from '@/features/Dashboard/Widget/PieChart/PieChartSet
 import {LineChartSettings} from '@/features/Dashboard/Widget/LineChart/LineChartSettings'
 import {GeoPointSettings} from '@/features/Dashboard/Widget/GeoPoint/GeoPointSettings'
 import {GeoChartSettings} from '@/features/Dashboard/Widget/GeoChart/GeoChartSettings'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {TableSettings} from '@/features/Dashboard/Widget/Table/TableSettings'
 import {CardSettings} from '@/features/Dashboard/Widget/Card/CardSettings'
 import {AlertSettings} from '@/features/Dashboard/Widget/Alert/AlertSettings'

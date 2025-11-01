@@ -2,9 +2,9 @@ import {Ip} from 'infoportal-api-sdk'
 import {useMemo} from 'react'
 import {ResponsiveProps} from 'react-grid-layout'
 
-export const useGridLayout = (
-  widgets: Ip.Dashboard.Widget[],
-): Pick<ResponsiveProps, 'layouts' | 'breakpoints' | 'cols' | 'margin' | 'rowHeight' | 'width'> => {
+export type UseGridLayout = Pick<ResponsiveProps, 'layouts' | 'breakpoints' | 'cols' | 'margin' | 'rowHeight' | 'width'>
+
+export const useGridLayout = (widgets: Ip.Dashboard.Widget[]): UseGridLayout => {
   return useMemo(() => {
     const lg = widgets.map(_ => ({i: _.id, ..._.position}))
     const max = Math.max(...widgets.map(_ => _.position.h + _.position.y))

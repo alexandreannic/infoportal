@@ -30,7 +30,7 @@ export const ChartGeo = ({
 }: {
   dataLabel?: string
   selected?: string[]
-  onRegionClick: (_: string) => void
+  onRegionClick?: (_: string) => void
   country?: CountryCode
   data?: {iso: string; count: number}[]
 }) => {
@@ -150,7 +150,7 @@ export const ChartGeo = ({
               const count = dataTable.getValue(row, 1) as number
               if (!iso || count) return
               if (isIsoCountry(iso)) setSelectedCountry(iso as CountryCode)
-              else onRegionClick(iso)
+              else onRegionClick?.(iso)
             },
           },
         ]}

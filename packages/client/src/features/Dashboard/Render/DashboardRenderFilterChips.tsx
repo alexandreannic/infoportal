@@ -1,4 +1,4 @@
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {Obj} from '@axanc/ts-utils'
 import {Chip} from '@mui/material'
 

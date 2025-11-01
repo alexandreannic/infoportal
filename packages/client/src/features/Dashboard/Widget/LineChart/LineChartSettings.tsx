@@ -13,7 +13,7 @@ import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSe
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {Box, useTheme} from '@mui/material'
 import {ColorPickerLimited} from '@/shared/customInput/ColorPickerLimited'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 
 export function LineChartSettings() {
   const {m} = useI18n()

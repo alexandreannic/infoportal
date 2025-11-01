@@ -1,6 +1,6 @@
 import {useEffect} from 'react'
 import {useWidgetSettingsContext} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 
 export const useEffectSetTitle = (questionName?: string) => {
   const schema = useDashboardContext(_ => _.schema)

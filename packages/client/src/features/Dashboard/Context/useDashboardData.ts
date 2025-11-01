@@ -1,4 +1,4 @@
-import {Answers, DashboardContext} from '@/features/Dashboard/DashboardContext'
+import {Answers, DashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {fnSwitch, Seq} from '@axanc/ts-utils'
 import {filterByColumn} from '@infoportal/client-datatable'
 import {subDays} from 'date-fns'

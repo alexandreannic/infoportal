@@ -1,4 +1,4 @@
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 import {Core} from '@/shared'

@@ -1,6 +1,6 @@
 import {Ip} from 'infoportal-api-sdk'
 import React, {useMemo} from 'react'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {Core, Datatable} from '@/shared'
 import {questionTypeNumbers} from '@/features/Dashboard/Widget/Table/TableSettings'
 import {Obj} from '@axanc/ts-utils'

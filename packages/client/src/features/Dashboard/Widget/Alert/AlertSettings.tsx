@@ -10,7 +10,7 @@ import {
 } from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Core} from '@/shared'
 import {SelectChoices} from '@/features/Dashboard/Widget/shared/SelectChoices'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {SelectQuestionInput} from '@/shared/customInput/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'

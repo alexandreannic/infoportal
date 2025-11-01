@@ -1,5 +1,5 @@
 import {initGoogleMaps} from '@/core/initGoogleMaps'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {Core} from '@/shared'
 import {Box, useTheme} from '@mui/material'

@@ -1,4 +1,4 @@
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {PanelWidgetContent} from '@/shared/PdfLayout/PanelWidget'
 import {useI18n} from '@infoportal/client-i18n'

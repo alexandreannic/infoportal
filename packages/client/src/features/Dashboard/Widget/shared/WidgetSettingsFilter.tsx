@@ -9,7 +9,7 @@ import {Ip} from 'infoportal-api-sdk'
 import {Core} from '@/shared'
 import {Box, BoxProps, Icon, SxProps, useTheme} from '@mui/material'
 import {Kobo} from 'kobo-sdk'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {styleUtils} from '@infoportal/client-core'
 
 const formName: Record<keyof Ip.Dashboard.Widget.ConfigFilter, keyof Ip.Dashboard.Widget.ConfigFilter> = {

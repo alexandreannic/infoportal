@@ -2,7 +2,7 @@ import {SxProps} from '@mui/material'
 import React, {useMemo} from 'react'
 import {useQuestionInfo} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Core} from '@/shared'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 
 export function SelectChoices({
   value = [],

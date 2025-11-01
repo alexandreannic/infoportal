@@ -2,7 +2,7 @@ import {Ip} from 'infoportal-api-sdk'
 import React from 'react'
 import {Core} from '@/shared'
 import {Icon} from '@mui/material'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 
 export function AlertWidget({widget, isEditing}: {isEditing?: boolean; widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['Alert']

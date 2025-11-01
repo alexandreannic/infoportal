@@ -2,7 +2,7 @@ import {ReactNode} from 'react'
 import {Box, BoxProps, Icon, useTheme} from '@mui/material'
 import {styleUtils, Txt} from '@infoportal/client-core'
 import {Kobo} from 'kobo-sdk'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 
 export function ChoicesMapperPanel({children, sx, ...props}: BoxProps) {
   const t = useTheme()

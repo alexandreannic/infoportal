@@ -6,7 +6,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
 import {Link} from '@tanstack/react-router'
 import {PopoverShareLink} from '@/shared/PopoverShareLink'
-import {useGetDashboardLink} from '@/features/Dashboard/useGetDashboardLink'
+import {useGetDashboardLink} from '@/features/Dashboard/Context/useGetDashboardLink'
 
 export const DashboardCard = ({
   img,

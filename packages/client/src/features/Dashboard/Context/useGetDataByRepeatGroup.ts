@@ -1,5 +1,5 @@
 import {useRef} from 'react'
-import {Answers} from '@/features/Dashboard/DashboardContext'
+import {Answers} from '@/features/Dashboard/Context/DashboardContext'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {Seq} from '@axanc/ts-utils'
 

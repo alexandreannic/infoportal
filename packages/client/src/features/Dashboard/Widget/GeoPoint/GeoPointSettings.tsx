@@ -6,7 +6,7 @@ import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/W
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import React, {useEffect} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 
 export const GeoPointSettings = () => {

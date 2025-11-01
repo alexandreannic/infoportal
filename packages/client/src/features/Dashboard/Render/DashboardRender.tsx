@@ -2,7 +2,7 @@ import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
 import {muiTheme} from '@/core/theme'
-import {DashboardProvider, useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {DashboardProvider, useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {Widget} from '@/features/Dashboard/Widget/Widget'
 import {rootRoute} from '@/Router'
 import {CenteredContent, Core} from '@/shared'
@@ -16,7 +16,6 @@ import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from 'infoportal-common'
 import {useMemo} from 'react'
 import {Responsive, WidthProvider} from 'react-grid-layout'
-import {useGridLayout} from '../Section/useGridLayout'
 import {DashboardRenderFilterChips} from './DashboardRenderFilterChips'
 
 const GridLayout = WidthProvider(Responsive)
@@ -145,7 +144,7 @@ function WithContext({snapshot}: {snapshot: Ip.DashboardWithSnapshot['snapshot']
 }
 
 function Section({widgets, dashboard}: {dashboard: Ip.Dashboard; widgets: Ip.Dashboard.Widget[]}) {
-  const layout = useGridLayout(widgets)
+  const layout = useDashboardContext(_ => _.gridLayout)
 
   return (
     <GridLayout

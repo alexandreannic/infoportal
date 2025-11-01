@@ -14,7 +14,7 @@ import {
   WidgetSettingsFilterQuestion,
 } from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 
 export function PieChartSettings() {

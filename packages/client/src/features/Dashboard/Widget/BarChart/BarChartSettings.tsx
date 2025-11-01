@@ -11,7 +11,7 @@ import {
 import {SelectQuestionInput} from '@/shared/customInput/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
-import {useDashboardContext} from '@/features/Dashboard/DashboardContext'
+import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {SwitchBox} from '@/shared/customInput/SwitchBox'
 import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
