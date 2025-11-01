@@ -11,7 +11,7 @@ import {Dispatch, ReactNode, SetStateAction, useMemo, useState} from 'react'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {UseDashboardFilteredDataCache, useDashboardFilteredDataCache} from './useDashboardData'
 import {UseDashboardFormEdit, useDashboardFormEdit} from './useDashboardFormEdit'
-import {UseGridLayout, useGridLayout} from '@/features/Dashboard/Context/useGridLayout'
+import {UseDashboardGridLayout, useDashboardGridLayout} from '@/features/Dashboard/Context/useDashboardGridLayout'
 
 // TODO this type could be globalized. It's maybe defined somewhere already
 export type Answers = Ip.Submission.Meta & Record<string, any>
@@ -30,7 +30,7 @@ export type DashboardContext = {
   widgetsBySection: Map<Ip.Dashboard.SectionId, Ip.Dashboard.Widget[]>
   sections: Ip.Dashboard.Section[]
   updateForm: UseDashboardFormEdit
-  gridLayout: UseGridLayout
+  gridLayout: UseDashboardGridLayout
 }
 
 const Context = createContext<DashboardContext>({} as DashboardContext)
@@ -95,7 +95,7 @@ export const DashboardProvider = ({
 
   const updateForm = useDashboardFormEdit({workspaceId, dashboard})
 
-  const gridLayout = useGridLayout(widgets)
+  const gridLayout = useDashboardGridLayout(widgets, dashboard)
   return (
     <Context.Provider
       value={{

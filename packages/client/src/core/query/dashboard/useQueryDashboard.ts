@@ -30,6 +30,19 @@ export class UseQueryDashboard {
     })
   }
 
+  static restorePublishedVersion = ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
+    const {toastHttpError} = useIpToast()
+    const {apiv2} = useAppSettings()
+    const queryClient = useQueryClient()
+    return useMutation({
+      mutationFn: () => apiv2.dashboard.restorePublishedVersion({workspaceId, id}),
+      onSuccess: () => {
+        queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId, id)})
+      },
+      onError: toastHttpError,
+    })
+  }
+
   static getProtectedSubmission = ({workspaceSlug, dashboardSlug}: {workspaceSlug: string; dashboardSlug: string}) => {
     const {apiv2} = useAppSettings()
     return useQuery({

@@ -310,6 +310,11 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(({body}) => dashboard.getAll(body))
           .then(ok200)
           .catch(handleError),
+      restorePublishedVersion: _ =>
+        auth2(_)
+          .then(({body}) => dashboard.restorePublishedVersion(body))
+          .then(ok204)
+          .catch(handleError),
       getPublished: _ =>
         auth2(_)
           .then(({body}) => dashboard.getPublished(body))

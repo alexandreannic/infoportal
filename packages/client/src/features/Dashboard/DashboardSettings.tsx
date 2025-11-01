@@ -36,6 +36,8 @@ export function DashboardSettings() {
   const queryUpdate = UseQueryDashboard.update({workspaceId})
   const queryRemove = UseQueryDashboard.remove({workspaceId})
   const queryPermission = UseQueryPermission.workspace({workspaceId})
+  const queryRestore = UseQueryDashboard.restorePublishedVersion({workspaceId, id: dashboard.id})
+
   const navigate = useNavigate()
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
@@ -215,6 +217,25 @@ export function DashboardSettings() {
       </Core.PanelWBody>
       {queryPermission.data?.dashboard_canDelete && (
         <Core.PanelWBody outsideTitle={m.dangerZone}>
+          <SettingsRow
+            icon="settings_backup_restore"
+            label={m._dashboard.restorePublishedVersion}
+            desc={m._dashboard.restorePublishedVersionDesc}
+            action={
+              <Core.Modal
+                loading={queryRestore.isPending}
+                title={m._dashboard.restorePublishedVersion}
+                content={dashboard.name}
+                onConfirm={async (e, close) => {
+                  await queryRestore.mutateAsync()
+                  toastSuccess(m._dashboard.restorePublishedDone)
+                  close()
+                }}
+              >
+                <Core.Btn variant="outlined" icon="settings_backup_restore" children={m.restore} />
+              </Core.Modal>
+            }
+          />
           <SettingsRow
             icon="delete"
             label={m._dashboard.deleteThis}

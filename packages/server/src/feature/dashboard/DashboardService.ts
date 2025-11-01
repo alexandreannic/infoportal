@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboMetaHelper, KoboSchemaHelper, slugify} from 'infoportal-common'
 import {genShortid} from '../../helper/Utils.js'
 import {HttpError, Ip} from 'infoportal-api-sdk'
@@ -39,6 +39,21 @@ export class DashboardService {
           snapshot: _.published!.snapshot,
         }
       })
+  }
+
+  readonly restorePublishedVersion = async ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
+    const snapshot: Ip.DashboardWithSnapshot['snapshot'] = await this.prisma.dashboard
+      .findFirstOrThrow({select: {published: {select: {snapshot: true}}}, where: {id}})
+      .then(_ => _.published?.snapshot)
+      .catch(HttpError.throwNotFoundIfUndefined())
+    await this.prisma.dashboardSection.deleteMany({where: {dashboardId: id}})
+    const sections: Prisma.DashboardSectionCreateManyInput[] = snapshot.map(({widgets, ..._}) => ({
+      ..._,
+      dashboardId: id,
+    }))
+    const widgets: Prisma.DashboardWidgetCreateManyInput[] = snapshot.flatMap(_ => _.widgets)
+    await this.prisma.dashboardSection.createMany({data: sections})
+    await this.prisma.dashboardWidget.createMany({data: widgets})
   }
 
   readonly getProtectedSubmission = async ({

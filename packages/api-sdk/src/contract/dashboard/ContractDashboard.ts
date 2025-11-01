@@ -31,6 +31,15 @@ export const dashboardContract = c.router({
     }),
     responses: {200: z.any() as z.ZodType<Ip.Submission[]>},
   },
+  restorePublishedVersion: {
+    method: 'POST',
+    path: `/dashboard/restorePublishedVersion`,
+    body: z.object({
+      workspaceId: schema.workspaceId,
+      id: schema.dashboardId,
+    }),
+    responses: {204: schema.emptyResult},
+  },
   search: {
     method: 'POST',
     path: `/dashboard/search`,
@@ -109,5 +118,9 @@ export const dashboardClient = (client: TsRestClient) => {
         .getProtectedSubmission({body})
         .then(map200)
         .then(_ => _.map(Ip.Submission.map)),
+
+    restorePublishedVersion: (body: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
+      return client.dashboard.restorePublishedVersion({body}).then(map204)
+    },
   }
 }

@@ -328,6 +328,7 @@ export const en = Object.freeze({
     proxyUrl: 'Proxy URL',
     proxyDestinationUrl: 'DestinationURL',
     enabled: 'Enabled',
+    restore: 'Restore',
     households: 'Households',
     displacementStatus: 'Displacement status',
     uniqIndividuals: 'Unique individuals',
@@ -348,6 +349,9 @@ export const en = Object.freeze({
     dangerZone: 'Danger zone',
     font: 'Font',
     _dashboard: {
+      restorePublishedVersion: 'Restore published version',
+      restorePublishedVersionDesc: 'Revert the dashboard to the last published version',
+      restorePublishedDone: 'Successfully restored published version',
       successfullyPublished: 'Successfully published!',
       theme: {
         primaryColor: 'Color',

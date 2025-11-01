@@ -13,7 +13,7 @@ export namespace HttpError {
 
   export const throwNotFoundIfUndefined =
     (message: string = 'Resource not found') =>
-    <T>(t: T | undefined): T => {
+    <T>(t: T | undefined | null): T => {
       if (t) return t
       throw new NotFound(message)
     }

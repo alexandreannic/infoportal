@@ -44,7 +44,7 @@ export interface ToastProviderProps {
   horizontal?: 'left' | 'center' | 'right'
 }
 
-export const ToastProvider = ({children, vertical = 'bottom', horizontal = 'left'}: ToastProviderProps) => {
+export const ToastProvider = ({children, vertical = 'bottom', horizontal = 'right'}: ToastProviderProps) => {
   const t = useTheme()
   const [open, setOpen] = useState(false)
   const [type, setType] = useState<ToastType | undefined>(undefined)
