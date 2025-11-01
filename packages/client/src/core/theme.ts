@@ -200,8 +200,12 @@ export const muiTheme = ({
             backgroundRepeat: 'no-repeat',
             backgroundAttachment: 'fixed',
             backgroundPosition: 'center',
+            ...t.applyStyles('dark', {
+              background: 'var(--mui-palette-background-default)',
+            }),
+
             // Dark mode override
-            // '[data-mui-color-scheme="dark"] &': {},
+            // '[data-mui-color-scheme="dark"] &': {
             // background: 'linear-gradient(to bottom, #c8e6f9, #f2f4fb)',
             // '&:before': {
             //   content: t.palette.mode == 'light' ? '" "' : undefined,

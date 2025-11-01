@@ -16,8 +16,8 @@ export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const filteredData = useMemo(() => {
     const d = getFilteredData([
       filterFns.byPeriodCurrent,
-      filterFns.byWidgetFilter(config.filter),
       filterFns.byDashboardFilter(),
+      filterFns.byWidgetFilter(config.filter),
     ])
     return flattenRepeatGroupData.flattenIfRepeatGroup(d, config.questionName)
   }, [
@@ -33,8 +33,8 @@ export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     if (!filterFns.byPeriodCurrentDelta) return
     const d = getFilteredData([
       filterFns.byPeriodCurrentDelta,
-      filterFns.byWidgetFilter(config.filter),
       filterFns.byDashboardFilter(),
+      filterFns.byWidgetFilter(config.filter),
     ])
     return flattenRepeatGroupData.flattenIfRepeatGroup(d, config.questionName)
   }, [
@@ -63,13 +63,7 @@ export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
       <Core.ChartPieWidgetBy<any>
         title={widget.i18n_title?.[langIndex]}
         data={filteredData}
-        compare={
-          filteredDataDelta && config.showEvolution
-            ? {
-                before: filteredDataDelta,
-              }
-            : undefined
-        }
+        previousData={filteredDataDelta && config.showEvolution ? filteredDataDelta : undefined}
         dense={config.dense}
         property={config.questionName}
         filter={filterValue ?? (_ => true)}

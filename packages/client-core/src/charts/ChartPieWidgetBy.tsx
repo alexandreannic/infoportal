@@ -4,9 +4,9 @@ import {Seq} from '@axanc/ts-utils'
 import {ChartPieIndicatorProps, ChartPieWidget} from './ChartPieWidget'
 
 export type ChartPieWidgetProps<T> = {
-  compare?: {before: Seq<T>; now?: Seq<T>}
   title?: ReactNode
   data: Seq<T>
+  previousData?: Seq<T>
   showValue?: boolean
   showBase?: boolean
   hideEvolution?: boolean
@@ -14,7 +14,7 @@ export type ChartPieWidgetProps<T> = {
 
 export const ChartPieWidgetBy = <T,>({
   title,
-  compare,
+  previousData,
   data,
   filter,
   filterBase,
@@ -32,26 +32,22 @@ export const ChartPieWidgetBy = <T,>({
       base: base.length || 1,
     }
   }
-  const all = useMemo(() => run(data), [data, filter, filterBase])
-  const comparedData = useMemo(() => {
-    if (compare) {
-      return {
-        before: run(compare.before),
-        now: compare.now ? run(compare.now) : run(data),
-      }
-    }
-  }, [compare, filter, filterBase])
+  const computedData = useMemo(() => run(data), [data, filter, filterBase])
+
+  const computedPreviousData = useMemo(() => {
+    if (previousData) return run(previousData)
+  }, [previousData, filter, filterBase])
 
   return (
     <ChartPieWidget
       title={title}
-      value={all.res}
-      base={all.base}
+      value={computedData.res}
+      base={computedData.base}
       evolution={
         hideEvolution
           ? undefined
-          : comparedData
-            ? percent(comparedData.now ?? all) - percent(comparedData.before)
+          : computedPreviousData
+            ? percent(computedData) * 100 - percent(computedPreviousData) * 100
             : undefined
       }
       {...props}
