@@ -148,7 +148,7 @@ function Form() {
   ])
 
   return (
-    <Page width="full">
+    <Page width="full" sx={{height: '100%'}}>
       <Tabs variant="scrollable" scrollButtons="auto" value={activeTab}>
         <Tab
           icon={<Icon>{appConfig.icons.dataTable}</Icon>}

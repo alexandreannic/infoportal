@@ -92,7 +92,7 @@ export function FormActionReports() {
                   label: (
                     <>
                       {formated}
-                      <Icon fontSize="small" color="action" children="schedule" sx={{ml: 1}} />
+                      <Icon fontSize="small" color="action" children="today" sx={{ml: 1}} />
                     </>
                   ),
                 }
@@ -112,7 +112,7 @@ export function FormActionReports() {
                   label: duration && (
                     <>
                       {_.running ? <Duration start={_.startedAt} /> : duration}
-                      <Icon fontSize="small" color="action" children="today" sx={{ml: 1}} />
+                      <Icon fontSize="small" color="action" children="schedule" sx={{ml: 1}} />
                     </>
                   ),
                 }

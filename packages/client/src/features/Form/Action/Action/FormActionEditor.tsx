@@ -6,7 +6,7 @@ import Editor, {useMonaco} from '@monaco-editor/react'
 import type * as monaco from 'monaco-editor'
 // @ts-ignore
 import {constrainedEditor} from 'constrained-editor-plugin'
-import {Core} from '@/shared/index.js'
+import {Core} from '@/shared'
 
 const monacoBg = '#1e1e1e'
 
@@ -109,6 +109,7 @@ function FormActionEditorWithMonaco({
     <Box
       sx={{
         height: '100%',
+        maxHeight: '85vh',
         minHeight: 0,
         borderRadius: t.vars.shape.borderRadius,
         overflow: 'hidden',
