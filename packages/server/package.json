@@ -54,7 +54,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
-    "@axanc/ts-utils": "2.4.3",
+    "@axanc/ts-utils": "3.0.4",
     "@azure/msal-common": "^15.4.0",
     "@azure/msal-node": "^3.4.1",
     "@microsoft/microsoft-graph-client": "^3.0.5",
@@ -80,7 +80,7 @@
     "@infoportal/action-compiler": "1.0.0",
     "infoportal-api-sdk": "1.0.0",
     "infoportal-common": "1.0.0",
-    "kobo-sdk": "^2.4.0",
+    "kobo-sdk": "^2.4.3",
     "lodash.merge": "^4.6.2",
     "mssql": "^11.0.1",
     "multer": "^1.4.5-lts.1",
