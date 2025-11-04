@@ -17,7 +17,7 @@ export function SliderNumberInput({
 }: Pick<SliderProps, 'disabled' | 'min' | 'max' | 'sx'> & {
   defaultValue?: number
   value?: number
-  onChange: (e: any, value?: number) => void
+  onChange: (value: number | undefined, e: any) => void
   label?: string
 }) {
   const t = useTheme()
@@ -52,7 +52,7 @@ export function SliderNumberInput({
           value={value}
           type="number"
           onChange={e => {
-            onChange?.(e, +e.target.value)
+            onChange?.(+e.target.value, e)
           }}
         />
       </Box>
@@ -66,7 +66,7 @@ export function SliderNumberInput({
           left: 0,
         }}
         disabled={disabled}
-        onChange={(e, v) => onChange(e, v)}
+        onChange={(e, v) => onChange(v, e)}
         value={value}
         min={min}
         max={max}
