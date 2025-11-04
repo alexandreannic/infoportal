@@ -52,7 +52,7 @@ export function SliderNumberInput({
           value={value}
           type="number"
           onChange={e => {
-            onChange?.(+e.target.value)
+            onChange?.(e, +e.target.value)
           }}
         />
       </Box>
@@ -66,7 +66,7 @@ export function SliderNumberInput({
           left: 0,
         }}
         disabled={disabled}
-        onChange={(e, v) => onChange(v)}
+        onChange={(e, v) => onChange(e, v)}
         value={value}
         min={min}
         max={max}
