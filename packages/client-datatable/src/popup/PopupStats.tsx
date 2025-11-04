@@ -1,4 +1,4 @@
-import React, {ReactNode, useEffect, useMemo} from 'react'
+import React, {ReactNode, useMemo} from 'react'
 import {Box, Popover, PopoverProps} from '@mui/material'
 import {Btn, ChartBarBy, ChartLineByDateFiltered, PanelBody, PanelFoot, PanelHead, Txt} from '@infoportal/client-core'
 import {KeyOf} from 'infoportal-common'
@@ -151,7 +151,7 @@ const MultipleChoicesPopover = <T extends Row>({
         <Txt truncate>{title}</Txt>
       </PanelHead>
       <PanelBody sx={{maxHeight: '50vh', overflowY: 'auto'}}>
-        <ChartBarBy data={data} by={_ => getValue(_) as any} multiple={multiple} label={labels} />
+        <ChartBarBy data={data} by={_ => getValue(_) as any} multiple={multiple} labels={labels} />
       </PanelBody>
       <PanelFoot alignEnd>
         <Btn color="primary" onClick={onClose as any}>

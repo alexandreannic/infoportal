@@ -152,7 +152,7 @@ export class SessionService {
           name,
           accessToken,
           job: job,
-          avatar,
+          avatar: avatar as any,
           lastConnectedAt: new Date(),
         },
       })
@@ -162,7 +162,7 @@ export class SessionService {
         data: {
           accessToken,
           name,
-          avatar,
+          avatar: avatar as any,
           job: job,
           lastConnectedAt: new Date(),
         },

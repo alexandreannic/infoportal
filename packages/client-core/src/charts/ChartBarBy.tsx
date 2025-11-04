@@ -1,5 +1,5 @@
 import {Obj} from '@axanc/ts-utils'
-import {useMemo} from 'react'
+import {ReactNode, useMemo} from 'react'
 import {ChartBar} from './ChartBar'
 import {ChartBuilder, ChartValue} from './ChartBuilder'
 
@@ -8,7 +8,7 @@ interface ChartBarBaseProps<D extends Record<string, any>, K extends string> {
   checked?: K[]
   data: D[]
   limit?: number
-  label?: Record<K, string>
+  labels?: Record<K, ReactNode>
   skippedValues?: K[]
   compareBy?: (_: D) => boolean
   orderKeys?: K[]
@@ -16,6 +16,7 @@ interface ChartBarBaseProps<D extends Record<string, any>, K extends string> {
   onToggle?: (_: K) => void
   hideValue?: boolean
   basedOn?: undefined
+  dense?: boolean
 }
 
 type ChartBarByPropsMultiple<D extends Record<string, any>, K extends string> = ChartBarBaseProps<D, K> & {
@@ -41,12 +42,13 @@ export const ChartBarBy = <D extends Record<string, any>, K extends string>({
   limit,
   onClickData,
   checked,
-  label,
+  labels,
   hideValue,
   skippedValues,
   orderKeys,
   basedOn,
   multiple,
+  dense,
 }: ChartBarByProps<D, K>) => {
   const computed: Obj<K, ChartValue> = useMemo(() => {
     if (multiple)
@@ -66,12 +68,8 @@ export const ChartBarBy = <D extends Record<string, any>, K extends string>({
   }, [data, by, multiple, basedOn, skippedValues, compareBy])
 
   const result = useMemo(() => {
-    return computed
-      .take(limit)
-      .sortManual(orderKeys)
-      .mapKeys(_ => (label ? (label[_] ?? _) : _))
-      .get()
-  }, [limit, computed, orderKeys, label])
+    return computed.take(limit).sortManual(orderKeys).get()
+  }, [limit, computed, orderKeys, labels])
 
   return (
     <ChartBar
@@ -79,6 +77,8 @@ export const ChartBarBy = <D extends Record<string, any>, K extends string>({
       data={result}
       onClickData={_ => onClickData?.(_)}
       checked={checked}
+      dense={dense}
+      labels={labels}
       // labels={
       //   !onToggle
       //     ? undefined

@@ -13,8 +13,8 @@ export class KoboMapper {
   static readonly findAttachmentId = (
     attachments?: Kobo.Submission.Attachment[],
     fileName?: string,
-  ): number | undefined => {
-    return fileName ? attachments?.find(x => x.filename.includes(fileName))?.id : undefined
+  ): string | undefined => {
+    return fileName ? attachments?.find(x => x.filename.includes(fileName))?.uid : undefined
   }
 
   static readonly mapValidation = {

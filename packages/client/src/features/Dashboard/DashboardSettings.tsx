@@ -232,7 +232,12 @@ export function DashboardSettings() {
                   close()
                 }}
               >
-                <Core.Btn variant="outlined" icon="settings_backup_restore" children={m.restore} />
+                <Core.Btn
+                  disabled={!dashboard.isPublished}
+                  variant="outlined"
+                  icon="settings_backup_restore"
+                  children={m.restore}
+                />
               </Core.Modal>
             }
           />

@@ -8,7 +8,7 @@ export namespace DataFilter {
 
   interface ShapeOption<TOption extends string = string> {
     value: TOption
-    label?: ReactNode
+    label?: string
   }
 
   interface ShapeBase<TData, TOption extends string> {
@@ -42,7 +42,7 @@ export namespace DataFilter {
     return [...(addBlank ? [blankOption] : []), ...opt.map(_ => buildOption(_))]
   }
 
-  export const buildOption = (value: string, label?: ReactNode): ShapeOption => {
+  export const buildOption = (value: string, label?: string): ShapeOption => {
     return {value: value, label: label ?? value}
   }
 

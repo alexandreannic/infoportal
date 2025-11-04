@@ -771,7 +771,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       log.error(e.toString())
     }
     log.error(e)
-    console.error(e)
+    console.error('Route error', e)
   }
   return {rawRoutes: r, tsRestRoutes: tsRestRouter}
 }

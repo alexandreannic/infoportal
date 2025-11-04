@@ -268,21 +268,24 @@ function Overview() {
       .mapValues(_ => {
         return {
           value: _.count,
-          label: (
-            <Box display="flex" alignItems="center">
-              {!_.key || _.key === '' ? (
-                <AppAvatar sx={{mr: 1}} size={24} icon="domino_mask" />
-              ) : _.key.includes('@') ? (
-                <AppAvatar sx={{mr: 1}} size={24} email={_.key as Ip.User.Email} />
-              ) : (
-                <AppAvatar sx={{mr: 1}} size={24} />
-              )}
-              {_.key === '' ? <Core.Txt color="disabled">{m.anonymous}</Core.Txt> : _.key}
-            </Box>
-          ),
+          label: _.key,
         }
       })
       .get()
+
+    const labels = Obj.mapValues(data, _ => (
+      <Box display="flex" alignItems="center">
+        {!_.label || _.label === '' ? (
+          <AppAvatar sx={{mr: 1}} size={24} icon="domino_mask" />
+        ) : _.label.includes('@') ? (
+          <AppAvatar sx={{mr: 1}} size={24} email={_.label as Ip.User.Email} />
+        ) : (
+          <AppAvatar sx={{mr: 1}} size={24} />
+        )}
+        {_.label === '' ? <Core.Txt color="disabled">{m.anonymous}</Core.Txt> : _.label}
+      </Box>
+    ))
+
     return (
       <Core.Panel>
         <Core.PanelHead
@@ -301,7 +304,7 @@ function Overview() {
         </Core.PanelHead>
         <Core.PanelBody>
           <ViewMoreDiv>
-            <Core.ChartBar dense data={data} />
+            <Core.ChartBar dense data={data} labels={labels} />
           </ViewMoreDiv>
         </Core.PanelBody>
       </Core.Panel>

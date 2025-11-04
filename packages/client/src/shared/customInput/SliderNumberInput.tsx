@@ -2,7 +2,7 @@ import {styleUtils} from '@infoportal/client-core'
 import {Box, InputBase, InputLabel, Slider, SliderProps, useTheme} from '@mui/material'
 import {useRef, useState} from 'react'
 
-const sliderHeight = 4
+const sliderHeight = 2
 
 export function SliderNumberInput({
   label,

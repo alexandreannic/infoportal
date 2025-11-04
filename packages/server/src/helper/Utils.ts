@@ -16,10 +16,6 @@ export const genShortid = (length: number = 4) => genUUID().replace(/-/g, '').sl
 
 export const toYYYYMMDD = (_: Date) => format(_, 'yyyy-MM-dd') //_.toString().substring(0, 10)
 
-export type MappedColumn<T, O = string> = {
-  [P in keyof T]: T[P] extends undefined | Date | string | number | boolean | any[] ? O : MappedColumn<T[P], O>
-}
-
 export const idParamsSchema = yup.object({
   id: yup.string().required(),
 })
@@ -31,23 +27,6 @@ export const previewList = (list: (string | number)[], toPrint = 1) => {
     return `${displayedItems} +${rest}`
   }
 }
-
-export const renameObjectProperties =
-  <O>(propsMap: Partial<MappedColumn<O>>) =>
-  (input: any): O => {
-    return Obj.keys(propsMap).reduce((acc, key) => {
-      if (typeof propsMap[key] === 'object') {
-        return {
-          ...acc,
-          [key]: renameObjectProperties(propsMap[key]!)(input),
-        }
-      }
-      return {
-        ...acc,
-        [key]: input[propsMap[key]],
-      }
-    }, {} as O)
-  }
 
 export const mapMultipleChoices = <T>(
   value: string | undefined,

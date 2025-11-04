@@ -3,7 +3,7 @@ import {ReactNode, useMemo, useState} from 'react'
 import {Box, Checkbox, Icon, TooltipProps, useTheme} from '@mui/material'
 import {useTimeout} from '@axanc/react-hooks'
 import {Obj, seq} from '@axanc/ts-utils'
-import {toPercent} from 'infoportal-common'
+import {PartialOnly, toPercent} from 'infoportal-common'
 import {Txt} from '../ui/Txt'
 import {useI18n} from '@infoportal/client-i18n'
 import {alphaVar} from '../core/theme'
@@ -11,7 +11,7 @@ import {LightTooltip, TooltipRow} from '../ui/LightTooltip'
 import {ComparativeValue} from './ComparativeValue'
 import {ChartValue} from './ChartBuilder'
 
-export interface BarChartData extends ChartValue {
+export interface BarChartData extends PartialOnly<ChartValue, 'base' | 'ratio'> {
   color?: string
   disabled?: boolean
 }
@@ -65,12 +65,18 @@ export const ChartBarContent = <K extends string>({
 }: Omit<Props<K>, 'data'> & {data: NonNullable<Props<K>['data']>}) => {
   const t = useTheme()
   const {values, maxRatio, maxValue, sumValue} = useMemo(() => {
-    const values = Obj.values(data)
+    const values = new Obj(data).mapValues((v, key) => ({...v, key})).values()
+    const sumValue = seq(values).sum(_ => _.value)
+    const safeValues = values.map(_ => {
+      const base = _.base ?? sumValue
+      const ratio = _.ratio ?? _.value / base
+      return {..._, base, ratio}
+    })
     return {
-      values,
-      sumValue: seq(values).sum(_ => _.value),
-      maxValue: Math.max(...values.map(_ => _.value)),
-      maxRatio: Math.max(...values.map(_ => _.ratio)),
+      values: safeValues,
+      sumValue,
+      maxValue: Math.max(...safeValues.map(_ => _.value)),
+      maxRatio: Math.max(...safeValues.map(_ => _.ratio)),
     }
   }, [data])
   const [appeared, setAppeared] = useState<boolean>(false)
@@ -90,8 +96,9 @@ export const ChartBarContent = <K extends string>({
           </Txt>
         </Box>
       )}
-      {Obj.entries(data).map(([k, item], i) => {
+      {values.map((item, i) => {
         const percentOfMax = 100 * (item.base ? item.ratio / maxRatio : item.value / maxValue)
+        const k = item.key
         const isSelected = checked?.includes(k)
         return (
           <TooltipWrapper item={item} base={item.base ?? sumValue} sumValue={sumValue} key={i}>

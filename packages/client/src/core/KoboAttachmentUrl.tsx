@@ -38,7 +38,7 @@ export const getKoboAttachmentUrl = ({
       formId,
       answerId: submissionId,
       // Seems Kobo change .id to .uid. Update SDK
-      attachmentId: (attachment as any)?.uid,
+      attachmentId: attachment.uid,
       baseUrl: conf.apiURL,
     })
 }

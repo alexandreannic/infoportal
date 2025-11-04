@@ -91,7 +91,7 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
         multiple={multiple}
         hideValue={!config.showValue}
         data={filteredData}
-        label={labels}
+        labels={labels}
         limit={config.limit}
         skippedValues={hiddenChoices}
         by={by!}

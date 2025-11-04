@@ -1,11 +1,10 @@
-import {ReactNode} from 'react'
 import {Obj} from '@axanc/ts-utils'
 
 export type ChartValue = {
   value: number
   base: number
   ratio: number
-  label?: ReactNode
+  label?: string
   desc?: string
   delta?: number
 }

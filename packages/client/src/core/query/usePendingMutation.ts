@@ -12,15 +12,15 @@ export function usePendingMutation<TData = unknown, TError = unknown, TVariables
   const pendingIds = useSetState<string>()
   const mutation = useMutation({
     ...options,
-    onMutate: async variables => {
+    onMutate: async (variables, ...args) => {
       pendingIds.add(getId(variables))
-      return options.onMutate?.(variables)
+      return options.onMutate?.(variables, ...args)!
     },
-    onSettled: (data, error, variables, context) => {
+    onSettled: (data, error, variables, onMutateResult, context) => {
       if (variables) {
         pendingIds.delete(getId(variables))
       }
-      options.onSettled?.(data, error, variables, context)
+      options.onSettled?.(data, error, variables, onMutateResult, context)
     },
   })
   return {...mutation, pendingIds: pendingIds.get}

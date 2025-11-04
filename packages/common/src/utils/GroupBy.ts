@@ -1,4 +1,4 @@
-import {Enum, Obj, Seq, seq} from '@axanc/ts-utils'
+import {Obj, Seq, seq} from '@axanc/ts-utils'
 
 type GroupByKey = string | number
 
@@ -167,9 +167,9 @@ export const groupBy: {
   const [group, ...rest] = groups
   const res = seq(data).groupBy(_ => group.by(_, collectedGroup))
   const collectedTransforms: any[] = []
-  const ress = new Enum(res)
+  const ress = new Obj(res)
     .sort(([a], [b]) => (group.sort ? group.sort(a, b) : a.localeCompare(b)))
-    .transform((k, v) => {
+    .map((k, v) => {
       const gbb = groupBy({
         data: v,
         groups: rest,

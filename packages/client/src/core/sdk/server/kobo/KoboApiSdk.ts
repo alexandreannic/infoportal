@@ -64,7 +64,7 @@ export class KoboApiSdk {
     baseUrl: string
     formId: Ip.FormId
     answerId: Kobo.SubmissionId
-    attachmentId: number
+    attachmentId: string
     fileName?: string
   }) => {
     return (
