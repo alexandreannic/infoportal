@@ -5,11 +5,11 @@ import {Core, Datatable} from '@/shared'
 import {Box} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import {useCallback, useMemo} from 'react'
-import {normalizeIsoRegion} from '@infoportal/client-core'
 
 export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
 
+  const byPeriod = useDashboardContext(_ => _.data.filterFns.byPeriodCurrentDelta)
   const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
   const filterFns = useDashboardContext(_ => _.data.filterFns)
   const langIndex = useDashboardContext(_ => _.langIndex)
@@ -32,8 +32,8 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const filteredData = useMemo(() => {
     return getFilteredData([
       filterFns.byPeriodCurrent,
-      filterFns.byWidgetFilter(config.filter),
       filterFns.byDashboardFilter({excludedQuestion: config.questionName}),
+      filterFns.byWidgetFilter(config.filter),
     ])
   }, [
     getFilteredData,
@@ -42,20 +42,6 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     filterFns.byDashboardFilter,
     filterFns.byPeriodCurrent,
     filterFns.byWidgetFilter,
-  ])
-
-  const dataDelta = useMemo(() => {
-    return getFilteredData([
-      filterFns.byPeriodCurrentDelta,
-      filterFns.byWidgetFilter(config.filter),
-      filterFns.byDashboardFilter({excludedQuestion: config.questionName}),
-    ])
-  }, [
-    getFilteredData,
-    config.filter,
-    filterFns.byWidgetFilter,
-    filterFns.byDashboardFilter,
-    filterFns.byPeriodCurrentDelta,
   ])
 
   const question = schema.helper.questionIndex[config.questionName!]
@@ -101,13 +87,13 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
       <Core.ChartBarBy
         checked={filter.questions[config.questionName]}
         onClickData={handleChoiceClick}
-        compareTo={config.showEvolution ? dataDelta : undefined}
+        compareBy={byPeriod}
         multiple={multiple}
         hideValue={!config.showValue}
         data={filteredData}
         label={labels}
         limit={config.limit}
-        filterValue={hiddenChoices}
+        skippedValues={hiddenChoices}
         by={by!}
       />
     </Box>

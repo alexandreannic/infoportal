@@ -1,15 +1,6 @@
-import React, {ReactNode, useMemo} from 'react'
+import React, {ReactNode, useEffect, useMemo} from 'react'
 import {Box, Popover, PopoverProps} from '@mui/material'
-import {
-  Btn,
-  ChartBar,
-  ChartHelper,
-  ChartLineByDateFiltered,
-  PanelBody,
-  PanelFoot,
-  PanelHead,
-  Txt,
-} from '@infoportal/client-core'
+import {Btn, ChartBarBy, ChartLineByDateFiltered, PanelBody, PanelFoot, PanelHead, Txt} from '@infoportal/client-core'
 import {KeyOf} from 'infoportal-common'
 import {seq} from '@axanc/ts-utils'
 import {Popup} from '../core/reducer'
@@ -145,21 +136,10 @@ const MultipleChoicesPopover = <T extends Row>({
       }
   )) => {
   const {m} = useConfig()
-  const chart = useMemo(() => {
-    const chart = (() => {
-      if (multiple) {
-        const mapped = seq(data).map(getValue).compact()
-        return ChartHelper.multiple({data: mapped})
-      } else {
-        const mapped = seq(data).map(getValue).compact()
-        return ChartHelper.single({data: mapped})
-      }
-    })()
-    return chart
-      .setLabel(seq(translations).reduceObject<Record<string, ReactNode>>(_ => [_.value!, _.label!]))
-      .sortBy.value()
-      .get()
-  }, [getValue, data, translations])
+  const labels = useMemo(() => {
+    return seq(translations).reduceObject<Record<string, string>>(_ => [_.value!, _.label!])
+  }, [translations])
+
   return (
     <Popover
       open={!!anchorEl}
@@ -171,7 +151,7 @@ const MultipleChoicesPopover = <T extends Row>({
         <Txt truncate>{title}</Txt>
       </PanelHead>
       <PanelBody sx={{maxHeight: '50vh', overflowY: 'auto'}}>
-        <ChartBar data={chart} />
+        <ChartBarBy data={data} by={_ => getValue(_) as any} multiple={multiple} label={labels} />
       </PanelBody>
       <PanelFoot alignEnd>
         <Btn color="primary" onClick={onClose as any}>

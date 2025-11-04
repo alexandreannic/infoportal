@@ -2,17 +2,16 @@ import * as React from 'react'
 import {ReactNode, useMemo, useState} from 'react'
 import {Box, Checkbox, Icon, TooltipProps, useTheme} from '@mui/material'
 import {useTimeout} from '@axanc/react-hooks'
-import {Obj} from '@axanc/ts-utils'
+import {Obj, seq} from '@axanc/ts-utils'
 import {toPercent} from 'infoportal-common'
 import {Txt} from '../ui/Txt'
-import {ChartDataVal} from './chartHelper'
 import {useI18n} from '@infoportal/client-i18n'
 import {alphaVar} from '../core/theme'
 import {LightTooltip, TooltipRow} from '../ui/LightTooltip'
 import {ComparativeValue} from './ComparativeValue'
+import {ChartValue} from './ChartBuilder'
 
-export interface BarChartData extends ChartDataVal {
-  comparativeValue?: number
+export interface BarChartData extends ChartValue {
   color?: string
   disabled?: boolean
 }
@@ -65,34 +64,15 @@ export const ChartBarContent = <K extends string>({
   showLastBorder,
 }: Omit<Props<K>, 'data'> & {data: NonNullable<Props<K>['data']>}) => {
   const t = useTheme()
-  const {
-    values,
-    maxValue,
-    sumValue,
-    // base,
-    percents,
-    percentsDelta,
-  } = useMemo(() => {
-    const values = Obj.values(data) as BarChartData[]
-    const maxValue = Math.max(...values.map(_ => _.value))
-    const sumValue = values.reduce((sum, _) => _.value + sum, 0)
-    // const base = values[0]?.base ?? sumValue
-    const percents = values.map(_ => (_.value / (_.base ?? sumValue)) * 100)
-    const percentsDelta = values.map((_, i) => {
-      if (!_.comparativeValue) return
-      const before = (_.comparativeValue / (_.base ?? sumValue)) * 100
-      return before - percents[i]
-    })
+  const {values, maxRatio, maxValue, sumValue} = useMemo(() => {
+    const values = Obj.values(data)
     return {
       values,
-      maxValue,
-      sumValue,
-      // base,
-      percents,
-      percentsDelta,
+      sumValue: seq(values).sum(_ => _.value),
+      maxValue: Math.max(...values.map(_ => _.value)),
+      maxRatio: Math.max(...values.map(_ => _.ratio)),
     }
   }, [data])
-  const maxPercent = useMemo(() => Math.max(...percents), [percents])
   const [appeared, setAppeared] = useState<boolean>(false)
   useTimeout(() => setAppeared(true), 200)
 
@@ -111,7 +91,7 @@ export const ChartBarContent = <K extends string>({
         </Box>
       )}
       {Obj.entries(data).map(([k, item], i) => {
-        const percentOfMax = 100 * (item.base ? percents[i] / maxPercent : item.value / maxValue)
+        const percentOfMax = 100 * (item.base ? item.ratio / maxRatio : item.value / maxValue)
         const isSelected = checked?.includes(k)
         return (
           <TooltipWrapper item={item} base={item.base ?? sumValue} sumValue={sumValue} key={i}>
@@ -172,13 +152,11 @@ export const ChartBarContent = <K extends string>({
                     {!item.disabled && (
                       <Box sx={{display: 'flex', textAlign: 'right'}}>
                         {!hideValue && (
-                          <Txt color="hint" sx={{minWidth: 52, flex: 1, mr: 1}}>
+                          <Txt color="hint" sx={{minWidth: 52, flex: 1, mr: 0.5}}>
                             {formatLargeNumber(item.value)}
                           </Txt>
                         )}
-                        {percentsDelta[i] !== undefined && (
-                          <ComparativeValue sx={{minWidth: 66, mr: 1}} value={percentsDelta[i]} />
-                        )}
+                        {item.delta !== undefined && <ComparativeValue sx={{width: 66, mr: 0.5}} value={item.delta} />}
                         <Txt
                           sx={{
                             flex: 1,
@@ -187,7 +165,7 @@ export const ChartBarContent = <K extends string>({
                             fontWeight: t.typography.fontWeightBold,
                           }}
                         >
-                          {percents[i].toFixed(1)}%
+                          {(item.ratio * 100).toFixed(1)}%
                         </Txt>
                       </Box>
                     )}

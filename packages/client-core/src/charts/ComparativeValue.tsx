@@ -9,15 +9,20 @@ export const ComparativeValue = ({
   fractionDigits = 0,
   tooltip,
   sx,
+  threshold = 0.1,
   ...props
 }: TxtProps & {
   children?: ReactNode
   fractionDigits?: number
   value: number
   tooltip?: string
+  threshold?: number
 }) => {
   const t = useTheme()
   const type = value === 0 ? 'equal' : value > 0 ? 'more' : 'less'
+  if (Math.abs(value) <= threshold) {
+    return <Box sx={sx} />
+  }
   return (
     <>
       <Txt
@@ -35,11 +40,15 @@ export const ComparativeValue = ({
         {...props}
       >
         <Icon sx={{ml: 1, width: 24}} fontSize="inherit">
-          {fnSwitch(type, {
-            // equal: 'equal',
-            more: 'north',
-            less: 'south',
-          }, () => '')}
+          {fnSwitch(
+            type,
+            {
+              // equal: 'equal',
+              more: 'north',
+              less: 'south',
+            },
+            () => '',
+          )}
         </Icon>
         <Box sx={{ml: 0.25}}>
           {value > 0 && '+'}

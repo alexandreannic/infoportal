@@ -11,7 +11,7 @@ export class Utils {
   static readonly buildColumns = <T extends Row = Row>(_: Column.Props<T>[]) => _
 
   static readonly blank: BlankValue = '\u200B'
-  static readonly blankLabel = (<i>BLANK</i>)
+  static readonly blankLabel = 'BLANK'
   static readonly blankOption: Option = {value: Utils.blank, label: Utils.blankLabel}
 
   static readonly buildOptions = (opt: string[], addBlank?: boolean): Option[] => {
@@ -26,7 +26,7 @@ export class Utils {
     return Obj.entries(_).map(([value, label]) => ({value, label}))
   }
 
-  static readonly buildCustomOption = (_: string, label?: ReactNode): Option => {
+  static readonly buildCustomOption = (_: string, label?: string): Option => {
     return {value: _, label: label ?? _}
   }
 }

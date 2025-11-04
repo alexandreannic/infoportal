@@ -29,23 +29,6 @@ export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     config.filter,
   ])
 
-  const filteredDataDelta = useMemo(() => {
-    if (!filterFns.byPeriodCurrentDelta) return
-    const d = getFilteredData([
-      filterFns.byPeriodCurrentDelta,
-      filterFns.byDashboardFilter(),
-      filterFns.byWidgetFilter(config.filter),
-    ])
-    return flattenRepeatGroupData.flattenIfRepeatGroup(d, config.questionName)
-  }, [
-    getFilteredData,
-    filterFns.byPeriodCurrentDelta,
-    filterFns.byWidgetFilter,
-    filterFns.byDashboardFilter,
-    config.questionName,
-    config.filter,
-  ])
-
   const filterValue = useMemo(() => {
     if (!config.questionName) return
     return filterFns.byWidgetFilter({questionName: config.questionName, ...config.filterValue})
@@ -63,11 +46,11 @@ export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
       <Core.ChartPieWidgetBy<any>
         title={widget.i18n_title?.[langIndex]}
         data={filteredData}
-        previousData={filteredDataDelta && config.showEvolution ? filteredDataDelta : undefined}
+        compareBy={config.showEvolution ? filterFns.byPeriodCurrentDelta : undefined}
         dense={config.dense}
         property={config.questionName}
-        filter={filterValue ?? (_ => true)}
-        filterBase={filterBase ?? (_ => true)}
+        condition={filterValue ?? (_ => true)}
+        baseCondition={filterBase}
         showBase={config.showBase}
         showValue={config.showValue}
       />

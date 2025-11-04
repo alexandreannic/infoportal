@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@axanc/react-hooks": "^1.14.2",
-    "@axanc/ts-utils": "3.0.4",
+    "@axanc/ts-utils": "3.0.6",
     "@infoportal/client-core": "1.0.0",
     "react": "19.1.0",
     "react-dom": "19.1.0"

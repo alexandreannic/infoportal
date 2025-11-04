@@ -16,7 +16,7 @@ export type FilterValue = FilterTypeMapping[keyof FilterTypeMapping]
 
 export type BlankValue = '\u200B'
 
-export type Filters<T extends Row> = Partial<Record<KeyOf<T>, FilterValue>>
+export type Filters<T extends Row> = Partial<Record<keyof T, FilterValue>>
 
 export type SortBy = {column: string; orderBy: OrderBy}
 
@@ -24,7 +24,7 @@ export interface Option {
   value: string
   // label?: string
   // Should be string to filter options in filters popup
-  label?: ReactNode
+  label?: string
 }
 
 export type FilterTypeMapping = {
@@ -88,12 +88,12 @@ export interface Props<T extends Row, K extends string = string> {
 
 export namespace Column {
   export type Type = 'select_one' | 'select_multiple' | 'string' | 'id' | 'date' | 'number'
-  
+
   export type Option = {
     value: string
     // label?: string
     // Should be string to filter options in filters popup
-    label?: ReactNode
+    label?: string
   }
 
   export type Value = string[] | string | undefined | Date | number | null | boolean

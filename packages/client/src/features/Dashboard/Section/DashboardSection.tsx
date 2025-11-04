@@ -225,7 +225,7 @@ function GridResponsiveDivider() {
         border: '1px dashed',
         borderColor: t.vars.palette.divider,
         position: 'absolute',
-        right: '50%',
+        right: 'calc(50% - 1px)',
         top: t.vars.spacing,
         bottom: t.vars.spacing,
       }}
