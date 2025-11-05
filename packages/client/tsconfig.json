@@ -36,6 +36,9 @@
       "path": "../client-i18n"
     },
     {
+      "path": "../xls-form-editor"
+    },
+    {
       "path": "../api-sdk"
     },
     {
