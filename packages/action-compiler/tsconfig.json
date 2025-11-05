@@ -9,7 +9,7 @@
     "moduleResolution": "bundler",
     "declaration": true,
     "declarationMap": true,
-    "outDir": "./lib",
+    "outDir": "./dist",
     "checkJs": false,
     "rootDir": "./src",
     "composite": true,

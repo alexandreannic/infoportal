@@ -2,9 +2,9 @@
   "name": "@infoportal/client-datatable",
   "version": "1.0.0",
   "type": "module",
-  "main": "lib/index.js",
-  "module": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],

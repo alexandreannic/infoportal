@@ -2,8 +2,8 @@
   "name": "@infoportal/action-compiler",
   "type": "module",
   "version": "1.0.0",
-  "types": "lib/index.d.ts",
-  "main": "lib/index.js",
+  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc -b",
     "dev": "tsc -w"

@@ -1,5 +1,5 @@
 import * as ExcelJS from 'exceljs'
-import {downloadBufferAsFile, extractInnerText} from '@infoportal/client-core/lib/core/utils.js'
+import {downloadBufferAsFile, extractInnerText} from '@infoportal/client-core'
 import {format} from 'date-fns'
 import {isValidElement} from 'react'
 import {Column} from './types.js'

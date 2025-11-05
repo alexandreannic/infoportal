@@ -6,7 +6,7 @@
   ],
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./lib"
+    "outDir": "./dist"
   },
   "references": [
     {

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Set of utils methods and features",
   "type": "module",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "private": false,
   "scripts": {
     "test": "jest",
