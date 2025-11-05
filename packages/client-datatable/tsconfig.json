@@ -11,6 +11,9 @@
   "references": [
     {
       "path": "../client-core"
+    },
+    {
+      "path": "../client-i18n"
     }
   ]
 }

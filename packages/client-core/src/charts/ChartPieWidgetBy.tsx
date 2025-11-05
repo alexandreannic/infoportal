@@ -1,9 +1,8 @@
 import * as React from 'react'
 import {ReactNode, useMemo} from 'react'
 import {Seq} from '@axanc/ts-utils'
-import {ChartPieIndicatorProps, ChartPieWidget} from './ChartPieWidget'
-import {ChartBuilder} from './ChartBuilder'
-
+import {ChartPieIndicatorProps, ChartPieWidget} from './ChartPieWidget.js'
+import {ChartBuilder} from './ChartBuilder.js'
 export type ChartPieWidgetProps<T> = {
   title?: ReactNode
   data: T[]

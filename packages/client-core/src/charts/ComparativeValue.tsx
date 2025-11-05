@@ -1,4 +1,4 @@
-import {Txt, TxtProps} from '../ui'
+import {Txt, TxtProps} from '../ui/index.js'
 import {Box, Icon, Tooltip, useTheme} from '@mui/material'
 import React, {ReactNode} from 'react'
 import {fnSwitch} from '@axanc/ts-utils'

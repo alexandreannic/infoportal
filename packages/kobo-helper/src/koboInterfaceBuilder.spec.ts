@@ -1,5 +1,5 @@
 import {Kobo} from 'kobo-sdk'
-import {KoboInterfaceBuilder} from './KoboInterfaceBuilder.js'
+import {KoboInterfaceBuilder} from './koboInterfaceBuilder.js'
 
 describe.only('KoboBuildInterface', () => {
   it('', () => {

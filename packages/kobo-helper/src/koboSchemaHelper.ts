@@ -3,7 +3,7 @@ import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper.js'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboMetaHelper} from './koboMetaHelper.js'
-import {removeHtml} from '../../utils/Common.js'
+import {removeHtml} from 'infoportal-common'
 
 export type KoboTranslateQuestion = (key: string) => string
 export type KoboTranslateChoice = (key: string, choice?: string) => string

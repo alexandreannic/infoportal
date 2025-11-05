@@ -1,6 +1,5 @@
 import React, {forwardRef, ReactNode, useContext, useEffect, useImperativeHandle, useMemo, useState} from 'react'
-import {StepperHeader} from './StepperHeader'
-
+import {StepperHeader} from './StepperHeader.js'
 export interface StepProps {
   name: string
   label?: string

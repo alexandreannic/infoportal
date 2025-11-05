@@ -1,5 +1,5 @@
 import {useQuery} from '@tanstack/react-query'
-import {KoboSchemaHelper} from 'infoportal-common'
+import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import {useAppSettings} from '../context/ConfigContext'
 import {queryKeys} from './query.index'
 import {Ip} from 'infoportal-api-sdk'

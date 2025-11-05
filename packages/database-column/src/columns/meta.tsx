@@ -1,14 +1,14 @@
 import React from 'react'
-import {ColumnMetaProps, Row} from './type'
+import {ColumnMetaProps, Row} from './type.js'
 import {Ip} from 'infoportal-api-sdk'
 import * as Datatable from '@infoportal/client-datatable'
-import {ReadonlyAction} from '../ui/ReadonlyAction'
-import {KoboFlattenRepeatedGroup} from 'infoportal-common'
+import {ReadonlyAction} from '../ui/ReadonlyAction.js'
 import {Messages} from '@infoportal/client-i18n'
 import {StatusIcon} from '@infoportal/client-core'
-import {BulkUpdateValidation} from '../ui/BulkUpdate'
-import {KoboTypeIcon} from '../ui/KoboTypeIcon'
-import {defaultColWidth} from './common'
+import {BulkUpdateValidation} from '../ui/BulkUpdate.js'
+import {KoboTypeIcon} from '../ui/KoboTypeIcon.js'
+import {defaultColWidth} from './common.js'
+import {KoboFlattenRepeatedGroup} from '../../../kobo-helper/src/koboFlattenRepeatedGroup.js'
 
 const metaGroup = {label: 'Meta', id: 'meta'}
 

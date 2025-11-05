@@ -1,9 +1,10 @@
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
 import {fnSwitch} from '@axanc/ts-utils'
-import {KoboCustomDirective} from 'infoportal-common'
 
 export class KoboMapper {
+  static readonly _IP_VALIDATION_STATUS_EXTRA = '_IP_VALIDATION_STATUS_EXTRA'
+
   static readonly timestampToDate: {
     (_: number): Date
     (_: undefined): undefined
@@ -26,7 +27,7 @@ export class KoboMapper {
           validation_status_not_approved: Ip.Submission.Validation.Rejected,
           no_status: undefined,
         })
-      if (_[KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]) {
+      if (_[this._IP_VALIDATION_STATUS_EXTRA]) {
         return Ip.Submission.Validation[_._IP_VALIDATION_STATUS_EXTRA as keyof typeof Ip.Submission.Validation]
       }
     },
@@ -37,7 +38,7 @@ export class KoboMapper {
       _validation_status?: Kobo.Submission.Validation
     } => {
       if (_ === Ip.Submission.Validation.Flagged || _ === Ip.Submission.Validation.UnderReview) {
-        return {[KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: _}
+        return {[this._IP_VALIDATION_STATUS_EXTRA]: _}
       }
       return {
         _validation_status: fnSwitch(

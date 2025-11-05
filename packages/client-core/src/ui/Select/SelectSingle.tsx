@@ -15,9 +15,8 @@ import {
 import React, {ReactNode, useMemo} from 'react'
 import {OverridableComponent} from '@mui/material/OverridableComponent'
 import {ArrowDropDownIcon} from '@mui/x-date-pickers-pro'
-import {Txt} from '../Txt'
-import {makeSx} from '../../core/theme'
-
+import {Txt} from '../Txt.js'
+import {makeSx} from '../../core/theme.js'
 export type SelectOption<T extends string | number = string> = {
   value: T
   children: ReactNode

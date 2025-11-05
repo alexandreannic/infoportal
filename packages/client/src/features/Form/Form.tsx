@@ -7,7 +7,7 @@ import {createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo,
 import {createRoute, Link, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
-import {KoboSchemaHelper} from 'infoportal-common'
+import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import {Page} from '@/shared'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {answersRoute} from '@/features/Form/Database/DatabaseTable'

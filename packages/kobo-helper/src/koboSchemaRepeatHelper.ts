@@ -1,4 +1,3 @@
-import {Obj} from '@axanc/ts-utils'
 import {ignoredColType} from './koboSchemaHelper.js'
 import {Kobo} from 'kobo-sdk'
 

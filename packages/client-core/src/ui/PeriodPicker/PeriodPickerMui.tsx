@@ -2,8 +2,8 @@ import React from 'react'
 import {DateRange, DateRangePicker, PickersShortcutsItem, SingleInputDateRangeField} from '@mui/x-date-pickers-pro'
 // import {unstable_useMultiInputDateRangeField as useMultiInputDateRangeField} from '@mui/x-date-pickers-pro/MultiInputDateRangeField'
 import {endOfMonth, format, startOfMonth, subMonths} from 'date-fns'
-import {PeriodPickerProps} from './PeriodPicker'
-import {styleUtils} from '../../core'
+import {PeriodPickerProps} from './PeriodPicker.js'
+import {styleUtils} from '../../core/theme.js'
 import {useTheme} from '@mui/material'
 
 const shortcutsItems: PickersShortcutsItem<DateRange<Date>>[] = (() => {

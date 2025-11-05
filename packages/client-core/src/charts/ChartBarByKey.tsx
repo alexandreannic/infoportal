@@ -1,6 +1,5 @@
 import {KeyOfType} from '@axanc/ts-utils'
-import {ChartBarBy, ChartBarByProps} from './ChartBarBy'
-
+import {ChartBarBy, ChartBarByProps} from './ChartBarBy.js'
 type ChartBarByKeyProps<D extends Record<string, any>, R extends string> = Omit<
   ChartBarByProps<D, R>,
   'by' | 'multiple'

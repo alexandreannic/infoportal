@@ -1,5 +1,5 @@
 import {Core} from '../index'
-import {KoboSchemaHelper} from 'infoportal-common'
+import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 
 export const SelectLangIndex = ({
   schema,

@@ -8,9 +8,9 @@ import {
   useTheme,
 } from '@mui/material'
 import {colorRepeatedQuestionHeader, KoboTypeIcon} from '@infoportal/database-column'
-import {KoboSchemaHelper, removeHtml} from 'infoportal-common'
+import {removeHtml} from 'infoportal-common'
+import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import React, {useCallback, useMemo} from 'react'
-import {seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {Core} from '../index'
 import {useI18n} from '@infoportal/client-i18n'

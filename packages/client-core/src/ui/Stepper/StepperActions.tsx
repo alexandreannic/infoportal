@@ -1,9 +1,8 @@
 import {Box, BoxProps} from '@mui/material'
 import {ReactElement} from 'react'
-import {StepperContext, useStepperContext} from './Stepper'
-import {StepperBtnNext, StepperBtnNextProps} from './StepperBtnNext'
-import {StepperBtnPrevious, StepperBtnPreviousProps} from './StepperBtnPrevious'
-
+import {StepperContext, useStepperContext} from './Stepper.js'
+import {StepperBtnNext, StepperBtnNextProps} from './StepperBtnNext.js'
+import {StepperBtnPrevious, StepperBtnPreviousProps} from './StepperBtnPrevious.js'
 export type StepperActionsProps = BoxProps & {
   children?: (_: {
     context: StepperContext

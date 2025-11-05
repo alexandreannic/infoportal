@@ -1,5 +1,5 @@
 import {Autocomplete, AutocompleteProps, Box, Chip, createFilterOptions} from '@mui/material'
-import {KoboSchemaHelper} from 'infoportal-common'
+import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import React, {useCallback, useMemo} from 'react'
 import {Ip} from 'infoportal-api-sdk'
 import {Kobo} from 'kobo-sdk'

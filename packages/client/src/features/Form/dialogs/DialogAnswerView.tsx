@@ -17,7 +17,8 @@ import {
   useTheme,
 } from '@mui/material'
 import {DialogProps} from '@toolpad/core'
-import {KoboSchemaHelper, NonNullableKey} from 'infoportal-common'
+import {NonNullableKey} from 'infoportal-common'
+import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
 import {Ip} from 'infoportal-api-sdk'

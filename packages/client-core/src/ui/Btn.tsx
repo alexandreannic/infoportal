@@ -1,10 +1,10 @@
 import * as React from 'react'
 import {forwardRef, ReactNode, useMemo} from 'react'
-import {alpha, Button, CircularProgress, Icon, Tooltip} from '@mui/material'
+import {Button, CircularProgress, Icon, Tooltip} from '@mui/material'
 import {ButtonProps} from '@mui/material/Button'
 import {makeStyles} from 'tss-react/mui'
 import {fnSwitch} from '@axanc/ts-utils'
-import {alphaVar, styleUtils} from '../core'
+import {alphaVar, styleUtils} from '../core/theme.js'
 
 const useStyles = makeStyles<{loading?: boolean; variant?: BtnVariant}>()((t, {loading, variant}) => ({
   icon: {

@@ -1,8 +1,7 @@
 import {Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 import React from 'react'
 import {Box, BoxProps, Theme, useTheme} from '@mui/material'
-import {chartConfig} from './index'
-
+import {chartConfig} from './index.js'
 const RADIAN = Math.PI / 180
 
 const renderCustomizedLabel = ({x, y, stroke, value, ...rest}: any) => {

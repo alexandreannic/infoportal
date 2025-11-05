@@ -1,17 +1,16 @@
 {
-  "name": "@infoportal/client-datatable",
+  "name": "@infoportal/kobo-helper",
   "version": "1.0.0",
   "type": "module",
   "main": "lib/index.js",
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
-    "dist"
+    "lib"
   ],
   "scripts": {
-    "build": "tsc -b",
     "dev": "tsc --watch",
-    "preview": "vite preview --config vite.config.demo.ts"
+    "build": "tsc -b"
   },
   "author": "",
   "license": "ISC",
@@ -19,12 +18,9 @@
   "devDependencies": {
   },
   "dependencies": {
+    "infoportal-common": "1.0.0",
+    "kobo-sdk": "^2.4.1",
     "@axanc/react-hooks": "^1.14.2",
-    "@axanc/ts-utils": "3.0.6",
-    "@infoportal/client-core": "1.0.0",
-    "@infoportal/client-i18n": "1.0.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "@mui/material": "^7.3.1"
+    "date-fns": "^4.1.0"
   }
 }

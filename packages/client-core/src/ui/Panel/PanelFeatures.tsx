@@ -2,9 +2,8 @@ import * as React from 'react'
 import {cloneElement, useRef, useState, ReactElement, useEffect, ReactNode} from 'react'
 import {Box, useTheme, SxProps, Modal} from '@mui/material'
 import html2canvas from 'html2canvas'
-import {IconBtn} from '../IconBtn'
-import {openCanvasInNewTab} from '../../core'
-
+import {IconBtn} from '../IconBtn.js'
+import {openCanvasInNewTab} from '../../core/utils.js'
 export interface PanelFeaturesProps {
   sx?: SxProps
   expendable?: boolean

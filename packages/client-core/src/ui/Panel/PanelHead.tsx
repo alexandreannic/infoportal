@@ -1,8 +1,7 @@
 import * as React from 'react'
 import {ReactNode} from 'react'
 import {Box, BoxProps, Icon} from '@mui/material'
-import {PanelTitle, PanelTitleProps} from './PanelTitle'
-
+import {PanelTitle, PanelTitleProps} from './PanelTitle.js'
 interface Props extends BoxProps {
   className?: string
   children: ReactNode

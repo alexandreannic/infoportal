@@ -1,7 +1,7 @@
 import {addDays, subDays} from 'date-fns'
 import React, {useEffect, useState} from 'react'
 import {Box, BoxProps} from '@mui/material'
-import {Datepicker} from '../Datepicker'
+import {Datepicker} from '../Datepicker.js'
 import {useI18n} from '@infoportal/client-i18n'
 
 export interface PeriodPickerNativeProps extends Omit<BoxProps, 'defaultValue' | 'onChange'> {

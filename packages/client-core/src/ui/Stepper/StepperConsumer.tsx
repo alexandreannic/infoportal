@@ -1,7 +1,6 @@
 import {Box, BoxProps} from '@mui/material'
 import {ReactNode} from 'react'
-import {StepperContext, useStepperContext} from './Stepper'
-
+import {StepperContext, useStepperContext} from './Stepper.js'
 export type StepperConsumerProps = Omit<BoxProps, 'children'> & {
   children: (_: StepperContext) => ReactNode
 }

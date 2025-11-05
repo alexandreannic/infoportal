@@ -19,6 +19,7 @@
     "@infoportal/client-core": "1.0.0",
     "@infoportal/client-datatable": "1.0.0",
     "@infoportal/client-i18n": "1.0.0",
+    "@infoportal/kobo-helper": "1.0.0",
     "@monaco-editor/react": "^4.7.0",
     "@mui/icons-material": "^7.1.2",
     "@mui/material": "^7.3.1",

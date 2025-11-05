@@ -1,9 +1,8 @@
 import * as React from 'react'
 import {forwardRef, ReactNode} from 'react'
 import {Box, Card, CardProps, LinearProgress, useTheme} from '@mui/material'
-import {PanelHead} from './PanelHead'
-import {PanelOutsideTitle} from './PanelOutsideTitle'
-
+import {PanelHead} from './PanelHead.js'
+import {PanelOutsideTitle} from './PanelOutsideTitle.js'
 export interface PanelProps extends Omit<CardProps, 'title'> {
   loading?: boolean
   hoverable?: boolean

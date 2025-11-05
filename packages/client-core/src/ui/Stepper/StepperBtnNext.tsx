@@ -1,8 +1,7 @@
 import {Icon} from '@mui/material'
-import {Btn, BtnProps} from '../Btn'
+import {Btn, BtnProps} from '../Btn.js'
 import {useI18n} from '@infoportal/client-i18n'
-import {useStepperContext} from './Stepper'
-
+import {useStepperContext} from './Stepper.js'
 export interface StepperBtnNextProps extends BtnProps {}
 
 export const StepperBtnNext = ({sx, ...props}: StepperBtnNextProps) => {

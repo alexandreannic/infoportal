@@ -1,8 +1,7 @@
 import {map, Obj} from '@axanc/ts-utils'
 import React, {useMemo} from 'react'
 import {isDate, PeriodHelper} from 'infoportal-common'
-import {ChartLine, ChartLineProps} from './ChartLine'
-
+import {ChartLine, ChartLineProps} from './ChartLine.js'
 export type ChartLineCurve<T = any> = {
   getDate: (_: T) => Date | undefined
   filter?: (_: T) => boolean | undefined

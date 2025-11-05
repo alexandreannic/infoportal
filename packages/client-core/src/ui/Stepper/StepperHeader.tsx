@@ -1,9 +1,8 @@
 import React from 'react'
 import {Box, BoxProps, SxProps, Theme, useTheme} from '@mui/material'
 import {fnSwitch} from '@axanc/ts-utils'
-import {alphaVar, makeSx, styleUtils} from '../../core/theme'
-import {useStepperContext} from './Stepper'
-
+import {alphaVar, makeSx, styleUtils} from '../../core/theme.js'
+import {useStepperContext} from './Stepper.js'
 interface StepperHeaderProps extends BoxProps {
   steps: (string | undefined)[]
   stepSize?: number

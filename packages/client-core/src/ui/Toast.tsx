@@ -11,8 +11,7 @@ import {
   SnackbarProps,
   useTheme,
 } from '@mui/material'
-import {IconBtn} from './IconBtn'
-
+import {IconBtn} from './IconBtn.js'
 const ToastContext = createContext<WithToast>({} as any)
 
 type ToastType = 'error' | 'loading' | 'warning' | 'success' | 'info' | undefined

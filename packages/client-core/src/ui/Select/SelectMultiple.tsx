@@ -12,8 +12,7 @@ import {
 } from '@mui/material'
 import React, {forwardRef, ReactNode, useMemo, useState} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
-import {makeSx} from '../../core/theme'
-
+import {makeSx} from '../../core/theme.js'
 type Option<T extends string | number = string> = {value: T; children: ReactNode; key?: string}
 
 export class IpSelectMultipleHelper {

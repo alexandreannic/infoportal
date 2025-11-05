@@ -1,6 +1,7 @@
 {
   "name": "@infoportal/database-column",
   "version": "1.0.0",
+  "type": "module",
   "main": "lib/index.js",
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -17,6 +18,7 @@
   "devDependencies": {
   },
   "dependencies": {
+    "@infoportal/kobo-helper": "1.0.0",
     "@infoportal/client-i18n": "1.0.0",
     "@infoportal/client-core": "1.0.0",
     "infoportal-common": "1.0.0",

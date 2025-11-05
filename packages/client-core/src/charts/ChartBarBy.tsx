@@ -1,8 +1,7 @@
 import {Obj} from '@axanc/ts-utils'
 import {ReactNode, useMemo} from 'react'
-import {ChartBar} from './ChartBar'
-import {ChartBuilder, ChartValue} from './ChartBuilder'
-
+import {ChartBar} from './ChartBar.js'
+import {ChartBuilder, ChartValue} from './ChartBuilder.js'
 interface ChartBarBaseProps<D extends Record<string, any>, K extends string> {
   onClickData?: (_: K) => void
   checked?: K[]

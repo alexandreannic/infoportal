@@ -1,8 +1,8 @@
-import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from 'infoportal-common'
 import {Ip} from 'infoportal-api-sdk'
 import {Kobo} from 'kobo-sdk'
 import {Theme} from '@mui/material'
 import {Messages} from '@infoportal/client-i18n'
+import {KoboSchemaHelper, KoboFlattenRepeatedGroup} from '@infoportal/kobo-helper'
 
 export type ExternalFilesChoices = {list_name: string; name: string; label: string}
 export type KoboExternalFilesIndex = Record<string, Record<string, ExternalFilesChoices>>

@@ -18,6 +18,9 @@
   },
   "references": [
     {
+      "path": "../kobo-helper"
+    },
+    {
       "path": "../action-compiler"
     },
     {

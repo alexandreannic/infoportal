@@ -1,8 +1,7 @@
 import {KeyOfType, Obj, Seq} from '@axanc/ts-utils'
 import {format} from 'date-fns'
 import React, {useMemo} from 'react'
-import {ChartLine, ChartLineData} from './ChartLine'
-
+import {ChartLine, ChartLineData} from './ChartLine.js'
 /** @deprecated rather use ChartLineByDateFiltered.tsx. Better API, better perf */
 export const ChartLineByProperty = <
   T extends Record<string, any>,

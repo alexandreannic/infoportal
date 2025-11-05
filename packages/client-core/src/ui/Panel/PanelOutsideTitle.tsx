@@ -1,7 +1,6 @@
 import {Box, Typography, TypographyProps, useTheme} from '@mui/material'
 import {ReactNode} from 'react'
-import {styleUtils} from '../../core'
-
+import {styleUtils} from '../../core/theme.js'
 export interface PanelOutsideTitleProps extends TypographyProps {
   action?: ReactNode
 }

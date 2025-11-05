@@ -1,11 +1,10 @@
-import {KoboSchemaHelper} from 'infoportal-common'
+import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import {mapFor} from '@axanc/ts-utils'
 import {Messages} from '@infoportal/client-i18n'
 import {Theme} from '@mui/material'
 import {Ip} from 'infoportal-api-sdk'
 import {Datatable} from '@/shared'
-import {OnRepeatGroupClick} from '@infoportal/database-column/lib/columns/type.js'
-import {buildDbColumns, colorRepeatedQuestionHeader} from '@infoportal/database-column'
+import {buildDbColumns, colorRepeatedQuestionHeader, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
 
 export type DatabaseDisplay = {

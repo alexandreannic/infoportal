@@ -1,12 +1,12 @@
 import {useRef} from 'react'
 import {Answers} from '@/features/Dashboard/Context/DashboardContext'
-import {KoboSchemaHelper} from 'infoportal-common'
+import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import {Seq} from '@axanc/ts-utils'
 
 export type UseFlattenRepeatGroupData = ReturnType<typeof useFlattenRepeatGroupData>
 
 /**
- * React hook that returns a helper to flatten Kobo submissions
+ * React hook that returns a schema to flatten Kobo submissions
  * when a widget accesses data from a repeat group question.
  */
 export const useFlattenRepeatGroupData = (schema: KoboSchemaHelper.Bundle<any>) => {

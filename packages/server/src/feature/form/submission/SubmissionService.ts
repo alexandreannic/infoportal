@@ -8,7 +8,7 @@ import {SubmissionHistoryService} from '../history/SubmissionHistoryService.js'
 import {HttpError, Ip, Paginate} from 'infoportal-api-sdk'
 import {genUUID, Util} from '../../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
-import {IpEvent, KoboCustomDirective, logPerformance} from 'infoportal-common'
+import {IpEvent, logPerformance} from 'infoportal-common'
 import {KoboMapper} from '../../kobo/KoboMapper.js'
 import {FormService} from '../FormService.js'
 import {prismaMapper} from '../../../core/prismaMapper/PrismaMapper.js'
@@ -409,7 +409,7 @@ export class SubmissionService {
             sdk.v2.submission.update({
               formId: koboFormId,
               submissionIds: koboSubmissionIds,
-              data: {[KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: null},
+              data: {[KoboMapper._IP_VALIDATION_STATUS_EXTRA]: null},
             }),
           ])
         } else {
@@ -418,7 +418,7 @@ export class SubmissionService {
               formId: koboFormId,
               submissionIds: koboSubmissionIds,
               data: {
-                [KoboCustomDirective.Name._IP_VALIDATION_STATUS_EXTRA]: mappedValidation._IP_VALIDATION_STATUS_EXTRA,
+                [KoboMapper._IP_VALIDATION_STATUS_EXTRA]: mappedValidation._IP_VALIDATION_STATUS_EXTRA,
               },
             }),
             sdk.v2.submission.updateValidation({

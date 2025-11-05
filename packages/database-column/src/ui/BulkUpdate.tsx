@@ -1,13 +1,13 @@
 import React, {ReactNode, useMemo, useState} from 'react'
 import {Alert, Box, Collapse} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
-import {KoboSchemaHelper} from 'infoportal-common'
 import {Obj} from '@axanc/ts-utils'
 import {Ip} from 'infoportal-api-sdk'
 import * as Core from '@infoportal/client-core'
 import {StatusIcon} from '@infoportal/client-core'
-import {editableColsType} from '../columns/common'
-import {Query, Question} from '../columns/type'
+import {editableColsType} from '../columns/common.js'
+import {Query, Question} from '../columns/type.js'
+import {KoboSchemaHelper} from '../../../kobo-helper/src/koboSchemaHelper.js'
 
 export type KoboEditModalOption = {
   value: string | null

@@ -1,7 +1,7 @@
 import * as ExcelJS from 'exceljs'
 import {downloadBufferAsFile} from '@infoportal/client-core/src/core/utils.js'
 import {Kobo} from 'kobo-sdk'
-import {KoboSchemaHelper} from 'infoportal-common'
+import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import Question = Kobo.Form.Question
 import Choice = Kobo.Form.Choice
 

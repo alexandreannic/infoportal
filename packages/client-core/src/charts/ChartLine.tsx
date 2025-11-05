@@ -3,10 +3,10 @@ import * as React from 'react'
 import {ReactNode, useState} from 'react'
 import {Box, BoxProps, Checkbox, Theme, useTheme} from '@mui/material'
 import {map, Obj, seq} from '@axanc/ts-utils'
-import {styleUtils} from '../core/theme'
+import {styleUtils} from '../core/theme.js'
 import {addMonths, format, isBefore, parse} from 'date-fns'
-import {chartConfig} from './index'
-import {commonLegendProps} from './ChartBarStacked'
+import {chartConfig} from './index.js'
+import {commonLegendProps} from './ChartBarStacked.js'
 import {useI18n} from '@infoportal/client-i18n'
 
 export interface ChartLineProps extends Pick<BoxProps, 'sx'> {

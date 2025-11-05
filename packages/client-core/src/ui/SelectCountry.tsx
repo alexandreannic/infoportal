@@ -1,10 +1,9 @@
 import * as React from 'react'
 import {Autocomplete, AutocompleteProps} from '@mui/material'
 import countries from '../core/chartGeoData.json'
-import {CountryFlag} from './CountryFlag'
-import {Input} from './Input'
-import {Country} from '../core'
-
+import {CountryFlag} from './CountryFlag.js'
+import {Input} from './Input.js'
+import {Country} from '../core/country.js'
 const countryOptions = Object.entries(countries).map(([code, {name}]) => ({
   code,
   name,

@@ -1,8 +1,8 @@
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {Ip} from 'infoportal-api-sdk'
-import {KoboSchemaHelper} from './helper/koboSchemaHelper.js'
-import {removeHtml} from '../utils/index.js'
+import {KoboSchemaHelper} from './koboSchemaHelper.js'
+import {removeHtml} from 'infoportal-common'
 
 export class KoboInterfaceBuilder {
   constructor(

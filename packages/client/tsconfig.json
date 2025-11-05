@@ -21,6 +21,9 @@
   },
   "references": [
     {
+      "path": "../kobo-helper"
+    },
+    {
       "path": "../client-core"
     },
     {

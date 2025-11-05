@@ -4,7 +4,7 @@ import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from 'infoportal-api-sdk'
 import {useMemo} from 'react'
 import {useQuerySchemaBundle} from '@/core/query/useQuerySchema.js'
-import {KoboInterfaceBuilder} from 'infoportal-common'
+import {KoboInterfaceBuilder} from '@infoportal/kobo-helper'
 import {map} from '@axanc/ts-utils'
 import {FormActionEditor} from '@/features/Form/Action/Action/FormActionEditor.js'
 import {useI18n} from '@infoportal/client-i18n'
@@ -13,7 +13,6 @@ import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {Box, BoxProps, Skeleton, useTheme} from '@mui/material'
 import {FormActionLogs} from '@/features/Form/Action/FormActionLogs.js'
 import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
-import {TabContent} from '@/shared/Tab/TabContent'
 
 export const formActionRoute = createRoute({
   getParentRoute: () => formActionsRoute,

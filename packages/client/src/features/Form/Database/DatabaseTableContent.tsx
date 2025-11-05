@@ -11,7 +11,7 @@ import {generateEmptyXlsTemplate} from '@/features/Form/Database/generateEmptyXl
 import {databaseKoboDisplayBuilder} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {DatabaseViewBtn, DatabaseViewEditor} from '@/features/Form/Database/view/DatabaseView'
 import {Alert, AlertProps, Box, Icon, useTheme} from '@mui/material'
-import {KoboFlattenRepeatedGroup} from 'infoportal-common'
+import {KoboFlattenRepeatedGroup} from '@infoportal/kobo-helper'
 import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
@@ -210,7 +210,7 @@ export const DatabaseTableContent = ({
           //     : undefined
           // }
           // exportAdditionalSheets={data => {
-          //   return schema.helper.group.search().map(group => {
+          //   return schema.schema.group.search().map(group => {
           //     const cols = getColumnsForRepeatGroup({
           //       formId: ctx.form.id,
           //       t,

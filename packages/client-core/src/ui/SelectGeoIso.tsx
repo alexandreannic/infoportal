@@ -1,6 +1,6 @@
 import {Autocomplete, AutocompleteProps} from '@mui/material'
-import {Input} from './Input'
-import {CountryFlag} from './CountryFlag'
+import {Input} from './Input.js'
+import {CountryFlag} from './CountryFlag.js'
 import geoData from '../core/chartGeoData.json'
 
 type GeoOption = {

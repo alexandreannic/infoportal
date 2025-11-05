@@ -1,8 +1,7 @@
 import * as React from 'react'
 import {ForwardedRef, forwardRef} from 'react'
-import {PanelBody, PanelBodyProps} from './PanelBody'
-import {Panel, PanelProps} from './Panel'
-
+import {PanelBody, PanelBodyProps} from './PanelBody.js'
+import {Panel, PanelProps} from './Panel.js'
 export type PanelWBodyProps = PanelProps & {
   BodyProps?: PanelBodyProps
 }

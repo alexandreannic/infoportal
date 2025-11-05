@@ -4,13 +4,12 @@ import {Box, Checkbox, Icon, TooltipProps, useTheme} from '@mui/material'
 import {useTimeout} from '@axanc/react-hooks'
 import {Obj, seq} from '@axanc/ts-utils'
 import {PartialOnly, toPercent} from 'infoportal-common'
-import {Txt} from '../ui/Txt'
+import {Txt} from '../ui/Txt.js'
 import {useI18n} from '@infoportal/client-i18n'
-import {alphaVar} from '../core/theme'
-import {LightTooltip, TooltipRow} from '../ui/LightTooltip'
-import {ComparativeValue} from './ComparativeValue'
-import {ChartValue} from './ChartBuilder'
-
+import {alphaVar} from '../core/theme.js'
+import {LightTooltip, TooltipRow} from '../ui/LightTooltip.js'
+import {ComparativeValue} from './ComparativeValue.js'
+import {ChartValue} from './ChartBuilder.js'
 export interface BarChartData extends PartialOnly<ChartValue, 'base' | 'ratio'> {
   color?: string
   disabled?: boolean

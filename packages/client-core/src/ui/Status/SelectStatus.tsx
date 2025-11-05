@@ -1,10 +1,10 @@
 import {StateStatus} from 'infoportal-common'
 import React, {ReactNode, useMemo} from 'react'
 import {Box, useTheme} from '@mui/material'
-import {statusConfig} from './statusConfig'
-import {StatusIcon} from './StatusIcon'
+import {statusConfig} from './statusConfig.js'
+import {StatusIcon} from './StatusIcon.js'
 import {Obj} from '@axanc/ts-utils'
-import {SelectOption, SelectSingle, SelectSingleNullableProps} from '../Select/SelectSingle'
+import {SelectOption, SelectSingle, SelectSingleNullableProps} from '../Select/SelectSingle.js'
 import {useI18n} from '@infoportal/client-i18n'
 
 export type SelectStatusProps<T extends string> = Omit<SelectSingleNullableProps<T>, 'hideNullOption' | 'options'> & {

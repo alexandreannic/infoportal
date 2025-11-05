@@ -1,6 +1,5 @@
 import {Theme} from '@mui/material'
-import {alphaVar} from '../core/theme'
-
+import {alphaVar} from '../core/theme.js'
 export const chartConfig = {
   defaultColors: (t: Theme) => [
     t.vars.palette.primary.main,

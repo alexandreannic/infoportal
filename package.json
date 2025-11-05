@@ -25,7 +25,13 @@
   "devDependencies": {
     "@typescript/native-preview": "^7.0.0-dev.20250811.1",
     "prettier": "^3.4.2",
-    "tsx": "^4.19.3"
+    "tsx": "^4.19.3",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "eslint": "^9.39.1",
+    "eslint-plugin-import": "^2.32.0",
+    "typescript-eslint": "^8.46.3",
+    "eslint-plugin-react-hooks": "^7.0.1"
   },
   "dependencies": {
     "await-to-js": "^3.0.0"
