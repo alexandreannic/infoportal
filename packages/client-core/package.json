@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@axanc/react-hooks": "^1.14.2",
-    "@axanc/ts-utils": "3.0.6",
+    "@axanc/ts-utils": "3.1.0",
     "@infoportal/client-i18n": "1.0.0",
     "@mui/material": "^7.3.1",
     "date-fns": "^4.1.0",

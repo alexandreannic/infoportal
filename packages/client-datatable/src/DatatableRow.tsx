@@ -81,6 +81,8 @@ function DatatableRow_<T extends Row>({
       key={rowId}
       draggable={draggingEnabled}
       onDragStart={e => {
+        e.dataTransfer.effectAllowed = 'move'
+        e.dataTransfer.dropEffect = 'move'
         handleDragStart(virtualItem.index, e)
       }}
       onDragOver={e => handleDragOver(virtualItem.index, e)}
@@ -90,7 +92,7 @@ function DatatableRow_<T extends Row>({
         height: `${virtualItem.size}px`,
         transform: `translateY(${virtualItem.start}px)`,
         opacity: isDragging ? 0.5 : 1,
-        cursor: draggingEnabled ? 'grab' : undefined,
+        cursor: draggingEnabled ? (isDragging ? 'grabbing' : 'grab') : undefined,
         borderTop: isOver ? '3px solid ' + t.vars.palette.primary.main : undefined,
       }}
     >

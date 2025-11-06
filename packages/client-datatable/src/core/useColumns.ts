@@ -41,7 +41,7 @@ export const useDatatableColumns = <T extends Row>({
     if (showRowIndex)
       return [
         {
-          group: {label: 'Meta', id: 'meta'},
+          // group: {label: 'Meta', id: 'meta'},
           id: 'index',
           className: 'td-index',
           head: '#',
