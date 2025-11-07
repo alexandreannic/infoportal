@@ -1,4 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import {DatatableContext} from './DatatableContext'
+import {CellSelectionCoord} from './reducer'
 
 export type UseCellSelection = ReturnType<typeof useCellSelectionEngine>
 
@@ -7,16 +9,44 @@ const voidFn = () => void 0
 export const useCellSelectionEngine = ({
   tableRef,
   disabled,
+  dispatch,
+  selectionStart,
+  selectionEnd,
 }: {
+  selectionStart: CellSelectionCoord | null
+  selectionEnd: CellSelectionCoord | null
+  dispatch: DatatableContext['dispatch']
   disabled?: boolean
   tableRef: React.MutableRefObject<HTMLDivElement>
 }) => {
   const selecting = useRef<boolean>(false)
   const scrollInterval = useRef<NodeJS.Timeout | null>(null)
-  const [selectionStart, setSelectionStart] = useState<{row: number; col: number} | null>(null)
-  const [selectionEnd, setSelectionEnd] = useState<{row: number; col: number} | null>(null)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const anchor = useRef<{row: number; col: number} | null>(null) // last clicked cell for shift
+
+  const setSelectionStart = useCallback((coord: Partial<CellSelectionCoord> | null) => {
+    dispatch({type: 'CELL_SELECTION_SET_START', coord})
+  }, [])
+
+  const setSelectionEnd = useCallback((coord: Partial<CellSelectionCoord> | null) => {
+    dispatch({type: 'CELL_SELECTION_SET_END', coord})
+  }, [])
+
+  const {rowMin, rowMax, colMin, colMax} = useMemo(() => {
+    if (!selectionStart || !selectionEnd) return {rowMin: -1, rowMax: -1, colMin: -1, colMax: -1}
+    const rowMin = Math.min(selectionStart.row, selectionEnd.row)
+    const rowMax = Math.max(selectionStart.row, selectionEnd.row)
+    const colMin = Math.min(selectionStart.col, selectionEnd.col)
+    const colMax = Math.max(selectionStart.col, selectionEnd.col)
+    return {rowMin, rowMax, colMin, colMax}
+  }, [selectionStart, selectionEnd])
+
+  const isRowSelected = useCallback((rowIndex: number) => rowIndex >= rowMin && rowIndex <= rowMax, [rowMin, rowMax])
+  const isColumnSelected = useCallback((colIndex: number) => colIndex >= colMin && colIndex <= colMax, [colMin, colMax])
+  const isSelected = useCallback(
+    (rowIndex: number, colIndex: number) => isRowSelected(rowIndex) && isColumnSelected(colIndex),
+    [rowMin, rowMax, colMin, colMax],
+  )
 
   const reset = useCallback(() => {
     setSelectionStart(null)
@@ -26,21 +56,26 @@ export const useCellSelectionEngine = ({
     anchor.current = null
   }, [])
 
-  const handleMouseDown = useCallback((rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
-    const isShift = event.shiftKey
-    setAnchorEl(null)
-    if (isShift && anchor.current) {
-      // Shift+click: select rect from anchor to current cell
-      setSelectionStart(anchor.current)
-      setSelectionEnd({row: rowIndex, col: colIndex})
-    } else {
-      // Normal click: start new selection
-      selecting.current = true
-      setSelectionStart({row: rowIndex, col: colIndex})
-      setSelectionEnd({row: rowIndex, col: colIndex})
-      anchor.current = {row: rowIndex, col: colIndex}
-    }
-  }, [])
+  const handleMouseDown = useCallback(
+    (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
+      const preventReSelectionToDnDrop = colIndex === 0 && isRowSelected(rowIndex)
+      if (preventReSelectionToDnDrop) return
+      const isShift = event.shiftKey
+      setAnchorEl(null)
+      if (isShift && anchor.current) {
+        // Shift+click: select rect from anchor to current cell
+        setSelectionStart(anchor.current)
+        setSelectionEnd({row: rowIndex, col: colIndex})
+      } else {
+        // Normal click: start new selection
+        selecting.current = true
+        setSelectionStart({row: rowIndex, col: colIndex})
+        setSelectionEnd({row: rowIndex, col: colIndex})
+        anchor.current = {row: rowIndex, col: colIndex}
+      }
+    },
+    [isRowSelected],
+  )
 
   const handleMouseEnter = useCallback(
     (rowIndex: number, colIndex: number) => {
@@ -101,22 +136,6 @@ export const useCellSelectionEngine = ({
     }
   }
 
-  const {rowMin, rowMax, colMin, colMax} = useMemo(() => {
-    if (!selectionStart || !selectionEnd) return {rowMin: -1, rowMax: -1, colMin: -1, colMax: -1}
-    const rowMin = Math.min(selectionStart.row, selectionEnd.row)
-    const rowMax = Math.max(selectionStart.row, selectionEnd.row)
-    const colMin = Math.min(selectionStart.col, selectionEnd.col)
-    const colMax = Math.max(selectionStart.col, selectionEnd.col)
-    return {rowMin, rowMax, colMin, colMax}
-  }, [selectionStart, selectionEnd])
-
-  const isRowSelected = useCallback((rowIndex: number) => rowIndex >= rowMin && rowIndex <= rowMax, [rowMin, rowMax])
-  const isColumnSelected = useCallback((colIndex: number) => colIndex >= colMin && colIndex <= colMax, [colMin, colMax])
-  const isSelected = useCallback(
-    (rowIndex: number, colIndex: number) => isRowSelected(rowIndex) && isColumnSelected(colIndex),
-    [rowMin, rowMax, colMin, colMax],
-  )
-
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', () => {
@@ -141,6 +160,11 @@ export const useCellSelectionEngine = ({
   return {
     reset,
     state: {
+      rowMin,
+      rowMax,
+      colMin,
+      colMax,
+      selecting: selecting.current,
       selectionStart,
       selectionEnd,
       setSelectionStart: disabled ? voidFn : setSelectionStart,

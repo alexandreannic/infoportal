@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useMemo} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {UseCellSelection} from './useCellSelectionEngine'
 import {Column, Props, Row} from './types.js'
+import {DatatableContext} from './DatatableContext'
 
 export type UseCellSelectionComputed = ReturnType<typeof useCellSelectionComputed>
 
@@ -46,18 +47,21 @@ export const useCellSelectionComputed = <T extends Row>({
   useEffect(
     function selectFullRowOnIndexSelected() {
       if (selectedColumnsIds.has('index')) {
-        state.setSelectionStart(_ => _ && {..._, col: 0})
-        state.setSelectionStart(_ => _ && {..._, col: visibleColumns.length})
+        state.setSelectionStart({col: 0})
+        state.setSelectionEnd({col: visibleColumns.length})
       }
     },
     [selectedColumnsIds],
   )
 
-  const selectColumn = useCallback((columnIndex: number, event: React.MouseEvent<HTMLDivElement>) => {
-    state.setSelectionStart({row: 0, col: columnIndex})
-    cellSelectionEngine.setAnchorEl(event.target as any)
-    state.setSelectionEnd({row: filteredAndSortedData.length - 1, col: columnIndex})
-  }, [filteredAndSortedData])
+  const selectColumn = useCallback(
+    (columnIndex: number, event: React.MouseEvent<HTMLDivElement>) => {
+      state.setSelectionStart({row: 0, col: columnIndex})
+      cellSelectionEngine.setAnchorEl(event.target as any)
+      state.setSelectionEnd({row: filteredAndSortedData.length - 1, col: columnIndex})
+    },
+    [filteredAndSortedData],
+  )
 
   const areAllColumnsSelected = useMemo(() => {
     return selectedColumnsIds.size === visibleColumns.length

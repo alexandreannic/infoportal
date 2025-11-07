@@ -1,5 +1,5 @@
 import {VirtualItem} from '@tanstack/react-virtual'
-import {Skeleton} from '@mui/material'
+import {Box, Skeleton, useTheme} from '@mui/material'
 import React, {memo} from 'react'
 import {Column, Props, Row} from './core/types.js'
 import {VirtualCell} from './core/reducer'
@@ -14,8 +14,10 @@ export const DatatableRow = memo(DatatableRow_, (prevProps, nextProps) => {
     prevProps.onCellClick === nextProps.onCellClick &&
     prevProps.cellSelection_handleMouseDown === nextProps.cellSelection_handleMouseDown &&
     prevProps.cellSelection_handleMouseEnter === nextProps.cellSelection_handleMouseEnter &&
+    prevProps.isOver === nextProps.isOver &&
+    prevProps.isDragging === nextProps.isDragging &&
+    prevProps.draggingEnabled === nextProps.draggingEnabled &&
     // prevProps.cellSelection_isSelected === nextProps.cellSelection_isSelected
-
     // prevProps.cellSelection_isRowInSelection === nextProps.cellSelection_isRowInSelection
 
     !prevProps.cellSelection_isRowInSelection &&
@@ -34,7 +36,21 @@ function DatatableRow_<T extends Row>({
   cellSelection_handleMouseEnter,
   rowStyle,
   row,
+  //
+  draggingEnabled,
+  isOver,
+  isDragging,
+  handleDragOver,
+  handleDragStart,
+  handleDrop,
 }: {
+  draggingEnabled?: boolean
+  isOver?: boolean
+  isDragging?: boolean
+  handleDragOver: (index: number, e: React.DragEvent) => void
+  handleDragStart: (index: number, e: React.DragEvent) => void
+  handleDrop: () => void
+  //
   onCellClick: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
   virtualRow: Record<string, VirtualCell>
   rowId: string
@@ -54,14 +70,28 @@ function DatatableRow_<T extends Row>({
   // useEffect(() => console.log(virtualItem.index + '-3 ' + ' columns'), [columns])
   // useEffect(() => console.log(virtualItem.index + '-5 ' + ' virtualItem'), [virtualItem])
 
+  const t = useTheme()
+
+  // useEffect(() => {
+  //   console.log('draggingEnabled', draggingEnabled)
+  // }, [draggingEnabled])
   return (
-    <div
+    <Box
       className="dtr"
       key={rowId}
-      style={{
+      draggable={draggingEnabled}
+      onDragStart={e => {
+        handleDragStart(virtualItem.index, e)
+      }}
+      onDragOver={e => handleDragOver(virtualItem.index, e)}
+      onDrop={handleDrop}
+      sx={{
         ...rowStyle?.(row),
         height: `${virtualItem.size}px`,
         transform: `translateY(${virtualItem.start}px)`,
+        opacity: isDragging ? 0.5 : 1,
+        cursor: draggingEnabled ? 'grab' : undefined,
+        borderTop: isOver ? '3px solid ' + t.vars.palette.primary.main : undefined,
       }}
     >
       {columns.map((col, colIndex) => {
@@ -69,7 +99,7 @@ function DatatableRow_<T extends Row>({
         const selected = cellSelection_isSelected(virtualItem.index, colIndex)
         const key = virtualItem.key + col.id
         if (!cell) {
-          return <CellSkeleton key={key}/>
+          return <CellSkeleton key={key} />
           // // if (col.id === 'id')
           // cell = data?.[virtualRow.index]
           //   console.log({
@@ -95,14 +125,14 @@ function DatatableRow_<T extends Row>({
           />
         )
       })}
-    </div>
+    </Box>
   )
 }
 
 const CellSkeleton = () => {
   return (
     <div className="dtd skeleton">
-      <Skeleton width="100%"/>
+      <Skeleton width="100%" />
     </div>
   )
 }

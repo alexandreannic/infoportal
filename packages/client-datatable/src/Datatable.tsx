@@ -13,13 +13,13 @@ import {PopupSelectedCell} from './popup/PopupSelectedCell'
 import {PopupStats} from './popup/PopupStats'
 import {PopupFilter} from './popup/PopupFilter'
 
-export const Datatable = <T extends Row>({data, sx, ...props}: Props<T>) => {
+export const Datatable = <T extends Row>({data, sx, rowHeight = 32, ...props}: Props<T>) => {
   if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx} />
   const tableRef = React.useRef(null) as unknown as React.RefObject<HTMLDivElement>
   const defaultProps = useConfig().defaultProps
   return (
     <DatatableErrorBoundary>
-      <Provider {...{...defaultProps, ...props}} data={data} tableRef={tableRef}>
+      <Provider {...{...defaultProps, ...props}} rowHeight={rowHeight} data={data} tableRef={tableRef}>
         {props.loading && <LinearProgress sx={{position: 'absolute', top: 0, right: 0, left: 0, height: 3}} />}
         <DatatableWithData sx={sx} />
       </Provider>
@@ -35,7 +35,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
     dispatch,
     getRowKey,
     data,
-    rowHeight = 32,
+    rowHeight,
     dataFilteredAndSorted,
     loading,
     dataFilteredExceptBy,
@@ -44,6 +44,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
     tableRef,
     contentProps,
     rowStyle,
+    dndRows,
     module,
     renderEmptyState,
   } = useCtx(_ => _)
@@ -60,7 +61,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
     if (!items.length) return
 
     dispatch({
-      type: 'INIT_DATA',
+      type: 'INIT_VIEWPORT_CACHE',
       data: dataFilteredAndSorted,
       columns: columns.all,
       getRowKey,
@@ -78,7 +79,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
 
     if (lastIndex < dataFilteredAndSorted.length - 1) {
       dispatch({
-        type: 'SET_DATA',
+        type: 'APPEND_VIEWPORT_CACHE',
         data: dataFilteredAndSorted,
         columns: columns.all,
         getRowKey,
@@ -109,7 +110,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
           ...contentProps?.style,
         }}
       >
-        <DatatableHead onMouseDown={() => cellSelection.engine.reset()} />
+        <DatatableHead onMouseDown={cellSelection.engine.reset} />
         {renderEmptyState && data.length === 0 && !loading && renderEmptyState}
         <div
           className="dtbody"
@@ -124,10 +125,22 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
             const row = dataFilteredAndSorted[virtualItem.index]
             const rowId = getRowKey(row)
             const isRowInSelection = cellSelection.engine.isRowSelected(virtualItem.index)
+
+            const isDragging = dndRows.isRowDragging(virtualItem.index)
+            const isOver = dndRows.dropIndicatorIndex === virtualItem.index
+
             return (
               <DatatableRow
                 row={row}
                 key={virtualItem.key}
+                //
+                draggingEnabled={dndRows.enabled}
+                isDragging={isDragging}
+                isOver={isOver}
+                handleDragOver={dndRows.handleDragOver}
+                handleDragStart={dndRows.handleDragStart}
+                handleDrop={dndRows.handleDrop}
+                //
                 onCellClick={onCellClick}
                 columns={columns.visible}
                 rowId={rowId}
@@ -142,7 +155,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
             )
           })}
         </div>
-        <PopupSelectedCell />
+        {/*<PopupSelectedCell />*/}
         {(() => {
           switch (popup?.name) {
             case 'STATS': {
