@@ -1,5 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react'
 import {DatatableContext} from './DatatableContext'
+import {MinMax} from './reducer'
 
 export type UseDraggingRows = ReturnType<typeof useDraggingRows>
 
@@ -10,19 +11,28 @@ export const useDraggingRows = ({
   isRowSelected,
   rowHeight,
   dispatch,
+  draggingRange,
+  overIndex,
 }: {
   dispatch: DatatableContext['dispatch']
   rowHeight: number
   selecting?: boolean
   isRowSelected: (rowIndex: number) => boolean
   // dataFilteredAndSorted: any[]
+  draggingRange: MinMax | null
+  overIndex: number | null
   selectedRows: {
     min: number
     max: number
   }
 }) => {
-  const [draggingRange, setDraggingRange] = useState<{min: number; max: number} | null>(null)
-  const [overIndex, setOverIndex] = useState<number | null>(null)
+  const setDraggingRange = useCallback((range: MinMax | null) => {
+    dispatch({type: 'DRAGGING_ROWS_SET_RANGE', range})
+  }, [])
+
+  const setOverIndex = useCallback((overIndex: number | null) => {
+    dispatch({type: 'DRAGGING_ROWS_SET_OVER_INDEX', overIndex})
+  }, [])
 
   const enabled = !selecting && selectedRows.min !== -1 && selectedRows.max !== -1
 
@@ -38,7 +48,6 @@ export const useDraggingRows = ({
     (rowIndex: number, e: React.DragEvent) => {
       if (isRowSelected(rowIndex)) setDraggingRange(selectedRows)
 
-      console.log(rowHeight)
       const dragPreview = createDragGhostEl(rowHeight * (selectedRows.max - selectedRows.min))
       document.body.appendChild(dragPreview)
       e.dataTransfer?.setDragImage(dragPreview, 0, 0)

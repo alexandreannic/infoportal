@@ -72,9 +72,6 @@ function DatatableRow_<T extends Row>({
 
   const t = useTheme()
 
-  // useEffect(() => {
-  //   console.log('draggingEnabled', draggingEnabled)
-  // }, [draggingEnabled])
   return (
     <Box
       className="dtr"

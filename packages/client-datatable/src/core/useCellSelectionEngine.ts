@@ -49,8 +49,7 @@ export const useCellSelectionEngine = ({
   )
 
   const reset = useCallback(() => {
-    setSelectionStart(null)
-    setSelectionEnd(null)
+    dispatch({type: 'CELL_SELECTION_CLEAR'})
     setAnchorEl(null)
     selecting.current = false
     anchor.current = null
