@@ -111,6 +111,8 @@ export const Provider = <T extends Row>(
 
   const dndRows = useDraggingRows({
     dispatch,
+    overIndex: state.draggingRow.overIndex,
+    draggingRange: state.draggingRow.range,
     rowHeight: props.rowHeight,
     selecting: cellSelectionEngine.state.selecting,
     isRowSelected: cellSelectionEngine.isRowSelected,

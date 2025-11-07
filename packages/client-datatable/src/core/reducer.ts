@@ -16,6 +16,8 @@ export namespace Popup {
 
 export type State<T extends Row> = DatatableState<T>
 
+export type MinMax = {min: number; max: number}
+
 export type VirtualCell = {
   // value: any
   label: ReactNode
@@ -43,6 +45,8 @@ export type Action<T extends Row> =
       columns: Column.InnerProps<T>[]
       getRowKey: Props<T>['getRowKey']
     }
+  | {type: 'DRAGGING_ROWS_SET_RANGE'; range: MinMax | null}
+  | {type: 'DRAGGING_ROWS_SET_OVER_INDEX'; overIndex: number | null}
   | {type: 'CELL_SELECTION_SET_START'; coord: Partial<CellSelectionCoord> | null}
   | {type: 'CELL_SELECTION_SET_END'; coord: Partial<CellSelectionCoord> | null}
   | {type: 'CELL_SELECTION_CLEAR'}
@@ -61,6 +65,10 @@ export type DatatableState<T extends Row> = {
   cellsSelection: {
     start: CellSelectionCoord | null
     end: CellSelectionCoord | null
+  }
+  draggingRow: {
+    range: MinMax | null
+    overIndex: number | null
   }
   sourceData: T[]
   popup?: Popup.Event
@@ -128,6 +136,10 @@ export const initialState = <T extends Row>(): State<T> => {
       start: null,
       end: null,
     },
+    draggingRow: {
+      range: null,
+      overIndex: null,
+    },
     sourceData: [],
     hasRenderedRowId: [],
     virtualTable: {},
@@ -145,10 +157,31 @@ type HandlerMap<T extends Row> = {
 
 function createHandlerMap<T extends Row>(): HandlerMap<T> {
   return {
+    DRAGGING_ROWS_SET_OVER_INDEX: (state, {overIndex}) => {
+      return {
+        ...state,
+        draggingRow: {
+          ...state.draggingRow,
+          overIndex,
+        },
+      }
+    },
+
+    DRAGGING_ROWS_SET_RANGE: (state, {range}) => {
+      return {
+        ...state,
+        draggingRow: {
+          ...state.draggingRow,
+          range,
+        },
+      }
+    },
+
     CELL_SELECTION_CLEAR: state => {
       return {
         ...state,
         cellsSelection: {start: null, end: null},
+        draggingRow: {range: null, overIndex: null},
       }
     },
 
