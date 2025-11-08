@@ -99,6 +99,7 @@ export const Provider = <T extends Row>(
     selectionStart: state.cellsSelection.start,
     selectionEnd: state.cellsSelection.end,
     tableRef: props.tableRef,
+    mode: module?.cellSelection?.mode ?? (module?.rowsDragging?.enabled ? 'row' : undefined),
     disabled: module?.cellSelection?.enabled !== true,
   })
   const cellSectionComputed = useCellSelectionComputed({
@@ -110,6 +111,7 @@ export const Provider = <T extends Row>(
   })
 
   const dndRows = useDraggingRows({
+    disabled: module?.rowsDragging?.enabled !== true,
     dispatch,
     overIndex: state.draggingRow.overIndex,
     draggingRange: state.draggingRow.range,

@@ -41,6 +41,8 @@ export type FilterTypeMapping = {
   select_multiple: string[]
 }
 
+export type CellSelectionMode = 'free' | 'row' //|'cell' | 'col' |  'row-or-cell'
+
 export interface Props<T extends Row, K extends string = string> {
   // Core
   id: string
@@ -67,6 +69,9 @@ export interface Props<T extends Row, K extends string = string> {
   sx?: SxProps<Theme>
 
   module?: {
+    rowsDragging?: {
+      enabled: boolean
+    }
     export?: {
       enabled: boolean
     }
@@ -77,7 +82,7 @@ export interface Props<T extends Row, K extends string = string> {
     }
     cellSelection?: {
       enabled: boolean
-      mode?: 'cell' | 'col' | 'free' | 'row' | 'row-or-cell'
+      mode?: CellSelectionMode
       renderComponentOnRowSelected?: ({rowIds}: {rowIds: string[]}) => ReactNode
     }
     columnsResize?: {

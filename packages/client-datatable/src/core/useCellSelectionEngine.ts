@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {DatatableContext} from './DatatableContext'
 import {CellSelectionCoord} from './reducer'
+import {CellSelectionMode} from './types'
 
 export type UseCellSelection = ReturnType<typeof useCellSelectionEngine>
 
@@ -12,7 +13,9 @@ export const useCellSelectionEngine = ({
   dispatch,
   selectionStart,
   selectionEnd,
+  mode,
 }: {
+  mode?: CellSelectionMode
   selectionStart: CellSelectionCoord | null
   selectionEnd: CellSelectionCoord | null
   dispatch: DatatableContext['dispatch']
@@ -57,6 +60,7 @@ export const useCellSelectionEngine = ({
 
   const handleMouseDown = useCallback(
     (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
+      if (mode === 'row' && colIndex !== 0) return
       const preventReSelectionToDnDrop = colIndex === 0 && isRowSelected(rowIndex)
       if (preventReSelectionToDnDrop) return
       const isShift = event.shiftKey

@@ -155,7 +155,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
             )
           })}
         </div>
-        {/*<PopupSelectedCell />*/}
+        <PopupSelectedCell />
         {(() => {
           switch (popup?.name) {
             case 'STATS': {

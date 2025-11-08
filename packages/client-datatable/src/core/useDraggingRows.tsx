@@ -13,7 +13,9 @@ export const useDraggingRows = ({
   dispatch,
   draggingRange,
   overIndex,
+  disabled,
 }: {
+  disabled?: boolean
   dispatch: DatatableContext['dispatch']
   rowHeight: number
   selecting?: boolean
@@ -34,7 +36,7 @@ export const useDraggingRows = ({
     dispatch({type: 'DRAGGING_ROWS_SET_OVER_INDEX', overIndex})
   }, [])
 
-  const enabled = !selecting && selectedRows.min !== -1 && selectedRows.max !== -1
+  const enabled = !disabled && !selecting && selectedRows.min !== -1 && selectedRows.max !== -1
 
   const isRowDragging = useCallback(
     (rowIndex: number) => {

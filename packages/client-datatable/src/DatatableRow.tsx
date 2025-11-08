@@ -78,6 +78,8 @@ function DatatableRow_<T extends Row>({
       key={rowId}
       draggable={draggingEnabled}
       onDragStart={e => {
+        e.dataTransfer.effectAllowed = 'move'
+        e.dataTransfer.dropEffect = 'move'
         handleDragStart(virtualItem.index, e)
       }}
       onDragOver={e => handleDragOver(virtualItem.index, e)}
