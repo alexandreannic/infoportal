@@ -1,6 +1,6 @@
 import {VirtualItem} from '@tanstack/react-virtual'
 import {Box, Skeleton, useTheme} from '@mui/material'
-import React, {memo, useCallback} from 'react'
+import React, {memo, useCallback, useEffect} from 'react'
 import {Column, Props, Row} from './core/types.js'
 import {VirtualCell} from './core/reducer'
 import {UseDraggingRows} from './core/useDraggingRows'
@@ -8,28 +8,10 @@ import {useCtx} from './core/DatatableContext'
 import {UseCellSelection} from './core/useCellSelectionEngine'
 
 export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
-  // const dataFilteredAndSorted = useCtx(_ => _.dataFilteredAndSorted)
-  // const row = dataFilteredAndSorted[virtualItem.index]
-  // const getRowKey = useCtx(_ => _.getRowKey)
-  // const rowId = getRowKey(row)
-  // const virtualTable = useCtx(_ => _.state.virtualTable)
-  // const virtualRow = virtualTable[rowId]
-  // const rowStyle = useCtx(_ => _.rowStyle)
-  // const isDragging = useCtx(_ => _.dndRows.isRowDragging(virtualItem.index))
-  // const isOver = useCtx(_ => _.dndRows.dropIndicatorIndex === virtualItem.index)
-  // const isDraggable = useCtx(_ => _.dndRows.isRowDraggable(virtualItem.index))
-  // const handleDragStart = useCtx(_ => _.dndRows.handleDragStart)
-  // const handleDragOver = useCtx(_ => _.dndRows.handleDragOver)
-  // const handleDrop = useCtx(_ => _.dndRows.handleDrop)
-  // const isRowSelected = useCtx(_ => _.cellSelection.engine.isRowSelected(virtualItem.index))
-  // const cellSelection_handleMouseDown = useCtx(_ => _.cellSelection.engine.handleMouseDown)
-  // const cellSelection_handleMouseEnter = useCtx(_ => _.cellSelection.engine.handleMouseEnter)
-  // const columns = useCtx(_ => _.columns)
-  // const isColumnSelected = useCtx(_ => _.cellSelection.engine.isColumnSelected)
-
   const {
-    isColumnSelected,
     virtualTable,
+    isRowSelected,
+    isColumnSelected,
     cellSelection_handleMouseDown,
     cellSelection_handleMouseEnter,
     isDragging,
@@ -42,7 +24,6 @@ export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
     rowStyle,
     dataFilteredAndSorted,
     getRowKey,
-    isRowSelected,
   } = useCtx(_ => ({
     isRowSelected: _.cellSelection.engine.isRowSelected(virtualItem.index),
     isColumnSelected: _.cellSelection.engine.isColumnSelected,
@@ -64,18 +45,20 @@ export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
   const rowId = getRowKey(row)
   const virtualRow = virtualTable[rowId]
 
-  const onCellClick = useCallback((rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
-    const row = dataFilteredAndSorted[rowIndex]
-    const column = columns.visible[colIndex]
-    if (column.onClick) {
-      column.onClick({data: row, rowIndex, event})
-    }
-  }, [])
+  const onCellClick = useCallback(
+    (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
+      const row = dataFilteredAndSorted[rowIndex]
+      const column = columns.visible[colIndex]
+      if (column.onClick) {
+        column.onClick({data: row, rowIndex, event})
+      }
+    },
+    [dataFilteredAndSorted, columns.visible],
+  )
 
   return (
     <DatatableRowMemo
       rowId={rowId}
-      isColumnSelected={isColumnSelected}
       virtualItem={virtualItem}
       virtualRow={virtualRow}
       columns={columns.visible}
@@ -85,7 +68,8 @@ export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
       isDraggable={isDraggable}
       isDragging={isDragging}
       isOver={isOver}
-      isRowSelected={isRowSelected}
+      // isRowSelected={isRowSelected}
+      isColumnSelected={isRowSelected && isColumnSelected}
       handleDragStart={handleDragStart}
       handleDragOver={handleDragOver}
       handleDrop={handleDrop}
@@ -107,7 +91,7 @@ const DatatableRowMemo = memo(
     isDraggable,
     isDragging,
     isOver,
-    isRowSelected,
+    // isRowSelected,
     handleDragStart,
     handleDragOver,
     isColumnSelected,
@@ -124,8 +108,8 @@ const DatatableRowMemo = memo(
     virtualItem: VirtualItem
     cellSelection_handleMouseDown: UseCellSelection['handleMouseDown']
     cellSelection_handleMouseEnter: UseCellSelection['handleMouseEnter']
-    isRowSelected?: boolean
-    isColumnSelected: UseCellSelection['isColumnSelected']
+    // isRowSelected?: boolean
+    isColumnSelected: false | UseCellSelection['isColumnSelected']
     handleDragStart: UseDraggingRows['handleDragStart']
     handleDragOver: UseDraggingRows['handleDragOver']
     handleDrop: UseDraggingRows['handleDrop']
@@ -171,8 +155,7 @@ const DatatableRowMemo = memo(
             //   })
             // return <CellSkeleton key={key} />
           }
-          const colSelected = isRowSelected && isColumnSelected(colIndex)
-          if (colSelected) console.log(virtualItem.index + ':' + colIndex)
+          const colSelected = isColumnSelected !== false && isColumnSelected(colIndex)
           return (
             <Cell
               onClick={onCellClick}
@@ -181,9 +164,9 @@ const DatatableRowMemo = memo(
               colIndex={colIndex}
               handleMouseDown={cellSelection_handleMouseDown}
               handleMouseEnter={cellSelection_handleMouseEnter}
-              className={cell.className + (colSelected ? ' selected' : '')}
-              label={cell.label}
               selected={colSelected}
+              className={cell.className}
+              label={cell.label}
               tooltip={cell.tooltip as any}
               style={cell.style}
             />
@@ -212,8 +195,10 @@ const Cell = memo(
     tooltip,
     onClick,
     style,
+    selected,
     className = '',
   }: VirtualCell & {
+    selected?: boolean
     onClick?: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
     colIndex: number
     rowIndex: number
@@ -222,7 +207,7 @@ const Cell = memo(
   }) => {
     return (
       <div
-        className={'dtd ' + className}
+        className={'dtd ' + className + (selected ? ' selected' : '')}
         style={style}
         onClick={onClick ? e => onClick(rowIndex, colIndex, e) : undefined}
         title={tooltip}

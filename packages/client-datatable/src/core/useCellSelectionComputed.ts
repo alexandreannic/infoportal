@@ -1,25 +1,32 @@
-import React, {useCallback, useEffect, useMemo} from 'react'
+import React, {Dispatch, useCallback, useEffect, useMemo} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {UseCellSelection} from './useCellSelectionEngine'
 import {Column, Props, Row} from './types.js'
 import {DatatableContext} from './DatatableContext'
+import {CellSelectionCoord} from './reducer'
 
 export type UseCellSelectionComputed = ReturnType<typeof useCellSelectionComputed>
 
 export const useCellSelectionComputed = <T extends Row>({
+  dispatch,
   filteredAndSortedData,
-  cellSelectionEngine,
+  engine,
   visibleColumns,
   columnsIndex,
   getRowKey,
+  selectionStart,
+  selectionEnd,
 }: {
+  dispatch: DatatableContext['dispatch']
+  selectionStart: CellSelectionCoord | null
+  selectionEnd: CellSelectionCoord | null
   getRowKey: Props<T>['getRowKey']
   columnsIndex: Record<KeyOf<T>, Column.InnerProps<any>>
   visibleColumns: Column.InnerProps<T>[]
-  cellSelectionEngine: UseCellSelection
+  engine: UseCellSelection
   filteredAndSortedData: T[]
 }) => {
-  const {state, isRowSelected, isSelected, isColumnSelected} = cellSelectionEngine
+  const {state, isRowSelected, isSelected, isColumnSelected} = engine
 
   const selectedRowIds = useMemo(() => {
     const selectedRowIds = new Set<string>()
@@ -27,7 +34,7 @@ export const useCellSelectionComputed = <T extends Row>({
       if (isRowSelected(index)) selectedRowIds.add(getRowKey(_))
     })
     return selectedRowIds
-  }, [filteredAndSortedData, isRowSelected])
+  }, [filteredAndSortedData, selectionStart?.row, selectionEnd?.row])
 
   const selectedColumnsIds = useMemo(() => {
     const selectedColumns = new Set<string>()
@@ -35,7 +42,7 @@ export const useCellSelectionComputed = <T extends Row>({
       if (isColumnSelected(index)) selectedColumns.add(_.id)
     })
     return selectedColumns
-  }, [visibleColumns, isColumnSelected])
+  }, [visibleColumns, selectionStart?.col, selectionEnd?.col])
 
   const selectedColumnUniq = useMemo(() => {
     if (selectedColumnsIds.size === 1) {
@@ -46,9 +53,10 @@ export const useCellSelectionComputed = <T extends Row>({
 
   useEffect(
     function selectFullRowOnIndexSelected() {
-      if (selectedColumnsIds.has('index')) {
-        state.setSelectionStart({col: 0})
-        state.setSelectionEnd({col: visibleColumns.length})
+      const isIndexSelected = selectedColumnsIds.has('index')
+      if (isIndexSelected) {
+        dispatch({type: 'CELL_SELECTION_SET_START', coord: {col: 0}})
+        dispatch({type: 'CELL_SELECTION_SET_END', coord: {col: visibleColumns.length}})
       }
     },
     [selectedColumnsIds],
@@ -56,9 +64,9 @@ export const useCellSelectionComputed = <T extends Row>({
 
   const selectColumn = useCallback(
     (columnIndex: number, event: React.MouseEvent<HTMLDivElement>) => {
-      state.setSelectionStart({row: 0, col: columnIndex})
-      cellSelectionEngine.setAnchorEl(event.target as any)
-      state.setSelectionEnd({row: filteredAndSortedData.length - 1, col: columnIndex})
+      dispatch({type: 'CELL_SELECTION_SET_START', coord: {row: 0, col: columnIndex}})
+      engine.setAnchorEl(event.target as any)
+      dispatch({type: 'CELL_SELECTION_SET_START', coord: {row: filteredAndSortedData.length - 1, col: columnIndex}})
     },
     [filteredAndSortedData],
   )

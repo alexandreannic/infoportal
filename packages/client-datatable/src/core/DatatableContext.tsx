@@ -105,12 +105,15 @@ export const Provider = <T extends Row>(
     mode: module?.cellSelection?.mode ?? (module?.rowsDragging?.enabled ? 'row' : undefined),
     disabled: module?.cellSelection?.enabled !== true,
   })
-  const cellSectionComputed = useCellSelectionComputed({
+  const cellSectionComputed = useCellSelectionComputed<T>({
+    dispatch,
+    selectionStart: state.cellsSelection.start,
+    selectionEnd: state.cellsSelection.end,
     getRowKey: props.getRowKey,
     filteredAndSortedData,
     columnsIndex: columns.indexMap,
     visibleColumns: columns.visible,
-    cellSelectionEngine,
+    engine: cellSelectionEngine,
   })
 
   const dndRows = useDraggingRows({
@@ -120,7 +123,8 @@ export const Provider = <T extends Row>(
     draggingRange: state.draggingRow.range,
     rowHeight: props.rowHeight,
     isRowSelected: cellSelectionEngine.isRowSelected,
-    selectionRef: cellSelectionEngine.state.selectionRef,
+    selectionBoundary: cellSelectionEngine.state.selectionBoundary,
+    // selectionRef: cellSelectionEngine.state.selectionRef,
   })
 
   return (

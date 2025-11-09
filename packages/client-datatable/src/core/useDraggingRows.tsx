@@ -5,13 +5,13 @@ import {MinMax} from './reducer'
 export type UseDraggingRows = ReturnType<typeof useDraggingRows>
 
 export const useDraggingRows = ({
-  selectionRef,
   isRowSelected,
   rowHeight,
   dispatch,
   draggingRange,
   overIndex,
   disabled,
+  selectionBoundary,
 }: {
   disabled?: boolean
   dispatch: DatatableContext['dispatch']
@@ -19,11 +19,17 @@ export const useDraggingRows = ({
   isRowSelected: (rowIndex: number) => boolean
   draggingRange: MinMax | null
   overIndex: number | null
-  selectionRef: RefObject<{rowMin: number; rowMax: number}>
+  selectionBoundary: {
+    rowMin: number
+    rowMax: number
+    colMin: number
+    colMax: number
+  }
 }) => {
-  /** ---------- Refs to always have latest state ---------- */
+  // Refs to always have latest state
   const draggingRangeRef = useRef(draggingRange)
   const overIndexRef = useRef(overIndex)
+  const selectionBoundaryRef = useRef(selectionBoundary)
 
   useEffect(() => {
     draggingRangeRef.current = draggingRange
@@ -31,8 +37,9 @@ export const useDraggingRows = ({
   useEffect(() => {
     overIndexRef.current = overIndex
   }, [overIndex])
-
-  /** ---------- Core helpers ---------- */
+  useEffect(() => {
+    selectionBoundaryRef.current = selectionBoundary
+  }, [selectionBoundary])
 
   const setDraggingRange = useCallback(
     (range: MinMax | null) => {
@@ -48,8 +55,6 @@ export const useDraggingRows = ({
     [dispatch],
   )
 
-  // const canDnd = !disabled && !selecting && selectedRows.min !== -1 && selectedRows.max !== -1
-
   const isRowDraggable = useCallback(
     (rowIndex: number) => {
       if (disabled) return false
@@ -57,12 +62,11 @@ export const useDraggingRows = ({
     },
     [isRowSelected],
   )
-  /** ---------- Stable handlers ---------- */
 
   const handleDragStart = useCallback(
     (rowIndex: number, e: React.DragEvent) => {
-      const min = selectionRef.current.rowMin
-      const max = selectionRef.current.rowMax
+      const min = selectionBoundaryRef.current.rowMin
+      const max = selectionBoundaryRef.current.rowMax
       if (isRowSelected(rowIndex)) {
         setDraggingRange({min, max})
       }
@@ -75,7 +79,7 @@ export const useDraggingRows = ({
       e.dataTransfer.dropEffect = 'move'
       setTimeout(() => document.body.removeChild(ghost), 0)
     },
-    [isRowSelected, rowHeight, setDraggingRange],
+    [rowHeight, setDraggingRange],
   )
 
   const handleDragOver = useCallback(
@@ -94,8 +98,6 @@ export const useDraggingRows = ({
     setDraggingRange(null)
     setOverIndex(null)
   }, [dispatch, setDraggingRange, setOverIndex])
-
-  /** ---------- Derived helpers ---------- */
 
   const isRowDragging = useCallback((rowIndex: number) => {
     const range = draggingRangeRef.current
