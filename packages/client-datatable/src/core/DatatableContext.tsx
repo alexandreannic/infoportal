@@ -1,4 +1,4 @@
-import React, {ReactNode, useEffect, useReducer} from 'react'
+import React, {ReactNode, useCallback, useEffect, useReducer} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {useEffectFn} from '@axanc/react-hooks'
@@ -66,10 +66,13 @@ export const Provider = <T extends Row>(
     if (_) _dispatch({type: 'FILTER', value: _})
   })
 
-  const dispatch: React.Dispatch<Action<T>> = _ => {
-    _dispatch(_)
-    props.onEvent?.(_)
-  }
+  const dispatch: React.Dispatch<Action<T>> = useCallback(
+    _ => {
+      _dispatch(_)
+      props.onEvent?.(_)
+    },
+    [_dispatch, props.onEvent],
+  )
 
   const columns = useDatatableColumns({
     colHidden: state.colHidden,
@@ -116,12 +119,8 @@ export const Provider = <T extends Row>(
     overIndex: state.draggingRow.overIndex,
     draggingRange: state.draggingRow.range,
     rowHeight: props.rowHeight,
-    selecting: cellSelectionEngine.state.selecting,
     isRowSelected: cellSelectionEngine.isRowSelected,
-    selectedRows: {
-      min: cellSelectionEngine.state.rowMin,
-      max: cellSelectionEngine.state.rowMax,
-    },
+    selectionRef: cellSelectionEngine.state.selectionRef,
   })
 
   return (

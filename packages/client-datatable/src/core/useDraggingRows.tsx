@@ -1,13 +1,11 @@
-import React, {useCallback, useMemo, useState} from 'react'
+import React, {RefObject, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {DatatableContext} from './DatatableContext'
 import {MinMax} from './reducer'
 
 export type UseDraggingRows = ReturnType<typeof useDraggingRows>
 
 export const useDraggingRows = ({
-  // dataFilteredAndSorted,
-  selectedRows,
-  selecting,
+  selectionRef,
   isRowSelected,
   rowHeight,
   dispatch,
@@ -18,70 +16,104 @@ export const useDraggingRows = ({
   disabled?: boolean
   dispatch: DatatableContext['dispatch']
   rowHeight: number
-  selecting?: boolean
   isRowSelected: (rowIndex: number) => boolean
-  // dataFilteredAndSorted: any[]
   draggingRange: MinMax | null
   overIndex: number | null
-  selectedRows: {
-    min: number
-    max: number
-  }
+  selectionRef: RefObject<{rowMin: number; rowMax: number}>
 }) => {
-  const setDraggingRange = useCallback((range: MinMax | null) => {
-    dispatch({type: 'DRAGGING_ROWS_SET_RANGE', range})
-  }, [])
+  /** ---------- Refs to always have latest state ---------- */
+  const draggingRangeRef = useRef(draggingRange)
+  const overIndexRef = useRef(overIndex)
 
-  const setOverIndex = useCallback((overIndex: number | null) => {
-    dispatch({type: 'DRAGGING_ROWS_SET_OVER_INDEX', overIndex})
-  }, [])
+  useEffect(() => {
+    draggingRangeRef.current = draggingRange
+  }, [draggingRange])
+  useEffect(() => {
+    overIndexRef.current = overIndex
+  }, [overIndex])
 
-  const enabled = !disabled && !selecting && selectedRows.min !== -1 && selectedRows.max !== -1
+  /** ---------- Core helpers ---------- */
 
-  const isRowDragging = useCallback(
-    (rowIndex: number) => {
-      if (!draggingRange || !enabled) return false
-      return rowIndex >= draggingRange.min && rowIndex <= draggingRange.max
+  const setDraggingRange = useCallback(
+    (range: MinMax | null) => {
+      dispatch({type: 'DRAGGING_ROWS_SET_RANGE', range})
     },
-    [draggingRange, enabled],
+    [dispatch],
   )
 
-  const handleDragStart = useCallback(
-    (rowIndex: number, e: React.DragEvent) => {
-      if (isRowSelected(rowIndex)) setDraggingRange(selectedRows)
+  const setOverIndex = useCallback(
+    (index: number | null) => {
+      dispatch({type: 'DRAGGING_ROWS_SET_OVER_INDEX', overIndex: index})
+    },
+    [dispatch],
+  )
 
-      const dragPreview = createDragGhostEl(rowHeight * (selectedRows.max - selectedRows.min))
-      document.body.appendChild(dragPreview)
-      e.dataTransfer?.setDragImage(dragPreview, 0, 0)
-      setTimeout(() => document.body.removeChild(dragPreview), 0)
+  // const canDnd = !disabled && !selecting && selectedRows.min !== -1 && selectedRows.max !== -1
+
+  const isRowDraggable = useCallback(
+    (rowIndex: number) => {
+      if (disabled) return false
+      return isRowSelected(rowIndex)
     },
     [isRowSelected],
   )
+  /** ---------- Stable handlers ---------- */
 
-  const handleDragOver = useCallback((rowIndex: number, e: React.DragEvent) => {
-    e.preventDefault() // allow drop
-    setOverIndex(rowIndex)
-  }, [])
+  const handleDragStart = useCallback(
+    (rowIndex: number, e: React.DragEvent) => {
+      const min = selectionRef.current.rowMin
+      const max = selectionRef.current.rowMax
+      if (isRowSelected(rowIndex)) {
+        setDraggingRange({min, max})
+      }
+
+      const dragHeight = rowHeight * (max - min)
+      const ghost = createDragGhostEl(dragHeight)
+      document.body.appendChild(ghost)
+      e.dataTransfer?.setDragImage(ghost, 0, 0)
+      e.dataTransfer.effectAllowed = 'move'
+      e.dataTransfer.dropEffect = 'move'
+      setTimeout(() => document.body.removeChild(ghost), 0)
+    },
+    [isRowSelected, rowHeight, setDraggingRange],
+  )
+
+  const handleDragOver = useCallback(
+    (rowIndex: number, e: React.DragEvent) => {
+      e.preventDefault() // required to allow drop
+      setOverIndex(rowIndex)
+    },
+    [setOverIndex],
+  )
 
   const handleDrop = useCallback(() => {
-    if (draggingRange == null || overIndex == null) return
-    dispatch({type: 'REORDER_ROWS', range: draggingRange, index: overIndex})
+    const range = draggingRangeRef.current
+    const over = overIndexRef.current
+    if (!range || over == null) return
+    dispatch({type: 'REORDER_ROWS', range, index: over})
     setDraggingRange(null)
     setOverIndex(null)
-  }, [draggingRange, overIndex])
+  }, [dispatch, setDraggingRange, setOverIndex])
 
-  const dropIndicatorIndex = useMemo((): number | null => {
-    if (!enabled || !draggingRange || overIndex == null) return null
+  /** ---------- Derived helpers ---------- */
+
+  const isRowDragging = useCallback((rowIndex: number) => {
+    const range = draggingRangeRef.current
+    if (!range) return false
+    return rowIndex >= range.min && rowIndex <= range.max
+  }, [])
+
+  const dropIndicatorIndex = useMemo(() => {
+    if (!draggingRange || overIndex == null) return null
     if (overIndex < draggingRange.min) return overIndex
     if (overIndex > draggingRange.max) return overIndex
     return null
-  }, [enabled, draggingRange, overIndex])
+  }, [draggingRange, overIndex])
 
   return {
+    isRowDraggable,
     isRowDragging,
-    enabled,
     draggingRange,
-    // overIndex,
     dropIndicatorIndex,
     handleDragStart,
     handleDragOver,
