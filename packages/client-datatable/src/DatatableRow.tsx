@@ -1,6 +1,6 @@
 import {VirtualItem} from '@tanstack/react-virtual'
-import {Box, Skeleton, useTheme} from '@mui/material'
-import React, {memo, useCallback, useEffect} from 'react'
+import {Box, BoxProps, Skeleton, useTheme} from '@mui/material'
+import React, {memo, useCallback} from 'react'
 import {Column, Props, Row} from './core/types.js'
 import {VirtualCell} from './core/reducer'
 import {UseDraggingRows} from './core/useDraggingRows'
@@ -68,7 +68,6 @@ export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
       isDraggable={isDraggable}
       isDragging={isDragging}
       isOver={isOver}
-      // isRowSelected={isRowSelected}
       isColumnSelected={isRowSelected && isColumnSelected}
       handleDragStart={handleDragStart}
       handleDragOver={handleDragOver}
@@ -91,7 +90,6 @@ const DatatableRowMemo = memo(
     isDraggable,
     isDragging,
     isOver,
-    // isRowSelected,
     handleDragStart,
     handleDragOver,
     isColumnSelected,
@@ -108,7 +106,6 @@ const DatatableRowMemo = memo(
     virtualItem: VirtualItem
     cellSelection_handleMouseDown: UseCellSelection['handleMouseDown']
     cellSelection_handleMouseEnter: UseCellSelection['handleMouseEnter']
-    // isRowSelected?: boolean
     isColumnSelected: false | UseCellSelection['isColumnSelected']
     handleDragStart: UseDraggingRows['handleDragStart']
     handleDragOver: UseDraggingRows['handleDragOver']
@@ -118,19 +115,10 @@ const DatatableRowMemo = memo(
     isOver?: boolean
   }) => {
     const t = useTheme()
-
     return (
       <Box
         className="dtr"
         key={rowId}
-        draggable={isDraggable}
-        onDragStart={e => {
-          e.dataTransfer.effectAllowed = 'move'
-          e.dataTransfer.dropEffect = 'move'
-          handleDragStart(virtualItem.index, e)
-        }}
-        onDragOver={e => handleDragOver(virtualItem.index, e)}
-        onDrop={handleDrop}
         sx={{
           ...rowStyle?.(row),
           height: `${virtualItem.size}px`,
@@ -156,8 +144,13 @@ const DatatableRowMemo = memo(
             // return <CellSkeleton key={key} />
           }
           const colSelected = isColumnSelected !== false && isColumnSelected(colIndex)
+          const isFirst = colIndex === 0
           return (
             <Cell
+              draggable={isFirst && isDraggable}
+              onDragStart={isFirst ? e => handleDragStart(virtualItem.index, e) : undefined}
+              onDragOver={isFirst ? e => handleDragOver(virtualItem.index, e) : undefined}
+              onDrop={isFirst ? handleDrop : undefined}
               onClick={onCellClick}
               key={key}
               rowIndex={virtualItem.index}
@@ -197,16 +190,19 @@ const Cell = memo(
     style,
     selected,
     className = '',
-  }: VirtualCell & {
-    selected?: boolean
-    onClick?: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
-    colIndex: number
-    rowIndex: number
-    handleMouseDown: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
-    handleMouseEnter: (rowIndex: number, colIndex: number) => void
-  }) => {
+    ...props
+  }: VirtualCell &
+    Pick<BoxProps, 'draggable' | 'onDragStart' | 'onDragOver' | 'onDrop'> & {
+      selected?: boolean
+      onClick?: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
+      colIndex: number
+      rowIndex: number
+      handleMouseDown: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
+      handleMouseEnter: (rowIndex: number, colIndex: number) => void
+    }) => {
     return (
       <div
+        {...props}
         className={'dtd ' + className + (selected ? ' selected' : '')}
         style={style}
         onClick={onClick ? e => onClick(rowIndex, colIndex, e) : undefined}

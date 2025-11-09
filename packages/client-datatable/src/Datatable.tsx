@@ -136,6 +136,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
             <DatatableRow key={virtualItem.key} virtualItem={virtualItem} />
           ))}
         </div>
+        <PopupSelectedCell />
         {(() => {
           switch (popup?.name) {
             case 'STATS': {

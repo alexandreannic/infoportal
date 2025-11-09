@@ -74,7 +74,6 @@ export type DatatableState<T extends Row> = {
   popup?: Popup.Event
   hasRenderedRowId: boolean[]
   virtualTable: Record<string, Record<string, VirtualCell>>
-  // selected: Set<string>
   sortBy?: SortBy
   filters: Partial<Record<KeyOf<T>, FilterValue>>
   colWidths: Record<string, number>
@@ -158,6 +157,7 @@ type HandlerMap<T extends Row> = {
 function createHandlerMap<T extends Row>(): HandlerMap<T> {
   return {
     DRAGGING_ROWS_SET_OVER_INDEX: (state, {overIndex}) => {
+      if (state.draggingRow.overIndex === overIndex) return state
       return {
         ...state,
         draggingRow: {
@@ -168,6 +168,10 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
     },
 
     DRAGGING_ROWS_SET_RANGE: (state, {range}) => {
+      const prev = state.draggingRow.range ?? ({} as MinMax)
+      if (prev.min === range?.min && prev.max === range?.max) {
+        return state
+      }
       return {
         ...state,
         draggingRow: {
@@ -188,6 +192,7 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
     CELL_SELECTION_SET_START: (state, {coord}) => {
       return {
         ...state,
+        draggingRow: {range: null, overIndex: null},
         cellsSelection: {
           ...state.cellsSelection,
           start: {...state.cellsSelection.start, ...(coord as CellSelectionCoord)},
@@ -198,6 +203,7 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
     CELL_SELECTION_SET_END: (state, {coord}) => {
       return {
         ...state,
+        draggingRow: {range: null, overIndex: null},
         cellsSelection: {...state.cellsSelection, end: {...state.cellsSelection.end, ...(coord as CellSelectionCoord)}},
       }
     },

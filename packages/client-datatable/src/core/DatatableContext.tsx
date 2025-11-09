@@ -2,7 +2,7 @@ import React, {ReactNode, useCallback, useEffect, useReducer} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {useEffectFn} from '@axanc/react-hooks'
-import {Option, Props, Row} from './types.js'
+import {Props, Row} from './types.js'
 import {Action, datatableReducer, initialState, State} from './reducer'
 import {useDatatableColumns, UseDatatableColumns} from './useColumns'
 import {useCellSelectionComputed, UseCellSelectionComputed} from './useCellSelectionComputed'
@@ -12,8 +12,8 @@ import {useDatatableOptions} from './useOptions'
 import {UseDraggingRows, useDraggingRows} from './useDraggingRows'
 
 export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'rowHeight' | 'data' | 'columns'> & {
-  tableRef: React.MutableRefObject<HTMLDivElement>
-  getColumnOptions: (_: KeyOf<T>) => Option[] | undefined
+  tableRef: React.RefObject<HTMLDivElement>
+  getColumnOptions: ReturnType<typeof useDatatableOptions<T>>
   state: State<T>
   rowHeight: number
   dispatch: React.Dispatch<Action<T>>
@@ -27,6 +27,7 @@ export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'rowHeight' |
       UseCellSelection,
       | 'isSelected'
       | 'isColumnSelected'
+      | 'isRowSelectedRef'
       | 'isRowSelected'
       | 'handleMouseDown'
       | 'handleMouseEnter'
@@ -123,8 +124,8 @@ export const Provider = <T extends Row>(
     draggingRange: state.draggingRow.range,
     rowHeight: props.rowHeight,
     isRowSelected: cellSelectionEngine.isRowSelected,
+    isRowSelectedRef: cellSelectionEngine.isRowSelectedRef,
     selectionBoundary: cellSelectionEngine.state.selectionBoundary,
-    // selectionRef: cellSelectionEngine.state.selectionRef,
   })
 
   return (
@@ -144,10 +145,11 @@ export const Provider = <T extends Row>(
             handleMouseEnter: cellSelectionEngine.handleMouseEnter,
             handleMouseUp: cellSelectionEngine.handleMouseUp,
             reset: cellSelectionEngine.reset,
-            anchorEl: cellSelectionEngine.anchorEl,
             isSelected: cellSelectionEngine.isSelected,
             isColumnSelected: cellSelectionEngine.isColumnSelected,
             isRowSelected: cellSelectionEngine.isRowSelected,
+            isRowSelectedRef: cellSelectionEngine.isRowSelectedRef,
+            anchorEl: cellSelectionEngine.anchorEl,
           },
           selectedCount: cellSectionComputed.selectedCount,
           areAllColumnsSelected: cellSectionComputed.areAllColumnsSelected,

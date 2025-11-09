@@ -26,37 +26,37 @@ export const useCellSelectionComputed = <T extends Row>({
   engine: UseCellSelection
   filteredAndSortedData: T[]
 }) => {
-  const {state, isRowSelected, isSelected, isColumnSelected} = engine
+  const {state, isRowSelected, isColumnSelected} = engine
 
   const selectedRowIds = useMemo(() => {
-    const selectedRowIds = new Set<string>()
+    const ids = new Set<string>()
     filteredAndSortedData.forEach((_, index) => {
-      if (isRowSelected(index)) selectedRowIds.add(getRowKey(_))
+      if (isRowSelected(index)) ids.add(getRowKey(_))
     })
-    return selectedRowIds
-  }, [filteredAndSortedData, selectionStart?.row, selectionEnd?.row])
+    return ids
+  }, [filteredAndSortedData, isRowSelected])
 
   const selectedColumnsIds = useMemo(() => {
-    const selectedColumns = new Set<string>()
+    const ids = new Set<string>()
     visibleColumns.forEach((_, index) => {
-      if (isColumnSelected(index)) selectedColumns.add(_.id)
+      if (isColumnSelected(index)) ids.add(_.id)
     })
-    return selectedColumns
-  }, [visibleColumns, selectionStart?.col, selectionEnd?.col])
+    return ids
+  }, [visibleColumns, isColumnSelected])
 
   const selectedColumnUniq = useMemo(() => {
     if (selectedColumnsIds.size === 1) {
       const colId = [...selectedColumnsIds][0]
       return columnsIndex[colId]
     }
-  }, [selectedColumnsIds])
+  }, [selectedColumnsIds, columnsIndex])
 
   useEffect(
     function selectFullRowOnIndexSelected() {
       const isIndexSelected = selectedColumnsIds.has('index')
       if (isIndexSelected) {
-        dispatch({type: 'CELL_SELECTION_SET_START', coord: {col: 0}})
-        dispatch({type: 'CELL_SELECTION_SET_END', coord: {col: visibleColumns.length}})
+        dispatch({type: 'CELL_SELECTION_SET_END', coord: {col: 0}})
+        dispatch({type: 'CELL_SELECTION_SET_START', coord: {col: visibleColumns.length}})
       }
     },
     [selectedColumnsIds],
@@ -65,20 +65,20 @@ export const useCellSelectionComputed = <T extends Row>({
   const selectColumn = useCallback(
     (columnIndex: number, event: React.MouseEvent<HTMLDivElement>) => {
       dispatch({type: 'CELL_SELECTION_SET_START', coord: {row: 0, col: columnIndex}})
-      engine.setAnchorEl(event.target as any)
-      dispatch({type: 'CELL_SELECTION_SET_START', coord: {row: filteredAndSortedData.length - 1, col: columnIndex}})
+      dispatch({type: 'CELL_SELECTION_SET_END', coord: {row: filteredAndSortedData.length - 1, col: columnIndex}})
+      engine.anchorEl = event.target as any
     },
     [filteredAndSortedData],
   )
 
   const areAllColumnsSelected = useMemo(() => {
     return selectedColumnsIds.size === visibleColumns.length
-  }, [selectedColumnsIds])
+  }, [selectedColumnsIds, visibleColumns.length])
 
   const selectedCount = useMemo(() => {
     if (!state.selectionStart || !state.selectionEnd) return 0
     return selectedColumnsIds.size * selectedRowIds.size
-  }, [isSelected])
+  }, [selectedColumnsIds, selectedRowIds])
 
   return {
     selectedCount,

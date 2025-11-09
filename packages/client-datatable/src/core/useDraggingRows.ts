@@ -1,10 +1,13 @@
 import React, {RefObject, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {DatatableContext} from './DatatableContext'
 import {MinMax} from './reducer'
+import {Theme, useTheme} from '@mui/material'
+import {alphaVar} from '@infoportal/client-core'
 
 export type UseDraggingRows = ReturnType<typeof useDraggingRows>
 
 export const useDraggingRows = ({
+  isRowSelectedRef,
   isRowSelected,
   rowHeight,
   dispatch,
@@ -16,6 +19,7 @@ export const useDraggingRows = ({
   disabled?: boolean
   dispatch: DatatableContext['dispatch']
   rowHeight: number
+  isRowSelectedRef: RefObject<(rowIndex: number) => boolean>
   isRowSelected: (rowIndex: number) => boolean
   draggingRange: MinMax | null
   overIndex: number | null
@@ -26,6 +30,7 @@ export const useDraggingRows = ({
     colMax: number
   }
 }) => {
+  const t = useTheme()
   // Refs to always have latest state
   const draggingRangeRef = useRef(draggingRange)
   const overIndexRef = useRef(overIndex)
@@ -67,12 +72,12 @@ export const useDraggingRows = ({
     (rowIndex: number, e: React.DragEvent) => {
       const min = selectionBoundaryRef.current.rowMin
       const max = selectionBoundaryRef.current.rowMax
-      if (isRowSelected(rowIndex)) {
+      if (isRowSelectedRef.current(rowIndex)) {
         setDraggingRange({min, max})
       }
 
       const dragHeight = rowHeight * (max - min)
-      const ghost = createDragGhostEl(dragHeight)
+      const ghost = createDragGhostEl(t, dragHeight, max - min + 1)
       document.body.appendChild(ghost)
       e.dataTransfer?.setDragImage(ghost, 0, 0)
       e.dataTransfer.effectAllowed = 'move'
@@ -123,16 +128,51 @@ export const useDraggingRows = ({
   }
 }
 
-function createDragGhostEl(height: number) {
-  const dragPreview = document.createElement('div')
-  dragPreview.style.width = '70%'
-  dragPreview.style.height = `${height}px`
-  dragPreview.style.background = 'rgba(100, 150, 255, 0.2)' // light transparent blue
-  dragPreview.style.border = '1px solid rgba(100, 150, 255, 0.6)'
-  dragPreview.style.borderRadius = '4px'
-  dragPreview.style.boxSizing = 'border-box'
-  dragPreview.style.position = 'absolute'
-  dragPreview.style.top = '-9999px'
-  dragPreview.style.left = '-9999px'
-  return dragPreview
+export function createDragGhostEl(t: Theme, rowHeight: number, rowCount: number) {
+  const el = document.createElement('div')
+  el.style.display = 'flex'
+  el.style.alignItems = 'center'
+  el.style.justifyContent = 'center'
+  el.style.gap = '8px'
+  el.style.width = '180px'
+  el.style.whiteSpace = 'nowrap'
+  el.style.overflow = `visible`
+  el.style.borderRadius = t.shape.borderRadius + 'px'
+  el.style.color = t.vars.palette.info.contrastText
+  el.style.boxShadow = t.vars?.shadows[3]
+  el.style.backdropFilter = 'blur(8px)'
+  el.style.padding = t.vars?.spacing
+  el.style.pointerEvents = 'none'
+  el.style.fontWeight = '500'
+  el.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.25))'
+  el.style.background = `linear-gradient(
+    135deg,
+    ${alphaVar(t.vars.palette.info.main, 0.65)},
+    ${alphaVar(t.vars.palette.info.main, 0.95)}
+  )`
+  const icon = document.createElement('span')
+  icon.classList.add('material-icons')
+  icon.classList.add('MuiIcon-root')
+  icon.textContent = 'drag_click'
+  icon.style.fontSize = '24px'
+  icon.style.opacity = '0.8'
+
+  const label = document.createElement('span')
+  label.textContent = `${rowCount} row${rowCount > 1 ? 's' : ''} selected`
+
+  el.appendChild(icon)
+  el.appendChild(label)
+
+  const wrapper = document.createElement('div')
+  wrapper.style.padding = '8px'
+  wrapper.style.background = 'transparent'
+  wrapper.appendChild(el)
+
+  // required for drag image to render correctly
+  el.style.position = 'absolute'
+  el.style.top = '-9999px'
+  el.style.left = '-9999px'
+  document.body.appendChild(wrapper)
+
+  return wrapper
 }
