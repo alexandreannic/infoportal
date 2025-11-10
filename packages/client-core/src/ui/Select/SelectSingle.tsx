@@ -21,11 +21,12 @@ export type SelectOption<T extends string | number = string> = {
   value: T
   children: ReactNode
   key?: string
+  disabled?: boolean
 }
 
 type TType = string | number
 
-export type SelectSingleBaseProps<T extends TType = string> = {
+export type SelectSingleBaseProps<T extends TType = string> = Pick<SelectProps, 'MenuProps'> & {
   slotProps?: SelectProps['slotProps']
   placeholder?: string | undefined
   disabled?: boolean
@@ -157,7 +158,13 @@ export const SelectSingle = <T extends TType>({
           </MenuItem>
         )}
         {options.map((option, i) => (
-          <MenuItem dense key={option.key ?? option.value} value={option.value} sx={style.item}>
+          <MenuItem
+            dense
+            key={option.key ?? option.value}
+            value={option.value}
+            sx={style.item}
+            disabled={option.disabled}
+          >
             {option.children}
           </MenuItem>
         ))}

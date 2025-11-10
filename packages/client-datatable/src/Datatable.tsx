@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react'
+import React, {useEffect} from 'react'
 import {useVirtualizer} from '@tanstack/react-virtual'
 import {Box, LinearProgress, SxProps, Theme} from '@mui/material'
 import {DatatableSkeleton} from './DatatableSkeleton'
@@ -9,9 +9,9 @@ import {Provider, useCtx} from './core/DatatableContext'
 import {DatatableToolbar} from './DatatableToolbar'
 import {DatatableHead} from './head/DatatableHead'
 import {DatatableRow} from './DatatableRow'
-import {PopupSelectedCell} from './popup/PopupSelectedCell'
 import {PopupStats} from './popup/PopupStats'
 import {PopupFilter} from './popup/PopupFilter'
+import {DatatableFormularBar} from './DatatableFormularBar'
 
 export const Datatable = <T extends Row>({data, sx, rowHeight = 32, ...props}: Props<T>) => {
   if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx} />
@@ -111,6 +111,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
   return (
     <Box className="dt-container" sx={sx}>
       {header !== null && <DatatableToolbar rowVirtualizer={rowVirtualizer} />}
+      {module?.cellSelection?.enabled && <DatatableFormularBar />}
       <Box
         className="dt"
         ref={tableRef}
@@ -136,7 +137,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
             <DatatableRow key={virtualItem.key} virtualItem={virtualItem} />
           ))}
         </div>
-        <PopupSelectedCell />
+        {/*<PopupSelectedCell />*/}
         {(() => {
           switch (popup?.name) {
             case 'STATS': {

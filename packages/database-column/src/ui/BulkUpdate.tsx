@@ -1,13 +1,13 @@
 import React, {ReactNode, useMemo, useState} from 'react'
-import {Alert, Box, Collapse} from '@mui/material'
+import {Alert, SxProps} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import {Obj} from '@axanc/ts-utils'
 import {Ip} from 'infoportal-api-sdk'
 import * as Core from '@infoportal/client-core'
-import {StatusIcon} from '@infoportal/client-core'
+import {StatusIcon, Txt} from '@infoportal/client-core'
 import {editableColsType} from '../columns/common.js'
 import {Query, Question} from '../columns/type.js'
-import {KoboSchemaHelper} from '../../../kobo-helper/src/koboSchemaHelper.js'
+import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 
 export type KoboEditModalOption = {
   value: string | null
@@ -18,14 +18,26 @@ export type KoboEditModalOption = {
 
 export type KoboBulkUpdateType = typeof editableColsType extends Set<infer U> ? U : never
 
+const inputSx: SxProps = {my: -0.5, flex: 1, '& fieldset': {border: 'none'}, '& .MuiInputBase-root': {paddingLeft: 0}}
+
+const StartAdornmentLabel = ({label}: {label?: string}) => {
+  return (
+    <Txt bold sx={{mr: 1}} color="hint">
+      {label}:
+    </Txt>
+  )
+}
+
 const Base = ({
   type,
   onConfirm,
   error,
+  label,
   options,
   loading,
   answerIds,
 }: {
+  label?: string
   answerIds: Ip.SubmissionId[]
   type?: KoboBulkUpdateType
   onConfirm: (_: any) => Promise<{editedCount: number}>
@@ -37,63 +49,82 @@ const Base = ({
   const [value, setValue] = useState<any>()
   const [updatedCount, setUpdatedCount] = useState<null | number>(null)
 
-  const _options = useMemo(() => {
+  const _options: Core.SelectOption[] = useMemo(() => {
     const harmonized: KoboEditModalOption[] | undefined = options?.map(o =>
       typeof o === 'string' ? {value: o, label: o} : o,
     )
     const resetOption: KoboEditModalOption = {value: null, label: 'BLANK', desc: ' '}
-    return [resetOption, ...(harmonized ?? [])].map(_ => (
-      <Core.RadioGroupItem
-        dense
-        disabled={
-          type === 'select_multiple' &&
-          _.value !== null &&
-          ((value ?? []) as KoboEditModalOption[]).some(_ => _ === null)
-        }
-        key={_.value}
-        value={_.value}
-        before={_.before}
-        description={_.desc}
-        title={_.label}
-      />
-    ))
+    return [resetOption, ...(harmonized ?? [])].map(_ => ({
+      value: _.value!,
+      children: _.label,
+      disabled:
+        type === 'select_multiple' &&
+        _.value !== null &&
+        ((value ?? []) as KoboEditModalOption[]).some(_ => _ === null),
+    }))
   }, [options, value])
 
   return (
     <>
-      {error && <Alert color="error">{m.somethingWentWrong}</Alert>}
-      {updatedCount && (
+      {error && (
+        <Alert sx={{py: 0, flex: 1}} color="error">
+          {m.somethingWentWrong}
+        </Alert>
+      )}
+      {updatedCount ? (
         <Alert
+          sx={{py: 0, flex: 1}}
           color="success"
-          sx={{mb: 1}}
-          action={<Core.Btn onClick={() => setUpdatedCount(null)}>{m.change}</Core.Btn>}
+          action={
+            <Core.Btn size="small" color="success" onClick={() => setUpdatedCount(null)}>
+              {m.change}
+            </Core.Btn>
+          }
         >
           {m.successfullyEditedRows(updatedCount)}
         </Alert>
-      )}
-      <Collapse in={!updatedCount}>
-        <Box sx={{minWidth: 340, maxHeight: 400, overflowY: 'auto'}}>
+      ) : (
+        <>
           {/*<Checkbox/>Delete answer and set as BLANK*/}
           {(() => {
             switch (type) {
               case 'select_one': {
                 return (
-                  <Core.RadioGroup
-                    dense
+                  <Core.SelectSingle
+                    startAdornment={<StartAdornmentLabel label={label} />}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          minWidth: 'unset !important',
+                        },
+                      },
+                    }}
+                    hideNullOption
                     value={value}
+                    slotProps={{}}
+                    sx={inputSx}
                     onChange={setValue}
-                    disabled={(value as KoboEditModalOption['value']) === null}
-                  >
-                    {_options}
-                  </Core.RadioGroup>
+                    // disabled={(value as KoboEditModalOption['value']) === null}
+                    options={_options}
+                  />
                 )
               }
               case 'select_multiple': {
                 return (
-                  <Core.RadioGroup
-                    dense
-                    multiple
+                  <Core.SelectMultiple
+                    InputProps={{
+                      startAdornment: <StartAdornmentLabel label={label} />,
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          minWidth: 'unset !important',
+                        },
+                      },
+                    }}
                     value={value ?? []}
+                    options={_options}
+                    sx={inputSx}
                     onChange={newValue => {
                       if (newValue?.some(_ => _ === null)) {
                         setValue([null])
@@ -101,44 +132,67 @@ const Base = ({
                         setValue(newValue)
                       }
                     }}
-                  >
-                    {_options}
-                  </Core.RadioGroup>
+                  />
                 )
               }
               case 'note':
               case 'text':
               case 'calculate': {
                 return (
-                  <Core.Input multiline maxRows={9} fullWidth value={value} onChange={e => setValue(e.target.value)} />
+                  <Core.Input
+                    startAdornment={<StartAdornmentLabel label={label} />}
+                    helperText={null}
+                    multiline
+                    sx={inputSx}
+                    maxRows={9}
+                    value={value}
+                    onChange={e => setValue(e.target.value)}
+                  />
                 )
               }
               case 'integer':
               case 'decimal': {
-                return <Core.Input type="number" fullWidth value={value} onChange={e => setValue(e.target.value)} />
+                return (
+                  <Core.Input
+                    startAdornment={<StartAdornmentLabel label={label} />}
+                    type="number"
+                    helperText={null}
+                    sx={inputSx}
+                    value={value}
+                    onChange={e => setValue(e.target.value)}
+                  />
+                )
               }
               case 'datetime':
               case 'date': {
-                return <Core.Datepicker value={value} onChange={setValue} />
+                return (
+                  <Core.Datepicker
+                    startAdornment={<StartAdornmentLabel label={label} />}
+                    sx={inputSx}
+                    value={value}
+                    onChange={setValue}
+                  />
+                )
               }
             }
           })()}
-        </Box>
-      </Collapse>
+          <Core.Btn
+            icon="check"
+            size="small"
+            variant="outlined"
+            loading={loading}
+            disabled={!!updatedCount}
+            onClick={() => onConfirm(value).then(_ => setUpdatedCount(_.editedCount))}
+          >
+            {m.save}&nbsp;
+          </Core.Btn>
+        </>
+      )}
       {/*onClose={() => onClose()}*/}
       {/*loading={_loading}*/}
       {/*cancelLabel={m.close}*/}
       {/*confirmDisabled={_loading || updated}*/}
       {/*onConfirm={() => onConfirm(value)}*/}
-      <Core.Btn
-        variant="outlined"
-        loading={loading}
-        disabled={!!updatedCount}
-        onClick={() => onConfirm(value).then(_ => setUpdatedCount(_.editedCount))}
-        sx={{mt: 1}}
-      >
-        {m.confirm}
-      </Core.Btn>
     </>
   )
 }
@@ -160,6 +214,7 @@ export const BulkUpdateAnswer = ({
   return (
     <Base
       {...props}
+      label={schema.translate.question(question.name)}
       loading={query.isPending}
       error={query.error?.message}
       onConfirm={answer => {
@@ -191,10 +246,11 @@ export const BulkUpdateValidation = ({
   query: Query<Ip.Submission.Payload.UpdateValidation, Ip.BulkResponse<Ip.SubmissionId>>
 }) => {
   const {workspaceId, formId, answerIds} = props
-
+  const {m} = useI18n()
   return (
     <Base
       {...props}
+      label={m.validation}
       loading={query.isPending}
       error={query.error?.message}
       onConfirm={status =>

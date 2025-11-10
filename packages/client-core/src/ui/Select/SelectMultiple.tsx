@@ -6,6 +6,7 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  SelectProps,
   SxProps,
   Theme,
   Typography,
@@ -13,19 +14,15 @@ import {
 import React, {forwardRef, ReactNode, useMemo, useState} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {makeSx} from '../../core/theme.js'
-type Option<T extends string | number = string> = {value: T; children: ReactNode; key?: string}
+import {SelectOption} from './SelectSingle'
 
-export class IpSelectMultipleHelper {
-  static readonly makeOption = <T extends string | number = string>(_: Option<T>) => _
-}
-
-export interface IpSelectMultipleProps<T extends string | number = string> {
+export type IpSelectMultipleProps<T extends string | number = string> = Pick<SelectProps, 'MenuProps'> & {
   placeholder?: string | undefined
   disabled?: boolean
   id?: string | undefined
   label?: ReactNode
   showUndefinedOption?: boolean
-  options: Option<T>[] | string[]
+  options: SelectOption<T>[] | string[]
   sx?: SxProps<Theme>
   defaultValue?: T[]
   value?: T[]
@@ -66,9 +63,9 @@ function SelectMultipleInner<T extends string | number>(
   const options = useMemo(() => {
     const _options = props.options ?? []
     if (typeof _options[0] === 'string') {
-      return props.options.map(_ => ({value: _, children: _})) as Option<T>[]
+      return props.options.map(_ => ({value: _, children: _})) as SelectOption<T>[]
     }
-    return _options as Option<T>[]
+    return _options as SelectOption<T>[]
   }, [props.options])
 
   const handleSelectAll = (e: any) => {
@@ -135,7 +132,13 @@ function SelectMultipleInner<T extends string | number>(
         )}
         {showUndefinedOption && <MenuItem dense value={null as any} sx={style.item} />}
         {options.map((option, i) => (
-          <MenuItem dense key={option.key ?? option.value} value={option.value} sx={style.item}>
+          <MenuItem
+            dense
+            disabled={option.disabled}
+            key={option.key ?? option.value}
+            value={option.value}
+            sx={style.item}
+          >
             <Checkbox
               size="small"
               checked={innerValue.includes(option.value)}

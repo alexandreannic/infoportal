@@ -24,9 +24,9 @@ export const DatatableToolbar = ({rowVirtualizer}: {rowVirtualizer: Virtualizer<
   return (
     <Box
       sx={{
-        padding: `calc(${t.vars.spacing} * 0.5)`,
+        padding: `calc(${t.vars.spacing} * 0.25)`,
         display: 'flex',
-        pl: 2,
+        pl: 1,
         alignItems: 'center',
         // borderBottom: `1px solid ${t.vars.palette.divider}`,
       }}

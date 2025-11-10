@@ -1,10 +1,10 @@
-import {Box, Icon, Popover, Switch, useTheme} from '@mui/material'
-import {Btn, lightenVar, Txt} from '@infoportal/client-core'
+import {Box, Icon, Popover, Switch, Tooltip, useTheme} from '@mui/material'
+import {alphaVar, Btn, lightenVar, Txt} from '@infoportal/client-core'
 import React, {useEffect, useMemo, useState} from 'react'
 import {useCtx} from '../core/DatatableContext'
 import {useConfig} from '../DatatableConfig'
 
-const dangerThreshold = 200
+export const cellSelectionDangerThreshold = 200
 
 export const PopupSelectedCell = () => {
   const {engine, selectedCount, areAllColumnsSelected, selectedColumnsIds, selectedRowIds, selectedColumnUniq} = useCtx(
@@ -65,7 +65,7 @@ export const PopupSelectedCell = () => {
           <Icon fontSize="inherit">table_rows</Icon>
           {formatLargeNumber(selectedRowIds.size)}
           <Box sx={{mx: 0.5}}>=</Box>
-          <Txt bold color={selectedCount > dangerThreshold ? 'error' : undefined}>
+          <Txt bold color={selectedCount > cellSelectionDangerThreshold ? 'error' : undefined}>
             {formatLargeNumber(selectedCount)}
           </Txt>
         </Txt>
@@ -73,7 +73,7 @@ export const PopupSelectedCell = () => {
           <Btn size="small" variant="outlined" onClick={engine.reset} color="primary" sx={{mr: 1, minWidth: 0}}>
             <Icon>clear</Icon>
           </Btn>
-          <BtnCopyCells/>
+          <BtnCopyCells />
         </Box>
 
         {selectedColumnUniq &&
@@ -85,7 +85,7 @@ export const PopupSelectedCell = () => {
   )
 }
 
-const BtnCopyCells = () => {
+export const BtnCopyCells = () => {
   const {m, formatLargeNumber} = useConfig()
   const t = useTheme()
   const getRowKey = useCtx(_ => _.getRowKey)
@@ -160,7 +160,54 @@ const BtnCopyCells = () => {
   }, [cellSelection.engine.isSelected])
 
   return (
-    <>
+    <Tooltip
+      slotProps={{
+        popper: {
+          sx: {
+            background: 'none',
+          },
+        },
+        tooltip: {
+          sx: {
+            py: 1,
+            px: 2,
+            backdropFilter: 'blur(4px)',
+            backgroundColor: alphaVar(lightenVar(t.vars.palette.success.light, 0.6), 0.6),
+            boxShadow: t.vars.shadows[2],
+          },
+        },
+      }}
+      sx={{}}
+      title={
+        copiedCounter > 0 && (
+          <Txt
+            noWrap
+            sx={{
+              // opacity: copiedCounter > 0 ? 1 : 0,
+              transform: t.transitions.create('opacity'),
+              // py: 0.5,
+              // px: 1,
+              // ml: 1,
+              // borderRadius: t.vars.shape.borderRadius,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Icon sx={{mr: 1}} color="success" fontSize="small">
+              check_circle
+            </Icon>
+            <span
+              style={{
+                color: t.vars.palette.success.main,
+                fontWeight: t.typography.fontWeightBold,
+              }}
+            >
+              {formatLargeNumber(copiedCounter)} {m.copied.toLowerCase()}!
+            </span>
+          </Txt>
+        )
+      }
+    >
       <Btn size="small" variant="outlined" onClick={copy} sx={{minWidth: 0}}>
         <Icon>content_copy</Icon>
         <Txt textTransform="none" fontWeight="400" color="hint" sx={{ml: 1}}>
@@ -177,29 +224,7 @@ const BtnCopyCells = () => {
           }}
         />{' '}
       </Btn>
-      <Txt
-        noWrap
-        sx={{
-          opacity: copiedCounter > 0 ? 1 : 0,
-          transform: t.transitions.create('opacity'),
-          py: 0.5,
-          px: 1,
-          ml: 1,
-          borderRadius: t.vars.shape.borderRadius,
-          // backdropFilter: 'blur(4px)',
-          backgroundColor: lightenVar(t.vars.palette.success.light, 0.8),
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Icon sx={{mr: 1}} color="success" fontSize="small">
-          check_circle
-        </Icon>
-        <span style={{color: t.vars.palette.success.main, fontWeight: t.typography.fontWeightBold}}>
-          {formatLargeNumber(copiedCounter)} {m.copied.toLowerCase()}!
-        </span>
-      </Txt>
-    </>
+    </Tooltip>
   )
 }
 

@@ -40,7 +40,7 @@ export const DatabaseSelectedRowsAction = ({
             </>
           }
         >
-          <Core.Btn variant="outlined" color="error" icon="delete">
+          <Core.Btn variant="outlined" color="error" size="small" icon="delete">
             {m.deleteNRows(formatLargeNumber(selectedIds.length))}
           </Core.Btn>
         </Core.Modal>
