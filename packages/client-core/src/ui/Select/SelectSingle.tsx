@@ -26,7 +26,7 @@ export type SelectOption<T extends string | number = string> = {
 
 type TType = string | number
 
-export type SelectSingleBaseProps<T extends TType = string> = Pick<SelectProps, 'MenuProps'> & {
+export type SelectSingleBaseProps<T extends TType = string> = Pick<SelectProps<T>, 'MenuProps'> & {
   slotProps?: SelectProps['slotProps']
   placeholder?: string | undefined
   disabled?: boolean
