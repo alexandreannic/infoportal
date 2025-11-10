@@ -10,23 +10,21 @@
   ],
   "scripts": {
     "build": "tsc -b",
-    "dev": "tsc --watch",
+    "dev": "tsc -b && tsc --watch",
     "preview": "vite preview --config vite.config.demo.ts"
   },
   "author": "",
   "license": "ISC",
   "description": "",
-  "devDependencies": {
-  },
   "dependencies": {
+    "kobo-sdk": "^2.4.3",
     "@axanc/react-hooks": "^1.14.2",
-    "@axanc/ts-utils": "3.0.6",
-    "infoportal-api-sdk": "1.0.0",
-    "@infoportal/client-i18n": "1.0.0",
-    "react-hook-form": "^7.65.0",
+    "@axanc/ts-utils": "3.1.0",
     "@infoportal/client-core": "1.0.0",
     "@infoportal/client-datatable": "1.0.0",
+    "@infoportal/client-i18n": "1.0.0",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "zustand": "^5.0.8"
   }
 }

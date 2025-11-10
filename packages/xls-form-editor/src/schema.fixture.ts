@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Kobo} from 'kobo-sdk'
 
 export const schema = {
   schema: '1',
@@ -19446,4 +19446,4 @@ export const schema = {
   },
   translated: ['constraint_message', 'hint', 'label'],
   translations: ['English (en)', 'Ukrainian (uk)'],
-} as Ip.Form.Schema
+} as Kobo.Form['content']
