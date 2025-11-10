@@ -133,24 +133,15 @@ const DatatableRowMemo = memo(
           const key = virtualItem.key + col.id
           if (!cell) {
             return <CellSkeleton key={key} />
-            // // if (col.id === 'id')
-            // cell = data?.[virtualRow.index]
-            //   console.log({
-            //     count: dataFilteredAndSorted?.length ?? 0,
-            //     i: virtualRow.index,
-            //     index: row.index,
-            //     virtualTable,
-            //   })
-            // return <CellSkeleton key={key} />
           }
           const colSelected = isColumnSelected !== false && isColumnSelected(colIndex)
-          const isFirst = colIndex === 0
+          const isFirstCol = colIndex === 0
           return (
             <Cell
-              draggable={isFirst && isDraggable}
-              onDragStart={isFirst ? e => handleDragStart(virtualItem.index, e) : undefined}
-              onDragOver={isFirst ? e => handleDragOver(virtualItem.index, e) : undefined}
-              onDrop={isFirst ? handleDrop : undefined}
+              draggable={isFirstCol && colSelected && isDraggable}
+              onDragStart={isFirstCol ? e => handleDragStart(virtualItem.index, e) : undefined}
+              onDragOver={isFirstCol ? e => handleDragOver(virtualItem.index, e) : undefined}
+              onDrop={isFirstCol ? handleDrop : undefined}
               onClick={onCellClick}
               key={key}
               rowIndex={virtualItem.index}

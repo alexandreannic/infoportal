@@ -118,6 +118,7 @@ export const Provider = <T extends Row>(
   })
 
   const dndRows = useDraggingRows({
+    selecting: cellSelectionEngine.state.selecting,
     disabled: module?.rowsDragging?.enabled !== true,
     dispatch,
     overIndex: state.draggingRow.overIndex,

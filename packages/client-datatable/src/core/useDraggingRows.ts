@@ -15,7 +15,9 @@ export const useDraggingRows = ({
   overIndex,
   disabled,
   selectionBoundary,
+  selecting,
 }: {
+  selecting: RefObject<boolean>
   disabled?: boolean
   dispatch: DatatableContext['dispatch']
   rowHeight: number
@@ -70,8 +72,13 @@ export const useDraggingRows = ({
 
   const handleDragStart = useCallback(
     (rowIndex: number, e: React.DragEvent) => {
+      if (selecting.current) {
+        e.preventDefault()
+        return
+      }
       const min = selectionBoundaryRef.current.rowMin
       const max = selectionBoundaryRef.current.rowMax
+
       if (isRowSelectedRef.current(rowIndex)) {
         setDraggingRange({min, max})
       }
@@ -89,20 +96,31 @@ export const useDraggingRows = ({
 
   const handleDragOver = useCallback(
     (rowIndex: number, e: React.DragEvent) => {
+      if (selecting.current) {
+        e.preventDefault()
+        return
+      }
       e.preventDefault() // required to allow drop
       setOverIndex(rowIndex)
     },
     [setOverIndex],
   )
 
-  const handleDrop = useCallback(() => {
-    const range = draggingRangeRef.current
-    const over = overIndexRef.current
-    if (!range || over == null) return
-    dispatch({type: 'REORDER_ROWS', range, index: over})
-    setDraggingRange(null)
-    setOverIndex(null)
-  }, [dispatch, setDraggingRange, setOverIndex])
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      if (selecting.current) {
+        e.preventDefault()
+        return
+      }
+      const range = draggingRangeRef.current
+      const over = overIndexRef.current
+      if (!range || over == null) return
+      dispatch({type: 'REORDER_ROWS', range, index: over})
+      setDraggingRange(null)
+      setOverIndex(null)
+    },
+    [dispatch, setDraggingRange, setOverIndex],
+  )
 
   const isRowDragging = useCallback((rowIndex: number) => {
     const range = draggingRangeRef.current
