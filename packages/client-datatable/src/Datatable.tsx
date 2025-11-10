@@ -13,13 +13,13 @@ import {PopupSelectedCell} from './popup/PopupSelectedCell'
 import {PopupStats} from './popup/PopupStats'
 import {PopupFilter} from './popup/PopupFilter'
 
-export const Datatable = <T extends Row>({data, sx, ...props}: Props<T>) => {
+export const Datatable = <T extends Row>({data, sx, rowHeight = 32, ...props}: Props<T>) => {
   if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx} />
   const tableRef = React.useRef(null) as unknown as React.RefObject<HTMLDivElement>
   const defaultProps = useConfig().defaultProps
   return (
     <DatatableErrorBoundary>
-      <Provider {...{...defaultProps, ...props}} data={data} tableRef={tableRef}>
+      <Provider {...{...defaultProps, ...props}} rowHeight={rowHeight} data={data} tableRef={tableRef}>
         {props.loading && <LinearProgress sx={{position: 'absolute', top: 0, right: 0, left: 0, height: 3}} />}
         <DatatableWithData sx={sx} />
       </Provider>
@@ -29,13 +29,15 @@ export const Datatable = <T extends Row>({data, sx, ...props}: Props<T>) => {
 
 const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
   const {
+    sortBy,
+    filters,
+    popup,
     columns,
     header,
-    state: {sortBy, filters, virtualTable, popup},
     dispatch,
     getRowKey,
     data,
-    rowHeight = 32,
+    rowHeight,
     dataFilteredAndSorted,
     loading,
     dataFilteredExceptBy,
@@ -43,10 +45,28 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
     cellSelection,
     tableRef,
     contentProps,
-    rowStyle,
     module,
     renderEmptyState,
-  } = useCtx(_ => _)
+  } = useCtx(_ => ({
+    sortBy: _.state.sortBy,
+    filters: _.state.filters,
+    popup: _.state.popup,
+    columns: _.columns,
+    header: _.header,
+    dispatch: _.dispatch,
+    getRowKey: _.getRowKey,
+    data: _.data,
+    rowHeight: _.rowHeight,
+    dataFilteredAndSorted: _.dataFilteredAndSorted,
+    loading: _.loading,
+    dataFilteredExceptBy: _.dataFilteredExceptBy,
+    getColumnOptions: _.getColumnOptions,
+    cellSelection: _.cellSelection,
+    tableRef: _.tableRef,
+    contentProps: _.contentProps,
+    module: _.module,
+    renderEmptyState: _.renderEmptyState,
+  }))
 
   const rowVirtualizer = useVirtualizer({
     count: dataFilteredAndSorted?.length ?? 0,
@@ -60,7 +80,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
     if (!items.length) return
 
     dispatch({
-      type: 'INIT_DATA',
+      type: 'INIT_VIEWPORT_CACHE',
       data: dataFilteredAndSorted,
       columns: columns.all,
       getRowKey,
@@ -78,7 +98,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
 
     if (lastIndex < dataFilteredAndSorted.length - 1) {
       dispatch({
-        type: 'SET_DATA',
+        type: 'APPEND_VIEWPORT_CACHE',
         data: dataFilteredAndSorted,
         columns: columns.all,
         getRowKey,
@@ -87,14 +107,6 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
       })
     }
   }, [dataFilteredAndSorted, rowVirtualizer.range])
-
-  const onCellClick = useCallback((rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
-    const row = dataFilteredAndSorted[rowIndex]
-    const column = columns.visible[colIndex]
-    if (column.onClick) {
-      column.onClick({data: row, rowIndex, event})
-    }
-  }, [])
 
   return (
     <Box className="dt-container" sx={sx}>
@@ -109,7 +121,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
           ...contentProps?.style,
         }}
       >
-        <DatatableHead onMouseDown={() => cellSelection.engine.reset()} />
+        <DatatableHead onMouseDown={cellSelection.engine.reset} />
         {renderEmptyState && data.length === 0 && !loading && renderEmptyState}
         <div
           className="dtbody"
@@ -120,27 +132,9 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
             position: 'relative',
           }}
         >
-          {rowVirtualizer.getVirtualItems().map(virtualItem => {
-            const row = dataFilteredAndSorted[virtualItem.index]
-            const rowId = getRowKey(row)
-            const isRowInSelection = cellSelection.engine.isRowSelected(virtualItem.index)
-            return (
-              <DatatableRow
-                row={row}
-                key={virtualItem.key}
-                onCellClick={onCellClick}
-                columns={columns.visible}
-                rowId={rowId}
-                rowStyle={rowStyle}
-                virtualRow={virtualTable[rowId]}
-                virtualItem={virtualItem}
-                cellSelection_isRowInSelection={isRowInSelection}
-                cellSelection_isSelected={cellSelection.engine.isSelected}
-                cellSelection_handleMouseDown={cellSelection.engine.handleMouseDown}
-                cellSelection_handleMouseEnter={cellSelection.engine.handleMouseEnter}
-              />
-            )
-          })}
+          {rowVirtualizer.getVirtualItems().map(virtualItem => (
+            <DatatableRow key={virtualItem.key} virtualItem={virtualItem} />
+          ))}
         </div>
         <PopupSelectedCell />
         {(() => {

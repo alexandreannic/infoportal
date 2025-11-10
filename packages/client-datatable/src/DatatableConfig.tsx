@@ -2,6 +2,7 @@ import React, {ReactNode} from 'react'
 import {BoxProps, SxProps, Theme} from '@mui/material'
 import {Action} from '.'
 import {DatatableGlobalStyles} from './DatatableStyles'
+import {CellSelectionMode} from './core/types'
 
 export type DatatableConfigProps = {
   m: (typeof defaultConfig)['m']
@@ -33,7 +34,7 @@ export type DatatableConfigProps = {
       }
       cellSelection?: {
         enabled: true
-        mode?: 'cell' | 'col' | 'free' | 'row' | 'row-or-cell'
+        mode?: CellSelectionMode
         renderComponentOnRowSelected?: ({rowIds}: {rowIds: string[]}) => ReactNode
       }
       columnsResize?: {

@@ -1,22 +1,25 @@
-import React, {ReactNode, useReducer} from 'react'
+import React, {ReactNode, useCallback, useEffect, useReducer} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {useEffectFn} from '@axanc/react-hooks'
-import {Option, Props, Row} from './types.js'
+import {Props, Row} from './types.js'
 import {Action, datatableReducer, initialState, State} from './reducer'
 import {useDatatableColumns, UseDatatableColumns} from './useColumns'
 import {useCellSelectionComputed, UseCellSelectionComputed} from './useCellSelectionComputed'
 import {UseCellSelection, useCellSelectionEngine} from './useCellSelectionEngine'
 import {useData} from './useData'
 import {useDatatableOptions} from './useOptions'
+import {UseDraggingRows, useDraggingRows} from './useDraggingRows'
 
-export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'data' | 'columns'> & {
-  tableRef: React.MutableRefObject<HTMLDivElement>
-  getColumnOptions: (_: KeyOf<T>) => Option[] | undefined
+export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'rowHeight' | 'data' | 'columns'> & {
+  tableRef: React.RefObject<HTMLDivElement>
+  getColumnOptions: ReturnType<typeof useDatatableOptions<T>>
   state: State<T>
+  rowHeight: number
   dispatch: React.Dispatch<Action<T>>
   columns: UseDatatableColumns<T>
   data: T[]
+  dndRows: UseDraggingRows
   dataFilteredAndSorted: T[]
   dataFilteredExceptBy: (key: KeyOf<T>) => T[]
   cellSelection: UseCellSelectionComputed & {
@@ -24,6 +27,7 @@ export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'data' | 'col
       UseCellSelection,
       | 'isSelected'
       | 'isColumnSelected'
+      | 'isRowSelectedRef'
       | 'isRowSelected'
       | 'handleMouseDown'
       | 'handleMouseEnter'
@@ -41,7 +45,8 @@ export const useCtx = <Selected extends any>(selector: (_: DatatableContext) => 
 }
 
 export const Provider = <T extends Row>(
-  props: Omit<Props<T>, 'data'> & {
+  props: Omit<Props<T>, 'rowHeight' | 'data'> & {
+    rowHeight: number
     data: T[]
     children: ReactNode
     tableRef: React.MutableRefObject<HTMLDivElement>
@@ -49,6 +54,10 @@ export const Provider = <T extends Row>(
 ) => {
   const {module} = props
   const [state, _dispatch] = useReducer(datatableReducer<T>(), initialState<T>())
+
+  useEffect(() => {
+    _dispatch({type: 'SET_SOURCE_DATA', data: props.data})
+  }, [props.data])
 
   useEffectFn(module?.columnsToggle?.hidden, hiddenColumns => {
     _dispatch({type: 'SET_HIDDEN_COLUMNS', hiddenColumns})
@@ -58,10 +67,13 @@ export const Provider = <T extends Row>(
     if (_) _dispatch({type: 'FILTER', value: _})
   })
 
-  const dispatch: React.Dispatch<Action<T>> = _ => {
-    _dispatch(_)
-    props.onEvent?.(_)
-  }
+  const dispatch: React.Dispatch<Action<T>> = useCallback(
+    _ => {
+      _dispatch(_)
+      props.onEvent?.(_)
+    },
+    [_dispatch, props.onEvent],
+  )
 
   const columns = useDatatableColumns({
     colHidden: state.colHidden,
@@ -71,7 +83,7 @@ export const Provider = <T extends Row>(
   })
 
   const {filteredAndSortedData, filterExceptBy} = useData<T>({
-    data: props.data,
+    data: state.sourceData,
     filters: state.filters,
     sortBy: state.sortBy,
     colIndex: columns.indexMap,
@@ -87,15 +99,33 @@ export const Provider = <T extends Row>(
   })
 
   const cellSelectionEngine = useCellSelectionEngine({
+    dispatch,
+    selectionStart: state.cellsSelection.start,
+    selectionEnd: state.cellsSelection.end,
     tableRef: props.tableRef,
+    mode: module?.cellSelection?.mode ?? (module?.rowsDragging?.enabled ? 'row' : undefined),
     disabled: module?.cellSelection?.enabled !== true,
   })
-  const cellSectionComputed = useCellSelectionComputed({
+  const cellSectionComputed = useCellSelectionComputed<T>({
+    dispatch,
+    selectionStart: state.cellsSelection.start,
+    selectionEnd: state.cellsSelection.end,
     getRowKey: props.getRowKey,
     filteredAndSortedData,
     columnsIndex: columns.indexMap,
     visibleColumns: columns.visible,
-    cellSelectionEngine,
+    engine: cellSelectionEngine,
+  })
+
+  const dndRows = useDraggingRows({
+    disabled: module?.rowsDragging?.enabled !== true,
+    dispatch,
+    overIndex: state.draggingRow.overIndex,
+    draggingRange: state.draggingRow.range,
+    rowHeight: props.rowHeight,
+    isRowSelected: cellSelectionEngine.isRowSelected,
+    isRowSelectedRef: cellSelectionEngine.isRowSelectedRef,
+    selectionBoundary: cellSelectionEngine.state.selectionBoundary,
   })
 
   return (
@@ -108,16 +138,18 @@ export const Provider = <T extends Row>(
         dataFilteredExceptBy: filterExceptBy as any, //TODO
         state,
         dispatch,
+        dndRows,
         cellSelection: {
           engine: {
             handleMouseDown: cellSelectionEngine.handleMouseDown,
             handleMouseEnter: cellSelectionEngine.handleMouseEnter,
             handleMouseUp: cellSelectionEngine.handleMouseUp,
             reset: cellSelectionEngine.reset,
-            anchorEl: cellSelectionEngine.anchorEl,
             isSelected: cellSelectionEngine.isSelected,
             isColumnSelected: cellSelectionEngine.isColumnSelected,
             isRowSelected: cellSelectionEngine.isRowSelected,
+            isRowSelectedRef: cellSelectionEngine.isRowSelectedRef,
+            anchorEl: cellSelectionEngine.anchorEl,
           },
           selectedCount: cellSectionComputed.selectedCount,
           areAllColumnsSelected: cellSectionComputed.areAllColumnsSelected,

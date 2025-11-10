@@ -16,6 +16,8 @@ export namespace Popup {
 
 export type State<T extends Row> = DatatableState<T>
 
+export type MinMax = {min: number; max: number}
+
 export type VirtualCell = {
   // value: any
   label: ReactNode
@@ -24,23 +26,32 @@ export type VirtualCell = {
   className?: string
 }
 
+export type CellSelectionCoord = {row: number; col: number}
+
 export type Action<T extends Row> =
   | {
-  type: 'INIT_DATA'
-  data: T[]
-  limit: number
-  offset: number
-  columns: Column.InnerProps<T>[]
-  getRowKey: Props<T>['getRowKey']
-}
+      type: 'INIT_VIEWPORT_CACHE'
+      data: T[]
+      limit: number
+      offset: number
+      columns: Column.InnerProps<T>[]
+      getRowKey: Props<T>['getRowKey']
+    }
   | {
-  type: 'SET_DATA'
-  data: T[]
-  limit: number
-  offset: number
-  columns: Column.InnerProps<T>[]
-  getRowKey: Props<T>['getRowKey']
-}
+      type: 'APPEND_VIEWPORT_CACHE'
+      data: T[]
+      limit: number
+      offset: number
+      columns: Column.InnerProps<T>[]
+      getRowKey: Props<T>['getRowKey']
+    }
+  | {type: 'DRAGGING_ROWS_SET_RANGE'; range: MinMax | null}
+  | {type: 'DRAGGING_ROWS_SET_OVER_INDEX'; overIndex: number | null}
+  | {type: 'CELL_SELECTION_SET_START'; coord: Partial<CellSelectionCoord> | null}
+  | {type: 'CELL_SELECTION_SET_END'; coord: Partial<CellSelectionCoord> | null}
+  | {type: 'CELL_SELECTION_CLEAR'}
+  | {type: 'SET_SOURCE_DATA'; data: T[]}
+  | {type: 'REORDER_ROWS'; range: {min: number; max: number}; index: number}
   | {type: 'CLOSE_POPUP'}
   | {type: 'OPEN_POPUP'; event: Popup.Event}
   | {type: 'SORT'; column: string; orderBy?: OrderBy}
@@ -51,10 +62,18 @@ export type Action<T extends Row> =
   | {type: 'SET_HIDDEN_COLUMNS'; hiddenColumns: string[]}
 
 export type DatatableState<T extends Row> = {
+  cellsSelection: {
+    start: CellSelectionCoord | null
+    end: CellSelectionCoord | null
+  }
+  draggingRow: {
+    range: MinMax | null
+    overIndex: number | null
+  }
+  sourceData: T[]
   popup?: Popup.Event
   hasRenderedRowId: boolean[]
   virtualTable: Record<string, Record<string, VirtualCell>>
-  selected: Set<string>
   sortBy?: SortBy
   filters: Partial<Record<KeyOf<T>, FilterValue>>
   colWidths: Record<string, number>
@@ -112,10 +131,19 @@ const buildVirtualTable = <T extends Row>({
 
 export const initialState = <T extends Row>(): State<T> => {
   return {
+    cellsSelection: {
+      start: null,
+      end: null,
+    },
+    draggingRow: {
+      range: null,
+      overIndex: null,
+    },
+    sourceData: [],
     hasRenderedRowId: [],
     virtualTable: {},
     filters: {},
-    selected: new Set(),
+    // selected: new Set(),
     sortBy: undefined,
     colWidths: {},
     colHidden: new Set(),
@@ -128,7 +156,66 @@ type HandlerMap<T extends Row> = {
 
 function createHandlerMap<T extends Row>(): HandlerMap<T> {
   return {
-    INIT_DATA: (state, {limit, data, columns, offset, getRowKey}) => {
+    DRAGGING_ROWS_SET_OVER_INDEX: (state, {overIndex}) => {
+      if (state.draggingRow.overIndex === overIndex) return state
+      return {
+        ...state,
+        draggingRow: {
+          ...state.draggingRow,
+          overIndex,
+        },
+      }
+    },
+
+    DRAGGING_ROWS_SET_RANGE: (state, {range}) => {
+      const prev = state.draggingRow.range ?? ({} as MinMax)
+      if (prev.min === range?.min && prev.max === range?.max) {
+        return state
+      }
+      return {
+        ...state,
+        draggingRow: {
+          ...state.draggingRow,
+          range,
+        },
+      }
+    },
+
+    CELL_SELECTION_CLEAR: state => {
+      return {
+        ...state,
+        cellsSelection: {start: null, end: null},
+        draggingRow: {range: null, overIndex: null},
+      }
+    },
+
+    CELL_SELECTION_SET_START: (state, {coord}) => {
+      return {
+        ...state,
+        draggingRow: {range: null, overIndex: null},
+        cellsSelection: {
+          ...state.cellsSelection,
+          start: {...state.cellsSelection.start, ...(coord as CellSelectionCoord)},
+        },
+      }
+    },
+
+    CELL_SELECTION_SET_END: (state, {coord}) => {
+      return {
+        ...state,
+        draggingRow: {range: null, overIndex: null},
+        cellsSelection: {...state.cellsSelection, end: {...state.cellsSelection.end, ...(coord as CellSelectionCoord)}},
+      }
+    },
+
+    SET_SOURCE_DATA: (state, {data}) => {
+      return {
+        ...state,
+        sourceData: data,
+      }
+    },
+
+    INIT_VIEWPORT_CACHE: (state, {limit, data, columns, offset, getRowKey}) => {
       return {
         ...state,
         hasRenderedRowId: [],
@@ -141,7 +228,7 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
       }
     },
 
-    SET_DATA: (state, {limit, offset, data, columns, getRowKey}) => {
+    APPEND_VIEWPORT_CACHE: (state, {limit, offset, data, columns, getRowKey}) => {
       const missingIndexes: number[] = []
       for (let i = offset; i <= offset + limit; i++) {
         if (!state.hasRenderedRowId[i]) {
@@ -232,6 +319,33 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
       return {
         ...state,
         colHidden: new Set(action.hiddenColumns),
+      }
+    },
+
+    REORDER_ROWS: (state, {range, index}) => {
+      const rows = [...state.sourceData]
+      const moved = rows.splice(range.min, range.max - range.min + 1)
+      const target = index > range.max ? index - moved.length : index
+      rows.splice(target, 0, ...moved)
+
+      // Update cell selection by shifting row indexes
+      const shiftRow = (r: number | null): number => {
+        if (r == null) return -1
+        if (r < range.min && r >= target) return r + (range.max - range.min + 1)
+        if (r > range.max && r < target) return r - (range.max - range.min + 1)
+        if (r >= range.min && r <= range.max) return target + (r - range.min)
+        return r
+      }
+
+      const {start, end} = state.cellsSelection
+
+      return {
+        ...state,
+        sourceData: rows,
+        cellsSelection: {
+          start: start ? {...start, row: shiftRow(start.row)} : null,
+          end: end ? {...end, row: shiftRow(end.row)} : null,
+        },
       }
     },
   }
