@@ -1,7 +1,7 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
-import {Core} from '@/shared'
+import {Core, Datatable} from '@/shared'
 import {Page} from '@/shared/Page'
 import {map, seq} from '@axanc/ts-utils'
 import {
@@ -26,8 +26,6 @@ import {createRoute, Link} from '@tanstack/react-router'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {buildDbColumns} from '@infoportal/database-column'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/core/KoboAttachmentUrl.js'
-import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate.js'
-import {Datatable} from '@/shared'
 
 export const databaseAnswerViewRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -198,7 +196,7 @@ const KoboAnswerQuestionView = ({
   const {formatDateTime} = useI18n()
   const {m} = useI18n()
   const t = useTheme()
-  const queryUpdate = useQueryAnswerUpdate().update
+  const queryUpdate = UseQuerySubmission.update()
   const columns = useMemo(() => {
     if (questionSchema.type !== 'begin_repeat') return
     const group = schema.helper.group.getByName(questionSchema.name)

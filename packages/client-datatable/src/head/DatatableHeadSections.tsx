@@ -18,7 +18,7 @@ export const primaryColors = [
 ]
 
 const Th = styled('div', {label: 'DatatableHeadSection-th', slot: 'TH'})(({theme}) => ({
-  height: 6,
+  height: 4,
   transition: theme.transitions.create('all'),
   minHeight: '100%',
   padding: '0 !important',

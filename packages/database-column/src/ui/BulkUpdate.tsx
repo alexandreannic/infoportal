@@ -179,7 +179,7 @@ const Base = ({
           <Core.Btn
             icon="check"
             size="small"
-            variant="outlined"
+            variant={value !== undefined ? 'contained' : 'outlined'}
             loading={loading}
             disabled={!!updatedCount}
             onClick={() => onConfirm(value).then(_ => setUpdatedCount(_.editedCount))}

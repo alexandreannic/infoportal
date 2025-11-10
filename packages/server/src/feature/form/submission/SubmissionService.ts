@@ -334,21 +334,22 @@ export class SubmissionService {
         newValue: answer,
         authorEmail,
       }),
-      await this.prisma.$executeRawUnsafe(
-        `UPDATE "FormSubmission"
-         SET answers = jsonb_set(answers, '{${question}}', '"${SubmissionService.safeJsonValue(answer ?? '')}"'),
-             "end"   = NOW()
-         WHERE id IN (${SubmissionService.safeIds(answerIds).join(',')})
-        `,
-      ),
-      await this.prisma.$executeRaw`
-        UPDATE "FormSubmission"
-        SET answers = CASE
-          WHEN ${answer} IS NULL OR ${answer} = '' THEN answers - ${question}
-          ELSE jsonb_set(answers, '{${question}}', to_jsonb(${answer}::text))
-        END
-        WHERE id IN (${Prisma.join(answerIds)})
-      `,
+      answer == null || answer === ''
+        ? await this.prisma.$executeRaw`
+          UPDATE "FormSubmission"
+          SET answers = answers - ${question}
+          WHERE id IN (${Prisma.join(answerIds)})
+        `
+        : await this.prisma.$executeRawUnsafe(
+            `
+              UPDATE "FormSubmission"
+              SET answers = jsonb_set(answers, ARRAY[$1], to_jsonb($2::text))
+              WHERE id = ANY ($3::text[])
+            `,
+            question,
+            answer,
+            answerIds,
+          ),
       this.isConnectedToKobo(formId).then(async isConnected => {
         if (!isConnected) return
         const sdk = await this.sdkGenerator.getBy.formId(formId)

@@ -13,7 +13,6 @@ import {formRoute, useFormContext} from '@/features/Form/Form'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {buildDbColumns, defaultColWidth, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
-import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate.js'
 
 export const databaseKoboRepeatRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -75,7 +74,7 @@ const DatabaseKoboRepeat = ({
   const navigate = useNavigate()
 
   const queryAnswers = UseQuerySubmission.search({workspaceId, formId})
-  const queryUpdate = useQueryAnswerUpdate().update
+  const queryUpdate = UseQuerySubmission.update()
   const data = queryAnswers.data?.data
   const groupInfo = schema.helper.group.getByName(group)!
   const paths = groupInfo?.pathArr

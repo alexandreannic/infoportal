@@ -14,7 +14,6 @@ import {Alert, AlertProps, Box, Icon, useTheme} from '@mui/material'
 import {KoboFlattenRepeatedGroup} from '@infoportal/kobo-helper'
 import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
-import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Link, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
 import {AppAvatar, Core, Datatable} from '@/shared'
@@ -27,6 +26,7 @@ import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
 import {useKoboDialogs} from '@/features/Form/Database/useKoboDialogs'
 import {useFormContext} from '@/features/Form/Form'
 import {SelectLangIndex} from '@/shared/customInput/SelectLangIndex'
+import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -59,7 +59,8 @@ export const DatabaseTableContent = ({
   const connectedUsers = useFormSocket({workspaceId, formId: ctx.form.id})
   const [viewEditorOpen, setViewEditorOpen] = useState(false)
 
-  const queryUpdate = useQueryAnswerUpdate()
+  const queryUpdate = UseQuerySubmission.update()
+  const queryUpdateValidation = UseQuerySubmission.updateValidation()
 
   const flatData: Submission[] | undefined = useMemo(() => {
     if (ctx.groupDisplay.get.repeatAs !== 'rows' || ctx.groupDisplay.get.repeatGroupName === undefined) return ctx.data
@@ -81,7 +82,7 @@ export const DatabaseTableContent = ({
         },
       })
     const schemaColumns = buildDbColumns.question.bySchema({
-      queryUpdateAnswer: queryUpdate.update,
+      queryUpdateAnswer: queryUpdate,
       getFileUrl: getKoboAttachmentUrl,
       workspaceId: workspaceId,
       isReadonly: !ctx.canEdit,
@@ -94,7 +95,7 @@ export const DatabaseTableContent = ({
       m,
     })
     return databaseKoboDisplayBuilder({
-      queryUpdateAnswer: queryUpdate.update,
+      queryUpdateAnswer: queryUpdate,
       getFileUrl: getKoboAttachmentUrl,
       workspaceId,
       data: ctx.data ?? [],
@@ -110,7 +111,7 @@ export const DatabaseTableContent = ({
   const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const base = buildDbColumns.meta.all({
       formType: ctx.form.type,
-      queryUpdateValidation: queryUpdate.updateValidation,
+      queryUpdateValidation: queryUpdateValidation,
       workspaceId,
       formId: ctx.form.id,
       isReadonly: !ctx.canEdit,
@@ -156,8 +157,12 @@ export const DatabaseTableContent = ({
           </Core.Panel>
         )}
       </DatabaseToolbarContainer>
-      <Core.Panel sx={{width: '100%'}}>
+      <Core.Panel sx={{width: '100%', mb: 0}}>
         <Datatable.Component
+          sx={{
+            maxHeight: 'calc(100vh - 102px)',
+            mb: 0,
+          }}
           rowHeight={34}
           onEvent={_ => {
             switch (_.type) {

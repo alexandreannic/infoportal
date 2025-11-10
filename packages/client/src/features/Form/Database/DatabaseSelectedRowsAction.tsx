@@ -1,9 +1,9 @@
 import React from 'react'
 import {Core} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'
-import {useQueryAnswerUpdate} from '@/core/query/useQueryAnswerUpdate'
 import {Ip} from 'infoportal-api-sdk'
 import {Alert} from '@mui/material'
+import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 
 export const DatabaseSelectedRowsAction = ({
   formId,
@@ -17,14 +17,14 @@ export const DatabaseSelectedRowsAction = ({
   selectedIds: Ip.SubmissionId[]
 }) => {
   const {formatLargeNumber, m} = useI18n()
-  const query = useQueryAnswerUpdate()
+  const queryRemove = UseQuerySubmission.remove()
   return (
     <>
       {canDelete && (
         <Core.Modal
-          loading={query.remove.isPending}
+          loading={queryRemove.isPending}
           onConfirm={(event, close) =>
-            query.remove
+            queryRemove
               .mutateAsync({
                 workspaceId,
                 formId,
@@ -35,7 +35,7 @@ export const DatabaseSelectedRowsAction = ({
           title={m.confirmRemove}
           content={
             <>
-              {query.remove.error && <Alert color="error">{m.somethingWentWrong}</Alert>}
+              {queryRemove.error && <Alert color="error">{m.somethingWentWrong}</Alert>}
               <Core.Txt color="hint">{m.confirmRemoveDesc}</Core.Txt>
             </>
           }
