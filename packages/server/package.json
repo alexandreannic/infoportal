@@ -11,9 +11,9 @@
     "build": "node --loader ts-node/esm ../../node_modules/webpack/bin/webpack.js --config webpack.config.mjs",
     "dev-r": "nodemon src/index.ts",
     "dev-hmr": "tsx watch src/index.ts",
-    "dev": "tsc --build --force && node lib/index.js",
+    "dev": "tsc --build --force && node dist/index.js",
     "dev-BROKEN": "ts-node src/index.ts",
-    "debug": "npm run build && node --inspect-brk lib/index.js",
+    "debug": "npm run build && node --inspect-brk dist/index.js",
     "db-migrate": "npx prisma migrate dev",
     "db-migrate-f": "prisma db push",
     "db-generate": "prisma generate"
@@ -48,7 +48,7 @@
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2",
+    "typescript": "^5.9.3",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4",
     "webpack-node-externals": "^3.0.0"
