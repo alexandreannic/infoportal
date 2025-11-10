@@ -1,8 +1,8 @@
 // import * as React from 'react'
 import {createContext, ReactNode, useContext, useState} from 'react'
 import {
+  Alert,
   Box,
-  Button,
   CircularProgress,
   Icon,
   IconButton,
@@ -12,6 +12,8 @@ import {
   useTheme,
 } from '@mui/material'
 import {IconBtn} from './IconBtn.js'
+import {alphaVar} from '../core'
+
 const ToastContext = createContext<WithToast>({} as any)
 
 type ToastType = 'error' | 'loading' | 'warning' | 'success' | 'info' | undefined
@@ -83,6 +85,8 @@ export const ToastProvider = ({children, vertical = 'bottom', horizontal = 'righ
     options?.onClose?.(event)
   }
 
+  const bgVarcolor = !type || type === 'loading' ? t.vars.palette.background.paper : t.vars.palette[type].light
+
   return (
     <ToastContext.Provider
       value={{
@@ -95,6 +99,14 @@ export const ToastProvider = ({children, vertical = 'bottom', horizontal = 'righ
     >
       {children}
       <Snackbar
+        slotProps={{
+          content: {
+            sx: {
+              background: alphaVar(bgVarcolor, 0.3),
+            },
+          },
+        }}
+        sx={{}}
         anchorOrigin={{vertical, horizontal}}
         open={open}
         autoHideDuration={
@@ -112,7 +124,9 @@ export const ToastProvider = ({children, vertical = 'bottom', horizontal = 'righ
         action={
           <>
             {options?.action}
-            {options?.reloadBtn && <IconBtn children="refresh" sx={{color: 'inherit'}} onClick={() => location.reload()} />}
+            {options?.reloadBtn && (
+              <IconBtn children="refresh" sx={{color: 'inherit'}} onClick={() => location.reload()} />
+            )}
             <IconButton onClick={handleClose} sx={{color: 'inherit', ...(options?.action ? {ml: 1} : {})}}>
               <Icon>close</Icon>
             </IconButton>
