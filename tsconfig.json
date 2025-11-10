@@ -21,6 +21,9 @@
     },
     {
       "path": "./packages/common"
+    },
+    {
+      "path": "./packages/xls-form-editor"
     }
   ]
 }
