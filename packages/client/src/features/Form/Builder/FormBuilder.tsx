@@ -15,6 +15,7 @@ import {useIpToast} from '@/core/useToast'
 import {Ip} from '@infoportal/api-sdk'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
+import {XlsFormEditor} from '@infoportal/xls-form-editor'
 
 export const formBuilderRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -49,13 +50,14 @@ function FormBuilder() {
 
   return (
     <TabContent width="full" loading={queryForm.isPending || queryVersion.get.isLoading}>
+      <XlsFormEditor />
       {queryForm.data &&
         (Ip.Form.isConnectedToKobo(queryForm.data) ? (
           <FormBuilderKoboFender workspaceId={workspaceId} form={queryForm.data} />
         ) : (
           <Grid container>
             <Grid size={{xs: 12, md: 6}}>
-              {queryPermission.data?.version_canCreate && (
+              {Ip.Form.isKobo(queryForm.data) && (
                 <Core.Alert severity="warning" sx={{mb: 1}}>
                   <div>{m._builder.alertPreviouslyKoboForm}</div>
                   {queryVersion.get.data?.length === 0 && (
