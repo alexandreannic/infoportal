@@ -46,6 +46,7 @@ export const useDatatableColumns = <T extends Row>({
           className: 'td-index',
           head: '#',
           width: 50,
+          type: 'number',
           render: (_: any) => ({
             value: _?.index,
             label: _?.index,

@@ -2,14 +2,14 @@ import {VirtualItem} from '@tanstack/react-virtual'
 import {Box, BoxProps, Skeleton, useTheme} from '@mui/material'
 import React, {memo, useCallback} from 'react'
 import {Column, Props, Row} from './core/types.js'
-import {VirtualCell} from './core/reducer'
+import {CachedCell} from './core/reducer'
 import {UseDraggingRows} from './core/useDraggingRows'
 import {useCtx} from './core/DatatableContext'
 import {UseCellSelection} from './core/useCellSelectionEngine'
 
 export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
   const {
-    virtualTable,
+    cachedData,
     isRowSelected,
     isColumnSelected,
     cellSelection_handleMouseDown,
@@ -27,14 +27,14 @@ export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
   } = useCtx(_ => ({
     isRowSelected: _.cellSelection.engine.isRowSelected(virtualItem.index),
     isColumnSelected: _.cellSelection.engine.isColumnSelected,
-    virtualTable: _.state.virtualTable,
+    cachedData: _.state.cachedData,
     isDragging: _.dndRows.isRowDragging(virtualItem.index),
     isOver: _.dndRows.dropIndicatorIndex === virtualItem.index,
     isDraggable: _.dndRows.isRowDraggable(virtualItem.index),
     handleDragStart: _.dndRows.handleDragStart,
     handleDragOver: _.dndRows.handleDragOver,
     handleDrop: _.dndRows.handleDrop,
-    columns: _.columns,
+    columns: _.columns.visible,
     rowStyle: _.rowStyle,
     cellSelection_handleMouseDown: _.cellSelection.engine.handleMouseDown,
     cellSelection_handleMouseEnter: _.cellSelection.engine.handleMouseEnter,
@@ -43,25 +43,25 @@ export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
   }))
   const row = dataFilteredAndSorted[virtualItem.index]
   const rowId = getRowKey(row)
-  const virtualRow = virtualTable[rowId]
+  const cachedRow = cachedData[rowId]
 
   const onCellClick = useCallback(
     (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
       const row = dataFilteredAndSorted[rowIndex]
-      const column = columns.visible[colIndex]
+      const column = columns[colIndex]
       if (column.onClick) {
         column.onClick({data: row, rowIndex, event})
       }
     },
-    [dataFilteredAndSorted, columns.visible],
+    [dataFilteredAndSorted, columns],
   )
 
   return (
     <DatatableRowMemo
       rowId={rowId}
       virtualItem={virtualItem}
-      virtualRow={virtualRow}
-      columns={columns.visible}
+      cachedRow={cachedRow}
+      columns={columns}
       onCellClick={onCellClick}
       rowStyle={rowStyle}
       row={row}
@@ -82,7 +82,7 @@ const DatatableRowMemo = memo(
   <T extends Row>({
     rowId,
     virtualItem,
-    virtualRow,
+    cachedRow,
     columns,
     onCellClick,
     rowStyle,
@@ -98,7 +98,7 @@ const DatatableRowMemo = memo(
     cellSelection_handleMouseEnter,
   }: {
     onCellClick: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
-    virtualRow: Record<string, VirtualCell>
+    cachedRow: Record<string, CachedCell>
     rowId: string
     row: T
     rowStyle: Props<any>['rowStyle']
@@ -129,7 +129,7 @@ const DatatableRowMemo = memo(
         }}
       >
         {columns.map((col, colIndex) => {
-          let cell = virtualRow?.[col.id]
+          let cell = cachedRow?.[col.id]
           const key = virtualItem.key + col.id
           if (!cell) {
             return <CellSkeleton key={key} />
@@ -182,7 +182,7 @@ const Cell = memo(
     selected,
     className = '',
     ...props
-  }: VirtualCell &
+  }: CachedCell &
     Pick<BoxProps, 'draggable' | 'onDragStart' | 'onDragOver' | 'onDrop'> & {
       selected?: boolean
       onClick?: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void

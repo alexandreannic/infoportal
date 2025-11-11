@@ -87,7 +87,7 @@ export const DatatableGlobalStyles = () => (
         borderRight: `1px solid ${theme.vars.palette.primary.main}`,
       },
 
-      '.td-index': {
+      '.dtd.td-index': {
         justifyContent: 'center',
         textAlign: 'center',
         padding: 0,

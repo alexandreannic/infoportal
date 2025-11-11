@@ -18,7 +18,7 @@ export type State<T extends Row> = DatatableState<T>
 
 export type MinMax = {min: number; max: number}
 
-export type VirtualCell = {
+export type CachedCell = {
   // value: any
   label: ReactNode
   tooltip?: string
@@ -73,7 +73,7 @@ export type DatatableState<T extends Row> = {
   sourceData: T[]
   popup?: Popup.Event
   hasRenderedRowId: boolean[]
-  virtualTable: Record<string, Record<string, VirtualCell>>
+  cachedData: Record<string, Record<string, CachedCell>>
   sortBy?: SortBy
   filters: Partial<Record<KeyOf<T>, FilterValue>>
   colWidths: Record<string, number>
@@ -88,7 +88,7 @@ export function datatableReducer<T extends Row>() {
   }
 }
 
-const buildVirtualTable = <T extends Row>({
+const buildCachedData = <T extends Row>({
   data,
   columns,
   dataIndexes,
@@ -98,8 +98,8 @@ const buildVirtualTable = <T extends Row>({
   getRowKey: Props<T>['getRowKey']
   columns: Column.InnerProps<T>[]
   data: T[]
-}): State<T>['virtualTable'] => {
-  const result: State<T>['virtualTable'] = {}
+}): State<T>['cachedData'] => {
+  const result: State<T>['cachedData'] = {}
   const classNameTdIndex: Record<string, string> = {}
   columns.forEach(col => {
     let className = typeof col.className === 'string' ? col.className : ' '
@@ -141,7 +141,7 @@ export const initialState = <T extends Row>(): State<T> => {
     },
     sourceData: [],
     hasRenderedRowId: [],
-    virtualTable: {},
+    cachedData: {},
     filters: {},
     // selected: new Set(),
     sortBy: undefined,
@@ -219,7 +219,7 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
       return {
         ...state,
         hasRenderedRowId: [],
-        virtualTable: buildVirtualTable({
+        cachedData: buildCachedData({
           data,
           columns,
           getRowKey,
@@ -236,9 +236,9 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
           missingIndexes.push(i)
         }
       }
-      state.virtualTable = {
-        ...state.virtualTable,
-        ...buildVirtualTable({
+      state.cachedData = {
+        ...state.cachedData,
+        ...buildCachedData({
           dataIndexes: missingIndexes,
           data,
           columns,
@@ -292,16 +292,16 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
 
     UPDATE_CELL: (state, action) => {
       const virtualTable = {
-        ...state.virtualTable,
+        ...state.cachedData,
         [action.rowId]: {
-          ...state.virtualTable[action.rowId],
+          ...state.cachedData[action.rowId],
           [action.col]: action.value,
         },
       }
 
       return {
         ...state,
-        virtualTable,
+        cachedData: virtualTable,
       }
     },
 
