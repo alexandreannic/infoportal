@@ -6,7 +6,7 @@ import {Widget} from '@/features/Dashboard/Widget/Widget'
 import {WidgetCreatorFormPanel, WidgetUpdatePayload} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
 import {Core} from '@/shared'
 import {SelectLangIndex} from '@/shared/customInput/SelectLangIndex'
-import {NotFoundContent} from '@/shared/PageNotFound'
+import {ErrorContent} from '@/shared/PageError'
 import {TabContent} from '@/shared/Tab/TabContent'
 import {alphaVar} from '@infoportal/client-core'
 import {useI18n} from '@infoportal/client-i18n'
@@ -77,7 +77,7 @@ export function DashboardSection() {
     })
   }, [dashboard.theme])
 
-  if (!sections.some(_ => _.id === sectionId)) return <NotFoundContent sx={{height: '100%'}} />
+  if (!sections.some(_ => _.id === sectionId)) return <ErrorContent sx={{height: '100%'}} />
 
   return (
     <TabContent width="full">
