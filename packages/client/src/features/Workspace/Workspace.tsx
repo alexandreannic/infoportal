@@ -8,7 +8,7 @@ import {Layout} from '@/shared/Layout/Layout'
 import {Ip} from '@infoportal/api-sdk'
 import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
-import {PageNotFound} from '@/shared/PageNotFound'
+import {PageError} from '@/shared/PageError'
 
 export const workspaceRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -50,7 +50,7 @@ function Workspace() {
             </Context.Provider>
           )
         ) : (
-          <PageNotFound />
+          <PageError />
         )}
       </Layout>
     </ProtectRoute>

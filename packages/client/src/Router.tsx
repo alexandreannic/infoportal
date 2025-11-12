@@ -28,6 +28,9 @@ import {dashboardSectionRoute} from '@/features/Dashboard/Section/DashboardSecti
 import {dashboardRoute} from '@/features/Dashboard/Dashboard'
 import {dashboardSettingsRoute} from '@/features/Dashboard/DashboardSettings'
 import {dashboardRenderRoute} from '@/features/Dashboard/Render/DashboardRender'
+import {formBuilderVersionRoute} from '@/features/Form/Builder/FormBuilderVersion'
+import {formBuilderXlsUploaderRoute} from '@/features/Form/Builder/XlsFileUploadForm'
+import {formBuilderEditorRoute} from '@/features/Form/Builder/FormBuilderEditor'
 
 export const rootRoute = createRootRoute({
   component: App,
@@ -46,7 +49,7 @@ const tsRoutes = [
       formsRoute,
       formRoute.addChildren([
         databaseAccessRoute,
-        formBuilderRoute,
+        formBuilderRoute.addChildren([formBuilderVersionRoute, formBuilderXlsUploaderRoute, formBuilderEditorRoute]),
         answersRoute,
         databaseAnswerViewRoute,
         databaseHistoryRoute,

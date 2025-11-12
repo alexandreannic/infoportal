@@ -42,9 +42,9 @@ export const XlsFormEditor = () => {
     return {color: t.vars.palette.text.secondary, fontFamily: 'monospace'}
   }, [t])
 
-  console.log(survey)
   const columns: Datatable.Column.Props<XlsSurveyRow>[] = useMemo(() => {
-    return [
+    const defaultWith = 190
+    const cols: Datatable.Column.Props<XlsSurveyRow>[] = [
       {
         id: 'type',
         head: 'type',
@@ -88,6 +88,7 @@ export const XlsFormEditor = () => {
         return Datatable.Column.make<XlsSurveyRow>({
           id: 'label:' + lang,
           head: 'label' + ':' + lang,
+          width: 280,
           type: 'string',
           render: row => {
             const value = row.label?.[i]
@@ -104,6 +105,7 @@ export const XlsFormEditor = () => {
           id: 'hint:' + lang,
           head: 'hint' + ':' + lang,
           type: 'string',
+          width: 320,
           render: row => {
             const value = row.hint?.[i]
             return {
@@ -205,6 +207,13 @@ export const XlsFormEditor = () => {
         },
       },
     ]
+    return cols.map(_ => {
+      if (_.width) return _
+      return {
+        ..._,
+        width: defaultWith,
+      }
+    })
   }, [schema])
 
   const handleEvent = useCallback((action: Datatable.Action<XlsSurveyRow>) => {
@@ -221,7 +230,7 @@ export const XlsFormEditor = () => {
   }, [])
 
   return (
-    <Panel sx={{width: '100%', mb: 0}}>
+    <Panel sx={{width: '100%', mb: 0, overflowX: 'auto'}}>
       <Datatable.Component
         module={tableModule}
         showRowIndex

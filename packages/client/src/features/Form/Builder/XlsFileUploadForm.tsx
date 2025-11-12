@@ -1,6 +1,6 @@
 import {Controller, useForm} from 'react-hook-form'
 import {DragDropFileInput} from '@/shared/DragDropFileInput'
-import React, {useRef, useState} from 'react'
+import React, {useMemo, useRef, useState} from 'react'
 import {Core} from '@/shared'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useI18n} from '@infoportal/client-i18n'
@@ -8,6 +8,11 @@ import {Alert, AlertTitle, Box, CircularProgress, Icon, Skeleton} from '@mui/mat
 import {DiffView} from '@/features/Form/Builder/DiffView'
 import {Ip} from '@infoportal/api-sdk'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
+import {createRoute} from '@tanstack/react-router'
+import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
+import {seq} from '@axanc/ts-utils'
+import {UseQueryPermission} from '@/core/query/useQueryPermission'
+import {ErrorContent} from '@/shared/PageError'
 
 type Form = {
   message?: string
@@ -19,7 +24,25 @@ const schemaToString = (schema?: Ip.Form.Schema): string => {
   return JSON.stringify(Core.sortObjectKeysDeep(schema), null, 2)
 }
 
-export const XlsFileUploadForm = ({
+export const formBuilderXlsUploaderRoute = createRoute({
+  getParentRoute: () => formBuilderRoute,
+  path: 'upload',
+  component: XlsFileUploadForm,
+})
+
+function XlsFileUploadForm() {
+  const {workspaceId, formId} = formBuilderRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
+  const queryVersion = useQueryVersion({workspaceId, formId})
+  const queryPermission = UseQueryPermission.form({workspaceId, formId})
+  const lastSchema = useMemo(() => {
+    return seq(queryVersion.get.data ?? []).last()
+  }, [queryVersion.get.data])
+
+  if (!queryPermission.data?.version_canCreate) return <ErrorContent variant="forbidden" />
+  return <XlsFileUploadFormInner lastSchema={lastSchema} workspaceId={workspaceId} formId={formId} />
+}
+
+function XlsFileUploadFormInner({
   onSubmit,
   lastSchema,
   workspaceId,
@@ -29,7 +52,7 @@ export const XlsFileUploadForm = ({
   onSubmit?: (f: Form) => Promise<any>
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
-}) => {
+}) {
   const {m} = useI18n()
   const {
     formState: {isValid},
@@ -74,7 +97,7 @@ export const XlsFileUploadForm = ({
   }
 
   return (
-    <form onSubmit={form.handleSubmit(submit)}>
+    <Box component="form" onSubmit={form.handleSubmit(submit)} sx={{margin: 'auto', width: '50%'}}>
       <Core.Panel>
         <Core.PanelHead>{m.importXlsFile}</Core.PanelHead>
         <Core.PanelBody>
@@ -147,44 +170,44 @@ export const XlsFileUploadForm = ({
               },
               ...(lastSchema
                 ? [
-                    {
-                      name: 'check',
-                      label: m.checkDiff,
-                      component: () => {
-                        const actions = <Actions disabledNext={!schemaHasChanges} />
-                        if (querySchema.isLoading) {
-                          return (
-                            <>
-                              {actions}
-                              <Skeleton height={200} />
-                            </>
-                          )
-                        }
-                        if (!validation) {
-                          return <Core.Fender type="error" title={m.error} />
-                        }
+                  {
+                    name: 'check',
+                    label: m.checkDiff,
+                    component: () => {
+                      const actions = <Actions disabledNext={!schemaHasChanges} />
+                      if (querySchema.isLoading) {
                         return (
                           <>
                             {actions}
-                            {schemaHasChanges === false && (
-                              <Alert color="error" sx={{mt: 1}}>
-                                <AlertTitle>{m.xlsFormNoChangeTitle}</AlertTitle>
-                                {m.xlsFormNoChangeDesc}
-                              </Alert>
-                            )}
-                            <DiffView
-                              stepperRef={stepperRef}
-                              oldStr={schemaToString(querySchema.data)}
-                              newStr={schemaToString(validation.schema)}
-                              hasChanges={setSchemaHasChanges}
-                              sx={{mt: 1}}
-                            />
-                            {actions}
+                            <Skeleton height={200} />
                           </>
                         )
-                      },
+                      }
+                      if (!validation) {
+                        return <Core.Fender type="error" title={m.error} />
+                      }
+                      return (
+                        <>
+                          {actions}
+                          {schemaHasChanges === false && (
+                            <Alert color="error" sx={{mt: 1}}>
+                              <AlertTitle>{m.xlsFormNoChangeTitle}</AlertTitle>
+                              {m.xlsFormNoChangeDesc}
+                            </Alert>
+                          )}
+                          <DiffView
+                            stepperRef={stepperRef}
+                            oldStr={schemaToString(querySchema.data)}
+                            newStr={schemaToString(validation.schema)}
+                            hasChanges={setSchemaHasChanges}
+                            sx={{mt: 1}}
+                          />
+                          {actions}
+                        </>
+                      )
                     },
-                  ]
+                  },
+                ]
                 : []),
               {
                 name: 'submit',
@@ -212,7 +235,7 @@ export const XlsFileUploadForm = ({
           ></Core.Stepper>
         </Core.PanelBody>
       </Core.Panel>
-    </form>
+    </Box>
   )
 }
 
