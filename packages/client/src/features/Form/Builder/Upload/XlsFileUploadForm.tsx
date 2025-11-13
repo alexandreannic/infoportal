@@ -9,10 +9,11 @@ import {Ip} from '@infoportal/api-sdk'
 import {DiffView} from '@/features/Form/Builder/Upload/DiffView'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 import {createRoute} from '@tanstack/react-router'
-import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
+import {formBuilderRoute, useFormBuilderContentStyle} from '@/features/Form/Builder/FormBuilder'
 import {seq} from '@axanc/ts-utils'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {ErrorContent} from '@/shared/PageError'
+import {FormBuilderBody} from '@/features/Form/Builder/FormBuilderBody'
 
 type Form = {
   message?: string
@@ -62,7 +63,6 @@ function XlsFileUploadFormInner({
   const [validation, setValidation] = useState<Ip.Form.Schema.Validation>()
   const stepperRef = useRef<Core.StepperHandle>(null)
   const [schemaHasChanges, setSchemaHasChanges] = useState<boolean | null>(null)
-
   const querySchema = useQuerySchemaByVersion({formId, workspaceId, versionId: lastSchema?.id})
 
   const watched = {
@@ -97,145 +97,147 @@ function XlsFileUploadFormInner({
   }
 
   return (
-    <Box component="form" onSubmit={form.handleSubmit(submit)} sx={{margin: 'auto', width: '50%'}}>
-      <Core.Panel>
-        <Core.PanelHead>{m.importXlsFile}</Core.PanelHead>
-        <Core.PanelBody>
-          <Core.Stepper
-            ref={stepperRef}
-            steps={[
-              {
-                name: 'select',
-                label: m.selectXlsForm,
-                component: () => (
-                  <>
-                    <Controller
-                      name="xlsFile"
-                      control={form.control}
-                      rules={{
-                        required: true,
-                      }}
-                      render={({field, fieldState}) => (
-                        <DragDropFileInput
-                          error={fieldState.error?.message}
-                          onClear={() => {
-                            form.unregister('xlsFile')
-                          }}
-                          onFilesSelected={async _ => {
-                            const file = _.item(0)
-                            if (!file) return
-                            field.onChange({target: {value: file}})
-                            stepperRef.current?.next()
-                            queryVersion.validateXls.mutateAsync(file).then(setValidation)
-                          }}
-                          sx={{mb: 1}}
-                        />
-                      )}
-                    />
-                    <Actions disabledNext={!watched.xlsFile} />
-                  </>
-                ),
-              },
-              {
-                name: 'validate',
-                label: m.validate,
-                component: () =>
-                  watched.xlsFile &&
-                  (queryVersion.validateXls.isPending ? (
-                    <Alert severity="info" icon={<CircularProgress size={20} color="inherit" />}>
-                      {m.validation}...
-                    </Alert>
-                  ) : (
-                    validation && (
-                      <>
-                        <Alert
-                          severity={validation.code === 100 ? 'success' : validation.code < 200 ? 'warning' : 'error'}
-                        >
-                          <AlertTitle>
-                            {validation.code === 100 ? m.success : validation.code < 200 ? m.warning : m.error}
-                          </AlertTitle>
-                          {validation.message}
-                          {validation.warnings && (
-                            <ul style={{paddingLeft: 0, marginLeft: 0, listStylePosition: 'outside'}}>
-                              {validation.warnings.map((_, i) => (
-                                <li key={i}>{_}</li>
-                              ))}
-                            </ul>
-                          )}
-                        </Alert>
-                        <Actions disabledNext={validation.status === 'error'} />
-                      </>
-                    )
-                  )),
-              },
-              ...(lastSchema
-                ? [
-                  {
-                    name: 'check',
-                    label: m.checkDiff,
-                    component: () => {
-                      const actions = <Actions disabledNext={!schemaHasChanges} />
-                      if (querySchema.isLoading) {
+    <FormBuilderBody>
+      <Box component="form" onSubmit={form.handleSubmit(submit)}>
+        <Core.Panel>
+          <Core.PanelHead>{m.importXlsFile}</Core.PanelHead>
+          <Core.PanelBody>
+            <Core.Stepper
+              ref={stepperRef}
+              steps={[
+                {
+                  name: 'select',
+                  label: m.selectXlsForm,
+                  component: () => (
+                    <>
+                      <Controller
+                        name="xlsFile"
+                        control={form.control}
+                        rules={{
+                          required: true,
+                        }}
+                        render={({field, fieldState}) => (
+                          <DragDropFileInput
+                            error={fieldState.error?.message}
+                            onClear={() => {
+                              form.unregister('xlsFile')
+                            }}
+                            onFilesSelected={async _ => {
+                              const file = _.item(0)
+                              if (!file) return
+                              field.onChange({target: {value: file}})
+                              stepperRef.current?.next()
+                              queryVersion.validateXls.mutateAsync(file).then(setValidation)
+                            }}
+                            sx={{mb: 1}}
+                          />
+                        )}
+                      />
+                      <Actions disabledNext={!watched.xlsFile} />
+                    </>
+                  ),
+                },
+                {
+                  name: 'validate',
+                  label: m.validate,
+                  component: () =>
+                    watched.xlsFile &&
+                    (queryVersion.validateXls.isPending ? (
+                      <Alert severity="info" icon={<CircularProgress size={20} color="inherit" />}>
+                        {m.validation}...
+                      </Alert>
+                    ) : (
+                      validation && (
+                        <>
+                          <Alert
+                            severity={validation.code === 100 ? 'success' : validation.code < 200 ? 'warning' : 'error'}
+                          >
+                            <AlertTitle>
+                              {validation.code === 100 ? m.success : validation.code < 200 ? m.warning : m.error}
+                            </AlertTitle>
+                            {validation.message}
+                            {validation.warnings && (
+                              <ul style={{paddingLeft: 0, marginLeft: 0, listStylePosition: 'outside'}}>
+                                {validation.warnings.map((_, i) => (
+                                  <li key={i}>{_}</li>
+                                ))}
+                              </ul>
+                            )}
+                          </Alert>
+                          <Actions disabledNext={validation.status === 'error'} />
+                        </>
+                      )
+                    )),
+                },
+                ...(lastSchema
+                  ? [
+                    {
+                      name: 'check',
+                      label: m.checkDiff,
+                      component: () => {
+                        const actions = <Actions disabledNext={!schemaHasChanges} />
+                        if (querySchema.isLoading) {
+                          return (
+                            <>
+                              {actions}
+                              <Skeleton height={200} />
+                            </>
+                          )
+                        }
+                        if (!validation) {
+                          return <Core.Fender type="error" title={m.error} />
+                        }
                         return (
                           <>
                             {actions}
-                            <Skeleton height={200} />
+                            {schemaHasChanges === false && (
+                              <Alert color="error" sx={{mt: 1}}>
+                                <AlertTitle>{m.xlsFormNoChangeTitle}</AlertTitle>
+                                {m.xlsFormNoChangeDesc}
+                              </Alert>
+                            )}
+                            <DiffView
+                              stepperRef={stepperRef}
+                              oldStr={schemaToString(querySchema.data)}
+                              newStr={schemaToString(validation.schema)}
+                              hasChanges={setSchemaHasChanges}
+                              sx={{mt: 1}}
+                            />
+                            {actions}
                           </>
                         )
-                      }
-                      if (!validation) {
-                        return <Core.Fender type="error" title={m.error} />
-                      }
-                      return (
-                        <>
-                          {actions}
-                          {schemaHasChanges === false && (
-                            <Alert color="error" sx={{mt: 1}}>
-                              <AlertTitle>{m.xlsFormNoChangeTitle}</AlertTitle>
-                              {m.xlsFormNoChangeDesc}
-                            </Alert>
-                          )}
-                          <DiffView
-                            stepperRef={stepperRef}
-                            oldStr={schemaToString(querySchema.data)}
-                            newStr={schemaToString(validation.schema)}
-                            hasChanges={setSchemaHasChanges}
-                            sx={{mt: 1}}
-                          />
-                          {actions}
-                        </>
-                      )
+                      },
                     },
-                  },
-                ]
-                : []),
-              {
-                name: 'submit',
-                label: m.submit,
-                component: () => (
-                  <>
-                    <Controller
-                      name="message"
-                      control={form.control}
-                      render={({field, fieldState}) => (
-                        <Core.Input
-                          sx={{mt: 1}}
-                          label={`${m.message} (${m.optional})`}
-                          {...field}
-                          error={!!fieldState.error}
-                          helperText={fieldState.error?.message}
-                        />
-                      )}
-                    />
-                    <Actions hideNext={true} />
-                  </>
-                ),
-              },
-            ]}
-          ></Core.Stepper>
-        </Core.PanelBody>
-      </Core.Panel>
-    </Box>
+                  ]
+                  : []),
+                {
+                  name: 'submit',
+                  label: m.submit,
+                  component: () => (
+                    <>
+                      <Controller
+                        name="message"
+                        control={form.control}
+                        render={({field, fieldState}) => (
+                          <Core.Input
+                            sx={{mt: 1}}
+                            label={`${m.message} (${m.optional})`}
+                            {...field}
+                            error={!!fieldState.error}
+                            helperText={fieldState.error?.message}
+                          />
+                        )}
+                      />
+                      <Actions hideNext={true} />
+                    </>
+                  ),
+                },
+              ]}
+            ></Core.Stepper>
+          </Core.PanelBody>
+        </Core.Panel>
+      </Box>
+    </FormBuilderBody>
   )
 }
 

@@ -22,7 +22,7 @@ const tableSx: SxProps = {
 const tableModule: Datatable.Props<any>['module'] = {
   export: {enabled: true},
   rowsDragging: {enabled: true},
-  cellSelection: {enabled: true, mode: 'row'},
+  cellSelection: {hideFormulaBar: true, enabled: true, mode: 'row'},
   columnsResize: {enabled: true},
   columnsToggle: {enabled: true},
 }
