@@ -111,7 +111,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
   return (
     <Box className="dt-container" sx={sx}>
       {header !== null && <DatatableToolbar rowVirtualizer={rowVirtualizer} />}
-      {module?.cellSelection?.enabled && <DatatableFormularBar />}
+      {module?.cellSelection?.enabled && !module.cellSelection.hideFormulaBar && <DatatableFormularBar />}
       <Box
         className="dt"
         ref={tableRef}

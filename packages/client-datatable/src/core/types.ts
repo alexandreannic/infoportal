@@ -33,9 +33,9 @@ export type FilterTypeMapping = {
   number: [number | undefined, number | undefined]
   string:
     | {
-        filterBlank?: boolean
-        value?: string
-      }
+    filterBlank?: boolean
+    value?: string
+  }
     | undefined
   select_one: string[]
   select_multiple: string[]
@@ -81,6 +81,7 @@ export interface Props<T extends Row, K extends string = string> {
       hidden?: string[]
     }
     cellSelection?: {
+      hideFormulaBar?: boolean
       enabled: boolean
       mode?: CellSelectionMode
       renderComponentOnRowSelected?: ({rowIds}: {rowIds: string[]}) => ReactNode
@@ -235,7 +236,7 @@ export namespace Column {
       | Number.TypeInner<T>
       | SelectMultiple.TypeInner<T>
       | Undefined.TypeInner<T>
-    )
+      )
   export type Props<T extends Row = Record<string, any>, K extends string = string> = Base<T, K> &
     (
       | Text.TypeOuter<T>
@@ -244,7 +245,7 @@ export namespace Column {
       | Number.TypeOuter<T>
       | SelectMultiple.TypeOuter<T>
       | Undefined.TypeOuter<T>
-    )
+      )
   export type QuickProps<T extends Row, K extends string = string> = Base<T, K> &
     (
       | Text.TypeQuick<T>
@@ -253,7 +254,7 @@ export namespace Column {
       | Number.TypeQuick<T>
       | SelectMultiple.TypeQuick<T>
       | Undefined.TypeQuick<T>
-    )
+      )
 
   export const isQuick = (_: Props<any>): _ is QuickProps<any> => {
     return !!(_ as any).renderQuick
