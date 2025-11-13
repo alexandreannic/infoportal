@@ -2,9 +2,9 @@ import {appConfig} from '@/conf/AppConfig'
 import {useI18n} from '@infoportal/client-i18n'
 import {useQuerySchemaBundle} from '@/core/query/useQuerySchema'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
-import {Icon, Tab, Tabs} from '@mui/material'
+import {Icon} from '@mui/material'
 import {createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
-import {createRoute, Link, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
+import {createRoute, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from 'infoportal-api-sdk'
 import {KoboSchemaHelper} from '@infoportal/kobo-helper'
@@ -15,10 +15,9 @@ import {formSettingsRoute} from '@/features/Form/Settings/FormSettings'
 import {databaseHistoryRoute} from './History/DatabaseHistory'
 import {databaseAccessRoute} from './Access/DatabaseAccess'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
-import {databaseKoboRepeatRoute} from '@/features/Form/RepeatGroup/DatabaseKoboRepeatGroup'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
-import {formActionReportsRoute} from '@/features/Form/Action/FormActionReports.js'
+import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
 
 export const formRootRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -58,14 +57,6 @@ export const useDefaultTabRedirect = ({
       }
     }
   }, [currentFullPath, pathname, isLoading])
-}
-
-/**
- * Needed so sub path are considered as active too.
- * Both `/action` and `/action/:id` will make Action tab active.
- */
-const useActiveTab = (currentFullPath: string, basePaths: string[]) => {
-  return basePaths.find(path => currentFullPath.startsWith(path)) ?? false
 }
 
 export type FormContext = {
@@ -137,97 +128,73 @@ function Form() {
     )
   }, [queryForm.data, querySchema.data, queryPermission.data, workspaceId])
 
-  const activeTab = useActiveTab(currentFullPath, [
-    answersRoute.fullPath,
-    formBuilderRoute.fullPath,
-    databaseAccessRoute.fullPath,
-    formActionsRoute.fullPath,
-    databaseHistoryRoute.fullPath,
-    formSettingsRoute.fullPath,
-    databaseKoboRepeatRoute.fullPath,
-  ])
-
   return (
     <Page width="full" sx={{height: '100%'}}>
-      <Tabs variant="scrollable" scrollButtons="auto" value={activeTab}>
-        <Tab
+      <TabsLayout>
+        <TabLink
           icon={<Icon>{appConfig.icons.dataTable}</Icon>}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
-          component={Link}
-          value={answersRoute.fullPath}
           to={answersRoute.fullPath}
           label={m.data}
           disabled={!schema && (!queryForm.data || !Ip.Form.isKobo(queryForm.data))}
         />
-        <Tab
+        <TabLink
           icon={<Icon>edit</Icon>}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
-          component={Link}
-          value={formBuilderRoute.fullPath}
           to={formBuilderRoute.fullPath}
           label={m.form}
           disabled={!queryPermission.data || !queryPermission.data.version_canGet}
         />
-        <Tab
+        <TabLink
           icon={<Icon>lock</Icon>}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
-          component={Link}
-          value={databaseAccessRoute.fullPath}
           to={databaseAccessRoute.fullPath}
           disabled={!schema}
           label={m.access}
         />
         {queryForm.data?.type === 'smart' ? (
-          <Tab
+          <TabLink
             icon={<Icon>dynamic_form</Icon>}
             iconPosition="start"
             sx={{minHeight: 34, py: 1}}
-            component={Link}
-            value={formActionsRoute.fullPath}
-            to={formActionReportsRoute.fullPath}
+            to={formActionsRoute.fullPath}
             label={m.action}
             disabled={!schema}
           />
         ) : (
-          <Tab
+          <TabLink
             icon={<Icon>history</Icon>}
             disabled={!schema}
             iconPosition="start"
             sx={{minHeight: 34, py: 1}}
-            component={Link}
-            value={databaseHistoryRoute.fullPath}
             to={databaseHistoryRoute.fullPath}
             label={m.history}
           />
         )}
-        <Tab
+        <TabLink
           icon={<Icon>settings</Icon>}
           iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           disabled={!queryPermission.data || !queryPermission.data?.canDelete || !queryPermission.data?.canUpdate}
-          component={Link}
-          value={formSettingsRoute.fullPath}
           to={formSettingsRoute.fullPath}
           label={m.settings}
         />
         {schema &&
           repeatGroups?.map(_ => (
-            <Tab
+            <TabLink
               icon={<Icon color="disabled">repeat</Icon>}
               iconPosition="start"
               key={_}
               sx={{minHeight: 34, py: 1}}
-              component={Link}
               to="/$workspaceId/form/$formId/group/$group"
-              params={{workspaceId, formId, group: _} as any}
-              value={databaseKoboRepeatRoute.fullPath}
+              params={{workspaceId, formId, group: _}}
               label={schema.translate.question(_)}
             />
           ))}
-      </Tabs>
+      </TabsLayout>
       {outlet}
     </Page>
   )

@@ -11,6 +11,7 @@ import {settingsUsersRoute} from '@/features/Settings/SettingsUsers'
 import {settingsCacheRoute} from '@/features/Settings/SettingsCache'
 import {useSession} from '@/core/Session/SessionContext'
 import {Ip} from 'infoportal-api-sdk'
+import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
 
 export const settingsRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -21,10 +22,8 @@ export const settingsRoute = createRoute({
 function Settings() {
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
-  const match = useMatches().slice(-1)[0]
   const {permission} = useWorkspaceContext()
   const {globalPermission} = useSession()
-  const workspaceId = settingsRoute.useParams().workspaceId as Ip.WorkspaceId
 
   useEffect(() => {
     setTitle(m.settings)
@@ -32,59 +31,44 @@ function Settings() {
 
   return (
     <Page width="full">
-      <Tabs
-        variant="scrollable"
-        scrollButtons="auto"
-        value={match.fullPath}
-        sx={{
-          borderBottom: t => `1px solid ${t.vars.palette.divider}`,
-        }}
-      >
+      <TabsLayout>
         {permission.user_canRead && (
-          <Tab
+          <TabLink
             icon={<Icon>group</Icon>}
             iconPosition="start"
             sx={{minHeight: 34, py: 1}}
-            component={Link}
-            value={settingsUsersRoute.fullPath}
             to={settingsUsersRoute.fullPath}
             label={m.users}
           />
         )}
         {permission.group_canRead && (
-          <Tab
+          <TabLink
             icon={<Icon>groups</Icon>}
             iconPosition="start"
             sx={{minHeight: 34, py: 1}}
-            component={Link}
-            value={settingsGroupsRoute.fullPath}
             to={settingsGroupsRoute.fullPath}
             label={m.group}
           />
         )}
         {permission.proxy_canRead && (
-          <Tab
+          <TabLink
             icon={<Icon>settings_input_antenna</Icon>}
             iconPosition="start"
             sx={{minHeight: 34, py: 1}}
-            component={Link}
-            value={settingsProxyRoute.fullPath}
             to={settingsProxyRoute.fullPath}
             label={m.proxy}
           />
         )}
         {globalPermission?.cache_manage && (
-          <Tab
+          <TabLink
             icon={<Icon>memory</Icon>}
             iconPosition="start"
             sx={{minHeight: 34, py: 1}}
-            component={Link}
-            value={settingsCacheRoute.fullPath}
             to={settingsCacheRoute.fullPath}
             label={m.serverCache}
           />
         )}
-      </Tabs>
+      </TabsLayout>
       <Outlet />
     </Page>
   )

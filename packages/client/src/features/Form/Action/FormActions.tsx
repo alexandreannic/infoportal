@@ -1,6 +1,6 @@
-import {createRoute, Link, Outlet, useMatches} from '@tanstack/react-router'
+import {createRoute, Outlet, redirect} from '@tanstack/react-router'
 import {Core} from '@/shared/index.js'
-import {Box, Icon, Skeleton, Tab, Tabs, useTheme} from '@mui/material'
+import {Box, Icon, Skeleton, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from 'infoportal-api-sdk'
@@ -11,11 +11,18 @@ import {FormActionRow} from '@/features/Form/Action/FormActionRow.js'
 import {formActionReportsRoute} from '@/features/Form/Action/FormActionReports.js'
 import {formActionLogsRoute} from '@/features/Form/Action/FormActionLogs.js'
 import {FormActionCreateBtn} from '@/features/Form/Action/FormActionCreateBtn.js'
+import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
 
+const formActionsRoutePath = 'action'
 export const formActionsRoute = createRoute({
   getParentRoute: () => formRoute,
-  path: 'action',
+  path: formActionsRoutePath,
   component: FormActions,
+  beforeLoad: ({location, params}) => {
+    if (location.pathname.endsWith(formActionsRoutePath)) {
+      throw redirect({to: formActionReportsRoute.to, params})
+    }
+  },
 })
 
 export function FormActions() {
@@ -25,7 +32,6 @@ export function FormActions() {
   const workspaceId = params.workspaceId as Ip.WorkspaceId
   const formId = params.formId as Ip.FormId
   const queryActionGet = UseQueryFromAction.getByDbId(workspaceId, formId)
-  const currentFullPath = useMatches().slice(-1)[0].fullPath
 
   return (
     <TabContent
@@ -47,8 +53,7 @@ export function FormActions() {
           overflowY: 'scroll',
         }}
       >
-        <Tabs
-          value={currentFullPath}
+        <TabsLayout
           sx={{
             p: 0,
             border: `1px solid ${t.vars.palette.divider} !important`,
@@ -56,23 +61,19 @@ export function FormActions() {
             mb: 1,
           }}
         >
-          <Tab
+          <TabLink
             sx={{flex: 1}}
-            component={Link}
-            value={formActionReportsRoute.fullPath}
             to={formActionReportsRoute.fullPath}
             icon={<Icon children="terminal" />}
             label={m._formAction.executionsHistory}
           />
-          <Tab
+          <TabLink
             sx={{flex: 1, mr: 0.5}}
-            component={Link}
-            value={formActionLogsRoute.fullPath}
             to={formActionLogsRoute.fullPath}
             icon={<Icon children="overview" />}
             label={m.logs}
           />
-        </Tabs>
+        </TabsLayout>
         <FormActionCreateBtn workspaceId={workspaceId} formId={formId} />
         {queryActionGet.isLoading && mapFor(3, i => <Skeleton key={i} height={50} sx={{transform: 'none', mb: 1}} />)}
         {queryActionGet.data?.map(_ => (

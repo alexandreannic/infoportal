@@ -6,14 +6,14 @@ import {UseQueryFormActionReport} from '@/core/query/useQueryFormActionReport.js
 import {Code} from '@/features/Form/Action/FormActionLogs.js'
 import {useNow} from '@/shared/useNow.js'
 import {FormActionRunBtn} from '@/features/Form/Action/FormActionRunBtn.js'
-import {useMemo} from 'react'
+import React, {useMemo} from 'react'
 import {fnSwitch} from '@axanc/ts-utils'
 import {createRoute} from '@tanstack/react-router'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 
 export const formActionReportsRoute = createRoute({
   getParentRoute: () => formActionsRoute,
-  path: 'report',
+  path: '/report',
   component: FormActionReports,
 })
 

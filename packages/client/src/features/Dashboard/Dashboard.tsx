@@ -13,44 +13,20 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {PopoverShareLink} from '@/shared/PopoverShareLink'
 import {useEffectFn} from '@axanc/react-hooks'
 import {useI18n} from '@infoportal/client-i18n'
-import {Box, Collapse, Icon, Tab, Tabs, useTheme} from '@mui/material'
-import {createRoute, Link, Outlet, useMatchRoute, useNavigate} from '@tanstack/react-router'
+import {Box, Collapse, Icon, useTheme} from '@mui/material'
+import {createRoute, Link, Outlet, useNavigate} from '@tanstack/react-router'
 import {Ip} from 'infoportal-api-sdk'
-import {useState} from 'react'
+import React, {useState} from 'react'
 import 'react-grid-layout/css/styles.css'
 import {DashboardTheme} from './DashboardTheme'
 import {useIpToast} from '@/core/useToast'
+import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
   path: 'dashboard/$dashboardId/edit',
   component: Dashboard,
 })
-
-const useActiveTab = ({
-  sections,
-  dashboardId,
-  workspaceId,
-}: {
-  dashboardId?: Ip.DashboardId
-  sections?: Ip.Dashboard.Section[]
-  workspaceId: Ip.WorkspaceId
-}) => {
-  const matchRoute = useMatchRoute()
-  const settingsMatch = matchRoute({
-    to: dashboardSettingsRoute.fullPath,
-    params: {workspaceId},
-    fuzzy: true,
-  })
-  if (settingsMatch) return 'settings'
-  return sections?.find(_ => {
-    return matchRoute({
-      to: '/$workspaceId/dashboard/$dashboardId/edit/s/$sectionId',
-      params: {workspaceId, dashboardId, sectionId: _.id},
-      fuzzy: true,
-    })
-  })?.id
-}
 
 export function Dashboard() {
   const t = useTheme()
@@ -82,21 +58,15 @@ export function Dashboard() {
 
   useEffectFn(queryDashboard.data, _ => setTitle(_.name))
 
-  const activeTab = useActiveTab({workspaceId, dashboardId, sections: queryDashboardSection.data})
-
   return (
     <Page width="full" loading={isLoading} sx={{height: `calc(100% - ${t.vars.spacing})`}}>
-      <Tabs variant="scrollable" scrollButtons="auto" value={activeTab}>
+      <TabsLayout>
         {queryDashboardSection.data?.map(_ => (
-          <Tab
+          <TabLink
             key={_.id}
             iconPosition="start"
-            component={Link}
-            {...({
-              value: _.id,
-              to: dashboardSectionRoute.fullPath,
-              params: {sectionId: _.id},
-            } as any)}
+            to={dashboardSectionRoute.fullPath}
+            params={{workspaceId, dashboardId, sectionId: _.id}}
             label={_.title}
           />
         ))}
@@ -127,14 +97,12 @@ export function Dashboard() {
             {m.new}
           </Core.Btn>
         </Core.Modal>
-        <Tab
+        <TabLink
           icon={<Icon>settings</Icon>}
           iconPosition="start"
-          sx={{mr: 0.75, marginLeft: 'auto', minHeight: 34, py: 1, maxWidth: 50}} //,  }}
+          sx={{mr: 0.75, marginLeft: 'auto', minHeight: 34, py: 1, maxWidth: 50}}
           component={Link}
-          value="settings"
           to={dashboardSettingsRoute.fullPath}
-          // label={m.settings}
         />
         <Core.IconBtn
           sx={{mr: 0.5}}
@@ -170,7 +138,7 @@ export function Dashboard() {
         >
           {m.publish}
         </Core.Btn>
-      </Tabs>
+      </TabsLayout>
       <Box sx={{display: 'flex'}}>
         {querySubmissions.data &&
           queryDashboardSection.data &&
