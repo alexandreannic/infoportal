@@ -1,17 +1,16 @@
-import {Box, SxProps, useTheme} from '@mui/material'
+import {SxProps, useTheme} from '@mui/material'
 import * as Datatable from '@infoportal/client-datatable'
-import {schema as getSchema} from './schema.fixture'
 import {useI18n} from '@infoportal/client-i18n'
 import {CellText} from './CellText'
 import {useXlsFormStore, XlsSurveyRow} from './useStore'
 import {useCallback, useEffect, useMemo} from 'react'
 import {CellBoolean} from './CellBoolean'
-import {Kobo} from 'kobo-sdk'
 import {CellSelectType} from './CellSelectType'
 import {CellFormula} from './CellFormula'
 import {CellSelectAppearance} from './CellSelectAppearance'
 import {selectsQuestionTypes} from './settings'
-import {Panel} from '@infoportal/client-core'
+import {Btn, IconBtn, Panel} from '@infoportal/client-core'
+import {Ip} from '@infoportal/api-sdk'
 
 const getDataKey = (_: XlsSurveyRow) => _.key
 
@@ -19,23 +18,34 @@ const tableSx: SxProps = {
   '& .dtd': {px: 0},
 }
 
-const tableModule: Datatable.Props<any>['module'] = {
-  export: {enabled: true},
-  rowsDragging: {enabled: true},
-  cellSelection: {hideFormulaBar: true, enabled: true, mode: 'row'},
-  columnsResize: {enabled: true},
-  columnsToggle: {enabled: true},
-}
-
-export const XlsFormEditor = () => {
+export const XlsFormEditor = ({
+  value,
+  initialValue,
+  onChange,
+}: {
+  initialValue?: Ip.Form.Schema
+  value?: Ip.Form.Schema
+  onChange?: (_: Ip.Form.Schema) => void
+  onSave?: (_: Ip.Form.Schema) => void
+}) => {
   const {m} = useI18n()
   const t = useTheme()
-  const schema = getSchema
-  const setData = useXlsFormStore(_ => _.setData)
-  const survey = useXlsFormStore(_ => _.survey)
+  const schema = useXlsFormStore(_ => _.schema)
+  const setSchema = useXlsFormStore(_ => _.setSchema)
+  const addSurveyRow = useXlsFormStore(_ => _.addSurveyRow)
 
   useEffect(() => {
-    setData(schema.survey)
+    if (!initialValue) return
+    setSchema(initialValue)
+  }, [])
+
+  useEffect(() => {
+    if (!value) return
+    setSchema(value)
+  }, [value])
+
+  useEffect(() => {
+    onChange?.(schema)
   }, [schema])
 
   const sxName = useMemo(() => {
@@ -43,7 +53,7 @@ export const XlsFormEditor = () => {
   }, [t])
 
   const columns: Datatable.Column.Props<XlsSurveyRow>[] = useMemo(() => {
-    const defaultWith = 190
+    const defaultWith = 160
     const cols: Datatable.Column.Props<XlsSurveyRow>[] = [
       {
         id: 'type',
@@ -88,7 +98,7 @@ export const XlsFormEditor = () => {
         return Datatable.Column.make<XlsSurveyRow>({
           id: 'label:' + lang,
           head: 'label' + ':' + lang,
-          width: 280,
+          width: 260,
           type: 'string',
           render: row => {
             const value = row.label?.[i]
@@ -105,7 +115,7 @@ export const XlsFormEditor = () => {
           id: 'hint:' + lang,
           head: 'hint' + ':' + lang,
           type: 'string',
-          width: 320,
+          width: 280,
           render: row => {
             const value = row.hint?.[i]
             return {
@@ -220,18 +230,37 @@ export const XlsFormEditor = () => {
     switch (action.type) {
       case 'REORDER_ROWS': {
         const {index, range} = action
-        const rows = [...survey]
+        const rows = [...schema.survey]
         const moved = rows.splice(range.min, range.max - range.min + 1)
         const target = index > range.max ? index - moved.length : index
         rows.splice(target, 0, ...moved)
-        setData(rows)
+        setSchema({...schema, survey: rows})
       }
     }
   }, [])
 
+  const tableModule: Datatable.Props<any>['module'] = useMemo(() => {
+      return {
+        export: {enabled: true},
+        rowsDragging: {enabled: true},
+        cellSelection: {
+          hideFormulaBar: true,
+          enabled: true,
+          renderComponentOnRowSelected: () => <>
+            <IconBtn>add</IconBtn>
+          </>,
+          // mode: 'row'
+        },
+        columnsResize: {enabled: true},
+        columnsToggle: {enabled: true},
+      }
+    }
+    , [])
+
   return (
     <Panel sx={{width: '100%', mb: 0, overflowX: 'auto'}}>
       <Datatable.Component
+        // header={_ => (
         module={tableModule}
         showRowIndex
         onEvent={handleEvent}
@@ -240,8 +269,9 @@ export const XlsFormEditor = () => {
         columns={columns}
         getRowChangeTracker={getDataKey}
         getRowKey={getDataKey}
-        data={survey}
+        data={schema.survey}
       />
+      <IconBtn onClick={() => addSurveyRow()}>add</IconBtn>
     </Panel>
   )
 }

@@ -1,13 +1,26 @@
 import {create} from 'zustand'
 import {immer} from 'zustand/middleware/immer'
-import {Kobo} from 'kobo-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
-export type XlsSurveyRow = Kobo.Form.Question & {key: string}
+export type RawQuestion = Omit<Ip.Form.Question, '$xpath'>
+
+export type XlsSurveyRow = RawQuestion & {key: string}
+
+export type XlsSchema = Omit<Ip.Form.Schema, 'survey'> & {
+  survey: XlsSurveyRow[]
+}
 
 interface XlsFormState {
-  survey: XlsSurveyRow[]
-  setData: (rows: Kobo.Form.Question[]) => void
-  updateCell: <K extends keyof XlsSurveyRow>(
+  schema: XlsSchema
+  setSchema: (_: Ip.Form.Schema) => void
+  // translations: Kobo.Form['content']['translations']
+  // setTranslations: (rows: Kobo.Form['content']['translations']) => void
+  // survey: XlsSurveyRow[]
+  // setSurvey: (rows: Kobo.Form.Question[]) => void
+  // choices: XlsChoiceRow[]
+  // setChoices: (rows: Kobo.Form.Choice[]) => void
+  addSurveyRow: () => void
+  updateSurveyCell: <K extends keyof XlsSurveyRow>(
     rowKey: string,
     field: K,
     value: XlsSurveyRow[K] extends (infer U)[]
@@ -22,18 +35,34 @@ const skippedQuestionTypesSet = new Set(skippedQuestionTypes)
 
 export const useXlsFormStore = create<XlsFormState>()(
   immer(set => ({
-    survey: [],
-    setData: rows =>
+    schema: {choices: [], survey: [], translations: [], settings: {}, translated: [], schema: ''},
+    setSchema: schema =>
       set({
-        survey: rows
-          .filter(_ => !skippedQuestionTypesSet.has(_.type as any))
-          // .map((_, i) => ({..._, key: _.name})),
-          .map((_, i) => ({..._, key: i + '_' + _.name})),
+        schema: {
+          ...schema,
+          choices: schema.choices ?? [],
+          survey: schema.survey
+            .filter(_ => !skippedQuestionTypesSet.has(_.type as any))
+            .map((_, i) => ({..._, key: i + '_' + _.name})),
+        },
       }),
 
-    updateCell: (rowKey, field, value, fieldIndex) =>
+    addSurveyRow: () =>
       set(state => {
-        const row = state.survey.find(r => r.key === rowKey)
+        const survey = state.schema.survey
+        const i = survey.length
+        const name = ''
+        survey.push({
+          name,
+          calculation: '',
+          type: 'text',
+          key: i + '_' + name,
+        })
+      }),
+
+    updateSurveyCell: (rowKey, field, value, fieldIndex) =>
+      set(state => {
+        const row = state.schema.survey.find(r => r.key === rowKey)
         if (!row) return
 
         const current = row[field]
@@ -52,7 +81,7 @@ export const useXlsFormStore = create<XlsFormState>()(
 
 export const useCell = <T extends boolean | string>(key: string, field: keyof XlsSurveyRow, fieldIndex?: number) => {
   const value = useXlsFormStore(s => {
-    const row = s.survey.find(_ => _.key === key)
+    const row = s.schema.survey.find(_ => _.key === key)
     if (!row) return undefined
 
     const fieldValue = row[field]
@@ -62,7 +91,7 @@ export const useCell = <T extends boolean | string>(key: string, field: keyof Xl
     return fieldValue as T
   })
 
-  const updateCell = useXlsFormStore(s => s.updateCell)
+  const updateCell = useXlsFormStore(s => s.updateSurveyCell)
 
   const onChange = (v: T | null) => {
     updateCell(key, field, v as any, fieldIndex)

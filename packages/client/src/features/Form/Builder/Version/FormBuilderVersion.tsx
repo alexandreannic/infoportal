@@ -1,15 +1,16 @@
 import {seq} from '@axanc/ts-utils'
 import {VersionRow, VersionRowRoot, VersionRowShowMore} from '@/features/Form/Builder/Version/VersionRow'
-import React, {useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import {Core} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {createRoute} from '@tanstack/react-router'
-import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
+import {formBuilderRoute, useFormBuilderContext} from '@/features/Form/Builder/FormBuilder'
 import {FormBuilderBody} from '@/features/Form/Builder/FormBuilderBody'
+import {useFormContext} from '@/features/Form/Form'
 
 export const formBuilderVersionRoute = createRoute({
   getParentRoute: () => formBuilderRoute,
@@ -18,30 +19,30 @@ export const formBuilderVersionRoute = createRoute({
 })
 
 function FormBuilderVersion() {
-  const {workspaceId, formId} = formBuilderRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
-  const queryPermission = UseQueryPermission.form({workspaceId, formId})
-  const queryVersion = useQueryVersion({workspaceId, formId})
   const {m} = useI18n()
-  const versions = queryVersion.get.data ?? []
-  const queryForm = UseQueryForm.get({workspaceId, formId})
-  const [versionVisible, setVersionVisible] = useState(5)
 
-  const draft = useMemo(() => {
-    return queryVersion.get.data?.find(_ => _.status === 'draft')
-  }, [queryVersion.get.data])
+  const formId = useFormContext(_ => _.formId)
+  const workspaceId = useFormContext(_ => _.workspaceId)
+  const formPermission = useFormContext(_ => _.permission)
+  const versions = useFormBuilderContext(_ => _.versions)
+  const draft = useFormBuilderContext(_ => _.versionDraft)
+  const queryDeployLast = useQueryVersion({workspaceId, formId}).deployLast
+  const queryForm = UseQueryForm.get({workspaceId, formId})
+
+  const [versionVisible, setVersionVisible] = useState(5)
 
   return (
     <FormBuilderBody>
       <Core.Panel>
         <Core.PanelHead
           action={
-            queryPermission.data?.version_canDeploy && (
+            formPermission.version_canDeploy && (
               <Core.Modal
-                loading={queryVersion.deployLast.isPending}
+                loading={queryDeployLast.isPending}
                 title={m.confirm}
-                onConfirm={(event, close) => queryVersion.deployLast.mutateAsync({workspaceId, formId}).then(close)}
+                onConfirm={(event, close) => queryDeployLast.mutateAsync({workspaceId, formId}).then(close)}
               >
-                <Core.Btn icon="send" variant="contained" disabled={!draft} loading={queryVersion.deployLast.isPending}>
+                <Core.Btn icon="send" variant="contained" disabled={!draft} loading={queryDeployLast.isPending}>
                   {m.deployLastVersion}
                 </Core.Btn>
               </Core.Modal>

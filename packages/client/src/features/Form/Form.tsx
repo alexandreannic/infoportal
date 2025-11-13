@@ -3,7 +3,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {useQuerySchemaBundle} from '@/core/query/useQuerySchema'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon} from '@mui/material'
-import {createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
+import {Dispatch, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
 import {createRoute, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from '@infoportal/api-sdk'
@@ -14,10 +14,12 @@ import {answersRoute} from '@/features/Form/Database/DatabaseTable'
 import {formSettingsRoute} from '@/features/Form/Settings/FormSettings'
 import {databaseHistoryRoute} from './History/DatabaseHistory'
 import {databaseAccessRoute} from './Access/DatabaseAccess'
-import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
+import {FormBuilderContext, formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
+import {ErrorContent} from '@/shared/PageError'
+import {createContext, useContextSelector} from 'use-context-selector'
 
 export const formRootRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -61,8 +63,9 @@ export const useDefaultTabRedirect = ({
 
 export type FormContext = {
   workspaceId: Ip.WorkspaceId
+  formId: Ip.FormId
   form: Ip.Form
-  schema: KoboSchemaHelper.Bundle
+  schema?: KoboSchemaHelper.Bundle
   permission: Ip.Permission.Form
   langIndex: number
   setLangIndex: Dispatch<SetStateAction<number>>
@@ -70,7 +73,9 @@ export type FormContext = {
 
 const Context = createContext<FormContext>({} as FormContext)
 
-export const useFormContext = (): FormContext => useContext<FormContext>(Context)
+export const useFormContext = <Selected extends any>(selector: (_: FormContext) => Selected = _ => _ as any): Selected => {
+  return useContextSelector(Context, selector)
+}
 
 function Form() {
   const {workspaceId, formId} = formRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
@@ -105,17 +110,18 @@ function Form() {
   })
 
   const outlet = useMemo(() => {
-    if (queryForm.isLoading || querySchema.isLoading || queryPermission.isLoading) {
+    if (queryForm.isLoading || queryPermission.isLoading) {
       return <Page width="full" loading={true} />
     }
-    if (!queryForm.data || !querySchema.data || !queryPermission.data) {
-      return <>Error</>
+    if (!queryForm.data || !queryPermission.data) {
+      return <ErrorContent variant="internal">Cannot load Form.</ErrorContent>
     }
 
     return (
       <Context.Provider
         value={{
           workspaceId,
+          formId,
           langIndex,
           setLangIndex,
           form: queryForm.data,
@@ -133,7 +139,6 @@ function Form() {
       <TabsLayout>
         <TabLink
           icon={<Icon>{appConfig.icons.dataTable}</Icon>}
-          iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           to={answersRoute.fullPath}
           label={m.data}
@@ -141,7 +146,6 @@ function Form() {
         />
         <TabLink
           icon={<Icon>edit</Icon>}
-          iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           to={formBuilderRoute.fullPath}
           label={m.form}
@@ -149,7 +153,6 @@ function Form() {
         />
         <TabLink
           icon={<Icon>lock</Icon>}
-          iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           to={databaseAccessRoute.fullPath}
           disabled={!schema}
@@ -158,7 +161,6 @@ function Form() {
         {queryForm.data?.type === 'smart' ? (
           <TabLink
             icon={<Icon>dynamic_form</Icon>}
-            iconPosition="start"
             sx={{minHeight: 34, py: 1}}
             to={formActionsRoute.fullPath}
             label={m.action}
@@ -168,7 +170,6 @@ function Form() {
           <TabLink
             icon={<Icon>history</Icon>}
             disabled={!schema}
-            iconPosition="start"
             sx={{minHeight: 34, py: 1}}
             to={databaseHistoryRoute.fullPath}
             label={m.history}
@@ -176,7 +177,6 @@ function Form() {
         )}
         <TabLink
           icon={<Icon>settings</Icon>}
-          iconPosition="start"
           sx={{minHeight: 34, py: 1}}
           disabled={!queryPermission.data || !queryPermission.data?.canDelete || !queryPermission.data?.canUpdate}
           to={formSettingsRoute.fullPath}
@@ -186,7 +186,6 @@ function Form() {
           repeatGroups?.map(_ => (
             <TabLink
               icon={<Icon color="disabled">repeat</Icon>}
-              iconPosition="start"
               key={_}
               sx={{minHeight: 34, py: 1}}
               to="/$workspaceId/form/$formId/group/$group"

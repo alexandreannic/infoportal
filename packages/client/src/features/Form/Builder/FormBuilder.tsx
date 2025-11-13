@@ -1,19 +1,20 @@
 import {Core} from '@/shared'
 import {Box, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
-import React, {Dispatch, useMemo, useState} from 'react'
+import React, {Dispatch, useEffect, useMemo, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFender'
 import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
 import {createRoute, Outlet, redirect} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
-import {useIpToast} from '@/core/useToast'
-import {Ip} from '@infoportal/api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {FormBuilderTabs} from '@/features/Form/Builder/FormBuilderTabs'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {formBuilderVersionRoute} from '@/features/Form/Builder/Version/FormBuilderVersion'
+import {UseQueryPermission} from '@/core/query/useQueryPermission'
+import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 
 const formBuilderRoutePath = 'formCreator'
 export const formBuilderRoute = createRoute({
@@ -28,13 +29,17 @@ export const formBuilderRoute = createRoute({
 })
 
 export type FormBuilderContext = {
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
-  form: Ip.Form
+  // workspaceId: Ip.WorkspaceId
+  // formId: Ip.FormId
+  // form: Ip.Form
+  // formPermission: Ip.Permission.Form
   versions: Ip.Form.Version[]
   versionActive?: Ip.Form.Version
+  versionDraft?: Ip.Form.Version
   showPreview: boolean
   setShowPreview: Dispatch<React.SetStateAction<boolean>>
+  localDraft: Ip.Form.Schema | undefined
+  setLocalDraft: Dispatch<React.SetStateAction<Ip.Form.Schema | undefined>>
 }
 
 const Context = createContext<FormBuilderContext>({} as any)
@@ -43,42 +48,49 @@ export const useFormBuilderContext = <Selected extends any>(selector: (_: FormBu
   return useContextSelector(Context, selector)
 }
 
-export const useFormBuilderContentStyle = ({fullWidth}: {fullWidth?: boolean} = {}) => {
-  const showPreview = useFormBuilderContext(_ => _.showPreview)
-  return {
-    marginRight: 'auto',
-    marginLeft: 'auto',
-    width: fullWidth || showPreview ? '100%' : '50%',
-  }
-}
-
 function FormBuilder() {
   const t = useTheme()
   const {workspaceId, formId} = formBuilderRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryVersion = useQueryVersion({workspaceId, formId})
+  const queryPermission = UseQueryPermission.form({workspaceId, formId})
   const [showPreview, setShowPreview] = useState(false)
 
-  const active = useMemo(() => {
-    return queryVersion.get.data?.find(_ => _.status === 'active')
+  const {active, draft} = useMemo(() => {
+    return {
+      active: queryVersion.get.data?.find(_ => _.status === 'active'),
+      draft: queryVersion.get.data?.find(_ => _.status === 'draft'),
+    }
   }, [queryVersion.get.data])
 
+  const queryDraftSchema = useQuerySchemaByVersion({workspaceId, formId, versionId: draft?.id})
+
+  const [localDraft, setLocalDraft] = useState<Ip.Form.Schema | undefined>()
+  useEffect(() => {
+    if (!localDraft && queryDraftSchema.isSuccess || queryDraftSchema.error instanceof HttpError.NotFound) {
+      if (queryDraftSchema.data) setLocalDraft(queryDraftSchema.data)
+      else setLocalDraft({choices: [], survey: [], translations: [], settings: {}, translated: [], schema: ''})
+    }
+  }, [queryDraftSchema.data])
+
+  // console.log(localDraft)
+
   return (
-    <TabContent width="full" loading={queryForm.isPending || queryVersion.get.isLoading}>
+    <TabContent width="full" loading={queryPermission.isLoading || queryForm.isPending || queryVersion.get.isLoading}>
       {(() => {
-        if (!queryForm.data || !queryVersion.get.data) return
+        if (!queryForm.data || !queryPermission.data || !queryVersion.get.data) return
         if (Ip.Form.isConnectedToKobo(queryForm.data))
           return <FormBuilderKoboFender workspaceId={workspaceId} form={queryForm.data} />
 
         return (
           <Context.Provider value={{
-            workspaceId,
-            formId,
-            form: queryForm.data,
             versions: queryVersion.get.data,
             versionActive: active,
+            versionDraft: draft,
             showPreview,
             setShowPreview,
+            localDraft,
+            setLocalDraft,
           }}>
             <Box
               sx={{

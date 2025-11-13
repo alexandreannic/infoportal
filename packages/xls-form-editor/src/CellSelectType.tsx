@@ -1,11 +1,11 @@
 import {SelectOption, SelectSingle} from '@infoportal/client-core'
 import {skippedQuestionTypes, useCell, XlsSurveyRow} from './useStore'
 import {BoxProps} from '@mui/material'
-import {Kobo} from 'kobo-sdk'
 import {Obj, Seq, seq} from '@axanc/ts-utils'
 import {Icon} from '@infoportal/client-datatable'
+import {Ip} from '@infoportal/api-sdk'
 
-type QType = Exclude<Kobo.Form.QuestionType, (typeof skippedQuestionTypes)[number]>
+type QType = Exclude<Ip.Form.QuestionType, (typeof skippedQuestionTypes)[number]>
 
 const separators: Seq<QType> = seq(['end_repeat', 'select_multiple', 'datetime'])
 

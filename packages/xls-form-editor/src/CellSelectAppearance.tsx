@@ -2,8 +2,8 @@ import {BoxProps} from '@mui/material'
 import {useCell, XlsSurveyRow} from './useStore'
 import {SelectSingle} from '@infoportal/client-core'
 import {useMemo} from 'react'
-import {Kobo} from 'kobo-sdk'
 import {appearances} from './settings'
+import {Ip} from '@infoportal/api-sdk'
 
 export const CellSelectAppearance = ({
   rowKey,
@@ -12,7 +12,7 @@ export const CellSelectAppearance = ({
   questionType,
   ...props
 }: Pick<BoxProps, 'sx'> & {
-  questionType?: Kobo.Form.QuestionType
+  questionType?: Ip.Form.QuestionType
   rowKey: string
   field: keyof XlsSurveyRow
 }) => {

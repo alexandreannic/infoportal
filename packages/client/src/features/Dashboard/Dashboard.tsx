@@ -64,7 +64,6 @@ export function Dashboard() {
         {queryDashboardSection.data?.map(_ => (
           <TabLink
             key={_.id}
-            iconPosition="start"
             to={dashboardSectionRoute.fullPath}
             params={{workspaceId, dashboardId, sectionId: _.id}}
             label={_.title}
@@ -99,7 +98,6 @@ export function Dashboard() {
         </Core.Modal>
         <TabLink
           icon={<Icon>settings</Icon>}
-          iconPosition="start"
           sx={{mr: 0.75, marginLeft: 'auto', minHeight: 34, py: 1, maxWidth: 50}}
           component={Link}
           to={dashboardSettingsRoute.fullPath}

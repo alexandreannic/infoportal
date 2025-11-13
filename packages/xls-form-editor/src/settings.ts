@@ -1,9 +1,9 @@
-import {Kobo} from 'kobo-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 type Appearance = {
   name: string
   description: string
-  questionTypes: (Kobo.Form.QuestionType | string)[]
+  questionTypes: (Ip.Form.QuestionType | string)[]
 }
 
 export const selectsQuestionTypes = ['select_one_from_file', 'select_one', 'select_multiple']
@@ -21,7 +21,7 @@ export const appearances: Appearance[] = [
   },
   {
     name: 'url',
-    description: "Show a button to launch the website represented by this field's value",
+    description: 'Show a button to launch the website represented by this field\'s value',
     questionTypes: ['text'],
   },
   {
@@ -200,7 +200,7 @@ export const appearances: Appearance[] = [
   },
   {
     name: 'map',
-    description: "Show available choices on a map using each choice's geometry column",
+    description: 'Show available choices on a map using each choice\'s geometry column',
     questionTypes: ['select_one', 'select_one_from_file'],
   },
   {

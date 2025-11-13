@@ -3,7 +3,7 @@ import {Link, useRouter} from '@tanstack/react-router'
 import React from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {PopoverShareLink} from '@/shared/PopoverShareLink'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
 import {formBuilderXlsUploaderRoute} from '@/features/Form/Builder/Upload/XlsFileUploadForm'
@@ -57,6 +57,7 @@ export const FormBuilderTabs = ({
       />
       <Tab
         sx={{flex: 1}}
+        iconPosition="start"
         icon={<Icon>visibility</Icon>}
         label={m.preview}
         color={showPreview ? 'primary' : 'inherit'}
@@ -67,7 +68,7 @@ export const FormBuilderTabs = ({
       {/*  <Tab sx={{flex: 1}} icon={<Icon>open_in_new</Icon>} label={m.open} disabled={!activeVersion} />*/}
       {/*</Link>*/}
       <PopoverShareLink label={m.copyResponderLink} url={absoluteUrl}>
-        <Tab sx={{flex: 1}} icon={<Icon>share</Icon>} label={m.share} disabled={!activeVersion} />
+        <Tab sx={{flex: 1}} iconPosition="start" icon={<Icon>share</Icon>} label={m.share} disabled={!activeVersion} />
       </PopoverShareLink>
     </TabsLayout>
   )
