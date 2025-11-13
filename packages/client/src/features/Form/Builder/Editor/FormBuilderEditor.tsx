@@ -1,7 +1,7 @@
 import {createRoute} from '@tanstack/react-router'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
-import {Box} from '@mui/material'
 import {XlsFormEditor} from '@infoportal/xls-form-editor'
+import {FormBuilderBody} from '@/features/Form/Builder/FormBuilderBody'
 
 export const formBuilderEditorRoute = createRoute({
   getParentRoute: () => formBuilderRoute,
@@ -10,7 +10,7 @@ export const formBuilderEditorRoute = createRoute({
 })
 
 function FormBuilderEditor() {
-  return <Box>
+  return <FormBuilderBody fullWidth>
     <XlsFormEditor />
-  </Box>
+  </FormBuilderBody>
 }

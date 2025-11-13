@@ -9,6 +9,7 @@ import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {createRoute} from '@tanstack/react-router'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
+import {FormBuilderBody} from '@/features/Form/Builder/FormBuilderBody'
 
 export const formBuilderVersionRoute = createRoute({
   getParentRoute: () => formBuilderRoute,
@@ -17,7 +18,6 @@ export const formBuilderVersionRoute = createRoute({
 })
 
 function FormBuilderVersion() {
-// {workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
   const {workspaceId, formId} = formBuilderRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
   const queryVersion = useQueryVersion({workspaceId, formId})
@@ -31,34 +31,36 @@ function FormBuilderVersion() {
   }, [queryVersion.get.data])
 
   return (
-    <Core.Panel>
-      <Core.PanelHead
-        action={
-          queryPermission.data?.version_canDeploy && (
-            <Core.Modal
-              loading={queryVersion.deployLast.isPending}
-              title={m.confirm}
-              onConfirm={(event, close) => queryVersion.deployLast.mutateAsync({workspaceId, formId}).then(close)}
-            >
-              <Core.Btn icon="send" variant="contained" disabled={!draft} loading={queryVersion.deployLast.isPending}>
-                {m.deployLastVersion}
-              </Core.Btn>
-            </Core.Modal>
-          )
-        }
-      >
-        {m.versions}
-      </Core.PanelHead>
-      <Core.PanelBody>
-        {seq(versions ?? [])
-          .sortByNumber(_ => _.version, '9-0')
-          .slice(0, versionVisible)
-          .map((_, i) => (
-            <VersionRow key={_.id} version={_} index={i} />
-          ))}
-        {versionVisible < versions.length && <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />}
-        {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
-      </Core.PanelBody>
-    </Core.Panel>
+    <FormBuilderBody>
+      <Core.Panel>
+        <Core.PanelHead
+          action={
+            queryPermission.data?.version_canDeploy && (
+              <Core.Modal
+                loading={queryVersion.deployLast.isPending}
+                title={m.confirm}
+                onConfirm={(event, close) => queryVersion.deployLast.mutateAsync({workspaceId, formId}).then(close)}
+              >
+                <Core.Btn icon="send" variant="contained" disabled={!draft} loading={queryVersion.deployLast.isPending}>
+                  {m.deployLastVersion}
+                </Core.Btn>
+              </Core.Modal>
+            )
+          }
+        >
+          {m.versions}
+        </Core.PanelHead>
+        <Core.PanelBody>
+          {seq(versions ?? [])
+            .sortByNumber(_ => _.version, '9-0')
+            .slice(0, versionVisible)
+            .map((_, i) => (
+              <VersionRow key={_.id} version={_} index={i} />
+            ))}
+          {versionVisible < versions.length && <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />}
+          {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
+        </Core.PanelBody>
+      </Core.Panel>
+    </FormBuilderBody>
   )
 }
