@@ -1,5 +1,5 @@
 import {seq} from '@axanc/ts-utils'
-import {VersionRow, VersionRowRoot, VersionRowShowMore} from '@/features/Form/Builder/VersionRow'
+import {VersionRow, VersionRowRoot, VersionRowShowMore} from '@/features/Form/Builder/Version/VersionRow'
 import React, {useMemo, useState} from 'react'
 import {Core} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'
