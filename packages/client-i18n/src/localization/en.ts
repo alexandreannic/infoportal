@@ -1,5 +1,5 @@
 import {formatDistance, formatDuration as formatDurationFns, intervalToDuration} from 'date-fns'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 const invalidDate = ''
 

@@ -3,7 +3,7 @@ import {useEffect, useRef, useState} from 'react'
 import {Socket} from 'socket.io-client'
 import {useQueryClient} from '@tanstack/react-query'
 import {IpEvent} from 'infoportal-common'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {getAppSocket} from '@/core/socket'
 

@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Box, BoxProps, Icon, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import {statusConfig} from '@infoportal/client-core'

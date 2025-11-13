@@ -1,6 +1,6 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm, useWatch} from 'react-hook-form'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import React, {useEffect} from 'react'
 import {SwitchBox} from '@/shared/customInput/SwitchBox'
 import {

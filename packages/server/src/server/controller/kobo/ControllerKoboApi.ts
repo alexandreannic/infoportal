@@ -5,7 +5,7 @@ import {KoboSdkGenerator} from '../../../feature/kobo/KoboSdkGenerator.js'
 import {KoboSyncServer} from '../../../feature/kobo/KoboSyncServer.js'
 import axios, {AxiosError} from 'axios'
 import {KoboFormService} from '../../../feature/kobo/KoboFormService.js'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {KoboFormIndex} from '../../../feature/kobo/KoboFormIndex.js'
 
 export class ControllerKoboApi {

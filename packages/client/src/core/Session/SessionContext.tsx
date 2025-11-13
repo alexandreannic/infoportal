@@ -11,7 +11,7 @@ import {useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
 import {useNavigate} from '@tanstack/react-router'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 
 export interface SessionContext {

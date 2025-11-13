@@ -1,6 +1,6 @@
 import {UUID} from 'infoportal-common'
 import {AppConfig} from '@/conf/AppConfig'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export interface Proxy {
   id: UUID

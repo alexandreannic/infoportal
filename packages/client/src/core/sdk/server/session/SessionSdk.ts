@@ -1,6 +1,6 @@
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {Session, SessionHelper} from '@/core/sdk/server/session/Session'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 interface LoginRequest {
   name: string

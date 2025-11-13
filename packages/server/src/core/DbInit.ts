@@ -1,6 +1,6 @@
 import {Prisma, PrismaClient} from '@prisma/client'
 import {AppConf} from './conf/AppConf.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export const createdBySystem = 'SYSTEM' as Ip.User.Email
 

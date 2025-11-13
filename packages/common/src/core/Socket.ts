@@ -1,6 +1,6 @@
 import {IpEvent} from '../event/IpEventClient.js'
 import {IpEventParams} from '../event/IpEvent.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export interface ServerToClientEvents {
   [IpEvent.SUBMISSION_NEW]: (data: IpEventParams.NewSubmission) => void

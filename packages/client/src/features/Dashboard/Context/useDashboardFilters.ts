@@ -1,6 +1,6 @@
 import {useCallback, useMemo, useState} from 'react'
 import {produce} from 'immer'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Obj} from '@axanc/ts-utils'
 
 export type Filters = {

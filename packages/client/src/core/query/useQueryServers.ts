@@ -3,7 +3,7 @@ import {queryKeys} from '@/core/query/query.index'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
 import {ApiError} from '@/core/sdk/server/ApiClient'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export const useQueryServers = (workspaceId: Ip.WorkspaceId) => {
   const {apiv2} = useAppSettings()

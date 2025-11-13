@@ -2,7 +2,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {queryKeys} from '@/core/query/query.index'
 import {duration} from '@axanc/ts-utils'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 
 export class UseQueryWorkspace {

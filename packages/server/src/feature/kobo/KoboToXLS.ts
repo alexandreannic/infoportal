@@ -6,7 +6,7 @@ import {Kobo} from 'kobo-sdk'
 import {KoboFormService} from './KoboFormService'
 import {fnSwitch, Obj, seq} from '@axanc/ts-utils'
 import {format} from 'date-fns'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {app} from '../../index'
 import {FormService} from '../form/FormService'
 

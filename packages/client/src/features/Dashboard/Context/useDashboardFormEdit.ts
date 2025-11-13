@@ -3,7 +3,7 @@ import {defaultThemeParams} from '@/core/theme'
 import {useEffectSkipFirst} from '@/shared/useEffectSkipFirst'
 import {useDebounce} from '@axanc/react-hooks'
 import {useTheme} from '@emotion/react'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useForm, useWatch} from 'react-hook-form'
 
 export type UseDashboardFormEdit = ReturnType<typeof useDashboardFormEdit>

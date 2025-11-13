@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {app, AppLogger} from '../../../index.js'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../../core/prismaMapper/PrismaMapper.js'
 
 export class FormAccessService {

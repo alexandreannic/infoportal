@@ -4,7 +4,7 @@ import {getQuestionTypeByWidget, useWidgetSettingsContext} from '@/features/Dash
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import React, {useEffect} from 'react'
 import {Box} from '@mui/material'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {RangeTableEditor} from '@/features/Dashboard/Widget/Table/RangeTableEditor'

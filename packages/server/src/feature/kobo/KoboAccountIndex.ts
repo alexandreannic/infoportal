@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../index.js'
 import {Kobo} from 'kobo-sdk'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {duration, seq} from '@axanc/ts-utils'
 
 export class KoboAccountIndex {

@@ -3,7 +3,7 @@ import {genShortid} from '../../helper/Utils.js'
 import {slugify, UUID} from 'infoportal-common'
 import {GroupService} from '../group/GroupService.js'
 import {FormAccessService} from '../form/access/FormAccessService.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class WorkspaceService {

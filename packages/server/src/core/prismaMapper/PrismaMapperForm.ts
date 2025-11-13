@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import type * as Prisma from '@prisma/client'
 import {Kobo} from 'kobo-sdk'
 import {Defined} from 'yup'

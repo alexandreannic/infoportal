@@ -1,6 +1,6 @@
 import {UUID} from 'infoportal-common'
 import {ApiClient} from '../ApiClient'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export type JsonStore<T> = {
   id: UUID

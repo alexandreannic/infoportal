@@ -3,7 +3,7 @@ import React, {ReactNode, useMemo} from 'react'
 import {StateStatus} from 'infoportal-common'
 import {Box, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Core} from '@/shared'
 
 export namespace selectStatusConfig {

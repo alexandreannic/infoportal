@@ -1,7 +1,7 @@
 import {AppConfig, appConfig} from '@/conf/AppConfig.js'
 import {KoboApiSdk} from '@/core/sdk/server/kobo/KoboApiSdk.js'
 import {Kobo} from 'kobo-sdk'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 import {Datatable} from '@/shared'
 

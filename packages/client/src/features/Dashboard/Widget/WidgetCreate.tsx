@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Obj} from '@axanc/ts-utils'
 import {WidgetTypeIcon} from '@/features/Dashboard/Widget/WidgetTypeIcon'
 import React from 'react'

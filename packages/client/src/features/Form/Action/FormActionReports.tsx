@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {CircularProgress, Icon, useTheme} from '@mui/material'
 import {AppAvatar, Core, Datatable} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'

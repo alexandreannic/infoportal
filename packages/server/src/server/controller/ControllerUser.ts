@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {UserService} from '../../feature/user/UserService.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export class ControllerUser {
   constructor(

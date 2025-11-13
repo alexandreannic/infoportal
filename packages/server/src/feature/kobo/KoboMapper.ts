@@ -1,5 +1,5 @@
 import {Kobo} from 'kobo-sdk'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {fnSwitch} from '@axanc/ts-utils'
 
 export class KoboMapper {

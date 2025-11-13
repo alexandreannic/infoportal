@@ -7,7 +7,7 @@ import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {DrcJobInputMultiple} from '@/shared/customInput/DrcJobInput'
 import {Core, Datatable} from '@/shared'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Regexp} from 'infoportal-common'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
 

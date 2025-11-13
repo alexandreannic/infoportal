@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 type Bytes = Uint8Array<ArrayBufferLike>
 

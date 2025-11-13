@@ -1,5 +1,5 @@
 import {Form, PrismaClient} from '@prisma/client'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {FormVersionService} from './FormVersionService.js'
 import {FormAccessService} from './access/FormAccessService.js'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'

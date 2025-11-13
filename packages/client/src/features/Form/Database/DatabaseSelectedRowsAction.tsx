@@ -1,7 +1,7 @@
 import React from 'react'
 import {Core} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Alert} from '@mui/material'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 

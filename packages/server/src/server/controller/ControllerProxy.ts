@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
 import {ProxyService} from '../../feature/proxy/ProxyService.js'
 import {PrismaClient} from '@prisma/client'
-import {HttpError} from 'infoportal-api-sdk'
+import {HttpError} from '@infoportal/api-sdk'
 
 export class ControllerProxy {
   constructor(

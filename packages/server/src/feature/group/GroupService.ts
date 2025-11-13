@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {format} from 'date-fns'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class GroupService {

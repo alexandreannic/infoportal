@@ -3,7 +3,7 @@ import {useAppSettings} from '../context/ConfigContext'
 import {KoboMapper, Submission} from '../sdk/server/kobo/KoboMapper'
 import {queryKeys} from './query.index'
 import {useQuerySchemaBundle} from './useQuerySchema'
-import {Ip, Paginate} from 'infoportal-api-sdk'
+import {Ip, Paginate} from '@infoportal/api-sdk'
 import {produce} from 'immer'
 import {useIpToast} from '@/core/useToast'
 

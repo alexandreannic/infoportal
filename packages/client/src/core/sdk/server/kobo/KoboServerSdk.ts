@@ -1,7 +1,7 @@
 import {ApiClient} from '../ApiClient'
 import {KoboServer} from './KoboMapper'
 import {UUID} from 'infoportal-common'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export class KoboServerSdk {
   constructor(private client: ApiClient) {}

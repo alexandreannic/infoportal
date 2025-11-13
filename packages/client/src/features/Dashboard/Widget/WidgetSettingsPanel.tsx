@@ -1,5 +1,5 @@
 import {Core} from '@/shared'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import React, {RefObject, useRef} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, Icon, useTheme} from '@mui/material'

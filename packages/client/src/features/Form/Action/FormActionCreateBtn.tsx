@@ -2,7 +2,7 @@ import {FormActionCreate} from '@/features/Form/Action/FormActionCreate.js'
 import {useI18n} from '@infoportal/client-i18n'
 import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
 import {Core} from '@/shared'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export const FormActionCreateBtn = ({
   workspaceId,

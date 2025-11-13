@@ -5,7 +5,7 @@ import {DialogProps} from '@toolpad/core'
 import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import {useRef} from 'react'
 import {XlsFormFiller, XlsFormFillerHandle} from 'xls-form-filler'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Link} from '@tanstack/react-router'
 import {Core} from '@/shared'
 

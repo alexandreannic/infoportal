@@ -12,7 +12,7 @@ import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
 import {createRoute, Link, useRouter} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
 import {useIpToast} from '@/core/useToast'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
 

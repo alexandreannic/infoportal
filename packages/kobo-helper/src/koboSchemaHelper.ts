@@ -1,7 +1,7 @@
 import {seq} from '@axanc/ts-utils'
 import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper.js'
 import {Kobo} from 'kobo-sdk'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {KoboMetaHelper} from './koboMetaHelper.js'
 import {removeHtml} from 'infoportal-common'
 

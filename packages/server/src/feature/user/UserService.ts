@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {UUID} from 'infoportal-common'
 import {app, AppLogger} from '../../index.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class UserService {

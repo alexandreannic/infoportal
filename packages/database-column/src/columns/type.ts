@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Kobo} from 'kobo-sdk'
 import {Theme} from '@mui/material'
 import {Messages} from '@infoportal/client-i18n'

@@ -1,6 +1,6 @@
 import {app, AppCacheKey} from '../../index.js'
 import {duration} from '@axanc/ts-utils'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {Kobo} from 'kobo-sdk'
 import {PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from '../kobo/KoboSdkGenerator.js'

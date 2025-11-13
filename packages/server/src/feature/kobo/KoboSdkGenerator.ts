@@ -1,7 +1,7 @@
 import {duration} from '@axanc/ts-utils'
 import {KoboServer, PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../index.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Kobo, KoboClient} from 'kobo-sdk'
 import {KoboAccountIndex} from './KoboAccountIndex.js'
 import {KoboFormIndex} from './KoboFormIndex.js'

@@ -5,7 +5,7 @@ import {
 } from '@/features/Dashboard/Context/useGetDataByRepeatGroup'
 import {seq} from '@axanc/ts-utils'
 import {useI18n} from '@infoportal/client-i18n'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import {Dispatch, ReactNode, SetStateAction, useMemo, useState} from 'react'
 import {createContext, useContextSelector} from 'use-context-selector'

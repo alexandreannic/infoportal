@@ -15,7 +15,7 @@ import * as csvToJson from 'csvtojson'
 import {map, Obj, seq} from '@axanc/ts-utils'
 import {UseDatabaseView, useDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
 import {DatabaseDisplay} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {ExternalFilesChoices, KoboExternalFilesIndex} from '@infoportal/database-column'
 import {useFormContext} from '@/features/Form/Form'
 

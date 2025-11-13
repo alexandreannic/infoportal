@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 import {ResponsiveProps} from 'react-grid-layout'
 

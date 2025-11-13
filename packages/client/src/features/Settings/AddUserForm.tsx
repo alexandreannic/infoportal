@@ -1,7 +1,7 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {Regexp} from 'infoportal-common'
 import {Controller, useForm} from 'react-hook-form'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {Collapse} from '@mui/material'
 import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
 import {Core} from '@/shared'

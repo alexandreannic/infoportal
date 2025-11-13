@@ -5,7 +5,7 @@ import {Kobo, KoboClient} from 'kobo-sdk'
 import {appConf} from '../../core/conf/AppConf.js'
 import {app, AppCacheKey} from '../../index.js'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {FormService, FormServiceCreatePayload} from '../form/FormService.js'
 

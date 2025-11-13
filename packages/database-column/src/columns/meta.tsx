@@ -1,6 +1,6 @@
 import React from 'react'
 import {ColumnMetaProps, Row} from './type.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import * as Datatable from '@infoportal/client-datatable'
 import {ReadonlyAction} from '../ui/ReadonlyAction.js'
 import {Messages} from '@infoportal/client-i18n'

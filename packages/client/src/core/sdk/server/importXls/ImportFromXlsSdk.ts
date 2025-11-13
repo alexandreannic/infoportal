@@ -1,5 +1,5 @@
 import {ApiClient} from '@/core/sdk/server/ApiClient'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import FormId = Ip.FormId
 
 export class ImportFromXlsDataSdk {

@@ -2,7 +2,7 @@ import {PrismaClient} from '@prisma/client'
 import {InferType} from 'yup'
 import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {UserService} from '../user/UserService.js'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export type WorkspaceAccessCreate = InferType<typeof WorkspaceAccessService.schema.create>

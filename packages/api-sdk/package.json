@@ -1,5 +1,5 @@
 {
-  "name": "infoportal-api-sdk",
+  "name": "@infoportal/api-sdk",
   "version": "1.0.0",
   "description": "Set of utils methods and features",
   "type": "module",

@@ -1,7 +1,7 @@
 import {createRoute, Link} from '@tanstack/react-router'
 import {Core} from '@/shared'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 import {useQuerySchemaBundle} from '@/core/query/useQuerySchema.js'
 import {KoboInterfaceBuilder} from '@infoportal/kobo-helper'

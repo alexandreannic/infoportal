@@ -10,7 +10,7 @@ import {ApiError} from '@/core/sdk/server/ApiClient'
 import {DialogProps} from '@toolpad/core'
 import {useQueryServers} from '@/core/query/useQueryServers'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Core} from '@/shared'
 
 const servers = {

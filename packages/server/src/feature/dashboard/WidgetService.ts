@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class WidgetService {

@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Box, Icon} from '@mui/material'
 import {widgetTypeToIcon} from '@/features/Dashboard/Widget/WidgetTypeIcon'
 import React from 'react'

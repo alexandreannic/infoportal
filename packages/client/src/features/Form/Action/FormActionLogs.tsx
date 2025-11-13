@@ -1,5 +1,5 @@
 import {UseQueryFormActionLog} from '@/core/query/useQueryFormActionLog.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Box, Icon, styled, SxProps, Theme, useTheme} from '@mui/material'
 import {Core, Datatable} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'

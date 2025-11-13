@@ -1,5 +1,5 @@
 import {FormSubmission, Prisma, PrismaClient} from '@prisma/client'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {FormService} from './form/FormService.js'
 import {duration, fnSwitch, Seq, seq} from '@axanc/ts-utils'
 import {app, AppCacheKey} from '../index.js'

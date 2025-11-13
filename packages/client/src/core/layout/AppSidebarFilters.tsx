@@ -1,7 +1,7 @@
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {Box, BoxProps, Collapse, Icon, InputProps} from '@mui/material'
 import {Obj, seq} from '@axanc/ts-utils'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 import {forwardRef, useEffect, useMemo} from 'react'
 import {Core} from '@/shared'

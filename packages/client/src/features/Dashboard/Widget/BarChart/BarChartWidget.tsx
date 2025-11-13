@@ -3,7 +3,7 @@ import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCa
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 import {Core, Datatable} from '@/shared'
 import {Box} from '@mui/material'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useCallback, useMemo} from 'react'
 
 export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {

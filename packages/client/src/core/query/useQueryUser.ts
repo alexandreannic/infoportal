@@ -2,7 +2,7 @@ import {useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {queryKeys} from './query.index'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {usePendingMutation} from '@/core/query/usePendingMutation.js'
 
 export class UseQueryUser {

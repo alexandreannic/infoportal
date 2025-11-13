@@ -8,7 +8,7 @@ import {createRoute, useNavigate} from '@tanstack/react-router'
 import {ReactNode} from 'react'
 import {assetStyle, Asset, AssetType} from '@/shared/Asset.js'
 import {SelectFormCategory} from '@/shared/customInput/SelectFormCategory.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export const formSettingsRoute = createRoute({
   getParentRoute: () => formRoute,

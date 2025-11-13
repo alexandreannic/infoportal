@@ -11,7 +11,7 @@ import {NewFormCreateInternal} from '@/features/NewForm/NewFormCreateInternal'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {createRoute, useNavigate} from '@tanstack/react-router'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Asset, assetStyle} from '@/shared/Asset.js'
 

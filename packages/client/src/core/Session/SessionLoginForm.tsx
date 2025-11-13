@@ -11,7 +11,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {CenteredContent} from '@/shared/CenteredContent'
 import {useGoogleLogin} from '@react-oauth/google'
 import {ButtonProps} from '@mui/material/Button'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {styleUtils} from '@infoportal/client-core'
 
 const BtnLogin = ({

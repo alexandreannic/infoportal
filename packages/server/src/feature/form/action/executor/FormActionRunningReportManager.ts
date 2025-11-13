@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../../../core/prismaMapper/PrismaMapper.js'
 
 type LiveReport = Omit<Ip.Form.Action.Report, 'id'>

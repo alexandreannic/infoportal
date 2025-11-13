@@ -12,7 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "infoportal-api-sdk": "1.0.0",
+    "@infoportal/api-sdk": "1.0.0",
     "quickjs-emscripten": "^0.31.0",
     "vm2": "^3.9.19"
   }

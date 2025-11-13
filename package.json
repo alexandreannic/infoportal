@@ -10,7 +10,7 @@
     "start:server": "npm run start --workspace infoportal-server",
     "start:client": "npm run start --workspace infoportal-client",
     "build:all": "npm run build:common && npm run build:server && npm run build:client",
-    "build:api-sdk": "npm run build --workspace infoportal-api-sdk",
+    "build:api-sdk": "npm run build --workspace @infoportal/api-sdk",
     "build:server": "npm run build --workspace infoportal-server",
     "build:client": "npm run build --workspace infoportal-client",
     "build:common": "npm run build --workspace infoportal-common",

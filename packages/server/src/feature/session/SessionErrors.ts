@@ -1,4 +1,4 @@
-import {HttpError} from 'infoportal-api-sdk'
+import {HttpError} from '@infoportal/api-sdk'
 
 export namespace SessionError {
   export class UserNotConnected extends HttpError.Forbidden {

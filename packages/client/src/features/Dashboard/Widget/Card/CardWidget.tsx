@@ -2,7 +2,7 @@ import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {PanelWidgetContent} from '@/shared/PdfLayout/PanelWidget'
 import {useI18n} from '@infoportal/client-i18n'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {toInt} from 'infoportal-common'
 import {useMemo} from 'react'
 

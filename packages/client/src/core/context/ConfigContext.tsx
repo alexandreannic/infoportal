@@ -1,7 +1,7 @@
 import React, {ReactNode, useContext} from 'react'
 import {ApiSdk} from '../sdk/server/ApiSdk'
 import {appConfig, AppConfig} from '@/conf/AppConfig'
-import {IpClient} from 'infoportal-api-sdk'
+import {IpClient} from '@infoportal/api-sdk'
 
 export interface ConfigContext {
   api: ApiSdk

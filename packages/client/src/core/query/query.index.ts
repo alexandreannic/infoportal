@@ -1,5 +1,5 @@
 import {Core} from '@/shared'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 const concat = (...args: (string | undefined)[]) => {
   return args.filter(_ => !!_)

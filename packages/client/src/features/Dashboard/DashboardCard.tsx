@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, useTheme} from '@mui/material'
 import {Core} from '@/shared'

@@ -5,7 +5,7 @@ import {ApiError} from '@/core/sdk/server/ApiClient'
 import {useIpToast} from '@/core/useToast'
 import {useI18n} from '@infoportal/client-i18n'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 
 export class UseQueryDashboard {

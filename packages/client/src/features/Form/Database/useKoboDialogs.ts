@@ -2,7 +2,7 @@ import {useDialogs} from '@toolpad/core'
 import {DialogAnswerView} from '@/features/Form/dialogs/DialogAnswerView'
 import {DialogAnswerEdit} from '@/features/Form/dialogs/DialogAnswerEdit'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useFormContext} from '@/features/Form/Form'
 
 export interface OpenModalProps {

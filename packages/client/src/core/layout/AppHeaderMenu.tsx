@@ -4,7 +4,7 @@ import {Box, BoxProps, Chip, Icon, Popover, SxProps} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '@/shared'
 import {AppAvatar} from '@/shared/AppAvatar'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace.js'
 
 const Row = ({

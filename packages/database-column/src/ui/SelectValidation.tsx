@@ -1,6 +1,6 @@
 import React from 'react'
 import {SelectSingleNullableProps, SelectStatus} from '@infoportal/client-core'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export const SelectValidation = (props: SelectSingleNullableProps<Ip.Submission.Validation>) => {
   return (

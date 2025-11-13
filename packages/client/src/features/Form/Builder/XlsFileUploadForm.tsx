@@ -6,7 +6,7 @@ import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {useI18n} from '@infoportal/client-i18n'
 import {Alert, AlertTitle, Box, CircularProgress, Icon, Skeleton} from '@mui/material'
 import {DiffView} from '@/features/Form/Builder/DiffView'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 
 type Form = {

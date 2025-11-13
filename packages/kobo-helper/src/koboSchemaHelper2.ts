@@ -1,6 +1,6 @@
 import {Kobo} from 'kobo-sdk'
 import {removeHtml} from 'infoportal-common'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper.js'
 import {seq} from '@axanc/ts-utils'
 

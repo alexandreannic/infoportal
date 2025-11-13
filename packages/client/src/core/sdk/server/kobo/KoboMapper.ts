@@ -1,6 +1,6 @@
 import {Obj} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 /** @deprecated use from sdk*/
 export type KoboServer = {

@@ -7,7 +7,7 @@ import {colorRepeatedQuestionHeader, defaultColWidth, ignoredColType} from './co
 import {Btn, Txt} from '@infoportal/client-core'
 import {ReadonlyAction} from '../ui/ReadonlyAction.js'
 import {BulkUpdateAnswer} from '../ui/BulkUpdate.js'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {map} from '@axanc/ts-utils'
 import {KoboTypeIcon} from '../ui/KoboTypeIcon.js'
 import {removeHtml} from 'infoportal-common'

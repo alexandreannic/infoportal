@@ -7,7 +7,7 @@ import {SessionError} from './SessionErrors.js'
 import {google} from 'googleapis'
 import {WorkspaceService} from '../workspace/WorkspaceService.js'
 import {UserProfile} from './AppSession.js'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {UserService} from '../user/UserService.js'
 

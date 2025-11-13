@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import React, {useMemo} from 'react'
 import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {Core, Datatable} from '@/shared'

@@ -3,7 +3,7 @@ import {app, AppLogger} from '../../../index.js'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {KoboAnswerHistoryHelper} from './SubmissionHistoryType.js'
-import {Ip, Paginate} from 'infoportal-api-sdk'
+import {Ip, Paginate} from '@infoportal/api-sdk'
 
 type Create = {
   authorEmail: Ip.User.Email

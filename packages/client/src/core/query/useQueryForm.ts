@@ -4,7 +4,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {seq} from '@axanc/ts-utils'
 import {ApiError} from '@/core/sdk/server/ApiClient'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 import {usePendingMutation} from '@/core/query/usePendingMutation.js'
 

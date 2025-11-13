@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export const mapWorkspace = <T extends {id: string}>(_: T): T & {id: Ip.WorkspaceId} => _ as any
 export const mapWorkspaceAccess = <T extends {id: string}>(_: T): T & {id: Ip.Workspace.AccessId} => _ as any

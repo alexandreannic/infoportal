@@ -2,7 +2,7 @@ import xlsx from 'xlsx'
 import {Kobo} from 'kobo-sdk'
 import {promisify} from 'util'
 import {execFile} from 'child_process'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 const execFilePromise = promisify(execFile)
 

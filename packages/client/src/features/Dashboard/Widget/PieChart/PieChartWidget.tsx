@@ -2,7 +2,7 @@ import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {Core} from '@/shared'
 import {Box} from '@mui/material'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 
 export function PieChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {

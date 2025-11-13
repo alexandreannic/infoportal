@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Icon, IconProps} from '@mui/material'
 
 export const widgetTypeToIcon = {

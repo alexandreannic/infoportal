@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 
 export namespace KoboFlattenRepeatedGroup {
   export type Data = Pick<Ip.Submission, 'originId' | 'id' | 'submissionTime'> & Cursor & Record<string, any>

@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {WorkspaceAccessCreate, WorkspaceAccessService} from './WorkspaceAccessService.js'
 import {UserService} from '../user/UserService.js'

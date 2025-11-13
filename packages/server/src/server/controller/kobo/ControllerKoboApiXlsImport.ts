@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express'
-import {HttpError} from 'infoportal-api-sdk'
+import {HttpError} from '@infoportal/api-sdk'
 import {PrismaClient} from '@prisma/client'
 import {SubmissionImportService} from '../../../feature/form/submission/SubmissionImportService.js'
 

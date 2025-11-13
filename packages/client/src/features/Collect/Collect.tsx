@@ -6,7 +6,7 @@ import {Core, Page} from '@/shared'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useIpToast} from '@/core/useToast'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useEffect, useState} from 'react'
 
 export const collectRoute = createRoute({

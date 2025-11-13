@@ -3,7 +3,7 @@ import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCa
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 import {Core} from '@/shared'
 import {Obj, seq} from '@axanc/ts-utils'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useCallback, useMemo} from 'react'
 import {normalizeIsoRegion} from '@infoportal/client-core'
 

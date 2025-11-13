@@ -2,7 +2,7 @@ import {Alert, AlertTitle, Box, ButtonBase, ButtonBaseProps, Icon, useTheme} fro
 import {useI18n} from '@infoportal/client-i18n'
 import React from 'react'
 import {useQueryServer} from '@/core/query/useQueryServers'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {Core} from '@/shared'
 
 const Button = ({href, label, icon, sx, ...props}: {href: string; label: string; icon: string} & ButtonBaseProps) => {

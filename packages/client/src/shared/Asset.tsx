@@ -1,5 +1,5 @@
 import {Icon as MuiIcon, IconProps} from '@mui/material'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 
 export type Asset = {

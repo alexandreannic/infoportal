@@ -10,7 +10,7 @@ import {settingsProxyRoute} from '@/features/Settings/SettingsProxy'
 import {settingsUsersRoute} from '@/features/Settings/SettingsUsers'
 import {settingsCacheRoute} from '@/features/Settings/SettingsCache'
 import {useSession} from '@/core/Session/SessionContext'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
 
 export const settingsRoute = createRoute({

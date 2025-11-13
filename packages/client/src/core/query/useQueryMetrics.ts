@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useAppSettings} from '@/core/context/ConfigContext.js'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index.js' //

@@ -1,4 +1,4 @@
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import React from 'react'
 import {Core} from '@/shared'
 import {Icon} from '@mui/material'

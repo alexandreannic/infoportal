@@ -1,6 +1,6 @@
 import {useAppSettings} from '@/core/context/ConfigContext.js'
 import {useQuery, useQueryClient} from '@tanstack/react-query'
-import {HttpError, Ip} from 'infoportal-api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 import {queryKeys} from '@/core/query/query.index.js'
 
 export class UseQueryFormActionReport {

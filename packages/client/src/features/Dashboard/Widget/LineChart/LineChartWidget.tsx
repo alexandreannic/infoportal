@@ -5,7 +5,7 @@ import {Core} from '@/shared'
 import {seq} from '@axanc/ts-utils'
 import {ChartLineCurve} from '@infoportal/client-core'
 import {Box} from '@mui/material'
-import {Ip} from 'infoportal-api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 
 export const LineChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
