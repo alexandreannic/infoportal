@@ -6,9 +6,9 @@ import {PopoverShareLink} from '@/shared/PopoverShareLink'
 import {Ip} from 'infoportal-api-sdk'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
-import {formBuilderXlsUploaderRoute} from '@/features/Form/Builder/XlsFileUploadForm'
-import {formBuilderVersionRoute} from '@/features/Form/Builder/FormBuilderVersion'
-import {formBuilderEditorRoute} from '@/features/Form/Builder/FormBuilderEditor'
+import {formBuilderXlsUploaderRoute} from '@/features/Form/Builder/Upload/XlsFileUploadForm'
+import {formBuilderVersionRoute} from '@/features/Form/Builder/Version/FormBuilderVersion'
+import {formBuilderEditorRoute} from '@/features/Form/Builder/Editor/FormBuilderEditor'
 
 export const FormBuilderTabs = ({
   activeVersion,

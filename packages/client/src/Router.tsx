@@ -28,9 +28,9 @@ import {dashboardSectionRoute} from '@/features/Dashboard/Section/DashboardSecti
 import {dashboardRoute} from '@/features/Dashboard/Dashboard'
 import {dashboardSettingsRoute} from '@/features/Dashboard/DashboardSettings'
 import {dashboardRenderRoute} from '@/features/Dashboard/Render/DashboardRender'
-import {formBuilderVersionRoute} from '@/features/Form/Builder/FormBuilderVersion'
-import {formBuilderXlsUploaderRoute} from '@/features/Form/Builder/XlsFileUploadForm'
-import {formBuilderEditorRoute} from '@/features/Form/Builder/FormBuilderEditor'
+import {formBuilderVersionRoute} from '@/features/Form/Builder/Version/FormBuilderVersion'
+import {formBuilderXlsUploaderRoute} from '@/features/Form/Builder/Upload/XlsFileUploadForm'
+import {formBuilderEditorRoute} from '@/features/Form/Builder/Editor/FormBuilderEditor'
 
 export const rootRoute = createRootRoute({
   component: App,
