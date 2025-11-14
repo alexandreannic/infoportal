@@ -3,32 +3,42 @@ import {useConfig} from './DatatableConfig'
 import React, {useMemo} from 'react'
 import {Box, Icon, useTheme} from '@mui/material'
 import {Btn, Txt} from '@infoportal/client-core'
-import {BtnCopyCells, cellSelectionDangerThreshold} from './popup/PopupSelectedCell'
+import {BtnCopyCells} from './ui/BtnCopyCell'
+
+const cellSelectionDangerThreshold = 200
 
 export const DatatableFormularBar = () => {
-  const {engine, selectedCount, areAllColumnsSelected, selectedColumnsIds, selectedRowIds, selectedColumnUniq} = useCtx(
-    _ => _.cellSelection,
-  )
+  const columnsIndex = useCtx(_ => _.columns.indexMap)
+  const selectedColumnIds = useCtx(_ => _.state.selectedColumnIds)
+  const selectedRowIds = useCtx(_ => _.state.selectedRowIds)
+  const reset = useCtx(_ => _.cellSelection.reset)
+  const areAllColumnsSelected = useCtx(_ => _.cellSelection.areAllColumnsSelected)
+  const selectedCount = useCtx(_ => _.cellSelection.selectedCount)
   const renderComponentOnRowSelected = useCtx(_ => _.module?.cellSelection?.renderComponentOnRowSelected)
   const dataFilteredAndSorted = useCtx(_ => _.dataFilteredAndSorted)
   const columns = useCtx(_ => _.columns.visible)
+  const getRowKey = useCtx(_ => _.getRowKey)
+
+  const selectedColumnUniq = useMemo(() => {
+    if (!selectedColumnIds || selectedColumnIds.size !== 1) return
+    return columnsIndex[[...selectedColumnIds][0]]
+  }, [selectedColumnIds])
 
   const commonSelectedValue = useMemo(() => {
-    if (!selectedColumnUniq) return
-    let lastValue
-    for (let i = engine.state.selectionBoundary.rowMin; i < engine.state.selectionBoundary.rowMax + 1; i++) {
-      const row = dataFilteredAndSorted[i]
-      const value = selectedColumnUniq?.render(row).value
-      if (lastValue && value !== lastValue) {
-        lastValue = undefined
-        break
-      }
+    if (!selectedRowIds || !selectedColumnUniq) return
+    let lastValue: undefined | any = undefined
+    dataFilteredAndSorted.every(row => {
+      const key = getRowKey(row)
+      if (!selectedRowIds.has(key)) return true
+      const value = selectedColumnUniq.render(row).value
+      if (lastValue && lastValue !== value) return false
       lastValue = value
-    }
+      return true
+    })
     return lastValue
-  }, [engine.state.selectionBoundary])
+  }, [selectedRowIds, selectedColumnUniq, dataFilteredAndSorted])
 
-  const rowIds = useMemo(() => [...selectedRowIds], [selectedRowIds])
+  const rowIds = useMemo(() => selectedRowIds ? [...selectedRowIds] : [], [selectedRowIds])
 
   const t = useTheme()
 
@@ -63,14 +73,14 @@ export const DatatableFormularBar = () => {
       {selectedCount > 0 && (
         <>
           <BtnCopyCells />
-          <Btn size="small" variant="outlined" onClick={engine.reset} color="primary" sx={{minWidth: 0}}>
+          <Btn size="small" variant="outlined" onClick={reset} color="primary" sx={{minWidth: 0}}>
             <Icon>clear</Icon>
           </Btn>
         </>
       )}
       <Counter
-        columnsCount={selectedColumnsIds.size || columns.length}
-        rowsCount={selectedRowIds.size || dataFilteredAndSorted.length}
+        columnsCount={selectedColumnIds?.size || columns.length}
+        rowsCount={selectedRowIds?.size || dataFilteredAndSorted.length}
       />
     </Box>
   )

@@ -1,94 +1,89 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useRef} from 'react'
 import {DatatableContext} from './DatatableContext'
-import {CellSelectionCoord} from './reducer'
-import {CellSelectionMode} from './types'
+import {CellSelectionMode, Column, Props, Row} from './types'
+import {columnIndexId} from './useColumns'
+import {State} from './reducer'
 
-export type UseCellSelection = ReturnType<typeof useCellSelectionEngine>
+export type UseCellSelection = ReturnType<typeof useCellSelection>
 
 const voidFn = () => void 0
 
-export const useCellSelectionEngine = ({
+export const useCellSelection = <T extends Row = any>({
+  mode,
   tableRef,
   disabled,
   dispatch,
-  selectionStart,
-  selectionEnd,
-  mode,
+  selectedColumnIds,
+  selectedRowIds,
+  getRowKey,
+  visibleColumns,
+  filteredAndSortedData,
 }: {
   mode?: CellSelectionMode
-  selectionStart: CellSelectionCoord | null
-  selectionEnd: CellSelectionCoord | null
-  dispatch: DatatableContext['dispatch']
-  disabled?: boolean
   tableRef: React.MutableRefObject<HTMLDivElement>
+  disabled?: boolean
+  dispatch: DatatableContext['dispatch']
+  selectedColumnIds: Set<string> | null
+  selectedRowIds: Set<string> | null
+  visibleColumns: Column.InnerProps<T>[]
+  filteredAndSortedData: T[]
+  getRowKey: Props<T>['getRowKey']
 }) => {
   const selecting = useRef<boolean>(false)
   const scrollInterval = useRef<NodeJS.Timeout | null>(null)
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
   const anchor = useRef<{row: number; col: number} | null>(null) // last clicked cell for shift
-
-  const selectionBoundary = useMemo(() => {
-    if (!selectionStart || !selectionEnd) {
-      return {rowMin: -1, rowMax: -1, colMin: -1, colMax: -1}
-    } else {
-      return {
-        rowMin: Math.min(selectionStart.row, selectionEnd.row),
-        rowMax: Math.max(selectionStart.row, selectionEnd.row),
-        colMin: Math.min(selectionStart.col, selectionEnd.col),
-        colMax: Math.max(selectionStart.col, selectionEnd.col),
-      }
-    }
-  }, [selectionStart, selectionEnd])
-
-  const isRowSelected = useCallback(
-    (rowIndex: number) => {
-      return rowIndex >= selectionBoundary.rowMin && rowIndex <= selectionBoundary.rowMax
-    },
-    [selectionBoundary.rowMin, selectionBoundary.rowMax],
-  )
-
-  const isRowSelectedRef = useRef(isRowSelected)
-  useEffect(() => {
-    isRowSelectedRef.current = isRowSelected
-  }, [isRowSelected])
-
-  const isColumnSelected = useCallback(
-    (colIndex: number) => {
-      return colIndex >= selectionBoundary.colMin && colIndex <= selectionBoundary.colMax
-    },
-    [selectionBoundary.colMin, selectionBoundary.colMax],
-  )
-
-  const isSelected = useCallback(
-    (rowIndex: number, colIndex: number) => {
-      return isRowSelected(rowIndex) && isColumnSelected(colIndex)
-    },
-    [isRowSelected, isColumnSelected],
-  )
 
   const reset = useCallback(() => {
     dispatch({type: 'CELL_SELECTION_CLEAR'})
-    setAnchorEl(null)
     anchor.current = null
   }, [])
 
+  const setCellsSelection = ({startRow, startCol, endRow, endCol}: {startRow: number, startCol: number, endRow: number, endCol: number}) => {
+    const rowMin = Math.min(startRow, endRow)
+    const rowMax = Math.max(startRow, endRow)
+    const colMin = Math.min(startCol, endCol)
+    const colMax = Math.max(startCol, endCol)
+    const rowIds: string[] = []
+    const colIds: string[] = []
+    for (let i = rowMin; i <= rowMax; i++) {
+      rowIds.push(getRowKey(filteredAndSortedData[i]))
+    }
+    for (let i = colMin; i <= colMax; i++) {
+      colIds.push(visibleColumns[i].id)
+    }
+    // Shift+click: select rect from anchor to current cell
+    dispatch({type: 'CELL_SELECTION_SET_ROW_IDS', rowIds})
+    dispatch({type: 'CELL_SELECTION_SET_COLUMN_IDS', colIds})
+  }
+
+  const selectedRowIdsRef = useRef<State<any>['selectedRowIds']>(null)
+  useEffect(() => {
+    selectedRowIdsRef.current = selectedRowIds
+  }, [selectedRowIds])
+
   const handleMouseDown = useCallback(
-    (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => {
+    (rowIndex: number, colIndex: number, rowId: string, event: React.MouseEvent<HTMLElement>) => {
       if (mode === 'row' && colIndex !== 0) return
-      const preventReSelectionToDnDrop = colIndex === 0 && isRowSelectedRef.current(rowIndex)
+      const preventReSelectionToDnDrop = colIndex === 0 && selectedRowIdsRef.current?.has(rowId)
       if (preventReSelectionToDnDrop) return
       const isShift = event.shiftKey
-      setAnchorEl(null)
       if (isShift && anchor.current) {
-        // Shift+click: select rect from anchor to current cell
-        dispatch({type: 'CELL_SELECTION_SET_START', coord: anchor.current})
-        dispatch({type: 'CELL_SELECTION_SET_END', coord: {row: rowIndex, col: colIndex}})
+        setCellsSelection({
+          startRow: anchor.current.row,
+          startCol: anchor.current.col,
+          endRow: rowIndex,
+          endCol: colIndex,
+        })
       } else {
         // Normal click: start new selection
         selecting.current = true
-        dispatch({type: 'CELL_SELECTION_SET_START', coord: {row: rowIndex, col: colIndex}})
-        dispatch({type: 'CELL_SELECTION_SET_END', coord: {row: rowIndex, col: colIndex}})
         anchor.current = {row: rowIndex, col: colIndex}
+        setCellsSelection({
+          startRow: rowIndex,
+          startCol: colIndex,
+          endRow: rowIndex,
+          endCol: colIndex,
+        })
       }
     },
     [dispatch, mode],
@@ -96,15 +91,19 @@ export const useCellSelectionEngine = ({
 
   const handleMouseEnter = useCallback(
     (rowIndex: number, colIndex: number) => {
-      if (!selecting.current) return
-      dispatch({type: 'CELL_SELECTION_SET_END', coord: {row: rowIndex, col: colIndex}})
+      if (!selecting.current || !anchor.current) return
+      setCellsSelection({
+        startRow: anchor.current.row,
+        startCol: anchor.current.col,
+        endRow: rowIndex,
+        endCol: colIndex,
+      })
     },
     [dispatch],
   )
 
   const handleMouseUp = useCallback((event: React.MouseEvent<HTMLElement>) => {
     selecting.current = false
-    setAnchorEl(event.target as any)
   }, [])
 
   useEffect(() => {
@@ -167,22 +166,42 @@ export const useCellSelectionEngine = ({
     }
   }, [tableRef])
 
+  const areAllColumnsSelected = useMemo(() => {
+    return selectedColumnIds?.size === visibleColumns.length
+  }, [selectedColumnIds, visibleColumns.length])
+
+  const selectedCount = useMemo(() => {
+    if (!selectedColumnIds || !selectedRowIds) return 0
+    return selectedColumnIds.size * selectedRowIds.size
+  }, [selectedColumnIds, selectedRowIds])
+
+  useEffect(
+    function selectFullRowOnIndexSelected() {
+      if (!selectedColumnIds) return
+      if (selectedColumnIds.has(columnIndexId) && selectedColumnIds.size !== visibleColumns.length) {
+        dispatch({type: 'CELL_SELECTION_SET_COLUMN_IDS', colIds: visibleColumns.map(_ => _.id)})
+      }
+    },
+    [selectedColumnIds],
+  )
+
+  const selectColumn = useCallback(
+    (columnIndex: number, event: React.MouseEvent<HTMLDivElement>) => {
+      dispatch({type: 'CELL_SELECTION_SET_ROW_IDS', rowIds: filteredAndSortedData.map(getRowKey)})
+      dispatch({type: 'CELL_SELECTION_SET_COLUMN_IDS', colIds: [visibleColumns[columnIndex].id]})
+    },
+    [filteredAndSortedData],
+  )
+
   return {
     reset,
-    state: {
-      selectionBoundary,
-      selecting: selecting,
-      selectionStart,
-      selectionEnd,
-    },
-    anchorEl,
-    isSelected,
-    isRowSelected,
-    isRowSelectedRef,
-    isColumnSelected: isColumnSelected,
+    selecting: selecting,
+    areAllColumnsSelected,
+    selectedCount,
+    selectColumn,
+    selectedRowIdsRef,
     handleMouseDown: disabled ? voidFn : handleMouseDown,
     handleMouseEnter: disabled ? voidFn : handleMouseEnter,
     handleMouseUp: disabled ? voidFn : handleMouseUp,
-    // handleMouseMove: disabled ? voidFn : handleMouseMove,
   }
 }

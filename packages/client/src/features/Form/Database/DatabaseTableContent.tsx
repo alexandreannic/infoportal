@@ -185,6 +185,7 @@ export const DatabaseTableContent = ({
             columnsResize: {
               enabled: true,
             },
+            rowsDragging: {enabled: true},
             cellSelection: {
               enabled: true,
               mode: 'free',
