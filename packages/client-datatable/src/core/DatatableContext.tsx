@@ -25,6 +25,7 @@ export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'rowHeight' |
   cellSelection: UseCellSelectionComputed & {
     engine: Pick<
       UseCellSelection,
+      | 'state'
       | 'isSelected'
       | 'isColumnSelected'
       | 'isRowSelectedRef'
@@ -142,6 +143,7 @@ export const Provider = <T extends Row>(
         dndRows,
         cellSelection: {
           engine: {
+            state: cellSelectionEngine.state,
             handleMouseDown: cellSelectionEngine.handleMouseDown,
             handleMouseEnter: cellSelectionEngine.handleMouseEnter,
             handleMouseUp: cellSelectionEngine.handleMouseUp,

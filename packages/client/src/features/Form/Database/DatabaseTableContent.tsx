@@ -106,7 +106,7 @@ export const DatabaseTableContent = ({
       m,
       t,
     }).transformColumns(schemaColumns)
-  }, [ctx.data, schema.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
+  }, [ctx.data, queryUpdate, schema.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const base = buildDbColumns.meta.all({

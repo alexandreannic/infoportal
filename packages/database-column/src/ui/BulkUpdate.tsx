@@ -22,7 +22,7 @@ const inputSx: SxProps = {my: -0.5, flex: 1, '& fieldset': {border: 'none'}, '& 
 
 const StartAdornmentLabel = ({label}: {label?: string}) => {
   return (
-    <Txt bold sx={{mr: 1}} color="hint">
+    <Txt bold sx={{mr: 1}} color="disabled">
       {label}:
     </Txt>
   )
@@ -30,6 +30,7 @@ const StartAdornmentLabel = ({label}: {label?: string}) => {
 
 const Base = ({
   type,
+  value,
   onConfirm,
   error,
   label,
@@ -37,6 +38,7 @@ const Base = ({
   loading,
   answerIds,
 }: {
+  value?: any
   label?: string
   answerIds: Ip.SubmissionId[]
   type?: KoboBulkUpdateType
@@ -46,7 +48,7 @@ const Base = ({
   loading?: boolean
 }) => {
   const {m} = useI18n()
-  const [value, setValue] = useState<any>()
+  const [innerValue, setInnerValue] = useState<any>(value)
   const [updatedCount, setUpdatedCount] = useState<null | number>(null)
 
   const _options: Core.SelectOption[] = useMemo(() => {
@@ -60,9 +62,13 @@ const Base = ({
       disabled:
         type === 'select_multiple' &&
         _.value !== null &&
-        ((value ?? []) as KoboEditModalOption[]).some(_ => _ === null),
+        ((innerValue ?? []) as KoboEditModalOption[]).some(_ => _ === null),
     }))
-  }, [options, value])
+  }, [options, innerValue])
+
+  const hasChanged = useMemo(() => {
+    return innerValue !== value
+  }, [innerValue, value])
 
   return (
     <>
@@ -100,11 +106,11 @@ const Base = ({
                       },
                     }}
                     hideNullOption
-                    value={value}
+                    value={innerValue}
                     slotProps={{}}
                     sx={inputSx}
-                    onChange={setValue}
-                    // disabled={(value as KoboEditModalOption['value']) === null}
+                    onChange={setInnerValue}
+                    // disabled={(innerValue as KoboEditModalOption['innerValue']) === null}
                     options={_options}
                   />
                 )
@@ -122,14 +128,14 @@ const Base = ({
                         },
                       },
                     }}
-                    value={value ?? []}
+                    value={innerValue ?? []}
                     options={_options}
                     sx={inputSx}
                     onChange={newValue => {
                       if (newValue?.some(_ => _ === null)) {
-                        setValue([null])
+                        setInnerValue([null])
                       } else {
-                        setValue(newValue)
+                        setInnerValue(newValue)
                       }
                     }}
                   />
@@ -145,8 +151,8 @@ const Base = ({
                     multiline
                     sx={inputSx}
                     maxRows={9}
-                    value={value}
-                    onChange={e => setValue(e.target.value)}
+                    value={innerValue}
+                    onChange={e => setInnerValue(e.target.value)}
                   />
                 )
               }
@@ -158,8 +164,8 @@ const Base = ({
                     type="number"
                     helperText={null}
                     sx={inputSx}
-                    value={value}
-                    onChange={e => setValue(e.target.value)}
+                    value={innerValue}
+                    onChange={e => setInnerValue(e.target.value)}
                   />
                 )
               }
@@ -169,8 +175,8 @@ const Base = ({
                   <Core.Datepicker
                     startAdornment={<StartAdornmentLabel label={label} />}
                     sx={inputSx}
-                    value={value}
-                    onChange={setValue}
+                    value={innerValue}
+                    onChange={setInnerValue}
                   />
                 )
               }
@@ -179,10 +185,10 @@ const Base = ({
           <Core.Btn
             icon="check"
             size="small"
-            variant={value !== undefined ? 'contained' : 'outlined'}
+            variant={hasChanged ? 'contained' : 'outlined'}
             loading={loading}
-            disabled={!!updatedCount}
-            onClick={() => onConfirm(value).then(_ => setUpdatedCount(_.editedCount))}
+            disabled={!!updatedCount || !hasChanged}
+            onClick={() => onConfirm(innerValue).then(_ => setUpdatedCount(_.editedCount))}
           >
             {m.save}&nbsp;
           </Core.Btn>
@@ -192,7 +198,7 @@ const Base = ({
       {/*loading={_loading}*/}
       {/*cancelLabel={m.close}*/}
       {/*confirmDisabled={_loading || updated}*/}
-      {/*onConfirm={() => onConfirm(value)}*/}
+      {/*onConfirm={() => onConfirm(innerValue)}*/}
     </>
   )
 }
@@ -203,6 +209,7 @@ export const BulkUpdateAnswer = ({
   question,
   ...props
 }: {
+  value?: any
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   question: Question
@@ -226,10 +233,10 @@ export const BulkUpdateAnswer = ({
       options={
         question
           ? schema?.helper.choicesIndex[question.select_from_list_name!]?.map(_ => ({
-              value: _.name,
-              desc: _.name,
-              label: schema.translate.choice(question.name, _.name),
-            }))
+            value: _.name,
+            desc: _.name,
+            label: schema.translate.choice(question.name, _.name),
+          }))
           : undefined
       }
     />

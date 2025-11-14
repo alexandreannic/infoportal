@@ -40,8 +40,9 @@ export class QuestionType {
       typeLabel: q.type,
       actionOnSelected: isReadonly
         ? () => <ReadonlyAction />
-        : ({rowIds}: {rowIds: string[]}) => (
+        : ({rowIds, value}: {rowIds: string[], value?: any}) => (
             <BulkUpdateAnswer
+              value={value}
               schema={schema}
               question={q}
               query={queryUpdateAnswer}

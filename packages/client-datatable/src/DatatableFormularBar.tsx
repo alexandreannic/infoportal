@@ -13,8 +13,25 @@ export const DatatableFormularBar = () => {
   const dataFilteredAndSorted = useCtx(_ => _.dataFilteredAndSorted)
   const columns = useCtx(_ => _.columns.visible)
 
+  const commonSelectedValue = useMemo(() => {
+    if (!selectedColumnUniq) return
+    let lastValue
+    for (let i = engine.state.selectionBoundary.rowMin; i < engine.state.selectionBoundary.rowMax + 1; i++) {
+      const row = dataFilteredAndSorted[i]
+      const value = selectedColumnUniq?.render(row).value
+      if (lastValue && value !== lastValue) {
+        lastValue = undefined
+        break
+      }
+      lastValue = value
+    }
+    return lastValue
+  }, [engine.state.selectionBoundary])
+
   const rowIds = useMemo(() => [...selectedRowIds], [selectedRowIds])
+
   const t = useTheme()
+
   return (
     <Box
       sx={{
@@ -40,7 +57,7 @@ export const DatatableFormularBar = () => {
       {selectedColumnUniq &&
         selectedColumnUniq.actionOnSelected &&
         selectedColumnUniq?.actionOnSelected !== 'none' &&
-        React.cloneElement(selectedColumnUniq.actionOnSelected?.({rowIds}), {key: rowIds.join(',')})}
+        React.cloneElement(selectedColumnUniq.actionOnSelected?.({rowIds, value: commonSelectedValue}), {key: rowIds.join(',')})}
       {areAllColumnsSelected && renderComponentOnRowSelected && renderComponentOnRowSelected({rowIds})}
 
       {selectedCount > 0 && (

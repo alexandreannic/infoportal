@@ -125,7 +125,7 @@ export namespace Column {
     hidden?: boolean
     style?: (_: T) => CSSProperties
     styleHead?: CSSProperties
-    actionOnSelected?: 'none' | (({rowIds}: {rowIds: string[]}) => ReactElement)
+    actionOnSelected?: 'none' | (({rowIds}: {rowIds: string[], value?: any | undefined}) => ReactElement)
     classHead?: string
     typeIcon?: ReactNode
     typeLabel?: string
