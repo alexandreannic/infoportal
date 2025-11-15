@@ -30,28 +30,27 @@ export type CellSelectionCoord = {row: number; col: number}
 
 export type Action<T extends Row> =
   | {
-      type: 'INIT_VIEWPORT_CACHE'
-      data: T[]
-      limit: number
-      offset: number
-      columns: Column.InnerProps<T>[]
-      getRowKey: Props<T>['getRowKey']
-    }
+  type: 'INIT_VIEWPORT_CACHE'
+  data: T[]
+  limit: number
+  offset: number
+  columns: Column.InnerProps<T>[]
+  getRowKey: Props<T>['getRowKey']
+}
   | {
-      type: 'APPEND_VIEWPORT_CACHE'
-      data: T[]
-      limit: number
-      offset: number
-      columns: Column.InnerProps<T>[]
-      getRowKey: Props<T>['getRowKey']
-    }
-  | {type: 'DRAGGING_ROWS_SET_RANGE'; range: MinMax | null}
+  type: 'APPEND_VIEWPORT_CACHE'
+  data: T[]
+  limit: number
+  offset: number
+  columns: Column.InnerProps<T>[]
+  getRowKey: Props<T>['getRowKey']
+}
+  // | {type: 'DRAGGING_ROWS_SET_RANGE'; range: MinMax | null}
   | {type: 'DRAGGING_ROWS_SET_OVER_INDEX'; overIndex: number | null}
-  | {type: 'CELL_SELECTION_SET_START'; coord: Partial<CellSelectionCoord> | null}
-  | {type: 'CELL_SELECTION_SET_END'; coord: Partial<CellSelectionCoord> | null}
+  | {type: 'CELL_SELECTION_SET_ROW_IDS'; rowIds: string[] | null}
+  | {type: 'CELL_SELECTION_SET_COLUMN_IDS'; colIds: string[] | null}
   | {type: 'CELL_SELECTION_CLEAR'}
-  | {type: 'SET_SOURCE_DATA'; data: T[]}
-  | {type: 'REORDER_ROWS'; range: {min: number; max: number}; index: number}
+  | {type: 'REORDER_ROWS'; rowIds: string[]; index: number}
   | {type: 'CLOSE_POPUP'}
   | {type: 'OPEN_POPUP'; event: Popup.Event}
   | {type: 'SORT'; column: string; orderBy?: OrderBy}
@@ -62,15 +61,12 @@ export type Action<T extends Row> =
   | {type: 'SET_HIDDEN_COLUMNS'; hiddenColumns: string[]}
 
 export type DatatableState<T extends Row> = {
-  cellsSelection: {
-    start: CellSelectionCoord | null
-    end: CellSelectionCoord | null
-  }
+  selectedColumnIds: Set<string> | null
+  selectedRowIds: Set<string> | null
   draggingRow: {
-    range: MinMax | null
+    // range: MinMax | null
     overIndex: number | null
   }
-  sourceData: T[]
   popup?: Popup.Event
   hasRenderedRowId: boolean[]
   cachedData: Record<string, Record<string, CachedCell>>
@@ -131,19 +127,14 @@ const buildCachedData = <T extends Row>({
 
 export const initialState = <T extends Row>(): State<T> => {
   return {
-    cellsSelection: {
-      start: null,
-      end: null,
-    },
+    selectedColumnIds: null,
+    selectedRowIds: null,
     draggingRow: {
-      range: null,
       overIndex: null,
     },
-    sourceData: [],
     hasRenderedRowId: [],
     cachedData: {},
     filters: {},
-    // selected: new Set(),
     sortBy: undefined,
     colWidths: {},
     colHidden: new Set(),
@@ -167,20 +158,6 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
       }
     },
 
-    DRAGGING_ROWS_SET_RANGE: (state, {range}) => {
-      const prev = state.draggingRow.range ?? ({} as MinMax)
-      if (prev.min === range?.min && prev.max === range?.max) {
-        return state
-      }
-      return {
-        ...state,
-        draggingRow: {
-          ...state.draggingRow,
-          range,
-        },
-      }
-    },
-
     CELL_SELECTION_CLEAR: state => {
       return {
         ...state,
@@ -189,29 +166,19 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
       }
     },
 
-    CELL_SELECTION_SET_START: (state, {coord}) => {
+    CELL_SELECTION_SET_ROW_IDS: (state, {rowIds}) => {
       return {
         ...state,
         draggingRow: {range: null, overIndex: null},
-        cellsSelection: {
-          ...state.cellsSelection,
-          start: {...state.cellsSelection.start, ...(coord as CellSelectionCoord)},
-        },
+        selectedRowIds: new Set(rowIds),
       }
     },
 
-    CELL_SELECTION_SET_END: (state, {coord}) => {
+    CELL_SELECTION_SET_COLUMN_IDS: (state, {colIds}) => {
       return {
         ...state,
         draggingRow: {range: null, overIndex: null},
-        cellsSelection: {...state.cellsSelection, end: {...state.cellsSelection.end, ...(coord as CellSelectionCoord)}},
-      }
-    },
-
-    SET_SOURCE_DATA: (state, {data}) => {
-      return {
-        ...state,
-        sourceData: data,
+        selectedColumnIds: new Set(colIds),
       }
     },
 
@@ -322,31 +289,9 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
       }
     },
 
-    REORDER_ROWS: (state, {range, index}) => {
-      const rows = [...state.sourceData]
-      const moved = rows.splice(range.min, range.max - range.min + 1)
-      const target = index > range.max ? index - moved.length : index
-      rows.splice(target, 0, ...moved)
-
-      // Update cell selection by shifting row indexes
-      const shiftRow = (r: number | null): number => {
-        if (r == null) return -1
-        if (r < range.min && r >= target) return r + (range.max - range.min + 1)
-        if (r > range.max && r < target) return r - (range.max - range.min + 1)
-        if (r >= range.min && r <= range.max) return target + (r - range.min)
-        return r
-      }
-
-      const {start, end} = state.cellsSelection
-
-      return {
-        ...state,
-        sourceData: rows,
-        cellsSelection: {
-          start: start ? {...start, row: shiftRow(start.row)} : null,
-          end: end ? {...end, row: shiftRow(end.row)} : null,
-        },
-      }
+    REORDER_ROWS: (state, {rowIds, index}) => {
+      // Do nothing, let user handle reordering himself to keep a single source of truth.
+      return state
     },
   }
 }
