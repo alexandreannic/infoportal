@@ -2,6 +2,7 @@ import {BoxProps, SxProps, Theme} from '@mui/material'
 import React, {CSSProperties, ReactElement, ReactNode} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {Action} from './reducer'
+import {Brand} from '@infoportal/api-sdk/dist/type/Common'
 
 export type OrderBy = 'asc' | 'desc'
 
@@ -42,6 +43,8 @@ export type FilterTypeMapping = {
 }
 
 export type CellSelectionMode = 'free' | 'row' //|'cell' | 'col' |  'row-or-cell'
+
+export type RowId = Brand<string, 'dt-row-id'>
 
 export interface Props<T extends Row, K extends string = string> {
   // Core

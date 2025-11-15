@@ -1,17 +1,18 @@
 import {VirtualItem} from '@tanstack/react-virtual'
-import {Box, BoxProps, Skeleton, useTheme} from '@mui/material'
-import React, {memo, useCallback} from 'react'
+import {Box, BoxProps, keyframes, Skeleton, useTheme} from '@mui/material'
+import React, {memo, useCallback, useEffect, useRef} from 'react'
 import {Column, Props, Row} from './core/types.js'
 import {CachedCell} from './core/reducer'
 import {UseDraggingRows} from './core/useDraggingRows'
-import {useCtx} from './core/DatatableContext'
-import {UseCellSelection} from './core/useCellSelectionEngine'
+import {DatatableContext, useCtx} from './core/DatatableContext'
+import {UseCellSelection} from './core/useCellSelection'
+import {makeStyles} from 'tss-react/mui'
 
 export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
   const {
     cachedData,
-    isRowSelected,
-    isColumnSelected,
+    selectedRowIds,
+    selectedColumnIds,
     cellSelection_handleMouseDown,
     cellSelection_handleMouseEnter,
     isDragging,
@@ -24,20 +25,22 @@ export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
     rowStyle,
     dataFilteredAndSorted,
     getRowKey,
+    getRowChangeTracker,
   } = useCtx(_ => ({
-    isRowSelected: _.cellSelection.engine.isRowSelected(virtualItem.index),
-    isColumnSelected: _.cellSelection.engine.isColumnSelected,
+    selectedRowIds: _.state.selectedRowIds,
+    selectedColumnIds: _.state.selectedColumnIds,
     cachedData: _.state.cachedData,
-    isDragging: _.dndRows.isRowDragging(virtualItem.index),
-    isOver: _.dndRows.dropIndicatorIndex === virtualItem.index,
-    isDraggable: _.dndRows.isRowDraggable(virtualItem.index),
+    isDragging: _.dndRows.isRowDragging,
+    isOver: _.dndRows.overIndex === virtualItem.index,
+    isDraggable: _.dndRows.isRowDraggable,
     handleDragStart: _.dndRows.handleDragStart,
     handleDragOver: _.dndRows.handleDragOver,
     handleDrop: _.dndRows.handleDrop,
     columns: _.columns.visible,
     rowStyle: _.rowStyle,
-    cellSelection_handleMouseDown: _.cellSelection.engine.handleMouseDown,
-    cellSelection_handleMouseEnter: _.cellSelection.engine.handleMouseEnter,
+    getRowChangeTracker: _.getRowChangeTracker,
+    cellSelection_handleMouseDown: _.cellSelection.handleMouseDown,
+    cellSelection_handleMouseEnter: _.cellSelection.handleMouseEnter,
     dataFilteredAndSorted: _.dataFilteredAndSorted,
     getRowKey: _.getRowKey,
   }))
@@ -62,13 +65,14 @@ export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
       virtualItem={virtualItem}
       cachedRow={cachedRow}
       columns={columns}
+      getRowChangeTracker={getRowChangeTracker}
       onCellClick={onCellClick}
       rowStyle={rowStyle}
       row={row}
-      isDraggable={isDraggable}
-      isDragging={isDragging}
+      isDraggable={isDraggable(rowId)}
+      isDragging={isDragging(rowId)}
       isOver={isOver}
-      isColumnSelected={isRowSelected && isColumnSelected}
+      selectedColumnIds={selectedRowIds && selectedRowIds.has(rowId) && selectedColumnIds}
       handleDragStart={handleDragStart}
       handleDragOver={handleDragOver}
       handleDrop={handleDrop}
@@ -78,88 +82,137 @@ export const DatatableRow = ({virtualItem}: {virtualItem: VirtualItem}) => {
   )
 }
 
-const DatatableRowMemo = memo(
-  <T extends Row>({
-    rowId,
-    virtualItem,
-    cachedRow,
-    columns,
-    onCellClick,
-    rowStyle,
-    row,
-    isDraggable,
-    isDragging,
-    isOver,
-    handleDragStart,
-    handleDragOver,
-    isColumnSelected,
-    handleDrop,
-    cellSelection_handleMouseDown,
-    cellSelection_handleMouseEnter,
-  }: {
-    onCellClick: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
-    cachedRow: Record<string, CachedCell>
-    rowId: string
-    row: T
-    rowStyle: Props<any>['rowStyle']
-    columns: Column.InnerProps<T>[]
-    virtualItem: VirtualItem
-    cellSelection_handleMouseDown: UseCellSelection['handleMouseDown']
-    cellSelection_handleMouseEnter: UseCellSelection['handleMouseEnter']
-    isColumnSelected: false | UseCellSelection['isColumnSelected']
-    handleDragStart: UseDraggingRows['handleDragStart']
-    handleDragOver: UseDraggingRows['handleDragOver']
-    handleDrop: UseDraggingRows['handleDrop']
-    isDraggable?: boolean
-    isDragging?: boolean
-    isOver?: boolean
-  }) => {
-    const t = useTheme()
+const DatatableRowInner = <T extends Row>({
+  rowId,
+  virtualItem,
+  cachedRow,
+  columns,
+  onCellClick,
+  rowStyle,
+  row,
+  isDraggable,
+  isDragging,
+  isOver,
+  handleDragStart,
+  handleDragOver,
+  selectedColumnIds,
+  handleDrop,
+  cellSelection_handleMouseDown,
+  cellSelection_handleMouseEnter,
+}: {
+  onCellClick: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
+  cachedRow: Record<string, CachedCell>
+  rowId: string
+  row: T
+  rowStyle: Props<any>['rowStyle']
+  getRowChangeTracker: Props<any>['getRowChangeTracker']
+  columns: Column.InnerProps<T>[]
+  virtualItem: VirtualItem
+  cellSelection_handleMouseDown: UseCellSelection['handleMouseDown']
+  cellSelection_handleMouseEnter: UseCellSelection['handleMouseEnter']
+  selectedColumnIds: false | DatatableContext['state']['selectedColumnIds']
+  handleDragStart: UseDraggingRows['handleDragStart']
+  handleDragOver: UseDraggingRows['handleDragOver']
+  handleDrop: UseDraggingRows['handleDrop']
+  isDraggable?: boolean
+  isDragging?: boolean
+  isOver?: boolean
+}) => {
+  const t = useTheme()
+  return (
+    <Box
+      className="dtr"
+      key={rowId}
+      sx={{
+        ...rowStyle?.(row),
+        height: `${virtualItem.size}px`,
+        transform: `translateY(${virtualItem.start}px)`,
+        opacity: isDragging ? 0.5 : 1,
+        cursor: isDraggable ? 'grab' : undefined,
+        borderTop: isOver ? '3px solid ' + t.vars.palette.primary.main : undefined,
+      }}
+    >
+      {columns.map((col, colIndex) => {
+        let cell = cachedRow?.[col.id]
+        const key = virtualItem.key + col.id
+        if (!cell) {
+          return <CellSkeleton key={key} />
+        }
+        const colSelected = selectedColumnIds !== false && selectedColumnIds?.has(col.id)
+        const isFirstCol = colIndex === 0
+        return (
+          <Cell
+            draggable={isFirstCol && colSelected && isDraggable}
+            onDragStart={isFirstCol ? e => handleDragStart(rowId, e) : undefined}
+            onDragOver={isFirstCol ? e => handleDragOver(virtualItem.index, e) : undefined}
+            onDrop={isFirstCol ? handleDrop : undefined}
+            onClick={onCellClick}
+            key={key}
+            rowIndex={virtualItem.index}
+            colIndex={colIndex}
+            rowId={rowId}
+            handleMouseDown={cellSelection_handleMouseDown}
+            handleMouseEnter={cellSelection_handleMouseEnter}
+            selected={colSelected}
+            className={cell.className}
+            label={cell.label}
+            tooltip={cell.tooltip as any}
+            style={cell.style}
+          />
+        )
+      })}
+    </Box>
+  )
+}
+
+const DatatableRowMemo = memo(DatatableRowInner, (prevProps, nextProps) => {
+  if (prevProps.getRowChangeTracker && nextProps.getRowChangeTracker && prevProps.cachedRow !== undefined) {
     return (
-      <Box
-        className="dtr"
-        key={rowId}
-        sx={{
-          ...rowStyle?.(row),
-          height: `${virtualItem.size}px`,
-          transform: `translateY(${virtualItem.start}px)`,
-          opacity: isDragging ? 0.5 : 1,
-          cursor: isDraggable ? 'grab' : undefined,
-          borderTop: isOver ? '3px solid ' + t.vars.palette.primary.main : undefined,
-        }}
-      >
-        {columns.map((col, colIndex) => {
-          let cell = cachedRow?.[col.id]
-          const key = virtualItem.key + col.id
-          if (!cell) {
-            return <CellSkeleton key={key} />
-          }
-          const colSelected = isColumnSelected !== false && isColumnSelected(colIndex)
-          const isFirstCol = colIndex === 0
-          return (
-            <Cell
-              draggable={isFirstCol && colSelected && isDraggable}
-              onDragStart={isFirstCol ? e => handleDragStart(virtualItem.index, e) : undefined}
-              onDragOver={isFirstCol ? e => handleDragOver(virtualItem.index, e) : undefined}
-              onDrop={isFirstCol ? handleDrop : undefined}
-              onClick={onCellClick}
-              key={key}
-              rowIndex={virtualItem.index}
-              colIndex={colIndex}
-              handleMouseDown={cellSelection_handleMouseDown}
-              handleMouseEnter={cellSelection_handleMouseEnter}
-              selected={colSelected}
-              className={cell.className}
-              label={cell.label}
-              tooltip={cell.tooltip as any}
-              style={cell.style}
-            />
-          )
-        })}
-      </Box>
+      nextProps.getRowChangeTracker(nextProps.row) === prevProps.getRowChangeTracker(prevProps.row) &&
+      // prevProps.isDraggable === nextProps.isDraggable &&
+      // prevProps.isDragging === nextProps.isDragging &&
+      // prevProps.isOver === nextProps.isOver &&
+      // prevProps.isColumnSelected === nextProps.isColumnSelected
+      //
+      // prevProps.onCellClick === nextProps.onCellClick &&
+      // prevProps.cachedRow === nextProps.cachedRow &&
+      // prevProps.rowId === nextProps.rowId &&
+      // prevProps.row === nextProps.row &&
+      // prevProps.getRowChangeTracker === nextProps.getRowChangeTracker &&
+      // prevProps.rowStyle === nextProps.rowStyle &&
+      // prevProps.columns === nextProps.columns &&
+      // prevProps.virtualItem === nextProps.virtualItem &&
+      prevProps.cellSelection_handleMouseDown === nextProps.cellSelection_handleMouseDown &&
+      prevProps.cellSelection_handleMouseEnter === nextProps.cellSelection_handleMouseEnter &&
+      prevProps.selectedColumnIds === nextProps.selectedColumnIds &&
+      prevProps.handleDragStart === nextProps.handleDragStart &&
+      prevProps.handleDragOver === nextProps.handleDragOver &&
+      prevProps.handleDrop === nextProps.handleDrop &&
+      prevProps.isDraggable === nextProps.isDraggable &&
+      prevProps.isDragging === nextProps.isDragging &&
+      prevProps.isOver === nextProps.isOver
     )
-  },
-)
+  }
+  return (
+    prevProps.onCellClick === nextProps.onCellClick &&
+    prevProps.cachedRow === nextProps.cachedRow &&
+    prevProps.rowId === nextProps.rowId &&
+    prevProps.row === nextProps.row &&
+    // prevProps.getRowChangeTracker === nextProps.getRowChangeTracker &&
+    prevProps.rowStyle === nextProps.rowStyle &&
+    prevProps.columns === nextProps.columns &&
+    prevProps.virtualItem === nextProps.virtualItem &&
+    prevProps.cellSelection_handleMouseDown === nextProps.cellSelection_handleMouseDown &&
+    prevProps.cellSelection_handleMouseEnter === nextProps.cellSelection_handleMouseEnter &&
+    prevProps.selectedColumnIds === nextProps.selectedColumnIds &&
+    prevProps.handleDragStart === nextProps.handleDragStart &&
+    prevProps.handleDragOver === nextProps.handleDragOver &&
+    prevProps.handleDrop === nextProps.handleDrop &&
+    prevProps.isDraggable === nextProps.isDraggable &&
+    prevProps.isDragging === nextProps.isDragging &&
+    prevProps.isOver === nextProps.isOver
+  )
+})
 
 const CellSkeleton = () => {
   return (
@@ -169,6 +222,27 @@ const CellSkeleton = () => {
   )
 }
 
+// const blinkAnim = keyframes`
+//   0% {
+//     background-color: transparent;
+//   }
+//   20% {
+//     background-color: rgba(123, 123, 0, 0.2);
+//   }
+//   100% {
+//     background-color: transparent;
+//   }
+// `
+//
+// const useStyles = makeStyles()(() => ({
+//   root: {
+//     transition: 'background-color 0.3s',
+//   },
+//   blink: {
+//     animation: `${blinkAnim} 0.5s ease-in-out`,
+//   },
+// }))
+
 const Cell = memo(
   ({
     handleMouseDown,
@@ -176,6 +250,7 @@ const Cell = memo(
     colIndex,
     rowIndex,
     label,
+    rowId,
     tooltip,
     onClick,
     style,
@@ -184,21 +259,38 @@ const Cell = memo(
     ...props
   }: CachedCell &
     Pick<BoxProps, 'draggable' | 'onDragStart' | 'onDragOver' | 'onDrop'> & {
-      selected?: boolean
-      onClick?: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
-      colIndex: number
-      rowIndex: number
-      handleMouseDown: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
-      handleMouseEnter: (rowIndex: number, colIndex: number) => void
-    }) => {
+    selected?: boolean
+    onClick?: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
+    colIndex: number
+    rowIndex: number
+    rowId: string
+    handleMouseDown: (rowIndex: number, colIndex: number, rowId: string, event: React.MouseEvent<HTMLElement>) => void
+    handleMouseEnter: (rowIndex: number, colIndex: number) => void
+  }) => {
+    // const {classes, cx} = useStyles()
+    // const ref = useRef<HTMLDivElement>(null)
+
+    // useEffect(() => {
+    //   const el = ref.current
+    //   if (!el) return
+    //
+    //   // Remove and re-add the animation class to replay it every render
+    //   el.classList.remove(classes.blink)
+    //   // force reflow to restart animation
+    //   void el.offsetWidth
+    //   el.classList.add(classes.blink)
+    // })
+
     return (
       <div
         {...props}
+        // ref={ref}
+        // className={cx('dtd', className, selected && 'selected', classes.root)}
         className={'dtd ' + className + (selected ? ' selected' : '')}
         style={style}
         onClick={onClick ? e => onClick(rowIndex, colIndex, e) : undefined}
         title={tooltip}
-        onMouseDown={e => handleMouseDown(rowIndex, colIndex, e)}
+        onMouseDown={e => handleMouseDown(rowIndex, colIndex, rowId, e)}
         onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
       >
         {label}

@@ -22,6 +22,8 @@ const parseColumnWidth = (w: ColumnWidth) => {
   return `minmax(${minWidth}px, 1fr)`
 }
 
+export const columnIndexId = 'index'
+
 export const useDatatableColumns = <T extends Row>({
   baseColumns,
   showRowIndex,
@@ -42,7 +44,7 @@ export const useDatatableColumns = <T extends Row>({
       return [
         {
           group: {label: 'Meta', id: 'meta'},
-          id: 'index',
+          id: columnIndexId,
           className: 'td-index',
           head: '#',
           width: 50,

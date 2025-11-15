@@ -122,11 +122,11 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
           ...contentProps?.style,
         }}
       >
-        <DatatableHead onMouseDown={cellSelection.engine.reset} />
+        <DatatableHead onMouseDown={cellSelection.reset} />
         {renderEmptyState && data.length === 0 && !loading && renderEmptyState}
         <div
           className="dtbody"
-          onMouseUp={cellSelection.engine.handleMouseUp}
+          onMouseUp={cellSelection.handleMouseUp}
           style={{
             userSelect: module?.cellSelection?.enabled ? 'none' : undefined,
             height: `${rowVirtualizer.getTotalSize()}px`,
@@ -137,7 +137,6 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
             <DatatableRow key={virtualItem.key} virtualItem={virtualItem} />
           ))}
         </div>
-        {/*<PopupSelectedCell />*/}
         {(() => {
           switch (popup?.name) {
             case 'STATS': {

@@ -1,12 +1,11 @@
-import React, {ReactNode, useCallback, useEffect, useReducer} from 'react'
+import React, {ReactNode, useCallback, useReducer} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {useEffectFn} from '@axanc/react-hooks'
 import {Props, Row} from './types.js'
 import {Action, datatableReducer, initialState, State} from './reducer'
 import {useDatatableColumns, UseDatatableColumns} from './useColumns'
-import {useCellSelectionComputed, UseCellSelectionComputed} from './useCellSelectionComputed'
-import {UseCellSelection, useCellSelectionEngine} from './useCellSelectionEngine'
+import {UseCellSelection, useCellSelection} from './useCellSelection'
 import {useData} from './useData'
 import {useDatatableOptions} from './useOptions'
 import {UseDraggingRows, useDraggingRows} from './useDraggingRows'
@@ -22,21 +21,7 @@ export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'rowHeight' |
   dndRows: UseDraggingRows
   dataFilteredAndSorted: T[]
   dataFilteredExceptBy: (key: KeyOf<T>) => T[]
-  cellSelection: UseCellSelectionComputed & {
-    engine: Pick<
-      UseCellSelection,
-      | 'state'
-      | 'isSelected'
-      | 'isColumnSelected'
-      | 'isRowSelectedRef'
-      | 'isRowSelected'
-      | 'handleMouseDown'
-      | 'handleMouseEnter'
-      | 'handleMouseUp'
-      | 'reset'
-      | 'anchorEl'
-    >
-  }
+  cellSelection: UseCellSelection
 }
 
 const Context = createContext<DatatableContext>({} as any)
@@ -55,10 +40,6 @@ export const Provider = <T extends Row>(
 ) => {
   const {module} = props
   const [state, _dispatch] = useReducer(datatableReducer<T>(), initialState<T>())
-
-  useEffect(() => {
-    _dispatch({type: 'SET_SOURCE_DATA', data: props.data})
-  }, [props.data])
 
   useEffectFn(module?.columnsToggle?.hidden, hiddenColumns => {
     _dispatch({type: 'SET_HIDDEN_COLUMNS', hiddenColumns})
@@ -84,7 +65,7 @@ export const Provider = <T extends Row>(
   })
 
   const {filteredAndSortedData, filterExceptBy} = useData<T>({
-    data: state.sourceData,
+    data: props.data,
     filters: state.filters,
     sortBy: state.sortBy,
     colIndex: columns.indexMap,
@@ -99,35 +80,26 @@ export const Provider = <T extends Row>(
     filters: state.filters,
   })
 
-  const cellSelectionEngine = useCellSelectionEngine({
+  const cellSelection = useCellSelection({
     dispatch,
-    selectionStart: state.cellsSelection.start,
-    selectionEnd: state.cellsSelection.end,
+    visibleColumns: columns.visible,
+    filteredAndSortedData,
+    getRowKey: props.getRowKey,
+    selectedColumnIds: state.selectedColumnIds,
+    selectedRowIds: state.selectedRowIds,
     tableRef: props.tableRef,
     mode: module?.cellSelection?.mode ?? (module?.rowsDragging?.enabled ? 'row' : undefined),
     disabled: module?.cellSelection?.enabled !== true,
   })
-  const cellSectionComputed = useCellSelectionComputed<T>({
-    dispatch,
-    selectionStart: state.cellsSelection.start,
-    selectionEnd: state.cellsSelection.end,
-    getRowKey: props.getRowKey,
-    filteredAndSortedData,
-    columnsIndex: columns.indexMap,
-    visibleColumns: columns.visible,
-    engine: cellSelectionEngine,
-  })
 
   const dndRows = useDraggingRows({
-    selecting: cellSelectionEngine.state.selecting,
+    selectedRowIdsRef: cellSelection.selectedRowIdsRef,
+    selecting: cellSelection.selecting,
     disabled: module?.rowsDragging?.enabled !== true,
     dispatch,
     overIndex: state.draggingRow.overIndex,
-    draggingRange: state.draggingRow.range,
+    selectedRowIds: state.selectedRowIds,
     rowHeight: props.rowHeight,
-    isRowSelected: cellSelectionEngine.isRowSelected,
-    isRowSelectedRef: cellSelectionEngine.isRowSelectedRef,
-    selectionBoundary: cellSelectionEngine.state.selectionBoundary,
   })
 
   return (
@@ -141,26 +113,7 @@ export const Provider = <T extends Row>(
         state,
         dispatch,
         dndRows,
-        cellSelection: {
-          engine: {
-            state: cellSelectionEngine.state,
-            handleMouseDown: cellSelectionEngine.handleMouseDown,
-            handleMouseEnter: cellSelectionEngine.handleMouseEnter,
-            handleMouseUp: cellSelectionEngine.handleMouseUp,
-            reset: cellSelectionEngine.reset,
-            isSelected: cellSelectionEngine.isSelected,
-            isColumnSelected: cellSelectionEngine.isColumnSelected,
-            isRowSelected: cellSelectionEngine.isRowSelected,
-            isRowSelectedRef: cellSelectionEngine.isRowSelectedRef,
-            anchorEl: cellSelectionEngine.anchorEl,
-          },
-          selectedCount: cellSectionComputed.selectedCount,
-          areAllColumnsSelected: cellSectionComputed.areAllColumnsSelected,
-          selectedRowIds: cellSectionComputed.selectedRowIds,
-          selectedColumnsIds: cellSectionComputed.selectedColumnsIds,
-          selectedColumnUniq: cellSectionComputed.selectedColumnUniq,
-          selectColumn: cellSectionComputed.selectColumn,
-        },
+        cellSelection: cellSelection,
       }}
     >
       {props.children}
