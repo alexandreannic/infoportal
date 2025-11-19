@@ -27,6 +27,7 @@ import {useKoboDialogs} from '@/features/Form/Database/useKoboDialogs'
 import {useFormContext} from '@/features/Form/Form'
 import {SelectLangIndex} from '@/shared/customInput/SelectLangIndex'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
+import {DatabaseSelectedColumnAction} from '@/features/Form/Database/DatabaseSelectedColumnAction'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
   const t = useTheme()
@@ -59,9 +60,6 @@ export const DatabaseTableContent = ({
   const connectedUsers = useFormSocket({workspaceId, formId: ctx.form.id})
   const [viewEditorOpen, setViewEditorOpen] = useState(false)
 
-  const queryUpdate = UseQuerySubmission.update()
-  const queryUpdateValidation = UseQuerySubmission.updateValidation()
-
   const flatData: Submission[] | undefined = useMemo(() => {
     if (ctx.groupDisplay.get.repeatAs !== 'rows' || ctx.groupDisplay.get.repeatGroupName === undefined) return ctx.data
     return KoboFlattenRepeatedGroup.run({
@@ -82,9 +80,7 @@ export const DatabaseTableContent = ({
         },
       })
     const schemaColumns = buildDbColumns.question.bySchema({
-      queryUpdateAnswer: queryUpdate,
       getFileUrl: getKoboAttachmentUrl,
-      workspaceId: workspaceId,
       isReadonly: !ctx.canEdit,
       getRow: (_: Submission) => _.answers,
       formId: ctx.form.id,
@@ -95,9 +91,7 @@ export const DatabaseTableContent = ({
       m,
     })
     return databaseKoboDisplayBuilder({
-      queryUpdateAnswer: queryUpdate,
       getFileUrl: getKoboAttachmentUrl,
-      workspaceId,
       data: ctx.data ?? [],
       formId: ctx.form.id,
       schema: schema,
@@ -106,14 +100,11 @@ export const DatabaseTableContent = ({
       m,
       t,
     }).transformColumns(schemaColumns)
-  }, [ctx.data, queryUpdate, schema.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
+  }, [ctx.data, schema.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const base = buildDbColumns.meta.all({
       formType: ctx.form.type,
-      queryUpdateValidation: queryUpdateValidation,
-      workspaceId,
-      formId: ctx.form.id,
       isReadonly: !ctx.canEdit,
       koboEditEnketoUrl: ctx.koboEditEnketoUrl,
       m,
@@ -188,7 +179,17 @@ export const DatabaseTableContent = ({
             cellSelection: {
               enabled: true,
               mode: 'free',
-              renderComponentOnRowSelected: _ => (
+              renderFormulaBarOnColumnSelected: ({rowIds, columnId, commonValue}) => (
+                <DatabaseSelectedColumnAction
+                  rowIds={rowIds}
+                  columnId={columnId}
+                  commonValue={commonValue}
+                  workspaceId={workspaceId}
+                  schema={schema}
+                  formId={ctx.form.id}
+                />
+              ),
+              renderFormulaBarOnRowSelected: _ => (
                 <DatabaseSelectedRowsAction
                   canDelete={ctx.canEdit && ctx.permission.answers_canDelete}
                   selectedIds={_.rowIds as Ip.SubmissionId[]}

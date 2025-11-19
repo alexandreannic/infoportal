@@ -1,3 +1,4 @@
+export {AsyncInputWrapper, StartAdornmentLabel} from './formulabar/AsyncInputWrapper'
 export {filterByColumn} from './core/useData'
 export {primaryColors} from './head/DatatableHeadSections'
 export {DatatableHeadIcon as HeadIcon} from './head/DatatableHead'

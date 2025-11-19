@@ -2,13 +2,11 @@ import React from 'react'
 import {ColumnMetaProps, Row} from './type.js'
 import {Ip} from '@infoportal/api-sdk'
 import * as Datatable from '@infoportal/client-datatable'
-import {ReadonlyAction} from '../ui/ReadonlyAction.js'
 import {Messages} from '@infoportal/client-i18n'
 import {StatusIcon} from '@infoportal/client-core'
-import {BulkUpdateValidation} from '../ui/BulkUpdate.js'
 import {KoboTypeIcon} from '../ui/KoboTypeIcon.js'
 import {defaultColWidth} from './common.js'
-import {KoboFlattenRepeatedGroup} from '../../../kobo-helper/src/koboFlattenRepeatedGroup.js'
+import {KoboFlattenRepeatedGroup} from '@infoportal/kobo-helper'
 
 const metaGroup = {label: 'Meta', id: 'meta'}
 
@@ -22,7 +20,6 @@ export class Meta {
       group: metaGroup,
       type: 'id',
       id: 'id' as const,
-      actionOnSelected: () => <ReadonlyAction />,
       head: 'ID',
       width: 110,
       typeIcon: <Datatable.HeadIconByType type="id" />,
@@ -63,7 +60,7 @@ export class Meta {
     m,
   }: Pick<
     ColumnMetaProps,
-    'dialog' | 'formType' | 'workspaceId' | 'formId' | 'isReadonly' | 'koboEditEnketoUrl' | 'm'
+    'dialog' | 'formType' | 'isReadonly' | 'koboEditEnketoUrl' | 'm'
   >): Datatable.Column.Props<Row> {
     return {
       group: metaGroup,
@@ -145,6 +142,7 @@ export class Meta {
       label: m.end,
     })
   }
+
   static submissionTime({m}: {m: Messages}): Datatable.Column.Props<Row> {
     return this.date({
       key: 'submissionTime',
@@ -153,33 +151,17 @@ export class Meta {
   }
 
   static validation({
-    workspaceId,
-    formId,
     getRow = _ => _ as any,
     isReadonly,
-    queryUpdateValidation,
     m,
-  }: Pick<
-    ColumnMetaProps,
-    'isReadonly' | 'queryUpdateValidation' | 'getRow' | 'formId' | 'workspaceId' | 'm'
-  >): Datatable.Column.Props<Row> {
+  }: Pick<ColumnMetaProps, 'isReadonly' | 'getRow' | 'm'>): Datatable.Column.Props<Row> {
     return {
       group: metaGroup,
-      id: '_validation' as const,
+      id: 'validationStatus' as const,
       head: m.validation,
       align: 'center',
       width: 60,
       type: 'select_one',
-      actionOnSelected: isReadonly
-        ? undefined
-        : ({rowIds}: {rowIds: string[]}) => (
-            <BulkUpdateValidation
-              query={queryUpdateValidation}
-              formId={formId}
-              workspaceId={workspaceId}
-              answerIds={rowIds as Ip.SubmissionId[]}
-            />
-          ),
       render: (row: any) => {
         const value: Ip.Submission.Validation = getRow(row).validationStatus
         return {

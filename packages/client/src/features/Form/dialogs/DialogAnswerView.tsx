@@ -196,16 +196,13 @@ const KoboAnswerQuestionView = ({
   const {formatDateTime} = useI18n()
   const {m} = useI18n()
   const t = useTheme()
-  const queryUpdate = UseQuerySubmission.update()
   const columns = useMemo(() => {
     if (questionSchema.type !== 'begin_repeat') return
     const group = schema.helper.group.getByName(questionSchema.name)
     if (!group) return
     return buildDbColumns.question.byQuestions({
       getFileUrl: getKoboAttachmentUrl,
-      queryUpdateAnswer: queryUpdate,
       questions: group.questions,
-      workspaceId,
       schema,
       formId,
       m,

@@ -5,9 +5,6 @@ import {ColumnQuestionBaseProps, ColumnQuestionProps, Question, Row} from './typ
 import * as Datatable from '@infoportal/client-datatable'
 import {colorRepeatedQuestionHeader, defaultColWidth, ignoredColType} from './common.js'
 import {Btn, Txt} from '@infoportal/client-core'
-import {ReadonlyAction} from '../ui/ReadonlyAction.js'
-import {BulkUpdateAnswer} from '../ui/BulkUpdate.js'
-import {Ip} from '@infoportal/api-sdk'
 import {map} from '@axanc/ts-utils'
 import {KoboTypeIcon} from '../ui/KoboTypeIcon.js'
 import {removeHtml} from 'infoportal-common'
@@ -23,34 +20,15 @@ export class QuestionType {
 
   private static getBase({
     q,
-    m,
-    workspaceId,
-    formId,
-    isReadonly,
-    queryUpdateAnswer,
     translateQuestion,
-    schema,
   }: ColumnQuestionBaseProps): Pick<
     Datatable.Column.Props<any>,
-    'actionOnSelected' | 'id' | 'width' | 'group' | 'typeIcon' | 'typeLabel' | 'head' | 'subHeader'
+    'id' | 'width' | 'group' | 'typeIcon' | 'typeLabel' | 'head' | 'subHeader'
   > {
     return {
       id: q.name,
       width: defaultColWidth,
       typeLabel: q.type,
-      actionOnSelected: isReadonly
-        ? () => <ReadonlyAction />
-        : ({rowIds, value}: {rowIds: string[], value?: any}) => (
-            <BulkUpdateAnswer
-              value={value}
-              schema={schema}
-              question={q}
-              query={queryUpdateAnswer}
-              answerIds={rowIds as Ip.SubmissionId[]}
-              workspaceId={workspaceId}
-              formId={formId}
-            />
-          ),
       ...map(q.$xpath.split('/')[0], value => ({
         group: {label: translateQuestion(value), id: value},
       })),
@@ -61,18 +39,14 @@ export class QuestionType {
 
   static byQuestions({
     questions,
-    formId,
-    workspaceId,
     ...props
   }: {questions: Kobo.Form.Question[]} & Pick<
     ColumnQuestionProps,
     | 'isReadonly'
-    | 'workspaceId'
     | 'getRow'
     | 'schema'
     | 'formId'
     | 'getFileUrl'
-    | 'queryUpdateAnswer'
     | 't'
     | 'm'
     | 'externalFilesIndex'
@@ -81,8 +55,6 @@ export class QuestionType {
     const getBy = (q: Question): Datatable.Column.Props<Row> | undefined => {
       const args = (isReadonly?: boolean) => ({
         q,
-        formId,
-        workspaceId,
         isReadonly: props.isReadonly ?? isReadonly,
         translateQuestion: props.schema.translate.question,
         translateChoice: props.schema.translate.choice,
@@ -125,12 +97,10 @@ export class QuestionType {
       // | 'q'
       // | 'choicesIndex'
       // | 'translateChoice'
+      | 'formId'
       | 'isReadonly'
       | 'getRow'
       | 'schema'
-      | 'formId'
-      | 'queryUpdateAnswer'
-      | 'workspaceId'
       | 't'
       | 'm'
       | 'getFileUrl'

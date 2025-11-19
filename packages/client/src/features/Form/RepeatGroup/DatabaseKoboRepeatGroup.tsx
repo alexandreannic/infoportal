@@ -74,17 +74,14 @@ const DatabaseKoboRepeat = ({
   const navigate = useNavigate()
 
   const queryAnswers = UseQuerySubmission.search({workspaceId, formId})
-  const queryUpdate = UseQuerySubmission.update()
   const data = queryAnswers.data?.data
   const groupInfo = schema.helper.group.getByName(group)!
   const paths = groupInfo?.pathArr
 
   const {columns, filters} = useMemo(() => {
     const res = getColumnsForRepeatGroup({
-      queryUpdateAnswer: queryUpdate,
       formId,
       schema,
-      workspaceId,
       t,
       m,
       onRepeatGroupClick: _ =>
@@ -105,7 +102,7 @@ const DatabaseKoboRepeat = ({
         ...(index ? {_parent_index: {value: index}} : {}),
       },
     }
-  }, [formId, group, schema, data])
+  }, [formId, group, schema])
 
   const flat = useMemo(() => {
     return KoboFlattenRepeatedGroup.run({
@@ -167,18 +164,14 @@ export function getColumnsForRepeatGroup({
   groupName,
   formId,
   schema,
-  workspaceId,
   onRepeatGroupClick,
-  queryUpdateAnswer,
   m,
   t,
 }: {
-  workspaceId: Ip.WorkspaceId
   groupName: string
   formId: Ip.FormId
   schema: KoboSchemaHelper.Bundle
   onRepeatGroupClick?: OnRepeatGroupClick
-  queryUpdateAnswer: Parameters<typeof buildDbColumns.question.byQuestions>[0]['queryUpdateAnswer']
   m: Messages
   t: Theme
 }) {
@@ -206,8 +199,6 @@ export function getColumnsForRepeatGroup({
     buildDbColumns.meta.submissionTime({m}),
     ...buildDbColumns.question.byQuestions({
       getFileUrl: getKoboAttachmentUrl,
-      queryUpdateAnswer,
-      workspaceId,
       formId,
       questions: groupInfo.questions,
       onRepeatGroupClick,

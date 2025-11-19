@@ -17,12 +17,10 @@ type DatabaseKoboDisplayProps = {
   display: DatabaseDisplay
   schema: KoboSchemaHelper.Bundle
   formId: Ip.FormId
-  workspaceId: Ip.WorkspaceId
   onRepeatGroupClick?: OnRepeatGroupClick
   m: Messages
   t: Theme
   getFileUrl: typeof getKoboAttachmentUrl
-  queryUpdateAnswer: Parameters<typeof buildDbColumns.question.byQuestions>[0]['queryUpdateAnswer']
 }
 
 export const databaseKoboDisplayBuilder = ({
@@ -30,9 +28,7 @@ export const databaseKoboDisplayBuilder = ({
   display,
   schema,
   formId,
-  workspaceId,
   onRepeatGroupClick,
-  queryUpdateAnswer,
   getFileUrl,
   m,
   t,
@@ -47,9 +43,7 @@ export const databaseKoboDisplayBuilder = ({
           mapFor(groupSize, repeat => {
             const newCols = buildDbColumns.question
               .byQuestions({
-                queryUpdateAnswer,
                 getFileUrl,
-                workspaceId,
                 questions: group.questions,
                 schema,
                 onRepeatGroupClick,
@@ -85,9 +79,7 @@ export const databaseKoboDisplayBuilder = ({
         if (!group || group.depth > 1) return columns
         const repeatGroupColumns = buildDbColumns.question
           .byQuestions({
-            queryUpdateAnswer,
             getFileUrl,
-            workspaceId,
             questions: group.questions,
             schema,
             onRepeatGroupClick,

@@ -1,9 +1,9 @@
-import {useCtx} from './core/DatatableContext'
-import {useConfig} from './DatatableConfig'
+import {useCtx} from '../core/DatatableContext'
+import {useConfig} from '../DatatableConfig'
 import React, {useMemo} from 'react'
 import {Box, Icon, useTheme} from '@mui/material'
 import {Btn, Txt} from '@infoportal/client-core'
-import {BtnCopyCells} from './ui/BtnCopyCell'
+import {BtnCopyCells} from '../ui/BtnCopyCell'
 
 const cellSelectionDangerThreshold = 200
 
@@ -14,7 +14,8 @@ export const DatatableFormularBar = () => {
   const reset = useCtx(_ => _.cellSelection.reset)
   const areAllColumnsSelected = useCtx(_ => _.cellSelection.areAllColumnsSelected)
   const selectedCount = useCtx(_ => _.cellSelection.selectedCount)
-  const renderComponentOnRowSelected = useCtx(_ => _.module?.cellSelection?.renderComponentOnRowSelected)
+  const renderFormulaBarOnRowSelected = useCtx(_ => _.module?.cellSelection?.renderFormulaBarOnRowSelected)
+  const renderFormulaBarOnColumnSelected = useCtx(_ => _.module?.cellSelection?.renderFormulaBarOnColumnSelected)
   const dataFilteredAndSorted = useCtx(_ => _.dataFilteredAndSorted)
   const columns = useCtx(_ => _.columns.visible)
   const getRowKey = useCtx(_ => _.getRowKey)
@@ -42,6 +43,16 @@ export const DatatableFormularBar = () => {
 
   const t = useTheme()
 
+  const renderColumnSelected = useMemo(() => {
+    if (!selectedColumnUniq || !renderFormulaBarOnColumnSelected) return
+    return renderFormulaBarOnColumnSelected({rowIds, commonValue: commonSelectedValue, columnId: selectedColumnUniq.id})
+  }, [selectedColumnUniq, renderFormulaBarOnColumnSelected])
+
+  const renderRowSelected = useMemo(() => {
+    if (!areAllColumnsSelected || !renderFormulaBarOnRowSelected) return
+    return renderFormulaBarOnRowSelected && renderFormulaBarOnRowSelected({rowIds})
+  }, [areAllColumnsSelected, renderFormulaBarOnRowSelected])
+
   return (
     <Box
       sx={{
@@ -58,18 +69,8 @@ export const DatatableFormularBar = () => {
         justifyContent: 'flex-end',
       }}
     >
-      {/*{selectedColumnUniq && (*/}
-      {/*  <Txt block size="big" bold>*/}
-      {/*    {selectedColumnUniq.head}*/}
-      {/*  </Txt>*/}
-      {/*)}*/}
-
-      {selectedColumnUniq &&
-        selectedColumnUniq.actionOnSelected &&
-        selectedColumnUniq?.actionOnSelected !== 'none' &&
-        React.cloneElement(selectedColumnUniq.actionOnSelected?.({rowIds, value: commonSelectedValue}), {key: rowIds.join(',')})}
-      {areAllColumnsSelected && renderComponentOnRowSelected && renderComponentOnRowSelected({rowIds})}
-
+      {renderColumnSelected}
+      {renderRowSelected}
       {selectedCount > 0 && (
         <>
           <BtnCopyCells />

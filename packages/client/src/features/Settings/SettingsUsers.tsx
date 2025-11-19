@@ -185,7 +185,6 @@ function SettingsUsers() {
               width: 100,
               align: 'center',
               head: m.admin,
-              actionOnSelected: 'none',
               render: _ => ({
                 label: (
                   <Core.SelectSingle

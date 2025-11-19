@@ -81,10 +81,10 @@ export interface Props<T extends Row, K extends string = string> {
       hidden?: string[]
     }
     cellSelection?: {
-      hideFormulaBar?: boolean
       enabled: boolean
       mode?: CellSelectionMode
-      renderComponentOnRowSelected?: ({rowIds}: {rowIds: string[]}) => ReactNode
+      renderFormulaBarOnRowSelected?: (_: {rowIds: string[]}) => ReactNode
+      renderFormulaBarOnColumnSelected?: (_: {rowIds: string[], commonValue?: any, columnId: string,}) => ReactNode
     }
     columnsResize?: {
       enabled: boolean
@@ -125,7 +125,6 @@ export namespace Column {
     hidden?: boolean
     style?: (_: T) => CSSProperties
     styleHead?: CSSProperties
-    actionOnSelected?: 'none' | (({rowIds}: {rowIds: string[], value?: any | undefined}) => ReactElement)
     classHead?: string
     typeIcon?: ReactNode
     typeLabel?: string

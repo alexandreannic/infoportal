@@ -17,9 +17,8 @@ export type Question = Pick<
 export type OnRepeatGroupClick = (_: {name: string; row: Row; event: any}) => void
 
 export type ColumnQuestionProps = {
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
   q: Question
+  formId: Ip.FormId
   isReadonly?: boolean
   getRow?: (_: any) => Data
   schema: KoboSchemaHelper.Bundle
@@ -28,7 +27,6 @@ export type ColumnQuestionProps = {
   translateChoice: KoboSchemaHelper.Translation['choice']
   externalFilesIndex?: KoboExternalFilesIndex
   onRepeatGroupClick?: OnRepeatGroupClick
-  queryUpdateAnswer: Query<Ip.Submission.Payload.Update, Ip.BulkResponse<Ip.SubmissionId>>
   getFileUrl: (_: {
     formId: Ip.FormId
     submissionId: Ip.SubmissionId
@@ -41,28 +39,17 @@ export type ColumnQuestionProps = {
 
 export type ColumnQuestionBaseProps = Pick<
   ColumnQuestionProps,
-  'schema' | 'isReadonly' | 'queryUpdateAnswer' | 'formId' | 'workspaceId' | 'getRow' | 'q' | 'translateQuestion' | 'm'
+  'schema' | 'isReadonly' | 'getRow' | 'q' | 'translateQuestion' | 'm'
 >
 
 export type ColumnMetaProps = {
   formType: Ip.Form.Type
-  workspaceId: Ip.WorkspaceId
   getRow?: (_: any) => Row
-  formId: Ip.FormId
   koboEditEnketoUrl?: (answerId: Kobo.SubmissionId) => string
   isReadonly?: boolean
-  queryUpdateValidation: Query<Ip.Submission.Payload.UpdateValidation, Ip.BulkResponse<Ip.SubmissionId>>
   dialog: {
     openView: (_: {submission: Ip.Submission<any>}) => void
     openEdit: (_: {submission: Ip.Submission<any>}) => void
   }
   m: Messages
-}
-
-export type Query<P, R> = {
-  isPending?: boolean
-  error?: {
-    message: string
-  } | null
-  mutateAsync: (_: P) => Promise<R>
 }
