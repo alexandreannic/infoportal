@@ -8,7 +8,7 @@ import {useFormContext} from '@/features/Form/Form'
 export const DatabaseGroupDisplayInput = (props: Core.BtnProps) => {
   const t = useTheme()
   const {m} = useI18n()
-  const {schema} = useFormContext()
+  const schema = useFormContext(_ => _.schema)
   const {groupDisplay} = useDatabaseKoboTableContext()
   return (
     <Core.PopoverWrapper

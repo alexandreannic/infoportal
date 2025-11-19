@@ -31,7 +31,7 @@ function DatabaseKoboRepeatContainer() {
     group: string
   }
   const {id, index} = databaseKoboRepeatRoute.useSearch()
-  const {langIndex} = useFormContext()
+  const langIndex = useFormContext(_ => _.langIndex)
 
   const querySchema = useQuerySchemaBundle({workspaceId, formId, langIndex})
 

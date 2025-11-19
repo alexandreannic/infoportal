@@ -34,7 +34,7 @@ export interface DatabaseTableProps {
 }
 
 function DatabaseTableContainer() {
-  const props = useFormContext()
+  const props = useFormContext(_ => _)
   return (
     <TabContent width="full" sx={{mb: 0}}>
       <DatabaseTable

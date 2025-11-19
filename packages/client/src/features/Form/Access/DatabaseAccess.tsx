@@ -14,7 +14,7 @@ export const databaseAccessRoute = createRoute({
 })
 
 function DatabaseAccess() {
-  const {workspaceId, permission, form, schema} = useFormContext()
+  const {workspaceId, permission, form, schema} = useFormContext(_ => _)
   const {m} = useI18n()
   return (
     <TabContent width="full">

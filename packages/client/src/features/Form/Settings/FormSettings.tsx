@@ -84,7 +84,8 @@ export const SettingsRow = ({
 
 function FormSettings() {
   const {m} = useI18n()
-  const {workspaceId, form} = useFormContext()
+  const form = useFormContext(_ => _.form)
+  const workspaceId = useFormContext(_ => _.workspaceId)
   const queryUpdate = UseQueryForm.update(workspaceId)
   const queryUpdateKoboConnexion = UseQueryForm.updateKoboConnexion(workspaceId)
   const queryRemove = UseQueryForm.remove(workspaceId)

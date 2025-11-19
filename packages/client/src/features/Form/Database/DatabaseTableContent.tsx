@@ -54,7 +54,7 @@ export const DatabaseTableContent = ({
   const {m} = useI18n()
   const t = useTheme()
   const navigate = useNavigate()
-  const {schema, langIndex, setLangIndex} = useFormContext()
+  const {schema, langIndex, setLangIndex} = useFormContext(_ => _)
   const ctx = useDatabaseKoboTableContext()
   const dialog = useKoboDialogs({workspaceId, formId: ctx.form.id})
   const connectedUsers = useFormSocket({workspaceId, formId: ctx.form.id})

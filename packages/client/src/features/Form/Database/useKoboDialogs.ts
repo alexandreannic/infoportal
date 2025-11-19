@@ -11,13 +11,15 @@ export interface OpenModalProps {
 
 export const useKoboDialogs = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
   const dialogs = useDialogs()
-  const {schema} = useFormContext()
+  const schema = useFormContext(_ => _.schema)
 
   return {
     openView: (params: OpenModalProps) => {
+      if (!schema) return
       dialogs.open(DialogAnswerView, {schema, workspaceId, formId, ...params})
     },
     openEdit: (params: OpenModalProps) => {
+      if (!schema) return
       dialogs.open(DialogAnswerEdit, {schema, workspaceId, formId, ...params})
     },
   }

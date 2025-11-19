@@ -22,7 +22,7 @@ export const AccessTable = ({
 }) => {
   const {m, formatDate} = useI18n()
   const {user} = useSession()
-  const {langIndex} = useFormContext()
+  const langIndex = useFormContext(_ => _.langIndex)
   const queryJobs = UseQueryUser.getJobs(workspaceId)
   const queryAccess = UseQueryFormAccess.getByFormId({workspaceId, formId})
   const queryAccessUpdate = UseQueryFormAccess.update({workspaceId, formId})

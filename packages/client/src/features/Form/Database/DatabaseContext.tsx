@@ -50,7 +50,7 @@ export const DatabaseKoboTableProvider = (props: {
   const {form, data, children, refetch} = props
   const {api} = useAppSettings()
   const [indexExternalFiles, setIndexExternalFiles] = useState<KoboExternalFilesIndex>()
-  const {schema} = useFormContext()
+  const schema = useFormContext(_ => _.schema)
 
   const fetcherExternalFiles = useFetcher<() => Promise<{file: string; csv: string}[]>>(() => {
     return Promise.all(

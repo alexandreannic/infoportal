@@ -18,7 +18,7 @@ export const databaseHistoryRoute = createRoute({
 })
 
 function DatabaseHistory() {
-  const {schema, workspaceId, form} = useFormContext()
+  const {schema, workspaceId, form} = useFormContext(_ => _)
   const t = useTheme()
   const {m, formatDateTime, formatLargeNumber, formatDate} = useI18n()
   const {api} = useAppSettings()

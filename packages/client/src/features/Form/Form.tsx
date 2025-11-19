@@ -73,7 +73,7 @@ export type FormContext = {
 
 const Context = createContext<FormContext>({} as FormContext)
 
-export const useFormContext = <Selected extends any>(selector: (_: FormContext) => Selected = _ => _ as any): Selected => {
+export const useFormContext = <Selected extends any>(selector: (_: FormContext) => Selected): Selected => {
   return useContextSelector(Context, selector)
 }
 
