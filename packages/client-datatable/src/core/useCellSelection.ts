@@ -38,7 +38,17 @@ export const useCellSelection = <T extends Row = any>({
     anchor.current = null
   }, [])
 
-  const setCellsSelection = ({startRow, startCol, endRow, endCol}: {startRow: number, startCol: number, endRow: number, endCol: number}) => {
+  const setCellsSelection = ({
+    startRow,
+    startCol,
+    endRow,
+    endCol,
+  }: {
+    startRow: number
+    startCol: number
+    endRow: number
+    endCol: number
+  }) => {
     const rowMin = Math.min(startRow, endRow)
     const rowMax = Math.max(startRow, endRow)
     const colMin = Math.min(startCol, endCol)
@@ -70,9 +80,8 @@ export const useCellSelection = <T extends Row = any>({
   const handleMouseDown = useCallback(
     (rowIndex: number, colIndex: number, rowId: RowId, event: React.MouseEvent<HTMLElement>) => {
       if (mode === 'row' && colIndex !== 0) return
-      const preventReSelectionToAllowDnDrop = colIndex === 0
-        && selectedColumnIdsRef.current?.has(columnIndexId)
-        && selectedRowIdsRef.current?.has(rowId)
+      const preventReSelectionToAllowDnDrop =
+        colIndex === 0 && selectedColumnIdsRef.current?.has(columnIndexId) && selectedRowIdsRef.current?.has(rowId)
       if (preventReSelectionToAllowDnDrop) return
       const isShift = event.shiftKey
       if (isShift && anchor.current) {
@@ -94,7 +103,7 @@ export const useCellSelection = <T extends Row = any>({
         })
       }
     },
-    [dispatch, mode],
+    [dispatch, filteredAndSortedData, mode],
   )
 
   const handleMouseEnter = useCallback(
@@ -107,7 +116,7 @@ export const useCellSelection = <T extends Row = any>({
         endCol: colIndex,
       })
     },
-    [dispatch],
+    [dispatch, filteredAndSortedData],
   )
 
   const handleMouseUp = useCallback((event: React.MouseEvent<HTMLElement>) => {
