@@ -63,7 +63,7 @@ export const BulkUpdateAnswer = ({
   value?: any
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
-  question: Kobo.Form.Question
+  question: Ip.Form.Question
   answerIds: Ip.SubmissionId[]
   schema: KoboSchemaHelper.Bundle
 }) => {

@@ -48,7 +48,7 @@ function Collect() {
               onSubmit={_ =>
                 querySubmit.mutateAsync({formId, workspaceId, geolocation, ..._}).then(() => toastSuccess(''))
               }
-              survey={querySchema.data}
+              survey={querySchema.data as any}
             />
           </Core.PanelBody>
         </Core.Panel>

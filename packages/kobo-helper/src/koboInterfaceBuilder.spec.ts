@@ -1,5 +1,5 @@
-import {Kobo} from 'kobo-sdk'
 import {KoboInterfaceBuilder} from './koboInterfaceBuilder.js'
+import {Ip} from '@infoportal/api-sdk'
 
 describe.only('KoboBuildInterface', () => {
   it('', () => {
@@ -8,7 +8,7 @@ describe.only('KoboBuildInterface', () => {
   })
 })
 
-function getSchema(): Kobo.Form['content'] {
+function getSchema(): Ip.Form.Schema {
   return {
     schema: '1',
     survey: [

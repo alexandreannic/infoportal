@@ -1,10 +1,10 @@
 import {fnSwitch} from '@axanc/ts-utils'
 import React from 'react'
 import {IconProps} from '@mui/material'
-import {Kobo} from 'kobo-sdk'
 import * as Datatable from '@infoportal/client-datatable'
+import {Ip} from '@infoportal/api-sdk'
 
-const koboIconMap: Record<Kobo.Form.QuestionType, string> = {
+const koboIconMap: Record<Ip.Form.QuestionType, string> = {
   image: 'image',
   file: 'description',
   calculate: 'functions',
@@ -33,7 +33,7 @@ export const KoboTypeIcon = ({
   children,
   ...props
 }: {
-  children?: Kobo.Form.QuestionType
+  children?: Ip.Form.QuestionType
 } & Pick<IconProps, 'sx' | 'color'>) => {
   if (!children) return undefined
   return (

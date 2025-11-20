@@ -1,5 +1,4 @@
 import {Obj} from '@axanc/ts-utils'
-import {Kobo} from 'kobo-sdk'
 import {Ip} from '@infoportal/api-sdk'
 
 /** @deprecated use from sdk*/
@@ -22,7 +21,7 @@ export type Submission = Ip.Submission<SubmissionMapped>
 
 export class KoboMapper {
   static readonly mapSubmissionBySchema = (
-    indexedSchema: Record<string, Kobo.Form.Question | undefined>,
+    indexedSchema: Record<string, Ip.Form.Question | undefined>,
     submissions: Ip.Submission,
   ): Submission => {
     const {answers, ...meta} = submissions
@@ -30,7 +29,7 @@ export class KoboMapper {
   }
 
   static readonly unmapSubmissionBySchema = (
-    indexedSchema: Record<string, Kobo.Form.Question | undefined>,
+    indexedSchema: Record<string, Ip.Form.Question | undefined>,
     mapped: Submission,
   ): Ip.Submission => {
     const {answers, ...meta} = mapped
@@ -38,7 +37,7 @@ export class KoboMapper {
   }
 
   private static readonly mapAnswerBySchema = (
-    indexedSchema: Record<string, Kobo.Form.Question | undefined>,
+    indexedSchema: Record<string, Ip.Form.Question | undefined>,
     answers: Ip.Submission['answers'],
   ): SubmissionMapped => {
     const res: SubmissionMapped = {...answers}
@@ -69,7 +68,7 @@ export class KoboMapper {
   }
 
   private static readonly unmapAnswersBySchema = (
-    indexedSchema: Record<string, Kobo.Form.Question | undefined>,
+    indexedSchema: Record<string, Ip.Form.Question | undefined>,
     answers: SubmissionMapped,
   ): Ip.Submission['answers'] => {
     const res: Ip.Submission['answers'] = {}

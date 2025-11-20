@@ -12,7 +12,9 @@ import {selectsQuestionTypes} from './settings'
 import {Btn, IconBtn, Panel} from '@infoportal/client-core'
 import {Ip} from '@infoportal/api-sdk'
 
-const getDataKey = (_: XlsSurveyRow) => _.key
+const getDataKey = (_: XlsSurveyRow) => {
+  return _.key
+}
 
 const tableSx: SxProps = {
   '& .dtd': {px: 0},
@@ -45,7 +47,7 @@ export const XlsFormEditor = ({
   }, [value])
 
   useEffect(() => {
-    onChange?.(schema)
+    onChange?.(schema as any)
   }, [schema])
 
   const sxName = useMemo(() => {
@@ -229,38 +231,38 @@ export const XlsFormEditor = ({
   const handleEvent = useCallback((action: Datatable.Action<XlsSurveyRow>) => {
     switch (action.type) {
       case 'REORDER_ROWS': {
-        const {index, range} = action
+        const {index, rowIds} = action
         const rows = [...schema.survey]
-        const moved = rows.splice(range.min, range.max - range.min + 1)
-        const target = index > range.max ? index - moved.length : index
-        rows.splice(target, 0, ...moved)
-        setSchema({...schema, survey: rows})
+        // const moved = rows.splice(range.min, range.max - range.min + 1)
+        // const target = index > range.max ? index - moved.length : index
+        // rows.splice(target, 0, ...moved)
+        // setSchema({...schema, survey: rows})
       }
     }
   }, [])
 
   const tableModule: Datatable.Props<any>['module'] = useMemo(() => {
-      return {
-        export: {enabled: true},
-        rowsDragging: {enabled: true},
-        cellSelection: {
-          hideFormulaBar: true,
-          enabled: true,
-          renderComponentOnRowSelected: () => <>
+    return {
+      export: {enabled: true},
+      rowsDragging: {enabled: true},
+      cellSelection: {
+        mode: 'free',
+        enabled: true,
+        renderComponentOnRowSelected: () => (
+          <>
             <IconBtn>add</IconBtn>
-          </>,
-          // mode: 'row'
-        },
-        columnsResize: {enabled: true},
-        columnsToggle: {enabled: true},
-      }
+          </>
+        ),
+        // mode: 'row'
+      },
+      columnsResize: {enabled: true},
+      columnsToggle: {enabled: true},
     }
-    , [])
+  }, [])
 
   return (
     <Panel sx={{width: '100%', mb: 0, overflowX: 'auto'}}>
       <Datatable.Component
-        // header={_ => (
         module={tableModule}
         showRowIndex
         onEvent={handleEvent}

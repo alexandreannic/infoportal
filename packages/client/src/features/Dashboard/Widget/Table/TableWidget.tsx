@@ -1,12 +1,11 @@
 import {Ip} from '@infoportal/api-sdk'
 import React, {useMemo} from 'react'
 import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
-import {Core, Datatable} from '@/shared'
+import {Datatable} from '@/shared'
 import {questionTypeNumbers} from '@/features/Dashboard/Widget/Table/TableSettings'
 import {Obj} from '@axanc/ts-utils'
 import {useTheme} from '@mui/material'
 import {KoboSchemaHelper} from '@infoportal/kobo-helper'
-import {Kobo} from 'kobo-sdk'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 
@@ -25,7 +24,7 @@ const makeMapper = ({
   schema,
 }: {
   schema: KoboSchemaHelper.Bundle<any>
-  question: Kobo.Form.Question
+  question: Ip.Form.Question
   ranges?: Ip.Dashboard.Widget.NumberRange[]
 }): ((value: string | number) => string) => {
   const type = schema.helper.questionIndex[question.name]?.type

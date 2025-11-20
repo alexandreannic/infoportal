@@ -26,7 +26,6 @@ import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
 import {useKoboDialogs} from '@/features/Form/Database/useKoboDialogs'
 import {useFormContext} from '@/features/Form/Form'
 import {SelectLangIndex} from '@/shared/customInput/SelectLangIndex'
-import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {DatabaseSelectedColumnAction} from '@/features/Form/Database/DatabaseSelectedColumnAction'
 
 export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
@@ -47,14 +46,13 @@ export const ArchiveAlert = ({sx, ...props}: AlertProps) => {
 const getRowKey = (_: any) => _.id + ((_ as any) /** TODO Make it typesafe?*/._index ?? '')
 
 export const DatabaseTableContent = ({
-  workspaceId,
   onFiltersChange,
   onDataChange,
-}: Pick<DatabaseTableProps, 'workspaceId' | 'onFiltersChange' | 'onDataChange'>) => {
+}: Pick<DatabaseTableProps, 'onFiltersChange' | 'onDataChange'>) => {
   const {m} = useI18n()
   const t = useTheme()
   const navigate = useNavigate()
-  const {schema, langIndex, setLangIndex} = useFormContext(_ => _)
+  const {langIndex, workspaceId, setLangIndex} = useFormContext(_ => _)
   const ctx = useDatabaseKoboTableContext()
   const dialog = useKoboDialogs({workspaceId, formId: ctx.form.id})
   const connectedUsers = useFormSocket({workspaceId, formId: ctx.form.id})
@@ -84,7 +82,7 @@ export const DatabaseTableContent = ({
       isReadonly: !ctx.canEdit,
       getRow: (_: Submission) => _.answers,
       formId: ctx.form.id,
-      schema,
+      schema: ctx.schema,
       externalFilesIndex: ctx.externalFilesIndex,
       onRepeatGroupClick,
       t,
@@ -94,13 +92,13 @@ export const DatabaseTableContent = ({
       getFileUrl: getKoboAttachmentUrl,
       data: ctx.data ?? [],
       formId: ctx.form.id,
-      schema: schema,
+      schema: ctx.schema,
       onRepeatGroupClick,
       display: ctx.groupDisplay.get,
       m,
       t,
     }).transformColumns(schemaColumns)
-  }, [ctx.data, schema.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
+  }, [ctx.data, ctx.schema.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const base = buildDbColumns.meta.all({
@@ -134,8 +132,8 @@ export const DatabaseTableContent = ({
   }
 
   const handleGenerateTemplate = async () => {
-    if (schema && ctx.form) {
-      await generateEmptyXlsTemplate(schema, ctx.form.name + '_Template')
+    if (ctx.schema && ctx.form) {
+      await generateEmptyXlsTemplate(ctx.schema, ctx.form.name + '_Template')
     }
   }
 
@@ -185,7 +183,7 @@ export const DatabaseTableContent = ({
                   columnId={columnId}
                   commonValue={commonValue}
                   workspaceId={workspaceId}
-                  schema={schema}
+                  schema={ctx.schema}
                   formId={ctx.form.id}
                 />
               ),
@@ -240,8 +238,13 @@ export const DatabaseTableContent = ({
           header={params => (
             <>
               <DatabaseViewBtn sx={{mr: 1}} view={ctx.view} onClick={() => setViewEditorOpen(_ => !_)} />
-              <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
-              {schema.helper.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
+              <SelectLangIndex
+                schema={ctx.schema}
+                sx={{maxWidth: 128, mr: 1}}
+                value={langIndex}
+                onChange={setLangIndex}
+              />
+              {ctx.schema.helper.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
               {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 
               <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>

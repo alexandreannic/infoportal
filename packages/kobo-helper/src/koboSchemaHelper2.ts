@@ -1,4 +1,3 @@
-import {Kobo} from 'kobo-sdk'
 import {removeHtml} from 'infoportal-common'
 import {Ip} from '@infoportal/api-sdk'
 import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper.js'
@@ -18,7 +17,7 @@ class KoboSchemaHelper2<IncludeMeta extends boolean = false> {
     public langIndex: number = 0,
   ) {}
 
-  static readonly ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['end_group', 'end_repeat', 'deviceid'])
+  static readonly ignoredColType: Set<Ip.Form.QuestionType> = new Set(['end_group', 'end_repeat', 'deviceid'])
 
   static readonly getLabel = (
     q: {
@@ -47,7 +46,7 @@ class KoboSchemaHelper2<IncludeMeta extends boolean = false> {
     survey: this.sanitizeQuestions(this.schema.survey),
   }
 
-  private sanitizeQuestions(questions: Kobo.Form.Question[]): Kobo.Form.Question[] {
+  private sanitizeQuestions(questions: Ip.Form.Question[]): Ip.Form.Question[] {
     return questions
       .filter(
         _ =>
@@ -65,7 +64,7 @@ class KoboSchemaHelper2<IncludeMeta extends boolean = false> {
     const choicesIndex = seq(schema.choices).groupBy(_ => _.list_name)
     const questionIndex = seq([...schema.survey])
       .compactBy('name')
-      .reduceObject<Record<string, Kobo.Form.Question>>(_ => [_.name, _])
+      .reduceObject<Record<string, Ip.Form.Question>>(_ => [_.name, _])
 
     const getOptionsByQuestionName = (qName: string) => {
       const listName = questionIndex[qName].select_from_list_name

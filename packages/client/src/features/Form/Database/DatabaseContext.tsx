@@ -32,6 +32,7 @@ export interface DatabaseContext {
   externalFilesIndex?: KoboExternalFilesIndex
   view: UseDatabaseView
   groupDisplay: UseObjectStateReturn<DatabaseDisplay>
+  schema: KoboSchemaHelper.Bundle<false>
 }
 
 const Context = React.createContext({} as DatabaseContext)
@@ -46,15 +47,15 @@ export const DatabaseKoboTableProvider = (props: {
   refetch: (p?: FetchParams) => Promise<void>
   form: Ip.Form
   data?: Submission[]
+  schema: KoboSchemaHelper.Bundle<false>
 }) => {
   const {form, data, children, refetch} = props
   const {api} = useAppSettings()
   const [indexExternalFiles, setIndexExternalFiles] = useState<KoboExternalFilesIndex>()
-  const schema = useFormContext(_ => _.schema)
 
   const fetcherExternalFiles = useFetcher<() => Promise<{file: string; csv: string}[]>>(() => {
     return Promise.all(
-      (schema.schema.files ?? []).map(file =>
+      (props.schema.schema.files ?? []).map(file =>
         api.koboApi
           .proxy({method: 'GET', url: file.content, formId: form.id})
           .then((csv: string) => ({file: file.metadata.filename, csv}))
@@ -80,7 +81,7 @@ export const DatabaseKoboTableProvider = (props: {
         ),
       )
     })
-  }, [schema.schema])
+  }, [props.schema.schema])
 
   const asyncRefresh = useAsync(async () => {
     await api.koboApi.synchronizeAnswers(form.id)
@@ -101,7 +102,7 @@ export const DatabaseKoboTableProvider = (props: {
   const view = useDatabaseView(form.id)
   const groupDisplay = useObjectState<DatabaseDisplay>({
     repeatAs: undefined,
-    repeatGroupName: schema.helper.group.search({depth: 1})?.[0]?.name,
+    repeatGroupName: props.schema.helper.group.search({depth: 1})?.[0]?.name,
   })
 
   return (
