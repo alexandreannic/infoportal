@@ -19,7 +19,7 @@ interface XlsFormState {
   // setSurvey: (rows: Kobo.Form.Question[]) => void
   // choices: XlsChoiceRow[]
   // setChoices: (rows: Kobo.Form.Choice[]) => void
-  addSurveyRow: () => void
+  addSurveyRow: (count: number) => void
   updateSurveyCell: <K extends keyof XlsSurveyRow>(
     rowKey: string,
     field: K,
@@ -35,7 +35,14 @@ const skippedQuestionTypesSet = new Set(skippedQuestionTypes)
 
 export const useXlsFormStore = create<XlsFormState>()(
   immer(set => ({
-    schema: {choices: [], survey: [], translations: [], settings: {}, translated: [], schema: ''},
+    schema: {
+      choices: [],
+      survey: [{type: 'select_one', name: '', key: '0_'}],
+      translations: ['English (en)'],
+      settings: {},
+      translated: [],
+      schema: '',
+    },
     setSchema: schema =>
       set({
         schema: {
@@ -47,17 +54,20 @@ export const useXlsFormStore = create<XlsFormState>()(
         },
       }),
 
-    addSurveyRow: () =>
+    addSurveyRow: (count: number) =>
       set(state => {
         const survey = state.schema.survey
-        const i = survey.length
-        const name = ''
-        survey.push({
-          name,
-          calculation: '',
-          type: 'text',
-          key: i + '_' + name,
-        })
+        const start = survey.length
+        const end = survey.length + count
+        for (let i = start; i < end; i++) {
+          const name = ''
+          survey.push({
+            name,
+            calculation: '',
+            type: 'text',
+            key: i + '_' + name,
+          })
+        }
       }),
 
     updateSurveyCell: (rowKey, field, value, fieldIndex) =>

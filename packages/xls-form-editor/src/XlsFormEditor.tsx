@@ -1,16 +1,17 @@
-import {SxProps, useTheme} from '@mui/material'
+import {Box, SxProps, useTheme} from '@mui/material'
 import * as Datatable from '@infoportal/client-datatable'
 import {useI18n} from '@infoportal/client-i18n'
 import {CellText} from './CellText'
 import {useXlsFormStore, XlsSurveyRow} from './useStore'
-import {useCallback, useEffect, useMemo} from 'react'
+import {useCallback, useEffect, useMemo, useState} from 'react'
 import {CellBoolean} from './CellBoolean'
 import {CellSelectType} from './CellSelectType'
 import {CellFormula} from './CellFormula'
 import {CellSelectAppearance} from './CellSelectAppearance'
 import {selectsQuestionTypes} from './settings'
-import {Btn, IconBtn, Panel} from '@infoportal/client-core'
+import * as Core from '@infoportal/client-core'
 import {Ip} from '@infoportal/api-sdk'
+import {RowId} from '@infoportal/client-datatable/dist/core/types'
 
 const getDataKey = (_: XlsSurveyRow) => {
   return _.key
@@ -35,6 +36,7 @@ export const XlsFormEditor = ({
   const schema = useXlsFormStore(_ => _.schema)
   const setSchema = useXlsFormStore(_ => _.setSchema)
   const addSurveyRow = useXlsFormStore(_ => _.addSurveyRow)
+  const [rowsToAdd, setRowsToAdd] = useState(1)
 
   useEffect(() => {
     if (!initialValue) return
@@ -57,6 +59,18 @@ export const XlsFormEditor = ({
   const columns: Datatable.Column.Props<XlsSurveyRow>[] = useMemo(() => {
     const defaultWith = 160
     const cols: Datatable.Column.Props<XlsSurveyRow>[] = [
+      {
+        id: 'key',
+        head: 'key',
+        type: 'string',
+        width: 70,
+        render: row => {
+          return {
+            value: row.key,
+            label: row.key,
+          }
+        },
+      },
       {
         id: 'type',
         head: 'type',
@@ -232,11 +246,20 @@ export const XlsFormEditor = ({
     switch (action.type) {
       case 'REORDER_ROWS': {
         const {index, rowIds} = action
-        const rows = [...schema.survey]
-        // const moved = rows.splice(range.min, range.max - range.min + 1)
-        // const target = index > range.max ? index - moved.length : index
-        // rows.splice(target, 0, ...moved)
-        // setSchema({...schema, survey: rows})
+        const rows = schema.survey
+        const movingSet = new Set(rowIds)
+        const remaining: XlsSurveyRow = []
+        const moved: XlsSurveyRow = []
+        for (const row of rows) {
+          const id = getDataKey(row) as RowId
+          if (movingSet.has(id)) moved.push(row)
+          else remaining.push(row)
+        }
+        const target = Math.min(index, remaining.length)
+        const newRows = [...remaining.slice(0, target), ...moved, ...remaining.slice(target)]
+        console.log(newRows)
+        setSchema({...schema, survey: newRows})
+        break
       }
     }
   }, [])
@@ -250,7 +273,7 @@ export const XlsFormEditor = ({
         enabled: true,
         renderComponentOnRowSelected: () => (
           <>
-            <IconBtn>add</IconBtn>
+            <Core.IconBtn>add</Core.IconBtn>
           </>
         ),
         // mode: 'row'
@@ -261,7 +284,7 @@ export const XlsFormEditor = ({
   }, [])
 
   return (
-    <Panel sx={{width: '100%', mb: 0, overflowX: 'auto'}}>
+    <Core.Panel sx={{width: '100%', mb: 0, overflowX: 'auto'}}>
       <Datatable.Component
         module={tableModule}
         showRowIndex
@@ -273,7 +296,23 @@ export const XlsFormEditor = ({
         getRowKey={getDataKey}
         data={schema.survey}
       />
-      <IconBtn onClick={() => addSurveyRow()}>add</IconBtn>
-    </Panel>
+      <Box sx={{display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', my: 1}}>
+        <Core.Btn onClick={() => addSurveyRow(rowsToAdd)} icon="add">
+          {m.add}
+        </Core.Btn>
+        <Core.Input
+          slotProps={{
+            input: {min: 1},
+          }}
+          sx={{width: 80, mr: 1}}
+          type="number"
+          helperText={null}
+          value={rowsToAdd}
+          size="small"
+          onChange={e => setRowsToAdd(+e.target.value)}
+        />
+        {m._xlsFormEditor.moreRows}
+      </Box>
+    </Core.Panel>
   )
 }

@@ -25,7 +25,7 @@ function FormBuilderVersion() {
   const workspaceId = useFormContext(_ => _.workspaceId)
   const formPermission = useFormContext(_ => _.permission)
   const versions = useFormBuilderContext(_ => _.versions)
-  const draft = useFormBuilderContext(_ => _.versionDraft)
+  const draft = useFormBuilderContext(_ => _.versions.draft)
   const queryDeployLast = useQueryVersion({workspaceId, formId}).deployLast
   const queryForm = UseQueryForm.get({workspaceId, formId})
 
@@ -52,13 +52,13 @@ function FormBuilderVersion() {
           {m.versions}
         </Core.PanelHead>
         <Core.PanelBody>
-          {seq(versions ?? [])
+          {seq(versions.all ?? [])
             .sortByNumber(_ => _.version, '9-0')
             .slice(0, versionVisible)
             .map((_, i) => (
               <VersionRow key={_.id} version={_} index={i} />
             ))}
-          {versionVisible < versions.length && <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />}
+          {versionVisible < versions.all.length && <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />}
           {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
         </Core.PanelBody>
       </Core.Panel>

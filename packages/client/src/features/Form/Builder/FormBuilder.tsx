@@ -8,13 +8,14 @@ import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFend
 import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
 import {createRoute, Outlet, redirect} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {Ip} from '@infoportal/api-sdk'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {FormBuilderTabs} from '@/features/Form/Builder/FormBuilderTabs'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {formBuilderVersionRoute} from '@/features/Form/Builder/Version/FormBuilderVersion'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
+import {seq} from '@axanc/ts-utils'
 
 const formBuilderRoutePath = 'formCreator'
 export const formBuilderRoute = createRoute({
@@ -29,22 +30,28 @@ export const formBuilderRoute = createRoute({
 })
 
 export type FormBuilderContext = {
-  // workspaceId: Ip.WorkspaceId
-  // formId: Ip.FormId
-  // form: Ip.Form
-  // formPermission: Ip.Permission.Form
-  versions: Ip.Form.Version[]
-  versionActive?: Ip.Form.Version
-  versionDraft?: Ip.Form.Version
+  versions: {
+    all: Ip.Form.Version[]
+    active?: Ip.Form.Version
+    draft?: Ip.Form.Version
+    last?: Ip.Form.Version
+  }
   showPreview: boolean
   setShowPreview: Dispatch<React.SetStateAction<boolean>>
-  localDraft: Ip.Form.Schema | undefined
-  setLocalDraft: Dispatch<React.SetStateAction<Ip.Form.Schema | undefined>>
+  localDraft: {
+    isLoading?: boolean
+    isSuccess?: boolean
+    error?: Error | null
+    get: Ip.Form.Schema | undefined
+    set: Dispatch<React.SetStateAction<Ip.Form.Schema | undefined>>
+  }
 }
 
 const Context = createContext<FormBuilderContext>({} as any)
 
-export const useFormBuilderContext = <Selected extends any>(selector: (_: FormBuilderContext) => Selected): Selected => {
+export const useFormBuilderContext = <Selected extends any>(
+  selector: (_: FormBuilderContext) => Selected,
+): Selected => {
   return useContextSelector(Context, selector)
 }
 
@@ -56,24 +63,21 @@ function FormBuilder() {
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
   const [showPreview, setShowPreview] = useState(false)
 
-  const {active, draft} = useMemo(() => {
+  const versions = useMemo(() => {
     return {
+      all: queryVersion.get.data!,
       active: queryVersion.get.data?.find(_ => _.status === 'active'),
       draft: queryVersion.get.data?.find(_ => _.status === 'draft'),
+      last: seq(queryVersion.get.data).last(),
     }
   }, [queryVersion.get.data])
 
-  const queryDraftSchema = useQuerySchemaByVersion({workspaceId, formId, versionId: draft?.id})
+  const queryLocalDraft = useQuerySchemaByVersion({workspaceId, formId, versionId: versions.last?.id})
 
   const [localDraft, setLocalDraft] = useState<Ip.Form.Schema | undefined>()
   useEffect(() => {
-    if (!localDraft && queryDraftSchema.isSuccess || queryDraftSchema.error instanceof HttpError.NotFound) {
-      if (queryDraftSchema.data) setLocalDraft(queryDraftSchema.data)
-      else setLocalDraft({choices: [], survey: [], translations: [], settings: {}, translated: [], schema: ''})
-    }
-  }, [queryDraftSchema.data])
-
-  // console.log(localDraft)
+    if (queryLocalDraft.data) setLocalDraft(queryLocalDraft.data)
+  }, [queryLocalDraft.data])
 
   return (
     <TabContent width="full" loading={queryPermission.isLoading || queryForm.isPending || queryVersion.get.isLoading}>
@@ -83,15 +87,20 @@ function FormBuilder() {
           return <FormBuilderKoboFender workspaceId={workspaceId} form={queryForm.data} />
 
         return (
-          <Context.Provider value={{
-            versions: queryVersion.get.data,
-            versionActive: active,
-            versionDraft: draft,
-            showPreview,
-            setShowPreview,
-            localDraft,
-            setLocalDraft,
-          }}>
+          <Context.Provider
+            value={{
+              versions,
+              showPreview,
+              setShowPreview,
+              localDraft: {
+                get: localDraft,
+                set: setLocalDraft,
+                error: queryVersion.get.error || queryLocalDraft.error,
+                isSuccess: queryVersion.get.isSuccess || queryLocalDraft.isSuccess,
+                isLoading: queryVersion.get.isLoading || queryLocalDraft.isLoading,
+              },
+            }}
+          >
             <Box
               sx={{
                 gap: t.vars.spacing,
@@ -116,7 +125,7 @@ function FormBuilder() {
                   sx={{margin: 'auto', width: showPreview ? '100%' : '50%'}}
                   workspaceId={workspaceId}
                   formId={formId}
-                  activeVersion={active}
+                  activeVersion={versions.active}
                   setShowPreview={setShowPreview}
                   showPreview={showPreview}
                 />
@@ -132,7 +141,7 @@ function FormBuilder() {
                   opacity: showPreview ? 1 : 0,
                 }}
               >
-                {active && <FormBuilderPreview workspaceId={workspaceId} formId={formId} versionId={active?.id} />}
+                {showPreview && <FormBuilderPreview schema={localDraft} />}
               </Box>
             </Box>
           </Context.Provider>

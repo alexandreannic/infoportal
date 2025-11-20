@@ -45,11 +45,11 @@ export const queryKeys = {
     concat(workspaceId, 'form', formId, 'action', 'report', rest),
   submission: (formId?: Ip.FormId) => concat('submission', formId),
   schema: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('schema', workspaceId, formId),
+  schemaByVersion: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId, versionId?: Ip.Form.VersionId) =>
+    concat('schema', workspaceId, formId, 'version', versionId),
   version: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId) => concat('version', workspaceId, formId),
   user: (workspaceId?: Ip.WorkspaceId) => concat('user', workspaceId),
   userJob: (workspaceId?: Ip.WorkspaceId) => concat('userJob', workspaceId),
-  schemaByVersion: (workspaceId?: Ip.WorkspaceId, formId?: Ip.FormId, versionId?: Ip.Form.VersionId) =>
-    concat('schema', workspaceId, formId, versionId),
   group: (workspaceId?: Ip.WorkspaceId, args?: Omit<Ip.Group.Payload.Search, 'workspaceId'>) =>
     concat('group', workspaceId, args ? Core.stableStringify(args) : undefined),
   metrics: (

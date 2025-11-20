@@ -104,9 +104,8 @@ export class KoboToXLS {
       return
     }
     const indexLabel = seq(schema.survey)
-      .compactBy('name')
-      .filter(_ => koboQuestionType.includes(_.type))
-      .reduceObject<Record<string, Kobo.Form.Question>>(_ => [_.name, _])
+      .filter(_ => !!_ && koboQuestionType.includes(_.type))
+      .reduceObject<Record<string, Ip.Form.Question>>(_ => [_.name, _])
     const indexOptionsLabels = seq(schema.choices).reduceObject<Record<string, undefined | string>>(_ => [
       _.name,
       _.label?.[langIndex],

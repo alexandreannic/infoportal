@@ -1,7 +1,7 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
-import {Ip} from '@infoportal/api-sdk'
+import {HttpError, Ip} from '@infoportal/api-sdk'
 
 export const useQuerySchemaByVersion = ({
   workspaceId,
@@ -15,7 +15,12 @@ export const useQuerySchemaByVersion = ({
   const {apiv2} = useAppSettings()
   return useQuery({
     queryKey: queryKeys.schemaByVersion(workspaceId, formId, versionId),
-    queryFn: () => apiv2.form.getSchemaByVersion({workspaceId, formId, versionId: versionId!}),
+    queryFn: () => {
+      return apiv2.form.getSchemaByVersion({workspaceId, formId, versionId: versionId!}).catch(err => {
+        if (err instanceof HttpError.NotFound) return undefined
+        throw err
+      })
+    },
     enabled: !!versionId,
   })
 }
