@@ -1,6 +1,9 @@
 import {create} from 'zustand'
 import {immer} from 'zustand/middleware/immer'
 import {Ip} from '@infoportal/api-sdk'
+import {genShortid} from 'infoportal-common'
+import {RowId} from '@infoportal/client-datatable/dist/core/types'
+import {getDataKey} from './XlsFormEditor'
 
 export type RawQuestion = Omit<Ip.Form.Question, '$xpath'>
 
@@ -19,6 +22,7 @@ interface XlsFormState {
   // setSurvey: (rows: Kobo.Form.Question[]) => void
   // choices: XlsChoiceRow[]
   // setChoices: (rows: Kobo.Form.Choice[]) => void
+  reorderRows: (_: {index: number; rowIds: string[]}) => void
   addSurveyRow: (count: number) => void
   updateSurveyCell: <K extends keyof XlsSurveyRow>(
     rowKey: string,
@@ -50,7 +54,7 @@ export const useXlsFormStore = create<XlsFormState>()(
           choices: schema.choices ?? [],
           survey: schema.survey
             .filter(_ => !skippedQuestionTypesSet.has(_.type as any))
-            .map((_, i) => ({..._, key: i + '_' + _.name})),
+            .map((_, i) => ({..._, key: genShortid(8)})),
         },
       }),
 
@@ -65,10 +69,28 @@ export const useXlsFormStore = create<XlsFormState>()(
             name,
             calculation: '',
             type: 'text',
-            key: i + '_' + name,
+            key: genShortid(6),
           })
         }
       }),
+
+    reorderRows: ({index, rowIds}: {index: number; rowIds: string[]}) => {
+      set(draft => {
+        const rows = draft.schema.survey
+        const movingSet = new Set(rowIds)
+        const remaining: XlsSurveyRow[] = []
+        const moved: XlsSurveyRow[] = []
+
+        for (const row of rows) {
+          const id = getDataKey(row) as RowId
+          if (movingSet.has(id)) moved.push(row)
+          else remaining.push(row)
+        }
+
+        const target = Math.min(index, remaining.length)
+        draft.schema.survey = [...remaining.slice(0, target), ...moved, ...remaining.slice(target)]
+      })
+    },
 
     updateSurveyCell: (rowKey, field, value, fieldIndex) =>
       set(state => {

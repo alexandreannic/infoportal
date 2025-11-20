@@ -9,6 +9,7 @@ export interface PageProps extends BoxProps {
   width?: number | 'xxs' | 'xs' | 'md' | 'lg' | 'full'
   animation?: 'none' | 'default' | 'translateLeft'
   className?: any
+  fullHeight?: boolean
   style?: object
   loading?: boolean
   pending?: boolean
@@ -108,6 +109,7 @@ export const Page = ({
   sx,
   pending,
   loading,
+  fullHeight,
   animation = 'default',
   animationDeps = [],
   ...props
@@ -129,6 +131,7 @@ export const Page = ({
           minHeight: 0,
           position: 'relative',
           mt: 1,
+          height: fullHeight ? `calc(100% - ${t.vars.spacing})` : undefined,
           // borderRadius: t.shape.borderRadius + 'px',
           // overflow: 'hidden', // I removed this so WidgetSettingsPanel can be sticky
           ...sx,

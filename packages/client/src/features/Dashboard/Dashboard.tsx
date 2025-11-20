@@ -59,7 +59,7 @@ export function Dashboard() {
   useEffectFn(queryDashboard.data, _ => setTitle(_.name))
 
   return (
-    <Page width="full" loading={isLoading} sx={{height: `calc(100% - ${t.vars.spacing})`}}>
+    <Page width="full" loading={isLoading} fullHeight>
       <TabsLayout>
         {queryDashboardSection.data?.map(_ => (
           <TabLink

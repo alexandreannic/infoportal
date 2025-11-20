@@ -8,25 +8,25 @@ import {CellBoolean} from './CellBoolean'
 import {CellSelectType} from './CellSelectType'
 import {CellFormula} from './CellFormula'
 import {CellSelectAppearance} from './CellSelectAppearance'
-import {selectsQuestionTypes} from './settings'
+import {selectsQuestionTypes, selectsQuestionTypesSet} from './settings'
 import * as Core from '@infoportal/client-core'
 import {Ip} from '@infoportal/api-sdk'
 import {RowId} from '@infoportal/client-datatable/dist/core/types'
+import {CellSelectListName} from './CellSelectListName'
 
-const getDataKey = (_: XlsSurveyRow) => {
+export const getDataKey = (_: XlsSurveyRow) => {
   return _.key
 }
 
 const tableSx: SxProps = {
+  height: 'calc(100vh - 192px)',
   '& .dtd': {px: 0},
 }
 
 export const XlsFormEditor = ({
   value,
-  initialValue,
   onChange,
 }: {
-  initialValue?: Ip.Form.Schema
   value?: Ip.Form.Schema
   onChange?: (_: Ip.Form.Schema) => void
   onSave?: (_: Ip.Form.Schema) => void
@@ -34,14 +34,10 @@ export const XlsFormEditor = ({
   const {m} = useI18n()
   const t = useTheme()
   const schema = useXlsFormStore(_ => _.schema)
+  const reorderRows = useXlsFormStore(_ => _.reorderRows)
   const setSchema = useXlsFormStore(_ => _.setSchema)
   const addSurveyRow = useXlsFormStore(_ => _.addSurveyRow)
   const [rowsToAdd, setRowsToAdd] = useState(1)
-
-  useEffect(() => {
-    if (!initialValue) return
-    setSchema(initialValue)
-  }, [])
 
   useEffect(() => {
     if (!value) return
@@ -81,6 +77,20 @@ export const XlsFormEditor = ({
             value: row.type,
             label: <CellSelectType rowKey={row.key} field="type" />,
             option: row.type,
+          }
+        },
+      },
+      {
+        id: 'select_from_list_name',
+        head: 'select_from_list_name',
+        type: 'select_one',
+        render: row => {
+          return {
+            value: row.select_from_list_name,
+            label: selectsQuestionTypesSet.has(row.type) ? (
+              <CellSelectListName rowKey={row.key} field="select_from_list_name" />
+            ) : undefined,
+            option: row.select_from_list_name,
           }
         },
       },
@@ -245,20 +255,7 @@ export const XlsFormEditor = ({
   const handleEvent = useCallback((action: Datatable.Action<XlsSurveyRow>) => {
     switch (action.type) {
       case 'REORDER_ROWS': {
-        const {index, rowIds} = action
-        const rows = schema.survey
-        const movingSet = new Set(rowIds)
-        const remaining: XlsSurveyRow = []
-        const moved: XlsSurveyRow = []
-        for (const row of rows) {
-          const id = getDataKey(row) as RowId
-          if (movingSet.has(id)) moved.push(row)
-          else remaining.push(row)
-        }
-        const target = Math.min(index, remaining.length)
-        const newRows = [...remaining.slice(0, target), ...moved, ...remaining.slice(target)]
-        console.log(newRows)
-        setSchema({...schema, survey: newRows})
+        reorderRows(action)
         break
       }
     }
@@ -287,6 +284,7 @@ export const XlsFormEditor = ({
     <Core.Panel sx={{width: '100%', mb: 0, overflowX: 'auto'}}>
       <Datatable.Component
         module={tableModule}
+        rowHeight={34}
         showRowIndex
         onEvent={handleEvent}
         sx={tableSx}
@@ -296,19 +294,16 @@ export const XlsFormEditor = ({
         getRowKey={getDataKey}
         data={schema.survey}
       />
-      <Box sx={{display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', my: 1}}>
+      <Box sx={{display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', my: 0.5}}>
         <Core.Btn onClick={() => addSurveyRow(rowsToAdd)} icon="add">
           {m.add}
         </Core.Btn>
         <Core.Input
-          slotProps={{
-            input: {min: 1},
-          }}
           sx={{width: 80, mr: 1}}
           type="number"
           helperText={null}
           value={rowsToAdd}
-          size="small"
+          size="tiny"
           onChange={e => setRowsToAdd(+e.target.value)}
         />
         {m._xlsFormEditor.moreRows}

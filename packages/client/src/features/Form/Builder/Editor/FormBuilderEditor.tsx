@@ -16,7 +16,7 @@ function FormBuilderEditor() {
   return (
     <FormBuilderBody fullWidth>
       {localDraft.error && <Core.Alert color="error" />}
-      {localDraft.isSuccess && <XlsFormEditor initialValue={localDraft.get} onChange={console.log} />}
+      {localDraft.isSuccess && <XlsFormEditor value={localDraft.get} onChange={console.log} />}
     </FormBuilderBody>
   )
 }

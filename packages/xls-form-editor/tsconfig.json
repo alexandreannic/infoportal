@@ -13,6 +13,9 @@
       "path": "../client-i18n"
     },
     {
+      "path": "../common"
+    },
+    {
       "path": "../client-core"
     },
     {

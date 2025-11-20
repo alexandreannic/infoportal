@@ -135,7 +135,7 @@ function Form() {
   }, [queryForm.data, querySchema.data, queryPermission.data, workspaceId])
 
   return (
-    <Page width="full" sx={{height: '100%'}}>
+    <Page width="full" fullHeight>
       <TabsLayout>
         <TabLink
           icon={<Icon>{appConfig.icons.dataTable}</Icon>}
