@@ -2,10 +2,13 @@ import {BoxProps, SxProps, Theme} from '@mui/material'
 import React, {CSSProperties, ReactElement, ReactNode} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {Action} from './reducer'
+import {Brand} from '@infoportal/api-sdk/dist/type/Common'
 
 export type OrderBy = 'asc' | 'desc'
 
 export type Row = Record<string, any>
+export type RowId = Brand<string, 'dt-row-id'>
+export type GetRowKey = <T extends Row>(_: T) => RowId
 
 export type HeaderParams<T extends Row> = {
   data: T[]
@@ -33,9 +36,9 @@ export type FilterTypeMapping = {
   number: [number | undefined, number | undefined]
   string:
     | {
-    filterBlank?: boolean
-    value?: string
-  }
+        filterBlank?: boolean
+        value?: string
+      }
     | undefined
   select_one: string[]
   select_multiple: string[]
@@ -84,7 +87,7 @@ export interface Props<T extends Row, K extends string = string> {
       enabled: boolean
       mode?: CellSelectionMode
       renderFormulaBarOnRowSelected?: (_: {rowIds: string[]}) => ReactNode
-      renderFormulaBarOnColumnSelected?: (_: {rowIds: string[], commonValue?: any, columnId: string,}) => ReactNode
+      renderFormulaBarOnColumnSelected?: (_: {rowIds: string[]; commonValue?: any; columnId: string}) => ReactNode
     }
     columnsResize?: {
       enabled: boolean
@@ -235,7 +238,7 @@ export namespace Column {
       | Number.TypeInner<T>
       | SelectMultiple.TypeInner<T>
       | Undefined.TypeInner<T>
-      )
+    )
   export type Props<T extends Row = Record<string, any>, K extends string = string> = Base<T, K> &
     (
       | Text.TypeOuter<T>
@@ -244,7 +247,7 @@ export namespace Column {
       | Number.TypeOuter<T>
       | SelectMultiple.TypeOuter<T>
       | Undefined.TypeOuter<T>
-      )
+    )
   export type QuickProps<T extends Row, K extends string = string> = Base<T, K> &
     (
       | Text.TypeQuick<T>
@@ -253,7 +256,7 @@ export namespace Column {
       | Number.TypeQuick<T>
       | SelectMultiple.TypeQuick<T>
       | Undefined.TypeQuick<T>
-      )
+    )
 
   export const isQuick = (_: Props<any>): _ is QuickProps<any> => {
     return !!(_ as any).renderQuick

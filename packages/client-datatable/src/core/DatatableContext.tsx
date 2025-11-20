@@ -2,7 +2,7 @@ import React, {ReactNode, useCallback, useReducer} from 'react'
 import {KeyOf} from '@axanc/ts-utils'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {useEffectFn} from '@axanc/react-hooks'
-import {Props, Row} from './types.js'
+import {GetRowKey, Props, Row} from './types.js'
 import {Action, datatableReducer, initialState, State} from './reducer'
 import {useDatatableColumns, UseDatatableColumns} from './useColumns'
 import {UseCellSelection, useCellSelection} from './useCellSelection'
@@ -10,7 +10,8 @@ import {useData} from './useData'
 import {useDatatableOptions} from './useOptions'
 import {UseDraggingRows, useDraggingRows} from './useDraggingRows'
 
-export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'rowHeight' | 'data' | 'columns'> & {
+export type DatatableContext<T extends Row = any> = Omit<Props<T>, 'getRowKey' | 'rowHeight' | 'data' | 'columns'> & {
+  getRowKey: GetRowKey
   tableRef: React.RefObject<HTMLDivElement>
   getColumnOptions: ReturnType<typeof useDatatableOptions<T>>
   state: State<T>
@@ -30,14 +31,15 @@ export const useCtx = <Selected extends any>(selector: (_: DatatableContext) => 
   return useContextSelector(Context, selector)
 }
 
-export const Provider = <T extends Row>(
-  props: Omit<Props<T>, 'rowHeight' | 'data'> & {
-    rowHeight: number
-    data: T[]
-    children: ReactNode
-    tableRef: React.MutableRefObject<HTMLDivElement>
-  },
-) => {
+export const Provider = <T extends Row>({
+  getRowKey,
+  ...props
+}: Omit<Props<T>, 'rowHeight' | 'data'> & {
+  rowHeight: number
+  data: T[]
+  children: ReactNode
+  tableRef: React.MutableRefObject<HTMLDivElement>
+}) => {
   const {module} = props
   const [state, _dispatch] = useReducer(datatableReducer<T>(), initialState<T>())
 
@@ -84,7 +86,7 @@ export const Provider = <T extends Row>(
     dispatch,
     visibleColumns: columns.visible,
     filteredAndSortedData,
-    getRowKey: props.getRowKey,
+    getRowKey: getRowKey as GetRowKey,
     selectedColumnIds: state.selectedColumnIds,
     selectedRowIds: state.selectedRowIds,
     tableRef: props.tableRef,
@@ -106,6 +108,7 @@ export const Provider = <T extends Row>(
     <Context.Provider
       value={{
         ...props,
+        getRowKey: getRowKey as GetRowKey,
         columns,
         getColumnOptions,
         dataFilteredAndSorted: filteredAndSortedData,

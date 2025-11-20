@@ -1,7 +1,7 @@
 import {VirtualItem} from '@tanstack/react-virtual'
 import {Box, BoxProps, Skeleton, useTheme} from '@mui/material'
 import React, {memo, useCallback} from 'react'
-import {Column, Props, Row} from './core/types.js'
+import {Column, Props, Row, RowId} from './core/types.js'
 import {CachedCell} from './core/reducer'
 import {UseDraggingRows} from './core/useDraggingRows'
 import {DatatableContext, useCtx} from './core/DatatableContext'
@@ -101,7 +101,7 @@ const DatatableRowInner = <T extends Row>({
 }: {
   onCellClick: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
   cachedRow: Record<string, CachedCell>
-  rowId: string
+  rowId: RowId
   row: T
   rowStyle: Props<any>['rowStyle']
   getRowChangeTracker: Props<any>['getRowChangeTracker']
@@ -258,14 +258,14 @@ const Cell = memo(
     ...props
   }: CachedCell &
     Pick<BoxProps, 'draggable' | 'onDragStart' | 'onDragOver' | 'onDrop'> & {
-    selected?: boolean
-    onClick?: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
-    colIndex: number
-    rowIndex: number
-    rowId: string
-    handleMouseDown: (rowIndex: number, colIndex: number, rowId: string, event: React.MouseEvent<HTMLElement>) => void
-    handleMouseEnter: (rowIndex: number, colIndex: number) => void
-  }) => {
+      selected?: boolean
+      onClick?: (rowIndex: number, colIndex: number, event: React.MouseEvent<HTMLElement>) => void
+      colIndex: number
+      rowIndex: number
+      rowId: RowId
+      handleMouseDown: (rowIndex: number, colIndex: number, rowId: RowId, event: React.MouseEvent<HTMLElement>) => void
+      handleMouseEnter: (rowIndex: number, colIndex: number) => void
+    }) => {
     // const {classes, cx} = useStyles()
     // const ref = useRef<HTMLDivElement>(null)
 

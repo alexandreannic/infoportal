@@ -1,4 +1,4 @@
-import {Column, FilterValue, Props, Row, SortBy} from './types.js'
+import {Column, FilterValue, GetRowKey, Row, RowId, SortBy} from './types.js'
 import {KeyOf, mapFor} from '@axanc/ts-utils'
 import {OrderBy} from '@axanc/react-hooks'
 import {CSSProperties, ReactNode} from 'react'
@@ -30,46 +30,46 @@ export type CellSelectionCoord = {row: number; col: number}
 
 export type Action<T extends Row> =
   | {
-  type: 'INIT_VIEWPORT_CACHE'
-  data: T[]
-  limit: number
-  offset: number
-  columns: Column.InnerProps<T>[]
-  getRowKey: Props<T>['getRowKey']
-}
+      type: 'INIT_VIEWPORT_CACHE'
+      data: T[]
+      limit: number
+      offset: number
+      columns: Column.InnerProps<T>[]
+      getRowKey: GetRowKey
+    }
   | {
-  type: 'APPEND_VIEWPORT_CACHE'
-  data: T[]
-  limit: number
-  offset: number
-  columns: Column.InnerProps<T>[]
-  getRowKey: Props<T>['getRowKey']
-}
+      type: 'APPEND_VIEWPORT_CACHE'
+      data: T[]
+      limit: number
+      offset: number
+      columns: Column.InnerProps<T>[]
+      getRowKey: GetRowKey
+    }
   // | {type: 'DRAGGING_ROWS_SET_RANGE'; range: MinMax | null}
   | {type: 'DRAGGING_ROWS_SET_OVER_INDEX'; overIndex: number | null}
-  | {type: 'CELL_SELECTION_SET_ROW_IDS'; rowIds: string[] | null}
+  | {type: 'CELL_SELECTION_SET_ROW_IDS'; rowIds: RowId[] | null}
   | {type: 'CELL_SELECTION_SET_COLUMN_IDS'; colIds: string[] | null}
   | {type: 'CELL_SELECTION_CLEAR'}
-  | {type: 'REORDER_ROWS'; rowIds: string[]; index: number}
+  | {type: 'REORDER_ROWS'; rowIds: RowId[]; index: number}
   | {type: 'CLOSE_POPUP'}
   | {type: 'OPEN_POPUP'; event: Popup.Event}
   | {type: 'SORT'; column: string; orderBy?: OrderBy}
   | {type: 'FILTER'; value: Record<KeyOf<T>, FilterValue>}
   | {type: 'FILTER_CLEAR'}
-  | {type: 'UPDATE_CELL'; rowId: string; col: string; value: any}
+  | {type: 'UPDATE_CELL'; rowId: RowId; col: string; value: any}
   | {type: 'RESIZE'; col: string; width: number}
   | {type: 'SET_HIDDEN_COLUMNS'; hiddenColumns: string[]}
 
 export type DatatableState<T extends Row> = {
   selectedColumnIds: Set<string> | null
-  selectedRowIds: Set<string> | null
+  selectedRowIds: Set<RowId> | null
   draggingRow: {
     // range: MinMax | null
     overIndex: number | null
   }
   popup?: Popup.Event
   hasRenderedRowId: boolean[]
-  cachedData: Record<string, Record<string, CachedCell>>
+  cachedData: Record<RowId, Record<string, CachedCell>>
   sortBy?: SortBy
   filters: Partial<Record<KeyOf<T>, FilterValue>>
   colWidths: Record<string, number>
@@ -91,7 +91,7 @@ const buildCachedData = <T extends Row>({
   getRowKey,
 }: {
   dataIndexes: number[]
-  getRowKey: Props<T>['getRowKey']
+  getRowKey: GetRowKey
   columns: Column.InnerProps<T>[]
   data: T[]
 }): State<T>['cachedData'] => {

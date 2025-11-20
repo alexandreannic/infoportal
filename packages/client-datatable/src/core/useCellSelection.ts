@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef} from 'react'
 import {DatatableContext} from './DatatableContext'
-import {CellSelectionMode, Column, Props, Row} from './types'
+import {CellSelectionMode, Column, GetRowKey, Props, Row, RowId} from './types'
 import {columnIndexId} from './useColumns'
 import {State} from './reducer'
 
@@ -24,10 +24,10 @@ export const useCellSelection = <T extends Row = any>({
   disabled?: boolean
   dispatch: DatatableContext['dispatch']
   selectedColumnIds: Set<string> | null
-  selectedRowIds: Set<string> | null
+  selectedRowIds: Set<RowId> | null
   visibleColumns: Column.InnerProps<T>[]
   filteredAndSortedData: T[]
-  getRowKey: Props<T>['getRowKey']
+  getRowKey: GetRowKey
 }) => {
   const selecting = useRef<boolean>(false)
   const scrollInterval = useRef<NodeJS.Timeout | null>(null)
@@ -43,7 +43,7 @@ export const useCellSelection = <T extends Row = any>({
     const rowMax = Math.max(startRow, endRow)
     const colMin = Math.min(startCol, endCol)
     const colMax = Math.max(startCol, endCol)
-    const rowIds: string[] = []
+    const rowIds: RowId[] = []
     const colIds: string[] = []
     for (let i = rowMin; i <= rowMax; i++) {
       rowIds.push(getRowKey(filteredAndSortedData[i]))
@@ -68,7 +68,7 @@ export const useCellSelection = <T extends Row = any>({
   }, [selectedColumnIds])
 
   const handleMouseDown = useCallback(
-    (rowIndex: number, colIndex: number, rowId: string, event: React.MouseEvent<HTMLElement>) => {
+    (rowIndex: number, colIndex: number, rowId: RowId, event: React.MouseEvent<HTMLElement>) => {
       if (mode === 'row' && colIndex !== 0) return
       const preventReSelectionToAllowDnDrop = colIndex === 0
         && selectedColumnIdsRef.current?.has(columnIndexId)

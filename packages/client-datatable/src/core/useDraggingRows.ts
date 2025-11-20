@@ -3,6 +3,7 @@ import {DatatableContext} from './DatatableContext'
 import {MinMax, State} from './reducer'
 import {Theme, useTheme} from '@mui/material'
 import {alphaVar} from '@infoportal/client-core'
+import {RowId} from './types'
 
 export type UseDraggingRows = ReturnType<typeof useDraggingRows>
 
@@ -15,7 +16,7 @@ export const useDraggingRows = ({
   selectedRowIdsRef,
   selecting,
 }: {
-  selectedRowIdsRef: RefObject<State<any>['selectedRowIds']>,
+  selectedRowIdsRef: RefObject<State<any>['selectedRowIds']>
   selecting: RefObject<boolean>
   disabled?: boolean
   dispatch: DatatableContext['dispatch']
@@ -38,7 +39,7 @@ export const useDraggingRows = ({
   )
 
   const isRowDraggable = useCallback(
-    (rowId: string) => {
+    (rowId: RowId) => {
       if (disabled || !selectedRowIds) return false
       return selectedRowIds.has(rowId)
     },
@@ -46,7 +47,7 @@ export const useDraggingRows = ({
   )
 
   const handleDragStart = useCallback(
-    (rowId: string, e: React.DragEvent) => {
+    (rowId: RowId, e: React.DragEvent) => {
       if (selecting.current || !selectedRowIdsRef.current?.has(rowId)) {
         e.preventDefault()
         return
@@ -89,10 +90,13 @@ export const useDraggingRows = ({
     [dispatch, setOverIndex],
   )
 
-  const isRowDragging = useCallback((rowId: string) => {
-    if (!overIndex || !selectedRowIds) return false
-    return selectedRowIds.has(rowId)
-  }, [selectedRowIds, overIndex])
+  const isRowDragging = useCallback(
+    (rowId: RowId) => {
+      if (!overIndex || !selectedRowIds) return false
+      return selectedRowIds.has(rowId)
+    },
+    [selectedRowIds, overIndex],
+  )
 
   return {
     overIndex,
