@@ -1,5 +1,5 @@
 import {SelectOption, SelectSingle} from '@infoportal/client-core'
-import {CellPointer, skippedQuestionTypes, useCell, XlsSurveyRow} from './useStore'
+import {CellPointer, skippedQuestionTypes, useCell, XlsSurveyRow} from '../core/useStore'
 import {BoxProps} from '@mui/material'
 import {Obj, Seq, seq} from '@axanc/ts-utils'
 import {Icon} from '@infoportal/client-datatable'

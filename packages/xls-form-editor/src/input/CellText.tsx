@@ -1,5 +1,5 @@
 import {Box, BoxProps, styled} from '@mui/material'
-import {CellPointer, useCell, XlsChoicesRow, XlsSurveyRow} from './useStore'
+import {CellPointer, useCell, XlsChoicesRow, XlsSurveyRow} from '../core/useStore'
 import {memo} from 'react'
 
 export const CellText = memo(

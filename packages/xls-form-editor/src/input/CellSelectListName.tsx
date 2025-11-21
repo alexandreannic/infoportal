@@ -1,5 +1,5 @@
 import {SelectSingle} from '@infoportal/client-core'
-import {CellPointer, useCell, useXlsFormStore, XlsSurveyRow} from './useStore'
+import {CellPointer, useCell, useXlsFormStore, XlsSurveyRow} from '../core/useStore'
 import {BoxProps} from '@mui/material'
 import {seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'

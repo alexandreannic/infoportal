@@ -1,13 +1,13 @@
 import * as Datatable from '@infoportal/client-datatable'
-import {useXlsFormStore, XlsChoicesRow, XlsSurveyRow} from './useStore'
+import {useXlsFormStore, XlsChoicesRow, XlsSurveyRow} from '../core/useStore'
 import {RefObject, useCallback, useMemo} from 'react'
-import {CellSelectType} from './CellSelectType'
-import {selectsQuestionTypes, selectsQuestionTypesSet} from './settings'
-import {CellSelectListName} from './CellSelectListName'
-import {CellText} from './CellText'
-import {CellBoolean} from './CellBoolean'
-import {CellFormula} from './CellFormula'
-import {CellSelectAppearance} from './CellSelectAppearance'
+import {CellSelectType} from '../input/CellSelectType'
+import {selectsQuestionTypes, selectsQuestionTypesSet} from '../core/settings'
+import {CellSelectListName} from '../input/CellSelectListName'
+import {CellText} from '../input/CellText'
+import {CellBoolean} from '../input/CellBoolean'
+import {CellFormula} from '../input/CellFormula'
+import {CellSelectAppearance} from '../input/CellSelectAppearance'
 import {getDataKey} from './XlsFormEditor'
 import * as Core from '@infoportal/client-core'
 import {SxProps, useTheme} from '@mui/material'
@@ -18,9 +18,7 @@ export const ChoicesTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Ha
   const t = useTheme()
   const reorderRows = useXlsFormStore(_ => _.reorderRows)
   const choices = useXlsFormStore(_ => _.schema.choices)
-  const schema = useXlsFormStore(_ => _.schema)
-
-  console.log({schema, choices})
+  const translations = useXlsFormStore(_ => _.schema.translations)
 
   const columns: Datatable.Column.Props<XlsChoicesRow>[] = useMemo(() => {
     const defaultWith = 160
@@ -61,7 +59,7 @@ export const ChoicesTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Ha
           }
         },
       },
-      ...schema.translations.map((lang, i) => {
+      ...translations.map((lang, i) => {
         return Datatable.Column.make<XlsChoicesRow>({
           id: 'label:' + lang,
           head: 'label' + ':' + lang,
@@ -85,7 +83,7 @@ export const ChoicesTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Ha
         width: defaultWith,
       }
     })
-  }, [choices])
+  }, [translations])
 
   const handleEvent = useCallback((action: Datatable.Action<XlsChoicesRow>) => {
     switch (action.type) {
@@ -123,7 +121,7 @@ export const ChoicesTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Ha
       columns={columns}
       getRowChangeTracker={getDataKey}
       getRowKey={getDataKey}
-      data={schema.choices}
+      data={choices}
     />
   )
 }

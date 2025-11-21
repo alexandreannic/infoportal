@@ -3,7 +3,7 @@ import {immer} from 'zustand/middleware/immer'
 import {Ip} from '@infoportal/api-sdk'
 import {genShortid} from 'infoportal-common'
 import {RowId} from '@infoportal/client-datatable/dist/core/types'
-import {getDataKey, TableName} from './XlsFormEditor'
+import {getDataKey, TableName} from '../table/XlsFormEditor'
 
 export type RawQuestion = Omit<Ip.Form.Question, '$xpath'>
 

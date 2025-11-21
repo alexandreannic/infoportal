@@ -1,13 +1,13 @@
 import * as Datatable from '@infoportal/client-datatable'
-import {useXlsFormStore, XlsSurveyRow} from './useStore'
+import {useXlsFormStore, XlsSurveyRow} from '../core/useStore'
 import {RefObject, useCallback, useMemo} from 'react'
-import {CellSelectType} from './CellSelectType'
-import {selectsQuestionTypes, selectsQuestionTypesSet} from './settings'
-import {CellSelectListName} from './CellSelectListName'
-import {CellText} from './CellText'
-import {CellBoolean} from './CellBoolean'
-import {CellFormula} from './CellFormula'
-import {CellSelectAppearance} from './CellSelectAppearance'
+import {CellSelectType} from '../input/CellSelectType'
+import {selectsQuestionTypes, selectsQuestionTypesSet} from '../core/settings'
+import {CellSelectListName} from '../input/CellSelectListName'
+import {CellText} from '../input/CellText'
+import {CellBoolean} from '../input/CellBoolean'
+import {CellFormula} from '../input/CellFormula'
+import {CellSelectAppearance} from '../input/CellSelectAppearance'
 import {getDataKey} from './XlsFormEditor'
 import * as Core from '@infoportal/client-core'
 import {SxProps, useTheme} from '@mui/material'
@@ -17,7 +17,8 @@ export const SurveyTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Han
   const {m} = useI18n()
   const t = useTheme()
   const reorderRows = useXlsFormStore(_ => _.reorderRows)
-  const schema = useXlsFormStore(_ => _.schema)
+  const survey = useXlsFormStore(_ => _.schema.survey)
+  const translations = useXlsFormStore(_ => _.schema.translations)
 
   const columns: Datatable.Column.Props<XlsSurveyRow>[] = useMemo(() => {
     const defaultWith = 160
@@ -95,7 +96,7 @@ export const SurveyTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Han
           }
         },
       },
-      ...schema.translations.map((lang, i) => {
+      ...translations.map((lang, i) => {
         return Datatable.Column.make<XlsSurveyRow>({
           id: 'label:' + lang,
           head: 'label' + ':' + lang,
@@ -111,7 +112,7 @@ export const SurveyTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Han
           },
         })
       }),
-      ...schema.translations.map((lang, i) => {
+      ...translations.map((lang, i) => {
         return Datatable.Column.make<XlsSurveyRow>({
           id: 'hint:' + lang,
           head: 'hint' + ':' + lang,
@@ -192,7 +193,7 @@ export const SurveyTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Han
           }
         },
       },
-      ...schema.translations.map((lang, i) => {
+      ...translations.map((lang, i) => {
         return Datatable.Column.make<XlsSurveyRow>({
           id: 'constraint_message:' + lang,
           head: 'constraint_message' + ':' + lang,
@@ -233,7 +234,7 @@ export const SurveyTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Han
         width: defaultWith,
       }
     })
-  }, [schema])
+  }, [translations])
 
   const handleEvent = useCallback((action: Datatable.Action<XlsSurveyRow>) => {
     switch (action.type) {
@@ -271,7 +272,7 @@ export const SurveyTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Han
       columns={columns}
       getRowChangeTracker={getDataKey}
       getRowKey={getDataKey}
-      data={schema.survey}
+      data={survey}
     />
   )
 }

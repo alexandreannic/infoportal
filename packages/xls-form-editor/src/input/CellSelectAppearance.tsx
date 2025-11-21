@@ -1,8 +1,8 @@
 import {BoxProps} from '@mui/material'
-import {CellPointer, useCell, XlsSurveyRow} from './useStore'
+import {CellPointer, useCell, XlsSurveyRow} from '../core/useStore'
 import {SelectSingle} from '@infoportal/client-core'
 import {useMemo} from 'react'
-import {appearances} from './settings'
+import {appearances} from '../core/settings'
 import {Ip} from '@infoportal/api-sdk'
 
 export const CellSelectAppearance = ({

@@ -1,6 +1,6 @@
 import {Box, BoxProps} from '@mui/material'
 import {memo} from 'react'
-import {CellPointer, useCell, XlsSurveyRow} from './useStore'
+import {CellPointer, useCell, XlsSurveyRow} from '../core/useStore'
 
 export const CellFormula = memo(
   ({

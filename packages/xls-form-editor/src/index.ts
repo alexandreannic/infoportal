@@ -1,1 +1,1 @@
-export {XlsFormEditor} from './XlsFormEditor'
+export {XlsFormEditor} from './table/XlsFormEditor'
