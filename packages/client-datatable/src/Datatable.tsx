@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react'
+import React, {JSX, useEffect, useImperativeHandle, useMemo} from 'react'
 import {useVirtualizer} from '@tanstack/react-virtual'
 import {Box, LinearProgress, SxProps, Theme} from '@mui/material'
 import {DatatableSkeleton} from './DatatableSkeleton'
@@ -13,10 +13,35 @@ import {PopupStats} from './popup/PopupStats'
 import {PopupFilter} from './popup/PopupFilter'
 import {DatatableFormularBar} from './formulabar/DatatableFormularBar'
 
-export const Datatable = <T extends Row>({data, sx, rowHeight = 38, ...props}: Props<T>) => {
-  if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx} />
+export interface DatatableHandle {
+  scrollBottom: () => void
+  scrollTop: () => void
+}
+
+export const Datatable = React.forwardRef(function <T extends Row>(
+  {data, sx, rowHeight = 36, ...props}: Props<T>,
+  ref: React.Ref<DatatableHandle>,
+) {
   const tableRef = React.useRef(null) as unknown as React.RefObject<HTMLDivElement>
   const defaultProps = useConfig().defaultProps
+
+  useImperativeHandle(ref, () => ({
+    scrollTop: () => {
+      tableRef.current.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      })
+    },
+
+    scrollBottom: () => {
+      tableRef.current.scrollTo({
+        top: tableRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    },
+  }))
+
+  if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx} />
   return (
     <DatatableErrorBoundary>
       <Provider {...{...defaultProps, ...props}} rowHeight={rowHeight} data={data} tableRef={tableRef}>
@@ -25,7 +50,7 @@ export const Datatable = <T extends Row>({data, sx, rowHeight = 38, ...props}: P
       </Provider>
     </DatatableErrorBoundary>
   )
-}
+}) as <T extends Row>(props: Props<T> & {ref?: React.Ref<DatatableHandle>}) => JSX.Element
 
 const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
   const {
