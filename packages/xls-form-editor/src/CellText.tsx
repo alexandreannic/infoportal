@@ -1,22 +1,18 @@
 import {Box, BoxProps, styled} from '@mui/material'
-import {useCell, XlsSurveyRow} from './useStore'
+import {CellPointer, useCell, XlsChoicesRow, XlsSurveyRow} from './useStore'
 import {memo} from 'react'
 
 export const CellText = memo(
   ({
-    rowKey,
-    field,
-    fieldIndex,
     isBoolean,
+    cellPointer,
     sx,
     ...props
   }: Pick<BoxProps, 'sx'> & {
-    fieldIndex?: number
-    rowKey: string
-    field: keyof XlsSurveyRow
+    cellPointer: CellPointer
     isBoolean?: false | undefined
   }) => {
-    const cell = useCell<string>(rowKey, field, fieldIndex)
+    const cell = useCell<string>(cellPointer)
     return (
       <Box
         component="input"
@@ -30,7 +26,7 @@ export const CellText = memo(
           background: 'transparent',
           font: 'inherit',
           padding: 0,
-          pl: .5,
+          pl: 0.5,
           margin: 0,
           color: 'inherit',
           boxSizing: 'border-box',

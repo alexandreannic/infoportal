@@ -1,22 +1,18 @@
 import {Box, BoxProps} from '@mui/material'
 import {memo} from 'react'
-import {useCell, XlsSurveyRow} from './useStore'
+import {CellPointer, useCell, XlsSurveyRow} from './useStore'
 
 export const CellFormula = memo(
   ({
-    rowKey,
-    field,
-    fieldIndex,
+    cellPointer,
     isBoolean,
     sx,
     ...props
   }: Pick<BoxProps, 'sx'> & {
-    fieldIndex?: number
-    rowKey: string
-    field: keyof XlsSurveyRow
+    cellPointer: CellPointer
     isBoolean?: false | undefined
   }) => {
-    const cell = useCell<string>(rowKey, field, fieldIndex)
+    const cell = useCell<string>(cellPointer)
     return (
       <Box
         component="input"

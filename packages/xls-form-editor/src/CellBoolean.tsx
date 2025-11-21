@@ -1,15 +1,13 @@
 import {Box, BoxProps, Checkbox} from '@mui/material'
-import {useCell, XlsSurveyRow} from './useStore'
+import {CellPointer, useCell, XlsSurveyRow} from './useStore'
 
 export const CellBoolean = ({
-  rowKey,
-  field,
+  cellPointer,
   sx,
   ...props
 }: Pick<BoxProps, 'sx'> & {
-  rowKey: string
-  field: keyof XlsSurveyRow
+  cellPointer: CellPointer
 }) => {
-  const cell = useCell<boolean>(rowKey, field)
+  const cell = useCell<boolean>(cellPointer)
   return <Checkbox checked={cell.value ?? false} onChange={(e, checked) => cell.onChange(checked)} />
 }

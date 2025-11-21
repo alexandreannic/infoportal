@@ -1,22 +1,20 @@
 import {BoxProps} from '@mui/material'
-import {useCell, XlsSurveyRow} from './useStore'
+import {CellPointer, useCell, XlsSurveyRow} from './useStore'
 import {SelectSingle} from '@infoportal/client-core'
 import {useMemo} from 'react'
 import {appearances} from './settings'
 import {Ip} from '@infoportal/api-sdk'
 
 export const CellSelectAppearance = ({
-  rowKey,
-  field,
+  cellPointer,
   sx,
   questionType,
   ...props
 }: Pick<BoxProps, 'sx'> & {
   questionType?: Ip.Form.QuestionType
-  rowKey: string
-  field: keyof XlsSurveyRow
+  cellPointer: CellPointer
 }) => {
-  const cell = useCell<string>(rowKey, field)
+  const cell = useCell<string>(cellPointer)
   const options = useMemo(() => {
     if (!questionType) return []
     const names = appearances.filter(_ => _.questionTypes.includes(questionType)).map(_ => _.name)

@@ -1,18 +1,17 @@
 import {SelectSingle} from '@infoportal/client-core'
-import {useCell, useXlsFormStore, XlsSurveyRow} from './useStore'
+import {CellPointer, useCell, useXlsFormStore, XlsSurveyRow} from './useStore'
 import {BoxProps} from '@mui/material'
 import {seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
 
 export const CellSelectListName = ({
-  rowKey,
-  field,
+  cellPointer,
   sx,
   ...props
 }: Pick<BoxProps, 'sx'> & {
-  rowKey: string
-  field: keyof XlsSurveyRow
+  cellPointer: CellPointer
 }) => {
+  const cell = useCell<string>(cellPointer)
   const choices = useXlsFormStore(s => s.schema.choices)
 
   const options = useMemo(() => {
@@ -21,6 +20,5 @@ export const CellSelectListName = ({
       .distinct(_ => _)
   }, [choices])
 
-  const cell = useCell<string>(rowKey, field)
   return <SelectSingle<string> options={options} value={cell.value} onChange={(value, e) => cell.onChange(value)} />
 }

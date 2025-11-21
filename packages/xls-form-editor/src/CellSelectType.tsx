@@ -1,5 +1,5 @@
 import {SelectOption, SelectSingle} from '@infoportal/client-core'
-import {skippedQuestionTypes, useCell, XlsSurveyRow} from './useStore'
+import {CellPointer, skippedQuestionTypes, useCell, XlsSurveyRow} from './useStore'
 import {BoxProps} from '@mui/material'
 import {Obj, Seq, seq} from '@axanc/ts-utils'
 import {Icon} from '@infoportal/client-datatable'
@@ -47,15 +47,13 @@ const options: SelectOption<QType>[] = seq(Obj.entries(mapping)).map(([k, v]) =>
 })
 
 export const CellSelectType = ({
-  rowKey,
-  field,
+  cellPointer,
   sx,
   ...props
 }: Pick<BoxProps, 'sx'> & {
-  rowKey: string
-  field: keyof XlsSurveyRow
+  cellPointer: CellPointer
 }) => {
-  const cell = useCell<QType>(rowKey, field)
+  const cell = useCell<QType>(cellPointer)
   return (
     <SelectSingle<QType>
       options={options}
