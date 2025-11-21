@@ -1,7 +1,7 @@
 import {Core} from '@/shared'
 import {Box, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
-import React, {Dispatch, useEffect, useMemo, useState} from 'react'
+import React, {Dispatch, useEffect, useMemo, useRef, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFender'
@@ -16,6 +16,8 @@ import {formBuilderVersionRoute} from '@/features/Form/Builder/Version/FormBuild
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 import {seq} from '@axanc/ts-utils'
+import {DatatableHandle} from '@infoportal/client-datatable/dist/Datatable'
+import * as Datatable from '@infoportal/client-datatable'
 
 const formBuilderRoutePath = 'formCreator'
 export const formBuilderRoute = createRoute({

@@ -41,6 +41,7 @@ export const XlsFormEditor = ({
   const addSurveyRow = useXlsFormStore(_ => _.addRows)
   const [rowsToAdd, setRowsToAdd] = useState(1)
   const [activeTab, setActiveTab] = useState<TableName>('survey')
+  const datatableHandle = useRef<Datatable.Handle>(null)
 
   useEffect(() => {
     if (!value) return
@@ -53,9 +54,19 @@ export const XlsFormEditor = ({
 
   return (
     <Core.Panel sx={{width: '100%', mb: 0, overflowX: 'auto'}}>
-      {activeTab === 'survey' ? <SurveyTable sx={tableSx} /> : activeTab === 'choices' && <ChoicesTable sx={tableSx} />}
+      {activeTab === 'survey' ? (
+        <SurveyTable sx={tableSx} handleRef={datatableHandle} />
+      ) : (
+        activeTab === 'choices' && <ChoicesTable handleRef={datatableHandle} sx={tableSx} />
+      )}
       <Box sx={{display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', my: 0.5}}>
-        <Core.Btn onClick={() => addSurveyRow({table: activeTab, count: rowsToAdd})} icon="add">
+        <Core.Btn
+          onClick={() => {
+            addSurveyRow({table: activeTab, count: rowsToAdd})
+            setTimeout(() => datatableHandle.current?.scrollBottom())
+          }}
+          icon="add"
+        >
           {m.add}
         </Core.Btn>
         <Core.Input

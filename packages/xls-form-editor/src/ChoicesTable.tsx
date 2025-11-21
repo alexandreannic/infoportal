@@ -1,6 +1,6 @@
 import * as Datatable from '@infoportal/client-datatable'
 import {useXlsFormStore, XlsChoicesRow, XlsSurveyRow} from './useStore'
-import {useCallback, useMemo} from 'react'
+import {RefObject, useCallback, useMemo} from 'react'
 import {CellSelectType} from './CellSelectType'
 import {selectsQuestionTypes, selectsQuestionTypesSet} from './settings'
 import {CellSelectListName} from './CellSelectListName'
@@ -13,7 +13,7 @@ import * as Core from '@infoportal/client-core'
 import {SxProps, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 
-export const ChoicesTable = ({sx}: {sx?: SxProps}) => {
+export const ChoicesTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Handle | null>; sx?: SxProps}) => {
   const {m} = useI18n()
   const t = useTheme()
   const reorderRows = useXlsFormStore(_ => _.reorderRows)
@@ -116,6 +116,7 @@ export const ChoicesTable = ({sx}: {sx?: SxProps}) => {
       }}
       rowHeight={34}
       showRowIndex
+      ref={handleRef}
       onEvent={handleEvent}
       sx={sx}
       id="xls-form-editor"
