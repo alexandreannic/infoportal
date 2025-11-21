@@ -135,7 +135,7 @@ const DatatableRowInner = <T extends Row>({
         let cell = cachedRow?.[col.id]
         const key = virtualItem.key + col.id
         if (!cell) {
-          return <CellSkeleton key={key} />
+          return // <CellSkeleton key={key} />
         }
         const colSelected = selectedColumnIds !== false && selectedColumnIds?.has(col.id)
         const isFirstCol = colIndex === 0

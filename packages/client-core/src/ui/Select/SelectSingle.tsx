@@ -37,8 +37,10 @@ export type SelectSingleBaseProps<T extends TType = string> = Pick<SelectProps<T
   defaultValue?: T
   value?: T | null
   loading?: boolean
+  autoWidthPopover?: boolean
   multiple?: false
   hideNullOption?: boolean
+  input?: SelectProps<T>['input']
   renderValue?: SelectProps<T>['renderValue']
   startAdornment?: SelectProps<T>['startAdornment']
 }
@@ -115,7 +117,9 @@ export const SelectSingle = <T extends TType>({
   loading,
   onChange,
   sx,
+  autoWidthPopover,
   value,
+  MenuProps,
   placeholder,
   ...props
 }: IpSelectSingleProps<T>) => {
@@ -126,6 +130,31 @@ export const SelectSingle = <T extends TType>({
     }
     return _options as SelectOption<T>[]
   }, [props.options])
+
+  const MenuPropsComputed: SelectProps['MenuProps'] = useMemo(() => {
+    if (autoWidthPopover)
+      return {
+        ...MenuProps,
+        anchorOrigin: {
+          ...MenuProps?.anchorOrigin,
+          vertical: 'bottom',
+          horizontal: 'left',
+        },
+        transformOrigin: {
+          ...MenuProps?.transformOrigin,
+          vertical: 'top',
+          horizontal: 'left',
+        },
+        PaperProps: {
+          ...MenuProps?.PaperProps,
+          sx: {
+            ...MenuProps?.PaperProps?.sx,
+            minWidth: 'unset !important',
+          },
+        },
+      }
+    return MenuProps
+  }, [MenuProps, autoWidthPopover])
 
   return (
     <FormControl size="small" sx={{width: '100%', ...sx}}>
@@ -142,6 +171,7 @@ export const SelectSingle = <T extends TType>({
         //<div style={{minWidth: 20}}>
         //  <CircularProgress size={20}/>
         //</div>
+        MenuProps={MenuPropsComputed}
         multiple={false}
         onChange={e => {
           const value = e.target.value as T

@@ -1,9 +1,10 @@
-import {SelectOption, SelectSingle} from '@infoportal/client-core'
 import {CellPointer, skippedQuestionTypes, useCell, XlsSurveyRow} from '../core/useStore'
-import {BoxProps} from '@mui/material'
+import {BoxProps, SxProps, Theme, useTheme} from '@mui/material'
 import {Obj, Seq, seq} from '@axanc/ts-utils'
 import {Icon} from '@infoportal/client-datatable'
 import {Ip} from '@infoportal/api-sdk'
+import * as Core from '@infoportal/client-core'
+import {styleUtils} from '@infoportal/client-core'
 
 type QType = Exclude<Ip.Form.QuestionType, (typeof skippedQuestionTypes)[number]>
 
@@ -30,7 +31,7 @@ const mapping: Record<QType, {icon: string; label: string}> = {
   calculate: {icon: 'functions', label: 'calculate'},
 }
 
-const options: SelectOption<QType>[] = seq(Obj.entries(mapping)).map(([k, v]) => {
+const options: Core.SelectOption<QType>[] = seq(Obj.entries(mapping)).map(([k, v]) => {
   return {
     'data-value': k,
     key: k,
@@ -45,27 +46,64 @@ const options: SelectOption<QType>[] = seq(Obj.entries(mapping)).map(([k, v]) =>
     ),
   }
 })
+export const SelectType = ({
+  value,
+  onChange,
+  MenuProps,
+  ...props
+}: {
+  value?: QType
+  onChange: (_: QType) => void
+} & Omit<Core.IpSelectSingleProps, 'options' | 'value' | 'onChange'>) => {
+  return (
+    <Core.SelectSingle<QType>
+      options={options}
+      MenuProps={{
+        ...MenuProps,
+        PaperProps: {
+          ...MenuProps?.PaperProps,
+          sx: {
+            ...MenuProps?.PaperProps?.sx,
+            ...separators.reduceObject(_ => [`& [data-value="${_}"]`, {borderBottom: '1px solid silver'}]),
+          },
+        },
+      }}
+      hideNullOption
+      // renderValue={_ => (mapping[_]?.icon ? <Icon>{mapping[_]?.icon}</Icon> : undefined)}
+      value={value}
+      onChange={(value, e) => onChange(value)}
+      {...(props as any)}
+    />
+  )
+}
 
 export const CellSelectType = ({
   cellPointer,
   sx,
-  ...props
 }: Pick<BoxProps, 'sx'> & {
   cellPointer: CellPointer
 }) => {
+  const t = useTheme()
   const cell = useCell<QType>(cellPointer)
   return (
-    <SelectSingle<QType>
-      options={options}
-      MenuProps={{
-        PaperProps: {
-          sx: separators.reduceObject(_ => [`& [data-value="${_}"]`, {borderBottom: '1px solid silver'}]),
+    <SelectType
+      value={cell.value}
+      onChange={cell.onChange}
+      slotProps={{
+        root: {
+          sx: {
+            height: '100%',
+          },
         },
       }}
-      hideNullOption
-      renderValue={_ => (mapping[_]?.icon ? <Icon>{mapping[_]?.icon}</Icon> : undefined)}
-      value={cell.value}
-      onChange={(value, e) => cell.onChange(value)}
+      sx={{
+        borderRadius: 50,
+        background: t.vars.palette.action.selected,
+        verticalAlign: 'middle',
+        height: 'calc(100% - 4px)',
+        margin: '2px 8px',
+        ...sx,
+      }}
     />
   )
 }

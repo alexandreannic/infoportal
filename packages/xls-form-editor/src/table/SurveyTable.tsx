@@ -1,5 +1,5 @@
 import * as Datatable from '@infoportal/client-datatable'
-import {useXlsFormStore, XlsSurveyRow} from '../core/useStore'
+import {useXlsFormStore, XlsChoicesRow, XlsSurveyRow} from '../core/useStore'
 import {RefObject, useCallback, useMemo} from 'react'
 import {CellSelectType} from '../input/CellSelectType'
 import {selectsQuestionTypes, selectsQuestionTypesSet} from '../core/settings'
@@ -10,8 +10,9 @@ import {CellFormula} from '../input/CellFormula'
 import {CellSelectAppearance} from '../input/CellSelectAppearance'
 import {getDataKey} from './XlsFormEditor'
 import * as Core from '@infoportal/client-core'
-import {SxProps, useTheme} from '@mui/material'
+import {Box, SxProps, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
+import {ActionBar} from './ActionBar'
 
 export const SurveyTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Handle | null>; sx?: SxProps}) => {
   const {m} = useI18n()
@@ -39,7 +40,7 @@ export const SurveyTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Han
         id: 'type',
         head: 'type',
         type: 'select_one',
-        width: 70,
+        width: 190,
         render: row => {
           return {
             value: row.type,
@@ -204,7 +205,12 @@ export const SurveyTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Han
               value: value,
               label: (
                 <CellText
-                  cellPointer={{fieldIndex: i, table: 'survey', rowKey: row.key, field: 'constraint_message'}}
+                  cellPointer={{
+                    fieldIndex: i,
+                    table: 'survey',
+                    rowKey: row.key,
+                    field: 'constraint_message',
+                  }}
                   sx={{color: t.vars.palette.text.secondary}}
                 />
               ),
@@ -254,12 +260,15 @@ export const SurveyTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Han
         cellSelection: {
           mode: 'free',
           enabled: true,
+          renderFormulaBarOnColumnSelected: ({columnId, rowIds, commonValue}) => {
+            const [field, lang] = columnId.split(':') as [keyof XlsChoicesRow, string | undefined]
+            return <ActionBar rowKeys={rowIds} table="survey" value={commonValue} field={field} lang={lang} />
+          },
           renderFormulaBarOnRowSelected: () => (
             <Core.Btn icon="delete" size="small" variant="outlined" color="error">
               {m.delete}
             </Core.Btn>
           ),
-          // mode: 'row'
         },
         columnsResize: {enabled: true},
         columnsToggle: {enabled: true},

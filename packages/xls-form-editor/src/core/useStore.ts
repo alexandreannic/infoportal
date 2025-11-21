@@ -20,12 +20,12 @@ interface XlsFormState {
   setSchema: (_: Ip.Form.Schema) => void
   reorderRows: (_: {table: TableName; index: number; rowIds: string[]}) => void
   addRows: (_: {table: TableName; count: number}) => void
-  updateCell: (_: {
+  updateCells: (_: {
     table: TableName
-    rowKey: string
-    value: any // XlsSurveyRow[K] extends (infer U)[] ? U : XlsSurveyRow[K]
+    value: any
     fieldIndex?: number
     field: keyof XlsSurveyRow | keyof XlsChoicesRow
+    rowKeys: string[]
   }) => void
 }
 
@@ -91,22 +91,27 @@ export const useXlsFormStore = create<XlsFormState>()(
         }
 
         const target = Math.min(index, remaining.length)
-        draft.schema.survey = [...remaining.slice(0, target), ...moved, ...remaining.slice(target)]
+        draft.schema[table] = [...remaining.slice(0, target), ...moved, ...remaining.slice(target)]
       })
     },
 
-    updateCell: ({table, rowKey, field, value, fieldIndex}) =>
+    updateCells: ({table, rowKeys, field, value, fieldIndex}) =>
       set(state => {
-        const row: any = state.schema[table].find(r => r.key === rowKey)
-        if (!row) return
-        const current = row[field]
-        if (fieldIndex !== undefined) {
-          if (!Array.isArray(current)) {
-            row[field] = [] as any
+        for (const rowKey of rowKeys) {
+          const rows = state.schema[table]
+          const row: any = rows.find(r => r.key === rowKey)
+          if (!row) return
+
+          const current = row[field]
+
+          if (fieldIndex !== undefined) {
+            if (!Array.isArray(current)) {
+              row[field] = [] as any
+            }
+            ;(row[field] as any[])[fieldIndex] = value
+          } else {
+            row[field] = value
           }
-          ;(row[field] as any[])[fieldIndex] = value
-        } else {
-          row[field] = value as any
         }
       }),
   })),
@@ -128,10 +133,10 @@ export const useCell = <T extends boolean | string>({table, rowKey, field, field
     return fieldValue as T
   })
 
-  const updateCell = useXlsFormStore(s => s.updateCell)
+  const updateCells = useXlsFormStore(s => s.updateCells)
 
   const onChange = (v: T | null) => {
-    updateCell({table, rowKey, field, value: v as any, fieldIndex})
+    updateCells({table, rowKeys: [rowKey], field, value: v as any, fieldIndex})
   }
 
   return {value, onChange}

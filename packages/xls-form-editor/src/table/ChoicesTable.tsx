@@ -12,6 +12,7 @@ import {getDataKey} from './XlsFormEditor'
 import * as Core from '@infoportal/client-core'
 import {SxProps, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
+import {ActionBar} from './ActionBar'
 
 export const ChoicesTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Handle | null>; sx?: SxProps}) => {
   const {m} = useI18n()
@@ -107,7 +108,12 @@ export const ChoicesTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Ha
               {m.delete}
             </Core.Btn>
           ),
-          // mode: 'row'
+          renderFormulaBarOnColumnSelected: ({columnId, rowIds, commonValue}) => {
+            const [field, lang] = columnId.split(':') as [keyof XlsChoicesRow, string | undefined]
+            return (
+              <ActionBar rowKeys={rowIds} table="choices" value={commonValue} field={field} lang={lang} />
+            )
+          },
         },
         columnsResize: {enabled: true},
         columnsToggle: {enabled: true},
