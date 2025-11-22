@@ -32,21 +32,24 @@ export const DatatableFormularBar = () => {
       const key = getRowKey(row)
       if (!selectedRowIds.has(key)) return true
       const value = selectedColumnUniq.render(row).value
-      if (lastValue && lastValue !== value) return false
+      if (lastValue && lastValue !== value) {
+        lastValue = undefined
+        return false
+      }
       lastValue = value
       return true
     })
     return lastValue
   }, [selectedRowIds, selectedColumnUniq, dataFilteredAndSorted])
 
-  const rowIds = useMemo(() => selectedRowIds ? [...selectedRowIds] : [], [selectedRowIds])
+  const rowIds = useMemo(() => (selectedRowIds ? [...selectedRowIds] : []), [selectedRowIds])
 
   const t = useTheme()
 
   const renderColumnSelected = useMemo(() => {
     if (!selectedColumnUniq || !renderFormulaBarOnColumnSelected) return
     return renderFormulaBarOnColumnSelected({rowIds, commonValue: commonSelectedValue, columnId: selectedColumnUniq.id})
-  }, [selectedColumnUniq, renderFormulaBarOnColumnSelected])
+  }, [selectedColumnUniq, rowIds, commonSelectedValue, renderFormulaBarOnColumnSelected])
 
   const renderRowSelected = useMemo(() => {
     if (!areAllColumnsSelected || !renderFormulaBarOnRowSelected) return

@@ -1,4 +1,4 @@
-import React, {ReactNode, useMemo, useState} from 'react'
+import React, {ReactNode, useEffect, useMemo, useState} from 'react'
 import {Icon, Box, Tooltip} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import * as Core from '@infoportal/client-core'
@@ -30,6 +30,10 @@ export const AsyncInputWrapper = ({
 }) => {
   const {m} = useI18n()
   const [innerValue, setInnerValue] = useState<any>(value)
+
+  useEffect(() => {
+    setInnerValue(value)
+  }, [value])
 
   const hasChanged = useMemo(() => {
     return innerValue !== value

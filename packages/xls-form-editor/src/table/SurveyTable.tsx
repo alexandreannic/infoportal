@@ -261,7 +261,7 @@ export const SurveyTable = ({sx, handleRef}: {handleRef: RefObject<Datatable.Han
           mode: 'free',
           enabled: true,
           renderFormulaBarOnColumnSelected: ({columnId, rowIds, commonValue}) => {
-            const [field, lang] = columnId.split(':') as [keyof XlsChoicesRow, string | undefined]
+            const [field, lang] = columnId.split(':') as [keyof XlsSurveyRow, string | undefined]
             return <ActionBar rowKeys={rowIds} table="survey" value={commonValue} field={field} lang={lang} />
           },
           renderFormulaBarOnRowSelected: () => (

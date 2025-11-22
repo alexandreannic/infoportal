@@ -36,68 +36,65 @@ export const ActionBar = ({field, value, lang, rowKeys, table}: ActionBarProps) 
   }, [translations, lang])
 
   return (
-    <>
-      {field}:{fieldIndex}
-      <Datatable.AsyncInputWrapper
-        label={field}
-        value={value}
-        onConfirm={async (value: any) => {
-          updateCells({
-            field,
-            fieldIndex,
-            value,
-            table: 'survey',
-            rowKeys,
-          })
-          return {editedCount: rowKeys.length}
-        }}
-        renderInput={({value, placeholder, onChange}) => {
-          switch (field) {
-            case 'select_from_list_name': {
-              return <SelectListName value={value} onChange={onChange} sx={selectSx} autoWidthPopover />
-            }
-            case 'appearance': {
-              return <SelectAppearance value={value} onChange={onChange} sx={selectSx} autoWidthPopover />
-            }
-            case 'type': {
-              return <SelectType value={value} onChange={onChange} autoWidthPopover sx={selectSx} />
-            }
-            case 'required': {
-              return <Checkbox checked={Boolean(value)} onChange={(e, checked) => onChange(checked)} />
-            }
-            case 'relevant':
-            case 'constraint':
-            case 'default':
-            case 'constraint_message':
-            case 'choice_filter':
-            case 'calculation':
-            case 'list_name':
-            case 'hint':
-            case 'label':
-            case 'name': {
-              return (
-                <Box
-                  placeholder={placeholder}
-                  component="input"
-                  value={value}
-                  onChange={e => onChange((e.target as any).value)}
-                  sx={{
-                    fontWeight: 'bold',
-                    flex: 1,
-                    height: '100%',
-                    border: 'none',
-                    padding: 0,
-                    margin: 0,
-                    background: 'none',
-                  }}
-                />
-              )
-            }
-            default:
-              return
+    <Datatable.AsyncInputWrapper
+      label={field}
+      value={value ?? ''}
+      onConfirm={async (value: any) => {
+        updateCells({
+          field,
+          fieldIndex,
+          value,
+          table: 'survey',
+          rowKeys,
+        })
+        return {editedCount: rowKeys.length}
+      }}
+      renderInput={({value, placeholder, onChange}) => {
+        switch (field) {
+          case 'select_from_list_name': {
+            return <SelectListName value={value} onChange={onChange} sx={selectSx} autoWidthPopover />
           }
-        }}
-      />
-    </>
+          case 'appearance': {
+            return <SelectAppearance value={value} onChange={onChange} sx={selectSx} autoWidthPopover />
+          }
+          case 'type': {
+            return <SelectType value={value} onChange={onChange} autoWidthPopover sx={selectSx} />
+          }
+          case 'required': {
+            return <Checkbox checked={Boolean(value)} onChange={(e, checked) => onChange(checked)} />
+          }
+          case 'relevant':
+          case 'constraint':
+          case 'default':
+          case 'constraint_message':
+          case 'choice_filter':
+          case 'calculation':
+          case 'list_name':
+          case 'hint':
+          case 'label':
+          case 'name': {
+            return (
+              <Box
+                placeholder={placeholder}
+                component="input"
+                value={value}
+                onChange={e => onChange((e.target as any).value)}
+                sx={{
+                  fontWeight: 'bold',
+                  flex: 1,
+                  height: '100%',
+                  border: 'none',
+                  padding: 0,
+                  margin: 0,
+                  background: 'none',
+                }}
+              />
+            )
+          }
+          default:
+            return
+        }
+      }}
+    />
   )
 }
