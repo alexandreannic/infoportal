@@ -1,6 +1,5 @@
 import {useXlsFormStore, XlsChoicesRow, XlsSurveyRow} from '../core/useStore'
 import {Box, Checkbox} from '@mui/material'
-import {useI18n} from '@infoportal/client-i18n'
 import * as Datatable from '@infoportal/client-datatable'
 import {SelectType} from '../input/CellSelectType'
 import {SelectAppearance} from '../input/CellSelectAppearance'

@@ -1,6 +1,6 @@
 import {Box, BoxProps} from '@mui/material'
-import {memo} from 'react'
-import {CellPointer, useCell, XlsSurveyRow} from '../core/useStore'
+import {ChangeEvent, memo} from 'react'
+import {CellPointer, useCell} from '../core/useCell'
 
 export const CellFormula = memo(
   ({
@@ -17,7 +17,7 @@ export const CellFormula = memo(
       <Box
         component="input"
         value={cell.value}
-        onChange={e => cell.onChange(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => cell.onChange(e.target.value)}
         sx={{
           width: '100%',
           height: '100%',

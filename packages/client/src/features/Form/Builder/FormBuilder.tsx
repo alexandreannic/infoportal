@@ -98,7 +98,8 @@ function FormBuilder() {
                 get: localDraft,
                 set: setLocalDraft,
                 error: queryVersion.get.error || queryLocalDraft.error,
-                isSuccess: queryVersion.get.isSuccess || queryLocalDraft.isSuccess,
+                isSuccess:
+                  queryVersion.get.isSuccess && (queryVersion.get.data.length === 0 || queryLocalDraft.isSuccess),
                 isLoading: queryVersion.get.isLoading || queryLocalDraft.isLoading,
               },
             }}

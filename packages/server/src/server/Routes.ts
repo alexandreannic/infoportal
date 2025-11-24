@@ -561,7 +561,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           )
           .then(ok200)
           .catch(handleError),
-      getSchema: ({params}) => form.getSchema({formId: params.formId}).then(okOrNotFound).catch(handleError),
+      getSchema: ({params}) => form.getSchema({formId: params.formId}).then(ok200).catch(handleError),
       getSchemaByVersion: _ =>
         auth2(_)
           .then(({params}) => form.getSchemaByVersion({formId: params.formId, versionId: params.versionId}))

@@ -74,7 +74,7 @@ export namespace KoboMetaHelper {
         select_from_list_name: type === 'select_one' || type === 'select_multiple' ? _ : undefined,
         $xpath: _,
         // $qpath: _,
-        // $kuid: _,
+        $kuid: _,
         // $autoname: _,
         // TODO Fix kobo-sdk where calculation is required
       }
@@ -89,7 +89,7 @@ export namespace KoboMetaHelper {
           list_name,
           name: _,
           // $autovalue: _,
-          // $kuid: _,
+          $kuid: _,
           label: [labels[list_name][_]],
         }
         return c

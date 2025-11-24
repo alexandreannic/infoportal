@@ -1,5 +1,5 @@
-import {Box, BoxProps, Checkbox} from '@mui/material'
-import {CellPointer, useCell, XlsSurveyRow} from '../core/useStore'
+import {BoxProps, Checkbox} from '@mui/material'
+import {CellPointer, useCell} from '../core/useCell'
 
 export const CellBoolean = ({
   cellPointer,

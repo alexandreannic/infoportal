@@ -1,10 +1,10 @@
+import * as Core from '@infoportal/client-core'
 import {SelectSingle} from '@infoportal/client-core'
-import {CellPointer, useCell, useXlsFormStore, XlsSurveyRow} from '../core/useStore'
+import {useXlsFormStore} from '../core/useStore'
+import {CellPointer, useCell} from '../core/useCell'
 import {BoxProps, useTheme} from '@mui/material'
 import {seq} from '@axanc/ts-utils'
 import {useMemo} from 'react'
-import {Ip} from '@infoportal/api-sdk'
-import * as Core from '@infoportal/client-core'
 
 export const SelectListName = ({
   value,

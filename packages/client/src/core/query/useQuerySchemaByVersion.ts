@@ -16,10 +16,7 @@ export const useQuerySchemaByVersion = ({
   return useQuery({
     queryKey: queryKeys.schemaByVersion(workspaceId, formId, versionId),
     queryFn: () => {
-      return apiv2.form.getSchemaByVersion({workspaceId, formId, versionId: versionId!}).catch(err => {
-        if (err instanceof HttpError.NotFound) return undefined
-        throw err
-      })
+      return apiv2.form.getSchemaByVersion({workspaceId, formId, versionId: versionId!})
     },
     enabled: !!versionId,
   })

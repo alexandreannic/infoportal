@@ -1,11 +1,10 @@
 import {BoxProps, useTheme} from '@mui/material'
-import {CellPointer, useCell, XlsSurveyRow} from '../core/useStore'
+import {CellPointer, useCell} from '../core/useCell'
+import * as Core from '@infoportal/client-core'
 import {SelectSingle} from '@infoportal/client-core'
 import {useMemo} from 'react'
 import {appearances} from '../core/settings'
 import {Ip} from '@infoportal/api-sdk'
-import * as Core from '@infoportal/client-core'
-import {SelectSingleNullableProps} from '@infoportal/client-core/src/ui/Select/SelectSingle'
 
 export const SelectAppearance = ({
   value,
