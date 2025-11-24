@@ -1,7 +1,7 @@
 import {Core} from '@/shared'
 import {Box, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
-import React, {Dispatch, useEffect, useMemo, useRef, useState} from 'react'
+import React, {Dispatch, useMemo, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFender'
@@ -16,8 +16,6 @@ import {formBuilderVersionRoute} from '@/features/Form/Builder/Version/FormBuild
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 import {seq} from '@axanc/ts-utils'
-import {DatatableHandle} from '@infoportal/client-datatable/dist/Datatable'
-import * as Datatable from '@infoportal/client-datatable'
 
 const formBuilderRoutePath = 'formCreator'
 export const formBuilderRoute = createRoute({
@@ -40,13 +38,7 @@ export type FormBuilderContext = {
   }
   showPreview: boolean
   setShowPreview: Dispatch<React.SetStateAction<boolean>>
-  localDraft: {
-    isLoading?: boolean
-    isSuccess?: boolean
-    error?: Error | null
-    get: Ip.Form.Schema | undefined
-    set: Dispatch<React.SetStateAction<Ip.Form.Schema | undefined>>
-  }
+  queryLastVersion: ReturnType<typeof useQuerySchemaByVersion>
 }
 
 const Context = createContext<FormBuilderContext>({} as any)
@@ -74,12 +66,7 @@ function FormBuilder() {
     }
   }, [queryVersion.get.data])
 
-  const queryLocalDraft = useQuerySchemaByVersion({workspaceId, formId, versionId: versions.last?.id})
-
-  const [localDraft, setLocalDraft] = useState<Ip.Form.Schema | undefined>()
-  useEffect(() => {
-    if (queryLocalDraft.data) setLocalDraft(queryLocalDraft.data)
-  }, [queryLocalDraft.data])
+  const queryLastVersion = useQuerySchemaByVersion({workspaceId, formId, versionId: versions.last?.id})
 
   return (
     <TabContent width="full" loading={queryPermission.isLoading || queryForm.isPending || queryVersion.get.isLoading}>
@@ -94,14 +81,7 @@ function FormBuilder() {
               versions,
               showPreview,
               setShowPreview,
-              localDraft: {
-                get: localDraft,
-                set: setLocalDraft,
-                error: queryVersion.get.error || queryLocalDraft.error,
-                isSuccess:
-                  queryVersion.get.isSuccess && (queryVersion.get.data.length === 0 || queryLocalDraft.isSuccess),
-                isLoading: queryVersion.get.isLoading || queryLocalDraft.isLoading,
-              },
+              queryLastVersion,
             }}
           >
             <Box
@@ -124,14 +104,7 @@ function FormBuilder() {
                   minWidth: 0,
                 }}
               >
-                <FormBuilderTabs
-                  sx={{margin: 'auto', width: showPreview ? '100%' : '50%'}}
-                  workspaceId={workspaceId}
-                  formId={formId}
-                  activeVersion={versions.active}
-                  setShowPreview={setShowPreview}
-                  showPreview={showPreview}
-                />
+                <FormBuilderTabs sx={{margin: 'auto', width: showPreview ? '100%' : '50%'}} />
                 {Ip.Form.isKobo(queryForm.data) && <AlertImportKoboSchema workspaceId={workspaceId} formId={formId} />}
                 <Outlet />
               </Box>
@@ -144,7 +117,7 @@ function FormBuilder() {
                   opacity: showPreview ? 1 : 0,
                 }}
               >
-                {showPreview && <FormBuilderPreview schema={localDraft} />}
+                {showPreview && <FormBuilderPreview schema={queryLastVersion.data} />}
               </Box>
             </Box>
           </Context.Provider>

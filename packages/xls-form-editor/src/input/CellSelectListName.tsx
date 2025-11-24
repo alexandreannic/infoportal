@@ -37,13 +37,13 @@ export const CellSelectListName = ({
 
   return (
     <SelectListName
-      // slotProps={{
-      //   root: {
-      //     sx: {
-      //       height: '100%',
-      //     },
-      //   },
-      // }}
+      slotProps={{
+        root: {
+          sx: {
+            height: '100%',
+          },
+        },
+      }}
       sx={{
         borderRadius: 50,
         background: t.vars.palette.action.selected,

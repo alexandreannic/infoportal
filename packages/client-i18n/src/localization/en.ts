@@ -99,6 +99,7 @@ export const en = Object.freeze({
     skip: 'Skip',
     deleteSection: 'Delete section',
     _builder: {
+      previewLast: 'View Last',
       diffTimeout: 'Calculating changes is taking too long. Are you sure you have uploaded the good form?',
       alertPreviouslyKoboForm: `This form was originally imported from Kobo. It's no longer connected. Any version you publish here here won’t update Kobo.`,
       importCurrentKoboSurvey: 'Import last Kobo form version',
@@ -461,7 +462,7 @@ export const en = Object.freeze({
     apiToken: 'API Token',
     lastName: 'Last name',
     change: 'Change',
-    includeColumns: `Include column's name`,
+    includeColumns: `With column's name`,
     successfullyEdited: `Successfully edited`,
     successfullyEditedRows: (n: number) => `Successfully edited ${n} rows.`,
     successfullyAdded: `Successfully added.`,

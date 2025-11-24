@@ -1,4 +1,4 @@
-import {Box, Icon, SxProps, Tab, Tabs, useTheme} from '@mui/material'
+import {Box, Icon, SxProps, Tab, Tabs, Theme, useTheme} from '@mui/material'
 import {Link, useRouter} from '@tanstack/react-router'
 import React from 'react'
 import {useI18n} from '@infoportal/client-i18n'
@@ -9,22 +9,16 @@ import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
 import {formBuilderXlsUploaderRoute} from '@/features/Form/Builder/Upload/XlsFileUploadForm'
 import {formBuilderVersionRoute} from '@/features/Form/Builder/Version/FormBuilderVersion'
 import {formBuilderEditorRoute} from '@/features/Form/Builder/Editor/FormBuilderEditor'
+import {useFormContext} from '@/features/Form/Form'
+import {useFormBuilderContext} from '@/features/Form/Builder/FormBuilder'
 
-export const FormBuilderTabs = ({
-  activeVersion,
-  workspaceId,
-  formId,
-  showPreview,
-  setShowPreview,
-  sx,
-}: {
-  activeVersion?: Ip.Form.Version
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
-  showPreview: boolean
-  setShowPreview: React.Dispatch<React.SetStateAction<boolean>>
-  sx?: SxProps
-}) => {
+export const FormBuilderTabs = ({sx}: {sx?: SxProps<Theme>}) => {
+  const formId = useFormContext(_ => _.formId)
+  const workspaceId = useFormContext(_ => _.workspaceId)
+  const setShowPreview = useFormBuilderContext(_ => _.setShowPreview)
+  const showPreview = useFormBuilderContext(_ => _.showPreview)
+  const versions = useFormBuilderContext(_ => _.versions)
+
   const {m} = useI18n()
   const t = useTheme()
   const router = useRouter()
@@ -56,19 +50,25 @@ export const FormBuilderTabs = ({
         }}
       />
       <Tab
-        sx={{flex: 1}}
+        sx={{flex: 1, whiteSpace: 'nowrap'}}
         iconPosition="start"
         icon={<Icon>visibility</Icon>}
-        label={m.preview}
+        label={m._builder.previewLast}
         color={showPreview ? 'primary' : 'inherit'}
-        disabled={!activeVersion}
+        disabled={!versions.last}
         onClick={() => setShowPreview(_ => !_)}
       />
       {/*<Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId}} target="_blank">*/}
       {/*  <Tab sx={{flex: 1}} icon={<Icon>open_in_new</Icon>} label={m.open} disabled={!activeVersion} />*/}
       {/*</Link>*/}
       <PopoverShareLink label={m.copyResponderLink} url={absoluteUrl}>
-        <Tab sx={{flex: 1}} iconPosition="start" icon={<Icon>share</Icon>} label={m.share} disabled={!activeVersion} />
+        <Tab
+          sx={{flex: 1}}
+          iconPosition="start"
+          icon={<Icon>share</Icon>}
+          label={m.share}
+          disabled={!versions.active}
+        />
       </PopoverShareLink>
     </TabsLayout>
   )

@@ -13,7 +13,7 @@ export interface IconBtnProps extends IconButtonProps {
 export const IconBtn = ({tooltip, color, size, children, ...props}: IconBtnProps) => {
   const content = (
     <IconButton {...props} color={color} size={size}>
-      <Icon fontSize={size} color={color as any}>
+      <Icon fontSize={size} sx={{color: 'inherit'}}>
         {children}
       </Icon>
     </IconButton>

@@ -97,7 +97,7 @@ export const useXlsFormStore = create<XlsFormState>()(
       // MUTATIONS (all wrapped)
       // -----------------------------
       setSchema: schema =>
-        withHistory(draft => {
+        set(draft => {
           draft.schema = {
             ...schema,
             choices: schema.choices ?? [],
@@ -110,21 +110,23 @@ export const useXlsFormStore = create<XlsFormState>()(
           const t = draft.schema[table]
           const start = t.length
           const end = t.length + count
-          const emptySurvey: XlsSurveyRow = {
-            name: '',
-            calculation: '',
-            type: 'text',
-            $kuid: gen$kuid(),
-          }
-          const emptyChoice: XlsChoicesRow = {
-            name: '',
-            $kuid: gen$kuid(),
-            list_name: '',
-            label: [],
-          }
-          const emptyRow = table === 'survey' ? emptySurvey : emptyChoice
 
-          for (let i = start; i < end; i++) t.push({...emptyRow})
+          for (let i = start; i < end; i++) {
+            const emptySurvey: XlsSurveyRow = {
+              name: '',
+              calculation: '',
+              type: 'text',
+              $kuid: gen$kuid(),
+            }
+            const emptyChoice: XlsChoicesRow = {
+              name: '',
+              $kuid: gen$kuid(),
+              list_name: '',
+              label: [],
+            }
+            const emptyRow = table === 'survey' ? emptySurvey : emptyChoice
+            t.push({...emptyRow})
+          }
         }),
 
       deleteRows: ({table, rowIds}) =>

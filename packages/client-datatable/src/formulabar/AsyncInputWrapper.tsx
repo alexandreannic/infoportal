@@ -54,17 +54,16 @@ export const AsyncInputWrapper = ({
           <Icon color="error">error</Icon>
         </Tooltip>
       )}
-      <Core.Btn
-        icon="check"
+      <Core.IconBtn
         size="small"
+        tooltip={m.save}
         color={errorMsg && !hasChanged ? 'error' : 'primary'}
-        variant={hasChanged ? 'contained' : 'outlined'}
         loading={isPending}
         disabled={!hasChanged}
         onClick={() => onConfirm(innerValue)}
       >
-        {m.save}
-      </Core.Btn>
+        check
+      </Core.IconBtn>
     </>
   )
 }

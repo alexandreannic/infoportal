@@ -36,7 +36,7 @@ export const useCellSelection = <T extends Row = any>({
   const reset = useCallback(() => {
     dispatch({type: 'CELL_SELECTION_CLEAR'})
     anchor.current = null
-  }, [])
+  }, [dispatch])
 
   const setCellsSelection = ({
     startRow,

@@ -161,15 +161,16 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
     CELL_SELECTION_CLEAR: state => {
       return {
         ...state,
-        cellsSelection: {start: null, end: null},
-        draggingRow: {range: null, overIndex: null},
+        selectedColumnIds: null,
+        selectedRowIds: null,
+        draggingRow: {overIndex: null},
       }
     },
 
     CELL_SELECTION_SET_ROW_IDS: (state, {rowIds}) => {
       return {
         ...state,
-        draggingRow: {range: null, overIndex: null},
+        draggingRow: {overIndex: null},
         selectedRowIds: new Set(rowIds),
       }
     },
@@ -177,7 +178,7 @@ function createHandlerMap<T extends Row>(): HandlerMap<T> {
     CELL_SELECTION_SET_COLUMN_IDS: (state, {colIds}) => {
       return {
         ...state,
-        draggingRow: {range: null, overIndex: null},
+        draggingRow: {overIndex: null},
         selectedColumnIds: new Set(colIds),
       }
     },

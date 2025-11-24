@@ -38,6 +38,8 @@ export const XlsFormEditor = ({
   const deleteRows = useXlsFormStore(_ => _.deleteRows)
   const undo = useXlsFormStore(_ => _.undo)
   const redo = useXlsFormStore(_ => _.redo)
+  const past = useXlsFormStore(_ => _.past)
+  const future = useXlsFormStore(_ => _.future)
 
   const [rowsToAdd, setRowsToAdd] = useState(1)
   const [activeTab, setActiveTab] = useState<TableName>('survey')
@@ -79,9 +81,10 @@ export const XlsFormEditor = ({
           <Tab label="survey" value="survey" />
           <Tab label="choices" value="choices" />
         </Tabs>
-        <Core.IconBtn children="undo" onClick={undo} sx={{marginLeft: 'auto'}} />
-        <Core.IconBtn children="redo" onClick={redo} />
+        <Core.IconBtn children="undo" disabled={!past.length} onClick={undo} sx={{marginLeft: 'auto'}} />
+        <Core.IconBtn children="redo" disabled={!future.length} onClick={redo} />
         <Core.Btn
+          disabled={past.length === 0}
           variant="contained"
           onClick={() => {
             onCommit?.(parseForm(schema))

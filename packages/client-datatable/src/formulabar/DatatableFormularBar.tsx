@@ -2,7 +2,7 @@ import {useCtx} from '../core/DatatableContext'
 import {useConfig} from '../DatatableConfig'
 import React, {useMemo} from 'react'
 import {Box, Icon, useTheme} from '@mui/material'
-import {Btn, Txt} from '@infoportal/client-core'
+import {Btn, IconBtn, Txt} from '@infoportal/client-core'
 import {BtnCopyCells} from '../ui/BtnCopyCell'
 
 const cellSelectionDangerThreshold = 200
@@ -76,10 +76,10 @@ export const DatatableFormularBar = () => {
       {renderRowSelected}
       {selectedCount > 0 && (
         <>
+          <IconBtn size="small" onClick={reset} color="primary">
+            clear
+          </IconBtn>
           <BtnCopyCells />
-          <Btn size="small" variant="outlined" onClick={reset} color="primary" sx={{minWidth: 0}}>
-            <Icon>clear</Icon>
-          </Btn>
         </>
       )}
       <Counter

@@ -33,6 +33,7 @@ export class FormVersionService {
     file,
     ...rest
   }: {
+    workspaceId: Ip.WorkspaceId
     message?: string
     uploadedBy: Ip.User.Email
     formId: Ip.FormId
@@ -73,41 +74,43 @@ export class FormVersionService {
       .then(prismaMapper.form.mapVersion)
   }
 
-  private readonly createNewVersion = async ({
+  readonly createNewVersion = async ({
     schemaJson,
     formId,
+    workspaceId,
     ...rest
-  }: {
-    message?: string
-    fileName?: string
-    formId: Ip.Form.Id
-    schemaJson: Kobo.Form['content']
-    uploadedBy: Ip.User.Email
-  }) => {
+  }: Ip.Form.Version.Payload.CreateNewVersion & {uploadedBy: Ip.User.Email}) => {
     return this.prisma.$transaction(async tx => {
       const latest = await tx.formVersion.findFirst({
         where: {formId},
         orderBy: {version: 'desc'},
       })
-      const nextVersion = (latest?.version ?? 0) + 1
       if (latest && JSON.stringify(latest?.schema) === JSON.stringify(schemaJson))
         throw new Error('No change in schema.')
-      await tx.formVersion.updateMany({
-        where: {
-          formId,
-          status: 'draft',
-        },
-        data: {status: 'inactive'},
-      })
-      const schema = await tx.formVersion.create({
-        data: {
-          formId,
-          status: 'draft',
-          version: nextVersion,
-          schema: schemaJson,
-          ...rest,
-        },
-      })
+      const schema = await (() => {
+        if (latest?.status === 'draft') {
+          return tx.formVersion.update({
+            where: {
+              id: latest.id,
+            },
+            data: {
+              schema: schemaJson,
+              ...rest,
+            },
+          })
+        } else {
+          const nextVersion = (latest?.version ?? 0) + 1
+          return tx.formVersion.create({
+            data: {
+              formId,
+              status: 'draft',
+              version: nextVersion,
+              schema: schemaJson,
+              ...rest,
+            },
+          })
+        }
+      })()
       const versions = await this.getVersions({formId})
       return prismaMapper.form.mapVersion({...schema, versions})
     })
@@ -130,11 +133,20 @@ export class FormVersionService {
       .then(_ => _ !== null)
   }
 
-  readonly importLastKoboSchema = async ({formId, author}: {formId: Ip.FormId; author: Ip.User.Email}) => {
+  readonly importLastKoboSchema = async ({
+    formId,
+    workspaceId,
+    author,
+  }: {
+    workspaceId: Ip.WorkspaceId
+    formId: Ip.FormId
+    author: Ip.User.Email
+  }) => {
     app.cache.clear(AppCacheKey.KoboSchema, formId)
     const lastSchema = await this.koboSchemaCache.get({formId})
     if (!lastSchema) throw new HttpError.NotFound(`[importLastKoboSchema] Missing schema for ${formId}`)
     return this.createNewVersion({
+      workspaceId,
       schemaJson: lastSchema.content,
       formId,
       uploadedBy: author,
