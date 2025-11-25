@@ -470,7 +470,6 @@ export const muiTheme = ({
             color: theme.vars.palette.primary.main,
           }),
           root: ({theme}) => ({
-            color: theme.vars.palette.text.primary,
             spacing: 6,
           }),
         },

@@ -83,6 +83,7 @@ export const DatatableFormularBar = () => {
         </>
       )}
       <Counter
+        hasSelectedCells={selectedCount > 0}
         columnsCount={selectedColumnIds?.size || columns.length}
         rowsCount={selectedRowIds?.size || dataFilteredAndSorted.length}
       />
@@ -90,7 +91,15 @@ export const DatatableFormularBar = () => {
   )
 }
 
-function Counter({columnsCount, rowsCount}: {columnsCount: number; rowsCount: number}) {
+function Counter({
+  hasSelectedCells,
+  columnsCount,
+  rowsCount,
+}: {
+  hasSelectedCells?: boolean
+  columnsCount: number
+  rowsCount: number
+}) {
   const {formatLargeNumber} = useConfig()
   const total = columnsCount * rowsCount
   return (
@@ -101,7 +110,7 @@ function Counter({columnsCount, rowsCount}: {columnsCount: number; rowsCount: nu
       <Icon fontSize="inherit">table_rows</Icon>
       {formatLargeNumber(rowsCount)}
       <Box sx={{mx: 0.5}}>=</Box>
-      <Txt bold color={total > cellSelectionDangerThreshold ? 'error' : undefined}>
+      <Txt bold color={hasSelectedCells && total > cellSelectionDangerThreshold ? 'error' : undefined}>
         {formatLargeNumber(total)}
       </Txt>
     </Txt>
