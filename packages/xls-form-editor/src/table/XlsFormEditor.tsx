@@ -8,7 +8,9 @@ import {Ip} from '@infoportal/api-sdk'
 import {ActionBar} from './ActionBar'
 import {getChoicesColumns} from './getChoicesColumns'
 import {getSurveyColumns} from './getSurveyColumns'
-import {parseForm} from '../core/settings'
+import {parseAndVerifyForm} from '../core/settings'
+import {SchemaValidationErrorReport, SchemaValidator} from '@infoportal/kobo-helper'
+import {ErrorModal} from './ErrorModal'
 
 export type TableName = 'survey' | 'choices'
 
@@ -42,8 +44,13 @@ export const XlsFormEditor = ({
   const future = useXlsFormStore(_ => _.future)
 
   const [rowsToAdd, setRowsToAdd] = useState(1)
+  const [errors, setErrors] = useState<SchemaValidationErrorReport | undefined>()
   const [activeTab, setActiveTab] = useState<TableName>('survey')
   const datatableHandle = useRef<Datatable.Handle>(null)
+
+  const schemaHasChanged = useMemo(() => {
+    return past.length !== 0
+  }, [schema, past])
 
   const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const defaultWith = 160
@@ -57,12 +64,20 @@ export const XlsFormEditor = ({
     })
   }, [activeTab, translations])
 
+  const checkFormAndSubmit = (cb?: (_: Ip.Form.Schema) => void) => {
+    if (!cb || !schemaHasChanged) return
+    const parsed = parseAndVerifyForm(schema)
+    const errors = SchemaValidator.validate(parsed)
+    if (errors) setErrors(errors)
+    else cb?.(parsed)
+  }
+
   useEffect(() => {
     if (value) setSchema(value)
   }, [value])
 
   useEffect(() => {
-    onChange?.(parseForm(schema))
+    checkFormAndSubmit(onChange)
   }, [schema])
 
   const handleEvent = useCallback((action: Datatable.Action<XlsSurveyRow | XlsChoicesRow>) => {
@@ -87,7 +102,7 @@ export const XlsFormEditor = ({
           disabled={past.length === 0}
           variant="contained"
           onClick={() => {
-            onCommit?.(parseForm(schema))
+            checkFormAndSubmit(onCommit)
           }}
         >
           {m.save}
@@ -158,6 +173,7 @@ export const XlsFormEditor = ({
         />
         {m._xlsFormEditor.moreRows}
       </Box>
+      <ErrorModal error={errors} onClose={() => setErrors(undefined)} />
     </Core.Panel>
   )
 }

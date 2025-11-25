@@ -8,6 +8,8 @@ import {HttpError, Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {FormService} from './FormService.js'
 import {KoboSchemaCache} from './KoboSchemaCache.js'
+import {Obj} from '@axanc/ts-utils'
+import {SchemaValidator} from '@infoportal/kobo-helper'
 
 export class FormVersionService {
   constructor(
@@ -85,6 +87,8 @@ export class FormVersionService {
         where: {formId},
         orderBy: {version: 'desc'},
       })
+      const error = SchemaValidator.validate(schemaJson)
+      if (error) throw new HttpError.BadRequest(JSON.stringify(error))
       if (latest && JSON.stringify(latest?.schema) === JSON.stringify(schemaJson))
         throw new Error('No change in schema.')
       const schema = await (() => {

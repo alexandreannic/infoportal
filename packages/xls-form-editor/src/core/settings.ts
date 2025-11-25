@@ -1,7 +1,7 @@
 import {Ip} from '@infoportal/api-sdk'
 import {XlsSchema, XlsSurveyRow} from './useStore'
 
-export const parseForm = (schema: XlsSchema): Ip.Form.Schema => {
+export const parseAndVerifyForm = (schema: XlsSchema): Ip.Form.Schema => {
   return {
     ...schema,
     survey: computeSchemaPath(schema.survey),
@@ -9,18 +9,24 @@ export const parseForm = (schema: XlsSchema): Ip.Form.Schema => {
 }
 
 export const computeSchemaPath = (questions: XlsSurveyRow[]): Ip.Form.Question[] => {
+  const beginType = new Set<Ip.Form.QuestionType>(['begin_group', 'begin_repeat'])
+  const endType = new Set<Ip.Form.QuestionType>(['end_group', 'end_repeat'])
   const stack: string[] = []
-  const begin = new Set<Ip.Form.QuestionType>(['begin_group', 'begin_repeat'])
-  const end = new Set<Ip.Form.QuestionType>(['end_group', 'end_repeat'])
   return questions.map(q => {
-    if (begin.has(q.type)) {
+    const isEnd = endType.has(q.type)
+    const isBegin = beginType.has(q.type)
+    if (isEnd) {
+      stack.pop()
+      return q as Ip.Form.Question // end_* rows have no xpath
+    }
+    const xpath = [...stack, q.name].join('/')
+    if (isBegin) {
       stack.push(q.name)
-      return {
-        ...q,
-        $xpath: stack.join('/'),
-      }
-    } else if (end.has(q.type)) stack.pop()
-    return q as unknown as Ip.Form.Question
+    }
+    return {
+      ...q,
+      $xpath: xpath,
+    }
   })
 }
 
