@@ -1,10 +1,11 @@
-import {useXlsFormStore, XlsChoicesRow, XlsSurveyRow} from '../core/useStore'
+import {useXlsFormStore} from '../core/useStore'
 import {Box, Checkbox} from '@mui/material'
 import * as Datatable from '@infoportal/client-datatable'
 import {SelectType} from '../input/CellSelectType'
 import {SelectAppearance} from '../input/CellSelectAppearance'
 import {SelectListName} from '../input/CellSelectListName'
 import {useMemo} from 'react'
+import {Ip} from '@infoportal/api-sdk'
 
 type ActionBarProps = {
   value?: any
@@ -12,11 +13,11 @@ type ActionBarProps = {
   lang?: string
 } & (
   | {
-      field: keyof XlsSurveyRow
+      field: keyof Ip.Form.Question
       table: 'survey'
     }
   | {
-      field: keyof XlsChoicesRow
+      field: keyof Ip.Form.Choice
       table: 'choices'
     }
 )

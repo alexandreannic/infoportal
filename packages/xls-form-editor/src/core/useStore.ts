@@ -4,26 +4,19 @@ import {Ip} from '@infoportal/api-sdk'
 import {genShortid} from 'infoportal-common'
 import {RowId} from '@infoportal/client-datatable/dist/core/types'
 import {TableName} from '../table/XlsFormEditor'
-
-export type XlsSurveyRow = Omit<Ip.Form.Question, '$xpath'>
-export type XlsChoicesRow = Ip.Form.Choice
-
-export type XlsSchema = Omit<Ip.Form.Schema, 'choices' | 'survey'> & {
-  survey: XlsSurveyRow[]
-  choices: XlsChoicesRow[]
-}
+import {SchemaParser} from '@infoportal/kobo-helper'
 
 function getTable<T extends TableName>(
   draft: XlsFormState,
   table: T,
-): T extends 'survey' ? XlsSurveyRow[] : XlsChoicesRow[] {
+): T extends 'survey' ? Ip.Form.Question[] : Ip.Form.Choice[] {
   return draft.schema[table] as any
 }
 
 interface XlsFormState {
-  schema: XlsSchema
-  past: XlsSchema[]
-  future: XlsSchema[]
+  schema: Ip.Form.Schema
+  past: Ip.Form.Schema[]
+  future: Ip.Form.Schema[]
   undo: () => void
   redo: () => void
 
@@ -35,15 +28,13 @@ interface XlsFormState {
     table: TableName
     value: any
     fieldIndex?: number
-    field: keyof XlsSurveyRow | keyof XlsChoicesRow
+    field: keyof Ip.Form.Question | keyof Ip.Form.Choice
     rowKeys: string[]
   }) => void
 }
 
-export const getDataKey = (_: XlsSurveyRow | XlsChoicesRow) => _.$kuid
-export const gen$kuid = () => genShortid(10)
+export const getDataKey = (_: Ip.Form.Question | Ip.Form.Choice) => _.$kuid
 export const skippedQuestionTypes = ['deviceid', 'username', 'start', 'end'] as const
-const skippedQuestionTypesSet = new Set(skippedQuestionTypes)
 
 const HISTORY_LIMIT = 50
 
@@ -64,7 +55,7 @@ export const useXlsFormStore = create<XlsFormState>()(
     return {
       schema: {
         choices: [],
-        survey: [{type: 'select_one', name: '', $kuid: genShortid(8)}],
+        survey: [{type: 'select_one', name: '', $xpath: null as any, $kuid: genShortid(8)}],
         translations: ['English (en)'],
         settings: {},
         translated: [],
@@ -74,9 +65,6 @@ export const useXlsFormStore = create<XlsFormState>()(
       past: [],
       future: [],
 
-      // -----------------------------
-      // UNDO / REDO
-      // -----------------------------
       undo: () =>
         set(state => {
           if (state.past.length === 0) return
@@ -93,15 +81,12 @@ export const useXlsFormStore = create<XlsFormState>()(
           state.schema = next
         }),
 
-      // -----------------------------
-      // MUTATIONS (all wrapped)
-      // -----------------------------
       setSchema: schema =>
         set(draft => {
           draft.schema = {
             ...schema,
             choices: schema.choices ?? [],
-            survey: schema.survey.filter(_ => !skippedQuestionTypesSet.has(_.type as any)),
+            survey: schema.survey.filter(_ => !skippedQuestionTypes.includes(_.type as any)),
           }
         }),
 
@@ -112,15 +97,16 @@ export const useXlsFormStore = create<XlsFormState>()(
           const end = t.length + count
 
           for (let i = start; i < end; i++) {
-            const emptySurvey: XlsSurveyRow = {
+            const emptySurvey: Ip.Form.Question = {
               name: '',
+              $xpath: null as any, // Filled later
               calculation: '',
               type: 'text',
-              $kuid: gen$kuid(),
+              $kuid: SchemaParser.gen$kuid(),
             }
-            const emptyChoice: XlsChoicesRow = {
+            const emptyChoice: Ip.Form.Choice = {
               name: '',
-              $kuid: gen$kuid(),
+              $kuid: SchemaParser.gen$kuid(),
               list_name: '',
               label: [],
             }
@@ -156,7 +142,7 @@ export const useXlsFormStore = create<XlsFormState>()(
       updateCells: ({table, rowKeys, field, value, fieldIndex}) =>
         withHistory(draft => {
           for (const key of rowKeys) {
-            const rows: Array<XlsSurveyRow | XlsChoicesRow> = draft.schema[table]
+            const rows: Array<Ip.Form.Question | Ip.Form.Choice> = draft.schema[table]
             const row: any = rows.find(r => r.$kuid === key)
             if (!row) continue
 

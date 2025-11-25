@@ -1,16 +1,15 @@
 import {Box, SxProps, Tab, Tabs, useTheme} from '@mui/material'
 import * as Datatable from '@infoportal/client-datatable'
 import {useI18n} from '@infoportal/client-i18n'
-import {getDataKey, useXlsFormStore, XlsChoicesRow, XlsSurveyRow} from '../core/useStore'
+import {getDataKey, useXlsFormStore} from '../core/useStore'
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import * as Core from '@infoportal/client-core'
 import {Ip} from '@infoportal/api-sdk'
 import {ActionBar} from './ActionBar'
 import {getChoicesColumns} from './getChoicesColumns'
 import {getSurveyColumns} from './getSurveyColumns'
-import {parseAndVerifyForm} from '../core/settings'
-import {SchemaValidationErrorReport, SchemaValidator} from '@infoportal/kobo-helper'
-import {ErrorModal} from './ErrorModal'
+import {SchemaParser, SchemaValidator} from '@infoportal/kobo-helper'
+import {ErrorModal, ErrorModalValue} from './ErrorModal'
 
 export type TableName = 'survey' | 'choices'
 
@@ -21,9 +20,11 @@ const tableSx: SxProps = {
 
 export const XlsFormEditor = ({
   value,
+  saving,
   onChange,
   onCommit,
 }: {
+  saving?: boolean
   value?: Ip.Form.Schema
   onChange?: (_: Ip.Form.Schema) => void
   onCommit?: (_: Ip.Form.Schema) => void
@@ -44,13 +45,15 @@ export const XlsFormEditor = ({
   const future = useXlsFormStore(_ => _.future)
 
   const [rowsToAdd, setRowsToAdd] = useState(1)
-  const [errors, setErrors] = useState<SchemaValidationErrorReport | undefined>()
+  const [validationReport, setValidationReport] = useState<ErrorModalValue | undefined>()
   const [activeTab, setActiveTab] = useState<TableName>('survey')
   const datatableHandle = useRef<Datatable.Handle>(null)
 
-  const schemaHasChanged = useMemo(() => {
-    return past.length !== 0
-  }, [schema, past])
+  const quickCheckIfSchemaHasChanged = useMemo(() => {
+    if (past.length === 0) return false
+    return true
+    // return JSON.stringify(value) !== JSON.stringify(schema)
+  }, [past])
 
   const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const defaultWith = 160
@@ -65,11 +68,14 @@ export const XlsFormEditor = ({
   }, [activeTab, translations])
 
   const checkFormAndSubmit = (cb?: (_: Ip.Form.Schema) => void) => {
-    if (!cb || !schemaHasChanged) return
-    const parsed = parseAndVerifyForm(schema)
-    const errors = SchemaValidator.validate(parsed)
-    if (errors) setErrors(errors)
-    else cb?.(parsed)
+    if (!cb || !quickCheckIfSchemaHasChanged) return
+    if (JSON.stringify(value) === JSON.stringify(schema)) {
+      setValidationReport({noChanges: true})
+      return
+    }
+    const errors = SchemaValidator.validate(schema)
+    if (errors?.errors) setValidationReport(errors)
+    else cb?.(schema)
   }
 
   useEffect(() => {
@@ -80,7 +86,7 @@ export const XlsFormEditor = ({
     checkFormAndSubmit(onChange)
   }, [schema])
 
-  const handleEvent = useCallback((action: Datatable.Action<XlsSurveyRow | XlsChoicesRow>) => {
+  const handleEvent = useCallback((action: Datatable.Action<Ip.Form.Question | Ip.Form.Choice>) => {
     switch (action.type) {
       case 'REORDER_ROWS': {
         reorderRows({table: activeTab, ...action})
@@ -99,7 +105,8 @@ export const XlsFormEditor = ({
         <Core.IconBtn children="undo" disabled={!past.length} onClick={undo} sx={{marginLeft: 'auto'}} />
         <Core.IconBtn children="redo" disabled={!future.length} onClick={redo} />
         <Core.Btn
-          disabled={past.length === 0}
+          loading={saving}
+          disabled={!quickCheckIfSchemaHasChanged}
           variant="contained"
           onClick={() => {
             checkFormAndSubmit(onCommit)
@@ -123,7 +130,7 @@ export const XlsFormEditor = ({
             mode: 'free',
             enabled: true,
             renderFormulaBarOnColumnSelected: ({columnId, rowIds, commonValue}) => {
-              const [field, lang] = columnId.split(':') as [keyof XlsSurveyRow, string | undefined]
+              const [field, lang] = columnId.split(':') as [keyof Ip.Form.Question, string | undefined]
               return <ActionBar rowKeys={rowIds} table="survey" value={commonValue} field={field} lang={lang} />
             },
             renderFormulaBarOnRowSelected: ({rowIds}) => (
@@ -173,7 +180,7 @@ export const XlsFormEditor = ({
         />
         {m._xlsFormEditor.moreRows}
       </Box>
-      <ErrorModal error={errors} onClose={() => setErrors(undefined)} />
+      <ErrorModal report={validationReport} onClose={() => setValidationReport(undefined)} />
     </Core.Panel>
   )
 }

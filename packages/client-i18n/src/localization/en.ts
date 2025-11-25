@@ -516,7 +516,7 @@ export const en = Object.freeze({
       updatedAt: 'Updated At',
     },
     _xlsFormEditor: {
-      noError: 'No error',
+      noChanges: 'Schema has no changes.',
       moreRows: 'more rows at the bottom',
       notClosed: 'Not closed',
       closedBeforeBeingOpened: 'Closed before being opened',

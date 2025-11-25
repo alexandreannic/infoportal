@@ -45,7 +45,7 @@ export const DiffView = ({timeout = 4_000, stepperRef, oldStr = '', newStr, sx, 
       clearTimeout(timeoutRef)
       if (data.success) {
         setHtml(data.html)
-        hasChanges?.(data.hasChange)
+        hasChanges?.(data.hasChanges)
       } else {
         setError(data.error)
       }

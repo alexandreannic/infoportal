@@ -1,15 +1,12 @@
 import {PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../index.js'
 import {appConf} from '../../core/conf/AppConf.js'
-import {Kobo} from 'kobo-sdk'
 import {yup} from '../../helper/Utils.js'
-import {XlsFormParser} from '../kobo/XlsFormParser.js'
 import {HttpError, Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
-import {FormService} from './FormService.js'
 import {KoboSchemaCache} from './KoboSchemaCache.js'
-import {Obj} from '@axanc/ts-utils'
-import {SchemaValidator} from '@infoportal/kobo-helper'
+import {SchemaParser, SchemaValidator} from '@infoportal/kobo-helper'
+import {XlsFormParser} from './XlsFormParser.js'
 
 export class FormVersionService {
   constructor(
@@ -29,8 +26,6 @@ export class FormVersionService {
     }),
   }
 
-  readonly validateAndParse = XlsFormParser.validateAndParse
-
   readonly upload = async ({
     file,
     ...rest
@@ -41,12 +36,14 @@ export class FormVersionService {
     formId: Ip.FormId
     file: Express.Multer.File
   }) => {
-    const validation = await XlsFormParser.validateAndParse(file.path)
+    const validation = await this.validateAndParse(file.path)
     if (!validation.schema || validation.status === 'error') {
       throw new Error('Invalid XLSForm')
     }
     return this.createNewVersion({fileName: file.filename, schemaJson: validation.schema, ...rest})
   }
+
+  readonly validateAndParse = XlsFormParser.validateAndParse
 
   readonly deployLastDraft = async ({formId}: {formId: Ip.FormId}) => {
     return this.prisma
@@ -87,9 +84,10 @@ export class FormVersionService {
         where: {formId},
         orderBy: {version: 'desc'},
       })
-      const error = SchemaValidator.validate(schemaJson)
-      if (error) throw new HttpError.BadRequest(JSON.stringify(error))
-      if (latest && JSON.stringify(latest?.schema) === JSON.stringify(schemaJson))
+      const parsedSchema = SchemaParser.parse(schemaJson)
+      const errors = SchemaValidator.validate(parsedSchema)?.errors
+      if (errors) throw new HttpError.BadRequest(JSON.stringify(errors))
+      if (latest && JSON.stringify(latest?.schema) === JSON.stringify(parsedSchema))
         throw new Error('No change in schema.')
       const schema = await (() => {
         if (latest?.status === 'draft') {
@@ -98,7 +96,7 @@ export class FormVersionService {
               id: latest.id,
             },
             data: {
-              schema: schemaJson,
+              schema: parsedSchema,
               ...rest,
             },
           })
@@ -109,7 +107,7 @@ export class FormVersionService {
               formId,
               status: 'draft',
               version: nextVersion,
-              schema: schemaJson,
+              schema: parsedSchema,
               ...rest,
             },
           })

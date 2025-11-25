@@ -1,64 +1,62 @@
 import {SchemaValidationErrorReport} from '@infoportal/kobo-helper'
-import {Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemText} from '@mui/material'
-import {useI18n} from '@infoportal/client-i18n'
+import {Box, Chip, Dialog, DialogActions, DialogContent, DialogTitle, useTheme} from '@mui/material'
+import {Messages, useI18n} from '@infoportal/client-i18n'
 import * as Core from '@infoportal/client-core'
 
-export const ErrorModal = ({error, onClose}: {onClose: () => void; error?: SchemaValidationErrorReport}) => {
+export type ErrorModalValue = SchemaValidationErrorReport & {noChanges?: boolean}
+
+const getMatchValue = (m: Messages, value?: number) => {
+  if (!value) return
+  const text =
+    value === 1
+      ? m._xlsFormEditor.notClosed
+      : value === -1
+        ? m._xlsFormEditor.closedBeforeBeingOpened
+        : m._xlsFormEditor.unexpectedValue + ' ' + value
+  return [text]
+}
+
+export const ErrorModal = ({report, onClose}: {onClose: () => void; report?: ErrorModalValue}) => {
   const {m} = useI18n()
-  const open = !!error
-
-  const renderArray = (label: string, arr?: any[]) => {
-    if (!arr || arr.length === 0) return null
-    return (
-      <>
-        <Core.Txt>{label}</Core.Txt>
-        <List dense>
-          {arr.map((item, i) => (
-            <ListItem key={i}>
-              <ListItemText primary={String(item)} />
-            </ListItem>
-          ))}
-        </List>
-      </>
-    )
-  }
-
-  const renderMatch = (label: string, value?: number) => {
-    if (value === undefined || value === 0) return null
-    const text =
-      value === 1
-        ? m._xlsFormEditor.notClosed
-        : value === -1
-          ? m._xlsFormEditor.closedBeforeBeingOpened
-          : m._xlsFormEditor.unexpectedValue + ' ' + value
-
-    return (
-      <>
-        <Core.Txt>{label}</Core.Txt>
-        <List dense>
-          <ListItem>
-            <ListItemText primary={text} />
-          </ListItem>
-        </List>
-      </>
-    )
-  }
+  const open = !!report
 
   return (
     <Dialog open={open} maxWidth="sm" fullWidth>
-      <DialogTitle color="error">Schema Validation Errors</DialogTitle>
+      <DialogTitle>Schema Validation Errors</DialogTitle>
       <DialogContent>
-        {!error && m._xlsFormEditor.noError}
-
-        {error && (
+        {report && (
           <>
-            {renderArray(m._xlsFormEditor.missingQuestionNames, error.missingQuestionNames)}
-            {renderArray(m._xlsFormEditor.duplicateQuestionNames, error.duplicateQuestionNames)}
-            {renderArray(m._xlsFormEditor.duplicateChoiceNames, error.duplicateChoiceNames)}
-            {renderArray(m._xlsFormEditor.unusedChoiceLists, error.unusedChoicesLists)}
-            {renderArray(m._xlsFormEditor.missingChoiceLists, error.missingChoicesLists)}
-            {renderMatch(m._xlsFormEditor.groupStructure, error.matchingGroups)}
-            {renderMatch(m._xlsFormEditor.repeatStructure, error.matchingRepeats)}
+            {(report.errors || report.noChanges) && (
+              <>
+                <Core.Txt bold color="error" size="big" block>
+                  {m.error}
+                </Core.Txt>
+                <ErrorItem label={m._xlsFormEditor.noChanges} errors={report.noChanges ? [] : undefined} />
+                <ErrorItem label={m._xlsFormEditor.missingQuestionNames} errors={report.errors?.missingQuestionNames} />
+                <ErrorItem
+                  label={m._xlsFormEditor.duplicateQuestionNames}
+                  errors={report.errors?.duplicateQuestionNames}
+                />
+                <ErrorItem label={m._xlsFormEditor.duplicateChoiceNames} errors={report.errors?.duplicateChoiceNames} />
+                <ErrorItem label={m._xlsFormEditor.missingChoiceLists} errors={report.errors?.missingChoicesLists} />
+                <ErrorItem
+                  label={m._xlsFormEditor.groupStructure}
+                  errors={getMatchValue(m, report.errors?.matchingGroups)}
+                />
+                <ErrorItem
+                  label={m._xlsFormEditor.repeatStructure}
+                  errors={getMatchValue(m, report.errors?.matchingRepeats)}
+                />
+              </>
+            )}
+            {report.warnings && (
+              <>
+                <Core.Txt bold color="warning" size="big" block>
+                  {m.warning}
+                </Core.Txt>
+                <ErrorItem label={m._xlsFormEditor.unusedChoiceLists} errors={report.warnings?.unusedChoicesLists} />
+              </>
+            )}
           </>
         )}
       </DialogContent>
@@ -69,5 +67,20 @@ export const ErrorModal = ({error, onClose}: {onClose: () => void; error?: Schem
         </Core.Btn>
       </DialogActions>
     </Dialog>
+  )
+}
+
+const ErrorItem = ({label, errors}: {label: string; errors?: (string | number)[]}) => {
+  const t = useTheme()
+  if (!errors) return null
+  return (
+    <>
+      <Core.Txt sx={{mb: 1}} block bold>{label}</Core.Txt>
+      <Box sx={{display: 'flex', gap: t.vars?.spacing, flexWrap: 'wrap'}}>
+        {errors.map((item, i) => (
+          <Chip size="small" label={item} key={i} />
+        ))}
+      </Box>
+    </>
   )
 }

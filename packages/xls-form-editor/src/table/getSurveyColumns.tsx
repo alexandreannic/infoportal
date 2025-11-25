@@ -1,6 +1,5 @@
 import {Theme} from '@mui/material'
 import * as Datatable from '@infoportal/client-datatable'
-import {XlsSurveyRow} from '../core/useStore'
 import {CellSelectType} from '../input/CellSelectType'
 import {selectsQuestionTypes} from '../core/settings'
 import {CellSelectListName} from '../input/CellSelectListName'
@@ -8,6 +7,7 @@ import {CellText} from '../input/CellText'
 import {CellBoolean} from '../input/CellBoolean'
 import {CellFormula} from '../input/CellFormula'
 import {CellSelectAppearance} from '../input/CellSelectAppearance'
+import {Ip} from '@infoportal/api-sdk'
 
 export const simpleSelectsQuestionTypes = ['select_one', 'select_multiple']
 export const simpleSelectsQuestionTypesSet = new Set(selectsQuestionTypes)
@@ -18,7 +18,7 @@ export function getSurveyColumns({
 }: {
   t: Theme
   translations: string[]
-}): Datatable.Column.Props<XlsSurveyRow>[] {
+}): Datatable.Column.Props<Ip.Form.Question>[] {
   return [
     {
       id: 'type',
@@ -82,7 +82,7 @@ export function getSurveyColumns({
       },
     },
     ...translations.map((lang, i) => {
-      return Datatable.Column.make<XlsSurveyRow>({
+      return Datatable.Column.make<Ip.Form.Question>({
         id: 'label:' + lang,
         head: 'label' + ':' + lang,
         width: 260,
@@ -98,7 +98,7 @@ export function getSurveyColumns({
       })
     }),
     ...translations.map((lang, i) => {
-      return Datatable.Column.make<XlsSurveyRow>({
+      return Datatable.Column.make<Ip.Form.Question>({
         id: 'hint:' + lang,
         head: 'hint' + ':' + lang,
         type: 'string',
@@ -179,7 +179,7 @@ export function getSurveyColumns({
       },
     },
     ...translations.map((lang, i) => {
-      return Datatable.Column.make<XlsSurveyRow>({
+      return Datatable.Column.make<Ip.Form.Question>({
         id: 'constraint_message:' + lang,
         head: 'constraint_message' + ':' + lang,
         type: 'string',

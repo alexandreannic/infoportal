@@ -1,37 +1,6 @@
 import {Ip} from '@infoportal/api-sdk'
-import {XlsSchema, XlsSurveyRow} from './useStore'
-
-export const parseAndVerifyForm = (schema: XlsSchema): Ip.Form.Schema => {
-  return {
-    ...schema,
-    survey: computeSchemaPath(schema.survey),
-  }
-}
-
-export const computeSchemaPath = (questions: XlsSurveyRow[]): Ip.Form.Question[] => {
-  const beginType = new Set<Ip.Form.QuestionType>(['begin_group', 'begin_repeat'])
-  const endType = new Set<Ip.Form.QuestionType>(['end_group', 'end_repeat'])
-  const stack: string[] = []
-  return questions.map(q => {
-    const isEnd = endType.has(q.type)
-    const isBegin = beginType.has(q.type)
-    if (isEnd) {
-      stack.pop()
-      return q as Ip.Form.Question // end_* rows have no xpath
-    }
-    const xpath = [...stack, q.name].join('/')
-    if (isBegin) {
-      stack.push(q.name)
-    }
-    return {
-      ...q,
-      $xpath: xpath,
-    }
-  })
-}
 
 export const selectsQuestionTypes = ['select_one_from_file', 'select_one', 'select_multiple']
-export const selectsQuestionTypesSet = new Set(selectsQuestionTypes)
 
 type Appearance = {
   name: string

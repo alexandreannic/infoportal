@@ -23,6 +23,7 @@ function FormBuilderEditor() {
       {queryDraftVersion.error && <Core.Alert color="error" />}
       {(queryDraftVersion.isSuccess || !versions.draft) && (
         <XlsFormEditor
+          saving={queryVersion.isPending}
           value={queryDraftVersion.data}
           onCommit={_ => {
             queryVersion.mutateAsync({schemaJson: _})
