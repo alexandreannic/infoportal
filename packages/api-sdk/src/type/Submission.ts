@@ -16,6 +16,7 @@ export namespace Submission {
     return _
   }
 
+  export type Attachment = Kobo.Submission.Attachment
   export type Validation = Prisma.FormSubmissionValidation
   export const Validation = {
     Approved: 'Approved',

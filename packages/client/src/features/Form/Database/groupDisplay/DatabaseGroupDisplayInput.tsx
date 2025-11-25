@@ -8,7 +8,7 @@ import {useFormContext} from '@/features/Form/Form'
 export const DatabaseGroupDisplayInput = (props: Core.BtnProps) => {
   const t = useTheme()
   const {m} = useI18n()
-  const {schema} = useFormContext()
+  const schema = useFormContext(_ => _.schema)
   const {groupDisplay} = useDatabaseKoboTableContext()
   return (
     <Core.PopoverWrapper
@@ -26,7 +26,7 @@ export const DatabaseGroupDisplayInput = (props: Core.BtnProps) => {
             <Core.RadioGroupItem value="rows" title={m._koboDatabase.repeatAsRows} />
             <Core.RadioGroupItem value="columns" title={m._koboDatabase.repeatAsColumn} />
           </Core.RadioGroup>
-          {groupDisplay.get.repeatAs === 'rows' && (
+          {schema && groupDisplay.get.repeatAs === 'rows' && (
             <>
               <Core.Txt color="hint" sx={{mt: 1.5, mb: 0.5}} fontSize="small" block>
                 {m._koboDatabase.repeatAsQuestionName}

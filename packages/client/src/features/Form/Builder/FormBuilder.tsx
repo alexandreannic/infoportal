@@ -1,190 +1,150 @@
 import {Core} from '@/shared'
-import {Grid, Grow, useTheme} from '@mui/material'
+import {Box, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
-import React, {useMemo, useState} from 'react'
+import React, {Dispatch, useMemo, useState} from 'react'
 import {useQueryVersion} from '@/core/query/useQueryVersion'
-import {XlsFileUploadForm} from '@/features/Form/Builder/XlsFileUploadForm'
-import {map, seq} from '@axanc/ts-utils'
-import {VersionRow, VersionRowRoot, VersionRowShowMore} from '@/features/Form/Builder/VersionRow'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFender'
 import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
-import {createRoute, Link, useRouter} from '@tanstack/react-router'
+import {createRoute, Outlet, redirect} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
-import {useIpToast} from '@/core/useToast'
 import {Ip} from '@infoportal/api-sdk'
 import {TabContent} from '@/shared/Tab/TabContent.js'
-import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
+import {FormBuilderTabs} from '@/features/Form/Builder/FormBuilderTabs'
+import {createContext, useContextSelector} from 'use-context-selector'
+import {formBuilderVersionRoute} from '@/features/Form/Builder/Version/FormBuilderVersion'
+import {UseQueryPermission} from '@/core/query/useQueryPermission'
+import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
+import {seq} from '@axanc/ts-utils'
 
+const formBuilderRoutePath = 'formCreator'
 export const formBuilderRoute = createRoute({
   getParentRoute: () => formRoute,
-  path: 'formCreator',
+  path: formBuilderRoutePath,
   component: FormBuilder,
+  beforeLoad: ({location, params}) => {
+    if (location.pathname.endsWith(formBuilderRoutePath)) {
+      throw redirect({to: formBuilderVersionRoute.to, params})
+    }
+  },
 })
 
+export type FormBuilderContext = {
+  versions: {
+    all: Ip.Form.Version[]
+    active?: Ip.Form.Version
+    draft?: Ip.Form.Version
+    last?: Ip.Form.Version
+  }
+  showPreview: boolean
+  setShowPreview: Dispatch<React.SetStateAction<boolean>>
+  queryLastVersion: ReturnType<typeof useQuerySchemaByVersion>
+}
+
+const Context = createContext<FormBuilderContext>({} as any)
+
+export const useFormBuilderContext = <Selected extends any>(
+  selector: (_: FormBuilderContext) => Selected,
+): Selected => {
+  return useContextSelector(Context, selector)
+}
+
 function FormBuilder() {
-  const {m} = useI18n()
   const t = useTheme()
-  const {toastInfo, toastError} = useIpToast()
   const {workspaceId, formId} = formBuilderRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
-  const [versionVisible, setVersionVisible] = useState(5)
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryVersion = useQueryVersion({workspaceId, formId})
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
   const [showPreview, setShowPreview] = useState(false)
-  const router = useRouter()
 
-  const location = router.buildLocation({
-    to: '/collect/$workspaceId/$formId',
-    params: {workspaceId, formId},
-  })
-  const absoluteUrl = window.location.origin + location.href
-
-  const {active, draft} = useMemo(() => {
+  const versions = useMemo(() => {
     return {
+      all: queryVersion.get.data!,
       active: queryVersion.get.data?.find(_ => _.status === 'active'),
       draft: queryVersion.get.data?.find(_ => _.status === 'draft'),
+      last: seq(queryVersion.get.data).last(),
     }
   }, [queryVersion.get.data])
 
+  const queryLastVersion = useQuerySchemaByVersion({workspaceId, formId, versionId: versions.last?.id})
+
   return (
-    <TabContent width="full" loading={queryForm.isPending || queryVersion.get.isLoading}>
-      {queryForm.data &&
-        (Ip.Form.isConnectedToKobo(queryForm.data) ? (
-          <FormBuilderKoboFender workspaceId={workspaceId} form={queryForm.data} />
-        ) : (
-          <Grid container>
-            <Grid size={{xs: 12, md: 6}}>
-              {queryPermission.data?.version_canCreate && (
-                <Core.Alert severity="warning" sx={{mb: 1}}>
-                  <div>{m._builder.alertPreviouslyKoboForm}</div>
-                  {queryVersion.get.data?.length === 0 && (
-                    <div style={{textAlign: 'right'}}>
-                      <Core.Btn
-                        color="inherit"
-                        icon="download"
-                        loading={queryVersion.importLastKoboSchema.isPending}
-                        onClick={() => queryVersion.importLastKoboSchema.mutate()}
-                        sx={{textTransform: 'inherit', marginLeft: 'auto', whiteSpace: 'nowrap'}}
-                        children={m._builder.importCurrentKoboSurvey}
-                      />
-                    </div>
-                  )}
-                </Core.Alert>
-              )}
-              {queryPermission.data?.version_canCreate && (
-                <XlsFileUploadForm
-                  lastSchema={seq(queryVersion.get.data ?? []).last()}
-                  workspaceId={workspaceId}
-                  formId={formId}
-                />
-              )}
-              {map(
-                queryVersion.get.data,
-                versions =>
-                  versions.length > 0 && (
-                    <Core.Panel>
-                      <Core.PanelHead
-                        action={
-                          queryPermission.data?.version_canDeploy && (
-                            <Core.Modal
-                              loading={queryVersion.deployLast.isPending}
-                              title={m.confirm}
-                              onConfirm={(event, close) =>
-                                queryVersion.deployLast.mutateAsync({workspaceId, formId}).then(close)
-                              }
-                            >
-                              <Core.Btn
-                                icon="send"
-                                variant="contained"
-                                disabled={!draft}
-                                loading={queryVersion.deployLast.isPending}
-                              >
-                                {m.deployLastVersion}
-                              </Core.Btn>
-                            </Core.Modal>
-                          )
-                        }
-                      >
-                        {m.versions}
-                      </Core.PanelHead>
-                      <Core.PanelBody>
-                        {seq(versions ?? [])
-                          .sortByNumber(_ => _.version, '9-0')
-                          .slice(0, versionVisible)
-                          .map((_, i) => (
-                            <VersionRow key={_.id} version={_} index={i} />
-                          ))}
-                        {versionVisible < versions.length && (
-                          <VersionRowShowMore onClick={() => setVersionVisible(_ => _ + 5)} />
-                        )}
-                        {queryForm.data && <VersionRowRoot createdAt={queryForm.data.createdAt} />}
-                      </Core.PanelBody>
-                    </Core.Panel>
-                  ),
-              )}
-            </Grid>
-            <Grid size={{xs: 12, md: 6}}>
-              {active && (
-                <Core.Panel sx={{p: 1}}>
-                  <Core.Btn
-                    sx={{mr: 1}}
-                    icon="visibility"
-                    size="large"
-                    variant="outlined"
-                    onClick={() => setShowPreview(true)}
-                    disabled={!active}
-                  >
-                    {m.preview}
-                  </Core.Btn>
-                  <Link to="/collect/$workspaceId/$formId" params={{workspaceId, formId}} target="_blank">
-                    <Core.Btn
-                      sx={{mr: 1}}
-                      icon="open_in_new"
-                      size="large"
-                      variant="outlined"
-                      onClick={() => setShowPreview(true)}
-                    >
-                      {m.open}
-                    </Core.Btn>
-                  </Link>
-                  <Core.Modal
-                    title={m.copyResponderLink}
-                    onConfirm={async () => {
-                      try {
-                        await navigator.clipboard.writeText(absoluteUrl)
-                        toastInfo(m.copiedToClipboard)
-                      } catch (e: any) {
-                        toastError(e?.message ?? m.error)
-                      }
-                    }}
-                    confirmLabel={m.copy}
-                    cancelLabel={m.close}
-                    content={
-                      <Core.Input
-                        helperText={null}
-                        slotProps={{input: {sx: {width: 400, color: t.vars.palette.text.secondary}}}}
-                        readOnly
-                        value={window.location.origin + location.href}
-                      />
-                    }
-                  >
-                    <Core.Btn icon="link" size="large" variant="outlined">
-                      {m.copyLink}
-                    </Core.Btn>
-                  </Core.Modal>
-                </Core.Panel>
-              )}
-              {active && showPreview && (
-                <Grow in={true}>
-                  <div>
-                    <FormBuilderPreview workspaceId={workspaceId} formId={formId} versionId={active.id} />
-                  </div>
-                </Grow>
-              )}
-            </Grid>
-          </Grid>
-        ))}
+    <TabContent width="full" loading={queryPermission.isLoading || queryForm.isPending || queryVersion.get.isLoading}>
+      {(() => {
+        if (!queryForm.data || !queryPermission.data || !queryVersion.get.data) return
+        if (Ip.Form.isConnectedToKobo(queryForm.data))
+          return <FormBuilderKoboFender workspaceId={workspaceId} form={queryForm.data} />
+
+        return (
+          <Context.Provider
+            value={{
+              versions,
+              showPreview,
+              setShowPreview,
+              queryLastVersion,
+            }}
+          >
+            <Box
+              sx={{
+                gap: t.vars.spacing,
+                justifyItems: 'center',
+                width: showPreview ? '100%' : '100%',
+                margin: 'auto',
+                display: 'flex',
+                overflowX: 'auto',
+                transition: 'all 0.4s ease',
+                '--right-width': showPreview ? '50%' : '0%',
+                '--left-width': showPreview ? '50%' : '100%',
+              }}
+            >
+              <Box
+                sx={{
+                  flex: '1 1 var(--left-width)',
+                  transition: 'flex-basis 0.4s ease',
+                  minWidth: 0,
+                }}
+              >
+                <FormBuilderTabs sx={{margin: 'auto', width: showPreview ? '100%' : '50%'}} />
+                {Ip.Form.isKobo(queryForm.data) && <AlertImportKoboSchema workspaceId={workspaceId} formId={formId} />}
+                <Outlet />
+              </Box>
+
+              <Box
+                sx={{
+                  flex: '1 1 var(--right-width)',
+                  transition: 'flex-basis 0.4s ease',
+                  overflow: 'hidden',
+                  opacity: showPreview ? 1 : 0,
+                }}
+              >
+                {showPreview && <FormBuilderPreview schema={queryLastVersion.data} />}
+              </Box>
+            </Box>
+          </Context.Provider>
+        )
+      })()}
     </TabContent>
+  )
+}
+
+function AlertImportKoboSchema({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
+  const {m} = useI18n()
+  const queryVersion = useQueryVersion({workspaceId, formId})
+  return (
+    <Core.Alert severity="warning" sx={{mb: 1}}>
+      <div>{m._builder.alertPreviouslyKoboForm}</div>
+      {queryVersion.get.data?.length === 0 && (
+        <div style={{textAlign: 'right'}}>
+          <Core.Btn
+            color="inherit"
+            icon="download"
+            loading={queryVersion.importLastKoboSchema.isPending}
+            onClick={() => queryVersion.importLastKoboSchema.mutate()}
+            sx={{textTransform: 'inherit', marginLeft: 'auto', whiteSpace: 'nowrap'}}
+            children={m._builder.importCurrentKoboSurvey}
+          />
+        </div>
+      )}
+    </Core.Alert>
   )
 }

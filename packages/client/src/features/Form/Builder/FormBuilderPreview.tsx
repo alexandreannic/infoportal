@@ -1,28 +1,19 @@
-import {Ip} from '@infoportal/api-sdk'
 import {XlsFormFiller} from 'xls-form-filler'
 import React from 'react'
 import {useI18n} from '@infoportal/client-i18n'
-import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 import {Core} from '@/shared'
+import {Ip} from '@infoportal/api-sdk'
 
-export const FormBuilderPreview = ({
-  workspaceId,
-  formId,
-  versionId,
-}: {
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
-  versionId: Ip.Form.VersionId
-}) => {
+export const FormBuilderPreview = ({schema}: {schema?: Ip.Form.Schema}) => {
   const {m} = useI18n()
-  const querySchema = useQuerySchemaByVersion({workspaceId, formId, versionId})
+
   return (
-    <Core.Panel loading={querySchema.isLoading}>
+    <Core.Panel>
       <Core.PanelHead>{m.preview}</Core.PanelHead>
       <Core.PanelBody>
-        {querySchema.data && (
+        {schema && (
           <XlsFormFiller
-            survey={querySchema.data}
+            survey={schema as any}
             hideActions
             onSubmit={_ => {
               console.log('HERE')

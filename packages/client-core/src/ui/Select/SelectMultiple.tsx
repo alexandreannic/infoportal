@@ -24,6 +24,7 @@ export type IpSelectMultipleProps<T extends string | number = string> = Pick<Sel
   showUndefinedOption?: boolean
   options: SelectOption<T>[] | string[]
   sx?: SxProps<Theme>
+  autoWidthPopover?: boolean
   defaultValue?: T[]
   value?: T[]
   InputProps?: InputProps
@@ -49,6 +50,8 @@ function SelectMultipleInner<T extends string | number>(
     onChange,
     sx,
     value = [],
+    autoWidthPopover,
+    MenuProps,
     ...props
   }: IpSelectMultipleProps<T>,
   ref: any,
@@ -76,6 +79,31 @@ function SelectMultipleInner<T extends string | number>(
 
   const allSelected = innerValue.length === options.length
 
+  const MenuPropsComputed: SelectProps['MenuProps'] = useMemo(() => {
+    if (autoWidthPopover)
+      return {
+        ...MenuProps,
+        anchorOrigin: {
+          ...MenuProps?.anchorOrigin,
+          vertical: 'bottom',
+          horizontal: 'left',
+        },
+        transformOrigin: {
+          ...MenuProps?.transformOrigin,
+          vertical: 'top',
+          horizontal: 'left',
+        },
+        PaperProps: {
+          ...MenuProps?.PaperProps,
+          sx: {
+            ...MenuProps?.PaperProps?.sx,
+            minWidth: 'unset !important',
+          },
+        },
+      }
+    return MenuProps
+  }, [MenuProps, autoWidthPopover])
+
   return (
     <FormControl size="small" sx={{width: '100%', ...sx}}>
       {label && <InputLabel htmlFor={id}>{label}</InputLabel>}
@@ -96,6 +124,7 @@ function SelectMultipleInner<T extends string | number>(
           onChange(newValue, e)
           setUncontrolledInnerState(newValue)
         }}
+        MenuProps={MenuPropsComputed}
         input={
           <OutlinedInput
             label={label}

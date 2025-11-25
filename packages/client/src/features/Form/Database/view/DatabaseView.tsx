@@ -15,7 +15,7 @@ interface FormCreate {
 
 export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?: SxProps<Theme>}) => {
   const {m} = useI18n()
-  const {permission} = useFormContext()
+  const permission = useFormContext(_ => _.permission)
   const [open, setOpen] = useState<string | undefined>(undefined)
   const session = useSession()
 

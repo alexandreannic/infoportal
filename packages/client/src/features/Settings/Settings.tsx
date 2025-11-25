@@ -35,7 +35,6 @@ function Settings() {
         {permission.user_canRead && (
           <TabLink
             icon={<Icon>group</Icon>}
-            iconPosition="start"
             sx={{minHeight: 34, py: 1}}
             to={settingsUsersRoute.fullPath}
             label={m.users}
@@ -44,7 +43,6 @@ function Settings() {
         {permission.group_canRead && (
           <TabLink
             icon={<Icon>groups</Icon>}
-            iconPosition="start"
             sx={{minHeight: 34, py: 1}}
             to={settingsGroupsRoute.fullPath}
             label={m.group}
@@ -53,7 +51,6 @@ function Settings() {
         {permission.proxy_canRead && (
           <TabLink
             icon={<Icon>settings_input_antenna</Icon>}
-            iconPosition="start"
             sx={{minHeight: 34, py: 1}}
             to={settingsProxyRoute.fullPath}
             label={m.proxy}
@@ -62,7 +59,6 @@ function Settings() {
         {globalPermission?.cache_manage && (
           <TabLink
             icon={<Icon>memory</Icon>}
-            iconPosition="start"
             sx={{minHeight: 34, py: 1}}
             to={settingsCacheRoute.fullPath}
             label={m.serverCache}

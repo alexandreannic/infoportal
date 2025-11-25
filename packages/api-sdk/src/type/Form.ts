@@ -6,6 +6,7 @@ import {User} from './User.js'
 import {ServerId} from './KoboAccount.js'
 import {WorkspaceId} from './Workspace.js'
 import {Submission} from './Submission.js'
+import {Ip} from './index.js'
 
 export type FormId = Form.Id
 export type Form = Prisma.Form & {
@@ -48,7 +49,24 @@ export namespace Form {
 
   export type Id = Brand<string, 'FormId'>
 
-  export type Schema = Kobo.Form['content'] & {files?: Kobo.Form.File[]}
+  export type Schema = {
+    choices?: Choice[]
+    settings: Partial<{
+      version: string
+      default_language: string
+    }>
+    survey: Question[]
+    translated: Kobo.Form.Translated[]
+    translations: string[]
+    files?: Kobo.Form.File[]
+  }
+
+  export type Choice = Omit<Kobo.Form.Choice, '$autovalue'>
+  export type QuestionType = Kobo.Form.QuestionType
+  export type Question = Omit<Kobo.Form.Question, 'calculation' | '$autoname' | '$qpath'> & {
+    // Should be optional in kobo-sdk
+    calculation?: string
+  }
 
   export type Type = Prisma.FormType
   export const Type = {
@@ -179,5 +197,15 @@ export namespace Form {
     uploadedBy: User.Email
     id: VersionId
   }
-  export namespace Version {}
+  export namespace Version {
+    export namespace Payload {
+      export type CreateNewVersion = {
+        workspaceId: Ip.WorkspaceId
+        formId: Ip.Form.Id
+        message?: string
+        fileName?: string
+        schemaJson: Ip.Form.Schema
+      }
+    }
+  }
 }

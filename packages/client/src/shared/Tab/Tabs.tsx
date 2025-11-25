@@ -1,4 +1,4 @@
-import {Tab, TabProps, Tabs} from '@mui/material'
+import {Tab, TabProps, Icon, Tabs} from '@mui/material'
 import {Link, LinkProps, useRouterState} from '@tanstack/react-router'
 import React, {Children, isValidElement, ReactElement, ReactNode} from 'react'
 import {tsRouter} from '@/Router'
@@ -27,13 +27,15 @@ export const TabsLayout = ({children, sx}: {children: ReactNode; sx?: any}) => {
     >
       {React.Children.map(children, (child, i) => {
         if (isTabLink(child)) {
-          const {to, params, ...rest} = child.props
+          const {to, params, iconStr, iconPosition, icon, ...rest} = child.props
           const loc = tsRouter.buildLocation({to, params})
           return (
             <Tab
               {...rest as any}
               key={child.key ?? i}
+              iconPosition={iconPosition ?? 'start'}
               value={loc.pathname}
+              icon={icon ?? (iconStr ? <Icon>{iconStr}</Icon> : undefined)}
               component={Link}
               to={to}
               params={params}
@@ -47,7 +49,7 @@ export const TabsLayout = ({children, sx}: {children: ReactNode; sx?: any}) => {
   )
 }
 
-export type TabLinkProps = Omit<TabProps, 'value'> & Pick<LinkProps, 'to' | 'params'>
+export type TabLinkProps = Omit<TabProps, 'value'> & Pick<LinkProps, 'to' | 'params'> & {iconStr?: string}
 
 export const TabLink = ({}: TabLinkProps) => {
   // Doesn't matter, it will be built in TabsLayout

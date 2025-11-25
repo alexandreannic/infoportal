@@ -1,6 +1,5 @@
 import {seq} from '@axanc/ts-utils'
 import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper.js'
-import {Kobo} from 'kobo-sdk'
 import {Ip} from '@infoportal/api-sdk'
 import {KoboMetaHelper} from './koboMetaHelper.js'
 import {removeHtml} from 'infoportal-common'
@@ -8,14 +7,14 @@ import {removeHtml} from 'infoportal-common'
 export type KoboTranslateQuestion = (key: string) => string
 export type KoboTranslateChoice = (key: string, choice?: string) => string
 
-export const ignoredColType: Set<Kobo.Form.QuestionType> = new Set(['end_group', 'end_repeat', 'deviceid'])
+export const ignoredColType: Set<Ip.Form.QuestionType> = new Set(['end_group', 'end_repeat', 'deviceid'])
 
 export namespace KoboSchemaHelper {
   export interface Bundle<IncludeMeta extends boolean = false> {
     includeMeta?: IncludeMeta
     helper: Helper
     schema: Ip.Form.Schema
-    schemaFlatAndSanitized: Kobo.Form.Question[]
+    schemaFlatAndSanitized: Ip.Form.Question[]
     schemaSanitized: Ip.Form.Schema
     translate: Translation
   }
@@ -35,7 +34,7 @@ export namespace KoboSchemaHelper {
 
   export type Helper = ReturnType<typeof buildHelper>
 
-  const sanitizeQuestions = (questions: Kobo.Form.Question[]): Kobo.Form.Question[] => {
+  const sanitizeQuestions = (questions: Ip.Form.Question[]): Ip.Form.Question[] => {
     return questions
       .filter(
         _ =>
@@ -53,7 +52,7 @@ export namespace KoboSchemaHelper {
     const choicesIndex = seq(schema.choices).groupBy(_ => _.list_name)
     const questionIndex = seq([...schema.survey])
       .compactBy('name')
-      .reduceObject<Record<string, undefined | Kobo.Form.Question>>(_ => [_.name, _])
+      .reduceObject<Record<string, undefined | Ip.Form.Question>>(_ => [_.name, _])
 
     const getOptionsByQuestionName = (qName: string) => {
       const listName = questionIndex[qName]?.select_from_list_name

@@ -5,7 +5,6 @@ import {ColorSchemeType} from 'diff2html/lib/types.js'
 
 self.onmessage = (e) => {
   const {oldStr, newStr, mode} = e.data
-  console.log('CALLED')
   try {
     const diffText = createTwoFilesPatch(
       'old',

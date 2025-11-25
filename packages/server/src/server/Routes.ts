@@ -561,7 +561,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           )
           .then(ok200)
           .catch(handleError),
-      getSchema: ({params}) => form.getSchema({formId: params.formId}).then(okOrNotFound).catch(handleError),
+      getSchema: ({params}) => form.getSchema({formId: params.formId}).then(ok200).catch(handleError),
       getSchemaByVersion: _ =>
         auth2(_)
           .then(({params}) => form.getSchemaByVersion({formId: params.formId, versionId: params.versionId}))
@@ -613,6 +613,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               .then(ensureFile)
               .then(({params, req, body}) =>
                 formVersion.upload({
+                  workspaceId: params.workspaceId,
                   uploadedBy: req.session.app.user.email,
                   formId: params.formId,
                   file: req.file!,
@@ -627,6 +628,11 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .then(({params}) => formVersion.getVersions({formId: params.formId}))
             .then(ok200)
             .catch(handleError),
+        createNewVersion: _ =>
+          auth2(_)
+            .then(({body, req}) => formVersion.createNewVersion({...body, uploadedBy: req.session.app.user.email}))
+            .then(ok200)
+            .catch(handleError),
         deployLast: _ =>
           auth2(_)
             .then(({req, params}) => formVersion.deployLastDraft({formId: params.formId}))
@@ -635,7 +641,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         importLastKoboSchema: _ =>
           auth2(_)
             .then(({req, params}) =>
-              formVersion.importLastKoboSchema({author: req.session.app.user.email, formId: params.formId}),
+              formVersion.importLastKoboSchema({author: req.session.app.user.email, ...params}),
             )
             .then(ok200)
             .catch(handleError),

@@ -1,6 +1,7 @@
 import {duration, Obj} from '@axanc/ts-utils'
 import {NonNullableKeys} from '../type/Generic.js'
 import {addMonths, differenceInMonths, isAfter, isBefore, startOfMonth} from 'date-fns'
+import {v4} from 'uuid'
 
 export const generateId = () => ('' + Math.random()).split('.')[1]
 
@@ -98,17 +99,9 @@ export class Chain<T> {
 
 export const chain = <T>(value?: T) => new Chain(value)
 
-export const makeid = (length = 14) => {
-  let result = ''
-  const letters = 'abcdefghijklmnopqrstuvwxyz'
-  const numbers = '0123456789'
-  const characters = letters + numbers
-  const charactersLength = characters.length
-  for (let i = 0; i < length - 1; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
-  }
-  return result
-}
+export const genUUID = v4
+
+export const genShortid = (length: number = 4) => genUUID().replace(/-/g, '').slice(0, length)
 
 export function multipleFilters<T>(
   list: T[],

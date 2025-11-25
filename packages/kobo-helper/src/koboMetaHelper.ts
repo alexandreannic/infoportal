@@ -1,5 +1,5 @@
-import {Kobo} from 'kobo-sdk'
 import {Obj} from '@axanc/ts-utils'
+import {Ip} from '@infoportal/api-sdk'
 
 export namespace KoboMetaHelper {
   export const metaKeys = [
@@ -23,7 +23,7 @@ export namespace KoboMetaHelper {
 
   export const isMeta = (_: string) => metaKeys.includes(_ as any)
 
-  export const metaType: Record<Key, Kobo.Form.QuestionType> = {
+  export const metaType: Record<Key, Ip.Form.QuestionType> = {
     attachments: 'file',
     uuid: 'text',
     version: 'text',
@@ -64,32 +64,31 @@ export namespace KoboMetaHelper {
     }
   }
 
-  export const getMetaAsQuestion = (labels: Labels): Kobo.Form.Question[] => {
+  export const getMetaAsQuestion = (labels: Labels): Ip.Form.Question[] => {
     return metaKeys.map(_ => {
       const type = metaType[_]
-      const q: Kobo.Form.Question = {
+      const q: Ip.Form.Question = {
         type,
         name: _,
         label: [labels[_] ?? _],
         select_from_list_name: type === 'select_one' || type === 'select_multiple' ? _ : undefined,
         $xpath: _,
-        $qpath: _,
+        // $qpath: _,
         $kuid: _,
-        $autoname: _,
+        // $autoname: _,
         // TODO Fix kobo-sdk where calculation is required
-        calculation: undefined as any,
       }
       return q
     })
   }
 
-  export const getMetaAsChoices = (labels: ChoicesLabel): Kobo.Form.Choice[] => {
+  export const getMetaAsChoices = (labels: ChoicesLabel): Ip.Form.Choice[] => {
     return Obj.keys(labels).flatMap(list_name => {
       return Obj.keys(labels[list_name]).map(_ => {
-        const c: Kobo.Form.Choice = {
+        const c: Ip.Form.Choice = {
           list_name,
           name: _,
-          $autovalue: _,
+          // $autovalue: _,
           $kuid: _,
           label: [labels[list_name][_]],
         }

@@ -3,7 +3,7 @@ import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {Core, Datatable} from '@/shared'
 import {Page} from '@/shared/Page'
-import {map, seq} from '@axanc/ts-utils'
+import {map} from '@axanc/ts-utils'
 import {
   Alert,
   Box,
@@ -17,9 +17,7 @@ import {
   useTheme,
 } from '@mui/material'
 import {DialogProps} from '@toolpad/core'
-import {NonNullableKey} from 'infoportal-common'
 import {KoboSchemaHelper} from '@infoportal/kobo-helper'
-import {Kobo} from 'kobo-sdk'
 import {useMemo, useState} from 'react'
 import {Ip} from '@infoportal/api-sdk'
 import {createRoute, Link} from '@tanstack/react-router'
@@ -41,7 +39,7 @@ function DatabaseAnswerView() {
     answerId: Ip.SubmissionId
   }
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
-  const {schema, form} = useFormContext()
+  const {schema, form} = useFormContext(_ => _)
   const queryAnswers = UseQuerySubmission.search({formId, workspaceId})
 
   const answer = useMemo(() => {
@@ -57,7 +55,7 @@ function DatabaseAnswerView() {
           <Skeleton />
         </>
       ) : (
-        (map(answer, a => (
+        (map(answer, schema, (a, s) => (
           <Core.Panel>
             <Core.PanelHead
               action={
@@ -83,7 +81,7 @@ function DatabaseAnswerView() {
                 formId={formId}
                 showQuestionWithoutAnswer={showQuestionWithoutAnswer}
                 answer={a}
-                schema={schema}
+                schema={s}
               />
             </Core.PanelBody>
           </Core.Panel>
@@ -156,13 +154,13 @@ const KoboAnswerFormView = ({
 }) => {
   return (
     <Box>
-      {seq(schema.schemaSanitized.survey)
-        .compactBy('name')
+      {schema.schemaSanitized.survey
         .filter(
           q =>
-            showQuestionWithoutAnswer ||
-            q.type === 'begin_group' ||
-            (answer.answers[q.name] !== '' && answer.answers[q.name]),
+            q.name &&
+            (showQuestionWithoutAnswer ||
+              q.type === 'begin_group' ||
+              (answer.answers[q.name] !== '' && answer.answers[q.name])),
         )
         .map(q => (
           <Box key={q.name} sx={{mb: 1.5}}>
@@ -189,10 +187,10 @@ const KoboAnswerQuestionView = ({
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   schema: KoboSchemaHelper.Bundle
-  questionSchema: NonNullableKey<Kobo.Form.Question, 'name'>
+  questionSchema: Ip.Form.Question
   answer: Submission
 }) => {
-  const {langIndex} = useFormContext()
+  const langIndex = useFormContext(_ => _.langIndex)
   const {formatDateTime} = useI18n()
   const {m} = useI18n()
   const t = useTheme()

@@ -1,7 +1,5 @@
-import {v4} from 'uuid'
 import {addMonths, differenceInMonths, format, isAfter, isBefore, startOfMonth} from 'date-fns'
 import * as _yup from 'yup'
-import {Obj} from '@axanc/ts-utils'
 
 export const getObj = <K extends string, V extends any>(o: Record<K, V>, key: string): V | undefined => {
   // @ts-ignore
@@ -9,10 +7,6 @@ export const getObj = <K extends string, V extends any>(o: Record<K, V>, key: st
 }
 
 export const yup = _yup
-
-export const genUUID = v4
-
-export const genShortid = (length: number = 4) => genUUID().replace(/-/g, '').slice(0, length)
 
 export const toYYYYMMDD = (_: Date) => format(_, 'yyyy-MM-dd') //_.toString().substring(0, 10)
 

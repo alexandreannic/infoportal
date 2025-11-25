@@ -2,7 +2,7 @@ import {useCtx} from '../core/DatatableContext'
 import {useConfig} from '../DatatableConfig'
 import React, {useMemo} from 'react'
 import {Box, Icon, useTheme} from '@mui/material'
-import {Btn, Txt} from '@infoportal/client-core'
+import {Btn, IconBtn, Txt} from '@infoportal/client-core'
 import {BtnCopyCells} from '../ui/BtnCopyCell'
 
 const cellSelectionDangerThreshold = 200
@@ -32,21 +32,24 @@ export const DatatableFormularBar = () => {
       const key = getRowKey(row)
       if (!selectedRowIds.has(key)) return true
       const value = selectedColumnUniq.render(row).value
-      if (lastValue && lastValue !== value) return false
+      if (lastValue && lastValue !== value) {
+        lastValue = undefined
+        return false
+      }
       lastValue = value
       return true
     })
     return lastValue
   }, [selectedRowIds, selectedColumnUniq, dataFilteredAndSorted])
 
-  const rowIds = useMemo(() => selectedRowIds ? [...selectedRowIds] : [], [selectedRowIds])
+  const rowIds = useMemo(() => (selectedRowIds ? [...selectedRowIds] : []), [selectedRowIds])
 
   const t = useTheme()
 
   const renderColumnSelected = useMemo(() => {
     if (!selectedColumnUniq || !renderFormulaBarOnColumnSelected) return
     return renderFormulaBarOnColumnSelected({rowIds, commonValue: commonSelectedValue, columnId: selectedColumnUniq.id})
-  }, [selectedColumnUniq, renderFormulaBarOnColumnSelected])
+  }, [selectedColumnUniq, rowIds, commonSelectedValue, renderFormulaBarOnColumnSelected])
 
   const renderRowSelected = useMemo(() => {
     if (!areAllColumnsSelected || !renderFormulaBarOnRowSelected) return
@@ -73,10 +76,10 @@ export const DatatableFormularBar = () => {
       {renderRowSelected}
       {selectedCount > 0 && (
         <>
+          <IconBtn size="small" onClick={reset} color="primary">
+            clear
+          </IconBtn>
           <BtnCopyCells />
-          <Btn size="small" variant="outlined" onClick={reset} color="primary" sx={{minWidth: 0}}>
-            <Icon>clear</Icon>
-          </Btn>
         </>
       )}
       <Counter

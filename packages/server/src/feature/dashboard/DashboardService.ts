@@ -1,7 +1,6 @@
 import {Prisma, PrismaClient} from '@prisma/client'
-import {slugify} from 'infoportal-common'
+import {slugify, genShortid} from 'infoportal-common'
 import {KoboMetaHelper, KoboSchemaHelper} from '@infoportal/kobo-helper'
-import {genShortid} from '../../helper/Utils.js'
 import {HttpError, Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {FormService} from '../form/FormService.js'

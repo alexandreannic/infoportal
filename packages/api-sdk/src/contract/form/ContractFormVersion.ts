@@ -102,7 +102,20 @@ export const formVersionContract = c.router({
     },
     metadata: makeMeta({
       access: {
-        form: ['version_canDeploy'],
+        form: ['version_canCreate'],
+      },
+    }),
+  },
+  createNewVersion: {
+    method: 'POST',
+    path: '/form/version/createNewVersion',
+    body: z.custom<Ip.Form.Version.Payload.CreateNewVersion>(),
+    responses: {
+      200: z.custom<Ip.Form.Version>(),
+    },
+    metadata: makeMeta({
+      access: {
+        form: ['version_canCreate'],
       },
     }),
   },
@@ -174,6 +187,10 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
           params: {workspaceId, formId},
         })
         .then(map200)
+    },
+
+    createNewVersion: (body: Ip.Form.Version.Payload.CreateNewVersion) => {
+      return client.form.version.createNewVersion({body}).then(map200)
     },
   }
 }

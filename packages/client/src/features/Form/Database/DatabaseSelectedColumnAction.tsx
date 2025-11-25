@@ -63,7 +63,7 @@ export const BulkUpdateAnswer = ({
   value?: any
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
-  question: Kobo.Form.Question
+  question: Ip.Form.Question
   answerIds: Ip.SubmissionId[]
   schema: KoboSchemaHelper.Bundle
 }) => {
@@ -178,13 +178,7 @@ const Input = ({
     case 'select_one': {
       return (
         <Core.SelectSingle
-          MenuProps={{
-            PaperProps: {
-              sx: {
-                minWidth: 'unset !important',
-              },
-            },
-          }}
+          autoWidthPopover
           hideNullOption
           value={value}
           slotProps={{}}
@@ -198,14 +192,7 @@ const Input = ({
     case 'select_multiple': {
       return (
         <Core.SelectMultiple
-          InputProps={{}}
-          MenuProps={{
-            PaperProps: {
-              sx: {
-                minWidth: 'unset !important',
-              },
-            },
-          }}
+          autoWidthPopover
           value={value ?? []}
           options={_options}
           sx={inputSx}

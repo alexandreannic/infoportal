@@ -83,7 +83,7 @@ export class Meta {
                   disabled={isReadonly}
                   tooltip={m.editKobo}
                   target="_blank"
-                  href={koboEditEnketoUrl(_.originId)}
+                  href={koboEditEnketoUrl(_.originId as Ip.SubmissionId)}
                   children="edit_square"
                 />
               ) : (

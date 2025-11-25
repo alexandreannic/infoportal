@@ -57,11 +57,39 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Ip.Workspac
     onError: toastHttpError,
   })
 
+  const createNewVersion = useMutation({
+    mutationFn: async (body: Omit<Ip.Form.Version.Payload.CreateNewVersion, 'formId'>) => {
+      return apiv2.form.version.createNewVersion({formId, ...body}).catch(toastAndThrowHttpError)
+    },
+    onSuccess: newVersion => {
+      queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
+    },
+    onError: toastHttpError,
+  })
+
   return {
+    createNewVersion,
     importLastKoboSchema,
     deployLast,
     validateXls,
     get,
     upload,
+  }
+}
+
+export class UseQueryVersion {
+  static readonly createNewVersion = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
+    const {apiv2} = useAppSettings()
+    const queryClient = useQueryClient()
+    const {toastHttpError, toastAndThrowHttpError} = useIpToast()
+    return useMutation({
+      mutationFn: async (body: Omit<Ip.Form.Version.Payload.CreateNewVersion, 'workspaceId' | 'formId'>) => {
+        return apiv2.form.version.createNewVersion({formId, workspaceId, ...body}).catch(toastAndThrowHttpError)
+      },
+      onSuccess: newVersion => {
+        queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
+      },
+      onError: toastHttpError,
+    })
   }
 }

@@ -1,3 +1,5 @@
+export * from './SchemaParser.js'
+export * from './schemaValidator.js'
 export * from './koboFlattenRepeatedGroup.js'
 export * from './koboInterfaceBuilder.js'
 export * from './koboMetaHelper.js'

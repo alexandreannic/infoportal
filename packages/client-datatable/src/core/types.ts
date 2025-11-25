@@ -264,4 +264,8 @@ export namespace Column {
   export const isInner = (_: Props<any>): _ is InnerProps<any> => {
     return !!(_ as any).render
   }
+
+  export const make = <T extends Row>(_: Column.Props<T>) => {
+    return _
+  }
 }

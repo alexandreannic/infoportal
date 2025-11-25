@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.base.package.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "references": [
+    {
+      "path": "../client-i18n"
+    },
+    {
+      "path": "../kobo-helper"
+    },
+    {
+      "path": "../common"
+    },
+    {
+      "path": "../client-core"
+    },
+    {
+      "path": "../client-datatable"
+    }
+  ]
+}

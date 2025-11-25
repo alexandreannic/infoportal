@@ -4,7 +4,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '.'
 import {useIpToast} from '@/core/useToast'
 
-export const PopoverShareLink = ({url, children}: {url: string; children?: ReactElement}) => {
+export const PopoverShareLink = ({label, url, children}: {label?: string; url: string; children?: ReactElement}) => {
   const {m} = useI18n()
   const {toastSuccess} = useIpToast()
   return (
@@ -12,7 +12,7 @@ export const PopoverShareLink = ({url, children}: {url: string; children?: React
       content={close => (
         <Box sx={{p: 2, width: 400}}>
           <Core.Txt size="big" block bold sx={{mb: 1}}>
-            {m.copyLink}
+            {label ?? m.copyLink}
           </Core.Txt>
           <Core.Input
             readOnly

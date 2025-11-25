@@ -1,5 +1,5 @@
-import React, {ReactNode, useMemo, useState} from 'react'
-import {Icon, Tooltip} from '@mui/material'
+import React, {ReactNode, useEffect, useMemo, useState} from 'react'
+import {Icon, Box, Tooltip} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import * as Core from '@infoportal/client-core'
 import {Txt} from '@infoportal/client-core'
@@ -23,7 +23,7 @@ export const AsyncInputWrapper = ({
   value?: any
   label?: string
   onConfirm: (_: any) => Promise<{editedCount: number}>
-  renderInput: (_: {value?: any; onChange: (_: any) => any}) => ReactNode
+  renderInput: (_: {value?: any; placeholder?: string; onChange: (_: any) => any}) => ReactNode
   isPending?: boolean
   isSuccess?: boolean
   errorMsg?: string
@@ -31,33 +31,39 @@ export const AsyncInputWrapper = ({
   const {m} = useI18n()
   const [innerValue, setInnerValue] = useState<any>(value)
 
+  useEffect(() => {
+    setInnerValue(value)
+  }, [value])
+
   const hasChanged = useMemo(() => {
     return innerValue !== value
   }, [innerValue, value])
 
   return (
     <>
-      <StartAdornmentLabel label={label} />
-      {renderInput({
-        value: innerValue,
-        onChange: setInnerValue,
-      })}
+      <Box sx={{flex: 1, display: 'flex', alignItems: 'center'}}>
+        <StartAdornmentLabel label={label} />
+        {renderInput({
+          placeholder: '...',
+          value: innerValue,
+          onChange: setInnerValue,
+        })}
+      </Box>
       {errorMsg && (
         <Tooltip title={m.somethingWentWrong}>
           <Icon color="error">error</Icon>
         </Tooltip>
       )}
-      <Core.Btn
-        icon="check"
+      <Core.IconBtn
         size="small"
+        tooltip={m.save}
         color={errorMsg && !hasChanged ? 'error' : 'primary'}
-        variant={hasChanged ? 'contained' : 'outlined'}
         loading={isPending}
         disabled={!hasChanged}
         onClick={() => onConfirm(innerValue)}
       >
-        {m.save}
-      </Core.Btn>
+        check
+      </Core.IconBtn>
     </>
   )
 }

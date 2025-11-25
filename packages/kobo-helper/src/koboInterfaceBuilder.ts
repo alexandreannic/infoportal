@@ -1,5 +1,4 @@
 import {Obj, seq} from '@axanc/ts-utils'
-import {Kobo} from 'kobo-sdk'
 import {Ip} from '@infoportal/api-sdk'
 import {KoboSchemaHelper} from './koboSchemaHelper.js'
 import {removeHtml} from 'infoportal-common'
@@ -16,7 +15,7 @@ export class KoboInterfaceBuilder {
     }),
   ) {}
 
-  private readonly ignoredQuestionTypes: Set<Kobo.Form.QuestionType> = new Set([
+  private readonly ignoredQuestionTypes: Set<Ip.Form.QuestionType> = new Set([
     'start',
     'end',
     'begin_group',
@@ -37,7 +36,7 @@ export class KoboInterfaceBuilder {
     ].join('\n\n')
   }
 
-  private buildType = ({question}: {question: Kobo.Form.Question}) => {
+  private buildType = ({question}: {question: Ip.Form.Question}) => {
     switch (question.type) {
       case 'select_multiple':
       case 'select_one': {
@@ -69,7 +68,7 @@ export class KoboInterfaceBuilder {
       .slice(0, maxLength)
   }
 
-  private generateInterface = (questions: Kobo.Form.Question[]): string => {
+  private generateInterface = (questions: Ip.Form.Question[]): string => {
     const body = questions
       .filter(_ => !this.ignoredQuestionTypes.has(_.type))
       .map(question => {

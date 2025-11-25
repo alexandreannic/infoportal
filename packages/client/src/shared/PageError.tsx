@@ -5,21 +5,30 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Link} from '@tanstack/react-router'
 import {Icon} from '@mui/material'
 import {Core} from '@/shared'
+import {fnSwitch} from '@axanc/ts-utils'
 
-export const PageNotFound = () => {
+type ErrorVariant = 'forbidden' | 'not_found' | 'internal'
+
+export const PageError = ({variant = 'not_found'}: {variant?: ErrorVariant}) => {
   return (
     <Page>
       <CenteredContent>
-        <NotFoundContent />
+        <ErrorContent />
       </CenteredContent>
     </Page>
   )
 }
 
-export function NotFoundContent({sx, ...props}: Core.FenderProps) {
+export function ErrorContent({sx, children, variant = 'not_found', ...props}: Core.FenderProps & {variant?: ErrorVariant}) {
   const {m} = useI18n()
+  const title = fnSwitch(variant, {
+    not_found: m.noAccess,
+    forbidden: m.pageNotExists,
+    internal: m.somethingWentWrong,
+  })
   return (
-    <Core.Fender size="big" title={m.pageNotExists} sx={sx} {...props}>
+    <Core.Fender size="big" title={title} sx={sx} {...props}>
+      <div>{children}</div>
       <Link to="/">
         <Core.Btn variant="contained" icon="home" sx={{mt: 2}} endIcon={<Icon color="disabled">arrow_right_alt</Icon>}>
           {m.home}

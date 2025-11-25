@@ -1,4 +1,5 @@
 import {GlobalStyles} from '@mui/material'
+import {alphaVar} from '@infoportal/client-core'
 
 export const DatatableGlobalStyles = () => (
   <GlobalStyles
@@ -110,8 +111,10 @@ export const DatatableGlobalStyles = () => (
         top: 0,
         zIndex: 10,
         backdropFilter: 'blur(30px) saturate(150%)',
-        background: `rgb(${theme.vars.palette.AppBar?.defaultBg} / 0.4)`,
-        boxShadow: theme.vars.shadows[1],
+        background: alphaVar(theme.vars.palette.AppBar?.defaultBg, 0.7),
+        // background: `${theme.vars.palette.AppBar?.defaultBg}`,
+        // boxShadow: theme.vars.shadows[1],
+        borderBottom: '1px solid ' + theme.vars.palette.divider,
         // width: 'max-content',
         width: '100%',
       },
