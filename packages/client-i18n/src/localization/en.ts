@@ -661,6 +661,8 @@ export const en = Object.freeze({
     source: 'Source',
     timeConsumingOperation: 'Time consuming operation.',
     sector: 'Sector',
+    lang: 'Lang',
+    translations: 'Translations',
     showMore: 'Show more',
     thisFormIsManagedByKobo: 'This form is managed by KoboToolbox.',
     filterBlanks: 'Filter blanks',

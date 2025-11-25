@@ -10,6 +10,7 @@ import {getChoicesColumns} from './getChoicesColumns'
 import {getSurveyColumns} from './getSurveyColumns'
 import {SchemaParser, SchemaValidator} from '@infoportal/kobo-helper'
 import {ErrorModal, ErrorModalValue} from './ErrorModal'
+import {TranslationsManager} from './TranslationsManager'
 
 export type TableName = 'survey' | 'choices'
 
@@ -102,6 +103,7 @@ export const XlsFormEditor = ({
           <Tab label="survey" value="survey" />
           <Tab label="choices" value="choices" />
         </Tabs>
+        <TranslationsManager />
         <Core.IconBtn children="undo" disabled={!past.length} onClick={undo} sx={{marginLeft: 'auto'}} />
         <Core.IconBtn children="redo" disabled={!future.length} onClick={redo} />
         <Core.Btn
@@ -154,7 +156,7 @@ export const XlsFormEditor = ({
         sx={tableSx}
         id={'xls-form-editor-' + activeTab}
         columns={columns}
-        getRowChangeTracker={getDataKey}
+        // getRowChangeTracker={getDataKey}
         getRowKey={getDataKey}
         data={schema[activeTab]}
       />

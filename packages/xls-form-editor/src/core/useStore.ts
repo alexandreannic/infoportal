@@ -6,20 +6,13 @@ import {RowId} from '@infoportal/client-datatable/dist/core/types'
 import {TableName} from '../table/XlsFormEditor'
 import {SchemaParser} from '@infoportal/kobo-helper'
 
-function getTable<T extends TableName>(
-  draft: XlsFormState,
-  table: T,
-): T extends 'survey' ? Ip.Form.Question[] : Ip.Form.Choice[] {
-  return draft.schema[table] as any
-}
-
 interface XlsFormState {
   schema: Ip.Form.Schema
   past: Ip.Form.Schema[]
   future: Ip.Form.Schema[]
   undo: () => void
   redo: () => void
-
+  setTranslations: (translations: Ip.Form.Schema['translations']) => void
   setSchema: (_: Ip.Form.Schema) => void
   reorderRows: (_: {table: TableName; index: number; rowIds: string[]}) => void
   addRows: (_: {table: TableName; count: number}) => void
@@ -40,7 +33,7 @@ const HISTORY_LIMIT = 50
 
 export const useXlsFormStore = create<XlsFormState>()(
   immer((set, get) => {
-    const withHistory = (fn: (draft: any) => void) => {
+    const withHistory = (fn: (draft: XlsFormState) => void) => {
       const prev = get().schema
 
       set(state => {
@@ -90,9 +83,15 @@ export const useXlsFormStore = create<XlsFormState>()(
           }
         }),
 
+      setTranslations: translations => {
+        withHistory(draft => {
+          draft.schema.translations = translations
+        })
+      },
+
       addRows: ({table, count}) =>
         withHistory(draft => {
-          const t = draft.schema[table]
+          const t = draft.schema[table] ?? []
           const start = t.length
           const end = t.length + count
 
@@ -111,20 +110,20 @@ export const useXlsFormStore = create<XlsFormState>()(
               label: [],
             }
             const emptyRow = table === 'survey' ? emptySurvey : emptyChoice
-            t.push({...emptyRow})
+            t.push({...emptyRow} as any)
           }
         }),
 
       deleteRows: ({table, rowIds}) =>
         withHistory(draft => {
-          const rows = getTable(draft, table)
+          const rows = draft.schema[table] ?? []
           const toDelete = new Set(rowIds)
-          draft.schema[table] = rows.filter(row => !toDelete.has(getDataKey(row)))
+          draft.schema[table] = rows.filter(row => !toDelete.has(getDataKey(row))) as any
         }),
 
       reorderRows: ({table, index, rowIds}) =>
         withHistory(draft => {
-          const rows = draft.schema[table]
+          const rows = draft.schema[table] ?? []
           const movingSet = new Set(rowIds)
           const remaining: any[] = []
           const moved: any[] = []
@@ -142,7 +141,7 @@ export const useXlsFormStore = create<XlsFormState>()(
       updateCells: ({table, rowKeys, field, value, fieldIndex}) =>
         withHistory(draft => {
           for (const key of rowKeys) {
-            const rows: Array<Ip.Form.Question | Ip.Form.Choice> = draft.schema[table]
+            const rows: Array<Ip.Form.Question | Ip.Form.Choice> = draft.schema[table] ?? []
             const row: any = rows.find(r => r.$kuid === key)
             if (!row) continue
 
