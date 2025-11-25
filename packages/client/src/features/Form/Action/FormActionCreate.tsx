@@ -1,5 +1,5 @@
 import {Ip} from '@infoportal/api-sdk'
-import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
+import {UseQueryFromAction} from '@/core/query/form/useQueryFromAction.js'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {Controller, useForm, UseFormReturn} from 'react-hook-form'
 import React, {RefObject, useRef} from 'react'

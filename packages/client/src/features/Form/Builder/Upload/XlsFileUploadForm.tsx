@@ -2,7 +2,7 @@ import {Controller, useForm} from 'react-hook-form'
 import {DragDropFileInput} from '@/shared/DragDropFileInput'
 import React, {useMemo, useRef, useState} from 'react'
 import {Core} from '@/shared'
-import {useQueryVersion} from '@/core/query/useQueryVersion'
+import {useQueryVersion} from '@/core/query/form/useQueryVersion'
 import {useI18n} from '@infoportal/client-i18n'
 import {Alert, AlertTitle, Box, CircularProgress, Icon, Skeleton} from '@mui/material'
 import {Ip} from '@infoportal/api-sdk'
@@ -13,7 +13,7 @@ import {seq} from '@axanc/ts-utils'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {ErrorContent} from '@/shared/PageError'
 import {FormBuilderBody} from '@/features/Form/Builder/FormBuilderBody'
-import {UseQuerySchema} from '@/core/query/useQuerySchema'
+import {UseQuerySchema} from '@/core/query/form/useQuerySchema'
 
 type Form = {
   message?: string

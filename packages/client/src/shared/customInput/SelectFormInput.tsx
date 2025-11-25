@@ -1,5 +1,5 @@
 import {Ip} from '@infoportal/api-sdk'
-import {UseQueryForm} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import React, {useMemo, useState} from 'react'
 import {Asset, AssetIcon, AssetType} from '@/shared/Asset'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters'

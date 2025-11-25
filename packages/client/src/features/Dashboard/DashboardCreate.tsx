@@ -8,7 +8,7 @@ import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {useFetcher} from '@axanc/react-hooks'
 import {Core} from '@/shared'
 import {Ip} from '@infoportal/api-sdk'
-import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {UseQueryWorkspace} from '@/core/query/workspace/useQueryWorkspace'
 import {SwitchBox} from '@/shared/customInput/SwitchBox'
 import {SelectFormInput} from '@/shared/customInput/SelectFormInput'
 

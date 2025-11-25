@@ -7,7 +7,7 @@ import * as Core from '@infoportal/client-core'
 import {SelectOption, StatusIcon} from '@infoportal/client-core'
 import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import * as Datatable from '@infoportal/client-datatable'
-import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
+import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
 import {Kobo} from 'kobo-sdk'
 import {editableColsType} from '@infoportal/database-column'
 

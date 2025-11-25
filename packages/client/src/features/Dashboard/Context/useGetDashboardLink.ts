@@ -1,5 +1,5 @@
 import {Ip} from '@infoportal/api-sdk'
-import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {UseQueryWorkspace} from '@/core/query/workspace/useQueryWorkspace'
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {useAppSettings} from '@/core/context/ConfigContext'
 

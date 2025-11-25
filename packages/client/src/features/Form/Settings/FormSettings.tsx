@@ -1,5 +1,5 @@
 import {useI18n} from '@infoportal/client-i18n'
-import {UseQueryForm} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {Core} from '@/shared'
 import {TabContent} from '@/shared/Tab/TabContent.js'

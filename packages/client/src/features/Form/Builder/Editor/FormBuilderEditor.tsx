@@ -3,7 +3,7 @@ import {formBuilderRoute, useFormBuilderContext} from '@/features/Form/Builder/F
 import {XlsFormEditor} from '@infoportal/xls-form-editor'
 import {FormBuilderBody} from '@/features/Form/Builder/FormBuilderBody'
 import {Core} from '@/shared'
-import {UseQueryVersion} from '@/core/query/useQueryVersion'
+import {UseQueryVersion} from '@/core/query/form/useQueryVersion'
 import {Ip} from '@infoportal/api-sdk'
 
 export const formBuilderEditorRoute = createRoute({

@@ -3,7 +3,7 @@ import {Regexp} from 'infoportal-common'
 import {Controller, useForm} from 'react-hook-form'
 import {HttpError, Ip} from '@infoportal/api-sdk'
 import {Collapse} from '@mui/material'
-import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {UseQueryWorkspaceInvitation} from '@/core/query/workspace/useQueryWorkspaceInvitation.js'
 import {Core} from '@/shared'
 
 type Form = {

@@ -6,7 +6,7 @@ import React, {createContext, useContext} from 'react'
 import {rootRoute} from '@/Router'
 import {Layout} from '@/shared/Layout/Layout'
 import {Ip} from '@infoportal/api-sdk'
-import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {UseQueryWorkspace} from '@/core/query/workspace/useQueryWorkspace'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {PageError} from '@/shared/PageError'
 

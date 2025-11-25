@@ -11,7 +11,7 @@ import {createRoute, useNavigate} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
 import {Ip} from '@infoportal/api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
-import {UseQueryWorkspaceInvitation} from '@/core/query/useQueryWorkspaceInvitation.js'
+import {UseQueryWorkspaceInvitation} from '@/core/query/workspace/useQueryWorkspaceInvitation.js'
 import {Icon} from '@mui/material'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 

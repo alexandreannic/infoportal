@@ -4,7 +4,7 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon} from '@mui/material'
 import {Dispatch, SetStateAction, useEffect, useMemo, useState} from 'react'
 import {createRoute, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
-import {UseQueryForm} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import {Ip} from '@infoportal/api-sdk'
 import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import {Page} from '@/shared'
@@ -19,7 +19,7 @@ import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
 import {ErrorContent} from '@/shared/PageError'
 import {createContext, useContextSelector} from 'use-context-selector'
-import {UseQuerySchema} from '@/core/query/useQuerySchema'
+import {UseQuerySchema} from '@/core/query/form/useQuerySchema'
 
 export const formRootRoute = createRoute({
   getParentRoute: () => workspaceRoute,

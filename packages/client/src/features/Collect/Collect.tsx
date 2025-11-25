@@ -2,12 +2,12 @@ import {createRoute} from '@tanstack/react-router'
 import {rootRoute} from '@/Router'
 import {XlsFormFiller} from 'xls-form-filler'
 import {Core, Page} from '@/shared'
-import {UseQueryForm} from '@/core/query/useQueryForm'
-import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
+import {UseQueryForm} from '@/core/query/form/useQueryForm'
+import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
 import {useIpToast} from '@/core/useToast'
 import {Ip} from '@infoportal/api-sdk'
 import {useEffect, useState} from 'react'
-import {UseQuerySchema} from '@/core/query/useQuerySchema'
+import {UseQuerySchema} from '@/core/query/form/useQuerySchema'
 
 export const collectRoute = createRoute({
   getParentRoute: () => rootRoute,

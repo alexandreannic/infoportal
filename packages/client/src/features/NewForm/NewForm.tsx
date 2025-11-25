@@ -12,7 +12,7 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {Ip} from '@infoportal/api-sdk'
-import {UseQueryForm} from '@/core/query/useQueryForm'
+import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import {Asset, assetStyle} from '@/shared/Asset.js'
 
 export const newFormRoute = createRoute({

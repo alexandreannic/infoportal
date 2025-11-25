@@ -1,18 +1,18 @@
 import {createRoute, Link} from '@tanstack/react-router'
 import {Core} from '@/shared'
-import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
+import {UseQueryFromAction} from '@/core/query/form/useQueryFromAction.js'
 import {Ip} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 import {KoboInterfaceBuilder} from '@infoportal/kobo-helper'
 import {map} from '@axanc/ts-utils'
 import {FormActionEditor} from '@/features/Form/Action/Action/FormActionEditor.js'
 import {useI18n} from '@infoportal/client-i18n'
-import {UseQueryForm} from '@/core/query/useQueryForm.js'
+import {UseQueryForm} from '@/core/query/form/useQueryForm.js'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {Box, BoxProps, Skeleton, useTheme} from '@mui/material'
 import {FormActionLogs} from '@/features/Form/Action/FormActionLogs.js'
 import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
-import {UseQuerySchema} from '@/core/query/useQuerySchema'
+import {UseQuerySchema} from '@/core/query/form/useQuerySchema'
 
 export const formActionRoute = createRoute({
   getParentRoute: () => formActionsRoute,

@@ -2,12 +2,12 @@ import React, {ReactNode} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Core, Datatable} from '@/shared'
-import {UseQueryFormAccess} from '@/core/query/useQueryFormAccess'
+import {UseQueryFormAccess} from '@/core/query/form/useQueryFormAccess'
 import {Ip} from '@infoportal/api-sdk'
 import {useSession} from '@/core/Session/SessionContext'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
 import {useFormContext} from '@/features/Form/Form'
-import {UseQuerySchema} from '@/core/query/useQuerySchema'
+import {UseQuerySchema} from '@/core/query/form/useQuerySchema'
 
 export const AccessTable = ({
   isAdmin,

@@ -1,7 +1,7 @@
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {UseQueryDashboardSecion} from '@/core/query/dashboard/useQueryDashboardSection'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
-import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
+import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
 import {DashboardProvider} from '@/features/Dashboard/Context/DashboardContext'
 import {dashboardSettingsRoute} from '@/features/Dashboard/DashboardSettings'
 import {dashboardSectionRoute} from '@/features/Dashboard/Section/DashboardSection'
@@ -20,7 +20,7 @@ import 'react-grid-layout/css/styles.css'
 import {DashboardTheme} from './DashboardTheme'
 import {useIpToast} from '@/core/useToast'
 import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
-import {UseQuerySchema} from '@/core/query/useQuerySchema'
+import {UseQuerySchema} from '@/core/query/form/useQuerySchema'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,

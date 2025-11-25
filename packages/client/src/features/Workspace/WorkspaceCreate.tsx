@@ -4,7 +4,7 @@ import {useEffect, useState} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Controller, useForm} from 'react-hook-form'
 import {useIpToast} from '@/core/useToast'
-import {UseQueryWorkspace} from '@/core/query/useQueryWorkspace'
+import {UseQueryWorkspace} from '@/core/query/workspace/useQueryWorkspace'
 import {useFetcher} from '@axanc/react-hooks'
 import {Core} from '@/shared'
 

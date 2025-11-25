@@ -1,5 +1,5 @@
 import {Core} from '@/shared'
-import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
+import {UseQueryFromAction} from '@/core/query/form/useQueryFromAction.js'
 import {useI18n} from '@infoportal/client-i18n'
 import {useIpToast} from '@/core/useToast.js'
 import {Ip} from '@infoportal/api-sdk'

@@ -16,7 +16,7 @@ import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import {useMemo} from 'react'
 import {Responsive, WidthProvider} from 'react-grid-layout'
 import {DashboardRenderFilterChips} from './DashboardRenderFilterChips'
-import {UseQuerySchema} from '@/core/query/useQuerySchema'
+import {UseQuerySchema} from '@/core/query/form/useQuerySchema'
 
 const GridLayout = WidthProvider(Responsive)
 
