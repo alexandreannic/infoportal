@@ -14,8 +14,8 @@ import {FormBuilderTabs} from '@/features/Form/Builder/FormBuilderTabs'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {formBuilderVersionRoute} from '@/features/Form/Builder/Version/FormBuilderVersion'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
-import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 import {seq} from '@axanc/ts-utils'
+import {UseQuerySchema} from '@/core/query/useQuerySchema'
 
 const formBuilderRoutePath = 'formCreator'
 export const formBuilderRoute = createRoute({
@@ -38,7 +38,7 @@ export type FormBuilderContext = {
   }
   showPreview: boolean
   setShowPreview: Dispatch<React.SetStateAction<boolean>>
-  queryLastVersion: ReturnType<typeof useQuerySchemaByVersion>
+  queryLastVersion: ReturnType<(typeof UseQuerySchema)['getByVersion']>
 }
 
 const Context = createContext<FormBuilderContext>({} as any)
@@ -66,7 +66,7 @@ function FormBuilder() {
     }
   }, [queryVersion.get.data])
 
-  const queryLastVersion = useQuerySchemaByVersion({workspaceId, formId, versionId: versions.last?.id})
+  const queryLastVersion = UseQuerySchema.getByVersion({workspaceId, formId, versionId: versions.last?.id})
 
   return (
     <TabContent width="full" loading={queryPermission.isLoading || queryForm.isPending || queryVersion.get.isLoading}>

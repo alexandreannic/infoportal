@@ -2,10 +2,10 @@ import {QueryClient, useMutation, useQuery, useQueryClient} from '@tanstack/reac
 import {useAppSettings} from '../context/ConfigContext'
 import {KoboMapper, Submission} from '../sdk/server/kobo/KoboMapper'
 import {queryKeys} from './query.index'
-import {useQuerySchemaBundle} from './useQuerySchema'
 import {Ip, Paginate} from '@infoportal/api-sdk'
 import {produce} from 'immer'
 import {useIpToast} from '@/core/useToast'
+import {UseQuerySchema} from '@/core/query/useQuerySchema'
 
 export class UseQuerySubmission {
   static cacheRemove({
@@ -39,7 +39,7 @@ export class UseQuerySubmission {
     queryClient: QueryClient
     submission: Ip.Submission
   }) {
-    const schema = useQuerySchemaBundle({workspaceId, formId, langIndex: 0}).data
+    const schema = UseQuerySchema.getBundle({workspaceId, formId, langIndex: 0}).data
     if (!schema) {
       console.error('Cannot get schema from store.')
       return
@@ -110,7 +110,7 @@ export class UseQuerySubmission {
   static search({formId, workspaceId}: {formId?: Ip.FormId; workspaceId: Ip.WorkspaceId}) {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
-    const querySchema = useQuerySchemaBundle({workspaceId, formId, langIndex: 0})
+    const querySchema = UseQuerySchema.getBundle({workspaceId, formId, langIndex: 0})
 
     const query = useQuery({
       enabled: !!formId,

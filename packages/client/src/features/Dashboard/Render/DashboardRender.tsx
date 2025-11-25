@@ -1,5 +1,4 @@
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {KoboMapper} from '@/core/sdk/server/kobo/KoboMapper'
 import {muiTheme} from '@/core/theme'
 import {DashboardProvider, useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
@@ -17,6 +16,7 @@ import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import {useMemo} from 'react'
 import {Responsive, WidthProvider} from 'react-grid-layout'
 import {DashboardRenderFilterChips} from './DashboardRenderFilterChips'
+import {UseQuerySchema} from '@/core/query/useQuerySchema'
 
 const GridLayout = WidthProvider(Responsive)
 
@@ -31,7 +31,7 @@ export function DashboardRender() {
   const queryDashboard = UseQueryDashboard.getPublished({workspaceSlug, dashboardSlug})
   const workspaceId = '1783255f-564c-4286-9338-a4d77bb912f6' as Ip.WorkspaceId
   const querySubmissions = UseQueryDashboard.getProtectedSubmission({workspaceSlug, dashboardSlug})
-  const querySchema = useQuerySchema({workspaceId, formId: queryDashboard.data?.sourceFormId})
+  const querySchema = UseQuerySchema.get({workspaceId, formId: queryDashboard.data?.sourceFormId})
 
   const mappedSubmissions = useMemo(() => {
     if (!querySubmissions.data || !querySchema.data) return

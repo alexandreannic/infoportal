@@ -7,13 +7,13 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Alert, AlertTitle, Box, CircularProgress, Icon, Skeleton} from '@mui/material'
 import {Ip} from '@infoportal/api-sdk'
 import {DiffView} from '@/features/Form/Builder/Upload/DiffView'
-import {useQuerySchemaByVersion} from '@/core/query/useQuerySchemaByVersion'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {seq} from '@axanc/ts-utils'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {ErrorContent} from '@/shared/PageError'
 import {FormBuilderBody} from '@/features/Form/Builder/FormBuilderBody'
+import {UseQuerySchema} from '@/core/query/useQuerySchema'
 
 type Form = {
   message?: string
@@ -72,7 +72,7 @@ function XlsFileUploadFormInner({
   const [validation, setValidation] = useState<Ip.Form.Schema.Validation>()
   const stepperRef = useRef<Core.StepperHandle>(null)
   const [schemaHasChanges, setSchemaHasChanges] = useState<boolean | null>(null)
-  const querySchema = useQuerySchemaByVersion({formId, workspaceId, versionId: lastSchema?.id})
+  const querySchema = UseQuerySchema.getByVersion({formId, workspaceId, versionId: lastSchema?.id})
   const navigate = useNavigate()
 
   const watched = {

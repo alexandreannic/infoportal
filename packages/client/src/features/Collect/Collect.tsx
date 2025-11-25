@@ -1,6 +1,5 @@
 import {createRoute} from '@tanstack/react-router'
 import {rootRoute} from '@/Router'
-import {useQuerySchema, useQuerySchemaBundle} from '@/core/query/useQuerySchema'
 import {XlsFormFiller} from 'xls-form-filler'
 import {Core, Page} from '@/shared'
 import {UseQueryForm} from '@/core/query/useQueryForm'
@@ -8,6 +7,7 @@ import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {useIpToast} from '@/core/useToast'
 import {Ip} from '@infoportal/api-sdk'
 import {useEffect, useState} from 'react'
+import {UseQuerySchema} from '@/core/query/useQuerySchema'
 
 export const collectRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -20,7 +20,7 @@ function Collect() {
   const {workspaceId, formId} = collectRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
   const {toastSuccess} = useIpToast()
   const querySubmit = UseQuerySubmission.submit()
-  const querySchema = useQuerySchema({workspaceId, formId})
+  const querySchema = UseQuerySchema.get({workspaceId, formId})
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const [geolocation, setGeolocation] = useState<Ip.Geolocation>()
 

@@ -1,9 +1,8 @@
 import {appConfig} from '@/conf/AppConfig'
 import {useI18n} from '@infoportal/client-i18n'
-import {useQuerySchemaBundle} from '@/core/query/useQuerySchema'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Icon} from '@mui/material'
-import {Dispatch, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
+import {Dispatch, SetStateAction, useEffect, useMemo, useState} from 'react'
 import {createRoute, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
 import {UseQueryForm} from '@/core/query/useQueryForm'
 import {Ip} from '@infoportal/api-sdk'
@@ -14,12 +13,13 @@ import {answersRoute} from '@/features/Form/Database/DatabaseTable'
 import {formSettingsRoute} from '@/features/Form/Settings/FormSettings'
 import {databaseHistoryRoute} from './History/DatabaseHistory'
 import {databaseAccessRoute} from './Access/DatabaseAccess'
-import {FormBuilderContext, formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
+import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
 import {ErrorContent} from '@/shared/PageError'
 import {createContext, useContextSelector} from 'use-context-selector'
+import {UseQuerySchema} from '@/core/query/useQuerySchema'
 
 export const formRootRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -84,7 +84,7 @@ function Form() {
   const currentFullPath = useMatches().slice(-1)[0].fullPath
   const [langIndex, setLangIndex] = useState(0)
 
-  const querySchema = useQuerySchemaBundle({formId, workspaceId, langIndex})
+  const querySchema = UseQuerySchema.getBundle({formId, workspaceId, langIndex})
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
 

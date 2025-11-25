@@ -6,8 +6,8 @@ import {UseQueryFormAccess} from '@/core/query/useQueryFormAccess'
 import {Ip} from '@infoportal/api-sdk'
 import {useSession} from '@/core/Session/SessionContext'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
-import {useQuerySchemaBundle} from '@/core/query/useQuerySchema'
 import {useFormContext} from '@/features/Form/Form'
+import {UseQuerySchema} from '@/core/query/useQuerySchema'
 
 export const AccessTable = ({
   isAdmin,
@@ -27,7 +27,7 @@ export const AccessTable = ({
   const queryAccess = UseQueryFormAccess.getByFormId({workspaceId, formId})
   const queryAccessUpdate = UseQueryFormAccess.update({workspaceId, formId})
   const queryAccessRemove = UseQueryFormAccess.remove({workspaceId, formId})
-  const querySchema = useQuerySchemaBundle({workspaceId, formId, langIndex})
+  const querySchema = UseQuerySchema.getBundle({workspaceId, formId, langIndex})
   return (
     <Datatable.Component<Ip.Access>
       id="access"

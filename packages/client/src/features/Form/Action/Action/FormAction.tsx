@@ -3,7 +3,6 @@ import {Core} from '@/shared'
 import {UseQueryFromAction} from '@/core/query/useQueryFromAction.js'
 import {Ip} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
-import {useQuerySchemaBundle} from '@/core/query/useQuerySchema.js'
 import {KoboInterfaceBuilder} from '@infoportal/kobo-helper'
 import {map} from '@axanc/ts-utils'
 import {FormActionEditor} from '@/features/Form/Action/Action/FormActionEditor.js'
@@ -13,6 +12,7 @@ import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {Box, BoxProps, Skeleton, useTheme} from '@mui/material'
 import {FormActionLogs} from '@/features/Form/Action/FormActionLogs.js'
 import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
+import {UseQuerySchema} from '@/core/query/useQuerySchema'
 
 export const formActionRoute = createRoute({
   getParentRoute: () => formActionsRoute,
@@ -29,7 +29,7 @@ const useBuildInterface = ({
   workspaceId: Ip.WorkspaceId
   formId?: Ip.FormId
 }) => {
-  const querySchema = useQuerySchemaBundle({workspaceId, formId, langIndex: 0})
+  const querySchema = UseQuerySchema.getBundle({workspaceId, formId, langIndex: 0})
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const data = useMemo(() => {
     if (!querySchema.data || !queryForm.data) return

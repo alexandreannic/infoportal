@@ -1,7 +1,6 @@
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {UseQueryDashboardSecion} from '@/core/query/dashboard/useQueryDashboardSection'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
-import {useQuerySchema} from '@/core/query/useQuerySchema'
 import {UseQuerySubmission} from '@/core/query/useQuerySubmission'
 import {DashboardProvider} from '@/features/Dashboard/Context/DashboardContext'
 import {dashboardSettingsRoute} from '@/features/Dashboard/DashboardSettings'
@@ -21,6 +20,7 @@ import 'react-grid-layout/css/styles.css'
 import {DashboardTheme} from './DashboardTheme'
 import {useIpToast} from '@/core/useToast'
 import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
+import {UseQuerySchema} from '@/core/query/useQuerySchema'
 
 export const dashboardRoute = createRoute({
   getParentRoute: () => workspaceRoute,
@@ -40,7 +40,7 @@ export function Dashboard() {
   const queryDashboardPublish = UseQueryDashboard.publish({workspaceId, id: dashboardId})
   const queryDashboard = UseQueryDashboard.getById({workspaceId, id: dashboardId})
   const queryDashboardSection = UseQueryDashboardSecion.search({workspaceId, dashboardId})
-  const querySchema = useQuerySchema({workspaceId, formId: queryDashboard.data?.sourceFormId})
+  const querySchema = UseQuerySchema.get({workspaceId, formId: queryDashboard.data?.sourceFormId})
   const querySubmissions = UseQuerySubmission.search({workspaceId, formId: queryDashboard.data?.sourceFormId})
   const queryWidgets = UseQueryDashboardWidget.search({workspaceId, dashboardId})
   const queryDashboardSectionCreate = UseQueryDashboardSecion.create({workspaceId, dashboardId})
