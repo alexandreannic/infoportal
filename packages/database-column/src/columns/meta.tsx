@@ -6,7 +6,7 @@ import {Messages} from '@infoportal/client-i18n'
 import {StatusIcon} from '@infoportal/client-core'
 import {KoboTypeIcon} from '../ui/KoboTypeIcon.js'
 import {defaultColWidth} from './common.js'
-import {FormDataFlattenRepeatGroup} from '@infoportal/kobo-helper'
+import {FormDataFlattenRepeatGroup} from '@infoportal/form-helper'
 
 const metaGroup = {label: 'Meta', id: 'meta'}
 

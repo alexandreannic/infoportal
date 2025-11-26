@@ -4,7 +4,7 @@ import {filterByColumn} from '@infoportal/client-datatable'
 import {subDays} from 'date-fns'
 import {Ip} from '@infoportal/api-sdk'
 import {isDate, PeriodHelper} from '@infoportal/common'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import {useCallback, useMemo, useRef} from 'react'
 
 type FilterFn<T> = (item: T, index: number, array: T[]) => boolean | undefined

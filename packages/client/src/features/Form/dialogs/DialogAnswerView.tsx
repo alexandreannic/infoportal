@@ -23,7 +23,7 @@ import {createRoute, Link} from '@tanstack/react-router'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {buildDbColumns} from '@infoportal/database-column'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/core/KoboAttachmentUrl.js'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 
 export const databaseAnswerViewRoute = createRoute({
   getParentRoute: () => formRoute,

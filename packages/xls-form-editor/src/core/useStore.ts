@@ -4,7 +4,7 @@ import {Ip} from '@infoportal/api-sdk'
 import {genShortid} from '@infoportal/common'
 import {RowId} from '@infoportal/client-datatable/dist/core/types'
 import {TableName} from '../table/XlsFormEditor'
-import {SchemaParser} from '@infoportal/kobo-helper'
+import {SchemaParser} from '@infoportal/form-helper'
 
 interface XlsFormState {
   schema: Ip.Form.Schema

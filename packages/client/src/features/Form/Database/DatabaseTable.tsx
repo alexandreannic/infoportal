@@ -10,7 +10,7 @@ import {Datatable} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import {FetchParams} from '@axanc/react-hooks'
 import {TabContent} from '@/shared/Tab/TabContent.js'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 
 export const answersRoute = createRoute({
   getParentRoute: () => formRoute,

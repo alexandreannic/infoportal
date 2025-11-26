@@ -23,7 +23,7 @@
     "@infoportal/common": "1.0.0",
     "@infoportal/api-sdk": "1.0.0",
     "@infoportal/client-core": "1.0.0",
-    "@infoportal/kobo-helper": "1.0.0",
+    "@infoportal/form-helper": "1.0.0",
     "@infoportal/client-datatable": "1.0.0",
     "@infoportal/client-i18n": "1.0.0",
     "react": "19.1.0",

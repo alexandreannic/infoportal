@@ -5,7 +5,7 @@ import {Datatable} from '@/shared'
 import {questionTypeNumbers} from '@/features/Dashboard/Widget/Table/TableSettings'
 import {Obj} from '@axanc/ts-utils'
 import {useTheme} from '@mui/material'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 

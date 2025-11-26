@@ -78,7 +78,7 @@
     "fetch-cookie": "^2.1.0",
     "googleapis": "^148.0.0",
     "@infoportal/action-compiler": "1.0.0",
-    "@infoportal/kobo-helper": "1.0.0",
+    "@infoportal/form-helper": "1.0.0",
     "@infoportal/api-sdk": "1.0.0",
     "@infoportal/common": "1.0.0",
     "kobo-sdk": "^2.4.3",

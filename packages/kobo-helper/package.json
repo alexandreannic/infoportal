@@ -1,5 +1,5 @@
 {
-  "name": "@infoportal/kobo-helper",
+  "name": "@infoportal/form-helper",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",

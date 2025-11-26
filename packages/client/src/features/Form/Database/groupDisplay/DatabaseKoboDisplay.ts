@@ -1,4 +1,4 @@
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import {mapFor} from '@axanc/ts-utils'
 import {Messages} from '@infoportal/client-i18n'
 import {Theme} from '@mui/material'

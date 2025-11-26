@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import {colorRepeatedQuestionHeader, KoboTypeIcon} from '@infoportal/database-column'
 import {removeHtml} from '@infoportal/common'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import React, {useCallback, useMemo} from 'react'
 import {Kobo} from 'kobo-sdk'
 import {Core} from '../index'

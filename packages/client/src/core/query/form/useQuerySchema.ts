@@ -3,7 +3,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {useMemo} from 'react'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 
 export class UseQuerySchema {
   static readonly get = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId?: Ip.FormId}) => {

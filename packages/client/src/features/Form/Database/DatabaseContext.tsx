@@ -9,7 +9,7 @@ import {
 } from '@axanc/react-hooks'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {Kobo} from 'kobo-sdk'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import * as csvToJson from 'csvtojson'
 import {map, Obj, seq} from '@axanc/ts-utils'

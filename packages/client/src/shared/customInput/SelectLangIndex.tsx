@@ -1,5 +1,5 @@
 import {Core} from '../index'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 
 export const SelectLangIndex = ({
   inspector,

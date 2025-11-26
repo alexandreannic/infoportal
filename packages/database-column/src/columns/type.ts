@@ -6,7 +6,7 @@ import {
   SchemaInspector,
   SchemaInspectorLookup,
   SchemaInspectorTranslate,
-} from '@infoportal/kobo-helper'
+} from '@infoportal/form-helper'
 
 export type ExternalFilesChoices = {list_name: string; name: string; label: string}
 export type KoboExternalFilesIndex = Record<string, Record<string, ExternalFilesChoices>>

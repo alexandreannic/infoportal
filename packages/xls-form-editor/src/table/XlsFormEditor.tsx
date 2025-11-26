@@ -8,7 +8,7 @@ import {Ip} from '@infoportal/api-sdk'
 import {ActionBar} from './ActionBar'
 import {getChoicesColumns} from './getChoicesColumns'
 import {getSurveyColumns} from './getSurveyColumns'
-import {SchemaParser, SchemaValidator} from '@infoportal/kobo-helper'
+import {SchemaParser, SchemaValidator} from '@infoportal/form-helper'
 import {ErrorModal, ErrorModalValue} from './ErrorModal'
 import {TranslationsManager} from './TranslationsManager'
 

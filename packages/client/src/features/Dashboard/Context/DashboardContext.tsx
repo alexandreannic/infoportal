@@ -6,7 +6,7 @@ import {
 import {seq} from '@axanc/ts-utils'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from '@infoportal/api-sdk'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import {Dispatch, ReactNode, SetStateAction, useMemo, useState} from 'react'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {UseDashboardFilteredDataCache, useDashboardFilteredDataCache} from './useDashboardData'

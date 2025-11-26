@@ -1,6 +1,6 @@
 import * as ExcelJS from 'exceljs'
 import {downloadBufferAsFile} from '@infoportal/client-core'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import {Ip} from '@infoportal/api-sdk'
 import Question = Ip.Form.Question
 import Choice = Ip.Form.Choice

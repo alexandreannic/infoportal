@@ -1,5 +1,5 @@
 import {nullValuesToUndefined} from '@infoportal/common'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import React, {ReactElement, useMemo} from 'react'
 import {Core} from '@/shared'
 import {Box} from '@mui/material'

@@ -11,7 +11,7 @@ import {generateEmptyXlsTemplate} from '@/features/Form/Database/generateEmptyXl
 import {databaseKoboDisplayBuilder} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {DatabaseViewBtn, DatabaseViewEditor} from '@/features/Form/Database/view/DatabaseView'
 import {Alert, AlertProps, Box, Icon, useTheme} from '@mui/material'
-import {FormDataFlattenRepeatGroup} from '@infoportal/kobo-helper'
+import {FormDataFlattenRepeatGroup} from '@infoportal/form-helper'
 import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {Link, useNavigate} from '@tanstack/react-router'

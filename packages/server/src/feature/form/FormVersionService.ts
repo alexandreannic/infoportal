@@ -5,7 +5,7 @@ import {yup} from '../../helper/Utils.js'
 import {HttpError, Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {KoboSchemaCache} from './KoboSchemaCache.js'
-import {SchemaParser, SchemaValidator} from '@infoportal/kobo-helper'
+import {SchemaParser, SchemaValidator} from '@infoportal/form-helper'
 import {XlsFormParser} from './XlsFormParser.js'
 
 export class FormVersionService {
