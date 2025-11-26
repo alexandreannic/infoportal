@@ -1,5 +1,5 @@
 import {ApiClient} from '../ApiClient'
-import {IpCacheData} from 'infoportal-common'
+import {IpCacheData} from '@infoportal/common'
 import {Obj} from '@axanc/ts-utils'
 
 export class CacheSdk {

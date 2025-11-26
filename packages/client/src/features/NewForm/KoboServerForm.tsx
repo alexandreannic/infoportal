@@ -1,6 +1,6 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm} from 'react-hook-form'
-import {Regexp} from 'infoportal-common'
+import {Regexp} from '@infoportal/common'
 import {map, Obj} from '@axanc/ts-utils'
 import {useEffect, useState} from 'react'
 import {useFetcher} from '@axanc/react-hooks'

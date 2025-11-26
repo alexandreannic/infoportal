@@ -1,4 +1,4 @@
-import {genUUID, IpEvent, logPerformance, UUID} from 'infoportal-common'
+import {genUUID, IpEvent, logPerformance, UUID} from '@infoportal/common'
 import {PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {app, AppCacheKey, AppLogger} from '../../index.js'

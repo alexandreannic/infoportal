@@ -1,5 +1,5 @@
 import {ApiClient} from '@/core/sdk/server/ApiClient'
-import {UUID} from 'infoportal-common'
+import {UUID} from '@infoportal/common'
 import {Proxy} from '@/core/sdk/server/proxy/Proxy'
 
 export class ProxySdk {

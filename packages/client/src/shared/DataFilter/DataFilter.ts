@@ -1,4 +1,4 @@
-import {multipleFilters} from 'infoportal-common'
+import {multipleFilters} from '@infoportal/common'
 import {Obj, Seq} from '@axanc/ts-utils'
 import {ReactNode} from 'react'
 import {Datatable} from '@/shared'

@@ -1,4 +1,4 @@
-import {UUID} from 'infoportal-common'
+import {UUID} from '@infoportal/common'
 import {ApiClient} from '../ApiClient'
 import {Ip} from '@infoportal/api-sdk'
 

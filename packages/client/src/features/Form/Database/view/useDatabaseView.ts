@@ -1,4 +1,4 @@
-import {UUID} from 'infoportal-common'
+import {UUID} from '@infoportal/common'
 import {useCallback, useEffect, useMemo} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Seq, seq} from '@axanc/ts-utils'

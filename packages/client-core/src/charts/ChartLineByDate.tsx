@@ -1,7 +1,7 @@
 import {format} from 'date-fns'
 import {map, Obj} from '@axanc/ts-utils'
 import React, {useMemo} from 'react'
-import {isDate} from 'infoportal-common'
+import {isDate} from '@infoportal/common'
 import {ChartLine, ChartLineProps} from './ChartLine.js'
 type DateKeys<T> = {
   [K in keyof T]: T[K] extends Date | undefined ? K : never

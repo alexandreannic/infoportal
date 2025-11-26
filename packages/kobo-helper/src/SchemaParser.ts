@@ -1,4 +1,4 @@
-import {genShortid} from 'infoportal-common'
+import {genShortid} from '@infoportal/common'
 import {Ip} from '@infoportal/api-sdk'
 
 export class SchemaParser {

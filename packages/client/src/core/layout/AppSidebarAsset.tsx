@@ -1,5 +1,5 @@
 import {Box, Icon, Tooltip as MuiTooltip, useTheme} from '@mui/material'
-import {capitalize} from 'infoportal-common'
+import {capitalize} from '@infoportal/common'
 import {Link} from '@tanstack/react-router'
 import {SidebarItem} from '@/shared/Layout/Sidebar/index.js'
 import {Asset, AssetIcon} from '@/shared/Asset.js'

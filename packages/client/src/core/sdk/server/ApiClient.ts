@@ -1,6 +1,6 @@
 import axios, {AxiosError, AxiosResponse, ResponseType} from 'axios'
 import * as qs from 'qs'
-import {objectToQueryString} from 'infoportal-common'
+import {objectToQueryString} from '@infoportal/common'
 
 export interface RequestOption {
   readonly qs?: any

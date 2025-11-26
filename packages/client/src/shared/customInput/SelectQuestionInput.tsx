@@ -8,7 +8,7 @@ import {
   useTheme,
 } from '@mui/material'
 import {colorRepeatedQuestionHeader, KoboTypeIcon} from '@infoportal/database-column'
-import {removeHtml} from 'infoportal-common'
+import {removeHtml} from '@infoportal/common'
 import {SchemaInspector} from '@infoportal/kobo-helper'
 import React, {useCallback, useMemo} from 'react'
 import {Kobo} from 'kobo-sdk'

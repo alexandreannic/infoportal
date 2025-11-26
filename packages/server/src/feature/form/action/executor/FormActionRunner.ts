@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../../../index.js'
-import {IpEvent} from 'infoportal-common'
+import {IpEvent} from '@infoportal/common'
 import {HttpError, Ip} from '@infoportal/api-sdk'
 import {FormActionService} from '../FormActionService.js'
 import {SubmissionService} from '../../submission/SubmissionService.js'

@@ -1,5 +1,5 @@
 import {Core} from '@/shared'
-import {removeHtml} from 'infoportal-common'
+import {removeHtml} from '@infoportal/common'
 import {useMemo} from 'react'
 
 export const WidgetTitle = ({sx, children, ...props}: Omit<Core.TxtProps, 'children'> & {children: string}) => {

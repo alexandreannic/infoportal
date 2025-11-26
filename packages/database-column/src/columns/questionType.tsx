@@ -6,7 +6,7 @@ import {colorRepeatedQuestionHeader, defaultColWidth, ignoredColType} from './co
 import {Btn, Txt} from '@infoportal/client-core'
 import {map} from '@axanc/ts-utils'
 import {KoboTypeIcon} from '../ui/KoboTypeIcon.js'
-import {removeHtml} from 'infoportal-common'
+import {removeHtml} from '@infoportal/common'
 import {Ip} from '@infoportal/api-sdk'
 
 export class QuestionType {

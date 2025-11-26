@@ -1,5 +1,5 @@
 {
-  "name": "infoportal-common",
+  "name": "@infoportal/common",
   "version": "1.0.0",
   "description": "",
   "type": "module",

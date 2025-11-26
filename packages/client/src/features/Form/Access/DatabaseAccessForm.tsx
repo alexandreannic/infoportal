@@ -1,4 +1,4 @@
-import {nullValuesToUndefined} from 'infoportal-common'
+import {nullValuesToUndefined} from '@infoportal/common'
 import {SchemaInspector} from '@infoportal/kobo-helper'
 import React, {ReactElement, useMemo} from 'react'
 import {Core} from '@/shared'

@@ -2,7 +2,7 @@ import {Server} from 'socket.io'
 import {app} from '../index.js'
 import {AuthRequest} from '../typings'
 import {Ip} from '@infoportal/api-sdk'
-import {ClientToServerEvents, IpEvent, ServerToClientEvents} from 'infoportal-common'
+import {ClientToServerEvents, IpEvent, ServerToClientEvents} from '@infoportal/common'
 
 export class Socket {
   private static readonly connectedFormUsers = new Map<Ip.FormId, Set<Ip.User.Email>>()

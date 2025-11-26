@@ -2,7 +2,7 @@ import {Box, SxProps, Theme, useTheme} from '@mui/material'
 // @ts-ignore
 import {Cell, Pie, PieChart, PieChartProps, PieLabelRenderProps, ResponsiveContainer, Tooltip} from 'recharts'
 import React, {ReactNode} from 'react'
-import {toPercent} from 'infoportal-common'
+import {toPercent} from '@infoportal/common'
 import {Obj} from '@axanc/ts-utils'
 import {alphaVar} from '../core/theme.js'
 const RADIAN = Math.PI / 180

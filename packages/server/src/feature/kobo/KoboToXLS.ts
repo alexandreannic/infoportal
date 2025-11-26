@@ -1,4 +1,4 @@
-import {convertNumberIndexToLetter} from 'infoportal-common'
+import {convertNumberIndexToLetter} from '@infoportal/common'
 import XlsxPopulate from 'xlsx-populate'
 import {PrismaClient} from '@prisma/client'
 import {appConf} from '../../core/conf/AppConf.js'

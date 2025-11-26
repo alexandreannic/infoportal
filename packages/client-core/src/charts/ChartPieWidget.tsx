@@ -1,6 +1,6 @@
 import {Box, Icon} from '@mui/material'
 import React, {ReactNode, useEffect, useRef} from 'react'
-import {toPercent, uppercaseHandlingAcronyms} from 'infoportal-common'
+import {toPercent, uppercaseHandlingAcronyms} from '@infoportal/common'
 import {LightTooltip, PanelProps, TooltipRow, Txt, TxtProps} from '../ui/index.js'
 import {ChartPie} from './ChartPie.js'
 import {useI18n} from '@infoportal/client-i18n'

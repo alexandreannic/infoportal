@@ -1,5 +1,5 @@
 import {useCallback, useMemo} from 'react'
-import {multipleFilters, safeNumber} from 'infoportal-common'
+import {multipleFilters, safeNumber} from '@infoportal/common'
 import {fnSwitch, KeyOf, map, Obj} from '@axanc/ts-utils'
 import {Column, Filters, FilterTypeMapping, FilterValue, Row, SortBy} from './types.js'
 import {Utils} from '../helper/utils'

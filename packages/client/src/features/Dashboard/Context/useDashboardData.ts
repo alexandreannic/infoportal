@@ -3,7 +3,7 @@ import {fnSwitch, Seq} from '@axanc/ts-utils'
 import {filterByColumn} from '@infoportal/client-datatable'
 import {subDays} from 'date-fns'
 import {Ip} from '@infoportal/api-sdk'
-import {isDate, PeriodHelper} from 'infoportal-common'
+import {isDate, PeriodHelper} from '@infoportal/common'
 import {SchemaInspector} from '@infoportal/kobo-helper'
 import {useCallback, useMemo, useRef} from 'react'
 

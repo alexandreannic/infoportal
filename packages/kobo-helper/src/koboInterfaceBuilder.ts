@@ -1,6 +1,6 @@
 import {Obj, seq} from '@axanc/ts-utils'
 import {Ip} from '@infoportal/api-sdk'
-import {removeHtml} from 'infoportal-common'
+import {removeHtml} from '@infoportal/common'
 import {SchemaInspector} from './SchemaInspector.js'
 
 export class KoboInterfaceBuilder {

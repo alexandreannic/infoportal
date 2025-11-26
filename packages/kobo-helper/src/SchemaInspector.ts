@@ -2,7 +2,7 @@ import {Seq, seq} from '@axanc/ts-utils'
 import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper.js'
 import {Ip} from '@infoportal/api-sdk'
 import {KoboMetaHelper} from './koboMetaHelper.js'
-import {removeHtml} from 'infoportal-common'
+import {removeHtml} from '@infoportal/common'
 
 export interface SchemaInspectorLookup {
   group: KoboSchemaRepeatHelper

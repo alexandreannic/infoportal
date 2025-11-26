@@ -3,7 +3,7 @@ import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCa
 import {PanelWidgetContent} from '@/shared/PdfLayout/PanelWidget'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from '@infoportal/api-sdk'
-import {toInt} from 'infoportal-common'
+import {toInt} from '@infoportal/common'
 import {useMemo} from 'react'
 
 export function CardWidget({widget}: {widget: Ip.Dashboard.Widget}) {

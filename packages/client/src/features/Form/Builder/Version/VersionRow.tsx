@@ -3,7 +3,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Box, BoxProps, Chip, Icon, styled, Tooltip, useTheme} from '@mui/material'
 import {AppAvatar, Core} from '@/shared'
 import {fnSwitch} from '@axanc/ts-utils'
-import {capitalize} from 'infoportal-common'
+import {capitalize} from '@infoportal/common'
 import React from 'react'
 
 const borderWidth = 2.5

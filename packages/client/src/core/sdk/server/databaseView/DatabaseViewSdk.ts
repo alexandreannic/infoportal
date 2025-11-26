@@ -1,6 +1,6 @@
 import {ApiClient} from '@/core/sdk/server/ApiClient'
 import {DatabaseView, DatabaseViewCol, DatabaseViewHelper} from '@/core/sdk/server/databaseView/DatabaseView'
-import {UUID} from 'infoportal-common'
+import {UUID} from '@infoportal/common'
 
 export class DatabaseViewSdk {
   constructor(private client: ApiClient) {}

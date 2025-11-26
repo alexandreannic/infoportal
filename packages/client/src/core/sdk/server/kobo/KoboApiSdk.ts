@@ -1,5 +1,5 @@
 import {ApiClient, RequestOption} from '../ApiClient'
-import {objectToQueryString, UUID} from 'infoportal-common'
+import {objectToQueryString, UUID} from '@infoportal/common'
 import {Kobo} from 'kobo-sdk'
 import {appConfig, AppConfig} from '@/conf/AppConfig'
 import {ApiPagination} from '@/core/sdk/server/_core/ApiSdkUtils'

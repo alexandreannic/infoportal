@@ -1,4 +1,4 @@
-import {StateStatus} from 'infoportal-common'
+import {StateStatus} from '@infoportal/common'
 import React, {ReactNode, useMemo} from 'react'
 import {Box, useTheme} from '@mui/material'
 import {statusConfig} from './statusConfig.js'

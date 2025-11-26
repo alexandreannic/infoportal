@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client'
-import {slugify, genShortid, UUID} from 'infoportal-common'
+import {slugify, genShortid, UUID} from '@infoportal/common'
 import {GroupService} from '../group/GroupService.js'
 import {FormAccessService} from '../form/access/FormAccessService.js'
 import {Ip} from '@infoportal/api-sdk'
