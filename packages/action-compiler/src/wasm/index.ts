@@ -20,7 +20,7 @@ import {FunctionBodyExecutor} from './FunctionBodyExecutor'
 })()
 // // Apply user function body over rows, save result to DB (pseudo)
 // import {runUserMap} from './runUserMap'
-// import module {MapJob, Row} from './module'
+// import type {MapJob, Row} from './type'
 //
 // async function example() {
 //   const rows: Row[] = [

@@ -53,7 +53,7 @@ export const formVersionContract = c.router({
   getByFormId: {
     method: 'GET',
     path: '/:workspaceId/form/:formId/versions',
-    // pathParams: c.module<{
+    // pathParams: c.type<{
     //   workspaceId: Api.WorkspaceId
     //   formId: Api.FormId
     // }>(),

@@ -528,7 +528,7 @@ const tableTheme2 = (t: Theme) => ({
   //   borderCollapse: 'separate',
   //   borderSpacing: 0,
   // },
-  // '.table-head-module-icon': {
+  // '.table-head-type-icon': {
   //   ml: '2px',
   //   marginRight: 'auto',
   // },
@@ -595,7 +595,7 @@ const tableTheme2 = (t: Theme) => ({
   //   zIndex: 10,
   //   right: 0,
   // },
-  // '.table tbody tr:not(:last-of-module) td': {
+  // '.table tbody tr:not(:last-of-type) td': {
   //   borderBottom: `1px solid ${t.vars.palette.divider}`,
   // },
   // '.table tbody td': {
@@ -635,13 +635,13 @@ const tableTheme2 = (t: Theme) => ({
   //   whiteSpace: 'nowrap',
   //   textOverflow: 'ellipsis',
   // },
-  // '.table.borderY td:last-of-module, .table.borderY th:last-of-module': {
+  // '.table.borderY td:last-of-type, .table.borderY th:last-of-type': {
   //   paddingRight: 4,
   // },
-  // // '.table.borderY td:not(:last-of-module), .table.borderY th:not(:last-of-module)': {
+  // // '.table.borderY td:not(:last-of-type), .table.borderY th:not(:last-of-type)': {
   // //   borderRight: `1px solid ${t.vars.palette.divider}`,
   // // },
-  // '.table.borderY thead td:not(:last-of-module), .table.borderY thead th:not(:last-of-module)': {
+  // '.table.borderY thead td:not(:last-of-type), .table.borderY thead th:not(:last-of-type)': {
   //   borderRight: `1px solid ${t.vars.palette.divider}`,
   // },
   // '.table th': {

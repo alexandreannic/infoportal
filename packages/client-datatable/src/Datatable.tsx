@@ -173,7 +173,7 @@ const DatatableWithData = ({sx}: {sx?: SxProps<Theme>}) => {
             case 'FILTER': {
               const column = columns.indexMap[popup.columnId]
               if (!column.type) {
-                console.error('Missing module in', column)
+                console.error('Missing type in', column)
                 return
               }
               return (

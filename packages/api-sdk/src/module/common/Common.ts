@@ -8,7 +8,7 @@ export type NullToOptional<T> = {
   // keep required keys (no null)
   [K in keyof T as null extends T[K] ? never : K]: T[K] extends object ? NullToOptional<T[K]> : T[K]
 } & {
-  // make nullable keys optional, remove null from their module
+  // make nullable keys optional, remove null from their type
   [K in keyof T as null extends T[K] ? K : never]?: Exclude<T[K], null> extends object
     ? NullToOptional<Exclude<T[K], null>>
     : Exclude<T[K], null>

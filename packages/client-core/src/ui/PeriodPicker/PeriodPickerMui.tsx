@@ -141,7 +141,7 @@ export const PeriodPickerMui = ({
 //       }}
 //     >
 //       <TextField
-//         module="text"
+//         type="text"
 //         margin="dense"
 //         variant="outlined"
 //         fullWidth
@@ -158,7 +158,7 @@ export const PeriodPickerMui = ({
 //         inputRef={startRef}
 //       />
 //       <TextField
-//         module="text"
+//         type="text"
 //         margin="dense"
 //         variant="outlined"
 //         fullWidth
