@@ -9,6 +9,7 @@ export type KoboTranslateChoice = (key: string, choice?: string) => string
 
 export const ignoredColType: Set<Ip.Form.QuestionType> = new Set(['end_group', 'end_repeat', 'deviceid'])
 
+/** @deprecated*/
 export namespace KoboSchemaHelper {
   export interface Bundle<IncludeMeta extends boolean = false> {
     includeMeta?: IncludeMeta

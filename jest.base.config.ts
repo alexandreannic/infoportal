@@ -1,19 +1,29 @@
 import {JestConfigWithTsJest} from 'ts-jest'
 
-const config: JestConfigWithTsJest = {
-  preset: 'ts-jest/presets/default-esm', // Use ESM support
+const config = {
+  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
-  verbose: false,
-  noStackTrace: true,
+  // verbose: false,
+  // noStackTrace: true,
   extensionsToTreatAsEsm: ['.ts'],
-  setupFilesAfterEnv: ['<rootDir>/../../jest.setup.ts'], // Path to your setup file
+
+  setupFilesAfterEnv: ['<rootDir>/../../jest.setup.ts'],
+
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1', // Map .js imports to their .ts source files
+    // Load TYPE-SAFE source instead of ESM dist
+    '^@infoportal/(.*)$': '<rootDir>/../$1/src',
+    '^infoportal-common$': '<rootDir>/../common/src/index.ts',
+
+    // Allow ".js" imports to resolve to ".ts"
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
+
   transform: {
-    'KoboInterfaceBuilder.spec.ts': ['ts-jest', {useESM: true}], // Ensure proper regex escaping
-    // '^.+\\.tsx?$': ['ts-jest', {useESM: true}], // Ensure proper regex escaping
+    '^.+\\.tsx?$': ['ts-jest', {useESM: true}],
   },
+
+  // Allow transforms inside packages/ folder
+  transformIgnorePatterns: [],
 }
 
 export default config

@@ -9,6 +9,7 @@
     "lib"
   ],
   "scripts": {
+    "test": "jest",
     "dev": "tsc --watch",
     "build": "tsc -b"
   },

@@ -1,7 +1,7 @@
 import {Obj, seq} from '@axanc/ts-utils'
 import {Ip} from '@infoportal/api-sdk'
-import {KoboSchemaHelper} from './koboSchemaHelper.js'
 import {removeHtml} from 'infoportal-common'
+import {SchemaInspector} from './SchemaInspector'
 
 export class KoboInterfaceBuilder {
   constructor(
@@ -9,11 +9,11 @@ export class KoboInterfaceBuilder {
     private schema: Ip.Form.Schema,
     private langIndex: number = 0,
     private skipChoicesOverLimit = 100,
-    private schemaHelper: KoboSchemaHelper.Bundle = KoboSchemaHelper.buildBundle({
-      schema: this.schema,
-      langIndex: this.langIndex,
-    }),
-  ) {}
+  ) {
+    this.schemaInspector = new SchemaInspector(this.schema, this.langIndex)
+  }
+
+  private readonly schemaInspector: SchemaInspector
 
   private readonly ignoredQuestionTypes: Set<Ip.Form.QuestionType> = new Set([
     'start',
@@ -41,7 +41,7 @@ export class KoboInterfaceBuilder {
       case 'select_multiple':
       case 'select_one': {
         if (!question.select_from_list_name) return 'string'
-        const choicesCount = this.schemaHelper.helper.choicesIndex[question.select_from_list_name].length
+        const choicesCount = this.schemaInspector.lookup.choicesIndex[question.select_from_list_name].length
         if (choicesCount > this.skipChoicesOverLimit) return `string`
         return `Choice<'${question.select_from_list_name}'>` + (question.type === 'select_multiple' ? '[]' : '')
       }
@@ -53,9 +53,11 @@ export class KoboInterfaceBuilder {
       case 'datetime': {
         return 'Date'
       }
-      case 'begin_repeat': {
-        return this.generateInterface(this.schemaHelper.helper.group.getByName(question.name)?.questions ?? []) + `[]`
-      }
+      // case 'begin_repeat': {
+      //   return (
+      //     this.generateInterface(this.schemaInspector.lookup.group.getByName(question.name)?.questions ?? []) + `[]`
+      //   )
+      // }
       default: {
         return 'string'
       }
@@ -74,7 +76,7 @@ export class KoboInterfaceBuilder {
       .map(question => {
         const type = this.buildType({question})
         return [
-          `// [${question.type}] ${this.sanitizeLabel(this.schemaHelper.translate.question(question.name))} (${question.$xpath})`,
+          `// [${question.type}] ${this.sanitizeLabel(this.schemaInspector.translate.question(question.name))} (${question.$xpath})`,
           `'${question.name}': ${type};`,
         ].join('\n')
       })
