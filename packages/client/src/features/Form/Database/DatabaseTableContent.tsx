@@ -11,7 +11,7 @@ import {generateEmptyXlsTemplate} from '@/features/Form/Database/generateEmptyXl
 import {databaseKoboDisplayBuilder} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {DatabaseViewBtn, DatabaseViewEditor} from '@/features/Form/Database/view/DatabaseView'
 import {Alert, AlertProps, Box, Icon, useTheme} from '@mui/material'
-import {KoboFlattenRepeatedGroup} from '@infoportal/kobo-helper'
+import {FormDataFlattenRepeatGroup} from '@infoportal/kobo-helper'
 import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {Link, useNavigate} from '@tanstack/react-router'
@@ -60,11 +60,11 @@ export const DatabaseTableContent = ({
 
   const flatData: Submission[] | undefined = useMemo(() => {
     if (ctx.groupDisplay.get.repeatAs !== 'rows' || ctx.groupDisplay.get.repeatGroupName === undefined) return ctx.data
-    return KoboFlattenRepeatedGroup.run({
+    return FormDataFlattenRepeatGroup.run({
       data: ctx.data,
       path: [ctx.groupDisplay.get.repeatGroupName],
       replicateParentData: true,
-    }) as (KoboFlattenRepeatedGroup.Cursor & Submission)[]
+    }) as (FormDataFlattenRepeatGroup.Cursor & Submission)[]
   }, [ctx.data, ctx.groupDisplay.get])
 
   const schemaColumns = useMemo(() => {
@@ -224,7 +224,7 @@ export const DatabaseTableContent = ({
           //     })
           //     return {
           //       sheetName: group.name as string,
-          //       data: KoboFlattenRepeatedGroup.run({data, path: group.pathArr}),
+          //       data: FormDataFlattenRepeatGroup.run({data, path: group.pathArr}),
           //       schema: cols.map(DatatableXlsGenerator.columnsToParams),
           //     }
           //   })

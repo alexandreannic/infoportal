@@ -1,11 +1,11 @@
 import {Seq, seq} from '@axanc/ts-utils'
-import {KoboSchemaRepeatHelper} from './koboSchemaRepeatHelper.js'
+import {SchemaInspectorRepeatGroup} from './SchemaInspectorRepeatGroup.js'
 import {Ip} from '@infoportal/api-sdk'
-import {KoboMetaHelper} from './koboMetaHelper.js'
+import {SchemaMetaHelper} from './SchemaMetaHelper.js'
 import {removeHtml} from '@infoportal/common'
 
 export interface SchemaInspectorLookup {
-  group: KoboSchemaRepeatHelper
+  group: SchemaInspectorRepeatGroup
   choicesIndex: Record<string, Ip.Form.Choice[]>
   questionIndex: Record<string, Ip.Form.Question | undefined>
   getOptionsByQuestionName(qName: string): Seq<Ip.Form.Choice> | undefined
@@ -71,11 +71,11 @@ export class SchemaInspector<IncludeMeta extends boolean = false> {
    * Return a new KoboSchemaHelper instance with meta questions/choices prepended.
    * Does not mutate the current instance.
    */
-  withMeta(labels: KoboMetaHelper.Labels, choices: KoboMetaHelper.ChoicesLabel): SchemaInspector<true> {
+  withMeta(labels: SchemaMetaHelper.Labels, choices: SchemaMetaHelper.ChoicesLabel): SchemaInspector<true> {
     const upgradedSchema: Ip.Form.Schema = {
       ...this.schema,
-      survey: [...KoboMetaHelper.getMetaAsQuestion(labels), ...this.schema.survey],
-      choices: [...KoboMetaHelper.getMetaAsChoices(choices), ...(this.schema.choices ?? [])],
+      survey: [...SchemaMetaHelper.getMetaAsQuestion(labels), ...this.schema.survey],
+      choices: [...SchemaMetaHelper.getMetaAsChoices(choices), ...(this.schema.choices ?? [])],
     }
     return new SchemaInspector<true>(upgradedSchema, this.langIndex, true)
   }
@@ -101,7 +101,7 @@ export class SchemaInspector<IncludeMeta extends boolean = false> {
   }
 
   private buildLookup(schema: Ip.Form.Schema): SchemaInspectorLookup {
-    const groupHelper = new KoboSchemaRepeatHelper(schema.survey)
+    const groupHelper = new SchemaInspectorRepeatGroup(schema.survey)
     const choicesIndex = seq(schema.choices ?? []).groupBy(_ => _.list_name) as Record<string, Seq<Ip.Form.Choice>>
     const questionIndex = seq([...schema.survey])
       .compactBy('name')

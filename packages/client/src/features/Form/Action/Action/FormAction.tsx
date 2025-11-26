@@ -3,7 +3,7 @@ import {Core} from '@/shared'
 import {UseQueryFromAction} from '@/core/query/form/useQueryFromAction.js'
 import {Ip} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
-import {KoboInterfaceBuilder} from '@infoportal/kobo-helper'
+import {SchemaTsInterfaceBuilder} from '@infoportal/kobo-helper'
 import {map} from '@axanc/ts-utils'
 import {FormActionEditor} from '@/features/Form/Action/Action/FormActionEditor.js'
 import {useI18n} from '@infoportal/client-i18n'
@@ -37,7 +37,7 @@ const useBuildInterface = ({
       querySchema.data,
       inspector =>
         `// ${queryForm.data!.name}\n` +
-        new KoboInterfaceBuilder(name, inspector.schema, undefined, undefined, inspector).build(),
+        new SchemaTsInterfaceBuilder(name, inspector.schema, undefined, undefined, inspector).build(),
     )
   }, [querySchema.data])
   return {

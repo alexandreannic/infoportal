@@ -3,7 +3,7 @@ import {Ip} from '@infoportal/api-sdk'
 import {removeHtml} from '@infoportal/common'
 import {SchemaInspector} from './SchemaInspector.js'
 
-export class KoboInterfaceBuilder {
+export class SchemaTsInterfaceBuilder {
   constructor(
     private name: string,
     private schema: Ip.Form.Schema,

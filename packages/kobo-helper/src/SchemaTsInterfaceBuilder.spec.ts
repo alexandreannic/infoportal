@@ -1,9 +1,9 @@
-import {KoboInterfaceBuilder} from './koboInterfaceBuilder.js'
+import {SchemaTsInterfaceBuilder} from './SchemaTsInterfaceBuilder.js'
 import {Ip} from '@infoportal/api-sdk'
 
 describe.only('KoboBuildInterface', () => {
   it('Build', () => {
-    const res = new KoboInterfaceBuilder('Test', getSchema()).build()
+    const res = new SchemaTsInterfaceBuilder('Test', getSchema()).build()
     expect(res.startsWith('export namespace')).toBeTruthy()
   })
 })

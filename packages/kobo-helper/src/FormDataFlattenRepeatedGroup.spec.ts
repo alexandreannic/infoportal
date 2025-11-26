@@ -1,9 +1,9 @@
-import {KoboFlattenRepeatedGroup} from './koboFlattenRepeatedGroup'
+import {FormDataFlattenRepeatGroup} from './FormDataFlattenRepeatGroup'
 
 describe('koboFlattenRepeatedGroup', () => {
   it('should flatten the nested objects', () => {
     expect(
-      KoboFlattenRepeatedGroup.run({data: getData(), path: ['children', 'grandchildren'], replicateParentData: false}),
+      FormDataFlattenRepeatGroup.run({data: getData(), path: ['children', 'grandchildren'], replicateParentData: false}),
     ).toEqual([
       {
         submissionTime: '2024-11-07T05:48:16.000Z',

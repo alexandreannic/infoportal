@@ -9,7 +9,7 @@ export type KoboGroupInfo = {
   questions: Ip.Form.Question[]
 }
 
-export class KoboSchemaRepeatHelper {
+export class SchemaInspectorRepeatGroup {
   static readonly $xpathSeparator = '/'
 
   /** Questions not inside any repeat */
@@ -34,7 +34,7 @@ export class KoboSchemaRepeatHelper {
         if (depthStack.length === 0) {
           this.questionsDepth0.push(q)
         } else {
-          const path = depthStack.join(KoboSchemaRepeatHelper.$xpathSeparator)
+          const path = depthStack.join(SchemaInspectorRepeatGroup.$xpathSeparator)
           ;(this.questionsByGroupPath[path] ??= []).push(q)
         }
       }
@@ -45,7 +45,7 @@ export class KoboSchemaRepeatHelper {
     }
 
     for (const [path, questions] of Object.entries(this.questionsByGroupPath)) {
-      const pathArr = path.split(KoboSchemaRepeatHelper.$xpathSeparator)
+      const pathArr = path.split(SchemaInspectorRepeatGroup.$xpathSeparator)
       const groupInfo: KoboGroupInfo = {
         name: pathArr.at(-1)!,
         path,

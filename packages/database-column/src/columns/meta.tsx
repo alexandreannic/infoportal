@@ -6,7 +6,7 @@ import {Messages} from '@infoportal/client-i18n'
 import {StatusIcon} from '@infoportal/client-core'
 import {KoboTypeIcon} from '../ui/KoboTypeIcon.js'
 import {defaultColWidth} from './common.js'
-import {KoboFlattenRepeatedGroup} from '@infoportal/kobo-helper'
+import {FormDataFlattenRepeatGroup} from '@infoportal/kobo-helper'
 
 const metaGroup = {label: 'Meta', id: 'meta'}
 
@@ -26,7 +26,7 @@ export class Meta {
       className: 'td-id',
       style: (row: any) => {
         const data = getRow(row)
-        if (data[KoboFlattenRepeatedGroup.INDEX_COL]! > 0) {
+        if (data[FormDataFlattenRepeatGroup.INDEX_COL]! > 0) {
           return {
             opacity: '.6',
           }
@@ -35,7 +35,7 @@ export class Meta {
       },
       renderQuick: (row: any) => {
         const data = getRow(row)
-        const childIndex = data[KoboFlattenRepeatedGroup.INDEX_COL]
+        const childIndex = data[FormDataFlattenRepeatGroup.INDEX_COL]
         return (data.id ?? '') + (childIndex !== undefined ? '#' + (childIndex + 1) : '')
       },
     } as const

@@ -1,7 +1,7 @@
 import {Obj} from '@axanc/ts-utils'
 import {Ip} from '@infoportal/api-sdk'
 
-export namespace KoboMetaHelper {
+export namespace SchemaMetaHelper {
   export const metaKeys = [
     'start',
     'end',

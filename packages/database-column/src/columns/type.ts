@@ -2,7 +2,7 @@ import {Ip} from '@infoportal/api-sdk'
 import {Theme} from '@mui/material'
 import {Messages} from '@infoportal/client-i18n'
 import {
-  KoboFlattenRepeatedGroup,
+  FormDataFlattenRepeatGroup,
   SchemaInspector,
   SchemaInspectorLookup,
   SchemaInspectorTranslate,
@@ -11,7 +11,7 @@ import {
 export type ExternalFilesChoices = {list_name: string; name: string; label: string}
 export type KoboExternalFilesIndex = Record<string, Record<string, ExternalFilesChoices>>
 
-export type Row = KoboFlattenRepeatedGroup.Data
+export type Row = FormDataFlattenRepeatGroup.Data
 
 export type Data = Record<string, any>
 export type Question = Pick<

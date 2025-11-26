@@ -1,6 +1,6 @@
 import {Prisma, PrismaClient} from '@prisma/client'
 import {genShortid, slugify} from '@infoportal/common'
-import {KoboMetaHelper, SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaMetaHelper, SchemaInspector} from '@infoportal/kobo-helper'
 import {HttpError, Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {FormService} from '../form/FormService.js'
@@ -143,8 +143,8 @@ export class DashboardService {
       })
     const columnsAlways: (keyof Ip.Submission.Meta)[] = ['id', 'end', 'start', 'submissionTime']
     return {
-      metaKeys: seq([...columnsAlways, ...keys.filter(_ => KoboMetaHelper.isMeta(_))]).distinct(_ => _),
-      questionNames: keys.filter(_ => !KoboMetaHelper.isMeta(_)),
+      metaKeys: seq([...columnsAlways, ...keys.filter(_ => SchemaMetaHelper.isMeta(_))]).distinct(_ => _),
+      questionNames: keys.filter(_ => !SchemaMetaHelper.isMeta(_)),
     }
   }
 

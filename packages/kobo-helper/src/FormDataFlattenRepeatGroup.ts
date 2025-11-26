@@ -1,6 +1,6 @@
 import {Ip} from '@infoportal/api-sdk'
 
-export namespace KoboFlattenRepeatedGroup {
+export namespace FormDataFlattenRepeatGroup {
   export type Data = Pick<Ip.Submission, 'originId' | 'id' | 'submissionTime'> & Cursor & Record<string, any>
 
   type Row = Record<string, any> &
@@ -38,9 +38,9 @@ export namespace KoboFlattenRepeatedGroup {
             ...(_ ?? {}),
             submissionTime: d.submissionTime,
             id: d.id,
-            [KoboFlattenRepeatedGroup.INDEX_COL]: j,
-            [KoboFlattenRepeatedGroup.PARENT_INDEX_COL]: d._index ?? i,
-            [KoboFlattenRepeatedGroup.PARENT_TABLE_NAME]: path[depth - 1],
+            [FormDataFlattenRepeatGroup.INDEX_COL]: j,
+            [FormDataFlattenRepeatGroup.PARENT_INDEX_COL]: d._index ?? i,
+            [FormDataFlattenRepeatGroup.PARENT_TABLE_NAME]: path[depth - 1],
           })) ?? []
         )
       }),
