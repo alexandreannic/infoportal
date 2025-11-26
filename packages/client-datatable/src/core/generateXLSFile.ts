@@ -22,7 +22,7 @@ export namespace DatatableXlsGenerator {
         const datatable = workbook.addWorksheet(sheetName)
         const header = datatable.addRow(schema.map(_ => _.head))
         // header.fill = {
-        //   type: 'pattern',
+        //   module: 'pattern',
         //   pattern: 'solid',
         // bgColor: {argb: '#f2f2f2'},
         // }

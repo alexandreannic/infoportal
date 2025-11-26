@@ -35,20 +35,20 @@ export function WidgetCreate({
   // return (
   //   <form onSubmit={_ => form.handleSubmit(onSubmit)(_).then(close)}>
   //     <Controller
-  //       name="type"
+  //       name="module"
   //       control={form.control}
   //       render={({field}) => (
   //         <Core.RadioGroup<Ip.Dashboard.Widget.Type> {...field} inline sx={{mb: 2}}>
   //           {Obj.keys(Ip.Dashboard.Widget.Type).map(_ => (
   //             <Core.RadioGroupItem key={_} hideRadio value={_}>
-  //               <WidgetTypeIcon type={_} sx={{my: 1, fontSize: '3em'}} />
+  //               <WidgetTypeIcon module={_} sx={{my: 1, fontSize: '3em'}} />
   //             </Core.RadioGroupItem>
   //           ))}
   //         </Core.RadioGroup>
   //       )}
   //     />
   //     <Core.Btn onClick={close}>{m.close}</Core.Btn>
-  //     <Core.Btn type="submit" loading={loading} disabled={!form.formState.isValid}>
+  //     <Core.Btn module="submit" loading={loading} disabled={!form.formState.isValid}>
   //       {m.submit}
   //     </Core.Btn>
   //   </form>

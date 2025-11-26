@@ -6,7 +6,7 @@ import {fileURLToPath} from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default {
-  entry: './src/index.ts',
+  entry: './src/Api.ts',
   target: 'node',
   plugins: [new PrismaPlugin()],
   module: {

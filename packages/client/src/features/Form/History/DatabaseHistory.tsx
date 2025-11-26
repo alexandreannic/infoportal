@@ -76,7 +76,7 @@ function DatabaseHistory() {
           id={`kobo-answer-history${form.id}`}
           columns={[
             // {
-            //   type: 'string',
+            //   module: 'string',
             //   id: 'ID',
             //   head: m.id,
             //   renderQuick: _ => _.id,
@@ -134,13 +134,13 @@ function DatabaseHistory() {
               },
             },
             // {
-            //   type: 'select_one',
-            //   id: 'type',
-            //   head: m.type,
+            //   module: 'select_one',
+            //   id: 'module',
+            //   head: m.module,
             //   render: _ => {
             //     return {
-            //       value: _.type,
-            //       label: fnSwitch(_.type, {
+            //       value: _.module,
+            //       label: fnSwitch(_.module, {
             //         delete: (
             //           <Core.Txt color="error" bold>
             //             {m._koboDatabase.deleted}

@@ -135,7 +135,7 @@ function Forms() {
             },
             // {
             //   id: 'serverId',
-            //   type: 'select_one',
+            //   module: 'select_one',
             //   head: m.serverId,
             //   renderQuick: _ => _.kobo?.accountId,
             // },
@@ -160,14 +160,14 @@ function Forms() {
             },
             // {
             //   id: 'program',
-            //   type: 'select_one',
+            //   module: 'select_one',
             //   head: m.program,
             //   renderQuick: _ => _.name,
             // },
             // {
             //   id: 'length',
             //   head: m.submissions,
-            //   type: 'number',
+            //   module: 'number',
             //   align: 'right',
             //   width: 0,
             //   renderQuick: _ => _.kobo.submissionsCount,

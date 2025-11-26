@@ -132,7 +132,7 @@ const _RadioGroup = <T,>(
 }
 
 /**
- * Workaround because forwardRef break the generic type of ScSelect.
+ * Workaround because forwardRef break the generic module of ScSelect.
  */
 export const RadioGroup = React.forwardRef(_RadioGroup as any) as <T>(
   props: RadioGroupProps<T> & {ref?: React.ForwardedRef<any>},

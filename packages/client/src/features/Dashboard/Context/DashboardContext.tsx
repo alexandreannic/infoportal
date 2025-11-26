@@ -13,7 +13,7 @@ import {UseDashboardFilteredDataCache, useDashboardFilteredDataCache} from './us
 import {UseDashboardFormEdit, useDashboardFormEdit} from './useDashboardFormEdit'
 import {UseDashboardGridLayout, useDashboardGridLayout} from '@/features/Dashboard/Context/useDashboardGridLayout'
 
-// TODO this type could be globalized. It's maybe defined somewhere already
+// TODO this module could be globalized. It's maybe defined somewhere already
 export type Answers = Ip.Submission.Meta & Record<string, any>
 
 export type DashboardContext = {

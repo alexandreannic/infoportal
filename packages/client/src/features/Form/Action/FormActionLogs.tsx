@@ -142,7 +142,7 @@ export function FormActionLogs({
               //   width: 40,
               //   align: 'center',
               //   head: '',
-              //   type: 'string',
+              //   module: 'string',
               //   id: 'details',
               //   render: _ => {
               //     return {

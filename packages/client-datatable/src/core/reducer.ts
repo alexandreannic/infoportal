@@ -45,7 +45,7 @@ export type Action<T extends Row> =
       columns: Column.InnerProps<T>[]
       getRowKey: GetRowKey
     }
-  // | {type: 'DRAGGING_ROWS_SET_RANGE'; range: MinMax | null}
+  // | {module: 'DRAGGING_ROWS_SET_RANGE'; range: MinMax | null}
   | {type: 'DRAGGING_ROWS_SET_OVER_INDEX'; overIndex: number | null}
   | {type: 'CELL_SELECTION_SET_ROW_IDS'; rowIds: RowId[] | null}
   | {type: 'CELL_SELECTION_SET_COLUMN_IDS'; colIds: string[] | null}

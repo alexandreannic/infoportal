@@ -12,7 +12,7 @@ const config = {
   moduleNameMapper: {
     // Load TYPE-SAFE source instead of ESM dist
     '^@infoportal/(.*)$': '<rootDir>/../$1/src',
-    '^infoportal-common$': '<rootDir>/../common/src/index.ts',
+    '^infoportal-common$': '<rootDir>/../common/src/Api.ts',
 
     // Allow ".js" imports to resolve to ".ts"
     '^(\\.{1,2}/.*)\\.js$': '$1',
