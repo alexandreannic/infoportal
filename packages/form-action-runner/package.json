@@ -1,5 +1,5 @@
 {
-  "name": "@infoportal/action-compiler",
+  "name": "@infoportal/form-action-runner",
   "type": "module",
   "version": "1.0.0",
   "types": "dist/index.d.ts",

@@ -21,7 +21,7 @@
       "path": "../kobo-helper"
     },
     {
-      "path": "../action-compiler"
+      "path": "../form-action-runner"
     },
     {
       "path": "../api-sdk"
