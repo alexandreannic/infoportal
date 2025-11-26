@@ -1,4 +1,4 @@
-import {ApiClient, ApiClientApi, ApiClientParams, Method, RequestOption} from './ApiClient'
+import {HttpClient, ApiClientApi, ApiClientParams, Method, RequestOption} from './HttpClient'
 
 export interface TestRequest {
   method: Method
@@ -16,7 +16,7 @@ export class ApiClientMock implements ApiClientApi {
   constructor({baseUrl, headers, requestInterceptor, mapData, mapError}: ApiClientParams) {
     this.fetch = async <T>(method: Method, url: string, options?: RequestOption): Promise<T> => {
       // @ts-ignore bypass private method
-      const builtOptions = await ApiClient.buildOptions(options, headers, requestInterceptor)
+      const builtOptions = await HttpClient.buildOptions(options, headers, requestInterceptor)
       const returnValue = this.mocks.find(_ => _.urlPattern.test(url))?.returnValue
       this.requests.push({
         method,

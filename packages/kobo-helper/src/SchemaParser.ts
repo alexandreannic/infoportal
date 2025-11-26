@@ -1,10 +1,10 @@
-import {genShortid} from 'infoportal-common'
-import {Ip} from '@infoportal/api-sdk'
+import {genShortid} from '@infoportal/common'
+import {Api} from '@infoportal/api-sdk'
 
 export class SchemaParser {
   constructor() {}
 
-  private static readonly generateXpath = (questions: Ip.Form.Question[]): Ip.Form.Question[] => {
+  private static readonly generateXpath = (questions: Api.Form.Question[]): Api.Form.Question[] => {
     const path: string[] = []
     return questions.map(_ => {
       const q = {..._}
@@ -23,7 +23,7 @@ export class SchemaParser {
 
   static readonly gen$kuid = () => genShortid(10)
 
-  static readonly parse = (incompleteSchema: Ip.Form.Schema): Ip.Form.Schema => {
+  static readonly parse = (incompleteSchema: Api.Form.Schema): Api.Form.Schema => {
     return {
       ...incompleteSchema,
       survey: this.generateXpath(incompleteSchema.survey),

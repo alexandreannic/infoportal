@@ -1,4 +1,4 @@
-import {ApiClient} from '../server/ApiClient'
+import {HttpClient} from '../server/HttpClient'
 import {appConfig} from '@/conf/AppConfig'
 
 export interface ExcelWorksheet {
@@ -8,7 +8,7 @@ export interface ExcelWorksheet {
 export class MicrosoftGraphClient {
   constructor(
     private token: string = appConfig.microsoft.bearerToken,
-    private client = new ApiClient({
+    private client = new HttpClient({
       baseUrl: 'https://graph.microsoft.com/v1.0',
       headers: {
         Authorization: 'Bearer ' + token,

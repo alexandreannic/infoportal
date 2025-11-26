@@ -4,7 +4,7 @@ import {XlsFormEditor} from '@infoportal/xls-form-editor'
 import {FormBuilderBody} from '@/features/Form/Builder/FormBuilderBody'
 import {Core} from '@/shared'
 import {UseQueryVersion} from '@/core/query/form/useQueryVersion'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export const formBuilderEditorRoute = createRoute({
   getParentRoute: () => formBuilderRoute,
@@ -13,7 +13,7 @@ export const formBuilderEditorRoute = createRoute({
 })
 
 function FormBuilderEditor() {
-  const {formId, workspaceId} = formBuilderEditorRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
+  const {formId, workspaceId} = formBuilderEditorRoute.useParams() as {workspaceId: Api.WorkspaceId; formId: Api.FormId}
   const queryDraftVersion = useFormBuilderContext(_ => _.queryLastVersion)
   const versions = useFormBuilderContext(_ => _.versions)
   const queryVersion = UseQueryVersion.createNewVersion({workspaceId, formId})

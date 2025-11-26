@@ -8,7 +8,7 @@ import {Core, Datatable} from '@/shared'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
 import {createRoute} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {SettingsGroupCreateForm} from '@/features/Settings/SettingsGroupCreateForm.js'
@@ -34,8 +34,8 @@ function SettingsGroups() {
 
   const [selectedGroupId, setSelectedGroupId] = useState<
     | {
-        groupId: Ip.GroupId
-        itemId?: Ip.Group.ItemId
+        groupId: Api.GroupId
+        itemId?: Api.Group.ItemId
       }
     | undefined
   >()

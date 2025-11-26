@@ -3,12 +3,12 @@ import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCa
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 import {Core} from '@/shared'
 import {Obj, seq} from '@axanc/ts-utils'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useCallback, useMemo} from 'react'
 import {normalizeIsoRegion} from '@infoportal/client-core'
 
-export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
-  const config = widget.config as Ip.Dashboard.Widget.Config['GeoChart']
+export const GeoChartWidget = ({widget}: {widget: Api.Dashboard.Widget}) => {
+  const config = widget.config as Api.Dashboard.Widget.Config['GeoChart']
 
   const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
   const filters = useDashboardContext(_ => _.filter.get)

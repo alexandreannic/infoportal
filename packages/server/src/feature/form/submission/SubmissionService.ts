@@ -5,10 +5,10 @@ import {FormAccessService} from '../access/FormAccessService.js'
 import {app, AppCacheKey} from '../../../index.js'
 import {appConf} from '../../../core/conf/AppConf.js'
 import {SubmissionHistoryService} from '../history/SubmissionHistoryService.js'
-import {HttpError, Ip, Paginate} from '@infoportal/api-sdk'
+import {Api, HttpError} from '@infoportal/api-sdk'
 import {Util} from '../../../helper/Utils.js'
 import {Kobo} from 'kobo-sdk'
-import {genUUID, IpEvent, logPerformance} from 'infoportal-common'
+import {genUUID, IpEvent, logPerformance} from '@infoportal/common'
 import {KoboMapper} from '../../kobo/KoboMapper.js'
 import {FormService} from '../FormService.js'
 import {prismaMapper} from '../../../core/prismaMapper/PrismaMapper.js'
@@ -27,15 +27,15 @@ export class SubmissionService {
   ) {}
 
   private readonly _searchAnswersByUsersAccess = async (
-    params: Ip.Submission.Payload.Search,
-  ): Promise<Ip.Paginate<Ip.Submission>> => {
-    if (!params.user) return Paginate.make()([])
+    params: Api.Submission.Payload.Search,
+  ): Promise<Api.Paginate<Api.Submission>> => {
+    if (!params.user) return Api.Paginate.make()([])
     // TODO(Alex) reimplement
-    if (params.user.accessLevel !== Ip.AccessLevel.Admin) {
+    if (params.user.accessLevel !== Api.AccessLevel.Admin) {
       const access = await this.access
         .search({workspaceId: params.workspaceId, user: params.user})
         .then(_ => seq(_).filter(_ => _.formId === params.formId))
-      if (access.length === 0) return Paginate.make()([])
+      if (access.length === 0) return Api.Paginate.make()([])
       const hasEmptyFilter = access.some(_ => !_?.filters || Object.keys(_.filters).length === 0)
       if (!hasEmptyFilter) {
         const accessFilters = access
@@ -78,7 +78,11 @@ export class SubmissionService {
     },
     genIndex: p => p.formId,
     ttlMs: duration(1, 'day').toMs,
-    fn: ({formId, filters = {}, paginate = {}}: Ip.Submission.Payload.Search): Promise<Ip.Paginate<Ip.Submission>> => {
+    fn: ({
+      formId,
+      filters = {},
+      paginate = {},
+    }: Api.Submission.Payload.Search): Promise<Api.Paginate<Api.Submission>> => {
       return (
         this.prisma.formSubmission
           .findMany({
@@ -133,7 +137,7 @@ export class SubmissionService {
           //     })
           //   return _
           // })
-          .then(Paginate.make()) as Promise<Ip.Paginate<Ip.Submission>>
+          .then(Api.Paginate.make()) as Promise<Api.Paginate<Api.Submission>>
       )
     },
   })
@@ -147,12 +151,12 @@ export class SubmissionService {
     version,
     geolocation,
   }: {
-    geolocation?: Ip.Geolocation
+    geolocation?: Api.Geolocation
     version: string
     author?: string
-    formId: Ip.FormId
+    formId: Api.FormId
     isoCode?: string
-  } & Ip.Submission.Payload.Submit): Prisma.FormSubmissionUncheckedCreateInput => {
+  } & Api.Submission.Payload.Submit): Prisma.FormSubmissionUncheckedCreateInput => {
     return {
       formId: formId,
       id: this.genId(),
@@ -169,7 +173,7 @@ export class SubmissionService {
     }
   }
 
-  private readonly getIsoFromGeopoint = async (geolocation?: Ip.Geolocation) => {
+  private readonly getIsoFromGeopoint = async (geolocation?: Api.Geolocation) => {
     if (!geolocation) return
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${geolocation[0]}&lon=${geolocation[1]}&format=json`
     return fetch(url)
@@ -193,12 +197,12 @@ export class SubmissionService {
       })
   }
   readonly submit = async (
-    props: Ip.Submission.Payload.Submit & {
-      workspaceId: Ip.WorkspaceId
-      formId: Ip.FormId
+    props: Api.Submission.Payload.Submit & {
+      workspaceId: Api.WorkspaceId
+      formId: Api.FormId
       author?: string
     },
-  ): Promise<Ip.Submission> => {
+  ): Promise<Api.Submission> => {
     const {formId, workspaceId} = props
     const form = await this.form.get(formId)
     const formVersion = await this.prisma.formVersion.findFirst({
@@ -207,7 +211,7 @@ export class SubmissionService {
     })
     if (!formVersion) throw new HttpError.BadRequest(`No active version found for Form ${formId}.`)
     if (!form) throw new HttpError.NotFound(`Form ${formId} does not exists.`)
-    if (Ip.Form.isConnectedToKobo(form))
+    if (Api.Form.isConnectedToKobo(form))
       throw new HttpError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
     if (form.type === 'smart') throw new HttpError.BadRequest(`Cannot manually submit in a Smart form.`)
     const isoCode = await this.getIsoFromGeopoint(props.geolocation)
@@ -221,9 +225,9 @@ export class SubmissionService {
     workspaceId,
     data,
   }: {
-    workspaceId: Ip.WorkspaceId
+    workspaceId: Api.WorkspaceId
     data: Prisma.FormSubmissionUncheckedCreateInput
-  }): Promise<Ip.Submission> => {
+  }): Promise<Api.Submission> => {
     const submission = await this.prisma.formSubmission
       .create({
         select: {
@@ -240,8 +244,8 @@ export class SubmissionService {
         },
         data: data,
       })
-      .then(_ => prismaMapper.form.mapSubmission(_) as Ip.Submission)
-    this.event.emit(IpEvent.SUBMISSION_NEW, {workspaceId, formId: data.formId as Ip.FormId, submission})
+      .then(_ => prismaMapper.form.mapSubmission(_) as Api.Submission)
+    this.event.emit(IpEvent.SUBMISSION_NEW, {workspaceId, formId: data.formId as Api.FormId, submission})
     return submission
   }
 
@@ -267,16 +271,16 @@ export class SubmissionService {
     })
   }
 
-  static readonly genId = (): Ip.SubmissionId => nanoid(10)
+  static readonly genId = (): Api.SubmissionId => nanoid(10)
 
   readonly remove = async ({
     answerIds,
     formId,
-    authorEmail = 'system' as Ip.User.Email,
+    authorEmail = 'system' as Api.User.Email,
   }: {
-    answerIds: Ip.SubmissionId[]
-    formId: Ip.FormId
-    authorEmail?: Ip.User.Email
+    answerIds: Api.SubmissionId[]
+    formId: Api.FormId
+    authorEmail?: Api.User.Email
   }) => {
     await Promise.all([
       this.prisma.formSubmission.updateMany({
@@ -307,7 +311,7 @@ export class SubmissionService {
     this.event.emit(IpEvent.SUBMISSION_REMOVED, {submissionIds: answerIds, formId})
   }
 
-  private readonly isConnectedToKobo = (formId: Ip.FormId) => {
+  private readonly isConnectedToKobo = (formId: Api.FormId) => {
     return this.prisma.formKoboInfo.findFirst({select: {formId: true}, where: {formId}}).then(_ => !!_)
   }
 
@@ -316,14 +320,14 @@ export class SubmissionService {
     answerIds,
     question,
     answer,
-    authorEmail = 'system' as Ip.User.Email,
+    authorEmail = 'system' as Api.User.Email,
   }: {
-    authorEmail?: Ip.User.Email
-    formId: Ip.FormId
-    answerIds: Ip.SubmissionId[]
+    authorEmail?: Api.User.Email
+    formId: Api.FormId
+    answerIds: Api.SubmissionId[]
     question: string
     answer?: string
-  }): Promise<Ip.BulkResponse<Ip.SubmissionId>> => {
+  }): Promise<Api.BulkResponse<Api.SubmissionId>> => {
     answer = Array.isArray(answer) ? answer.join(' ') : answer
     await Promise.all([
       this.history.create({
@@ -376,13 +380,13 @@ export class SubmissionService {
     status,
     authorEmail,
   }: {
-    formId: Ip.FormId
-    answerIds: Ip.SubmissionId[]
-    status: Ip.Submission.Validation
-    authorEmail: Ip.User.Email
-  }): Promise<Ip.BulkResponse<Ip.SubmissionId>> => {
+    formId: Api.FormId
+    answerIds: Api.SubmissionId[]
+    status: Api.Submission.Validation
+    authorEmail: Api.User.Email
+  }): Promise<Api.BulkResponse<Api.SubmissionId>> => {
     const mappedValidation = KoboMapper.mapValidation.toKobo(status)
-    const validationKey: keyof Ip.Submission.Meta = 'validationStatus'
+    const validationKey: keyof Api.Submission.Meta = 'validationStatus'
     const [sqlRes] = await Promise.all([
       this.prisma.formSubmission.updateMany({
         where: {id: {in: answerIds}},
@@ -443,7 +447,7 @@ export class SubmissionService {
     return answerIds.map(id => ({id, status: 'success'}))
   }
 
-  private getKoboSubmissionIds = ({submissionIds}: {submissionIds: Ip.SubmissionId[]}) => {
+  private getKoboSubmissionIds = ({submissionIds}: {submissionIds: Api.SubmissionId[]}) => {
     return this.prisma.formSubmission
       .findMany({select: {originId: true}, where: {id: {in: submissionIds}}})
       .then(_ => _.map(_ => _.originId))

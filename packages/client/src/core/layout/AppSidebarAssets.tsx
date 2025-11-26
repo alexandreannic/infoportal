@@ -4,14 +4,14 @@ import {SidebarItem} from '@/shared/Layout/Sidebar'
 import {Skeleton, useTheme} from '@mui/material'
 import {useMemo, useState} from 'react'
 import {UseQueryForm} from '@/core/query/form/useQueryForm'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {mapFor, Seq, seq} from '@axanc/ts-utils'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
 import {AppSidebarFilters} from '@/core/layout/AppSidebarFilters.js'
 import {AppSidebarAsset} from '@/core/layout/AppSidebarAsset.js'
 import {Asset, AssetType} from '@/shared/Asset.js'
 
-export const AppSidebarAssets = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+export const AppSidebarAssets = ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
   const {m} = useI18n()
   const t = useTheme()
 

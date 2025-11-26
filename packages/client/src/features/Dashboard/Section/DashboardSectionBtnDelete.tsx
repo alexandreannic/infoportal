@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryDashboardSecion} from '@/core/query/dashboard/useQueryDashboardSection'
 import {useNavigate} from '@tanstack/react-router'
 import {useI18n} from '@infoportal/client-i18n'
@@ -11,15 +11,15 @@ export function DeleteSectionBtn({
   dashboardId,
   sections,
 }: {
-  workspaceId: Ip.WorkspaceId
-  dashboardId: Ip.DashboardId
-  sectionId: Ip.Dashboard.SectionId
-  sections: Ip.Dashboard.Section[]
+  workspaceId: Api.WorkspaceId
+  dashboardId: Api.DashboardId
+  sectionId: Api.Dashboard.SectionId
+  sections: Api.Dashboard.Section[]
 }) {
   const querySectionRemove = UseQueryDashboardSecion.remove({workspaceId, dashboardId})
   const navigate = useNavigate()
   const {m} = useI18n()
-  const navigateToDefaultRoute = (deletedSectionId: Ip.Dashboard.SectionId) => {
+  const navigateToDefaultRoute = (deletedSectionId: Api.Dashboard.SectionId) => {
     const firstSection = sections.filter(_ => _.id !== deletedSectionId)[0]
     if (firstSection) {
       navigate({

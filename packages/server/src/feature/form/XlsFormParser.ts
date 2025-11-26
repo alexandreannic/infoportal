@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {execFile} from 'child_process'
 import {promisify} from 'util'
 import {Kobo} from 'kobo-sdk'
@@ -7,8 +7,8 @@ import xlsx from 'xlsx'
 const execFilePromise = promisify(execFile)
 
 export class XlsFormParser {
-  static readonly validateAndParse = async (filePath: string): Promise<Ip.Form.Schema.Validation> => {
-    type PyxResponse = Pick<Ip.Form.Schema.Validation, 'code' | 'message' | 'warnings'>
+  static readonly validateAndParse = async (filePath: string): Promise<Api.Form.Schema.Validation> => {
+    type PyxResponse = Pick<Api.Form.Schema.Validation, 'code' | 'message' | 'warnings'>
     const {stdout, stderr} = await execFilePromise('python3', ['-m', 'pyxform.xls2xform', filePath, '--json'])
     const err: PyxResponse = stderr !== '' ? JSON.parse(stderr) : undefined
     const out: PyxResponse = stdout !== '' ? JSON.parse(stdout) : undefined
@@ -21,7 +21,7 @@ export class XlsFormParser {
     return {...output, status, schema}
   }
 
-  static readonly parse = (filePath: string): Ip.Form.Schema => {
+  static readonly parse = (filePath: string): Api.Form.Schema => {
     const workbook = xlsx.readFile(filePath)
     const sheetToJson = <T>(name: string): T[] => {
       const sheet = workbook.Sheets[name]

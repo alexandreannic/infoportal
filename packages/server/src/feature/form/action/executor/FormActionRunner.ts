@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../../../index.js'
-import {IpEvent} from 'infoportal-common'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {IpEvent} from '@infoportal/common'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {FormActionService} from '../FormActionService.js'
 import {SubmissionService} from '../../submission/SubmissionService.js'
 import {FormActionRunningReportManager} from './FormActionRunningReportManager.js'
@@ -34,8 +34,8 @@ export class FormActionRunner {
   private findActions = app.cache.request({
     key: AppCacheKey.FormAction,
     genIndex: _ => _,
-    fn: async (formId: Ip.FormId) => {
-      return this.prisma.formAction.findMany({where: {targetFormId: formId}}).then(_ => _.map(Ip.Form.Action.map))
+    fn: async (formId: Api.FormId) => {
+      return this.prisma.formAction.findMany({where: {targetFormId: formId}}).then(_ => _.map(Api.Form.Action.map))
     },
   })
 
@@ -44,10 +44,10 @@ export class FormActionRunner {
     formId,
     startedBy,
   }: {
-    startedBy: Ip.User.Email
-    workspaceId: Ip.WorkspaceId
-    formId: Ip.FormId
-  }): Promise<Ip.Form.Action.Report> => {
+    startedBy: Api.User.Email
+    workspaceId: Api.WorkspaceId
+    formId: Api.FormId
+  }): Promise<Api.Form.Action.Report> => {
     if (this.liveReport.has(formId)) {
       throw new HttpError.Conflict(`An execution is already running for ${formId}`)
     }
@@ -96,9 +96,9 @@ export class FormActionRunner {
     submission,
     workspaceId,
   }: {
-    workspaceId: Ip.WorkspaceId
-    submission: Ip.Submission
-    formId: Ip.FormId
+    workspaceId: Api.WorkspaceId
+    submission: Api.Submission
+    formId: Api.FormId
   }) => {
     const actions = await this.findActions(formId)
     this.log.info(`Run ${actions.length} actions for ${formId}.`)
@@ -115,10 +115,10 @@ export class FormActionRunner {
     submissions,
     formId,
   }: {
-    formId: Ip.FormId
-    workspaceId: Ip.WorkspaceId
-    action: Ip.Form.Action
-    submissions: Ip.Submission[]
+    formId: Api.FormId
+    workspaceId: Api.WorkspaceId
+    action: Api.Form.Action
+    submissions: Api.Submission[]
   }) => {
     if (!action.body || action.disabled) return
 

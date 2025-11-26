@@ -9,7 +9,7 @@ import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRootRoute} from '@/features/Form/Form'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
 import {DeploymentStatusIcon} from '@/shared/DeploymentStatus'
 import {AssetIcon} from '@/shared/Asset.js'
@@ -22,7 +22,7 @@ export const formsRoute = createRoute({
 })
 
 function Forms() {
-  const {workspaceId} = formsRoute.useParams() as {workspaceId: Ip.WorkspaceId}
+  const {workspaceId} = formsRoute.useParams() as {workspaceId: Api.WorkspaceId}
   const {formatDate, m} = useI18n()
   const t = useTheme()
   const {setTitle} = useLayoutContext()
@@ -30,7 +30,7 @@ function Forms() {
   const queryForm = UseQueryForm.getAccessibles(workspaceId)
   const permissionWorkspace = UseQueryPermission.workspace({workspaceId})
 
-  const indexServers: Record<Ip.ServerId, Ip.Server> = useMemo(() => {
+  const indexServers: Record<Api.ServerId, Api.Server> = useMemo(() => {
     return seq(queryServer.getAll.data).groupByFirst(_ => _.id)
   }, [queryServer.getAll.data])
 
@@ -79,8 +79,8 @@ function Forms() {
               head: m.connectedToKobo,
               align: 'center',
               render: _ => {
-                const isKobo = Ip.Form.isKobo(_)
-                const connected = Ip.Form.isConnectedToKobo(_)
+                const isKobo = Api.Form.isKobo(_)
+                const connected = Api.Form.isConnectedToKobo(_)
                 return {
                   label: isKobo ? !connected && <Icon color="error" children="block" /> : undefined,
                   value: isKobo ? '' + connected : undefined,
@@ -135,7 +135,7 @@ function Forms() {
             },
             // {
             //   id: 'serverId',
-            //   type: 'select_one',
+            //   module: 'select_one',
             //   head: m.serverId,
             //   renderQuick: _ => _.kobo?.accountId,
             // },
@@ -160,14 +160,14 @@ function Forms() {
             },
             // {
             //   id: 'program',
-            //   type: 'select_one',
+            //   module: 'select_one',
             //   head: m.program,
             //   renderQuick: _ => _.name,
             // },
             // {
             //   id: 'length',
             //   head: m.submissions,
-            //   type: 'number',
+            //   module: 'number',
             //   align: 'right',
             //   width: 0,
             //   renderQuick: _ => _.kobo.submissionsCount,

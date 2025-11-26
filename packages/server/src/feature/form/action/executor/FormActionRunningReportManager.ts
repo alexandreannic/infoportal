@@ -1,11 +1,11 @@
 import {PrismaClient} from '@prisma/client'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../../../core/prismaMapper/PrismaMapper.js'
 
-type LiveReport = Omit<Ip.Form.Action.Report, 'id'>
+type LiveReport = Omit<Api.Form.Action.Report, 'id'>
 
 export class FormActionRunningReportManager {
-  private liveReportMap = new Map<Ip.FormId, LiveReport>()
+  private liveReportMap = new Map<Api.FormId, LiveReport>()
 
   private constructor(private prisma: PrismaClient) {}
 
@@ -16,11 +16,11 @@ export class FormActionRunningReportManager {
     return FormActionRunningReportManager.instance
   }
 
-  has(formId: Ip.FormId) {
+  has(formId: Api.FormId) {
     return this.liveReportMap.has(formId)
   }
 
-  start(formId: Ip.FormId, totalActions: number, startedBy: Ip.User.Email) {
+  start(formId: Api.FormId, totalActions: number, startedBy: Api.User.Email) {
     this.liveReportMap.set(formId, {
       formId,
       startedAt: new Date(),
@@ -33,13 +33,13 @@ export class FormActionRunningReportManager {
     })
   }
 
-  update(formId: Ip.FormId, update: (r: LiveReport) => Partial<LiveReport>) {
+  update(formId: Api.FormId, update: (r: LiveReport) => Partial<LiveReport>) {
     const current = this.liveReportMap.get(formId)
     if (!current) return
     this.liveReportMap.set(formId, {...current, ...update(current)})
   }
 
-  async finalize(formId: Ip.FormId, failed?: string) {
+  async finalize(formId: Api.FormId, failed?: string) {
     const report = this.liveReportMap.get(formId)
     if (!report) throw new HttpError.InternalServerError(`Failed to fetch execution report.`)
     this.liveReportMap.delete(formId)
@@ -50,7 +50,7 @@ export class FormActionRunningReportManager {
       .then(prismaMapper.form.mapFormActionReport)
   }
 
-  get(formId: Ip.FormId): Ip.Form.Action.Report | undefined {
+  get(formId: Api.FormId): Api.Form.Action.Report | undefined {
     const liveReport = this.liveReportMap.get(formId)
     if (!liveReport) return
     return {

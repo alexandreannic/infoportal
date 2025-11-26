@@ -5,11 +5,11 @@ import {Core} from '@/shared'
 import {seq} from '@axanc/ts-utils'
 import {ChartLineCurve} from '@infoportal/client-core'
 import {Box} from '@mui/material'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 
-export const LineChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
-  const config = widget.config as Ip.Dashboard.Widget.Config['LineChart']
+export const LineChartWidget = ({widget}: {widget: Api.Dashboard.Widget}) => {
+  const config = widget.config as Api.Dashboard.Widget.Config['LineChart']
 
   const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
   const filterFns = useDashboardContext(_ => _.data.filterFns)

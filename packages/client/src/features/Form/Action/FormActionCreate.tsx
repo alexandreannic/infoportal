@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryFromAction} from '@/core/query/form/useQueryFromAction.js'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
 import {Controller, useForm, UseFormReturn} from 'react-hook-form'
@@ -9,12 +9,12 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Obj} from '@axanc/ts-utils'
 import {SelectFormInput} from '@/shared/customInput/SelectFormInput'
 
-type Form = Omit<Ip.Form.Action.Payload.Create, 'body' | 'workspaceId' | 'formId'>
+type Form = Omit<Api.Form.Action.Payload.Create, 'body' | 'workspaceId' | 'formId'>
 
 type Context = {
-  formId: Ip.FormId
+  formId: Api.FormId
   onClose: () => void
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
   stepperRef: RefObject<Core.StepperHandle | null>
   form: UseFormReturn<Form>
   loading?: boolean
@@ -26,8 +26,8 @@ export const FormActionCreate = ({onClose}: {onClose: () => void}) => {
   const stepperRef = useRef<Core.StepperHandle>(null)
 
   const params = formActionsRoute.useParams()
-  const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const formId = params.formId as Ip.FormId
+  const workspaceId = params.workspaceId as Api.WorkspaceId
+  const formId = params.formId as Api.FormId
   const queryAction = UseQueryFromAction.create(workspaceId, formId)
   const {m} = useI18n()
 
@@ -114,8 +114,8 @@ function SelectType() {
   const {stepperRef, form} = useContext()
   const {m} = useI18n()
   const icon = {
-    [Ip.Form.Action.Type.insert]: 'splitscreen_add',
-    [Ip.Form.Action.Type.mutate]: 'splitscreen_bottom',
+    [Api.Form.Action.Type.insert]: 'splitscreen_add',
+    [Api.Form.Action.Type.mutate]: 'splitscreen_bottom',
   }
   const type = form.watch('type')
   return (
@@ -131,7 +131,7 @@ function SelectType() {
               stepperRef.current?.goTo(1)
             }}
           >
-            {Obj.values(Ip.Form.Action.Type).map(_ => (
+            {Obj.values(Api.Form.Action.Type).map(_ => (
               <Core.RadioGroupItem
                 hideRadio
                 value={_}

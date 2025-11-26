@@ -11,7 +11,7 @@ import {NewFormCreateInternal} from '@/features/NewForm/NewFormCreateInternal'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {createRoute, useNavigate} from '@tanstack/react-router'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import {Asset, assetStyle} from '@/shared/Asset.js'
 
@@ -32,13 +32,13 @@ const OptionBody = ({icon, color, label}: {color: string; icon: string; label: s
 
 function NewForm() {
   const {m} = useI18n()
-  const {workspaceId} = newFormRoute.useParams() as {workspaceId: Ip.WorkspaceId}
+  const {workspaceId} = newFormRoute.useParams() as {workspaceId: Api.WorkspaceId}
   const {setTitle} = useLayoutContext()
   const dialog = useDialogs()
   const navigate = useNavigate()
 
-  const [type, setType] = useState<Ip.Form.Type>()
-  const [selectedServerId, setSelectedServerId] = useState<Ip.ServerId>()
+  const [type, setType] = useState<Api.Form.Type>()
+  const [selectedServerId, setSelectedServerId] = useState<Api.ServerId>()
 
   const queryForm = UseQueryForm.create(workspaceId)
   const queryServer = useQueryServers(workspaceId)
@@ -55,7 +55,7 @@ function NewForm() {
     <Page width="xs" sx={{minHeight: undefined}}>
       <Core.PanelWBody>
         <Core.RadioGroup value={type} sx={{flex: 1}} inline onChange={setType}>
-          {Obj.keys(Ip.Form.Type).map(asset => (
+          {Obj.keys(Api.Form.Type).map(asset => (
             <Core.RadioGroupItem
               key={asset}
               hideRadio

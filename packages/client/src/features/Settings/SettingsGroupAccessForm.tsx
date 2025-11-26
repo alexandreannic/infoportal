@@ -4,14 +4,14 @@ import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {Controller, UseFormReturn} from 'react-hook-form'
 import {fnSwitch} from '@axanc/ts-utils'
 import {AccessFormInputAccessLevel, AccessFormInputEmail, AccessFormInputJob, AccessFormInputLocation, IAccessForm,} from '@/features/Access/AccessForm'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Core} from '@/shared'
 
 export const SettingsGroupAccessForm = ({
   workspaceId,
   form,
 }: {
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
   form: UseFormReturn<IAccessForm>
 }) => {
   const {m} = useI18n()

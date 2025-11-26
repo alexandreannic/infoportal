@@ -1,7 +1,7 @@
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {Box, BoxProps, Collapse, Icon, InputProps} from '@mui/material'
 import {Obj, seq} from '@axanc/ts-utils'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 import {forwardRef, useEffect, useMemo} from 'react'
 import {Core} from '@/shared'
@@ -69,7 +69,7 @@ type FilterForm = {
   name: string
   category: string[]
   assetType: AssetType[]
-  status: Ip.Form.DeploymentStatus[]
+  status: Api.Form.DeploymentStatus[]
 }
 
 const defaultFormValues: FilterForm = {
@@ -189,7 +189,7 @@ export const AppSidebarFilters = ({
               name="status"
               control={searchForm.control}
               render={({field}) => (
-                <Core.RadioGroup<Ip.Form.DeploymentStatus>
+                <Core.RadioGroup<Api.Form.DeploymentStatus>
                   value={field.value}
                   onChange={_ => field.onChange(_)}
                   multiple
@@ -197,7 +197,7 @@ export const AppSidebarFilters = ({
                   dense
                   sx={{flex: 1, ml: 0.25}}
                 >
-                  {Obj.values(Ip.Form.DeploymentStatus).map(_ => (
+                  {Obj.values(Api.Form.DeploymentStatus).map(_ => (
                     <Core.RadioGroupItem
                       hideRadio
                       key={_}
@@ -209,7 +209,7 @@ export const AppSidebarFilters = ({
                 </Core.RadioGroup>
                 /* <Core.SelectMultiple
               {...field}
-              options={Obj.keys(Ip.Form.DeploymentStatus).map(_ => {
+              options={Obj.keys(Api.Form.DeploymentStatus).map(_ => {
                 return {
                   value: _,
                   children: m.deploymentStatus_[_],

@@ -1,6 +1,6 @@
 import {useRef} from 'react'
 import {Answers} from '@/features/Dashboard/Context/DashboardContext'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import {Seq} from '@axanc/ts-utils'
 
 export type UseFlattenRepeatGroupData = ReturnType<typeof useFlattenRepeatGroupData>

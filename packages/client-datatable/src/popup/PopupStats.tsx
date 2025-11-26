@@ -1,7 +1,7 @@
 import React, {ReactNode, useMemo} from 'react'
 import {Box, Popover, PopoverProps} from '@mui/material'
 import {Btn, ChartBarBy, ChartLineByDateFiltered, PanelBody, PanelFoot, PanelHead, Txt} from '@infoportal/client-core'
-import {KeyOf} from 'infoportal-common'
+import {KeyOf} from '@infoportal/common'
 import {seq} from '@axanc/ts-utils'
 import {Popup} from '../core/reducer'
 import {useCtx} from '../core/DatatableContext'

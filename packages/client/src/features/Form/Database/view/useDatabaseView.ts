@@ -1,10 +1,10 @@
-import {UUID} from 'infoportal-common'
+import {UUID} from '@infoportal/common'
 import {useCallback, useEffect, useMemo} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Seq, seq} from '@axanc/ts-utils'
 import {DatabaseView, DatabaseViewCol, DatabaseViewColVisibility, DatabaseViewVisibility,} from '@/core/sdk/server/databaseView/DatabaseView'
 import {useSession} from '@/core/Session/SessionContext'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useAsync, useFetcher, usePersistentState} from '@axanc/react-hooks'
 import {debounce} from '@mui/material'
 
@@ -12,7 +12,7 @@ export type UseDatabaseView = ReturnType<typeof useDatabaseView>
 
 export const DatabaseViewDefaultName = 'Default'
 
-export const useDatabaseView = (formId: Ip.FormId) => {
+export const useDatabaseView = (formId: Api.FormId) => {
   const {api} = useAppSettings()
   const session = useSession()
   const [currentViewId, setCurrentViewId] = usePersistentState<string | undefined>(undefined, {

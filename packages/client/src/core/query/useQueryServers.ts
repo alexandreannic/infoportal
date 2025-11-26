@@ -2,10 +2,10 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
-import {ApiError} from '@/core/sdk/server/ApiClient'
-import {Ip} from '@infoportal/api-sdk'
+import {ApiError} from '@/core/sdk/server/HttpClient'
+import {Api} from '@infoportal/api-sdk'
 
-export const useQueryServers = (workspaceId: Ip.WorkspaceId) => {
+export const useQueryServers = (workspaceId: Api.WorkspaceId) => {
   const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
   const {toastAndThrowHttpError, toastHttpError} = useIpToast()
@@ -21,7 +21,7 @@ export const useQueryServers = (workspaceId: Ip.WorkspaceId) => {
     },
   })
 
-  const create = useMutation<Ip.Server, ApiError, Ip.Server.Payload.Create>({
+  const create = useMutation<Api.Server, ApiError, Api.Server.Payload.Create>({
     mutationFn: async args => {
       return apiv2.server.create({...args, workspaceId})
     },
@@ -32,7 +32,7 @@ export const useQueryServers = (workspaceId: Ip.WorkspaceId) => {
   return {getAll, create}
 }
 
-export const useQueryServer = ({workspaceId, serverId}: {workspaceId: Ip.WorkspaceId; serverId: Ip.ServerId}) => {
+export const useQueryServer = ({workspaceId, serverId}: {workspaceId: Api.WorkspaceId; serverId: Api.ServerId}) => {
   const {apiv2} = useAppSettings()
   const {toastHttpError, toastAndThrowHttpError} = useIpToast()
   const queryClient = useQueryClient()

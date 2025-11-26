@@ -2,7 +2,7 @@ import {AppAvatar, Core, Page, ViewMoreDiv} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {useQueryMetrics} from '@/core/query/useQueryMetrics.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Box, Grid, useTheme} from '@mui/material'
 import {Obj, seq} from '@axanc/ts-utils'
 import {UseQueryForm} from '@/core/query/form/useQueryForm.js'
@@ -25,17 +25,17 @@ export const overviewRoute = createRoute({
 })
 
 export type OverviewFilters = {
-  period: Partial<Ip.Period>
+  period: Partial<Api.Period>
   folderNames: string[]
-  formIds: Ip.FormId[]
-  formTypes: Ip.Form.Type[]
+  formIds: Api.FormId[]
+  formTypes: Api.Form.Type[]
 }
 
 function Overview() {
   const {m, formatLargeNumber} = useI18n()
   const t = useTheme()
   const {setTitle} = useLayoutContext()
-  const workspaceId = overviewRoute.useParams().workspaceId as Ip.WorkspaceId
+  const workspaceId = overviewRoute.useParams().workspaceId as Api.WorkspaceId
 
   const [includeKoboAccounts, setIncludeKoboAccounts] = usePersistentState(false, {
     storageKey: 'Overview-includeKoboAccounts',
@@ -55,7 +55,7 @@ function Overview() {
       },
       folderNames: [],
       formIds: [],
-      formTypes: [Ip.Form.Type.internal, Ip.Form.Type.kobo],
+      formTypes: [Api.Form.Type.internal, Api.Form.Type.kobo],
     }
   }, [])
 
@@ -92,7 +92,7 @@ function Overview() {
   )
 
   const filteredForms = useMemo(() => {
-    return queryForms.data?.filter((_: Ip.Form) => {
+    return queryForms.data?.filter((_: Api.Form) => {
       if (filters.folderNames.length > 0 && !filters.folderNames.includes(_.category ?? '')) return false
       if (filters.formTypes.length > 0 && !filters.formTypes.includes(_.type)) return false
       return true
@@ -112,7 +112,7 @@ function Overview() {
   )
 
   const formsImportedToKoboCount = useMemo(() => {
-    return filteredForms?.count(_ => Ip.Form.isKobo(_)) ?? 0
+    return filteredForms?.count(_ => Api.Form.isKobo(_)) ?? 0
   }, [filteredForms])
 
   const formsImportedFromKobo = useMemo(() => {
@@ -134,7 +134,7 @@ function Overview() {
 
   const formsLinkedToKobo = useMemo(() => {
     if (!filteredForms) return <Core.Panel sx={{height: '100%'}} />
-    const value = filteredForms.count(_ => Ip.Form.isConnectedToKobo(_)) ?? 0
+    const value = filteredForms.count(_ => Api.Form.isConnectedToKobo(_)) ?? 0
     const base = filteredForms.length ?? 1
     //     <PanelWidget title={m.users} icon={appConfig.icons.users}>
     //       {formatLargeNumber(queryUsers.data?.length)}
@@ -158,10 +158,10 @@ function Overview() {
   const pieChartValidation = (
     <Core.Panel>
       <Core.PanelBody sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
-        {Obj.keys(Ip.Submission.Validation).map(status => (
+        {Obj.keys(Api.Submission.Validation).map(status => (
           <PieChartStatus
             key={status}
-            validation={status as Ip.Submission.Validation}
+            validation={status as Api.Submission.Validation}
             percent={
               (querySubmissionsByStatus.data?.find(_ => _.key === status)?.count ?? 0) /
               Math.max(submissionsCount ?? 0, 1)
@@ -198,7 +198,7 @@ function Overview() {
     const data = seq(querySubmissionsByForm.data).groupByAndApply(
       _ => _.key,
       _ => {
-        const formId = _[0]?.key as Ip.FormId
+        const formId = _[0]?.key as Api.FormId
         const res: Core.BarChartData = {
           value: _.sum(_ => _.count),
           label: formIndex?.get(formId)?.name ?? formId,
@@ -257,12 +257,12 @@ function Overview() {
   const submissionsByUser = useMemo(() => {
     if (!querySubmissionsByUser.data) return
 
-    const hasKoboAccounts = querySubmissionsByUser.data.some(_ => Ip.User.isKoboUserName(_.key))
+    const hasKoboAccounts = querySubmissionsByUser.data.some(_ => Api.User.isKoboUserName(_.key))
 
     const dataFiltered =
       hasKoboAccounts && includeKoboAccounts
         ? querySubmissionsByUser.data
-        : querySubmissionsByUser.data.filter(_ => !Ip.User.isKoboUserName(_.key))
+        : querySubmissionsByUser.data.filter(_ => !Api.User.isKoboUserName(_.key))
     const byUser = seq(dataFiltered).groupByFirst(_ => _.key)
     const data = new Obj(byUser)
       .mapValues(_ => {
@@ -278,7 +278,7 @@ function Overview() {
         {!_.label || _.label === '' ? (
           <AppAvatar sx={{mr: 1}} size={24} icon="domino_mask" />
         ) : _.label.includes('@') ? (
-          <AppAvatar sx={{mr: 1}} size={24} email={_.label as Ip.User.Email} />
+          <AppAvatar sx={{mr: 1}} size={24} email={_.label as Api.User.Email} />
         ) : (
           <AppAvatar sx={{mr: 1}} size={24} />
         )}

@@ -7,26 +7,26 @@ import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {DrcJobInputMultiple} from '@/shared/customInput/DrcJobInput'
 import {Core, Datatable} from '@/shared'
 import {useQueryGroup} from '@/core/query/useQueryGroup'
-import {Ip} from '@infoportal/api-sdk'
-import {Regexp} from 'infoportal-common'
+import {Api} from '@infoportal/api-sdk'
+import {Regexp} from '@infoportal/common'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
 
 export interface IAccessForm {
   selectBy?: 'email' | 'job' | 'group' | null
   email?: string | null
-  groupId?: Ip.GroupId | null
+  groupId?: Api.GroupId | null
   location?: string | null
   job?: string[] | null
-  level: Ip.AccessLevel
+  level: Api.AccessLevel
 }
 
-export const accessLevelIcon: Record<Ip.AccessLevel, string> = {
+export const accessLevelIcon: Record<Api.AccessLevel, string> = {
   Read: 'visibility',
   Write: 'edit',
   Admin: 'gavel',
 }
 
-export const AccessForm = ({workspaceId, form}: {workspaceId: Ip.WorkspaceId; form: UseFormReturn<IAccessForm>}) => {
+export const AccessForm = ({workspaceId, form}: {workspaceId: Api.WorkspaceId; form: UseFormReturn<IAccessForm>}) => {
   const {m} = useI18n()
   const watchSelectBy = form.watch('selectBy')
   const watch = form.watch()
@@ -104,7 +104,7 @@ export const AccessFormInputEmail = ({
   workspaceId,
   form,
 }: {
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
   form: UseFormReturn<IAccessForm>
 }) => {
   const {m} = useI18n()
@@ -161,16 +161,16 @@ export const AccessFormInputAccessLevel = ({form}: {form: UseFormReturn<IAccessF
   return (
     <Controller
       name="level"
-      defaultValue={Ip.AccessLevel.Read}
+      defaultValue={Api.AccessLevel.Read}
       control={form.control}
       render={({field}) => (
-        <Core.RadioGroup<Ip.AccessLevel>
+        <Core.RadioGroup<Api.AccessLevel>
           error={!!form.formState.errors.level}
           dense
           {...field}
           // onChange={_ => field.onChange({target: {value: _}} as any)}
         >
-          {Obj.values(Ip.AccessLevel).map(level => (
+          {Obj.values(Api.AccessLevel).map(level => (
             <Core.RadioGroupItem icon={accessLevelIcon[level]} value={level} key={level} title={level} />
           ))}
         </Core.RadioGroup>
@@ -184,7 +184,7 @@ export const AccessFormInputJob = ({
   form,
   sx,
 }: {
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
   form: UseFormReturn<IAccessForm>
   sx?: SxProps<Theme>
 }) => {
@@ -212,7 +212,7 @@ export const AccessFormInputGroup = ({
   workspaceId,
   form,
 }: {
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
   form: UseFormReturn<IAccessForm>
 }) => {
   const {m} = useI18n()

@@ -1,13 +1,13 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
-import {ApiError} from '@/core/sdk/server/ApiClient'
+import {ApiError} from '@/core/sdk/server/HttpClient'
 import {usePendingMutation} from '@/core/query/usePendingMutation'
 
 export class UseQueryDashboardSecion {
-  static search = (params: Ip.Dashboard.Section.Payload.Search) => {
+  static search = (params: Api.Dashboard.Section.Payload.Search) => {
     const {apiv2} = useAppSettings()
     const {dashboardId, workspaceId} = params
     const {toastAndThrowHttpError} = useIpToast()
@@ -17,14 +17,14 @@ export class UseQueryDashboardSecion {
     })
   }
 
-  static create = ({workspaceId, dashboardId}: {workspaceId: Ip.WorkspaceId; dashboardId: Ip.DashboardId}) => {
+  static create = ({workspaceId, dashboardId}: {workspaceId: Api.WorkspaceId; dashboardId: Api.DashboardId}) => {
     const {apiv2} = useAppSettings()
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
     return useMutation<
-      Ip.Dashboard.Section,
+      Api.Dashboard.Section,
       ApiError,
-      Omit<Ip.Dashboard.Section.Payload.Create, 'workspaceId' | 'dashboardId'>
+      Omit<Api.Dashboard.Section.Payload.Create, 'workspaceId' | 'dashboardId'>
     >({
       mutationFn: args => apiv2.dashboard.section.create({workspaceId, dashboardId, ...args}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboardSection(workspaceId, dashboardId)}),
@@ -32,17 +32,17 @@ export class UseQueryDashboardSecion {
     })
   }
 
-  static update = ({workspaceId, dashboardId}: {workspaceId: Ip.WorkspaceId; dashboardId: Ip.DashboardId}) => {
+  static update = ({workspaceId, dashboardId}: {workspaceId: Api.WorkspaceId; dashboardId: Api.DashboardId}) => {
     const {apiv2} = useAppSettings()
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
-    return usePendingMutation<Ip.Dashboard.Section, ApiError, Omit<Ip.Dashboard.Section.Payload.Update, 'workspaceId'>>(
+    return usePendingMutation<Api.Dashboard.Section, ApiError, Omit<Api.Dashboard.Section.Payload.Update, 'workspaceId'>>(
       {
         getId: _ => _.id,
         mutationFn: variables => {
           const query = apiv2.dashboard.section.update({workspaceId, ...variables})
           const key = queryKeys.dashboardSection(workspaceId, dashboardId)
-          queryClient.setQueryData<Ip.Dashboard.Section[]>(key, old => {
+          queryClient.setQueryData<Api.Dashboard.Section[]>(key, old => {
             return old?.map(_ => {
               if (_.id === variables.id) return {..._, ...variables}
               return _
@@ -59,11 +59,11 @@ export class UseQueryDashboardSecion {
     )
   }
 
-  static remove = ({workspaceId, dashboardId}: {workspaceId: Ip.WorkspaceId; dashboardId: Ip.DashboardId}) => {
+  static remove = ({workspaceId, dashboardId}: {workspaceId: Api.WorkspaceId; dashboardId: Api.DashboardId}) => {
     const {apiv2} = useAppSettings()
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
-    return usePendingMutation<void, ApiError, {id: Ip.Dashboard.SectionId}>({
+    return usePendingMutation<void, ApiError, {id: Api.Dashboard.SectionId}>({
       getId: _ => _.id,
       mutationFn: args => apiv2.dashboard.section.remove({workspaceId, ...args}),
       onSuccess: (data, variables) => {

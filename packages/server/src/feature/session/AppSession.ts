@@ -1,12 +1,12 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export type AppSession = {
-  user: Ip.User
-  originalEmail?: Ip.User.Email
+  user: Api.User
+  originalEmail?: Api.User.Email
 }
 
 export type UserProfile = {
-  user: Ip.User
+  user: Api.User
   /** @deprecated ? */
-  workspaces: Ip.Workspace[]
+  workspaces: Api.Workspace[]
 }

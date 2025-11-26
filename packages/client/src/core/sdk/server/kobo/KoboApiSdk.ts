@@ -1,10 +1,10 @@
-import {ApiClient, RequestOption} from '../ApiClient'
-import {objectToQueryString, UUID} from 'infoportal-common'
+import {HttpClient, RequestOption} from '../HttpClient'
+import {objectToQueryString, UUID} from '@infoportal/common'
 import {Kobo} from 'kobo-sdk'
 import {appConfig, AppConfig} from '@/conf/AppConfig'
 import {ApiPagination} from '@/core/sdk/server/_core/ApiSdkUtils'
 import {Method} from 'axios'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export interface FilterBy {
   column: string
@@ -15,7 +15,7 @@ export interface FilterBy {
 export interface AnswersFilters<T extends FilterBy[] = FilterBy[]> {
   start?: Date
   end?: Date
-  ids?: Ip.FormId[]
+  ids?: Api.FormId[]
   filterBy?: T
 }
 
@@ -30,11 +30,11 @@ export interface FnMap<T> {
 
 export class KoboApiSdk {
   constructor(
-    private client: ApiClient,
+    private client: HttpClient,
     private conf: AppConfig = appConfig,
   ) {}
 
-  readonly synchronizeAnswers = (formId: Ip.FormId) => {
+  readonly synchronizeAnswers = (formId: Api.FormId) => {
     return this.client.post(`/kobo-api/${formId}/sync`)
   }
 
@@ -62,7 +62,7 @@ export class KoboApiSdk {
     fileName,
   }: {
     baseUrl: string
-    formId: Ip.FormId
+    formId: Api.FormId
     answerId: Kobo.SubmissionId
     attachmentId: string
     fileName?: string
@@ -80,7 +80,7 @@ export class KoboApiSdk {
     formId,
     options,
   }: {
-    formId: Ip.FormId
+    formId: Api.FormId
     method: Method
     url: string
     options?: RequestOption

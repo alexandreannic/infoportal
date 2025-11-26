@@ -18,12 +18,12 @@ import {
 } from '@mui/material'
 import {DialogProps} from '@toolpad/core'
 import {useMemo, useState} from 'react'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {buildDbColumns} from '@infoportal/database-column'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/core/KoboAttachmentUrl.js'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 
 export const databaseAnswerViewRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -34,9 +34,9 @@ export const databaseAnswerViewRoute = createRoute({
 function DatabaseAnswerView() {
   const {m} = useI18n()
   const {workspaceId, formId, answerId} = databaseAnswerViewRoute.useParams() as {
-    workspaceId: Ip.WorkspaceId
-    formId: Ip.FormId
-    answerId: Ip.SubmissionId
+    workspaceId: Api.WorkspaceId
+    formId: Api.FormId
+    answerId: Api.SubmissionId
   }
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
   const {inspector, form} = useFormContext(_ => _)
@@ -95,8 +95,8 @@ export const DialogAnswerView = ({
   onClose,
   payload: {schema, formId, submission, workspaceId},
 }: DialogProps<{
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
   schema: SchemaInspector
   submission: Submission
 }>) => {
@@ -146,11 +146,11 @@ const KoboAnswerFormView = ({
   inspector,
   showQuestionWithoutAnswer,
 }: {
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
   inspector: SchemaInspector
   showQuestionWithoutAnswer?: boolean
   answer: Submission
-  formId: Ip.FormId
+  formId: Api.FormId
 }) => {
   return (
     <Box>
@@ -184,10 +184,10 @@ const KoboAnswerQuestionView = ({
   formId,
   workspaceId,
 }: {
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
   inspector: SchemaInspector
-  questionSchema: Ip.Form.Question
+  questionSchema: Api.Form.Question
   answer: Submission
 }) => {
   const langIndex = useFormContext(_ => _.langIndex)

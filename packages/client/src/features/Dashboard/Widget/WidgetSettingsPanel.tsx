@@ -1,5 +1,5 @@
 import {Core} from '@/shared'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import React, {RefObject, useRef} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, Icon, useTheme} from '@mui/material'
@@ -18,10 +18,10 @@ import {TableSettings} from '@/features/Dashboard/Widget/Table/TableSettings'
 import {CardSettings} from '@/features/Dashboard/Widget/Card/CardSettings'
 import {AlertSettings} from '@/features/Dashboard/Widget/Alert/AlertSettings'
 
-export type WidgetUpdatePayload = Omit<Ip.Dashboard.Widget.Payload.Update, 'workspaceId' | 'id' | 'dashboardId'>
+export type WidgetUpdatePayload = Omit<Api.Dashboard.Widget.Payload.Update, 'workspaceId' | 'id' | 'dashboardId'>
 
 type Context = {
-  widget: Ip.Dashboard.Widget
+  widget: Api.Dashboard.Widget
   stepperRef: RefObject<Core.StepperHandle | null>
   onClose: () => void
   onChange: (value: WidgetUpdatePayload) => void
@@ -30,7 +30,7 @@ type Context = {
 const Context = React.createContext<Context>({} as Context)
 export const useWidgetSettingsContext = () => React.useContext(Context)
 
-export const getQuestionTypeByWidget = (type: Ip.Dashboard.Widget.Type): Kobo.Form.QuestionType[] => {
+export const getQuestionTypeByWidget = (type: Api.Dashboard.Widget.Type): Kobo.Form.QuestionType[] => {
   switch (type) {
     case 'BarChart': {
       return ['select_multiple', 'select_one', 'calculate']
@@ -77,8 +77,8 @@ export const WidgetCreatorFormPanel = ({
   widget,
   onChange,
 }: {
-  sectionId: Ip.Dashboard.SectionId
-  widget: Ip.Dashboard.Widget
+  sectionId: Api.Dashboard.SectionId
+  widget: Api.Dashboard.Widget
   onChange: (value: WidgetUpdatePayload) => void
   onClose: () => void
 }) => {

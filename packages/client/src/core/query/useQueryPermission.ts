@@ -1,4 +1,4 @@
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
@@ -16,7 +16,7 @@ export class UseQueryPermission {
     })
   }
 
-  static workspace({workspaceId}: {workspaceId: Ip.WorkspaceId}) {
+  static workspace({workspaceId}: {workspaceId: Api.WorkspaceId}) {
     const {apiv2} = useAppSettings()
     return useQuery({
       queryKey: queryKeys.permission.byWorkspaceId(workspaceId),
@@ -24,7 +24,7 @@ export class UseQueryPermission {
     })
   }
 
-  static form({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
+  static form({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) {
     const {apiv2} = useAppSettings()
     return useQuery({
       queryKey: queryKeys.permission.byFormId(workspaceId, formId),

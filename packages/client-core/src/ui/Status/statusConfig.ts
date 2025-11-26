@@ -1,4 +1,4 @@
-import {StateStatus} from 'infoportal-common'
+import {StateStatus} from '@infoportal/common'
 import {Theme} from '@mui/material'
 
 export const statusConfig: Record<

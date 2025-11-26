@@ -3,9 +3,9 @@ import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
 import {Core, Datatable} from '@/shared'
 import {map} from '@axanc/ts-utils'
 import {Theme, useTheme} from '@mui/material'
-import {KoboFlattenRepeatedGroup, SchemaInspector} from '@infoportal/kobo-helper'
+import {FormDataFlattenRepeatGroup, SchemaInspector} from '@infoportal/form-helper'
 import {useMemo} from 'react'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute, useFormContext} from '@/features/Form/Form'
@@ -26,8 +26,8 @@ export const databaseKoboRepeatRoute = createRoute({
 
 function DatabaseKoboRepeatContainer() {
   const {workspaceId, formId, group} = databaseKoboRepeatRoute.useParams() as {
-    workspaceId: Ip.WorkspaceId
-    formId: Ip.FormId
+    workspaceId: Api.WorkspaceId
+    formId: Api.FormId
     group: string
   }
   const {id, index} = databaseKoboRepeatRoute.useSearch()
@@ -63,8 +63,8 @@ const DatabaseKoboRepeat = ({
 }: {
   id?: string
   index?: number
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
   group: string
   inspector: SchemaInspector
 }) => {
@@ -105,7 +105,7 @@ const DatabaseKoboRepeat = ({
   }, [formId, group, inspector])
 
   const flat = useMemo(() => {
-    return KoboFlattenRepeatedGroup.run({
+    return FormDataFlattenRepeatGroup.run({
       data: data?.map(_ => ({id: _.id, submissionTime: _.submissionTime, ..._.answers})) ?? [],
       path: paths,
     })
@@ -169,21 +169,21 @@ export function getColumnsForRepeatGroup({
   t,
 }: {
   groupName: string
-  formId: Ip.FormId
+  formId: Api.FormId
   inspector: SchemaInspector
   onRepeatGroupClick?: OnRepeatGroupClick
   m: Messages
   t: Theme
 }) {
   const groupInfo = inspector.lookup.group.getByName(groupName)!
-  const res: Datatable.Column.Props<KoboFlattenRepeatedGroup.Data>[] = []
+  const res: Datatable.Column.Props<FormDataFlattenRepeatGroup.Data>[] = []
   if (groupInfo.depth > 1) {
     res.push({
       width: defaultColWidth,
       type: 'select_one',
       id: '_parent_table_name',
       head: '_parent_table_name',
-      renderQuick: (_: KoboFlattenRepeatedGroup.Data) => _._parent_table_name,
+      renderQuick: (_: FormDataFlattenRepeatGroup.Data) => _._parent_table_name,
     })
   }
   res.push(
@@ -193,7 +193,7 @@ export function getColumnsForRepeatGroup({
       width: 50,
       id: '_parent_index',
       head: '_parent_index',
-      renderQuick: (_: KoboFlattenRepeatedGroup.Data) => '' + _._parent_index,
+      renderQuick: (_: FormDataFlattenRepeatGroup.Data) => '' + _._parent_index,
     },
     buildDbColumns.meta.id(),
     buildDbColumns.meta.submissionTime({m}),

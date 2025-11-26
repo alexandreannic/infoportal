@@ -2,10 +2,10 @@ import {useI18n} from '@infoportal/client-i18n'
 import {KoboMapper, Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from '@mui/material'
 import {DialogProps} from '@toolpad/core'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import {useRef} from 'react'
 import {XlsFormFiller, XlsFormFillerHandle} from 'xls-form-filler'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Link} from '@tanstack/react-router'
 import {Core} from '@/shared'
 
@@ -14,8 +14,8 @@ export const DialogAnswerEdit = ({
   payload: {inspector, workspaceId, formId, submission},
 }: DialogProps<{
   inspector: SchemaInspector
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
   submission: Submission
 }>) => {
   const formRef = useRef<XlsFormFillerHandle>(null)

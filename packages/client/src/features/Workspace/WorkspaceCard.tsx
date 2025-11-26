@@ -2,13 +2,13 @@ import {Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
 import {AppAvatar, Core} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'
 import {Link} from '@tanstack/react-router'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryWorkspaceInvitation} from '@/core/query/workspace/useQueryWorkspaceInvitation.js'
 import {appConfig} from '@/conf/AppConfig.js'
 import {AccessLevelRow} from '@/core/layout/AppHeaderMenu.js'
 import {CardAdd} from '@/shared/CardAdd'
 
-export const WorkspaceCard = ({workspace}: {workspace: Ip.Workspace}) => {
+export const WorkspaceCard = ({workspace}: {workspace: Api.Workspace}) => {
   const {m, formatDate} = useI18n()
   const t = useTheme()
 
@@ -50,7 +50,7 @@ export const WorkspaceCardInvitation = ({
   sx,
   ...props
 }: Core.PanelProps & {
-  invitation: Ip.Workspace.InvitationW_workspace
+  invitation: Api.Workspace.InvitationW_workspace
 }) => {
   const t = useTheme()
   const {m, formatDateTime} = useI18n()

@@ -2,7 +2,7 @@ import {Autocomplete, AutocompleteProps, Chip} from '@mui/material'
 import React from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {useAppSettings} from '@/core/context/ConfigContext'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
 import {Core} from '@/shared'
 
@@ -10,7 +10,7 @@ export const DrcJobInputMultiple = ({
   workspaceId,
   ...props
 }: Omit<AutocompleteProps<string, any, any, any>, 'renderInput' | 'options'> & {
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
 }) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
@@ -40,7 +40,7 @@ export const DrcJobInputSingle = ({
   workspaceId,
   ...props
 }: Omit<AutocompleteProps<string, any, any, any>, 'renderInput' | 'options'> & {
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
 }) => {
   const {m} = useI18n()
   const {api} = useAppSettings()

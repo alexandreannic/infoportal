@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import type * as Prisma from '@prisma/client'
 import {Kobo} from 'kobo-sdk'
 import {Defined} from 'yup'
@@ -7,7 +7,7 @@ export const mapForm = <
   T extends {
     kobo?: any | null
     category?: string | null
-    deploymentStatus?: Ip.Form.DeploymentStatus | null
+    deploymentStatus?: Api.Form.DeploymentStatus | null
     serverId?: string | null
     id?: string
   },
@@ -15,11 +15,11 @@ export const mapForm = <
   _: T,
 ): Defined<
   T & {
-    id: Ip.FormId
-    serverId?: Ip.ServerId
+    id: Api.FormId
+    serverId?: Api.ServerId
     category?: string
     deploymentStatus?: string
-    kobo?: Ip.Form.KoboInfo
+    kobo?: Api.Form.KoboInfo
   }
 > => _ as any
 
@@ -31,7 +31,7 @@ export const mapKoboInfo = <
 >(
   _: T,
 ): Defined<T> & {
-  accountId?: Ip.ServerId
+  accountId?: Api.ServerId
   koboId?: Kobo.FormId
 } => _ as any
 
@@ -39,7 +39,7 @@ export const mapFormActionReport = <T extends {startedBy: string}>(
   _: T,
 ): Defined<
   T & {
-    startedBy: Ip.User.Email
+    startedBy: Api.User.Email
   }
 > => _ as any
 
@@ -54,26 +54,26 @@ export const mapFormAction = <
   _: T,
 ): Defined<
   T & {
-    id: Ip.Form.ActionId
-    targetFormId: Ip.FormId
-    formId: Ip.FormId
-    type: Ip.Form.Action.Type
+    id: Api.Form.ActionId
+    targetFormId: Api.FormId
+    formId: Api.FormId
+    type: Api.Form.Action.Type
   }
 > => _ as any
 
 export const mapVersion = <T extends {id: string; uploadedBy: string}>(
   _: T,
-): T & {id: Ip.Form.VersionId; uploadedBy: Ip.User.Email} => _ as any
+): T & {id: Api.Form.VersionId; uploadedBy: Api.User.Email} => _ as any
 
 export const mapFormActionLog = <
   T extends {submission: any | null; id: string; actionId: string | null; details: string | null},
 >(
   _: T,
-): Defined<T & {submission?: Ip.Submission; actionId?: Ip.Form.ActionId; id: Ip.Form.Action.LogId; details?: string}> =>
+): Defined<T & {submission?: Api.Submission; actionId?: Api.Form.ActionId; id: Api.Form.Action.LogId; details?: string}> =>
   _ as any
 
 export const mapServer = <T extends {id: string; workspaceId: string}>(
   _: T,
-): T & {id: Ip.ServerId; workspaceId: Ip.WorkspaceId} => _ as any
+): T & {id: Api.ServerId; workspaceId: Api.WorkspaceId} => _ as any
 
-export const mapSubmission = <T extends {id: string}>(_: T): Defined<Omit<T, 'id'> & {id: Ip.SubmissionId}> => _ as any
+export const mapSubmission = <T extends {id: string}>(_: T): Defined<Omit<T, 'id'> & {id: Api.SubmissionId}> => _ as any

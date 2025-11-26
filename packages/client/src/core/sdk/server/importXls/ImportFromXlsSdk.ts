@@ -1,9 +1,9 @@
-import {ApiClient} from '@/core/sdk/server/ApiClient'
-import {Ip} from '@infoportal/api-sdk'
-import FormId = Ip.FormId
+import {HttpClient} from '@/core/sdk/server/HttpClient'
+import {Api} from '@infoportal/api-sdk'
+import FormId = Api.FormId
 
 export class ImportFromXlsDataSdk {
-  constructor(private client: ApiClient) {}
+  constructor(private client: HttpClient) {}
 
   readonly importFromXLSFile = (formId: FormId, file: File, action: 'create' | 'update') => {
     return this.client.postFile(`kobo-api/${formId}/import-from-xls`, {

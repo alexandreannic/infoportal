@@ -1,7 +1,7 @@
 import {Box, BoxProps, Icon, useTheme} from '@mui/material'
 import React, {ReactNode, useEffect, useRef} from 'react'
 import {usePdfContext} from './PdfLayout'
-import {uppercaseHandlingAcronyms} from 'infoportal-common'
+import {uppercaseHandlingAcronyms} from '@infoportal/common'
 import {Core} from '@/shared'
 
 export const PdfSlide = ({

@@ -1,19 +1,19 @@
 import {create} from 'zustand'
 import {immer} from 'zustand/middleware/immer'
-import {Ip} from '@infoportal/api-sdk'
-import {genShortid} from 'infoportal-common'
+import {Api} from '@infoportal/api-sdk'
+import {genShortid} from '@infoportal/common'
 import {RowId} from '@infoportal/client-datatable/dist/core/types'
 import {TableName} from '../table/XlsFormEditor'
-import {SchemaParser} from '@infoportal/kobo-helper'
+import {SchemaParser} from '@infoportal/form-helper'
 
 interface XlsFormState {
-  schema: Ip.Form.Schema
-  past: Ip.Form.Schema[]
-  future: Ip.Form.Schema[]
+  schema: Api.Form.Schema
+  past: Api.Form.Schema[]
+  future: Api.Form.Schema[]
   undo: () => void
   redo: () => void
-  setTranslations: (translations: Ip.Form.Schema['translations']) => void
-  setSchema: (_: Ip.Form.Schema) => void
+  setTranslations: (translations: Api.Form.Schema['translations']) => void
+  setSchema: (_: Api.Form.Schema) => void
   reorderRows: (_: {table: TableName; index: number; rowIds: string[]}) => void
   addRows: (_: {table: TableName; count: number}) => void
   deleteRows: (_: {table: TableName; rowIds: string[]}) => void
@@ -21,12 +21,12 @@ interface XlsFormState {
     table: TableName
     value: any
     fieldIndex?: number
-    field: keyof Ip.Form.Question | keyof Ip.Form.Choice
+    field: keyof Api.Form.Question | keyof Api.Form.Choice
     rowKeys: string[]
   }) => void
 }
 
-export const getDataKey = (_: Ip.Form.Question | Ip.Form.Choice) => _.$kuid
+export const getDataKey = (_: Api.Form.Question | Api.Form.Choice) => _.$kuid
 export const skippedQuestionTypes = ['deviceid', 'username', 'start', 'end'] as const
 
 const HISTORY_LIMIT = 50
@@ -96,14 +96,14 @@ export const useXlsFormStore = create<XlsFormState>()(
           const end = t.length + count
 
           for (let i = start; i < end; i++) {
-            const emptySurvey: Ip.Form.Question = {
+            const emptySurvey: Api.Form.Question = {
               name: '',
               $xpath: null as any, // Filled later
               calculation: '',
               type: 'text',
               $kuid: SchemaParser.gen$kuid(),
             }
-            const emptyChoice: Ip.Form.Choice = {
+            const emptyChoice: Api.Form.Choice = {
               name: '',
               $kuid: SchemaParser.gen$kuid(),
               list_name: '',
@@ -141,7 +141,7 @@ export const useXlsFormStore = create<XlsFormState>()(
       updateCells: ({table, rowKeys, field, value, fieldIndex}) =>
         withHistory(draft => {
           for (const key of rowKeys) {
-            const rows: Array<Ip.Form.Question | Ip.Form.Choice> = draft.schema[table] ?? []
+            const rows: Array<Api.Form.Question | Api.Form.Choice> = draft.schema[table] ?? []
             const row: any = rows.find(r => r.$kuid === key)
             if (!row) continue
 

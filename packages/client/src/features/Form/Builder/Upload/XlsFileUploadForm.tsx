@@ -5,7 +5,7 @@ import {Core} from '@/shared'
 import {useQueryVersion} from '@/core/query/form/useQueryVersion'
 import {useI18n} from '@infoportal/client-i18n'
 import {Alert, AlertTitle, Box, CircularProgress, Icon, Skeleton} from '@mui/material'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {DiffView} from '@/features/Form/Builder/Upload/DiffView'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {formBuilderRoute} from '@/features/Form/Builder/FormBuilder'
@@ -20,12 +20,12 @@ type Form = {
   xlsFile: File
 }
 
-const schemaToString = (schema?: Ip.Form.Schema): string => {
+const schemaToString = (schema?: Api.Form.Schema): string => {
   if (!schema) return '{}'
   return JSON.stringify(Core.sortObjectKeysDeep(schema), null, 2)
 }
 
-const removeSysKeys = (schema?: Ip.Form.Schema): Ip.Form.Schema | undefined => {
+const removeSysKeys = (schema?: Api.Form.Schema): Api.Form.Schema | undefined => {
   if (!schema) return
   return {
     ...schema,
@@ -41,7 +41,7 @@ export const formBuilderXlsUploaderRoute = createRoute({
 })
 
 function XlsFileUploadForm() {
-  const {workspaceId, formId} = formBuilderRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
+  const {workspaceId, formId} = formBuilderRoute.useParams() as {workspaceId: Api.WorkspaceId; formId: Api.FormId}
   const queryVersion = useQueryVersion({workspaceId, formId})
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
   const lastSchema = useMemo(() => {
@@ -58,10 +58,10 @@ function XlsFileUploadFormInner({
   workspaceId,
   formId,
 }: {
-  lastSchema?: Ip.Form.Version
+  lastSchema?: Api.Form.Version
   onSubmit?: (f: Form) => Promise<any>
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
 }) {
   const {m} = useI18n()
   const {
@@ -69,7 +69,7 @@ function XlsFileUploadFormInner({
     ...form
   } = useForm<Form>({defaultValues: {message: ''}, mode: 'onChange'})
   const queryVersion = useQueryVersion({workspaceId, formId})
-  const [validation, setValidation] = useState<Ip.Form.Schema.Validation>()
+  const [validation, setValidation] = useState<Api.Form.Schema.Validation>()
   const stepperRef = useRef<Core.StepperHandle>(null)
   const [schemaHasChanges, setSchemaHasChanges] = useState<boolean | null>(null)
   const querySchema = UseQuerySchema.getByVersion({formId, workspaceId, versionId: lastSchema?.id})

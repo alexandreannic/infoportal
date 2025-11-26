@@ -1,6 +1,6 @@
 import {Controller, useForm} from 'react-hook-form'
 import {useI18n} from '@infoportal/client-i18n'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Grid} from '@mui/material'
 import {Core} from '@/shared'
 import {SelectFormCategory} from '@/shared/customInput/SelectFormCategory.js'
@@ -19,7 +19,7 @@ export const NewFormCreateInternal = ({
   btnLabel?: string
   loading?: boolean
   onSubmit: (_: Form) => void
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
 }) => {
   const {m} = useI18n()
   const form = useForm<Form>({

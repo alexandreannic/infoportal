@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {Request} from 'express'
-import {HttpError, Ip, Permission} from '@infoportal/api-sdk'
+import {Api, HttpError} from '@infoportal/api-sdk'
 import {UserService} from './user/UserService.js'
 import {FormAccessService} from './form/access/FormAccessService.js'
 import {WorkspaceAccessService} from './workspace/WorkspaceAccessService.js'
@@ -17,12 +17,12 @@ export class PermissionService {
     req,
     connectedUser,
   }: {
-    connectedUser: Ip.User
-    permissions?: Ip.Permission.Requirements
+    connectedUser: Api.User
+    permissions?: Api.Permission.Requirements
     req: Request
   }) => {
     return this.checkPermissions({
-      workspaceId: (req.params.workspaceId ?? req.body.workspaceId) as Ip.WorkspaceId,
+      workspaceId: (req.params.workspaceId ?? req.body.workspaceId) as Api.WorkspaceId,
       formId: PermissionService.searchWhereIsFormId(req),
       user: connectedUser,
       permissions,
@@ -30,10 +30,10 @@ export class PermissionService {
   }
 
   private static readonly searchWhereIsFormId = (req: Request) => {
-    return (req.params.formId ?? req.body.formId ?? req.query.formId) as Ip.FormId | undefined
+    return (req.params.formId ?? req.body.formId ?? req.query.formId) as Api.FormId | undefined
   }
 
-  readonly checkUserConnected = async (req: Request): Promise<Ip.User> => {
+  readonly checkUserConnected = async (req: Request): Promise<Api.User> => {
     const email = req.session.app?.user.email
     if (!email) {
       throw new HttpError.Forbidden('auth_user_not_connected')
@@ -51,10 +51,10 @@ export class PermissionService {
     workspaceId,
     formId,
   }: {
-    user: Ip.User
-    permissions?: Ip.Permission.Requirements
-    workspaceId?: Ip.WorkspaceId
-    formId?: Ip.FormId
+    user: Api.User
+    permissions?: Api.Permission.Requirements
+    workspaceId?: Api.WorkspaceId
+    formId?: Api.FormId
   }): Promise<boolean> {
     if (!permissions) return false
     if (permissions.global && (await this.canGlobal(user, permissions.global))) return true
@@ -70,19 +70,19 @@ export class PermissionService {
     return false
   }
 
-  async getGlobal({user}: {user: Ip.User}): Promise<Ip.Permission.Global> {
-    return Permission.Evaluate.global(user)
+  async getGlobal({user}: {user: Api.User}): Promise<Api.Permission.Global> {
+    return Api.Permission.Helper.Evaluate.global(user)
   }
 
   async getByWorkspace({
     user,
     workspaceId,
   }: {
-    user: Ip.User
-    workspaceId: Ip.WorkspaceId
-  }): Promise<Ip.Permission.Workspace> {
+    user: Api.User
+    workspaceId: Api.WorkspaceId
+  }): Promise<Api.Permission.Workspace> {
     const wsAccess = await this.workspace.getByUser({workspaceId, user})
-    return Permission.Evaluate.workspace(user, wsAccess)
+    return Api.Permission.Helper.Evaluate.workspace(user, wsAccess)
   }
 
   async getByForm({
@@ -90,18 +90,18 @@ export class PermissionService {
     workspaceId,
     formId,
   }: {
-    user: Ip.User
-    workspaceId: Ip.WorkspaceId
-    formId: Ip.FormId
-  }): Promise<Ip.Permission.Form> {
+    user: Api.User
+    workspaceId: Api.WorkspaceId
+    formId: Api.FormId
+  }): Promise<Api.Permission.Form> {
     const wsAccess = await this.workspace.getByUser({workspaceId, user})
     const formAccesses = await this.formAccess
       .search({workspaceId, formId, user})
       .then(_ => _.filter(_ => _.formId === formId))
-    return Permission.Evaluate.form(user, wsAccess, formAccesses)
+    return Api.Permission.Helper.Evaluate.form(user, wsAccess, formAccesses)
   }
 
-  private async canGlobal(user: Ip.User, required: Array<keyof Ip.Permission.Global>): Promise<boolean> {
+  private async canGlobal(user: Api.User, required: Array<keyof Api.Permission.Global>): Promise<boolean> {
     const evals = await this.getGlobal({user})
     return required.some(perm => evals[perm])
   }
@@ -111,9 +111,9 @@ export class PermissionService {
     workspaceId,
     required,
   }: {
-    user: Ip.User
-    workspaceId: Ip.WorkspaceId
-    required: Array<keyof Ip.Permission.Workspace>
+    user: Api.User
+    workspaceId: Api.WorkspaceId
+    required: Array<keyof Api.Permission.Workspace>
   }): Promise<boolean> {
     const evals = await this.getByWorkspace({user, workspaceId})
     return required.some(perm => evals[perm])
@@ -125,10 +125,10 @@ export class PermissionService {
     formId,
     required,
   }: {
-    user: Ip.User
-    workspaceId: Ip.WorkspaceId
-    formId: Ip.FormId
-    required: Array<keyof Ip.Permission.Form>
+    user: Api.User
+    workspaceId: Api.WorkspaceId
+    formId: Api.FormId
+    required: Array<keyof Api.Permission.Form>
   }): Promise<boolean> {
     const evals = await this.getByForm({user, workspaceId, formId})
     return required.some(perm => evals[perm])

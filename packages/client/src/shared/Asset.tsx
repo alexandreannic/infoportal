@@ -1,5 +1,5 @@
 import {Icon as MuiIcon, IconProps} from '@mui/material'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 
 export type Asset = {
@@ -7,7 +7,7 @@ export type Asset = {
   name: string
   category?: string
   createdAt: Date
-  deploymentStatus?: Ip.Form.DeploymentStatus
+  deploymentStatus?: Api.Form.DeploymentStatus
   type: AssetType
 }
 

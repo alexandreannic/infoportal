@@ -2,10 +2,10 @@ import {PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../index.js'
 import {appConf} from '../../core/conf/AppConf.js'
 import {yup} from '../../helper/Utils.js'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {KoboSchemaCache} from './KoboSchemaCache.js'
-import {SchemaParser, SchemaValidator} from '@infoportal/kobo-helper'
+import {SchemaParser, SchemaValidator} from '@infoportal/form-helper'
 import {XlsFormParser} from './XlsFormParser.js'
 
 export class FormVersionService {
@@ -30,10 +30,10 @@ export class FormVersionService {
     file,
     ...rest
   }: {
-    workspaceId: Ip.WorkspaceId
+    workspaceId: Api.WorkspaceId
     message?: string
-    uploadedBy: Ip.User.Email
-    formId: Ip.FormId
+    uploadedBy: Api.User.Email
+    formId: Api.FormId
     file: Express.Multer.File
   }) => {
     const validation = await this.validateAndParse(file.path)
@@ -45,7 +45,7 @@ export class FormVersionService {
 
   readonly validateAndParse = XlsFormParser.validateAndParse
 
-  readonly deployLastDraft = async ({formId}: {formId: Ip.FormId}) => {
+  readonly deployLastDraft = async ({formId}: {formId: Api.FormId}) => {
     return this.prisma
       .$transaction(async tx => {
         await tx.formVersion.updateMany({
@@ -78,7 +78,7 @@ export class FormVersionService {
     formId,
     workspaceId,
     ...rest
-  }: Ip.Form.Version.Payload.CreateNewVersion & {uploadedBy: Ip.User.Email}) => {
+  }: Api.Form.Version.Payload.CreateNewVersion & {uploadedBy: Api.User.Email}) => {
     return this.prisma.$transaction(async tx => {
       const latest = await tx.formVersion.findFirst({
         where: {formId},
@@ -118,7 +118,7 @@ export class FormVersionService {
     })
   }
 
-  readonly getVersions = ({formId}: {formId: Ip.FormId}): Promise<Ip.Form.Version[]> => {
+  readonly getVersions = ({formId}: {formId: Api.FormId}): Promise<Api.Form.Version[]> => {
     return this.prisma.formVersion
       .findMany({
         omit: {schema: true},
@@ -127,7 +127,7 @@ export class FormVersionService {
       .then(_ => _.map(prismaMapper.form.mapVersion))
   }
 
-  readonly hasActiveVersion = ({formId}: {formId: Ip.FormId}): Promise<boolean> => {
+  readonly hasActiveVersion = ({formId}: {formId: Api.FormId}): Promise<boolean> => {
     return this.prisma.formVersion
       .findFirst({
         where: {formId, status: 'active'},
@@ -140,9 +140,9 @@ export class FormVersionService {
     workspaceId,
     author,
   }: {
-    workspaceId: Ip.WorkspaceId
-    formId: Ip.FormId
-    author: Ip.User.Email
+    workspaceId: Api.WorkspaceId
+    formId: Api.FormId
+    author: Api.User.Email
   }) => {
     app.cache.clear(AppCacheKey.KoboSchema, formId)
     const lastSchema = await this.koboSchemaCache.get({formId})

@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {CircularProgress, Icon, useTheme} from '@mui/material'
 import {AppAvatar, Core, Datatable} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'
@@ -17,14 +17,14 @@ export const formActionReportsRoute = createRoute({
   component: FormActionReports,
 })
 
-type Report = Ip.Form.Action.Report & {
+type Report = Api.Form.Action.Report & {
   running?: boolean
 }
 
 export function FormActionReports() {
   const params = formActionReportsRoute.useParams()
-  const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const formId = params.formId as Ip.FormId
+  const workspaceId = params.workspaceId as Api.WorkspaceId
+  const formId = params.formId as Api.FormId
 
   const {m, formatDateTime, formatDuration, formatLargeNumber} = useI18n()
   const t = useTheme()

@@ -4,13 +4,13 @@ import {DatabaseKoboTableProvider} from '@/features/Form/Database/DatabaseContex
 import {DatabaseTableContent} from '@/features/Form/Database/DatabaseTableContent'
 import {Skeleton} from '@mui/material'
 import {useCallback} from 'react'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {Datatable} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import {FetchParams} from '@axanc/react-hooks'
 import {TabContent} from '@/shared/Tab/TabContent.js'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 
 export const answersRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -19,11 +19,11 @@ export const answersRoute = createRoute({
 })
 
 export interface DatabaseTableProps {
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
   inspector?: SchemaInspector
-  form: Ip.Form
-  formId: Ip.FormId
-  permission: Ip.Permission.Form
+  form: Api.Form
+  formId: Api.FormId
+  permission: Api.Permission.Form
   dataFilter?: (_: Submission) => boolean
   onFiltersChange?: (_: Record<string, Datatable.FilterValue>) => void
   onDataChange?: (_: {data?: Submission[]; filteredAndSortedData?: Submission[]}) => void

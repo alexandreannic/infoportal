@@ -1,6 +1,6 @@
 import {DatabaseViewVisibility, Prisma, PrismaClient} from '@prisma/client'
-import {UUID} from 'infoportal-common'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {UUID} from '@infoportal/common'
+import {HttpError, Api} from '@infoportal/api-sdk'
 
 export class DatabaseView {
   constructor(private prisma: PrismaClient) {}
@@ -38,11 +38,11 @@ export class DatabaseView {
 
   readonly updateCol = async ({
     viewId,
-    updatedBy = 'unknown' as Ip.User.Email,
+    updatedBy = 'unknown' as Api.User.Email,
     body,
   }: {
     viewId: UUID
-    updatedBy?: Ip.User.Email
+    updatedBy?: Api.User.Email
     body: Pick<Prisma.DatabaseViewColCreateInput, 'name' | 'width' | 'visibility'>
   }) => {
     const view = await this.prisma.databaseView.findFirst({

@@ -4,7 +4,7 @@ import {getQuestionTypeByWidget, useWidgetSettingsContext} from '@/features/Dash
 import {WidgetSettingsSection} from '@/features/Dashboard/Widget/shared/WidgetSettingsSection'
 import React, {useEffect} from 'react'
 import {Box} from '@mui/material'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {RangeTableEditor} from '@/features/Dashboard/Widget/Table/RangeTableEditor'
@@ -18,9 +18,9 @@ export function TableSettings() {
   const schemaInspector = useDashboardContext(_ => _.schemaInspector)
   const langIndex = useDashboardContext(_ => _.langIndex)
   const {widget, onChange} = useWidgetSettingsContext()
-  const config = widget.config as Ip.Dashboard.Widget.Config['Table']
+  const config = widget.config as Api.Dashboard.Widget.Config['Table']
 
-  const form = useForm<Ip.Dashboard.Widget.Config['Table']>({
+  const form = useForm<Api.Dashboard.Widget.Config['Table']>({
     mode: 'onChange',
     defaultValues: {
       ...config,

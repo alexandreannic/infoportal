@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react'
 import {Box, Icon, useTheme} from '@mui/material'
-import {uppercaseHandlingAcronyms} from 'infoportal-common'
+import {uppercaseHandlingAcronyms} from '@infoportal/common'
 import {Core} from '@/shared'
 
 type PanelWidgetProps = Omit<Core.PanelProps, 'title' | 'expendable' | 'savableAsImg'> & {

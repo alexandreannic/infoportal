@@ -1,6 +1,6 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm, useWatch} from 'react-hook-form'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import React, {useEffect} from 'react'
 import {Box, Icon} from '@mui/material'
 import {getQuestionTypeByWidget, useWidgetSettingsContext} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
@@ -17,8 +17,8 @@ export function CardSettings() {
   const {m} = useI18n()
   const schema = useDashboardContext(_ => _.schemaInspector)
   const {widget, onChange} = useWidgetSettingsContext()
-  const config = widget.config as Ip.Dashboard.Widget.Config['Card']
-  const form = useForm<Ip.Dashboard.Widget.Config['Card']>({
+  const config = widget.config as Api.Dashboard.Widget.Config['Card']
+  const form = useForm<Api.Dashboard.Widget.Config['Card']>({
     mode: 'onChange',
     defaultValues: {
       ...widget.config,

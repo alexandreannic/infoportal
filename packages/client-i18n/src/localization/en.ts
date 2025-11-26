@@ -1,5 +1,5 @@
 import {formatDistance, formatDuration as formatDurationFns, intervalToDuration} from 'date-fns'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 const invalidDate = ''
 
@@ -128,16 +128,16 @@ export const en = Object.freeze({
     koboServer: 'Kobo server',
     no: 'No',
     validation_: {
-      [Ip.Submission.Validation.Approved]: 'Approved',
-      [Ip.Submission.Validation.Pending]: 'Pending',
-      [Ip.Submission.Validation.Rejected]: 'Rejected',
-      [Ip.Submission.Validation.Flagged]: 'Flagged',
-      [Ip.Submission.Validation.UnderReview]: 'UnderReview',
+      [Api.Submission.Validation.Approved]: 'Approved',
+      [Api.Submission.Validation.Pending]: 'Pending',
+      [Api.Submission.Validation.Rejected]: 'Rejected',
+      [Api.Submission.Validation.Flagged]: 'Flagged',
+      [Api.Submission.Validation.UnderReview]: 'UnderReview',
     } as const,
     deploymentStatus_: {
-      [Ip.Form.DeploymentStatus.draft]: 'Draft',
-      [Ip.Form.DeploymentStatus.archived]: 'Archived',
-      [Ip.Form.DeploymentStatus.deployed]: 'Deployed',
+      [Api.Form.DeploymentStatus.draft]: 'Draft',
+      [Api.Form.DeploymentStatus.archived]: 'Archived',
+      [Api.Form.DeploymentStatus.deployed]: 'Deployed',
     },
     open: 'Open',
     submissionsByLocation: 'Submissions by location',
@@ -194,12 +194,12 @@ export const en = Object.freeze({
       actionSummary: 'Action summary',
       newAction: 'Create an Action',
       _actionTypeLabel: {
-        [Ip.Form.Action.Type.insert]: 'Insert',
-        [Ip.Form.Action.Type.mutate]: 'Mutate',
+        [Api.Form.Action.Type.insert]: 'Insert',
+        [Api.Form.Action.Type.mutate]: 'Mutate',
       } as const,
       _actionTypeDesc: {
-        [Ip.Form.Action.Type.insert]: 'Generate new rows from submissions using a transformation.',
-        [Ip.Form.Action.Type.mutate]: 'Modify existing rows from submissions using a function.',
+        [Api.Form.Action.Type.insert]: 'Generate new rows from submissions using a transformation.',
+        [Api.Form.Action.Type.mutate]: 'Modify existing rows from submissions using a function.',
       } as const,
     },
     updatingTag: (rowsCount: number, key: string, value: string) => `Updating ${key}=${value} on ${rowsCount} rows...`,
@@ -246,14 +246,14 @@ export const en = Object.freeze({
     country: 'Country',
     selectCountry: 'Select country',
     _widgetType: {
-      [Ip.Dashboard.Widget.Type.Alert]: 'Paragraph',
-      [Ip.Dashboard.Widget.Type.Card]: 'Card',
-      [Ip.Dashboard.Widget.Type.PieChart]: 'Pie Chart',
-      [Ip.Dashboard.Widget.Type.GeoChart]: 'Geo Chart',
-      [Ip.Dashboard.Widget.Type.LineChart]: 'Line Chart',
-      [Ip.Dashboard.Widget.Type.BarChart]: 'Bar Chart',
-      [Ip.Dashboard.Widget.Type.GeoPoint]: 'Geo Point',
-      [Ip.Dashboard.Widget.Type.Table]: 'Table',
+      [Api.Dashboard.Widget.Type.Alert]: 'Paragraph',
+      [Api.Dashboard.Widget.Type.Card]: 'Card',
+      [Api.Dashboard.Widget.Type.PieChart]: 'Pie Chart',
+      [Api.Dashboard.Widget.Type.GeoChart]: 'Geo Chart',
+      [Api.Dashboard.Widget.Type.LineChart]: 'Line Chart',
+      [Api.Dashboard.Widget.Type.BarChart]: 'Bar Chart',
+      [Api.Dashboard.Widget.Type.GeoPoint]: 'Geo Point',
+      [Api.Dashboard.Widget.Type.Table]: 'Table',
     },
     signIn: 'Sign-in',
     signInMicrosoft: 'Continue with Microsoft',
@@ -448,9 +448,9 @@ export const en = Object.freeze({
     folder: 'Folder',
     folders: 'Folders',
     formSource_: {
-      [Ip.Form.Type.smart]: 'Smart database',
-      [Ip.Form.Type.kobo]: 'Imported from KoboToolbox',
-      [Ip.Form.Type.internal]: 'Raw form',
+      [Api.Form.Type.smart]: 'Smart database',
+      [Api.Form.Type.kobo]: 'Imported from KoboToolbox',
+      [Api.Form.Type.internal]: 'Raw form',
     },
     changeAccount: 'Change account',
     addNewKoboAccount: 'Add new Kobo account',

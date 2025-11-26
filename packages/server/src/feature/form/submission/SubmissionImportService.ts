@@ -1,4 +1,4 @@
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import xlsx from 'xlsx'
 import {PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from '../../kobo/KoboSdkGenerator.js'

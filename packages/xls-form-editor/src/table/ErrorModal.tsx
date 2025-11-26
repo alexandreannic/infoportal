@@ -1,4 +1,4 @@
-import {SchemaValidationErrorReport} from '@infoportal/kobo-helper'
+import {SchemaValidationErrorReport} from '@infoportal/form-helper'
 import {Box, Chip, Dialog, DialogActions, DialogContent, DialogTitle, useTheme} from '@mui/material'
 import {Messages, useI18n} from '@infoportal/client-i18n'
 import * as Core from '@infoportal/client-core'

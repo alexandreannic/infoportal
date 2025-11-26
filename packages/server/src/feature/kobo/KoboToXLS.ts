@@ -1,4 +1,4 @@
-import {convertNumberIndexToLetter} from 'infoportal-common'
+import {convertNumberIndexToLetter} from '@infoportal/common'
 import XlsxPopulate from 'xlsx-populate'
 import {PrismaClient} from '@prisma/client'
 import {appConf} from '../../core/conf/AppConf.js'
@@ -6,7 +6,7 @@ import {Kobo} from 'kobo-sdk'
 import {KoboFormService} from './KoboFormService'
 import {fnSwitch, Obj, seq} from '@axanc/ts-utils'
 import {format} from 'date-fns'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {app} from '../../index'
 import {FormService} from '../form/FormService'
 
@@ -27,8 +27,8 @@ export class KoboToXLS {
     password,
   }: {
     fileName: string
-    formId: Ip.FormId
-    data: Ip.Submission[]
+    formId: Api.FormId
+    data: Api.Submission[]
     langIndex?: number
     password?: string
   }) => {
@@ -49,7 +49,7 @@ export class KoboToXLS {
 
     const flatTranslated = translated.map(({answers, ...meta}) => ({...meta, ...answers}))
     const columns = (() => {
-      const metaColumns: (keyof Ip.Submission.Meta)[] = ['id', 'submissionTime', 'version']
+      const metaColumns: (keyof Api.Submission.Meta)[] = ['id', 'submissionTime', 'version']
       const schemaColumns = koboFormDetails.survey
         .filter(_ => koboQuestionType.includes(_.type))
         .map(_ =>
@@ -84,9 +84,9 @@ export class KoboToXLS {
     langIndex,
     data,
   }: {
-    formId: Ip.FormId
+    formId: Api.FormId
     langIndex: number
-    data: Ip.Submission[]
+    data: Api.Submission[]
   }) => {
     const koboQuestionType: Kobo.Form.QuestionType[] = [
       'text',
@@ -105,13 +105,13 @@ export class KoboToXLS {
     }
     const indexLabel = seq(schema.survey)
       .filter(_ => !!_ && koboQuestionType.includes(_.type))
-      .reduceObject<Record<string, Ip.Form.Question>>(_ => [_.name, _])
+      .reduceObject<Record<string, Api.Form.Question>>(_ => [_.name, _])
     const indexOptionsLabels = seq(schema.choices).reduceObject<Record<string, undefined | string>>(_ => [
       _.name,
       _.label?.[langIndex],
     ])
     return flatAnswers.map(d => {
-      const translated = {} as Ip.Submission
+      const translated = {} as Api.Submission
       Obj.keys(d).forEach(k => {
         const translatedKey = indexLabel[k]?.label?.[langIndex] ?? k
         const translatedValue = (() => {

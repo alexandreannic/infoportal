@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Obj} from '@axanc/ts-utils'
 import {WidgetTypeIcon} from '@/features/Dashboard/Widget/WidgetTypeIcon'
 import React from 'react'
@@ -7,7 +7,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm} from 'react-hook-form'
 
 export type WidgetCreateForm = {
-  type: Ip.Dashboard.Widget.Type
+  type: Api.Dashboard.Widget.Type
   //   questionName: string
 }
 
@@ -24,8 +24,8 @@ export function WidgetCreate({
   // const form = useForm<WidgetCreateForm>({mode: 'onChange'})
 
   return (
-    <Core.RadioGroup<Ip.Dashboard.Widget.Type> onChange={_ => onSubmit({type: _})} inline sx={{mb: 2}}>
-      {Obj.keys(Ip.Dashboard.Widget.Type).map(_ => (
+    <Core.RadioGroup<Api.Dashboard.Widget.Type> onChange={_ => onSubmit({type: _})} inline sx={{mb: 2}}>
+      {Obj.keys(Api.Dashboard.Widget.Type).map(_ => (
         <Core.RadioGroupItem key={_} hideRadio value={_}>
           <WidgetTypeIcon color="action" type={_} sx={{my: 1, fontSize: '2em'}} />
         </Core.RadioGroupItem>
@@ -38,8 +38,8 @@ export function WidgetCreate({
   //       name="type"
   //       control={form.control}
   //       render={({field}) => (
-  //         <Core.RadioGroup<Ip.Dashboard.Widget.Type> {...field} inline sx={{mb: 2}}>
-  //           {Obj.keys(Ip.Dashboard.Widget.Type).map(_ => (
+  //         <Core.RadioGroup<Api.Dashboard.Widget.Type> {...field} inline sx={{mb: 2}}>
+  //           {Obj.keys(Api.Dashboard.Widget.Type).map(_ => (
   //             <Core.RadioGroupItem key={_} hideRadio value={_}>
   //               <WidgetTypeIcon type={_} sx={{my: 1, fontSize: '3em'}} />
   //             </Core.RadioGroupItem>

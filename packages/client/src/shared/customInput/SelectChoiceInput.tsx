@@ -1,12 +1,12 @@
 import {Autocomplete, AutocompleteProps, Box, Chip, createFilterOptions} from '@mui/material'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/form-helper'
 import React, {useCallback, useMemo} from 'react'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Core} from '../index'
 import {seq} from '@axanc/ts-utils'
 
 type Props = Omit<AutocompleteProps<string, true, false, true>, 'options' | 'renderInput'> & {
-  schema: Ip.Form.Schema
+  schema: Api.Form.Schema
   questionName: string
   InputProps: Core.InputProps
   langIndex?: number

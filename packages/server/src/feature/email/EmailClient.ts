@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer'
 import {appConf} from '../../core/conf/AppConf.js'
 import {app} from '../../index.js'
 import {PrismaClient} from '@prisma/client'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export class EmailClient {
   constructor(
@@ -31,7 +31,7 @@ export class EmailClient {
     tags,
   }: {
     cc?: string[]
-    createdBy?: Ip.User.Email
+    createdBy?: Api.User.Email
     context: string
     html: string
     to: string | string[]

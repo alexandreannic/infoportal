@@ -1,9 +1,9 @@
-import {ApiClient} from '@/core/sdk/server/ApiClient'
+import {HttpClient} from '@/core/sdk/server/HttpClient'
 import {DatabaseView, DatabaseViewCol, DatabaseViewHelper} from '@/core/sdk/server/databaseView/DatabaseView'
-import {UUID} from 'infoportal-common'
+import {UUID} from '@infoportal/common'
 
 export class DatabaseViewSdk {
-  constructor(private client: ApiClient) {}
+  constructor(private client: HttpClient) {}
 
   readonly search = (body: {databaseId: string}): Promise<DatabaseView[]> => {
     return this.client.post(`/database-view`, {body}).then(_ => _.map(DatabaseViewHelper.map))

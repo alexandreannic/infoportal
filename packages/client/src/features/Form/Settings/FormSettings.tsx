@@ -8,7 +8,7 @@ import {createRoute, useNavigate} from '@tanstack/react-router'
 import {ReactNode} from 'react'
 import {assetStyle, Asset, AssetType} from '@/shared/Asset.js'
 import {SelectFormCategory} from '@/shared/customInput/SelectFormCategory.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export const formSettingsRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -91,7 +91,7 @@ function FormSettings() {
   const queryRemove = UseQueryForm.remove(workspaceId)
   const navigate = useNavigate()
 
-  const isConnectedToKobo = Ip.Form.isConnectedToKobo(form)
+  const isConnectedToKobo = Api.Form.isConnectedToKobo(form)
 
   return (
     <TabContent width="xs">
@@ -115,7 +115,7 @@ function FormSettings() {
             }
           />
 
-          {Ip.Form.isKobo(form) && (
+          {Api.Form.isKobo(form) && (
             <SettingsRow
               icon={assetStyle.icon[AssetType.kobo]}
               label={m._settings.connectedToKobo}
@@ -156,7 +156,7 @@ function FormSettings() {
             desc={
               <>
                 {m.archiveFormDesc}{' '}
-                {Ip.Form.isKobo(form) && <span style={{fontWeight: 'bold'}}>{m.archiveKoboFormDesc}</span>}
+                {Api.Form.isKobo(form) && <span style={{fontWeight: 'bold'}}>{m.archiveKoboFormDesc}</span>}
               </>
             }
             action={

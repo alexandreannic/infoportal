@@ -1,16 +1,16 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm} from 'react-hook-form'
-import {Regexp} from 'infoportal-common'
+import {Regexp} from '@infoportal/common'
 import {map, Obj} from '@axanc/ts-utils'
 import {useEffect, useState} from 'react'
 import {useFetcher} from '@axanc/react-hooks'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Box, CardActions, CircularProgress, Dialog, DialogContent, DialogTitle, Icon, useTheme} from '@mui/material'
-import {ApiError} from '@/core/sdk/server/ApiClient'
+import {ApiError} from '@/core/sdk/server/HttpClient'
 import {DialogProps} from '@toolpad/core'
 import {useQueryServers} from '@/core/query/useQueryServers'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Core} from '@/shared'
 
 const servers = {
@@ -54,11 +54,11 @@ export const KoboServerForm = ({
 }: {
   loading?: boolean
   onCancel: () => void
-  onSubmit: (f: Ip.Server.Payload.Create) => void
+  onSubmit: (f: Api.Server.Payload.Create) => void
 }) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
-  const form = useForm<Omit<Ip.Server, 'id'>>({mode: 'onChange'})
+  const form = useForm<Omit<Api.Server, 'id'>>({mode: 'onChange'})
   const [server, setServer] = useState<undefined | 'custom' | keyof typeof servers>('custom')
 
   const fetcherTest = useFetcher(() => {
@@ -203,7 +203,7 @@ export const KoboServerFormDialog = ({
   onClose,
   payload,
 }: DialogProps<{
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
 }>) => {
   const {m} = useI18n()
   const queryCreate = useQueryServers(payload.workspaceId).create

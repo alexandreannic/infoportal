@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 import {useTheme} from '@mui/material'
 import {UseQueryDashboardWidget} from '@/core/query/dashboard/useQueryDashboardWidget'
@@ -12,11 +12,11 @@ export function DashboardSectionBtnCreate({
   widgets,
   onCreate,
 }: {
-  workspaceId: Ip.WorkspaceId
-  dashboardId: Ip.DashboardId
-  sectionId: Ip.Dashboard.SectionId
-  widgets: Ip.Dashboard.Widget[]
-  onCreate: (_: Ip.Dashboard.WidgetId) => void
+  workspaceId: Api.WorkspaceId
+  dashboardId: Api.DashboardId
+  sectionId: Api.Dashboard.SectionId
+  widgets: Api.Dashboard.Widget[]
+  onCreate: (_: Api.Dashboard.WidgetId) => void
 }) {
   const {m} = useI18n()
   const t = useTheme()

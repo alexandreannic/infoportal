@@ -1,5 +1,5 @@
 import {io, Socket} from 'socket.io-client'
-import {ClientToServerEvents, ServerToClientEvents} from 'infoportal-common'
+import {ClientToServerEvents, ServerToClientEvents} from '@infoportal/common'
 import {AppConfig} from '@/conf/AppConfig'
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents> | null = null

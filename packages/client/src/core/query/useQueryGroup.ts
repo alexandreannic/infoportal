@@ -2,9 +2,9 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {queryKeys} from './query.index'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
-export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
+export const useQueryGroup = (workspaceId: Api.WorkspaceId) => {
   const {apiv2: api} = useAppSettings()
   const {toastHttpError, toastAndThrowHttpError} = useIpToast()
   const queryClient = useQueryClient()
@@ -17,7 +17,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const create = useMutation({
-    mutationFn: async (args: Omit<Ip.Group.Payload.Create, 'workspaceId'>) => {
+    mutationFn: async (args: Omit<Api.Group.Payload.Create, 'workspaceId'>) => {
       return api.group.create({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -25,7 +25,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const update = useMutation({
-    mutationFn: async (args: Omit<Ip.Group.Payload.Update, 'workspaceId'>) => {
+    mutationFn: async (args: Omit<Api.Group.Payload.Update, 'workspaceId'>) => {
       return api.group.update({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -33,7 +33,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const remove = useMutation({
-    mutationFn: async (args: {id: Ip.GroupId}) => {
+    mutationFn: async (args: {id: Api.GroupId}) => {
       return api.group.remove({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -41,7 +41,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const createItem = useMutation({
-    mutationFn: async (args: Omit<Ip.Group.Payload.ItemCreate, 'workspaceId'>) => {
+    mutationFn: async (args: Omit<Api.Group.Payload.ItemCreate, 'workspaceId'>) => {
       return api.group.createItem({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -49,7 +49,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const deleteItem = useMutation({
-    mutationFn: async (args: {id: Ip.Group.ItemId}) => {
+    mutationFn: async (args: {id: Api.Group.ItemId}) => {
       return api.group.deleteItem({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -57,7 +57,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const updateItem = useMutation({
-    mutationFn: async (args: Omit<Ip.Group.Payload.ItemUpdate, 'workspaceId'>) => {
+    mutationFn: async (args: Omit<Api.Group.Payload.ItemUpdate, 'workspaceId'>) => {
       return api.group.updateItem({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.group(workspaceId)}),
@@ -65,7 +65,7 @@ export const useQueryGroup = (workspaceId: Ip.WorkspaceId) => {
   })
 
   const duplicate = useMutation({
-    mutationFn: async (g: Ip.Group) => {
+    mutationFn: async (g: Api.Group) => {
       const {id, items, createdAt, name, ...params} = g
       const newGroup = await create.mutateAsync({
         name: `${name} (copy)`,

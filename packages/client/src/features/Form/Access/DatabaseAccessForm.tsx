@@ -1,5 +1,5 @@
-import {nullValuesToUndefined} from 'infoportal-common'
-import {SchemaInspector} from '@infoportal/kobo-helper'
+import {nullValuesToUndefined} from '@infoportal/common'
+import {SchemaInspector} from '@infoportal/form-helper'
 import React, {ReactElement, useMemo} from 'react'
 import {Core} from '@/shared'
 import {Box} from '@mui/material'
@@ -9,7 +9,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {AccessForm, IAccessForm} from '@/features/Access/AccessForm'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {UseQueryFormAccess} from '@/core/query/form/useQueryFormAccess'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {SelectQuestionInput} from '@/shared/customInput/SelectQuestionInput'
 import {SelectChoiceInput} from '@/shared/customInput/SelectChoiceInput'
 
@@ -27,8 +27,8 @@ export const DatabaseAccessForm = ({
 }: {
   onAdded?: () => void
   children: ReactElement
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
   inspector: SchemaInspector
 }) => {
   const langIndex = 0

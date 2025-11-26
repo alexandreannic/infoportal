@@ -1,14 +1,14 @@
 import {KeyOf, Obj} from '@axanc/ts-utils'
 import React, {ReactNode, useMemo} from 'react'
-import {StateStatus} from 'infoportal-common'
+import {StateStatus} from '@infoportal/common'
 import {Box, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Core} from '@/shared'
 
 export namespace selectStatusConfig {
   export const enumStatus = {
-    KoboValidation: Ip.Submission.Validation,
+    KoboValidation: Api.Submission.Validation,
   }
 
   export type EnumStatus = keyof typeof enumStatus

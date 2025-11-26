@@ -8,7 +8,7 @@ import {FormBuilderKoboFender} from '@/features/Form/Builder/FormBuilderKoboFend
 import {FormBuilderPreview} from '@/features/Form/Builder/FormBuilderPreview'
 import {createRoute, Outlet, redirect} from '@tanstack/react-router'
 import {formRoute} from '@/features/Form/Form'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {FormBuilderTabs} from '@/features/Form/Builder/FormBuilderTabs'
 import {createContext, useContextSelector} from 'use-context-selector'
@@ -31,10 +31,10 @@ export const formBuilderRoute = createRoute({
 
 export type FormBuilderContext = {
   versions: {
-    all: Ip.Form.Version[]
-    active?: Ip.Form.Version
-    draft?: Ip.Form.Version
-    last?: Ip.Form.Version
+    all: Api.Form.Version[]
+    active?: Api.Form.Version
+    draft?: Api.Form.Version
+    last?: Api.Form.Version
   }
   showPreview: boolean
   setShowPreview: Dispatch<React.SetStateAction<boolean>>
@@ -51,7 +51,7 @@ export const useFormBuilderContext = <Selected extends any>(
 
 function FormBuilder() {
   const t = useTheme()
-  const {workspaceId, formId} = formBuilderRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
+  const {workspaceId, formId} = formBuilderRoute.useParams() as {workspaceId: Api.WorkspaceId; formId: Api.FormId}
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryVersion = useQueryVersion({workspaceId, formId})
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
@@ -72,7 +72,7 @@ function FormBuilder() {
     <TabContent width="full" loading={queryPermission.isLoading || queryForm.isPending || queryVersion.get.isLoading}>
       {(() => {
         if (!queryForm.data || !queryPermission.data || !queryVersion.get.data) return
-        if (Ip.Form.isConnectedToKobo(queryForm.data))
+        if (Api.Form.isConnectedToKobo(queryForm.data))
           return <FormBuilderKoboFender workspaceId={workspaceId} form={queryForm.data} />
 
         return (
@@ -105,7 +105,7 @@ function FormBuilder() {
                 }}
               >
                 <FormBuilderTabs sx={{margin: 'auto', width: showPreview ? '100%' : '50%'}} />
-                {Ip.Form.isKobo(queryForm.data) && <AlertImportKoboSchema workspaceId={workspaceId} formId={formId} />}
+                {Api.Form.isKobo(queryForm.data) && <AlertImportKoboSchema workspaceId={workspaceId} formId={formId} />}
                 <Outlet />
               </Box>
 
@@ -127,7 +127,7 @@ function FormBuilder() {
   )
 }
 
-function AlertImportKoboSchema({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
+function AlertImportKoboSchema({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) {
   const {m} = useI18n()
   const queryVersion = useQueryVersion({workspaceId, formId})
   return (

@@ -5,14 +5,14 @@ import {SelectChoices} from '@/features/Dashboard/Widget/shared/SelectChoices'
 import {RangeInput} from '@/shared/customInput/RangeInput'
 import React from 'react'
 import {useQuestionInfo} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Core} from '@/shared'
 import {Box, BoxProps, Icon, SxProps, useTheme} from '@mui/material'
 import {Kobo} from 'kobo-sdk'
 import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {styleUtils} from '@infoportal/client-core'
 
-const formName: Record<keyof Ip.Dashboard.Widget.ConfigFilter, keyof Ip.Dashboard.Widget.ConfigFilter> = {
+const formName: Record<keyof Api.Dashboard.Widget.ConfigFilter, keyof Api.Dashboard.Widget.ConfigFilter> = {
   questionName: 'questionName',
   number: 'number',
   choices: 'choices',

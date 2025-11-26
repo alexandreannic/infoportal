@@ -1,5 +1,5 @@
 {
-  "name": "@infoportal/kobo-helper",
+  "name": "@infoportal/form-helper",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -19,7 +19,7 @@
   "devDependencies": {
   },
   "dependencies": {
-    "infoportal-common": "1.0.0",
+    "@infoportal/common": "1.0.0",
     "kobo-sdk": "^2.4.1",
     "@axanc/react-hooks": "^1.14.2",
     "date-fns": "^4.1.0"

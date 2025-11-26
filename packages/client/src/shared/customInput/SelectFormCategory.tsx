@@ -1,5 +1,5 @@
 import {Autocomplete, AutocompleteProps, CircularProgress} from '@mui/material'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryForm} from '@/core/query/form/useQueryForm.js'
 import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '../index'
@@ -14,7 +14,7 @@ export function SelectFormCategory({
 }: Omit<AutocompleteProps<string, false, true, true>, 'renderInput' | 'options'> & {
   InputProps?: Core.InputProps
   loading?: boolean
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
 }) {
   const categories = UseQueryForm.categories(workspaceId)
   const {m} = useI18n()

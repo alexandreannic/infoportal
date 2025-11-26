@@ -11,17 +11,17 @@ import {useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {UseQueryWorkspace} from '@/core/query/workspace/useQueryWorkspace'
 import {useNavigate} from '@tanstack/react-router'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 
 export interface SessionContext {
   originalEmail?: string
-  user: Ip.User
-  globalPermission: Ip.Permission.Global
+  user: Api.User
+  globalPermission: Api.Permission.Global
   logout: () => Promise<void>
   connectAs: ReturnType<typeof useQuerySession>['connectAs']
   revertConnectAs: ReturnType<typeof useQuerySession>['revertConnectAs']
-  setUser: (_: Ip.User) => void
+  setUser: (_: Api.User) => void
 }
 
 const Context = React.createContext(
@@ -70,7 +70,7 @@ export const SessionProvider = ({children}: {children: ReactNode}) => {
         revertConnectAs: querySession.revertConnectAs,
         connectAs: querySession.connectAs,
         user: user,
-        setUser: (_: Ip.User) => queryClient.setQueryData(queryKeys.session(), _),
+        setUser: (_: Api.User) => queryClient.setQueryData(queryKeys.session(), _),
         logout: async () => {
           await querySession.logout.mutateAsync()
           await navigate({to: '/'})

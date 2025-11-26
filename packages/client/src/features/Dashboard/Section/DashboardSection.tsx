@@ -12,7 +12,7 @@ import {alphaVar} from '@infoportal/client-core'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, Collapse, Icon, Theme, ThemeProvider, useTheme} from '@mui/material'
 import {createRoute} from '@tanstack/react-router'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useCallback, useMemo, useState} from 'react'
 import {Responsive, WidthProvider} from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
@@ -33,7 +33,7 @@ export function DashboardSection() {
   const t = useTheme()
   const {m} = useI18n()
   const params = dashboardSectionRoute.useParams()
-  const sectionId = params.sectionId as Ip.Dashboard.SectionId
+  const sectionId = params.sectionId as Api.Dashboard.SectionId
 
   const {
     langIndex,
@@ -51,10 +51,10 @@ export function DashboardSection() {
 
   const queryWidgetUpdate = UseQueryDashboardWidget.update({workspaceId, dashboardId: dashboard.id, sectionId})
 
-  const [editingWidgetId, setEditingWidgetId] = useState<Ip.Dashboard.WidgetId | undefined>()
+  const [editingWidgetId, setEditingWidgetId] = useState<Api.Dashboard.WidgetId | undefined>()
 
   const selectWidget = useCallback(
-    (id: Ip.Dashboard.WidgetId) => {
+    (id: Api.Dashboard.WidgetId) => {
       setEditingWidgetId(id)
     },
     [setEditingWidgetId],
@@ -64,7 +64,7 @@ export function DashboardSection() {
     return widgets.find(_ => _.id === editingWidgetId)
   }, [widgets, editingWidgetId])
 
-  const updateWidget = useCallback((id: Ip.Dashboard.WidgetId, values: WidgetUpdatePayload) => {
+  const updateWidget = useCallback((id: Api.Dashboard.WidgetId, values: WidgetUpdatePayload) => {
     queryWidgetUpdate.mutateAsync({id, ...values})
   }, [])
 
@@ -146,7 +146,7 @@ export function DashboardSection() {
                       if (!widget) return
                       const p = widget.position
                       if (p.x === x && p.y === y && p.h === h && p.w === w) return
-                      updateWidget(i as Ip.Dashboard.WidgetId, {position: {x, y, h, w}})
+                      updateWidget(i as Api.Dashboard.WidgetId, {position: {x, y, h, w}})
                     })
                   }}
                   {...layout}

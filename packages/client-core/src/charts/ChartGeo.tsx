@@ -3,7 +3,7 @@ import {useEffect, useMemo, useState} from 'react'
 import {Box, useColorScheme, useTheme} from '@mui/material'
 import {IconBtn} from '../ui/index.js'
 import json from '../core/chartGeoData.json'
-import {inferNullableFn} from 'infoportal-common'
+import {inferNullableFn} from '@infoportal/common'
 
 export type CountryCode = keyof typeof json
 

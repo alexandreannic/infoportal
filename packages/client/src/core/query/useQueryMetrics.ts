@@ -1,10 +1,10 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useAppSettings} from '@/core/context/ConfigContext.js'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index.js' //
 
 export function useQueryMetrics(
-  params: {workspaceId: Ip.WorkspaceId; formIds: Ip.FormId[]} & Ip.Metrics.Payload.Filter,
+  params: {workspaceId: Api.WorkspaceId; formIds: Api.FormId[]} & Api.Metrics.Payload.Filter,
 ) {
   const {apiv2} = useAppSettings()
 

@@ -134,7 +134,7 @@ function DatabaseHistory() {
               },
             },
             // {
-            //   type: 'select_one',
+            //   module: 'select_one',
             //   id: 'type',
             //   head: m.type,
             //   render: _ => {

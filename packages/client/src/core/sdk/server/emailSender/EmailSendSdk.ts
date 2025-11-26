@@ -1,4 +1,4 @@
-import {ApiClient} from '@/core/sdk/server/ApiClient'
+import {HttpClient} from '@/core/sdk/server/HttpClient'
 
 export enum EmailContext {
   Cfm = 'Cfm',
@@ -15,7 +15,7 @@ export type EmailSendParams = {
 }
 
 export class EmailSendSdk {
-  constructor(private client: ApiClient) {}
+  constructor(private client: HttpClient) {}
 
   readonly send = (body: EmailSendParams) => {
     return this.client.post(`/email-sender`, {body})

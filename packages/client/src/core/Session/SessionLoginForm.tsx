@@ -11,7 +11,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {CenteredContent} from '@/shared/CenteredContent'
 import {useGoogleLogin} from '@react-oauth/google'
 import {ButtonProps} from '@mui/material/Button'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {styleUtils} from '@infoportal/client-core'
 
 const BtnLogin = ({
@@ -63,7 +63,7 @@ const BtnLogin = ({
   )
 }
 
-export const SessionLoginForm = ({setSession}: {setSession: (_: Ip.User) => void}) => {
+export const SessionLoginForm = ({setSession}: {setSession: (_: Api.User) => void}) => {
   const {api} = useAppSettings()
   const {m} = useI18n()
   const {toastError} = useIpToast()

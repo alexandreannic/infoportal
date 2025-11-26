@@ -1,5 +1,5 @@
 {
-  "name": "infoportal-client",
+  "name": "@infoportal/client",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -21,7 +21,9 @@
     "@infoportal/client-datatable": "1.0.0",
     "@infoportal/client-i18n": "1.0.0",
     "@infoportal/xls-form-editor": "1.0.0",
-    "@infoportal/kobo-helper": "1.0.0",
+    "@infoportal/form-helper": "1.0.0",
+    "@infoportal/api-sdk": "1.0.0",
+    "@infoportal/common": "1.0.0",
     "@monaco-editor/react": "^4.7.0",
     "@mui/icons-material": "^7.1.2",
     "@mui/material": "^7.3.1",
@@ -59,8 +61,6 @@
     "fuse.js": "^7.1.0",
     "html2canvas": "^1.4.1",
     "immer": "^10.1.1",
-    "@infoportal/api-sdk": "1.0.0",
-    "infoportal-common": "1.0.0",
     "kobo-sdk": "^2.4.3",
     "lodash.debounce": "^4.0.8",
     "proxy-memoize": "^3.0.1",

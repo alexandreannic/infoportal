@@ -3,11 +3,11 @@ import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCa
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 import {Core, Datatable} from '@/shared'
 import {Box} from '@mui/material'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useCallback, useMemo} from 'react'
 
-export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
-  const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
+export function BarChartWidget({widget}: {widget: Api.Dashboard.Widget}) {
+  const config = widget.config as Api.Dashboard.Widget.Config['BarChart']
 
   const byPeriod = useDashboardContext(_ => _.data.filterFns.byPeriodCurrentDelta)
   const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)

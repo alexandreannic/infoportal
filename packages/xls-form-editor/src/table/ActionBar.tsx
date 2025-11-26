@@ -5,7 +5,7 @@ import {SelectType} from '../input/CellSelectType'
 import {SelectAppearance} from '../input/CellSelectAppearance'
 import {SelectListName} from '../input/CellSelectListName'
 import {useMemo} from 'react'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 type ActionBarProps = {
   value?: any
@@ -13,11 +13,11 @@ type ActionBarProps = {
   lang?: string
 } & (
   | {
-      field: keyof Ip.Form.Question
+      field: keyof Api.Form.Question
       table: 'survey'
     }
   | {
-      field: keyof Ip.Form.Choice
+      field: keyof Api.Form.Choice
       table: 'choices'
     }
 )

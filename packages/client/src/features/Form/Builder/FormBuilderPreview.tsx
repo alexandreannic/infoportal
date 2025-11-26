@@ -2,9 +2,9 @@ import {XlsFormFiller} from 'xls-form-filler'
 import React from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {Core} from '@/shared'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
-export const FormBuilderPreview = ({schema}: {schema?: Ip.Form.Schema}) => {
+export const FormBuilderPreview = ({schema}: {schema?: Api.Form.Schema}) => {
   const {m} = useI18n()
 
   return (

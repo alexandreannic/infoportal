@@ -5,7 +5,7 @@ import {Kobo, KoboClient} from 'kobo-sdk'
 import {appConf} from '../../core/conf/AppConf.js'
 import {app, AppCacheKey} from '../../index.js'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {FormService, FormServiceCreatePayload} from '../form/FormService.js'
 
@@ -25,9 +25,9 @@ export class KoboFormService {
     workspaceId,
   }: {
     schema: Kobo.Form
-    accountId: Ip.ServerId
-    workspaceId: Ip.WorkspaceId
-    uploadedBy: Ip.User.Email
+    accountId: Api.ServerId
+    workspaceId: Api.WorkspaceId
+    uploadedBy: Api.User.Email
   }): FormServiceCreatePayload => {
     return {
       type: 'kobo',
@@ -45,8 +45,8 @@ export class KoboFormService {
   static readonly HOOK_NAME = 'InfoPortal'
 
   readonly importFromKobo = async (
-    payload: Ip.Form.Payload.Import & {uploadedBy: Ip.User.Email; workspaceId: Ip.WorkspaceId},
-  ): Promise<Ip.Form> => {
+    payload: Api.Form.Payload.Import & {uploadedBy: Api.User.Email; workspaceId: Api.WorkspaceId},
+  ): Promise<Api.Form> => {
     const sdk = await this.koboSdk.getBy.accountId(payload.serverId)
     const schema = await sdk.v2.form.get({formId: payload.uid, use$autonameAsName: true})
     const [newFrom] = await Promise.all([
@@ -81,7 +81,7 @@ export class KoboFormService {
     await sdk.v2.hook.deleteByName({formId, name: KoboFormService.HOOK_NAME}).catch(() => {})
   }
 
-  readonly update = async ({formId, archive}: Ip.Form.Payload.Update) => {
+  readonly update = async ({formId, archive}: Api.Form.Payload.Update) => {
     const koboFormId = await this.prisma.form
       .findFirst({where: {id: formId, kobo: {isNot: null}}, select: {kobo: true}})
       .then(_ => _?.kobo?.koboId)
@@ -135,7 +135,7 @@ export class KoboFormService {
   //   )
   // }
 
-  private readonly getAll = async ({wsId}: {wsId: Ip.WorkspaceId}): Promise<Ip.Form[]> => {
+  private readonly getAll = async ({wsId}: {wsId: Api.WorkspaceId}): Promise<Api.Form[]> => {
     return this.prisma.form
       .findMany({
         include: {
@@ -149,7 +149,7 @@ export class KoboFormService {
       .then(_ => _.map(prismaMapper.form.mapForm))
   }
 
-  readonly refreshAll = async ({byEmail, wsId}: {byEmail: Ip.User.Email; wsId: Ip.WorkspaceId}) => {
+  readonly refreshAll = async ({byEmail, wsId}: {byEmail: Api.User.Email; wsId: Api.WorkspaceId}) => {
     const forms = await this.getAll({wsId}).then(seq)
     const sdks = await Promise.all(
       forms

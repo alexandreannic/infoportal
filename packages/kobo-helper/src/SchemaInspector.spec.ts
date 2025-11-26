@@ -1,5 +1,5 @@
 import {SchemaInspector} from './SchemaInspector.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 describe('SchemaHelper', () => {
   const schema = {
@@ -39,7 +39,7 @@ describe('SchemaHelper', () => {
         label: ['Spain', 'España'],
       },
     ],
-  } as Ip.Form.Schema
+  } as Api.Form.Schema
 
   describe('lookup', () => {
     it('builds questionIndex and choicesIndex correctly', () => {

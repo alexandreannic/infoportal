@@ -1,7 +1,7 @@
 import React from 'react'
 import {Core} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Alert} from '@mui/material'
 import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
 
@@ -11,10 +11,10 @@ export const DatabaseSelectedRowsAction = ({
   workspaceId,
   selectedIds,
 }: {
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
   canDelete: boolean
-  formId: Ip.FormId
-  selectedIds: Ip.SubmissionId[]
+  formId: Api.FormId
+  selectedIds: Api.SubmissionId[]
 }) => {
   const {formatLargeNumber, m} = useI18n()
   const queryRemove = UseQuerySubmission.remove()

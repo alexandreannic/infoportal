@@ -1,5 +1,5 @@
 import {Obj} from '@axanc/ts-utils'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 /** @deprecated use from sdk*/
 export type KoboServer = {
@@ -8,7 +8,7 @@ export type KoboServer = {
   url: string
   urlV1: string
   token: string
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
 }
 
 export type SubmissionMappedType = string | string[] | Date | number | undefined
@@ -17,28 +17,28 @@ export type SubmissionMapped = {
   [key: string]: SubmissionMappedType | SubmissionMapped[]
 }
 
-export type Submission = Ip.Submission<SubmissionMapped>
+export type Submission = Api.Submission<SubmissionMapped>
 
 export class KoboMapper {
   static readonly mapSubmissionBySchema = (
-    indexedSchema: Record<string, Ip.Form.Question | undefined>,
-    submissions: Ip.Submission,
+    indexedSchema: Record<string, Api.Form.Question | undefined>,
+    submissions: Api.Submission,
   ): Submission => {
     const {answers, ...meta} = submissions
     return {...meta, answers: KoboMapper.mapAnswerBySchema(indexedSchema, answers)}
   }
 
   static readonly unmapSubmissionBySchema = (
-    indexedSchema: Record<string, Ip.Form.Question | undefined>,
+    indexedSchema: Record<string, Api.Form.Question | undefined>,
     mapped: Submission,
-  ): Ip.Submission => {
+  ): Api.Submission => {
     const {answers, ...meta} = mapped
     return {...meta, answers: KoboMapper.unmapAnswersBySchema(indexedSchema, answers)}
   }
 
   private static readonly mapAnswerBySchema = (
-    indexedSchema: Record<string, Ip.Form.Question | undefined>,
-    answers: Ip.Submission['answers'],
+    indexedSchema: Record<string, Api.Form.Question | undefined>,
+    answers: Api.Submission['answers'],
   ): SubmissionMapped => {
     const res: SubmissionMapped = {...answers}
     Obj.entries(answers).forEach(([question, answer]) => {
@@ -68,10 +68,10 @@ export class KoboMapper {
   }
 
   private static readonly unmapAnswersBySchema = (
-    indexedSchema: Record<string, Ip.Form.Question | undefined>,
+    indexedSchema: Record<string, Api.Form.Question | undefined>,
     answers: SubmissionMapped,
-  ): Ip.Submission['answers'] => {
-    const res: Ip.Submission['answers'] = {}
+  ): Api.Submission['answers'] => {
+    const res: Api.Submission['answers'] = {}
     Obj.entries(answers).forEach(([question, answer]) => {
       const type = indexedSchema[question]?.type
       if (!type || !answer) return

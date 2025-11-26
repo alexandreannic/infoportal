@@ -1,6 +1,6 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm, useWatch} from 'react-hook-form'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import React, {useEffect} from 'react'
 import {Box, Checkbox, InputBase, Slider} from '@mui/material'
 import {
@@ -24,9 +24,9 @@ export function BarChartSettings() {
   const langIndex = useDashboardContext(_ => _.langIndex)
   const schema = useDashboardContext(_ => _.schemaInspector)
   const {widget, onChange} = useWidgetSettingsContext()
-  const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
+  const config = widget.config as Api.Dashboard.Widget.Config['BarChart']
   const {choices} = useQuestionInfo(config.questionName)
-  const form = useForm<Ip.Dashboard.Widget.Config['BarChart']>({
+  const form = useForm<Api.Dashboard.Widget.Config['BarChart']>({
     mode: 'onChange',
     defaultValues: {
       ...widget.config,

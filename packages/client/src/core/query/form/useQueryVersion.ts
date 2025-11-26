@@ -2,12 +2,12 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../../context/ConfigContext'
 import {useIpToast} from '../../useToast'
 import {queryKeys} from '../query.index'
-import {Ip, IpClient} from '@infoportal/api-sdk'
+import {Api, ApiClient} from '@infoportal/api-sdk'
 
-type Params<T extends keyof IpClient['form']['version']> = Parameters<IpClient['form']['version'][T]>[0]
-type Return<T extends keyof IpClient['form']['version']> = Awaited<ReturnType<IpClient['form']['version'][T]>>
+type Params<T extends keyof ApiClient['form']['version']> = Parameters<ApiClient['form']['version'][T]>[0]
+type Return<T extends keyof ApiClient['form']['version']> = Awaited<ReturnType<ApiClient['form']['version'][T]>>
 
-export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
+export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {
   const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
   const {toastHttpError, toastAndThrowHttpError} = useIpToast()
@@ -22,7 +22,7 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Ip.Workspac
   })
 
   const deployLast = useMutation({
-    mutationFn: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => apiv2.form.version.deployLast(params),
+    mutationFn: (params: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => apiv2.form.version.deployLast(params),
     onSuccess: newVersion => {
       queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
       queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, formId)})
@@ -58,7 +58,7 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Ip.Workspac
   })
 
   const createNewVersion = useMutation({
-    mutationFn: async (body: Omit<Ip.Form.Version.Payload.CreateNewVersion, 'formId'>) => {
+    mutationFn: async (body: Omit<Api.Form.Version.Payload.CreateNewVersion, 'formId'>) => {
       return apiv2.form.version.createNewVersion({formId, ...body}).catch(toastAndThrowHttpError)
     },
     onSuccess: newVersion => {
@@ -78,12 +78,12 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Ip.Workspac
 }
 
 export class UseQueryVersion {
-  static readonly createNewVersion = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
+  static readonly createNewVersion = ({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     const {toastHttpError, toastAndThrowHttpError} = useIpToast()
     return useMutation({
-      mutationFn: async (body: Omit<Ip.Form.Version.Payload.CreateNewVersion, 'workspaceId' | 'formId'>) => {
+      mutationFn: async (body: Omit<Api.Form.Version.Payload.CreateNewVersion, 'workspaceId' | 'formId'>) => {
         return apiv2.form.version.createNewVersion({formId, workspaceId, ...body}).catch(toastAndThrowHttpError)
       },
       onSuccess: newVersion => {

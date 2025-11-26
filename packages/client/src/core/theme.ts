@@ -576,7 +576,7 @@ const tableTheme2 = (t: Theme) => ({
   // '::-webkit-resizer': {
   //   background: 'invisible',
   // },
-  // '.table td:first-of-type, .table th:first-of-type': {
+  // '.table td:first-of-module, .table th:first-of-module': {
   //   paddingLeft: 8,
   // },
   // '.table .td-sticky-start': {

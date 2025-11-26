@@ -1,7 +1,7 @@
 import {duration} from '@axanc/ts-utils'
 import {KoboServer, PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../index.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Kobo, KoboClient} from 'kobo-sdk'
 import {KoboAccountIndex} from './KoboAccountIndex.js'
 import {KoboFormIndex} from './KoboFormIndex.js'
@@ -24,7 +24,7 @@ export class KoboSdkGenerator {
   ) {}
 
   readonly getServerBy = (() => {
-    const id = async (koboServerId: Ip.ServerId): Promise<KoboServer> => {
+    const id = async (koboServerId: Api.ServerId): Promise<KoboServer> => {
       return this.prisma.koboServer
         .findFirstOrThrow({where: {id: koboServerId}})
         .catch(() => this.prisma.koboServer.findFirstOrThrow())
@@ -36,7 +36,7 @@ export class KoboSdkGenerator {
   })()
 
   readonly getBy = {
-    formId: async (formId: Ip.FormId): Promise<KoboClient | undefined> => {
+    formId: async (formId: Api.FormId): Promise<KoboClient | undefined> => {
       const koboFormId = await this.koboFormIndex.getByFormId(formId)
       if (!koboFormId) return
       return this.getBy.koboFormId(koboFormId)
@@ -48,7 +48,7 @@ export class KoboSdkGenerator {
       key: AppCacheKey.KoboClient,
       ttlMs: duration(7, 'day'),
       genIndex: _ => _ as string,
-      fn: async (serverId: Ip.ServerId): Promise<KoboClient> => {
+      fn: async (serverId: Api.ServerId): Promise<KoboClient> => {
         this.log.info(`Rebuilding KoboClient form server ${serverId}`)
         const server = await this.getServerBy.id(serverId)
         return this.buildSdk(server)
@@ -56,7 +56,7 @@ export class KoboSdkGenerator {
     }),
   }
 
-  private readonly getAccountId = async (koboId: Kobo.FormId): Promise<Ip.ServerId> => {
+  private readonly getAccountId = async (koboId: Kobo.FormId): Promise<Api.ServerId> => {
     return this.koboAccountIndex.getByKoboId(koboId)
   }
 
