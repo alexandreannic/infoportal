@@ -1,5 +1,5 @@
-import {ignoredColType} from './koboSchemaHelper.js'
 import {Ip} from '@infoportal/api-sdk'
+import {SchemaInspector} from './SchemaInspector.js'
 
 export type KoboGroupInfo = {
   name: string
@@ -30,7 +30,7 @@ export class KoboSchemaRepeatHelper {
         continue
       }
 
-      if (!ignoredColType.has(q.type)) {
+      if (!SchemaInspector.ignoredColType.has(q.type)) {
         if (depthStack.length === 0) {
           this.questionsDepth0.push(q)
         } else {

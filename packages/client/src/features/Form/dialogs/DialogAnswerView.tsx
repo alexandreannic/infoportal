@@ -17,13 +17,13 @@ import {
   useTheme,
 } from '@mui/material'
 import {DialogProps} from '@toolpad/core'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
 import {useMemo, useState} from 'react'
 import {Ip} from '@infoportal/api-sdk'
 import {createRoute, Link} from '@tanstack/react-router'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {buildDbColumns} from '@infoportal/database-column'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/core/KoboAttachmentUrl.js'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 
 export const databaseAnswerViewRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -39,7 +39,7 @@ function DatabaseAnswerView() {
     answerId: Ip.SubmissionId
   }
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
-  const {schema, form} = useFormContext(_ => _)
+  const {inspector, form} = useFormContext(_ => _)
   const queryAnswers = UseQuerySubmission.search({formId, workspaceId})
 
   const answer = useMemo(() => {
@@ -55,7 +55,7 @@ function DatabaseAnswerView() {
           <Skeleton />
         </>
       ) : (
-        (map(answer, schema, (a, s) => (
+        (map(answer, inspector, (a, s) => (
           <Core.Panel>
             <Core.PanelHead
               action={
@@ -81,7 +81,7 @@ function DatabaseAnswerView() {
                 formId={formId}
                 showQuestionWithoutAnswer={showQuestionWithoutAnswer}
                 answer={a}
-                schema={s}
+                inspector={s}
               />
             </Core.PanelBody>
           </Core.Panel>
@@ -97,7 +97,7 @@ export const DialogAnswerView = ({
 }: DialogProps<{
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
-  schema: KoboSchemaHelper.Bundle
+  schema: SchemaInspector
   submission: Submission
 }>) => {
   const {m} = useI18n()
@@ -126,7 +126,7 @@ export const DialogAnswerView = ({
       <DialogContent>
         <KoboAnswerFormView
           workspaceId={workspaceId}
-          schema={schema}
+          inspector={schema}
           formId={formId}
           showQuestionWithoutAnswer={showQuestionWithoutAnswer}
           answer={submission}
@@ -143,18 +143,18 @@ const KoboAnswerFormView = ({
   workspaceId,
   answer,
   formId,
-  schema,
+  inspector,
   showQuestionWithoutAnswer,
 }: {
   workspaceId: Ip.WorkspaceId
-  schema: KoboSchemaHelper.Bundle
+  inspector: SchemaInspector
   showQuestionWithoutAnswer?: boolean
   answer: Submission
   formId: Ip.FormId
 }) => {
   return (
     <Box>
-      {schema.schemaSanitized.survey
+      {inspector.schemaSanitized.survey
         .filter(
           q =>
             q.name &&
@@ -167,7 +167,7 @@ const KoboAnswerFormView = ({
             <KoboAnswerQuestionView
               workspaceId={workspaceId}
               formId={formId}
-              schema={schema}
+              inspector={inspector}
               answer={answer}
               questionSchema={q}
             />
@@ -178,7 +178,7 @@ const KoboAnswerFormView = ({
 }
 
 const KoboAnswerQuestionView = ({
-  schema,
+  inspector,
   questionSchema,
   answer: row,
   formId,
@@ -186,7 +186,7 @@ const KoboAnswerQuestionView = ({
 }: {
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
-  schema: KoboSchemaHelper.Bundle
+  inspector: SchemaInspector
   questionSchema: Ip.Form.Question
   answer: Submission
 }) => {
@@ -196,24 +196,24 @@ const KoboAnswerQuestionView = ({
   const t = useTheme()
   const columns = useMemo(() => {
     if (questionSchema.type !== 'begin_repeat') return
-    const group = schema.helper.group.getByName(questionSchema.name)
+    const group = inspector.lookup.group.getByName(questionSchema.name)
     if (!group) return
     return buildDbColumns.question.byQuestions({
       getFileUrl: getKoboAttachmentUrl,
       questions: group.questions,
-      schema,
+      inspector: inspector,
       formId,
       m,
       t,
     })
-  }, [schema.schemaSanitized, langIndex])
+  }, [inspector.schemaSanitized, langIndex])
 
   switch (questionSchema.type) {
     case 'begin_group': {
       return (
         <Box sx={{pt: 1, mt: 2, borderTop: t => `1px solid ${t.vars.palette.divider}`}}>
           <Core.Txt bold block size="title">
-            {schema.translate.question(questionSchema.name)}
+            {inspector.translate.question(questionSchema.name)}
           </Core.Txt>
         </Box>
       )
@@ -221,7 +221,7 @@ const KoboAnswerQuestionView = ({
     case 'image': {
       return (
         <>
-          <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
+          <KoboQuestionLabelView>{inspector.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <Box>
             <Core.Txt block size="small" color="hint">
               {row.answers[questionSchema.name] as string}
@@ -240,7 +240,7 @@ const KoboAnswerQuestionView = ({
     case 'text': {
       return (
         <>
-          <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
+          <KoboQuestionLabelView>{inspector.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <KoboQuestionAnswerView icon="short_text">
             {row.answers[questionSchema.name] as string}
           </KoboQuestionAnswerView>
@@ -250,7 +250,7 @@ const KoboAnswerQuestionView = ({
     case 'note': {
       return (
         <>
-          <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
+          <KoboQuestionLabelView>{inspector.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <KoboQuestionAnswerView icon="info">{row.answers[questionSchema.name] as string}</KoboQuestionAnswerView>
         </>
       )
@@ -258,7 +258,7 @@ const KoboAnswerQuestionView = ({
     case 'begin_repeat': {
       return (
         <>
-          <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
+          <KoboQuestionLabelView>{inspector.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <Datatable.Component
             getRowKey={_ => _.id}
             columns={columns!}
@@ -274,7 +274,7 @@ const KoboAnswerQuestionView = ({
     case 'date': {
       return (
         <>
-          <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
+          <KoboQuestionLabelView>{inspector.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <KoboQuestionAnswerView icon="event">
             {formatDateTime(row.answers[questionSchema.name] as Date)}
           </KoboQuestionAnswerView>
@@ -284,10 +284,10 @@ const KoboAnswerQuestionView = ({
     case 'select_multiple': {
       return (
         <>
-          <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
+          <KoboQuestionLabelView>{inspector.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           {(row.answers[questionSchema.name] as string[])?.map(_ => (
             <KoboQuestionAnswerView key={_} icon="check_box">
-              {schema.translate.choice(questionSchema.name, _)}
+              {inspector.translate.choice(questionSchema.name, _)}
             </KoboQuestionAnswerView>
           ))}
         </>
@@ -296,9 +296,9 @@ const KoboAnswerQuestionView = ({
     case 'select_one': {
       return (
         <>
-          <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
+          <KoboQuestionLabelView>{inspector.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <KoboQuestionAnswerView icon="radio_button_checked">
-            {schema.translate.choice(questionSchema.name, row.answers[questionSchema.name] as string)}
+            {inspector.translate.choice(questionSchema.name, row.answers[questionSchema.name] as string)}
           </KoboQuestionAnswerView>
         </>
       )
@@ -306,7 +306,7 @@ const KoboAnswerQuestionView = ({
     case 'calculate':
       return (
         <>
-          <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
+          <KoboQuestionLabelView>{inspector.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <KoboQuestionAnswerView icon="functions">{row.answers[questionSchema.name] as string}</KoboQuestionAnswerView>
         </>
       )
@@ -314,7 +314,7 @@ const KoboAnswerQuestionView = ({
     case 'integer': {
       return (
         <>
-          <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
+          <KoboQuestionLabelView>{inspector.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <KoboQuestionAnswerView icon="tag">{row.answers[questionSchema.name] as string}</KoboQuestionAnswerView>
         </>
       )
@@ -322,7 +322,7 @@ const KoboAnswerQuestionView = ({
     default: {
       return (
         <>
-          <KoboQuestionLabelView>{schema.translate.question(questionSchema.name)}</KoboQuestionLabelView>
+          <KoboQuestionLabelView>{inspector.translate.question(questionSchema.name)}</KoboQuestionLabelView>
           <KoboQuestionAnswerView icon="short_text">
             {JSON.stringify(row.answers[questionSchema.name])}
           </KoboQuestionAnswerView>

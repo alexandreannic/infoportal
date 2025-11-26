@@ -6,7 +6,7 @@ import {Dispatch, SetStateAction, useEffect, useMemo, useState} from 'react'
 import {createRoute, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
 import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import {Ip} from '@infoportal/api-sdk'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import {Page} from '@/shared'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {answersRoute} from '@/features/Form/Database/DatabaseTable'
@@ -65,7 +65,7 @@ export type FormContext = {
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   form: Ip.Form
-  schema?: KoboSchemaHelper.Bundle
+  inspector?: SchemaInspector
   permission: Ip.Permission.Form
   langIndex: number
   setLangIndex: Dispatch<SetStateAction<number>>
@@ -84,7 +84,7 @@ function Form() {
   const currentFullPath = useMatches().slice(-1)[0].fullPath
   const [langIndex, setLangIndex] = useState(0)
 
-  const querySchema = UseQuerySchema.getBundle({formId, workspaceId, langIndex})
+  const querySchema = UseQuerySchema.getInspector({formId, workspaceId, langIndex})
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
 
@@ -98,7 +98,7 @@ function Form() {
 
   const schema = querySchema.data
   const repeatGroups = useMemo(() => {
-    return schema?.helper.group.search().map(_ => _.name)
+    return schema?.lookup.group.search().map(_ => _.name)
   }, [schema])
 
   useDefaultTabRedirect({
@@ -125,7 +125,7 @@ function Form() {
           langIndex,
           setLangIndex,
           form: queryForm.data,
-          schema: querySchema.data,
+          inspector: querySchema.data,
           permission: queryPermission.data,
         }}
       >

@@ -15,19 +15,19 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const langIndex = useDashboardContext(_ => _.langIndex)
   const filter = useDashboardContext(_ => _.filter.get)
   const updateQuestion = useDashboardContext(_ => _.filter.updateQuestion)
-  const schema = useDashboardContext(_ => _.schema)
+  const schemaInspector = useDashboardContext(_ => _.schemaInspector)
 
   const choices = useMemo(() => {
     if (!config.questionName) return
-    return schema.helper.getOptionsByQuestionName(config.questionName)
+    return schemaInspector.lookup.getOptionsByQuestionName(config.questionName)
   }, [config.questionName])
 
   const labels = useMemo(() => {
     const q = config.questionName
     if (!q) return {}
     if (!choices) return {}
-    return choices.reduceObject<Record<string, string>>(_ => [_.name, schema.translate.choice(q, _.name)])
-  }, [config.questionName, schema])
+    return choices.reduceObject<Record<string, string>>(_ => [_.name, schemaInspector.translate.choice(q, _.name)])
+  }, [config.questionName, schemaInspector])
 
   const filteredData = useMemo(() => {
     return getFilteredData([
@@ -44,7 +44,7 @@ export function BarChartWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     filterFns.byWidgetFilter,
   ])
 
-  const question = schema.helper.questionIndex[config.questionName!]
+  const question = schemaInspector.lookup.questionIndex[config.questionName!]
   const multiple = question?.type === 'select_multiple'
 
   const hiddenChoices = useMemo(() => {

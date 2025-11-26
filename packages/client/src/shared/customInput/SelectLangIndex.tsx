@@ -1,11 +1,11 @@
 import {Core} from '../index'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 
 export const SelectLangIndex = ({
-  schema,
+  inspector,
   ...props
 }: Omit<Core.IpSelectSingleProps<number>, 'options' | 'hideNullOption'> & {
-  schema: KoboSchemaHelper.Bundle<any>
+  inspector: SchemaInspector<any>
 }) => {
   return (
     <Core.SelectSingle<number>
@@ -13,7 +13,7 @@ export const SelectLangIndex = ({
       hideNullOption
       options={[
         {children: 'XML', value: -1},
-        ...schema.schemaSanitized.translations.map((_, i) => ({children: _, value: i})),
+        ...inspector.schemaSanitized.translations.map((_, i) => ({children: _, value: i})),
       ]}
     />
   )

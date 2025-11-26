@@ -5,7 +5,7 @@ import {Datatable} from '@/shared'
 import {questionTypeNumbers} from '@/features/Dashboard/Widget/Table/TableSettings'
 import {Obj} from '@axanc/ts-utils'
 import {useTheme} from '@mui/material'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 
@@ -21,17 +21,17 @@ const mapToRange = (value: number, ranges?: Ip.Dashboard.Widget.NumberRange[]) =
 const makeMapper = ({
   question,
   ranges,
-  schema,
+  inspector,
 }: {
-  schema: KoboSchemaHelper.Bundle<any>
+  inspector: SchemaInspector<any>
   question: Ip.Form.Question
   ranges?: Ip.Dashboard.Widget.NumberRange[]
 }): ((value: string | number) => string) => {
-  const type = schema.helper.questionIndex[question.name]?.type
+  const type = inspector.lookup.questionIndex[question.name]?.type
   if (!type) return () => '?'
   return questionTypeNumbers.has(type)
     ? value => mapToRange(value as number, ranges)
-    : value => schema.translate.choice(question.name, value as string) ?? '-'
+    : value => inspector.translate.choice(question.name, value as string) ?? '-'
 }
 
 const sortByRanges = <T extends string | {row: string}>({
@@ -64,7 +64,7 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
   const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
   const filterFns = useDashboardContext(_ => _.data.filterFns)
   const dashboard = useDashboardContext(_ => _.dashboard)
-  const schema = useDashboardContext(_ => _.schema)
+  const schemaInspector = useDashboardContext(_ => _.schemaInspector)
 
   const filteredData = useMemo(() => {
     return getFilteredData([
@@ -80,11 +80,11 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
 
     const getQuestion = (key?: string) => {
       if (!key) return
-      const question = schema.helper.questionIndex[key]
+      const question = schemaInspector.lookup.questionIndex[key]
       if (question) {
         return {
           ...question,
-          group: schema.helper.group.getByQuestionName(key),
+          group: schemaInspector.lookup.group.getByQuestionName(key),
         }
       }
     }
@@ -111,8 +111,8 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
     const grouped: Record<string, Record<string, number>> = {}
     const columnSet = new Set<string>()
 
-    const mapCol = makeMapper({question: column, schema, ranges: config.column?.rangesIfTypeNumber})
-    const mapRow = makeMapper({question: row, schema, ranges: config.row?.rangesIfTypeNumber})
+    const mapCol = makeMapper({question: column, inspector: schemaInspector, ranges: config.column?.rangesIfTypeNumber})
+    const mapRow = makeMapper({question: row, inspector: schemaInspector, ranges: config.row?.rangesIfTypeNumber})
 
     for (const item of relatedSubmissions) {
       const colValue = mapCol(item[column.name])
@@ -134,7 +134,7 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
       data: dataSorted,
       columns: columnsSorted,
     }
-  }, [relatedSubmissions, schema, config])
+  }, [relatedSubmissions, schemaInspector, config])
 
   if (!config.column?.questionName || !config.row?.questionName) return <WidgetCardPlaceholder type={widget.type} />
 
@@ -154,7 +154,7 @@ export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
       columns={[
         {
           id: 'row',
-          head: schema.translate.question(config.row.questionName),
+          head: schemaInspector.translate.question(config.row.questionName),
           type: 'select_one',
           renderQuick: _ => _.row,
           // group: {

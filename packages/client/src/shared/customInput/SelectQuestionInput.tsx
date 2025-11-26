@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import {colorRepeatedQuestionHeader, KoboTypeIcon} from '@infoportal/database-column'
 import {removeHtml} from 'infoportal-common'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import React, {useCallback, useMemo} from 'react'
 import {Kobo} from 'kobo-sdk'
 import {Core} from '../index'
@@ -17,7 +17,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {darkenVar} from '@infoportal/client-core'
 
 type Props = Omit<AutocompleteProps<string, false, any, any>, 'options' | 'renderInput'> & {
-  schema?: KoboSchemaHelper.Bundle<any>
+  inspector?: SchemaInspector<any>
   loading?: boolean
   InputProps?: Core.InputProps
   questionTypeFilter?: Array<Kobo.Form.QuestionType>
@@ -33,7 +33,7 @@ const optionInRepeatStyle = (t: Theme) => ({
 
 export const SelectQuestionInput = ({
   langIndex = 0,
-  schema,
+  inspector,
   loading,
   questionTypeFilter = [],
   value,
@@ -46,12 +46,12 @@ export const SelectQuestionInput = ({
   const {m} = useI18n()
   const t = useTheme()
   const questions = useMemo(() => {
-    const survey = schema?.schema.survey.filter(_ => _.type !== 'end_repeat' && _.type !== 'end_group')
+    const survey = inspector?.schema.survey.filter(_ => _.type !== 'end_repeat' && _.type !== 'end_group')
     if (questionTypeFilter.length === 0) return survey
     return survey?.filter(_ => questionTypeFilter.includes(_.type))
-  }, [questionTypeFilter, schema])
+  }, [questionTypeFilter, inspector])
 
-  const questionIndex = schema?.helper.questionIndex ?? {}
+  const questionIndex = inspector?.lookup.questionIndex ?? {}
   const filterOptions = useCallback(
     (
       index: Record<
@@ -68,12 +68,12 @@ export const SelectQuestionInput = ({
           const item = index[optionName]
           if (!item) return optionName
 
-          const label = KoboSchemaHelper.getLabel(item, langIndex)
+          const label = SchemaInspector.getLabel(item, langIndex)
           const labelText = Array.isArray(label) ? label.join(' ') : label || ''
           return `${item.name} ${labelText}`.trim()
         },
       }),
-    [schema],
+    [inspector],
   )
 
   return (
@@ -93,10 +93,10 @@ export const SelectQuestionInput = ({
       }}
       options={questions?.map(_ => _.name!) ?? []}
       groupBy={_ => {
-        return schema?.helper.group.getByQuestionName(_)?.name ?? ''
+        return inspector?.lookup.group.getByQuestionName(_)?.name ?? ''
       }}
       renderGroup={params => {
-        const label = schema?.translate.question(params.group)
+        const label = inspector?.translate.question(params.group)
         return (
           <li key={params.key} title={label}>
             <div
@@ -128,10 +128,10 @@ export const SelectQuestionInput = ({
           }
         />
       )}
-      renderValue={_ => KoboSchemaHelper.getLabel(questionIndex[_], langIndex).replace(/<[^>]+>/g, '') ?? _}
+      renderValue={_ => SchemaInspector.getLabel(questionIndex[_], langIndex).replace(/<[^>]+>/g, '') ?? _}
       renderOption={(props, option) => {
-        const isInRepeatGroup = !!schema?.helper.group.getByQuestionName(option)
-        const label = removeHtml(schema?.translate.question(option))
+        const isInRepeatGroup = !!inspector?.lookup.group.getByQuestionName(option)
+        const label = removeHtml(inspector?.translate.question(option))
         return (
           <Box
             component="li"

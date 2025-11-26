@@ -14,7 +14,7 @@ export const LineChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
   const filterFns = useDashboardContext(_ => _.data.filterFns)
   const langIndex = useDashboardContext(_ => _.langIndex)
-  const schema = useDashboardContext(_ => _.schema)
+  const schema = useDashboardContext(_ => _.schemaInspector)
 
   const data = useMemo(() => {
     return getFilteredData([filterFns.byPeriodCurrent, filterFns.byDashboardFilter()])

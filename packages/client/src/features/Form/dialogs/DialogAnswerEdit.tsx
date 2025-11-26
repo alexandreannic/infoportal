@@ -2,7 +2,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {KoboMapper, Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from '@mui/material'
 import {DialogProps} from '@toolpad/core'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import {useRef} from 'react'
 import {XlsFormFiller, XlsFormFillerHandle} from 'xls-form-filler'
 import {Ip} from '@infoportal/api-sdk'
@@ -11,9 +11,9 @@ import {Core} from '@/shared'
 
 export const DialogAnswerEdit = ({
   onClose,
-  payload: {schema, workspaceId, formId, submission},
+  payload: {inspector, workspaceId, formId, submission},
 }: DialogProps<{
-  schema: KoboSchemaHelper.Bundle
+  inspector: SchemaInspector
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   submission: Submission
@@ -37,8 +37,8 @@ export const DialogAnswerEdit = ({
       <DialogContent>
         <XlsFormFiller
           ref={formRef}
-          answers={KoboMapper.unmapSubmissionBySchema(schema.helper.questionIndex, submission)}
-          survey={schema.schema as any}
+          answers={KoboMapper.unmapSubmissionBySchema(inspector.lookup.questionIndex, submission)}
+          survey={inspector.schema as any}
           hideActions
           onSubmit={_ => {
             console.log('HERE')

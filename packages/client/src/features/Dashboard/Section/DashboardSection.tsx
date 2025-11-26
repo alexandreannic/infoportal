@@ -41,7 +41,7 @@ export function DashboardSection() {
     workspaceId,
     filter,
     effectiveDataRange,
-    schema,
+    schemaInspector,
     sections,
     widgetsBySection,
     dashboard,
@@ -125,7 +125,7 @@ export function DashboardSection() {
                 />
               )}
             </Core.DebouncedInput>
-            <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
+            <SelectLangIndex inspector={schemaInspector} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
             <Core.IconBtn children="filter_list_off" tooltip={m.clearFilter} onClick={() => filter.reset()} />
             <Box
               sx={{

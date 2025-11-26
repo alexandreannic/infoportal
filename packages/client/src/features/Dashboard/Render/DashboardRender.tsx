@@ -12,7 +12,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Badge, GlobalStyles, Theme, ThemeProvider} from '@mui/material'
 import {createRoute} from '@tanstack/react-router'
 import {Ip} from '@infoportal/api-sdk'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import {useMemo} from 'react'
 import {Responsive, WidthProvider} from 'react-grid-layout'
 import {DashboardRenderFilterChips} from './DashboardRenderFilterChips'
@@ -35,9 +35,9 @@ export function DashboardRender() {
 
   const mappedSubmissions = useMemo(() => {
     if (!querySubmissions.data || !querySchema.data) return
-    const schemaHelper = KoboSchemaHelper.buildBundle({schema: querySchema.data})
+    const schemaInspector = new SchemaInspector(querySchema.data)
     return querySubmissions.data.map(_ => {
-      return KoboMapper.mapSubmissionBySchema(schemaHelper.helper.questionIndex, _)
+      return KoboMapper.mapSubmissionBySchema(schemaInspector.lookup.questionIndex, _)
     })
   }, [querySubmissions.data, querySchema.data])
 
@@ -95,7 +95,7 @@ function WithContext({snapshot}: {snapshot: Ip.DashboardWithSnapshot['snapshot']
   const filters = useDashboardContext(_ => _.filter.get)
   const resetFilters = useDashboardContext(_ => _.filter.reset)
   const setFilters = useDashboardContext(_ => _.filter.set)
-  const schema = useDashboardContext(_ => _.schema)
+  const schemaInspector = useDashboardContext(_ => _.schemaInspector)
   const langIndex = useDashboardContext(_ => _.langIndex)
   const setLangIndex = useDashboardContext(_ => _.setLangIndex)
 
@@ -120,7 +120,12 @@ function WithContext({snapshot}: {snapshot: Ip.DashboardWithSnapshot['snapshot']
             max={filters.period.end}
             fullWidth={false}
           />
-          <SelectLangIndex schema={schema} sx={{maxWidth: 128, mr: 1}} value={langIndex} onChange={setLangIndex} />
+          <SelectLangIndex
+            inspector={schemaInspector}
+            sx={{maxWidth: 128, mr: 1}}
+            value={langIndex}
+            onChange={setLangIndex}
+          />
           <DashboardRenderFilterChips />
           <Badge
             color="primary"

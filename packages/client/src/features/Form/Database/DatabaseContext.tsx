@@ -1,4 +1,4 @@
-import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState} from 'react'
+import React, {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState} from 'react'
 import {
   FetchParams,
   useAsync,
@@ -9,7 +9,7 @@ import {
 } from '@axanc/react-hooks'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {Kobo} from 'kobo-sdk'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import * as csvToJson from 'csvtojson'
 import {map, Obj, seq} from '@axanc/ts-utils'
@@ -17,7 +17,6 @@ import {UseDatabaseView, useDatabaseView} from '@/features/Form/Database/view/us
 import {DatabaseDisplay} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
 import {Ip} from '@infoportal/api-sdk'
 import {ExternalFilesChoices, KoboExternalFilesIndex} from '@infoportal/database-column'
-import {useFormContext} from '@/features/Form/Form'
 
 export interface DatabaseContext {
   refetch: (p?: FetchParams) => Promise<void>
@@ -32,7 +31,7 @@ export interface DatabaseContext {
   externalFilesIndex?: KoboExternalFilesIndex
   view: UseDatabaseView
   groupDisplay: UseObjectStateReturn<DatabaseDisplay>
-  schema: KoboSchemaHelper.Bundle<false>
+  inspector: SchemaInspector<false>
 }
 
 const Context = React.createContext({} as DatabaseContext)
@@ -47,7 +46,7 @@ export const DatabaseKoboTableProvider = (props: {
   refetch: (p?: FetchParams) => Promise<void>
   form: Ip.Form
   data?: Submission[]
-  schema: KoboSchemaHelper.Bundle<false>
+  inspector: SchemaInspector<false>
 }) => {
   const {form, data, children, refetch} = props
   const {api} = useAppSettings()
@@ -55,7 +54,7 @@ export const DatabaseKoboTableProvider = (props: {
 
   const fetcherExternalFiles = useFetcher<() => Promise<{file: string; csv: string}[]>>(() => {
     return Promise.all(
-      (props.schema.schema.files ?? []).map(file =>
+      (props.inspector.schema.files ?? []).map(file =>
         api.koboApi
           .proxy({method: 'GET', url: file.content, formId: form.id})
           .then((csv: string) => ({file: file.metadata.filename, csv}))
@@ -81,7 +80,7 @@ export const DatabaseKoboTableProvider = (props: {
         ),
       )
     })
-  }, [props.schema.schema])
+  }, [props.inspector.schema])
 
   const asyncRefresh = useAsync(async () => {
     await api.koboApi.synchronizeAnswers(form.id)
@@ -102,7 +101,7 @@ export const DatabaseKoboTableProvider = (props: {
   const view = useDatabaseView(form.id)
   const groupDisplay = useObjectState<DatabaseDisplay>({
     repeatAs: undefined,
-    repeatGroupName: props.schema.helper.group.search({depth: 1})?.[0]?.name,
+    repeatGroupName: props.inspector.lookup.group.search({depth: 1})?.[0]?.name,
   })
 
   return (

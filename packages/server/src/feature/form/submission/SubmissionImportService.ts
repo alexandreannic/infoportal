@@ -1,4 +1,4 @@
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import xlsx from 'xlsx'
 import {PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from '../../kobo/KoboSdkGenerator.js'
@@ -17,13 +17,13 @@ export class SubmissionImportService {
   readonly processData = async (formId: Kobo.FormId, filePath: string, action: 'create' | 'update') => {
     const sdk = await this.koboSdkGenerator.getBy.koboFormId(formId)
     const schema = await sdk.v2.form.get({formId, use$autonameAsName: true})
-    const schemaHelper = KoboSchemaHelper.buildBundle({schema: schema.content})
+    const schemaInspector = new SchemaInspector(schema.content)
 
     const sheetData = Obj.mapValues(this.getSheets(xlsx.readFile(filePath)), sheet =>
-      SubmissionImportService.fixStupidMicrosoftDate(sheet, schemaHelper),
+      SubmissionImportService.fixStupidMicrosoftDate(sheet, schemaInspector),
     )
     if (action === 'create') {
-      const mergedData = SubmissionImportService.mergeNestedSheets(sheetData, schemaHelper)
+      const mergedData = SubmissionImportService.mergeNestedSheets(sheetData, schemaInspector)
       const taggedData = mergedData.map(_ => {
         _._IP_ADDED_FROM_XLS = true
         return _
@@ -50,11 +50,11 @@ export class SubmissionImportService {
     return sheetData
   }
 
-  private static mergeNestedSheets = (sheets: Record<string, KoboData[]>, schemaHelper: KoboSchemaHelper.Bundle) => {
+  private static mergeNestedSheets = (sheets: Record<string, KoboData[]>, schemaInspector: SchemaInspector) => {
     const rootSheetData = Object.values(sheets)[0]
 
     return rootSheetData.map(row => {
-      const groups = schemaHelper.helper.group.search({depth: 1})
+      const groups = schemaInspector.lookup.group.search({depth: 1})
       groups.forEach(group => {
         const indexedChildren = seq(sheets[group.name])
           .compactBy('_parent_index')
@@ -67,11 +67,11 @@ export class SubmissionImportService {
     })
   }
 
-  private static fixStupidMicrosoftDate = (data: KoboData[], schemaHelper: KoboSchemaHelper.Bundle): KoboData[] => {
+  private static fixStupidMicrosoftDate = (data: KoboData[], schemaInspector: SchemaInspector): KoboData[] => {
     const dates: Set<Kobo.Form.QuestionType> = new Set(['date', 'today', 'start', 'end', 'datetime'])
     return data.map(d => {
       return Obj.map(d, (k, v) => {
-        if (dates.has(schemaHelper.helper.questionIndex[k]?.type!)) {
+        if (dates.has(schemaInspector.lookup.questionIndex[k]?.type!)) {
           return [k, SubmissionImportService.stupidMicrosoftDateToJSDate(v)]
         }
         return [k, v]

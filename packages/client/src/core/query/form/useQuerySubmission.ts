@@ -39,12 +39,12 @@ export class UseQuerySubmission {
     queryClient: QueryClient
     submission: Ip.Submission
   }) {
-    const schema = UseQuerySchema.getBundle({workspaceId, formId, langIndex: 0}).data
+    const schema = UseQuerySchema.getInspector({workspaceId, formId, langIndex: 0}).data
     if (!schema) {
       console.error('Cannot get schema from store.')
       return
     }
-    const mapped = KoboMapper.mapSubmissionBySchema(schema.helper.questionIndex, Ip.Submission.map(submission))
+    const mapped = KoboMapper.mapSubmissionBySchema(schema.lookup.questionIndex, Ip.Submission.map(submission))
     queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.submission(formId), (old = {data: [], total: 0}) => {
       return {
         total: old.total + 1,
@@ -110,7 +110,7 @@ export class UseQuerySubmission {
   static search({formId, workspaceId}: {formId?: Ip.FormId; workspaceId: Ip.WorkspaceId}) {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
-    const querySchema = UseQuerySchema.getBundle({workspaceId, formId, langIndex: 0})
+    const querySchema = UseQuerySchema.getInspector({workspaceId, formId, langIndex: 0})
 
     const query = useQuery({
       enabled: !!formId,
@@ -119,7 +119,7 @@ export class UseQuerySubmission {
         const answersPromise = apiv2.submission.search({workspaceId, formId: formId!})
         const schema = querySchema.data // ?? (await querySchema.refetch().then(r => r.data!))
         const answers = await answersPromise
-        return Paginate.map((_: Ip.Submission) => KoboMapper.mapSubmissionBySchema(schema!.helper.questionIndex, _))(
+        return Paginate.map((_: Ip.Submission) => KoboMapper.mapSubmissionBySchema(schema!.lookup.questionIndex, _))(
           answers,
         )
       },

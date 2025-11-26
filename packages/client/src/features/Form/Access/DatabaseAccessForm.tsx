@@ -1,5 +1,5 @@
 import {nullValuesToUndefined} from 'infoportal-common'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import React, {ReactElement, useMemo} from 'react'
 import {Core} from '@/shared'
 import {Box} from '@mui/material'
@@ -21,7 +21,7 @@ interface Form extends IAccessForm {
 export const DatabaseAccessForm = ({
   formId,
   children,
-  schema,
+  inspector,
   workspaceId,
   onAdded,
 }: {
@@ -29,10 +29,10 @@ export const DatabaseAccessForm = ({
   children: ReactElement
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
-  schema: KoboSchemaHelper.Bundle
+  inspector: SchemaInspector
 }) => {
   const langIndex = 0
-  const survey = schema.schema.survey
+  const survey = inspector.schema.survey
 
   const {m} = useI18n()
   const queryAccessCreate = UseQueryFormAccess.create({workspaceId, formId})
@@ -43,7 +43,7 @@ export const DatabaseAccessForm = ({
     return seq(survey)
       .compactBy('name')
       .groupByFirst(_ => _.name)
-  }, [schema])
+  }, [inspector])
 
   const submit = ({selectBy, question, questionAnswer, ...f}: Form) => {
     queryAccessCreate
@@ -76,7 +76,7 @@ export const DatabaseAccessForm = ({
                 <SelectQuestionInput
                   {...field}
                   langIndex={langIndex}
-                  schema={schema}
+                  inspector={inspector}
                   questionTypeFilter={['calculate', 'text', 'select_multiple', 'select_one']}
                   InputProps={{
                     label: m.question,
@@ -107,7 +107,7 @@ export const DatabaseAccessForm = ({
                         <SelectChoiceInput
                           {...field}
                           langIndex={langIndex}
-                          schema={schema.schema}
+                          schema={inspector.schema}
                           questionName={questionName}
                           onReset={() => accessForm.setValue('questionAnswer', [])}
                           onChange={(e, _) => _ && field.onChange(_)}

@@ -5,10 +5,9 @@ import {Obj} from '@axanc/ts-utils'
 import {Ip} from '@infoportal/api-sdk'
 import * as Core from '@infoportal/client-core'
 import {SelectOption, StatusIcon} from '@infoportal/client-core'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import * as Datatable from '@infoportal/client-datatable'
 import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
-import {Kobo} from 'kobo-sdk'
 import {editableColsType} from '@infoportal/database-column'
 
 export type KoboBulkUpdateType = typeof editableColsType extends Set<infer U> ? U : never
@@ -19,14 +18,14 @@ export const DatabaseSelectedColumnAction = ({
   rowIds,
   commonValue,
   columnId,
-  schema,
+  inspector,
 }: {
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   rowIds: string[]
   commonValue?: any
   columnId: string
-  schema: KoboSchemaHelper.Bundle
+  inspector: SchemaInspector
 }) => {
   const validationColumnId: keyof Ip.Submission = 'validationStatus'
   if (columnId === validationColumnId)
@@ -38,7 +37,7 @@ export const DatabaseSelectedColumnAction = ({
         answerIds={rowIds as Ip.SubmissionId[]}
       />
     )
-  const question = schema.helper.questionIndex[columnId]
+  const question = inspector.lookup.questionIndex[columnId]
   if (!question) return
   if (editableColsType.has(question.type))
     return (
@@ -48,14 +47,14 @@ export const DatabaseSelectedColumnAction = ({
         formId={formId}
         question={question}
         answerIds={rowIds as Ip.SubmissionId[]}
-        schema={schema}
+        inspector={inspector}
       />
     )
   return <ReadonlyAction />
 }
 
 export const BulkUpdateAnswer = ({
-  schema,
+  inspector,
   question,
   value,
   ...props
@@ -65,7 +64,7 @@ export const BulkUpdateAnswer = ({
   formId: Ip.FormId
   question: Ip.Form.Question
   answerIds: Ip.SubmissionId[]
-  schema: KoboSchemaHelper.Bundle
+  inspector: SchemaInspector
 }) => {
   const query = UseQuerySubmission.update()
   const {workspaceId, formId, answerIds} = props
@@ -74,7 +73,7 @@ export const BulkUpdateAnswer = ({
       value={value}
       isSuccess={query.isSuccess}
       isPending={query.isPending}
-      label={schema.translate.question(question.name)}
+      label={inspector.translate.question(question.name)}
       errorMsg={query.error?.message}
       onConfirm={answer => {
         return query.mutateAsync({workspaceId, formId, answerIds, question: question.name, answer}).then(() => {
@@ -88,9 +87,9 @@ export const BulkUpdateAnswer = ({
           type={question.type as any}
           options={
             question
-              ? schema?.helper.choicesIndex[question.select_from_list_name!]?.map(_ => ({
+              ? inspector?.lookup.choicesIndex[question.select_from_list_name!]?.map(_ => ({
                   value: _.name,
-                  children: schema.translate.choice(question.name, _.name),
+                  children: inspector.translate.choice(question.name, _.name),
                 }))
               : undefined
           }

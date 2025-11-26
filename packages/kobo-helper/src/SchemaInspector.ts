@@ -4,14 +4,14 @@ import {Ip} from '@infoportal/api-sdk'
 import {KoboMetaHelper} from './koboMetaHelper.js'
 import {removeHtml} from 'infoportal-common'
 
-export interface SchemaHelperLookup {
+export interface SchemaInspectorLookup {
   group: KoboSchemaRepeatHelper
   choicesIndex: Record<string, Ip.Form.Choice[]>
   questionIndex: Record<string, Ip.Form.Question | undefined>
   getOptionsByQuestionName(qName: string): Seq<Ip.Form.Choice> | undefined
 }
 
-export interface SchemaHelperTranslate {
+export interface SchemaInspectorTranslate {
   langIndex: number
   question: (key: string) => string
   choice: (key: string, choice?: string) => string
@@ -31,17 +31,17 @@ export class SchemaInspector<IncludeMeta extends boolean = false> {
     public readonly includeMeta: IncludeMeta = false as unknown as IncludeMeta,
   ) {}
 
-  private _lookup?: SchemaHelperLookup
-  private _translate?: SchemaHelperTranslate
+  private _lookup?: SchemaInspectorLookup
+  private _translate?: SchemaInspectorTranslate
   private _schemaFlatAndSanitized?: Ip.Form.Question[]
   private _schemaSanitized?: Ip.Form.Schema
 
-  get lookup(): SchemaHelperLookup {
+  get lookup(): SchemaInspectorLookup {
     if (!this._lookup) this._lookup = this.buildLookup(this.schema)
     return this._lookup
   }
 
-  get translate(): SchemaHelperTranslate {
+  get translate(): SchemaInspectorTranslate {
     if (!this._translate)
       this._translate = this.buildTranslation({
         schema: this.schema,
@@ -100,7 +100,7 @@ export class SchemaInspector<IncludeMeta extends boolean = false> {
       }))
   }
 
-  private buildLookup(schema: Ip.Form.Schema): SchemaHelperLookup {
+  private buildLookup(schema: Ip.Form.Schema): SchemaInspectorLookup {
     const groupHelper = new KoboSchemaRepeatHelper(schema.survey)
     const choicesIndex = seq(schema.choices ?? []).groupBy(_ => _.list_name) as Record<string, Seq<Ip.Form.Choice>>
     const questionIndex = seq([...schema.survey])
@@ -128,8 +128,8 @@ export class SchemaInspector<IncludeMeta extends boolean = false> {
   }: {
     schema: Ip.Form.Schema
     langIndex: number
-    questionIndex: SchemaHelperLookup['questionIndex']
-  }): SchemaHelperTranslate {
+    questionIndex: SchemaInspectorLookup['questionIndex']
+  }): SchemaInspectorTranslate {
     const questionsTranslation: Record<string, string> = {}
     const choicesTranslation: Record<string, Record<string, string>> = {}
 

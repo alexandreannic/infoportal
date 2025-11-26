@@ -82,7 +82,7 @@ export const DatabaseTableContent = ({
       isReadonly: !ctx.canEdit,
       getRow: (_: Submission) => _.answers,
       formId: ctx.form.id,
-      schema: ctx.schema,
+      inspector: ctx.inspector,
       externalFilesIndex: ctx.externalFilesIndex,
       onRepeatGroupClick,
       t,
@@ -92,13 +92,13 @@ export const DatabaseTableContent = ({
       getFileUrl: getKoboAttachmentUrl,
       data: ctx.data ?? [],
       formId: ctx.form.id,
-      schema: ctx.schema,
+      inspector: ctx.inspector,
       onRepeatGroupClick,
       display: ctx.groupDisplay.get,
       m,
       t,
     }).transformColumns(schemaColumns)
-  }, [ctx.data, ctx.schema.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
+  }, [ctx.data, ctx.inspector.schema, langIndex, ctx.groupDisplay.get, ctx.externalFilesIndex, t])
 
   const columns: Datatable.Column.Props<any>[] = useMemo(() => {
     const base = buildDbColumns.meta.all({
@@ -132,8 +132,8 @@ export const DatabaseTableContent = ({
   }
 
   const handleGenerateTemplate = async () => {
-    if (ctx.schema && ctx.form) {
-      await generateEmptyXlsTemplate(ctx.schema, ctx.form.name + '_Template')
+    if (ctx.inspector && ctx.form) {
+      await generateEmptyXlsTemplate(ctx.inspector, ctx.form.name + '_Template')
     }
   }
 
@@ -183,7 +183,7 @@ export const DatabaseTableContent = ({
                   columnId={columnId}
                   commonValue={commonValue}
                   workspaceId={workspaceId}
-                  schema={ctx.schema}
+                  inspector={ctx.inspector}
                   formId={ctx.form.id}
                 />
               ),
@@ -239,12 +239,12 @@ export const DatabaseTableContent = ({
             <>
               <DatabaseViewBtn sx={{mr: 1}} view={ctx.view} onClick={() => setViewEditorOpen(_ => !_)} />
               <SelectLangIndex
-                schema={ctx.schema}
+                inspector={ctx.inspector}
                 sx={{maxWidth: 128, mr: 1}}
                 value={langIndex}
                 onChange={setLangIndex}
               />
-              {ctx.schema.helper.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
+              {ctx.inspector.lookup.group.size > 0 && <DatabaseGroupDisplayInput sx={{mr: 1}} />}
               {ctx.form.deploymentStatus === 'archived' && <ArchiveAlert />}
 
               <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>

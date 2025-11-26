@@ -32,7 +32,7 @@ export function ChoiceMapper({
   question: string
   choiceName: string
 }) {
-  const schema = useDashboardContext(_ => _.schema)
+  const schema = useDashboardContext(_ => _.schemaInspector)
   const t = useTheme()
   return (
     <Box

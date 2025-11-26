@@ -3,7 +3,7 @@ import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
 import {Core, Datatable} from '@/shared'
 import {map} from '@axanc/ts-utils'
 import {Theme, useTheme} from '@mui/material'
-import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {KoboFlattenRepeatedGroup, SchemaInspector} from '@infoportal/kobo-helper'
 import {useMemo} from 'react'
 import {Ip} from '@infoportal/api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
@@ -33,7 +33,7 @@ function DatabaseKoboRepeatContainer() {
   const {id, index} = databaseKoboRepeatRoute.useSearch()
   const langIndex = useFormContext(_ => _.langIndex)
 
-  const querySchema = UseQuerySchema.getBundle({workspaceId, formId, langIndex})
+  const querySchema = UseQuerySchema.getInspector({workspaceId, formId, langIndex})
 
   return (
     <TabContent width="full" sx={{p: 0, pb: 0, mb: 0}} animationDeps={[formId]} loading={querySchema.isLoading}>
@@ -42,7 +42,7 @@ function DatabaseKoboRepeatContainer() {
           <DatabaseKoboRepeat
             id={id}
             index={index}
-            schema={schema}
+            inspector={schema}
             group={group}
             formId={formId}
             workspaceId={workspaceId}
@@ -54,7 +54,7 @@ function DatabaseKoboRepeatContainer() {
 }
 
 const DatabaseKoboRepeat = ({
-  schema,
+  inspector,
   id,
   index,
   workspaceId,
@@ -66,7 +66,7 @@ const DatabaseKoboRepeat = ({
   workspaceId: Ip.WorkspaceId
   formId: Ip.FormId
   group: string
-  schema: KoboSchemaHelper.Bundle
+  inspector: SchemaInspector
 }) => {
   const t = useTheme()
   const {m} = useI18n()
@@ -75,13 +75,13 @@ const DatabaseKoboRepeat = ({
 
   const queryAnswers = UseQuerySubmission.search({workspaceId, formId})
   const data = queryAnswers.data?.data
-  const groupInfo = schema.helper.group.getByName(group)!
+  const groupInfo = inspector.lookup.group.getByName(group)!
   const paths = groupInfo?.pathArr
 
   const {columns, filters} = useMemo(() => {
     const res = getColumnsForRepeatGroup({
       formId,
-      schema,
+      inspector: inspector,
       t,
       m,
       onRepeatGroupClick: _ =>
@@ -102,7 +102,7 @@ const DatabaseKoboRepeat = ({
         ...(index ? {_parent_index: {value: index}} : {}),
       },
     }
-  }, [formId, group, schema])
+  }, [formId, group, inspector])
 
   const flat = useMemo(() => {
     return KoboFlattenRepeatedGroup.run({
@@ -163,19 +163,19 @@ const DatabaseKoboRepeat = ({
 export function getColumnsForRepeatGroup({
   groupName,
   formId,
-  schema,
+  inspector,
   onRepeatGroupClick,
   m,
   t,
 }: {
   groupName: string
   formId: Ip.FormId
-  schema: KoboSchemaHelper.Bundle
+  inspector: SchemaInspector
   onRepeatGroupClick?: OnRepeatGroupClick
   m: Messages
   t: Theme
 }) {
-  const groupInfo = schema.helper.group.getByName(groupName)!
+  const groupInfo = inspector.lookup.group.getByName(groupName)!
   const res: Datatable.Column.Props<KoboFlattenRepeatedGroup.Data>[] = []
   if (groupInfo.depth > 1) {
     res.push({
@@ -202,7 +202,7 @@ export function getColumnsForRepeatGroup({
       formId,
       questions: groupInfo.questions,
       onRepeatGroupClick,
-      schema,
+      inspector: inspector,
       t,
       m,
     }),

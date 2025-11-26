@@ -20,7 +20,7 @@ import {WidgetLabel} from '@/features/Dashboard/Widget/shared/WidgetLabel'
 
 export const GeoChartSettings = () => {
   const {m} = useI18n()
-  const schema = useDashboardContext(_ => _.schema)
+  const schema = useDashboardContext(_ => _.schemaInspector)
 
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoChart']
@@ -52,7 +52,7 @@ export const GeoChartSettings = () => {
               {...field}
               sx={{mb: 1}}
               onChange={(e, _) => field.onChange(_)}
-              schema={schema}
+              inspector={schema}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
                 label: m.question,

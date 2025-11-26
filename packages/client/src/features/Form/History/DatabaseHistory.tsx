@@ -18,7 +18,7 @@ export const databaseHistoryRoute = createRoute({
 })
 
 function DatabaseHistory() {
-  const {schema, workspaceId, form} = useFormContext(_ => _)
+  const {inspector, workspaceId, form} = useFormContext(_ => _)
   const t = useTheme()
   const {m, formatDateTime, formatLargeNumber, formatDate} = useI18n()
   const {api} = useAppSettings()
@@ -31,19 +31,19 @@ function DatabaseHistory() {
   const getAnswerTranslation = (row: KoboAnswerHistory, fn: (_: KoboAnswerHistory) => string) =>
     map(row.property, property => {
       const value: any = fn(row)
-      if (!schema) return value
-      const questionSchema = schema.helper.questionIndex[property]
+      if (!inspector) return value
+      const questionSchema = inspector.lookup.questionIndex[property]
       if (!questionSchema) return value
       switch (questionSchema.type) {
         case 'select_multiple': {
           const label = value
             ?.split(' ')
-            .map((_: string) => schema.translate.choice(property, _))
+            .map((_: string) => inspector.translate.choice(property, _))
             .join(' | ')
           return label
         }
         case 'select_one': {
-          const render = schema.translate.choice(property, value)
+          const render = inspector.translate.choice(property, value)
           return (
             render ?? (
               <span title={value}>
@@ -160,7 +160,7 @@ function DatabaseHistory() {
               render: _ => {
                 return {
                   value: _.property,
-                  label: _.property ? schema?.translate.question(_.property) : undefined,
+                  label: _.property ? inspector?.translate.question(_.property) : undefined,
                 }
               },
             },

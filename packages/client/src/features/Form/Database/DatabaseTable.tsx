@@ -10,7 +10,7 @@ import {Datatable} from '@/shared'
 import {createRoute} from '@tanstack/react-router'
 import {FetchParams} from '@axanc/react-hooks'
 import {TabContent} from '@/shared/Tab/TabContent.js'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 
 export const answersRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -20,7 +20,7 @@ export const answersRoute = createRoute({
 
 export interface DatabaseTableProps {
   workspaceId: Ip.WorkspaceId
-  schema?: KoboSchemaHelper.Bundle<false>
+  inspector?: SchemaInspector
   form: Ip.Form
   formId: Ip.FormId
   permission: Ip.Permission.Form
@@ -37,7 +37,7 @@ function DatabaseTableContainer() {
       <DatabaseTable
         permission={props.permission}
         formId={props.form.id}
-        schema={props.schema}
+        inspector={props.inspector}
         workspaceId={props.workspaceId}
         form={props.form}
       />
@@ -48,7 +48,7 @@ function DatabaseTableContainer() {
 const DatabaseTable = ({
   workspaceId,
   formId,
-  schema,
+  inspector,
   form,
   onFiltersChange,
   onDataChange,
@@ -73,14 +73,14 @@ const DatabaseTable = ({
           <Datatable.Skeleton />
         </>
       )}
-      {schema && (
+      {inspector && (
         <DatabaseKoboTableProvider
           form={form}
           dataFilter={dataFilter}
           refetch={refetch}
           loading={queryAnswers.isPending}
           data={queryAnswers.data?.data}
-          schema={schema}
+          inspector={inspector}
           permission={permission}
         >
           <DatabaseTableContent onFiltersChange={onFiltersChange} onDataChange={onDataChange} />

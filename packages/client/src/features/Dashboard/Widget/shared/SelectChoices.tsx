@@ -18,7 +18,7 @@ export function SelectChoices({
   label?: string
 }) {
   const {choices} = useQuestionInfo(questionName)
-  const schema = useDashboardContext(_ => _.schema)
+  const schema = useDashboardContext(_ => _.schemaInspector)
   const options = useMemo(() => {
     if (!questionName || !choices) return []
     return choices?.map(_ => ({value: _.name, children: schema.translate.choice(questionName, _.name)}))

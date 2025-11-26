@@ -15,7 +15,7 @@ export const questionTypeNumbers = new Set<Kobo.Form.QuestionType>(['integer', '
 
 export function TableSettings() {
   const {m} = useI18n()
-  const schema = useDashboardContext(_ => _.schema)
+  const schemaInspector = useDashboardContext(_ => _.schemaInspector)
   const langIndex = useDashboardContext(_ => _.langIndex)
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['Table']
@@ -53,11 +53,11 @@ export function TableSettings() {
                 const path = `column.i18n_label` as const
                 const current = form.getValues(path)
                 if (value && (!current || current.every(_ => !_))) {
-                  const labels = schema.helper.questionIndex[value]?.label ?? []
+                  const labels = schemaInspector.lookup.questionIndex[value]?.label ?? []
                   form.setValue('column.i18n_label', labels, {shouldDirty: true})
                 }
               }}
-              schema={schema}
+              inspector={schemaInspector}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
                 label: m.question,
@@ -83,7 +83,7 @@ export function TableSettings() {
             />
           )}
         />
-        {questionTypeNumbers.has(schema.helper.questionIndex[values.column?.questionName!]?.type!) && (
+        {questionTypeNumbers.has(schemaInspector.lookup.questionIndex[values.column?.questionName!]?.type!) && (
           <Controller
             name="column.rangesIfTypeNumber"
             control={form.control}
@@ -110,11 +110,11 @@ export function TableSettings() {
                 const path = `row.i18n_label` as const
                 const current = form.getValues(path)
                 if (value && (current ?? []).filter(_ => !!_).length === 0) {
-                  const labels = schema.helper.questionIndex[value]?.label
+                  const labels = schemaInspector.lookup.questionIndex[value]?.label
                   form.setValue(path, labels, {shouldDirty: true})
                 }
               }}
-              schema={schema}
+              inspector={schemaInspector}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
                 label: m.question,
@@ -132,7 +132,7 @@ export function TableSettings() {
             <Core.AsyncInput onSubmit={_ => onChange(_)} helperText={null} sx={{mb: 1}} label={m.title} {...field} />
           )}
         />
-        {questionTypeNumbers.has(schema.helper.questionIndex[values.row?.questionName!]?.type!) && (
+        {questionTypeNumbers.has(schemaInspector.lookup.questionIndex[values.row?.questionName!]?.type!) && (
           <Controller
             name="row.rangesIfTypeNumber"
             control={form.control}

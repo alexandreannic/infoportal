@@ -6,7 +6,7 @@ import {
 import {seq} from '@axanc/ts-utils'
 import {useI18n} from '@infoportal/client-i18n'
 import {Ip} from '@infoportal/api-sdk'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import {Dispatch, ReactNode, SetStateAction, useMemo, useState} from 'react'
 import {createContext, useContextSelector} from 'use-context-selector'
 import {UseDashboardFilteredDataCache, useDashboardFilteredDataCache} from './useDashboardData'
@@ -26,7 +26,7 @@ export type DashboardContext = {
   workspaceId: Ip.WorkspaceId
   data: UseDashboardFilteredDataCache
   dashboard: Ip.Dashboard
-  schema: KoboSchemaHelper.Bundle<true>
+  schemaInspector: SchemaInspector<true>
   widgetsBySection: Map<Ip.Dashboard.SectionId, Ip.Dashboard.Widget[]>
   sections: Ip.Dashboard.Section[]
   updateForm: UseDashboardFormEdit
@@ -79,19 +79,23 @@ export const DashboardProvider = ({
     return seq(submissions).map(({answers, ...rest}) => ({...answers, ...rest}))
   }, [submissions])
 
-  const schemaWithMeta = useMemo(() => {
-    const bundle = KoboSchemaHelper.buildBundle({schema, langIndex})
-    return KoboSchemaHelper.withMeta(bundle, m._meta, {validationStatus: m.validation_})
+  const schemaInspectorWithMeta = useMemo(() => {
+    return new SchemaInspector(schema, langIndex).withMeta(m._meta, {validationStatus: m.validation_})
   }, [schema, langIndex])
 
   const filter = useDashboardFilters({defaultPeriod: effectiveDataRange})
-  const data = useDashboardFilteredDataCache({data: dataSource, schema: schemaWithMeta, filters: filter.get, dashboard})
+  const data = useDashboardFilteredDataCache({
+    data: dataSource,
+    schemaInspector: schemaInspectorWithMeta,
+    filters: filter.get,
+    dashboard,
+  })
 
   const widgetsBySection = useMemo(() => {
     return seq(widgets).groupByToMap(_ => _.sectionId as Ip.Dashboard.SectionId)
   }, [widgets])
 
-  const flattenRepeatGroupData = useFlattenRepeatGroupData(schemaWithMeta)
+  const flattenRepeatGroupData = useFlattenRepeatGroupData(schemaInspectorWithMeta)
 
   const updateForm = useDashboardFormEdit({workspaceId, dashboard})
 
@@ -107,7 +111,7 @@ export const DashboardProvider = ({
         effectiveDataRange,
         workspaceId,
         widgetsBySection,
-        schema: schemaWithMeta,
+        schemaInspector: schemaInspectorWithMeta,
         data,
         dashboard,
         langIndex,

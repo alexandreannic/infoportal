@@ -1,7 +1,7 @@
 import {Obj, seq} from '@axanc/ts-utils'
 import {Ip} from '@infoportal/api-sdk'
 import {removeHtml} from 'infoportal-common'
-import {SchemaInspector} from './SchemaInspector'
+import {SchemaInspector} from './SchemaInspector.js'
 
 export class KoboInterfaceBuilder {
   constructor(
@@ -9,8 +9,9 @@ export class KoboInterfaceBuilder {
     private schema: Ip.Form.Schema,
     private langIndex: number = 0,
     private skipChoicesOverLimit = 100,
+    schemaInspector?: SchemaInspector,
   ) {
-    this.schemaInspector = new SchemaInspector(this.schema, this.langIndex)
+    this.schemaInspector = schemaInspector ?? new SchemaInspector(this.schema, this.langIndex)
   }
 
   private readonly schemaInspector: SchemaInspector

@@ -1,8 +1,7 @@
 import {Autocomplete, AutocompleteProps, Box, Chip, createFilterOptions} from '@mui/material'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import React, {useCallback, useMemo} from 'react'
 import {Ip} from '@infoportal/api-sdk'
-import {Kobo} from 'kobo-sdk'
 import {Core} from '../index'
 import {seq} from '@axanc/ts-utils'
 
@@ -37,7 +36,7 @@ export const SelectChoiceInput = ({langIndex = 0, schema, questionName, InputPro
       >,
     ) =>
       createFilterOptions({
-        stringify: (optionName: string) => KoboSchemaHelper.getLabel(index[optionName], langIndex),
+        stringify: (optionName: string) => SchemaInspector.getLabel(index[optionName], langIndex),
       }),
     [schema, langIndex],
   )
@@ -64,7 +63,7 @@ export const SelectChoiceInput = ({langIndex = 0, schema, questionName, InputPro
         <Box component="li" {...props} key={optionName}>
           <div>
             <Core.Txt block>
-              {KoboSchemaHelper.getLabel(indexOptionsByName[optionName], langIndex).replace(/<[^>]+>/g, '') ??
+              {SchemaInspector.getLabel(indexOptionsByName[optionName], langIndex).replace(/<[^>]+>/g, '') ??
                 optionName}
             </Core.Txt>
             <Core.Txt color="disabled">{optionName}</Core.Txt>

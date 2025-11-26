@@ -27,7 +27,7 @@ export const AccessTable = ({
   const queryAccess = UseQueryFormAccess.getByFormId({workspaceId, formId})
   const queryAccessUpdate = UseQueryFormAccess.update({workspaceId, formId})
   const queryAccessRemove = UseQueryFormAccess.remove({workspaceId, formId})
-  const querySchema = UseQuerySchema.getBundle({workspaceId, formId, langIndex})
+  const querySchema = UseQuerySchema.getInspector({workspaceId, formId, langIndex})
   return (
     <Datatable.Component<Ip.Access>
       id="access"

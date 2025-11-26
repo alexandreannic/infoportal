@@ -3,12 +3,12 @@ import {useWidgetSettingsContext} from '@/features/Dashboard/Widget/WidgetSettin
 import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 
 export const useEffectSetTitle = (questionName?: string) => {
-  const schema = useDashboardContext(_ => _.schema)
+  const schemaInspector = useDashboardContext(_ => _.schemaInspector)
   const {widget, onChange} = useWidgetSettingsContext()
   useEffect(() => {
     if (!questionName) return
     if (!widget.i18n_title || widget.i18n_title.length === 0) {
-      const i18n_title = schema.helper.questionIndex[questionName]?.label
+      const i18n_title = schemaInspector.lookup.questionIndex[questionName]?.label
       if (!i18n_title) return
       onChange({i18n_title})
     }

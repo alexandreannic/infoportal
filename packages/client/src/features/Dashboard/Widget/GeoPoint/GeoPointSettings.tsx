@@ -12,7 +12,7 @@ import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSet
 export const GeoPointSettings = () => {
   const {m} = useI18n()
 
-  const schema = useDashboardContext(_ => _.schema)
+  const schema = useDashboardContext(_ => _.schemaInspector)
 
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['GeoPoint']
@@ -43,7 +43,7 @@ export const GeoPointSettings = () => {
               {...field}
               sx={{mb: 1}}
               onChange={(e, _) => field.onChange(_)}
-              schema={schema}
+              inspector={schema}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
                 label: m.question,

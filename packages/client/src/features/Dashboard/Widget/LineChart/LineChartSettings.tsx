@@ -76,7 +76,7 @@ function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Wi
   const {widget, onChange} = useWidgetSettingsContext()
   const {choices, question} = useQuestionInfo(questionName)
 
-  const schema = useDashboardContext(_ => _.schema)
+  const schemaInspector = useDashboardContext(_ => _.schemaInspector)
   const langIndex = useDashboardContext(_ => _.langIndex)
 
   return (
@@ -95,11 +95,11 @@ function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Wi
               const path = `lines.${index}.i18n_label` as const
               const current = form.getValues(path)
               if (value && (!current || current.every(_ => !_))) {
-                const labels = schema.helper.questionIndex[value]?.label
+                const labels = schemaInspector.lookup.questionIndex[value]?.label
                 form.setValue(path, labels, {shouldDirty: true})
               }
             }}
-            schema={schema}
+            inspector={schemaInspector}
             questionTypeFilter={getQuestionTypeByWidget(widget.type)}
             sx={{mb: 1}}
             InputProps={{

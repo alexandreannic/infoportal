@@ -22,7 +22,7 @@ import {SliderNumberInput} from '@/shared/customInput/SliderNumberInput'
 export function BarChartSettings() {
   const {m} = useI18n()
   const langIndex = useDashboardContext(_ => _.langIndex)
-  const schema = useDashboardContext(_ => _.schema)
+  const schema = useDashboardContext(_ => _.schemaInspector)
   const {widget, onChange} = useWidgetSettingsContext()
   const config = widget.config as Ip.Dashboard.Widget.Config['BarChart']
   const {choices} = useQuestionInfo(config.questionName)
@@ -56,7 +56,7 @@ export function BarChartSettings() {
               {...field}
               sx={{mb: 1}}
               onChange={(e, _) => field.onChange(_)}
-              schema={schema}
+              inspector={schema}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
                 label: m.question,

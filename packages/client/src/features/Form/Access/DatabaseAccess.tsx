@@ -14,11 +14,11 @@ export const databaseAccessRoute = createRoute({
 })
 
 function DatabaseAccess() {
-  const {workspaceId, permission, form, schema} = useFormContext(_ => _)
+  const {workspaceId, permission, form, inspector} = useFormContext(_ => _)
   const {m} = useI18n()
   return (
     <TabContent width="full">
-      {schema && (
+      {inspector && (
         <Core.Panel>
           <AccessTable
             formId={form.id}
@@ -26,7 +26,7 @@ function DatabaseAccess() {
             isAdmin={permission.access_canEdit}
             header={
               permission.access_canAdd && (
-                <DatabaseAccessForm workspaceId={workspaceId} formId={form.id} schema={schema}>
+                <DatabaseAccessForm workspaceId={workspaceId} formId={form.id} inspector={inspector}>
                   <Core.Btn sx={{mr: 1}} variant="outlined" icon="person_add">
                     {m.grantAccess}
                   </Core.Btn>

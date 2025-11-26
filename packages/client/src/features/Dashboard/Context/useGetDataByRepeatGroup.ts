@@ -1,6 +1,6 @@
 import {useRef} from 'react'
 import {Answers} from '@/features/Dashboard/Context/DashboardContext'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import {Seq} from '@axanc/ts-utils'
 
 export type UseFlattenRepeatGroupData = ReturnType<typeof useFlattenRepeatGroupData>
@@ -9,7 +9,7 @@ export type UseFlattenRepeatGroupData = ReturnType<typeof useFlattenRepeatGroupD
  * React hook that returns a schema to flatten Kobo submissions
  * when a widget accesses data from a repeat group question.
  */
-export const useFlattenRepeatGroupData = (schema: KoboSchemaHelper.Bundle<any>) => {
+export const useFlattenRepeatGroupData = (inspector: SchemaInspector<any>) => {
   const cache = useRef(new WeakMap<any[], Map<string, Seq<Answers>>>())
 
   const flattenByGroupName = (data: Seq<Answers>, groupName?: string): Seq<Answers> => {
@@ -38,7 +38,7 @@ export const useFlattenRepeatGroupData = (schema: KoboSchemaHelper.Bundle<any>) 
     if (cached) return cached
 
     // Compute if needed
-    const group = schema.helper.group.getByQuestionName(questionName)
+    const group = inspector.lookup.group.getByQuestionName(questionName)
     if (!group) return data
 
     const flattened = flattenByGroupName(data, group.name)

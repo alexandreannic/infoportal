@@ -62,10 +62,10 @@ export const useQuestionInfo: {
   (_: string): {question: Kobo.Form.Question; choices: Kobo.Form.Choice[]}
   (_?: string): {question?: Kobo.Form.Question; choices?: Kobo.Form.Choice[]}
 } = (questionName?: string) => {
-  const schema = useDashboardContext(_ => _.schema)
+  const schemaInspector = useDashboardContext(_ => _.schemaInspector)
   if (!questionName) return {question: undefined, choices: undefined}
-  const question = schema.helper.questionIndex[questionName!]
-  const choices = schema.helper.choicesIndex[question?.select_from_list_name!]
+  const question = schemaInspector.lookup.questionIndex[questionName!]
+  const choices = schemaInspector.lookup.choicesIndex[question?.select_from_list_name!]
   return {question, choices} as any
 }
 

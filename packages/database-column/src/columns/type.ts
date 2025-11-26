@@ -1,7 +1,12 @@
 import {Ip} from '@infoportal/api-sdk'
 import {Theme} from '@mui/material'
 import {Messages} from '@infoportal/client-i18n'
-import {KoboFlattenRepeatedGroup, KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {
+  KoboFlattenRepeatedGroup,
+  SchemaInspector,
+  SchemaInspectorLookup,
+  SchemaInspectorTranslate,
+} from '@infoportal/kobo-helper'
 
 export type ExternalFilesChoices = {list_name: string; name: string; label: string}
 export type KoboExternalFilesIndex = Record<string, Record<string, ExternalFilesChoices>>
@@ -20,10 +25,10 @@ export type ColumnQuestionProps = {
   formId: Ip.FormId
   isReadonly?: boolean
   getRow?: (_: any) => Data
-  schema: KoboSchemaHelper.Bundle
-  choicesIndex: KoboSchemaHelper.Helper['choicesIndex']
-  translateQuestion: KoboSchemaHelper.Translation['question']
-  translateChoice: KoboSchemaHelper.Translation['choice']
+  inspector: SchemaInspector
+  choicesIndex: SchemaInspectorLookup['choicesIndex']
+  translateQuestion: SchemaInspectorTranslate['question']
+  translateChoice: SchemaInspectorTranslate['choice']
   externalFilesIndex?: KoboExternalFilesIndex
   onRepeatGroupClick?: OnRepeatGroupClick
   getFileUrl: (_: {
@@ -38,7 +43,7 @@ export type ColumnQuestionProps = {
 
 export type ColumnQuestionBaseProps = Pick<
   ColumnQuestionProps,
-  'schema' | 'isReadonly' | 'getRow' | 'q' | 'translateQuestion' | 'm'
+  'inspector' | 'isReadonly' | 'getRow' | 'q' | 'translateQuestion' | 'm'
 >
 
 export type ColumnMetaProps = {

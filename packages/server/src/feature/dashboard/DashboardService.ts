@@ -1,6 +1,6 @@
 import {Prisma, PrismaClient} from '@prisma/client'
-import {slugify, genShortid} from 'infoportal-common'
-import {KoboMetaHelper, KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {genShortid, slugify} from 'infoportal-common'
+import {KoboMetaHelper, SchemaInspector} from '@infoportal/kobo-helper'
 import {HttpError, Ip} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {FormService} from '../form/FormService.js'
@@ -95,7 +95,7 @@ export class DashboardService {
     schema: Ip.Form.Schema
     widgets: Pick<Ip.Dashboard.Widget, 'type' | 'config'>[]
   }) => {
-    const schemaHelper = KoboSchemaHelper.buildBundle({schema})
+    const inspector = new SchemaInspector(schema)
     const keys = widgets
       .flatMap(_ => {
         switch (_.type) {
@@ -134,7 +134,7 @@ export class DashboardService {
       })
       .filter(_ => _ !== undefined)
       .map(_ => {
-        const repeatGroup = schemaHelper.helper.group.getByQuestionName(_)
+        const repeatGroup = inspector.lookup.group.getByQuestionName(_)
         return repeatGroup?.name ?? _
       })
       .map(_ => {

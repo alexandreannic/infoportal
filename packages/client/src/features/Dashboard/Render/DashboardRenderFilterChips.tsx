@@ -5,7 +5,7 @@ import {Chip} from '@mui/material'
 export const DashboardRenderFilterChips = () => {
   const filter = useDashboardContext(_ => _.filter.get.questions)
   const clearQuestion = useDashboardContext(_ => _.filter.clearQuestion)
-  const schema = useDashboardContext(_ => _.schema)
+  const schema = useDashboardContext(_ => _.schemaInspector)
   return (
     <>
       {Obj.keys(filter).map(qName => {

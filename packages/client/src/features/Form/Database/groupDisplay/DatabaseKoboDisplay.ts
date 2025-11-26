@@ -1,4 +1,4 @@
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import {mapFor} from '@axanc/ts-utils'
 import {Messages} from '@infoportal/client-i18n'
 import {Theme} from '@mui/material'
@@ -15,7 +15,7 @@ export type DatabaseDisplay = {
 type DatabaseKoboDisplayProps = {
   data: Ip.Submission[]
   display: DatabaseDisplay
-  schema: KoboSchemaHelper.Bundle
+  inspector: SchemaInspector
   formId: Ip.FormId
   onRepeatGroupClick?: OnRepeatGroupClick
   m: Messages
@@ -26,7 +26,7 @@ type DatabaseKoboDisplayProps = {
 export const databaseKoboDisplayBuilder = ({
   data,
   display,
-  schema,
+  inspector,
   formId,
   onRepeatGroupClick,
   getFileUrl,
@@ -37,7 +37,7 @@ export const databaseKoboDisplayBuilder = ({
     switch (display.repeatAs) {
       case 'columns': {
         const copy = [...columns]
-        schema.helper.group.search({depth: 1}).map(group => {
+        inspector.lookup.group.search({depth: 1}).map(group => {
           const index = copy.findIndex(_ => _.id == group.name)
           const groupSize = Math.max(0, ...data.map(_ => _.answers[group.name]?.length ?? 0))
           mapFor(groupSize, repeat => {
@@ -45,7 +45,7 @@ export const databaseKoboDisplayBuilder = ({
               .byQuestions({
                 getFileUrl,
                 questions: group.questions,
-                schema,
+                inspector: inspector,
                 onRepeatGroupClick,
                 getRow: (_: Ip.Submission) => _.answers[group.name]?.[repeat] ?? {},
                 formId,
@@ -56,7 +56,7 @@ export const databaseKoboDisplayBuilder = ({
                 _.head = `[${repeat}] ${_.head}`
                 _.group = {
                   id: group.name + repeat,
-                  label: `[${repeat}] ` + schema.translate.question(group.name),
+                  label: `[${repeat}] ` + inspector.translate.question(group.name),
                 }
                 _.id = _.id + 'repeat' + repeat + '+' + i
                 _.styleHead = {
@@ -75,13 +75,13 @@ export const databaseKoboDisplayBuilder = ({
       }
       case 'rows': {
         if (!display.repeatGroupName) return columns
-        const group = schema.helper.group.getByName(display.repeatGroupName)
+        const group = inspector.lookup.group.getByName(display.repeatGroupName)
         if (!group || group.depth > 1) return columns
         const repeatGroupColumns = buildDbColumns.question
           .byQuestions({
             getFileUrl,
             questions: group.questions,
-            schema,
+            inspector: inspector,
             onRepeatGroupClick,
             formId,
             m,

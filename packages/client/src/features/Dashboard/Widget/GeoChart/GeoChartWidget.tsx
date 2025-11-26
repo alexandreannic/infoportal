@@ -15,11 +15,11 @@ export const GeoChartWidget = ({widget}: {widget: Ip.Dashboard.Widget}) => {
   const updateQuestion = useDashboardContext(_ => _.filter.updateQuestion)
   const filterFns = useDashboardContext(_ => _.data.filterFns)
   const langIndex = useDashboardContext(_ => _.langIndex)
-  const schema = useDashboardContext(_ => _.schema)
+  const schemaInspector = useDashboardContext(_ => _.schemaInspector)
 
   const choices = useMemo(() => {
     if (!config.questionName) return
-    return schema.helper.getOptionsByQuestionName(config.questionName)
+    return schemaInspector.lookup.getOptionsByQuestionName(config.questionName)
   }, [config.questionName])
 
   const filteredData = useMemo(() => {

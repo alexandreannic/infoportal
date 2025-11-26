@@ -4,7 +4,7 @@ import {filterByColumn} from '@infoportal/client-datatable'
 import {subDays} from 'date-fns'
 import {Ip} from '@infoportal/api-sdk'
 import {isDate, PeriodHelper} from 'infoportal-common'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import {useCallback, useMemo, useRef} from 'react'
 
 type FilterFn<T> = (item: T, index: number, array: T[]) => boolean | undefined
@@ -13,7 +13,7 @@ export type UseDashboardFilteredDataCache = ReturnType<typeof useDashboardFilter
 
 type Props = {
   data: Seq<Answers>
-  schema: KoboSchemaHelper.Bundle<true>
+  schemaInspector: SchemaInspector<true>
   filters: DashboardContext['filter']['get']
   dashboard: Ip.Dashboard
 }
@@ -43,7 +43,7 @@ export function useDashboardFilteredDataCache({data, ...props}: Props) {
   return {source: data, filterFns, getFilteredData}
 }
 
-function useFiltersFn({dashboard, schema, filters: dashboardFilters}: Omit<Props, 'data'>) {
+function useFiltersFn({dashboard, schemaInspector, filters: dashboardFilters}: Omit<Props, 'data'>) {
   const byPeriod = useCallback(
     (period: Ip.Period) => (row: Answers) => {
       return PeriodHelper.isDateIn(period, row.submissionTime)
@@ -75,9 +75,9 @@ function useFiltersFn({dashboard, schema, filters: dashboardFilters}: Omit<Props
 
   const byWidgetFilter = useCallback(
     (widgetFilter?: Ip.Dashboard.Widget.ConfigFilter) => {
-      return filterToFunction(schema, widgetFilter)
+      return filterToFunction(schemaInspector, widgetFilter)
     },
-    [schema],
+    [schemaInspector],
   )
   const byDashboardFilter = useCallback(
     ({excludedQuestion}: {excludedQuestion?: string} = {}) => {
@@ -88,7 +88,7 @@ function useFiltersFn({dashboard, schema, filters: dashboardFilters}: Omit<Props
           columnId: questionName,
           getValue: row => row[questionName],
           type: fnSwitch(
-            schema.helper.questionIndex[questionName]?.type!,
+            schemaInspector.lookup.questionIndex[questionName]?.type!,
             {
               today: 'date',
               start: 'date',
@@ -125,7 +125,7 @@ function useFiltersFn({dashboard, schema, filters: dashboardFilters}: Omit<Props
 const _filterCache = new WeakMap<Ip.Dashboard.Widget.ConfigFilter, undefined | ((row: any) => boolean | undefined)>()
 
 export function filterToFunction<T extends Record<string, any> = Record<string, any>>(
-  schema: KoboSchemaHelper.Bundle<true>,
+  schema: SchemaInspector<true>,
   filter?: Ip.Dashboard.Widget.ConfigFilter,
 ): undefined | ((_: T) => boolean | undefined) {
   if (!filter?.questionName) return
@@ -154,7 +154,7 @@ export function filterToFunction<T extends Record<string, any> = Record<string, 
       }
     if (filterChoice) {
       if (!filterChoice || filterChoice.length === 0) return (_: T) => true
-      const isMultiple = schema.helper.questionIndex[filter.questionName]?.type === 'select_multiple'
+      const isMultiple = schema.lookup.questionIndex[filter.questionName]?.type === 'select_multiple'
       const set = new Set(filterChoice)
       if (isMultiple) return (_: T) => _[filter.questionName!]?.some((_: string) => set.has(_))
       return (_: T) => set.has(_[filter.questionName!])

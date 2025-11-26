@@ -1,20 +1,17 @@
 import * as ExcelJS from 'exceljs'
 import {downloadBufferAsFile} from '@infoportal/client-core'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 import {Ip} from '@infoportal/api-sdk'
 import Question = Ip.Form.Question
 import Choice = Ip.Form.Choice
 
-export const generateEmptyXlsTemplate = async (
-  schemaBundle: KoboSchemaHelper.Bundle,
-  fileName: string,
-): Promise<void> => {
+export const generateEmptyXlsTemplate = async (schemaInspector: SchemaInspector, fileName: string): Promise<void> => {
   const workbook = new ExcelJS.Workbook()
   const templateSheet = workbook.addWorksheet('Template')
   const optionsSheet = workbook.addWorksheet('Options')
 
   const excludedQuestions = new Set(['begin_group', 'end_group', 'begin_repeat', 'end_repeat'])
-  const questions = schemaBundle.schema.survey.filter((q: Question) => !excludedQuestions.has(q.type))
+  const questions = schemaInspector.schema.survey.filter((q: Question) => !excludedQuestions.has(q.type))
 
   const dropdownRanges: Record<string, string> = {}
 
@@ -29,7 +26,7 @@ export const generateEmptyXlsTemplate = async (
     column.width = 20
 
     if (question.type === 'select_one' || question.type === 'select_one_from_file') {
-      const choices = schemaBundle.helper.choicesIndex[question.select_from_list_name || ''] || []
+      const choices = schemaInspector.lookup.choicesIndex[question.select_from_list_name || ''] || []
       if (!choices.length) return
       const dropdownValues = choices.map((choice: Choice) => choice.name)
       const range = writeDropdownOptions(optionsSheet, columnHeader, dropdownValues, optionsColumn)

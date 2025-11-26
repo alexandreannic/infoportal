@@ -3,7 +3,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {useMemo} from 'react'
-import {KoboSchemaHelper} from '@infoportal/kobo-helper'
+import {SchemaInspector} from '@infoportal/kobo-helper'
 
 export class UseQuerySchema {
   static readonly get = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId?: Ip.FormId}) => {
@@ -17,7 +17,7 @@ export class UseQuerySchema {
     })
   }
 
-  static readonly getBundle = ({
+  static readonly getInspector = ({
     workspaceId,
     formId,
     langIndex,
@@ -30,10 +30,7 @@ export class UseQuerySchema {
 
     const bundle = useMemo(() => {
       if (query.data === undefined) return
-      return KoboSchemaHelper.buildBundle({
-        schema: query.data,
-        langIndex,
-      })
+      return new SchemaInspector(query.data, langIndex)
     }, [query.data, langIndex])
 
     return {

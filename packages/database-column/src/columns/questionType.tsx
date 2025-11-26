@@ -44,7 +44,7 @@ export class QuestionType {
     ColumnQuestionProps,
     | 'isReadonly'
     | 'getRow'
-    | 'schema'
+    | 'inspector'
     | 'formId'
     | 'getFileUrl'
     | 't'
@@ -56,9 +56,9 @@ export class QuestionType {
       const args = (isReadonly?: boolean) => ({
         q,
         isReadonly: props.isReadonly ?? isReadonly,
-        translateQuestion: props.schema.translate.question,
-        translateChoice: props.schema.translate.choice,
-        choicesIndex: props.schema.helper.choicesIndex,
+        translateQuestion: props.inspector.translate.question,
+        translateChoice: props.inspector.translate.choice,
+        choicesIndex: props.inspector.lookup.choicesIndex,
         ...props,
       })
       const map: Partial<Record<Ip.Form.QuestionType, Datatable.Column.Props<Row>>> = {
@@ -100,7 +100,7 @@ export class QuestionType {
       | 'formId'
       | 'isReadonly'
       | 'getRow'
-      | 'schema'
+      | 'inspector'
       | 't'
       | 'm'
       | 'getFileUrl'
@@ -110,7 +110,7 @@ export class QuestionType {
   ): Datatable.Column.Props<Row>[] {
     return this.byQuestions({
       ...props,
-      questions: props.schema.schemaFlatAndSanitized.filter(q => !ignoredColType.has(q.type)),
+      questions: props.inspector.schemaFlatAndSanitized.filter(q => !ignoredColType.has(q.type)),
     })
   }
 

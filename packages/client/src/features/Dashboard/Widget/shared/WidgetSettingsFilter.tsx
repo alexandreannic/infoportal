@@ -28,7 +28,7 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
   name: string
   form: UseFormReturn<T>
 }) {
-  const schema = useDashboardContext(_ => _.schema)
+  const schema = useDashboardContext(_ => _.schemaInspector)
   const t = useTheme()
   const {m} = useI18n()
   const questionName: string | undefined = form.watch(`${name}.${formName.questionName}` as any)
@@ -86,7 +86,7 @@ export function WidgetSettingsFilterQuestion<T extends Record<string, any>>({
               field.onChange(_)
               form.setValue(`${name}.${formName.choices}` as any, [] as any)
             }}
-            schema={schema}
+            inspector={schema}
             questionTypeFilter={['select_multiple', 'date', 'datetime', 'today', 'select_one', 'decimal', 'integer']}
             InputProps={{
               label: m.question,

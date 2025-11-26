@@ -18,7 +18,7 @@ import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext
 import {useEffectSetTitle} from '@/features/Dashboard/Widget/shared/useEffectSetTitle'
 
 export function PieChartSettings() {
-  const schema = useDashboardContext(_ => _.schema)
+  const schema = useDashboardContext(_ => _.schemaInspector)
   const dashboard = useDashboardContext(_ => _.dashboard)
 
   const {widget, onChange} = useWidgetSettingsContext()
@@ -56,7 +56,7 @@ export function PieChartSettings() {
                 form.setValue('filterValue', undefined)
                 form.setValue('filterBase', undefined)
               }}
-              schema={schema}
+              inspector={schema}
               questionTypeFilter={getQuestionTypeByWidget(widget.type)}
               InputProps={{
                 label: m.question,

@@ -29,15 +29,15 @@ const useBuildInterface = ({
   workspaceId: Ip.WorkspaceId
   formId?: Ip.FormId
 }) => {
-  const querySchema = UseQuerySchema.getBundle({workspaceId, formId, langIndex: 0})
+  const querySchema = UseQuerySchema.getInspector({workspaceId, formId, langIndex: 0})
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const data = useMemo(() => {
     if (!querySchema.data || !queryForm.data) return
     return map(
       querySchema.data,
-      bundle =>
+      inspector =>
         `// ${queryForm.data!.name}\n` +
-        new KoboInterfaceBuilder(name, bundle.schema, undefined, undefined, bundle).build(),
+        new KoboInterfaceBuilder(name, inspector.schema, undefined, undefined, inspector).build(),
     )
   }, [querySchema.data])
   return {
