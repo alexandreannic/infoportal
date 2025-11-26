@@ -14,7 +14,7 @@
       "path": "./packages/client-i18n"
     },
     {
-      "path": "./packages/kobo-helper"
+      "path": "./packages/form-helper"
     },
     {
       "path": "./packages/api-sdk"

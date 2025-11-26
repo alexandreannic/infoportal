@@ -13,7 +13,7 @@
       "path": "../client-i18n"
     },
     {
-      "path": "../kobo-helper"
+      "path": "../form-helper"
     },
     {
       "path": "../common"

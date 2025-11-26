@@ -10,7 +10,7 @@
   },
   "references": [
     {
-      "path": "../kobo-helper"
+      "path": "../form-helper"
     },
     {
       "path": "../client-i18n"
