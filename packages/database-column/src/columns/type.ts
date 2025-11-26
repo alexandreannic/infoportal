@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Theme} from '@mui/material'
 import {Messages} from '@infoportal/client-i18n'
 import {
@@ -15,14 +15,14 @@ export type Row = FormDataFlattenRepeatGroup.Data
 
 export type Data = Record<string, any>
 export type Question = Pick<
-  Ip.Form.Question,
+  Api.Form.Question,
   'select_from_list_name' | 'file' | '$xpath' | 'appearance' | 'type' | 'label' | 'name'
 >
 export type OnRepeatGroupClick = (_: {name: string; row: Row; event: any}) => void
 
 export type ColumnQuestionProps = {
   q: Question
-  formId: Ip.FormId
+  formId: Api.FormId
   isReadonly?: boolean
   getRow?: (_: any) => Data
   inspector: SchemaInspector
@@ -32,9 +32,9 @@ export type ColumnQuestionProps = {
   externalFilesIndex?: KoboExternalFilesIndex
   onRepeatGroupClick?: OnRepeatGroupClick
   getFileUrl: (_: {
-    formId: Ip.FormId
-    submissionId: Ip.SubmissionId
-    attachments: Ip.Submission.Attachment[]
+    formId: Api.FormId
+    submissionId: Api.SubmissionId
+    attachments: Api.Submission.Attachment[]
     fileName: string
   }) => string | undefined
   t: Theme
@@ -47,13 +47,13 @@ export type ColumnQuestionBaseProps = Pick<
 >
 
 export type ColumnMetaProps = {
-  formType: Ip.Form.Type
+  formType: Api.Form.Type
   getRow?: (_: any) => Row
-  koboEditEnketoUrl?: (answerId: Ip.SubmissionId) => string
+  koboEditEnketoUrl?: (answerId: Api.SubmissionId) => string
   isReadonly?: boolean
   dialog: {
-    openView: (_: {submission: Ip.Submission<any>}) => void
-    openEdit: (_: {submission: Ip.Submission<any>}) => void
+    openView: (_: {submission: Api.Submission<any>}) => void
+    openEdit: (_: {submission: Api.Submission<any>}) => void
   }
   m: Messages
 }

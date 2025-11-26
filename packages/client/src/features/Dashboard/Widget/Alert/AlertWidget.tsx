@@ -1,11 +1,11 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import React from 'react'
 import {Core} from '@/shared'
 import {Icon} from '@mui/material'
 import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 
-export function AlertWidget({widget, isEditing}: {isEditing?: boolean; widget: Ip.Dashboard.Widget}) {
-  const config = widget.config as Ip.Dashboard.Widget.Config['Alert']
+export function AlertWidget({widget, isEditing}: {isEditing?: boolean; widget: Api.Dashboard.Widget}) {
+  const config = widget.config as Api.Dashboard.Widget.Config['Alert']
   const langIndex = useDashboardContext(_ => _.langIndex)
 
   return (

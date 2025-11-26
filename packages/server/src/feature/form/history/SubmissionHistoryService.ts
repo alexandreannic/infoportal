@@ -3,10 +3,10 @@ import {app, AppLogger} from '../../../index.js'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'
 import {KoboAnswerHistoryHelper} from './SubmissionHistoryType.js'
-import {Ip, Paginate} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 type Create = {
-  authorEmail: Ip.User.Email
+  authorEmail: Api.User.Email
   formId: Kobo.FormId
   answerIds: Kobo.SubmissionId[]
 } & (
@@ -49,7 +49,7 @@ export class SubmissionHistoryService {
           answerIds: history.answers.map(_ => _.id),
         }))
       })
-      .then(Paginate.wrap())
+      .then(Api.Paginate.wrap())
   }
 
   readonly create = async ({authorEmail, formId, answerIds, property, newValue, type}: Create) => {

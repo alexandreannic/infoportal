@@ -1,5 +1,5 @@
 import {SchemaTsInterfaceBuilder} from './SchemaTsInterfaceBuilder.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 describe.only('KoboBuildInterface', () => {
   it('Build', () => {
@@ -8,7 +8,7 @@ describe.only('KoboBuildInterface', () => {
   })
 })
 
-function getSchema(): Ip.Form.Schema {
+function getSchema(): Api.Form.Schema {
   return {
     survey: [
       {
@@ -46,5 +46,5 @@ function getSchema(): Ip.Form.Schema {
         label: ['Spain', 'España'],
       },
     ],
-  } as Ip.Form.Schema
+  } as Api.Form.Schema
 }

@@ -1,7 +1,7 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {makeMeta, schema} from '../../helper/Schema.js'
-import {Ip} from '../../Api.js'
+import {Api} from '../../Api.js'
 import {map200, map204, TsRestClient} from '../../ApiClient.js'
 
 const c = initContract()
@@ -14,7 +14,7 @@ export const formContract = c.router({
       workspaceId: schema.workspaceId,
     }),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form[]>,
+      200: z.any() as z.ZodType<Api.Form[]>,
     },
   },
 
@@ -43,7 +43,7 @@ export const formContract = c.router({
       formId: schema.formId,
     }),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form.Schema | undefined>,
+      200: z.any() as z.ZodType<Api.Form.Schema | undefined>,
     },
   },
 
@@ -56,7 +56,7 @@ export const formContract = c.router({
       versionId: schema.versionId,
     }),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form.Schema | undefined>,
+      200: z.any() as z.ZodType<Api.Form.Schema | undefined>,
     },
     metadata: makeMeta({
       access: {
@@ -68,10 +68,10 @@ export const formContract = c.router({
   update: {
     method: 'PATCH',
     path: '/:workspaceId/form/:formId',
-    pathParams: c.type<Pick<Ip.Form.Payload.Update, 'workspaceId' | 'formId'>>(),
-    body: c.type<Omit<Ip.Form.Payload.Update, 'workspaceId' | 'formId'>>(),
+    pathParams: c.type<Pick<Api.Form.Payload.Update, 'workspaceId' | 'formId'>>(),
+    body: c.type<Omit<Api.Form.Payload.Update, 'workspaceId' | 'formId'>>(),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form>,
+      200: z.any() as z.ZodType<Api.Form>,
     },
     metadata: makeMeta({
       access: {
@@ -83,10 +83,10 @@ export const formContract = c.router({
   updateKoboConnexion: {
     method: 'POST',
     path: '/:workspaceId/form/:formId/disconnect',
-    pathParams: c.type<Pick<Ip.Form.Payload.UpdateKoboConnexion, 'workspaceId' | 'formId'>>(),
-    body: c.type<Omit<Ip.Form.Payload.UpdateKoboConnexion, 'workspaceId' | 'formId'>>(),
+    pathParams: c.type<Pick<Api.Form.Payload.UpdateKoboConnexion, 'workspaceId' | 'formId'>>(),
+    body: c.type<Omit<Api.Form.Payload.UpdateKoboConnexion, 'workspaceId' | 'formId'>>(),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form>,
+      200: z.any() as z.ZodType<Api.Form>,
     },
     metadata: makeMeta({
       access: {
@@ -101,9 +101,9 @@ export const formContract = c.router({
     pathParams: z.object({
       workspaceId: schema.workspaceId,
     }),
-    body: c.type<Omit<Ip.Form.Payload.Create, 'workspaceId'>>(),
+    body: c.type<Omit<Api.Form.Payload.Create, 'workspaceId'>>(),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form>,
+      200: z.any() as z.ZodType<Api.Form>,
     },
     metadata: makeMeta({
       access: {
@@ -120,7 +120,7 @@ export const formContract = c.router({
       formId: schema.formId,
     }),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form | undefined>,
+      200: z.any() as z.ZodType<Api.Form | undefined>,
     },
     metadata: makeMeta({
       access: {
@@ -153,7 +153,7 @@ export const formContract = c.router({
       workspaceId: schema.workspaceId,
     }),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form[]>,
+      200: z.any() as z.ZodType<Api.Form[]>,
     },
     metadata: makeMeta({
       access: {
@@ -166,53 +166,53 @@ export const formContract = c.router({
 
 export const formClient = (client: TsRestClient, baseUrl: string) => {
   return {
-    refreshAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+    refreshAll: ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
       return client.form.refreshAll({params: {workspaceId}, body: undefined}).then(map200)
     },
 
-    create: ({workspaceId, ...body}: Ip.Form.Payload.Create) => {
-      return client.form.create({params: {workspaceId}, body}).then(map200).then(Ip.Form.map)
+    create: ({workspaceId, ...body}: Api.Form.Payload.Create) => {
+      return client.form.create({params: {workspaceId}, body}).then(map200).then(Api.Form.map)
     },
 
-    remove: ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
+    remove: ({formId, workspaceId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {
       return client.form.remove({params: {workspaceId, formId}}).then(map204)
     },
 
-    get: ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
+    get: ({formId, workspaceId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {
       return client.form
         .get({params: {workspaceId, formId}})
         .then(map200)
-        .then(_ => (_ ? Ip.Form.map(_) : _))
+        .then(_ => (_ ? Api.Form.map(_) : _))
     },
 
-    getAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+    getAll: ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
       return client.form
         .getAll({params: {workspaceId}})
         .then(map200)
-        .then(_ => _.map(Ip.Form.map))
+        .then(_ => _.map(Api.Form.map))
     },
 
-    getMine: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+    getMine: ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
       return client.form
         .getMine({params: {workspaceId}})
         .then(map200)
-        .then(_ => _.map(Ip.Form.map))
+        .then(_ => _.map(Api.Form.map))
     },
 
-    getSchemaByVersion: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId; versionId: Ip.Form.VersionId}) => {
+    getSchemaByVersion: (params: {workspaceId: Api.WorkspaceId; formId: Api.FormId; versionId: Api.Form.VersionId}) => {
       return client.form.getSchemaByVersion({params}).then(map200)
     },
 
-    getSchema: (params: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
+    getSchema: (params: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {
       return client.form.getSchema({params}).then(map200)
     },
 
-    update: ({workspaceId, formId, ...body}: Ip.Form.Payload.Update): Promise<Ip.Form> => {
-      return client.form.update({params: {workspaceId, formId}, body}).then(map200).then(Ip.Form.map)
+    update: ({workspaceId, formId, ...body}: Api.Form.Payload.Update): Promise<Api.Form> => {
+      return client.form.update({params: {workspaceId, formId}, body}).then(map200).then(Api.Form.map)
     },
 
-    updateKoboConnexion: ({workspaceId, formId, ...body}: Ip.Form.Payload.UpdateKoboConnexion): Promise<Ip.Form> => {
-      return client.form.updateKoboConnexion({params: {workspaceId, formId}, body}).then(map200).then(Ip.Form.map)
+    updateKoboConnexion: ({workspaceId, formId, ...body}: Api.Form.Payload.UpdateKoboConnexion): Promise<Api.Form> => {
+      return client.form.updateKoboConnexion({params: {workspaceId, formId}, body}).then(map200).then(Api.Form.map)
     },
   }
 }

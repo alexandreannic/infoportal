@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, BoxProps, Chip, Icon, styled, Tooltip, useTheme} from '@mui/material'
 import {AppAvatar, Core} from '@/shared'
@@ -9,7 +9,7 @@ import React from 'react'
 const borderWidth = 2.5
 const avatarSize = 26
 
-const Logo = ({version, index}: {index?: number; version: Ip.Form.Version}) => {
+const Logo = ({version, index}: {index?: number; version: Api.Form.Version}) => {
   const t = useTheme()
   const border = fnSwitch(version.status, {
     draft: {style: 'dashed', color: t.vars.palette.primary.main},
@@ -125,7 +125,7 @@ export const VersionRowShowMore = (props: BoxProps) => {
   )
 }
 
-export const VersionRow = ({version, index}: {index?: number; version: Ip.Form.Version}) => {
+export const VersionRow = ({version, index}: {index?: number; version: Api.Form.Version}) => {
   const {m, formatDateTime, dateFromNow} = useI18n()
   return (
     <VersionRowContainer>

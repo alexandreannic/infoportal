@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useAppSettings} from '@/core/context/ConfigContext.js'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index.js'
@@ -14,7 +14,7 @@ export class UseQueryWorkspaceInvitation {
     })
   }
 
-  static search({workspaceId}: {workspaceId: Ip.WorkspaceId}) {
+  static search({workspaceId}: {workspaceId: Api.WorkspaceId}) {
     const {apiv2} = useAppSettings()
     return useQuery({
       queryKey: queryKeys.workspaceInvitation(workspaceId),
@@ -27,7 +27,7 @@ export class UseQueryWorkspaceInvitation {
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: ({id, accept}: {id: Ip.Workspace.InvitationId; accept: boolean}) =>
+      mutationFn: ({id, accept}: {id: Api.Workspace.InvitationId; accept: boolean}) =>
         apiv2.workspace.invitation.accept({id, accept}),
       onSuccess: () => {
         queryClient.invalidateQueries({queryKey: queryKeys.workspaceInvitation('me')})
@@ -37,12 +37,12 @@ export class UseQueryWorkspaceInvitation {
     })
   }
 
-  static create(workspaceId: Ip.WorkspaceId) {
+  static create(workspaceId: Api.WorkspaceId) {
     const {apiv2} = useAppSettings()
     // const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (_: Omit<Ip.Workspace.Invitation.Payload.Create, 'workspaceId'>) => {
+      mutationFn: async (_: Omit<Api.Workspace.Invitation.Payload.Create, 'workspaceId'>) => {
         return apiv2.workspace.invitation.create({..._, workspaceId})
       },
       onSuccess: () => {
@@ -53,12 +53,12 @@ export class UseQueryWorkspaceInvitation {
     })
   }
 
-  static remove({workspaceId}: {workspaceId: Ip.WorkspaceId}) {
+  static remove({workspaceId}: {workspaceId: Api.WorkspaceId}) {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     return usePendingMutation({
       getId: variables => variables.id,
-      mutationFn: async ({id}: {id: Ip.Workspace.InvitationId}) => {
+      mutationFn: async ({id}: {id: Api.Workspace.InvitationId}) => {
         return apiv2.workspace.invitation.remove({workspaceId, id})
       },
       onSuccess: () => {

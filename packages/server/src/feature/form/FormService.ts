@@ -1,5 +1,5 @@
 import {Form, PrismaClient} from '@prisma/client'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {FormVersionService} from './FormVersionService.js'
 import {FormAccessService} from './access/FormAccessService.js'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
@@ -7,14 +7,14 @@ import {Kobo} from 'kobo-sdk'
 import {seq} from '@axanc/ts-utils'
 import {KoboSchemaCache} from './KoboSchemaCache.js'
 
-export type FormServiceCreatePayload = Ip.Form.Payload.Create & {
+export type FormServiceCreatePayload = Api.Form.Payload.Create & {
   kobo?: {
     formId: Kobo.FormId
-    accountId: Ip.ServerId
+    accountId: Api.ServerId
   }
-  uploadedBy: Ip.User.Email
-  workspaceId: Ip.WorkspaceId
-  deploymentStatus?: Ip.Form.DeploymentStatus
+  uploadedBy: Api.User.Email
+  workspaceId: Api.WorkspaceId
+  deploymentStatus?: Api.Form.DeploymentStatus
 }
 
 export class FormService {
@@ -26,13 +26,13 @@ export class FormService {
     private formAccess = new FormAccessService(prisma),
   ) {}
 
-  readonly getSchema = async ({formId}: {formId: Ip.FormId}): Promise<undefined | Ip.Form.Schema> => {
+  readonly getSchema = async ({formId}: {formId: Api.FormId}): Promise<undefined | Api.Form.Schema> => {
     const form = await this.prisma.form.findFirst({select: {id: true, kobo: true}, where: {id: formId}}).then(_ => {
       if (_) return {..._, kobo: _.kobo ? prismaMapper.form.mapKoboInfo(_.kobo) : _.kobo}
       return _
     })
     if (!form) return
-    if (!Ip.Form.isConnectedToKobo(form))
+    if (!Api.Form.isConnectedToKobo(form))
       return this.prisma.formVersion
         .findFirst({
           select: {schema: true},
@@ -43,7 +43,7 @@ export class FormService {
         })
         .then(_ => _?.schema as any)
     return this.koboSchemaCache
-      .get({refreshCacheIfMissing: true, formId: form.id as Ip.FormId})
+      .get({refreshCacheIfMissing: true, formId: form.id as Api.FormId})
       .then(_ => (_ ? _.content : undefined))
   }
 
@@ -51,9 +51,9 @@ export class FormService {
     formId,
     versionId,
   }: {
-    versionId: Ip.Form.VersionId
-    formId: Ip.FormId
-  }): Promise<undefined | Ip.Form.Schema> => {
+    versionId: Api.Form.VersionId
+    formId: Api.FormId
+  }): Promise<undefined | Api.Form.Schema> => {
     const _ = await this.prisma.formVersion.findFirst({
       select: {schema: true},
       where: {
@@ -72,7 +72,7 @@ export class FormService {
     deploymentStatus = 'draft',
     uploadedBy,
     workspaceId,
-  }: FormServiceCreatePayload): Promise<Ip.Form> => {
+  }: FormServiceCreatePayload): Promise<Api.Form> => {
     const created = await this.prisma.form.create({
       include: {
         kobo: true,
@@ -95,7 +95,7 @@ export class FormService {
       },
     })
     await this.formAccess.create({
-      formId: created.id as Ip.FormId,
+      formId: created.id as Api.FormId,
       workspaceId,
       email: uploadedBy,
       level: 'Admin',
@@ -103,7 +103,7 @@ export class FormService {
     return prismaMapper.form.mapForm(created)
   }
 
-  readonly get = async (id: Ip.FormId): Promise<Ip.Form | undefined> => {
+  readonly get = async (id: Api.FormId): Promise<Api.Form | undefined> => {
     return this.prisma.form.findFirst({include: {kobo: true}, where: {id}}).then(_ => {
       if (!_) return
       return prismaMapper.form.mapForm(_)
@@ -114,9 +114,9 @@ export class FormService {
     author,
     formId,
     connected,
-  }: Ip.Form.Payload.UpdateKoboConnexion & {
-    author: Ip.User.Email
-  }): Promise<Ip.Form> => {
+  }: Api.Form.Payload.UpdateKoboConnexion & {
+    author: Api.User.Email
+  }): Promise<Api.Form> => {
     await this.prisma.formKoboInfo.update({
       where: {formId},
       data: {
@@ -129,7 +129,7 @@ export class FormService {
     return update
   }
 
-  readonly update = async ({formId, archive, category}: Ip.Form.Payload.Update): Promise<Ip.Form> => {
+  readonly update = async ({formId, archive, category}: Api.Form.Payload.Update): Promise<Api.Form> => {
     // TODO trigger event!
     // const koboUpdate$ = this.koboForm.update(params)
     const form = await this.prisma.form.findUnique({select: {type: true}, where: {id: formId}})
@@ -138,7 +138,7 @@ export class FormService {
     if (archive) {
       newData.deploymentStatus = 'archived'
     } else if (archive === false) {
-      if (Ip.Form.isKobo(form)) {
+      if (Api.Form.isKobo(form)) {
         newData.deploymentStatus = 'deployed'
       } else {
         const hasActiveVersion = await this.formVersion.hasActiveVersion({formId})
@@ -156,7 +156,7 @@ export class FormService {
       .then(prismaMapper.form.mapForm)
   }
 
-  readonly remove = async (id: Ip.FormId): Promise<void> => {
+  readonly remove = async (id: Api.FormId): Promise<void> => {
     await Promise.any([
       this.prisma.databaseView.deleteMany({where: {databaseId: id}}),
       this.prisma.formSubmission.deleteMany({where: {formId: id}}),
@@ -170,9 +170,9 @@ export class FormService {
     workspaceId,
     user,
   }: {
-    user: Ip.User
-    workspaceId: Ip.WorkspaceId
-  }): Promise<Ip.Form[]> => {
+    user: Api.User
+    workspaceId: Api.WorkspaceId
+  }): Promise<Api.Form[]> => {
     const accesses = await this.access.search({workspaceId, user})
     return this.prisma.form
       .findMany({
@@ -189,7 +189,7 @@ export class FormService {
       .then(_ => _.map(prismaMapper.form.mapForm))
   }
 
-  readonly getAll = async ({wsId}: {wsId: Ip.WorkspaceId}): Promise<Ip.Form[]> => {
+  readonly getAll = async ({wsId}: {wsId: Api.WorkspaceId}): Promise<Api.Form[]> => {
     return this.prisma.form
       .findMany({
         include: {
@@ -202,7 +202,7 @@ export class FormService {
       .then(_ => _.map(prismaMapper.form.mapForm))
   }
 
-  readonly getKoboIdByFormId = (formId: Ip.FormId): Promise<Kobo.FormId | undefined> => {
+  readonly getKoboIdByFormId = (formId: Api.FormId): Promise<Kobo.FormId | undefined> => {
     return this.prisma.formKoboInfo.findFirst({select: {koboId: true}, where: {formId}}).then(_ => _?.koboId)
   }
 }

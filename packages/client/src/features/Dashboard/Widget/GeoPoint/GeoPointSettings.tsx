@@ -1,5 +1,5 @@
 import {getQuestionTypeByWidget, useWidgetSettingsContext} from '@/features/Dashboard/Widget/WidgetSettingsPanel'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Controller, useForm, useWatch} from 'react-hook-form'
 import {SelectQuestionInput} from '@/shared/customInput/SelectQuestionInput'
 import {WidgetSettingsFilterQuestion} from '@/features/Dashboard/Widget/shared/WidgetSettingsFilter'
@@ -15,8 +15,8 @@ export const GeoPointSettings = () => {
   const schema = useDashboardContext(_ => _.schemaInspector)
 
   const {widget, onChange} = useWidgetSettingsContext()
-  const config = widget.config as Ip.Dashboard.Widget.Config['GeoPoint']
-  const form = useForm<Ip.Dashboard.Widget.Config['GeoPoint']>({
+  const config = widget.config as Api.Dashboard.Widget.Config['GeoPoint']
+  const form = useForm<Api.Dashboard.Widget.Config['GeoPoint']>({
     mode: 'onChange',
     defaultValues: config,
   })

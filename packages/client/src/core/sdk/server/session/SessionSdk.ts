@@ -1,6 +1,6 @@
-import {ApiClient} from '@/core/sdk/server/ApiClient'
+import {HttpClient} from '@/core/sdk/server/HttpClient'
 import {Session, SessionHelper} from '@/core/sdk/server/session/Session'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 interface LoginRequest {
   name: string
@@ -10,7 +10,7 @@ interface LoginRequest {
 }
 
 export class SessionSdk {
-  constructor(private client: ApiClient) {}
+  constructor(private client: HttpClient) {}
 
   readonly login = (body: LoginRequest) => {
     return this.client.post<Session>(`/session/login`, {body}).then(SessionHelper.map)
@@ -24,7 +24,7 @@ export class SessionSdk {
     return this.client.get(`/session/me`).then(SessionHelper.map)
   }
 
-  readonly connectAs = (email: Ip.User.Email) => {
+  readonly connectAs = (email: Api.User.Email) => {
     return this.client.post<Session>(`/session/connect-as`, {body: {email}}).then(SessionHelper.map)
   }
 
@@ -33,6 +33,6 @@ export class SessionSdk {
   }
 
   readonly track = (detail: string) => {
-    return this.client.post<Ip.User>(`/session/track`, {body: {detail}})
+    return this.client.post<Api.User>(`/session/track`, {body: {detail}})
   }
 }

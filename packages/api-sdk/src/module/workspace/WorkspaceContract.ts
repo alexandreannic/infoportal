@@ -1,5 +1,5 @@
 import {initContract} from '@ts-rest/core'
-import {Ip} from '../../Api.js'
+import {Api} from '../../Api.js'
 import {map200, map204, TsRestClient} from '../../ApiClient.js'
 import {makeMeta, schema} from '../../helper/Schema.js'
 
@@ -9,7 +9,7 @@ export const workspaceContract = c.router({
   getMine: {
     method: 'GET',
     path: `/workspace/me`,
-    responses: {200: c.type<Ip.Workspace[]>()},
+    responses: {200: c.type<Api.Workspace[]>()},
   },
   checkSlug: {
     method: 'POST',
@@ -20,8 +20,8 @@ export const workspaceContract = c.router({
   create: {
     method: 'PUT',
     path: `/workspace`,
-    body: c.type<Ip.Workspace.Payload.Create>(),
-    responses: {200: c.type<Ip.Workspace>()},
+    body: c.type<Api.Workspace.Payload.Create>(),
+    responses: {200: c.type<Api.Workspace>()},
     metadata: makeMeta({
       access: {
         global: ['workspace_canCreate'],
@@ -31,9 +31,9 @@ export const workspaceContract = c.router({
   update: {
     method: 'POST',
     path: `/workspace/:id`,
-    pathParams: c.type<{id: Ip.WorkspaceId}>(),
-    body: c.type<Omit<Ip.Workspace.Payload.Update, 'id'>>(),
-    responses: {200: c.type<Ip.Workspace>()},
+    pathParams: c.type<{id: Api.WorkspaceId}>(),
+    body: c.type<Omit<Api.Workspace.Payload.Update, 'id'>>(),
+    responses: {200: c.type<Api.Workspace>()},
     metadata: makeMeta({
       access: {
         workspace: ['canUpdate'],
@@ -43,7 +43,7 @@ export const workspaceContract = c.router({
   remove: {
     method: 'DELETE',
     path: `/workspace/:id`,
-    pathParams: c.type<{id: Ip.Uuid}>(),
+    pathParams: c.type<{id: Api.Uuid}>(),
     responses: {204: schema.emptyResult},
     metadata: makeMeta({
       access: {
@@ -59,11 +59,11 @@ export const workspaceClient = (client: TsRestClient, baseUrl: string) => {
       client.workspace
         .getMine()
         .then(map200)
-        .then(_ => _.map(Ip.Workspace.map)),
+        .then(_ => _.map(Api.Workspace.map)),
     checkSlug: (slug: string) => client.workspace.checkSlug({body: {slug}}).then(map200),
-    create: (body: Ip.Workspace.Payload.Create) => client.workspace.create({body}).then(map200).then(Ip.Workspace.map),
-    update: ({id, ...body}: Ip.Workspace.Payload.Update) =>
-      client.workspace.update({params: {id}, body}).then(map200).then(Ip.Workspace.map),
-    remove: (id: Ip.Uuid) => client.workspace.remove({params: {id}}).then(map204),
+    create: (body: Api.Workspace.Payload.Create) => client.workspace.create({body}).then(map200).then(Api.Workspace.map),
+    update: ({id, ...body}: Api.Workspace.Payload.Update) =>
+      client.workspace.update({params: {id}, body}).then(map200).then(Api.Workspace.map),
+    remove: (id: Api.Uuid) => client.workspace.remove({params: {id}}).then(map204),
   }
 }

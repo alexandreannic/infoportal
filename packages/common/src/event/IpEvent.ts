@@ -1,9 +1,9 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export namespace IpEventParams {
   export interface SubmissionEdited {
-    formId: Ip.FormId
-    submissionIds: Ip.SubmissionId[]
+    formId: Api.FormId
+    submissionIds: Api.SubmissionId[]
     question: string
     answer?: any
     // answer: Record<string, any>
@@ -12,14 +12,14 @@ export namespace IpEventParams {
   }
 
   export interface SubmissionRemoved {
-    formId: Ip.FormId
-    submissionIds: Ip.SubmissionId[]
+    formId: Api.FormId
+    submissionIds: Api.SubmissionId[]
   }
 
   export interface SubmissionEditedValidation {
-    formId: Ip.FormId
-    submissionIds: Ip.SubmissionId[]
-    status: Ip.Submission.Validation
+    formId: Api.FormId
+    submissionIds: Api.SubmissionId[]
+    status: Api.Submission.Validation
     index?: number
     total?: number
   }
@@ -28,12 +28,12 @@ export namespace IpEventParams {
     // extends KoboSyncServerResult
     index?: number
     total?: number
-    formId: Ip.FormId
+    formId: Api.FormId
   }
 
   export interface NewSubmission {
-    formId: Ip.FormId
-    workspaceId: Ip.WorkspaceId
-    submission: Ip.Submission
+    formId: Api.FormId
+    workspaceId: Api.WorkspaceId
+    submission: Api.Submission
   }
 }

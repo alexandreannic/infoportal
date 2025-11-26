@@ -4,7 +4,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {getDataKey, useXlsFormStore} from '../core/useStore'
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import * as Core from '@infoportal/client-core'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {ActionBar} from './ActionBar'
 import {getChoicesColumns} from './getChoicesColumns'
 import {getSurveyColumns} from './getSurveyColumns'
@@ -26,10 +26,10 @@ export const XlsFormEditor = ({
   onCommit,
 }: {
   saving?: boolean
-  value?: Ip.Form.Schema
-  onChange?: (_: Ip.Form.Schema) => void
-  onCommit?: (_: Ip.Form.Schema) => void
-  onSave?: (_: Ip.Form.Schema) => void
+  value?: Api.Form.Schema
+  onChange?: (_: Api.Form.Schema) => void
+  onCommit?: (_: Api.Form.Schema) => void
+  onSave?: (_: Api.Form.Schema) => void
 }) => {
   const {m} = useI18n()
   const t = useTheme()
@@ -68,7 +68,7 @@ export const XlsFormEditor = ({
     })
   }, [activeTab, translations])
 
-  const checkFormAndSubmit = (cb?: (_: Ip.Form.Schema) => void) => {
+  const checkFormAndSubmit = (cb?: (_: Api.Form.Schema) => void) => {
     if (!cb || !quickCheckIfSchemaHasChanged) return
     if (JSON.stringify(value) === JSON.stringify(schema)) {
       setValidationReport({noChanges: true})
@@ -87,7 +87,7 @@ export const XlsFormEditor = ({
     checkFormAndSubmit(onChange)
   }, [schema])
 
-  const handleEvent = useCallback((action: Datatable.Action<Ip.Form.Question | Ip.Form.Choice>) => {
+  const handleEvent = useCallback((action: Datatable.Action<Api.Form.Question | Api.Form.Choice>) => {
     switch (action.type) {
       case 'REORDER_ROWS': {
         reorderRows({table: activeTab, ...action})
@@ -132,7 +132,7 @@ export const XlsFormEditor = ({
             mode: 'free',
             enabled: true,
             renderFormulaBarOnColumnSelected: ({columnId, rowIds, commonValue}) => {
-              const [field, lang] = columnId.split(':') as [keyof Ip.Form.Question, string | undefined]
+              const [field, lang] = columnId.split(':') as [keyof Api.Form.Question, string | undefined]
               return <ActionBar rowKeys={rowIds} table="survey" value={commonValue} field={field} lang={lang} />
             },
             renderFormulaBarOnRowSelected: ({rowIds}) => (

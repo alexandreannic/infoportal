@@ -5,7 +5,7 @@ import {Icon} from '@mui/material'
 import {Dispatch, SetStateAction, useEffect, useMemo, useState} from 'react'
 import {createRoute, Outlet, useMatches, useNavigate, useRouterState} from '@tanstack/react-router'
 import {UseQueryForm} from '@/core/query/form/useQueryForm'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {SchemaInspector} from '@infoportal/form-helper'
 import {Page} from '@/shared'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
@@ -43,8 +43,8 @@ export const useDefaultTabRedirect = ({
   isLoading?: boolean
   isResolved?: boolean
   currentFullPath: string
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
 }) => {
   const navigate = useNavigate()
   const pathname = useRouterState({select: s => s.location.pathname})
@@ -62,11 +62,11 @@ export const useDefaultTabRedirect = ({
 }
 
 export type FormContext = {
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
-  form: Ip.Form
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
+  form: Api.Form
   inspector?: SchemaInspector
-  permission: Ip.Permission.Form
+  permission: Api.Permission.Form
   langIndex: number
   setLangIndex: Dispatch<SetStateAction<number>>
 }
@@ -78,7 +78,7 @@ export const useFormContext = <Selected extends any>(selector: (_: FormContext) 
 }
 
 function Form() {
-  const {workspaceId, formId} = formRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
+  const {workspaceId, formId} = formRoute.useParams() as {workspaceId: Api.WorkspaceId; formId: Api.FormId}
   const {m} = useI18n()
   const {setTitle} = useLayoutContext()
   const currentFullPath = useMatches().slice(-1)[0].fullPath
@@ -142,7 +142,7 @@ function Form() {
           sx={{minHeight: 34, py: 1}}
           to={answersRoute.fullPath}
           label={m.data}
-          disabled={!schema && (!queryForm.data || !Ip.Form.isKobo(queryForm.data))}
+          disabled={!schema && (!queryForm.data || !Api.Form.isKobo(queryForm.data))}
         />
         <TabLink
           icon={<Icon>edit</Icon>}

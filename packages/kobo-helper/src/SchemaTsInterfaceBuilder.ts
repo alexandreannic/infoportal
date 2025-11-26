@@ -1,12 +1,12 @@
 import {Obj, seq} from '@axanc/ts-utils'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {removeHtml} from '@infoportal/common'
 import {SchemaInspector} from './SchemaInspector.js'
 
 export class SchemaTsInterfaceBuilder {
   constructor(
     private name: string,
-    private schema: Ip.Form.Schema,
+    private schema: Api.Form.Schema,
     private langIndex: number = 0,
     private skipChoicesOverLimit = 100,
     schemaInspector?: SchemaInspector,
@@ -16,7 +16,7 @@ export class SchemaTsInterfaceBuilder {
 
   private readonly schemaInspector: SchemaInspector
 
-  private readonly ignoredQuestionTypes: Set<Ip.Form.QuestionType> = new Set([
+  private readonly ignoredQuestionTypes: Set<Api.Form.QuestionType> = new Set([
     'start',
     'end',
     'begin_group',
@@ -37,7 +37,7 @@ export class SchemaTsInterfaceBuilder {
     ].join('\n\n')
   }
 
-  private buildType = ({question}: {question: Ip.Form.Question}) => {
+  private buildType = ({question}: {question: Api.Form.Question}) => {
     switch (question.type) {
       case 'select_multiple':
       case 'select_one': {
@@ -71,7 +71,7 @@ export class SchemaTsInterfaceBuilder {
       .slice(0, maxLength)
   }
 
-  private generateInterface = (questions: Ip.Form.Question[]): string => {
+  private generateInterface = (questions: Api.Form.Question[]): string => {
     const body = questions
       .filter(_ => !this.ignoredQuestionTypes.has(_.type))
       .map(question => {

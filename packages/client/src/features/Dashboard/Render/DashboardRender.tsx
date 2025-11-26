@@ -11,7 +11,7 @@ import {PeriodPicker} from '@infoportal/client-core'
 import {useI18n} from '@infoportal/client-i18n'
 import {Badge, GlobalStyles, Theme, ThemeProvider} from '@mui/material'
 import {createRoute} from '@tanstack/react-router'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {SchemaInspector} from '@infoportal/form-helper'
 import {useMemo} from 'react'
 import {Responsive, WidthProvider} from 'react-grid-layout'
@@ -29,7 +29,7 @@ export const dashboardRenderRoute = createRoute({
 export function DashboardRender() {
   const {workspaceSlug, dashboardSlug} = dashboardRenderRoute.useParams()
   const queryDashboard = UseQueryDashboard.getPublished({workspaceSlug, dashboardSlug})
-  const workspaceId = '1783255f-564c-4286-9338-a4d77bb912f6' as Ip.WorkspaceId
+  const workspaceId = '1783255f-564c-4286-9338-a4d77bb912f6' as Api.WorkspaceId
   const querySubmissions = UseQueryDashboard.getProtectedSubmission({workspaceSlug, dashboardSlug})
   const querySchema = UseQuerySchema.get({workspaceId, formId: queryDashboard.data?.sourceFormId})
 
@@ -88,7 +88,7 @@ export function DashboardRender() {
   )
 }
 
-function WithContext({snapshot}: {snapshot: Ip.DashboardWithSnapshot['snapshot']}) {
+function WithContext({snapshot}: {snapshot: Api.DashboardWithSnapshot['snapshot']}) {
   const {m} = useI18n()
 
   const dashboard = useDashboardContext(_ => _.dashboard)
@@ -148,7 +148,7 @@ function WithContext({snapshot}: {snapshot: Ip.DashboardWithSnapshot['snapshot']
   )
 }
 
-function Section({widgets, dashboard}: {dashboard: Ip.Dashboard; widgets: Ip.Dashboard.Widget[]}) {
+function Section({widgets, dashboard}: {dashboard: Api.Dashboard; widgets: Api.Dashboard.Widget[]}) {
   const layout = useDashboardContext(_ => _.gridLayout)
 
   return (

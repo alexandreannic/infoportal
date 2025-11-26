@@ -1,7 +1,7 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {makeMeta, schema} from '../../../helper/Schema.js'
-import {Ip} from '../../../Api.js'
+import {Api} from '../../../Api.js'
 import {map200, TsRestClient} from '../../../ApiClient.js'
 
 const c = initContract()
@@ -14,9 +14,9 @@ export const formActionContract = c.router({
       workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
-    body: c.type<Omit<Ip.Form.Action.Payload.Create, 'formId' | 'workspaceId'>>(),
+    body: c.type<Omit<Api.Form.Action.Payload.Create, 'formId' | 'workspaceId'>>(),
     responses: {
-      200: c.type<Ip.Form.Action>(),
+      200: c.type<Api.Form.Action>(),
     },
     metadata: makeMeta({
       access: {
@@ -33,7 +33,7 @@ export const formActionContract = c.router({
     }),
     body: c.type<undefined>(),
     responses: {
-      200: c.type<Ip.Form.Action.Report>(),
+      200: c.type<Api.Form.Action.Report>(),
     },
     metadata: makeMeta({
       access: {
@@ -49,9 +49,9 @@ export const formActionContract = c.router({
       formId: schema.formId,
       id: schema.formActionId,
     }),
-    body: c.type<Omit<Ip.Form.Action.Payload.Update, 'id' | 'formId' | 'workspaceId'>>(),
+    body: c.type<Omit<Api.Form.Action.Payload.Update, 'id' | 'formId' | 'workspaceId'>>(),
     responses: {
-      200: c.type<Ip.Form.Action>(),
+      200: c.type<Api.Form.Action>(),
     },
     metadata: makeMeta({
       access: {
@@ -67,7 +67,7 @@ export const formActionContract = c.router({
       formId: schema.formId,
     }),
     responses: {
-      200: c.type<Ip.Form.Action[]>(),
+      200: c.type<Api.Form.Action[]>(),
     },
     metadata: makeMeta({
       access: {
@@ -79,39 +79,39 @@ export const formActionContract = c.router({
 
 export const formActionClient = (client: TsRestClient) => {
   return {
-    getByDbId: ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}): Promise<Ip.Form.Action[]> => {
+    getByDbId: ({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}): Promise<Api.Form.Action[]> => {
       return client.form.action
         .getByDbId({
           params: {workspaceId, formId: formId},
         })
         .then(map200)
-        .then(_ => _.map(Ip.Form.Action.map))
+        .then(_ => _.map(Api.Form.Action.map))
     },
-    create: ({workspaceId, formId, ...body}: Ip.Form.Action.Payload.Create): Promise<Ip.Form.Action> => {
+    create: ({workspaceId, formId, ...body}: Api.Form.Action.Payload.Create): Promise<Api.Form.Action> => {
       return client.form.action
         .create({
           params: {workspaceId, formId},
           body,
         })
         .then(map200)
-        .then(Ip.Form.Action.map)
+        .then(Api.Form.Action.map)
     },
-    update: ({workspaceId, formId, id, ...body}: Ip.Form.Action.Payload.Update): Promise<Ip.Form.Action> => {
+    update: ({workspaceId, formId, id, ...body}: Api.Form.Action.Payload.Update): Promise<Api.Form.Action> => {
       return client.form.action
         .update({
           params: {workspaceId, formId, id},
           body,
         })
         .then(map200)
-        .then(Ip.Form.Action.map)
+        .then(Api.Form.Action.map)
     },
-    runAllActionsByForm: (params: Ip.Form.Action.Payload.Run) => {
+    runAllActionsByForm: (params: Api.Form.Action.Payload.Run) => {
       return client.form.action
         .runAllActionsByForm({
           params,
         })
         .then(map200)
-        .then(Ip.Form.Action.Report.map)
+        .then(Api.Form.Action.Report.map)
     },
   }
 }

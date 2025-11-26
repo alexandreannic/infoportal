@@ -3,13 +3,13 @@ import {useIpToast} from '@/core/useToast'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {seq} from '@axanc/ts-utils'
-import {ApiError} from '@/core/sdk/server/ApiClient'
-import {Ip} from '@infoportal/api-sdk'
+import {ApiError} from '@/core/sdk/server/HttpClient'
+import {Api} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 import {usePendingMutation} from '@/core/query/usePendingMutation.js'
 
 export class UseQueryForm {
-  static getAccessibles(workspaceId: Ip.WorkspaceId) {
+  static getAccessibles(workspaceId: Api.WorkspaceId) {
     const {apiv2} = useAppSettings()
     const {toastAndThrowHttpError} = useIpToast()
     const queryClient = useQueryClient()
@@ -30,21 +30,21 @@ export class UseQueryForm {
     })
   }
 
-  static getAsMap(workspaceId: Ip.WorkspaceId) {
+  static getAsMap(workspaceId: Api.WorkspaceId) {
     const accessibleForms = this.getAccessibles(workspaceId)
     return useMemo(() => {
       if (!accessibleForms.data) return
-      const map = new Map<Ip.FormId, Ip.Form>()
+      const map = new Map<Api.FormId, Api.Form>()
       accessibleForms.data.forEach(_ => map.set(_.id, _))
       return map
     }, [accessibleForms.data])
   }
 
-  static importFromKobo(workspaceId: Ip.WorkspaceId) {
+  static importFromKobo(workspaceId: Api.WorkspaceId) {
     const {apiv2} = useAppSettings()
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
-    return usePendingMutation<Ip.Form, ApiError, Ip.Form.Payload.Import>({
+    return usePendingMutation<Api.Form, ApiError, Api.Form.Payload.Import>({
       getId: _ => _.uid,
       mutationFn: args => apiv2.kobo.importFromKobo({workspaceId, ...args}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)}),
@@ -52,7 +52,7 @@ export class UseQueryForm {
     })
   }
 
-  static categories(workspaceId: Ip.WorkspaceId) {
+  static categories(workspaceId: Api.WorkspaceId) {
     const accessibleForms = this.getAccessibles(workspaceId)
     return useMemo(() => {
       return accessibleForms.data
@@ -62,23 +62,23 @@ export class UseQueryForm {
     }, [accessibleForms.data])
   }
 
-  static create(workspaceId: Ip.WorkspaceId) {
+  static create(workspaceId: Api.WorkspaceId) {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     const {toastHttpError} = useIpToast()
-    return useMutation<Ip.Form, ApiError, Omit<Ip.Form.Payload.Create, 'workspaceId'>>({
+    return useMutation<Api.Form, ApiError, Omit<Api.Form.Payload.Create, 'workspaceId'>>({
       mutationFn: args => apiv2.form.create({workspaceId, ...args}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)}),
       onError: toastHttpError,
     })
   }
 
-  static remove(workspaceId: Ip.WorkspaceId) {
+  static remove(workspaceId: Api.WorkspaceId) {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     const {toastHttpError} = useIpToast()
     return usePendingMutation({
-      mutationFn: (formId: Ip.FormId) => apiv2.form.remove({workspaceId, formId}),
+      mutationFn: (formId: Api.FormId) => apiv2.form.remove({workspaceId, formId}),
       getId: _ => _,
       onSuccess: (data, formId) => {
         queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
@@ -91,11 +91,11 @@ export class UseQueryForm {
     })
   }
 
-  static update(workspaceId: Ip.WorkspaceId) {
+  static update(workspaceId: Api.WorkspaceId) {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     const {toastHttpError} = useIpToast()
-    return usePendingMutation<Ip.Form, ApiError, Omit<Ip.Form.Payload.Update, 'workspaceId'>>({
+    return usePendingMutation<Api.Form, ApiError, Omit<Api.Form.Payload.Update, 'workspaceId'>>({
       getId: _ => _.formId,
       mutationFn: args => apiv2.form.update({workspaceId, ...args}),
       onSuccess: (data, variables) => {
@@ -106,12 +106,12 @@ export class UseQueryForm {
     })
   }
 
-  static updateKoboConnexion(workspaceId: Ip.WorkspaceId) {
+  static updateKoboConnexion(workspaceId: Api.WorkspaceId) {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     const {toastHttpError} = useIpToast()
     return useMutation({
-      mutationFn: (params: Omit<Ip.Form.Payload.UpdateKoboConnexion, 'workspaceId'>) =>
+      mutationFn: (params: Omit<Api.Form.Payload.UpdateKoboConnexion, 'workspaceId'>) =>
         apiv2.form.updateKoboConnexion({workspaceId, ...params}),
       onSuccess: (data, params) => {
         queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, params.formId)})
@@ -120,7 +120,7 @@ export class UseQueryForm {
     })
   }
 
-  static get({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId?: Ip.FormId}) {
+  static get({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId?: Api.FormId}) {
     const {apiv2} = useAppSettings()
     const {toastAndThrowHttpError} = useIpToast()
     return useQuery({

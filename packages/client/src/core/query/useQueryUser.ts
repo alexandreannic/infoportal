@@ -2,11 +2,11 @@ import {useQuery, useQueryClient} from '@tanstack/react-query'
 import {useAppSettings} from '../context/ConfigContext'
 import {useIpToast} from '../useToast'
 import {queryKeys} from './query.index'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {usePendingMutation} from '@/core/query/usePendingMutation.js'
 
 export class UseQueryUser {
-  static getAll(workspaceId: Ip.WorkspaceId) {
+  static getAll(workspaceId: Api.WorkspaceId) {
     const {apiv2} = useAppSettings()
     const {toastAndThrowHttpError} = useIpToast()
 
@@ -16,7 +16,7 @@ export class UseQueryUser {
     })
   }
 
-  static getJobs(workspaceId: Ip.WorkspaceId) {
+  static getJobs(workspaceId: Api.WorkspaceId) {
     const {apiv2} = useAppSettings()
     const {toastAndThrowHttpError} = useIpToast()
 
@@ -26,12 +26,12 @@ export class UseQueryUser {
     })
   }
 
-  static update(workspaceId: Ip.WorkspaceId) {
+  static update(workspaceId: Api.WorkspaceId) {
     const {apiv2} = useAppSettings()
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
     return usePendingMutation({
-      mutationFn: (params: Omit<Ip.User.Payload.Update, 'workspaceId'>) => apiv2.user.update({workspaceId, ...params}),
+      mutationFn: (params: Omit<Api.User.Payload.Update, 'workspaceId'>) => apiv2.user.update({workspaceId, ...params}),
       getId: variables => variables.id,
       onSuccess: () => {
         queryClient.invalidateQueries({queryKey: queryKeys.user(workspaceId)})

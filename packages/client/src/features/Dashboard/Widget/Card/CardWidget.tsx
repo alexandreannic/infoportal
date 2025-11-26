@@ -2,13 +2,13 @@ import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {PanelWidgetContent} from '@/shared/PdfLayout/PanelWidget'
 import {useI18n} from '@infoportal/client-i18n'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {toInt} from '@infoportal/common'
 import {useMemo} from 'react'
 
-export function CardWidget({widget}: {widget: Ip.Dashboard.Widget}) {
+export function CardWidget({widget}: {widget: Api.Dashboard.Widget}) {
   const {formatLargeNumber} = useI18n()
-  const config = widget.config as Ip.Dashboard.Widget.Config['Card']
+  const config = widget.config as Api.Dashboard.Widget.Config['Card']
 
   const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
   const filterFns = useDashboardContext(_ => _.data.filterFns)

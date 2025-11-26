@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export type DatabaseView = {
   id: string
@@ -6,8 +6,8 @@ export type DatabaseView = {
   databaseId: string
   createdAt: Date
   updatedAt?: Date
-  createdBy: Ip.User.Email
-  updatedBy?: Ip.User.Email
+  createdBy: Api.User.Email
+  updatedBy?: Api.User.Email
   visibility: DatabaseViewVisibility
   details: DatabaseViewCol[]
 }

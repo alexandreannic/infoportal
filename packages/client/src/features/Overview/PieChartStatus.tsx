@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Box, BoxProps, Icon, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import {statusConfig} from '@infoportal/client-core'
@@ -9,10 +9,10 @@ export const PieChartStatus = ({
   percent,
   validation,
   ...props
-}: {percent: number; validation: Ip.Submission.Validation} & BoxProps) => {
+}: {percent: number; validation: Api.Submission.Validation} & BoxProps) => {
   const {m} = useI18n()
   const t = useTheme()
-  const type = Ip.Submission.validationToStatus[validation]
+  const type = Api.Submission.validationToStatus[validation]
   const style = statusConfig[type ?? 'disabled']
   return (
     <Box {...props}>

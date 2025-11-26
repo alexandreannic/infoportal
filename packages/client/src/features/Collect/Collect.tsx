@@ -5,7 +5,7 @@ import {Core, Page} from '@/shared'
 import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
 import {useIpToast} from '@/core/useToast'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useEffect, useState} from 'react'
 import {UseQuerySchema} from '@/core/query/form/useQuerySchema'
 
@@ -17,12 +17,12 @@ export const collectRoute = createRoute({
 })
 
 function Collect() {
-  const {workspaceId, formId} = collectRoute.useParams() as {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}
+  const {workspaceId, formId} = collectRoute.useParams() as {workspaceId: Api.WorkspaceId; formId: Api.FormId}
   const {toastSuccess} = useIpToast()
   const querySubmit = UseQuerySubmission.submit()
   const querySchema = UseQuerySchema.get({workspaceId, formId})
   const queryForm = UseQueryForm.get({workspaceId, formId})
-  const [geolocation, setGeolocation] = useState<Ip.Geolocation>()
+  const [geolocation, setGeolocation] = useState<Api.Geolocation>()
 
   useEffect(function handleGetLocation() {
     if (!navigator.geolocation) return

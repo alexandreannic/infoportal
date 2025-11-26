@@ -1,6 +1,6 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm, useWatch} from 'react-hook-form'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import React, {useEffect} from 'react'
 import {SwitchBox} from '@/shared/customInput/SwitchBox'
 import {
@@ -22,10 +22,10 @@ export function PieChartSettings() {
   const dashboard = useDashboardContext(_ => _.dashboard)
 
   const {widget, onChange} = useWidgetSettingsContext()
-  const config = widget.config as Ip.Dashboard.Widget.Config['PieChart']
+  const config = widget.config as Api.Dashboard.Widget.Config['PieChart']
   const {question} = useQuestionInfo(config.questionName)
   const {m} = useI18n()
-  const form = useForm<Ip.Dashboard.Widget.Config['PieChart']>({
+  const form = useForm<Api.Dashboard.Widget.Config['PieChart']>({
     mode: 'onChange',
     defaultValues: config,
   })

@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../index.js'
 import {Kobo} from 'kobo-sdk'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {duration, seq} from '@axanc/ts-utils'
 
 export class KoboAccountIndex {
@@ -20,7 +20,7 @@ export class KoboAccountIndex {
     private log = app.logger('KoboAccountIndex'),
   ) {}
 
-  private readonly getHot = async (): Promise<Record<Kobo.FormId, Ip.ServerId>> => {
+  private readonly getHot = async (): Promise<Record<Kobo.FormId, Api.ServerId>> => {
     return this.prisma.formKoboInfo
       .findMany({
         select: {koboId: true, accountId: true},
@@ -31,7 +31,7 @@ export class KoboAccountIndex {
           .compactBy('accountId')
           .groupByAndApply(
             _ => _.koboId,
-            _ => _[0].accountId as Ip.ServerId,
+            _ => _[0].accountId as Api.ServerId,
           )
       })
   }
@@ -42,7 +42,7 @@ export class KoboAccountIndex {
     fn: this.getHot,
   })
 
-  readonly getByKoboId = async (koboFormId: Kobo.FormId): Promise<Ip.ServerId> => {
+  readonly getByKoboId = async (koboFormId: Kobo.FormId): Promise<Api.ServerId> => {
     const cache = await this.getCached()
     if (cache[koboFormId]) return cache[koboFormId]
     const now = Date.now()

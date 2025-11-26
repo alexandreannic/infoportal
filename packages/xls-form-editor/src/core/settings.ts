@@ -1,11 +1,11 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export const selectsQuestionTypes = ['select_one_from_file', 'select_one', 'select_multiple']
 
 type Appearance = {
   name: string
   description: string
-  questionTypes: (Ip.Form.QuestionType | string)[]
+  questionTypes: (Api.Form.QuestionType | string)[]
 }
 
 export const appearances: Appearance[] = [

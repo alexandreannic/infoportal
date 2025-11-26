@@ -1,9 +1,8 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {makeMeta, schema} from '../../../helper/Schema.js'
-import {Ip} from '../../../Api.js'
+import {Api} from '../../../Api.js'
 import {map200, TsRestClient} from '../../../ApiClient.js'
-import {CommonHelper} from '../../common/CommonHelper.js'
 
 const c = initContract()
 
@@ -14,9 +13,9 @@ export const formActionLogContract = c.router({
     pathParams: z.object({
       workspaceId: schema.workspaceId,
     }),
-    body: c.type<Omit<Ip.Form.Action.Log.Payload.Search, 'workspaceId'>>(),
+    body: c.type<Omit<Api.Form.Action.Log.Payload.Search, 'workspaceId'>>(),
     responses: {
-      200: c.type<Ip.Paginate<Ip.Form.Action.Log>>(),
+      200: c.type<Api.Paginate<Api.Form.Action.Log>>(),
     },
     metadata: makeMeta({
       access: {
@@ -28,14 +27,14 @@ export const formActionLogContract = c.router({
 
 export const formActionLogClient = (client: TsRestClient) => {
   return {
-    search: ({workspaceId, ...body}: Ip.Form.Action.Log.Payload.Search): Promise<Ip.Paginate<Ip.Form.Action.Log>> => {
+    search: ({workspaceId, ...body}: Api.Form.Action.Log.Payload.Search): Promise<Api.Paginate<Api.Form.Action.Log>> => {
       return client.form.action.log
         .search({
           body,
           params: {workspaceId},
         })
         .then(map200)
-        .then(CommonHelper.map(Ip.Form.Action.Log.map))
+        .then(Api.Paginate.map(Api.Form.Action.Log.map))
     },
   }
 }

@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class WidgetService {
@@ -8,7 +8,7 @@ export class WidgetService {
   readonly search = async ({
     sectionId,
     dashboardId,
-  }: Ip.Dashboard.Widget.Payload.Search): Promise<Ip.Dashboard.Widget[]> => {
+  }: Api.Dashboard.Widget.Payload.Search): Promise<Api.Dashboard.Widget[]> => {
     return this.prisma.dashboardWidget
       .findMany({where: {section: {dashboardId}, sectionId}})
       .then(_ => _.map(prismaMapper.dashboard.mapWidget))
@@ -18,8 +18,8 @@ export class WidgetService {
     workspaceId,
     id,
   }: {
-    id: Ip.Dashboard.WidgetId
-    workspaceId: Ip.WorkspaceId
+    id: Api.Dashboard.WidgetId
+    workspaceId: Api.WorkspaceId
   }): Promise<void> => {
     await this.prisma.dashboardWidget.delete({where: {id}})
   }
@@ -29,7 +29,7 @@ export class WidgetService {
     sectionId,
     id,
     ...data
-  }: Ip.Dashboard.Widget.Payload.Update): Promise<Ip.Dashboard.Widget> => {
+  }: Api.Dashboard.Widget.Payload.Update): Promise<Api.Dashboard.Widget> => {
     return this.prisma.dashboardWidget.update({where: {id}, data}).then(prismaMapper.dashboard.mapWidget)
   }
 
@@ -37,7 +37,7 @@ export class WidgetService {
     position,
     workspaceId,
     ...data
-  }: Ip.Dashboard.Widget.Payload.Create): Promise<Ip.Dashboard.Widget> => {
+  }: Api.Dashboard.Widget.Payload.Create): Promise<Api.Dashboard.Widget> => {
     return this.prisma.dashboardWidget
       .create({
         data: {

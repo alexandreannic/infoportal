@@ -3,12 +3,12 @@ import {Core} from '@/shared'
 import {Sidebar, SidebarHr, SidebarItem} from '@/shared/Layout/Sidebar'
 import {Box, Icon, useTheme} from '@mui/material'
 import {Link} from '@tanstack/react-router'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {appConfig} from '@/conf/AppConfig.js'
 import {AppSidebarAssets} from '@/core/layout/AppSidebarAssets.js'
 import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
 
-export const AppSidebar = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+export const AppSidebar = ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
   const {m} = useI18n()
   const t = useTheme()
   const permission = UseQueryPermission.workspace({workspaceId})

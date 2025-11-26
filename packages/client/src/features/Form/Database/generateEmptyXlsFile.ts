@@ -1,9 +1,9 @@
 import * as ExcelJS from 'exceljs'
 import {downloadBufferAsFile} from '@infoportal/client-core'
 import {SchemaInspector} from '@infoportal/form-helper'
-import {Ip} from '@infoportal/api-sdk'
-import Question = Ip.Form.Question
-import Choice = Ip.Form.Choice
+import {Api} from '@infoportal/api-sdk'
+import Question = Api.Form.Question
+import Choice = Api.Form.Choice
 
 export const generateEmptyXlsTemplate = async (schemaInspector: SchemaInspector, fileName: string): Promise<void> => {
   const workbook = new ExcelJS.Workbook()

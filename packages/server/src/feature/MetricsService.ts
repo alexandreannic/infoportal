@@ -1,18 +1,18 @@
 import {FormSubmission, Prisma, PrismaClient} from '@prisma/client'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {FormService} from './form/FormService.js'
 import {duration, fnSwitch, Seq, seq} from '@axanc/ts-utils'
 import {app, AppCacheKey} from '../index.js'
 import {UserService} from './user/UserService.js'
 
 type Filters = {
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
   start?: Date
   end?: Date
-  user: Ip.User
+  user: Api.User
 }
 type FiltersForm = Filters & {
-  formIds?: Ip.FormId[]
+  formIds?: Api.FormId[]
 }
 
 export class MetricsService {
@@ -26,12 +26,12 @@ export class MetricsService {
     key: AppCacheKey.AllowedFormIds,
     ttlMs: duration(1, 'minute'),
     genIndex: _ => _.user.email,
-    fn: (props: {workspaceId: Ip.WorkspaceId; user: Ip.User}): Promise<Seq<Ip.FormId>> => {
+    fn: (props: {workspaceId: Api.WorkspaceId; user: Api.User}): Promise<Seq<Api.FormId>> => {
       return this.form.getByUser(props).then(_ => seq(_).map(_ => _.id))
     },
   })
 
-  readonly usersByDate = async ({workspaceId, start, end, user}: Filters): Promise<Ip.Metrics.CountUserByDate> => {
+  readonly usersByDate = async ({workspaceId, start, end, user}: Filters): Promise<Api.Metrics.CountUserByDate> => {
     const whereConditions = [
       start ? Prisma.sql`"WorkspaceAccess"."createdAt" >= ${start}` : null,
       end ? Prisma.sql`"User"."createdAt" <= ${end}` : null,
@@ -40,7 +40,7 @@ export class MetricsService {
     const whereClause =
       whereConditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(whereConditions, ` AND `)}` : Prisma.sql``
 
-    return this.prisma.$queryRaw<Ip.Metrics.CountUserByDate>`
+    return this.prisma.$queryRaw<Api.Metrics.CountUserByDate>`
       SELECT TO_CHAR("WorkspaceAccess"."createdAt", 'YYYY-MM') AS "date",
              COUNT(*)                                             FILTER (
       WHERE "User"."createdAt" IS NOT NULL
@@ -62,7 +62,7 @@ export class MetricsService {
     )
   }
 
-  readonly submissionsBy = async (props: FiltersForm & {type: Ip.Metrics.ByType}): Promise<Ip.Metrics.CountByKey> => {
+  readonly submissionsBy = async (props: FiltersForm & {type: Api.Metrics.ByType}): Promise<Api.Metrics.CountByKey> => {
     const {type, workspaceId, start, end, formIds} = props
     const allowedFormIds = await this.getAllowedFormIds(props).then(_ =>
       formIds && formIds.length > 0 && type !== 'form' ? seq(_).intersect(formIds) : _,
@@ -101,14 +101,14 @@ export class MetricsService {
       })
   }
 
-  readonly submissionsByCategory = async (props: FiltersForm): Promise<Ip.Metrics.CountByKey> => {
+  readonly submissionsByCategory = async (props: FiltersForm): Promise<Api.Metrics.CountByKey> => {
     const [byForm, formsMap] = await Promise.all([
       this.submissionsBy({...props, type: 'form'}),
       this.form.getByUser(props).then(_ => seq(_).groupByFirstToMap(_ => _.id)),
     ])
     return byForm.map(_ => {
       return {
-        key: formsMap.get(_.key as Ip.FormId)?.category ?? '',
+        key: formsMap.get(_.key as Api.FormId)?.category ?? '',
         count: _.count,
       }
     })
@@ -120,7 +120,7 @@ export class MetricsService {
     end,
     formIds,
     user,
-  }: FiltersForm): Promise<Ip.Metrics.CountByKey> => {
+  }: FiltersForm): Promise<Api.Metrics.CountByKey> => {
     const allowedFormIds = await this.getAllowedFormIds({workspaceId, user}).then(_ =>
       formIds && formIds.length > 0 ? seq(_).intersect(formIds) : _,
     )
@@ -135,7 +135,7 @@ export class MetricsService {
     const whereClause =
       whereConditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(whereConditions, ` AND `)}` : Prisma.sql``
 
-    return this.prisma.$queryRaw<Ip.Metrics.CountByKey>`
+    return this.prisma.$queryRaw<Api.Metrics.CountByKey>`
       SELECT TO_CHAR("submissionTime", 'YYYY-MM') AS key, COUNT(*) AS count
       FROM "FormSubmission"
         ${whereClause}

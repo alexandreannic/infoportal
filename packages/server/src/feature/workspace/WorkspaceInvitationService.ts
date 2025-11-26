@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {WorkspaceAccessCreate, WorkspaceAccessService} from './WorkspaceAccessService.js'
 import {UserService} from '../user/UserService.js'
@@ -11,7 +11,7 @@ export class WorkspaceInvitationService {
     private access = new WorkspaceAccessService(prisma),
   ) {}
 
-  readonly getByUser = async ({user}: {user: Ip.User}): Promise<Ip.Workspace.InvitationW_workspace[]> => {
+  readonly getByUser = async ({user}: {user: Api.User}): Promise<Api.Workspace.InvitationW_workspace[]> => {
     return this.prisma.workspaceInvitation
       .findMany({
         include: {workspace: true},
@@ -24,9 +24,9 @@ export class WorkspaceInvitationService {
 
   readonly create = async (
     {level, email, workspaceId}: WorkspaceAccessCreate,
-    createdBy: Ip.User.Email,
-  ): Promise<Ip.Workspace.Invitation> => {
-    const maybeExistingUser = await this.user.getByEmail(email as Ip.User.Email)
+    createdBy: Api.User.Email,
+  ): Promise<Api.Workspace.Invitation> => {
+    const maybeExistingUser = await this.user.getByEmail(email as Api.User.Email)
     if (maybeExistingUser) {
       // TODO Send email
       const [existsAccess, existsInvitation] = await Promise.all([
@@ -53,11 +53,11 @@ export class WorkspaceInvitationService {
       .then(prismaMapper.workspace.mapWorkspaceInvitation)
   }
 
-  readonly remove = async ({id}: {id: Ip.Workspace.InvitationId}) => {
+  readonly remove = async ({id}: {id: Api.Workspace.InvitationId}) => {
     await this.prisma.workspaceInvitation.delete({where: {id}})
   }
 
-  readonly accept = async ({id, accept}: {accept: boolean; id: Ip.Workspace.InvitationId}) => {
+  readonly accept = async ({id, accept}: {accept: boolean; id: Api.Workspace.InvitationId}) => {
     const invitation = await this.prisma.workspaceInvitation
       .findFirst({where: {id}})
       .then(_ => (_ ? prismaMapper.workspace.mapWorkspaceInvitation(_) : undefined))
@@ -77,8 +77,8 @@ export class WorkspaceInvitationService {
   readonly getByWorkspace = async ({
     workspaceId,
   }: {
-    workspaceId: Ip.WorkspaceId
-  }): Promise<Ip.Workspace.Invitation[]> => {
+    workspaceId: Api.WorkspaceId
+  }): Promise<Api.Workspace.Invitation[]> => {
     return this.prisma.workspaceInvitation
       .findMany({
         where: {workspaceId},

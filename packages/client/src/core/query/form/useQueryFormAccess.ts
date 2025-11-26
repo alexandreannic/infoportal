@@ -2,10 +2,10 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useIpToast} from '@/core/useToast'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export class UseQueryFormAccess {
-  static getByFormId({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
+  static getByFormId({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) {
     const {apiv2} = useAppSettings()
     const {toastAndThrowHttpError} = useIpToast()
     return useQuery({
@@ -16,12 +16,12 @@ export class UseQueryFormAccess {
     })
   }
 
-  static remove({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
+  static remove({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) {
     const {apiv2} = useAppSettings()
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (args: {id: Ip.AccessId}) => {
+      mutationFn: async (args: {id: Api.AccessId}) => {
         return apiv2.form.access.remove({...args, formId, workspaceId})
       },
       onSuccess: (data, variables) =>
@@ -30,12 +30,12 @@ export class UseQueryFormAccess {
     })
   }
 
-  static update({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
+  static update({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) {
     const {apiv2} = useAppSettings()
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (args: Omit<Ip.Access.Payload.Update, 'workspaceId'>) => {
+      mutationFn: async (args: Omit<Api.Access.Payload.Update, 'workspaceId'>) => {
         return apiv2.form.access.update({...args, workspaceId})
       },
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.formAccess(workspaceId, formId)}),
@@ -43,12 +43,12 @@ export class UseQueryFormAccess {
     })
   }
 
-  static create({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
+  static create({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) {
     const {apiv2} = useAppSettings()
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (args: Omit<Ip.Access.Payload.Create, 'formId'>) => {
+      mutationFn: async (args: Omit<Api.Access.Payload.Create, 'formId'>) => {
         return apiv2.form.access.create({...args, formId, workspaceId})
       },
       onSuccess: (data, variables) =>

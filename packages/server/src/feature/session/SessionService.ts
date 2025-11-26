@@ -7,7 +7,7 @@ import {SessionError} from './SessionErrors.js'
 import {google} from 'googleapis'
 import {WorkspaceService} from '../workspace/WorkspaceService.js'
 import {UserProfile} from './AppSession.js'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {UserService} from '../user/UserService.js'
 
@@ -39,7 +39,7 @@ export class SessionService {
     name: string
     username: string
     accessToken: string
-  }): Promise<Ip.User> => {
+  }): Promise<Api.User> => {
     const oauth2Client = new google.auth.OAuth2()
     oauth2Client.setCredentials({access_token: userBody.accessToken})
 
@@ -52,7 +52,7 @@ export class SessionService {
 
     const oauth2 = google.oauth2({version: 'v2', auth: oauth2Client})
     const userInfo = await oauth2.userinfo.get()
-    const email = userInfo.data.email as Ip.User.Email
+    const email = userInfo.data.email as Api.User.Email
     const name = userInfo.data.name ?? userBody.name
 
     if (!email) {
@@ -86,7 +86,7 @@ export class SessionService {
     name: string
     username: string
     accessToken: string
-  }): Promise<Ip.User> => {
+  }): Promise<Api.User> => {
     class MyCustomAuthenticationProvider implements AuthenticationProvider {
       getAccessToken = async (authenticationProviderOptions?: AuthenticationProviderOptions) => {
         return userBody.accessToken
@@ -120,7 +120,7 @@ export class SessionService {
       throw new SessionError.UserNotFound()
     }
     const connectedUser = await this.syncUserInDb({
-      email: msUser.mail as Ip.User.Email,
+      email: msUser.mail as Api.User.Email,
       job: msUser.jobTitle?.trim().replace(/\s+/g, ' '),
       accessToken: userBody.accessToken,
       name: userBody.name,
@@ -140,7 +140,7 @@ export class SessionService {
     accessToken: string
     avatar?: Buffer
     name: string
-    email: Ip.User.Email
+    email: Api.User.Email
     job?: string
   }): Promise<User> => {
     const user = await this.prisma.user.findFirst({where: {email}})
@@ -181,13 +181,13 @@ export class SessionService {
     })
   }
 
-  readonly connectAs = async ({connectedUser, spyEmail}: {connectedUser: Ip.User; spyEmail: Ip.User.Email}) => {
+  readonly connectAs = async ({connectedUser, spyEmail}: {connectedUser: Api.User; spyEmail: Api.User.Email}) => {
     const connectAsUser = await this.user.getByEmail(spyEmail).then(HttpError.throwNotFoundIfUndefined('connectAs'))
     if (connectAsUser.id === connectedUser.id) throw new SessionError.UserNoAccess()
     return this.get(connectAsUser)
   }
 
-  readonly revertConnectAs = async (originalEmail?: Ip.User.Email) => {
+  readonly revertConnectAs = async (originalEmail?: Api.User.Email) => {
     if (!originalEmail) {
       throw new HttpError.Forbidden('')
     }
@@ -195,7 +195,7 @@ export class SessionService {
     return this.get(user)
   }
 
-  readonly get = async (user: Ip.User): Promise<UserProfile> => {
+  readonly get = async (user: Api.User): Promise<UserProfile> => {
     const workspaces = await this.workspace.getByUser(user.email)
     return {
       workspaces,

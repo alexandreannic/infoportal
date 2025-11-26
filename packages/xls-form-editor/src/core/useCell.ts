@@ -1,9 +1,9 @@
 import {useXlsFormStore} from './useStore'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export type CellPointer =
-  | {table: 'survey'; rowKey: string; field: keyof Ip.Form.Question; fieldIndex?: number}
-  | {table: 'choices'; rowKey: string; field: keyof Ip.Form.Choice; fieldIndex?: number}
+  | {table: 'survey'; rowKey: string; field: keyof Api.Form.Question; fieldIndex?: number}
+  | {table: 'choices'; rowKey: string; field: keyof Api.Form.Choice; fieldIndex?: number}
 
 export const useCell = <T extends boolean | string>({table, rowKey, field, fieldIndex}: CellPointer) => {
   const value = useXlsFormStore(s => {

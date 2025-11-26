@@ -15,7 +15,7 @@ import {FormDataFlattenRepeatGroup} from '@infoportal/form-helper'
 import {useMemo, useState} from 'react'
 import {DatabaseGroupDisplayInput} from './groupDisplay/DatabaseGroupDisplayInput'
 import {Link, useNavigate} from '@tanstack/react-router'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {AppAvatar, Core, Datatable} from '@/shared'
 import {useFormSocket} from '@/features/Form/useFormSocket'
 import {appConfig} from '@/conf/AppConfig.js'
@@ -108,7 +108,7 @@ export const DatabaseTableContent = ({
       m,
       dialog,
     })
-    const colOriginId: Datatable.Column.Props<Ip.Submission>[] = []
+    const colOriginId: Datatable.Column.Props<Api.Submission>[] = []
     if (ctx.form.type === 'kobo' || ctx.form.type === 'smart') {
       colOriginId.push({
         id: 'originId',
@@ -190,7 +190,7 @@ export const DatabaseTableContent = ({
               renderFormulaBarOnRowSelected: _ => (
                 <DatabaseSelectedRowsAction
                   canDelete={ctx.canEdit && ctx.permission.answers_canDelete}
-                  selectedIds={_.rowIds as Ip.SubmissionId[]}
+                  selectedIds={_.rowIds as Api.SubmissionId[]}
                   workspaceId={workspaceId}
                   formId={ctx.form.id}
                 />
@@ -207,7 +207,7 @@ export const DatabaseTableContent = ({
           // select={
           //   ctx.permission.answers_canUpdate
           //     ? {
-          //         onSelect: (_: string[]) => setSelectedIds(_ as Ip.SubmissionId[]),
+          //         onSelect: (_: string[]) => setSelectedIds(_ as Api.SubmissionId[]),
           //         selectActions: selectedHeader,
           //         getId: _ => _.id,
           //       }
@@ -252,7 +252,7 @@ export const DatabaseTableContent = ({
                   connectedUsers.map((_, i) => (
                     <AppAvatar size={36} email={_} tooltip overlap borderColor={Datatable.primaryColors[i]} key={_} />
                   ))}
-                {Ip.Form.isKobo(ctx.form) ? (
+                {Api.Form.isKobo(ctx.form) ? (
                   <Core.IconBtn
                     disabled={!ctx.form.kobo.enketoUrl || ctx.form.deploymentStatus === 'archived'}
                     href={ctx.form.kobo.enketoUrl ?? ''}
@@ -270,7 +270,7 @@ export const DatabaseTableContent = ({
                     />
                   </Link>
                 )}
-                {Ip.Form.isConnectedToKobo(ctx.form) && (
+                {Api.Form.isConnectedToKobo(ctx.form) && (
                   <DatabaseKoboSyncBtn
                     loading={ctx.asyncRefresh.loading}
                     tooltip={

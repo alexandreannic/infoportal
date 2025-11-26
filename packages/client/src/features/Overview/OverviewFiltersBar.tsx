@@ -2,7 +2,7 @@ import {addDays} from 'date-fns'
 import {DashboardFilterLabel} from '@/shared/DashboardLayout/DashboardFilterLabel'
 import {DashboardFilterOptions, DashboardFilterValue} from '@/shared/DashboardLayout/DashboardFilterOptions'
 import {Box, CircularProgress} from '@mui/material'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Obj, seq} from '@axanc/ts-utils'
 import {AssetIcon, AssetType} from '@/shared/Asset'
 import {Core} from '@/shared'
@@ -18,8 +18,8 @@ export const OverviewFiltersBar = ({
   filteredForms,
   onClear,
 }: {
-  forms?: Ip.Form[]
-  filteredForms?: Ip.Form[]
+  forms?: Api.Form[]
+  filteredForms?: Api.Form[]
   filters: OverviewFilters
   onClear: () => void
   setFilters: Dispatch<SetStateAction<OverviewFilters>>
@@ -58,12 +58,12 @@ export const OverviewFiltersBar = ({
       >
         {() => (
           <Box sx={{p: 1}}>
-            <Core.RadioGroup<Ip.Form.Type>
+            <Core.RadioGroup<Api.Form.Type>
               multiple
               value={filters.formTypes}
               onChange={_ => setFilters(prev => ({...prev, formTypes: _}))}
             >
-              {Obj.values(Ip.Form.Type).map(_ => (
+              {Obj.values(Api.Form.Type).map(_ => (
                 <Core.RadioGroupItem
                   hideRadio
                   key={_}
@@ -89,7 +89,7 @@ export const OverviewFiltersBar = ({
         value={filters.formIds}
         label={m.forms}
         options={() => filteredForms?.map(_ => ({value: _.id, label: _.name}))}
-        onChange={_ => setFilters(prev => ({...prev, formIds: _ as Ip.FormId[]}))}
+        onChange={_ => setFilters(prev => ({...prev, formIds: _ as Api.FormId[]}))}
       />
       {!forms && <CircularProgress size={24} />}
       <Core.IconBtn sx={{marginLeft: 'auto'}} children="filter_list_off" tooltip={m.clearFilter} onClick={onClear} />

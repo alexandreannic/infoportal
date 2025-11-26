@@ -1,7 +1,7 @@
 import {createRoute, Link} from '@tanstack/react-router'
 import {Core} from '@/shared'
 import {UseQueryFromAction} from '@/core/query/form/useQueryFromAction.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 import {SchemaTsInterfaceBuilder} from '@infoportal/form-helper'
 import {map} from '@axanc/ts-utils'
@@ -26,8 +26,8 @@ const useBuildInterface = ({
   formId,
 }: {
   name: string
-  workspaceId: Ip.WorkspaceId
-  formId?: Ip.FormId
+  workspaceId: Api.WorkspaceId
+  formId?: Api.FormId
 }) => {
   const querySchema = UseQuerySchema.getInspector({workspaceId, formId, langIndex: 0})
   const queryForm = UseQueryForm.get({workspaceId, formId})
@@ -50,9 +50,9 @@ export function FormAction({sx, ...props}: BoxProps) {
   const {m} = useI18n()
   const t = useTheme()
   const params = formActionRoute.useParams()
-  const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const formId = params.formId as Ip.FormId
-  const actionId = params.actionId as Ip.Form.ActionId
+  const workspaceId = params.workspaceId as Api.WorkspaceId
+  const formId = params.formId as Api.FormId
+  const actionId = params.actionId as Api.Form.ActionId
   const queryAction = UseQueryFromAction.getById(workspaceId, formId, actionId)
   const queryActionUpdate = UseQueryFromAction.update(workspaceId, formId)
   const queryPermissionForm = UseQueryPermission.form({formId, workspaceId})

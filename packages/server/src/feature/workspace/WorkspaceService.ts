@@ -2,7 +2,7 @@ import {PrismaClient} from '@prisma/client'
 import {slugify, genShortid, UUID} from '@infoportal/common'
 import {GroupService} from '../group/GroupService.js'
 import {FormAccessService} from '../form/access/FormAccessService.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class WorkspaceService {
@@ -38,7 +38,7 @@ export class WorkspaceService {
     return slug
   }
 
-  readonly getByUser = async (email: Ip.User.Email) => {
+  readonly getByUser = async (email: Api.User.Email) => {
     return this.prisma.workspaceAccess
       .findMany({
         where: {
@@ -62,7 +62,7 @@ export class WorkspaceService {
       .then(_ => _.map(prismaMapper.workspace.mapWorkspace))
   }
 
-  readonly create = async (data: Ip.Workspace.Payload.Create, user: Ip.User) => {
+  readonly create = async (data: Api.Workspace.Payload.Create, user: Api.User) => {
     return this.prisma.workspace
       .create({
         data: {
@@ -84,7 +84,7 @@ export class WorkspaceService {
       .then(prismaMapper.workspace.mapWorkspace)
   }
 
-  readonly update = (id: UUID, data: Partial<Ip.Workspace.Payload.Update>) => {
+  readonly update = (id: UUID, data: Partial<Api.Workspace.Payload.Update>) => {
     return this.prisma.workspace
       .update({
         where: {id},

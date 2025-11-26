@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
@@ -6,7 +6,7 @@ import {useMemo} from 'react'
 import {SchemaInspector} from '@infoportal/form-helper'
 
 export class UseQuerySchema {
-  static readonly get = ({workspaceId, formId}: {workspaceId: Ip.WorkspaceId; formId?: Ip.FormId}) => {
+  static readonly get = ({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId?: Api.FormId}) => {
     const {apiv2} = useAppSettings()
 
     return useQuery({
@@ -22,8 +22,8 @@ export class UseQuerySchema {
     formId,
     langIndex,
   }: {
-    workspaceId: Ip.WorkspaceId
-    formId?: Ip.FormId
+    workspaceId: Api.WorkspaceId
+    formId?: Api.FormId
     langIndex: number
   }) => {
     const query = UseQuerySchema.get({workspaceId, formId})
@@ -44,9 +44,9 @@ export class UseQuerySchema {
     formId,
     versionId,
   }: {
-    workspaceId: Ip.WorkspaceId
-    formId: Ip.FormId
-    versionId?: Ip.Form.VersionId
+    workspaceId: Api.WorkspaceId
+    formId: Api.FormId
+    versionId?: Api.Form.VersionId
   }) => {
     const {apiv2} = useAppSettings()
     return useQuery({

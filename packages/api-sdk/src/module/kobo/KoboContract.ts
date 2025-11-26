@@ -1,6 +1,6 @@
 import {z} from 'zod'
 import {makeMeta, schema} from '../../helper/Schema.js'
-import {Ip} from '../../Api.js'
+import {Api} from '../../Api.js'
 import {initContract} from '@ts-rest/core'
 import {map200, TsRestClient} from '../../ApiClient.js'
 import {Kobo} from 'kobo-sdk'
@@ -14,9 +14,9 @@ export const koboContract = c.router({
     pathParams: z.object({
       workspaceId: schema.workspaceId,
     }),
-    body: c.type<Ip.Form.Payload.Import>(),
+    body: c.type<Api.Form.Payload.Import>(),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form>,
+      200: z.any() as z.ZodType<Api.Form>,
     },
     metadata: makeMeta({
       access: {
@@ -32,11 +32,11 @@ export const koboClient = (client: TsRestClient, baseUrl: string) => {
       workspaceId,
       ...body
     }: {
-      workspaceId: Ip.WorkspaceId
-      serverId: Ip.ServerId
+      workspaceId: Api.WorkspaceId
+      serverId: Api.ServerId
       uid: Kobo.FormId
     }) => {
-      return client.kobo.importFromKobo({params: {workspaceId}, body}).then(map200).then(Ip.Form.map)
+      return client.kobo.importFromKobo({params: {workspaceId}, body}).then(map200).then(Api.Form.map)
     },
   }
 }

@@ -6,7 +6,7 @@ import {User} from '../user/User.js'
 import {ServerId} from '../kobo/KoboAccount.js'
 import {WorkspaceId} from '../workspace/Workspace.js'
 import {Submission} from '../submission/Submission.js'
-import {Ip} from '../../Api.js'
+import {Api} from '../../Api.js'
 
 export type FormId = Form.Id
 export type Form = Prisma.Form & {
@@ -44,7 +44,7 @@ export namespace Form {
     _: T,
   ): _ is Defined<T & {type: 'kobo'; kobo: NonNullable<Form['kobo']>}> => !!_.kobo && !_.kobo.deletedAt
 
-  export const isKobo = (_: {type: Form['module']}): _ is Form & {type: 'kobo'; kobo: NonNullable<Form['kobo']>} =>
+  export const isKobo = (_: {type: Form['type']}): _ is Form & {type: 'kobo'; kobo: NonNullable<Form['kobo']>} =>
     _.type === 'kobo'
 
   export type Id = Brand<string, 'FormId'>
@@ -200,11 +200,11 @@ export namespace Form {
   export namespace Version {
     export namespace Payload {
       export type CreateNewVersion = {
-        workspaceId: Ip.WorkspaceId
-        formId: Ip.Form.Id
+        workspaceId: Api.WorkspaceId
+        formId: Api.Form.Id
         message?: string
         fileName?: string
-        schemaJson: Ip.Form.Schema
+        schemaJson: Api.Form.Schema
       }
     }
   }

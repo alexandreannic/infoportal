@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export const schema = {
   schema: '1',
@@ -4968,4 +4968,4 @@ export const schema = {
   },
   translated: ['constraint_message', 'hint', 'label'],
   translations: ['English (en)', 'Ukrainian (uk)'],
-} as unknown as Ip.Form.Schema
+} as unknown as Api.Form.Schema

@@ -1,12 +1,12 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Box, BoxProps, Icon, Tooltip, useTheme} from '@mui/material'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 type Props = BoxProps & {
   icon?: string
   borderColor?: string
   overlap?: boolean
-  email?: Ip.User.Email
+  email?: Api.User.Email
   size: number
   url?: string
   tooltip?: boolean

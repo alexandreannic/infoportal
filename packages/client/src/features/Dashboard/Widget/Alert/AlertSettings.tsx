@@ -1,6 +1,6 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useForm, useWatch} from 'react-hook-form'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import React, {useEffect} from 'react'
 import {Box, Icon, Slider} from '@mui/material'
 import {
@@ -24,7 +24,7 @@ export function AlertSettings() {
   const {m} = useI18n()
   const langIndex = useDashboardContext(_ => _.langIndex)
   const {widget, onChange} = useWidgetSettingsContext()
-  const form = useForm<Ip.Dashboard.Widget.Config['Alert']>({
+  const form = useForm<Api.Dashboard.Widget.Config['Alert']>({
     mode: 'onChange',
     defaultValues: {
       ...widget.config,

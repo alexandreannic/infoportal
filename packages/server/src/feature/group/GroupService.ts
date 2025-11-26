@@ -1,12 +1,12 @@
 import {PrismaClient} from '@prisma/client'
 import {format} from 'date-fns'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class GroupService {
   constructor(private prisma: PrismaClient) {}
 
-  readonly create = (body: Ip.Group.Payload.Create): Promise<Ip.Group> => {
+  readonly create = (body: Api.Group.Payload.Create): Promise<Api.Group> => {
     return this.prisma.group
       .create({
         include: {items: true},
@@ -19,7 +19,7 @@ export class GroupService {
       .then(prismaMapper.access.mapGroup)
   }
 
-  readonly update = async ({id, ...data}: Ip.Group.Payload.Update): Promise<Ip.Group | undefined> => {
+  readonly update = async ({id, ...data}: Api.Group.Payload.Update): Promise<Api.Group | undefined> => {
     const exists = await this.prisma.group.findFirst({select: {id: true}, where: {id}})
     if (!exists) return
     return this.prisma.group
@@ -33,7 +33,7 @@ export class GroupService {
       .then(prismaMapper.access.mapGroup)
   }
 
-  readonly remove = ({id}: {id: Ip.GroupId}) => {
+  readonly remove = ({id}: {id: Api.GroupId}) => {
     return this.prisma.group.delete({
       where: {
         id,
@@ -41,7 +41,7 @@ export class GroupService {
     })
   }
 
-  readonly search = ({featureId, workspaceId, name, user}: Ip.Group.Payload.Search) => {
+  readonly search = ({featureId, workspaceId, name, user}: Api.Group.Payload.Search) => {
     return this.prisma.group
       .findMany({
         include: {

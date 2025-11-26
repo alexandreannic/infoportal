@@ -3,7 +3,7 @@ import {Core} from '@/shared/index.js'
 import {Box, Icon, Skeleton, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import {UseQueryFromAction} from '@/core/query/form/useQueryFromAction.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {formRoute} from '@/features/Form/Form.js'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {mapFor} from '@axanc/ts-utils'
@@ -29,8 +29,8 @@ export function FormActions() {
   const {m} = useI18n()
   const t = useTheme()
   const params = formActionsRoute.useParams()
-  const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const formId = params.formId as Ip.FormId
+  const workspaceId = params.workspaceId as Api.WorkspaceId
+  const formId = params.formId as Api.FormId
   const queryActionGet = UseQueryFromAction.getByDbId(workspaceId, formId)
 
   return (

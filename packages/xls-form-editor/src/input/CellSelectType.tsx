@@ -3,10 +3,10 @@ import {CellPointer, useCell} from '../core/useCell'
 import {BoxProps, useTheme} from '@mui/material'
 import {Obj, Seq, seq} from '@axanc/ts-utils'
 import {Icon} from '@infoportal/client-datatable'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import * as Core from '@infoportal/client-core'
 
-type QType = Exclude<Ip.Form.QuestionType, (typeof skippedQuestionTypes)[number]>
+type QType = Exclude<Api.Form.QuestionType, (typeof skippedQuestionTypes)[number]>
 
 const separators: Seq<QType> = seq(['end_repeat', 'select_multiple', 'datetime'])
 

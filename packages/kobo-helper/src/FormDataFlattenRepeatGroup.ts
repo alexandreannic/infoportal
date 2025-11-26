@@ -1,10 +1,10 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export namespace FormDataFlattenRepeatGroup {
-  export type Data = Pick<Ip.Submission, 'originId' | 'id' | 'submissionTime'> & Cursor & Record<string, any>
+  export type Data = Pick<Api.Submission, 'originId' | 'id' | 'submissionTime'> & Cursor & Record<string, any>
 
   type Row = Record<string, any> &
-    Pick<Ip.Submission, 'id' | 'submissionTime'> & {
+    Pick<Api.Submission, 'id' | 'submissionTime'> & {
       _index?: number
     }
 

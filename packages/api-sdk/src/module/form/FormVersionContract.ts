@@ -1,6 +1,6 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {Ip} from '../../Api.js'
+import {Api} from '../../Api.js'
 import {makeMeta, schema} from '../../helper/Schema.js'
 import {map200, TsRestClient} from '../../ApiClient.js'
 
@@ -19,7 +19,7 @@ export const formVersionContract = c.router({
       file: File
     }>(),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form.Schema.Validation>,
+      200: z.any() as z.ZodType<Api.Form.Schema.Validation>,
     },
     metadata: makeMeta({
       access: {
@@ -41,7 +41,7 @@ export const formVersionContract = c.router({
       message?: string
     }>(),
     responses: {
-      200: z.any() as z.ZodType<Ip.Form.Version>,
+      200: z.any() as z.ZodType<Api.Form.Version>,
     },
     metadata: makeMeta({
       access: {
@@ -54,15 +54,15 @@ export const formVersionContract = c.router({
     method: 'GET',
     path: '/:workspaceId/form/:formId/versions',
     // pathParams: c.module<{
-    //   workspaceId: Ip.WorkspaceId
-    //   formId: Ip.FormId
+    //   workspaceId: Api.WorkspaceId
+    //   formId: Api.FormId
     // }>(),
     pathParams: z.object({
       workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
     responses: {
-      200: z.array(z.custom<Ip.Form.Version>()),
+      200: z.array(z.custom<Api.Form.Version>()),
     },
     metadata: makeMeta({
       access: {
@@ -80,7 +80,7 @@ export const formVersionContract = c.router({
     }),
     body: z.object({}),
     responses: {
-      200: z.custom<Ip.Form.Version>(),
+      200: z.custom<Api.Form.Version>(),
     },
     metadata: makeMeta({
       access: {
@@ -98,7 +98,7 @@ export const formVersionContract = c.router({
     }),
     body: z.object({}),
     responses: {
-      200: z.custom<Ip.Form.Version>(),
+      200: z.custom<Api.Form.Version>(),
     },
     metadata: makeMeta({
       access: {
@@ -109,9 +109,9 @@ export const formVersionContract = c.router({
   createNewVersion: {
     method: 'POST',
     path: '/form/version/createNewVersion',
-    body: z.custom<Ip.Form.Version.Payload.CreateNewVersion>(),
+    body: z.custom<Api.Form.Version.Payload.CreateNewVersion>(),
     responses: {
-      200: z.custom<Ip.Form.Version>(),
+      200: z.custom<Api.Form.Version>(),
     },
     metadata: makeMeta({
       access: {
@@ -128,8 +128,8 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
       formId,
       xlsFile,
     }: {
-      workspaceId: Ip.WorkspaceId
-      formId: Ip.FormId
+      workspaceId: Api.WorkspaceId
+      formId: Api.FormId
       xlsFile: File
     }) => {
       return client.form.version
@@ -149,8 +149,8 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
       xlsFile,
       message,
     }: {
-      workspaceId: Ip.WorkspaceId
-      formId: Ip.FormId
+      workspaceId: Api.WorkspaceId
+      formId: Api.FormId
       xlsFile: File
       message?: string
     }) => {
@@ -165,7 +165,7 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
         .then(map200)
     },
 
-    getByFormId: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) => {
+    getByFormId: ({workspaceId, formId}: {formId: Api.FormId; workspaceId: Api.WorkspaceId}) => {
       return client.form.version
         .getByFormId({
           params: {formId, workspaceId},
@@ -173,7 +173,7 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
         .then(map200)
     },
 
-    deployLast: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) => {
+    deployLast: ({workspaceId, formId}: {formId: Api.FormId; workspaceId: Api.WorkspaceId}) => {
       return client.form.version
         .deployLast({
           params: {workspaceId, formId},
@@ -181,7 +181,7 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
         .then(map200)
     },
 
-    importLastKoboSchema: ({workspaceId, formId}: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) => {
+    importLastKoboSchema: ({workspaceId, formId}: {formId: Api.FormId; workspaceId: Api.WorkspaceId}) => {
       return client.form.version
         .importLastKoboSchema({
           params: {workspaceId, formId},
@@ -189,7 +189,7 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
         .then(map200)
     },
 
-    createNewVersion: (body: Ip.Form.Version.Payload.CreateNewVersion) => {
+    createNewVersion: (body: Api.Form.Version.Payload.CreateNewVersion) => {
       return client.form.version.createNewVersion({body}).then(map200)
     },
   }

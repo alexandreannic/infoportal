@@ -1,12 +1,12 @@
 import {UUID} from '@infoportal/common'
-import {ApiClient} from '../ApiClient'
-import {Ip} from '@infoportal/api-sdk'
+import {HttpClient} from '../HttpClient'
+import {Api} from '@infoportal/api-sdk'
 
 export type JsonStore<T> = {
   id: UUID
   createdAt: Date
   updatedAt: Date
-  updatedBy: Ip.User.Email
+  updatedBy: Api.User.Email
   key: JsonStoreKey
   value: T
 }
@@ -24,7 +24,7 @@ export enum JsonStoreKey {
 
 /** @deprecated as it is. Maybe useful in the future. */
 export class JsonStoreSdk {
-  constructor(private client: ApiClient) {}
+  constructor(private client: HttpClient) {}
 
   private readonly getRaw = <T>(key: JsonStoreKey.MpcaBudget): Promise<JsonStore<T>> => {
     return this.client.get(`/json-store/${key}`)

@@ -1,9 +1,8 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {makeMeta, schema} from '../../helper/Schema.js'
-import {Ip} from '../../Api.js'
+import {Api} from '../../Api.js'
 import {map200, map204, TsRestClient} from '../../ApiClient.js'
-import {CommonHelper} from '../common/CommonHelper.js'
 import {KeyOf, map, Obj} from '@axanc/ts-utils'
 import {endOfDay, startOfDay} from 'date-fns'
 
@@ -17,9 +16,9 @@ export const submissionContract = c.router({
       workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
-    body: c.type<Omit<Ip.Submission.Payload.Search, 'workspaceId' | 'formId'>>(),
+    body: c.type<Omit<Api.Submission.Payload.Search, 'workspaceId' | 'formId'>>(),
     responses: {
-      200: c.type<Ip.Paginate<Ip.Submission>>(),
+      200: c.type<Api.Paginate<Api.Submission>>(),
     },
   },
   updateAnswers: {
@@ -35,7 +34,7 @@ export const submissionContract = c.router({
       answer: z.any().nullable(),
     }),
     responses: {
-      200: c.type<Ip.BulkResponse<Ip.SubmissionId>>(),
+      200: c.type<Api.BulkResponse<Api.SubmissionId>>(),
     },
     metadata: makeMeta({
       access: {
@@ -52,10 +51,12 @@ export const submissionContract = c.router({
     }),
     body: z.object({
       answerIds: z.array(schema.submissionId).min(1),
-      status: z.enum(Obj.keys(Ip.Submission.Validation) as [Ip.Submission.Validation, ...Ip.Submission.Validation[]]),
+      status: z.enum(
+        Obj.keys(Api.Submission.Validation) as [Api.Submission.Validation, ...Api.Submission.Validation[]],
+      ),
     }),
     responses: {
-      200: c.type<Ip.BulkResponse<Ip.SubmissionId>>(),
+      200: c.type<Api.BulkResponse<Api.SubmissionId>>(),
     },
     metadata: makeMeta({
       access: {
@@ -96,23 +97,23 @@ export const submissionContract = c.router({
       geolocation: z.tuple([z.number(), z.number()]).optional(),
     }),
     responses: {
-      200: c.type<Ip.Submission>(),
+      200: c.type<Api.Submission>(),
     },
   },
 })
 
 export const submissionClient = (client: TsRestClient, baseUrl: string) => {
   return {
-    submit: (params: Ip.Submission.Payload.Submit) =>
+    submit: (params: Api.Submission.Payload.Submit) =>
       client.submission
         .submit({
           params,
           body: params,
         })
         .then(map200)
-        .then(Ip.Submission.map),
+        .then(Api.Submission.map),
 
-    search: ({workspaceId, formId, ...body}: Ip.Submission.Payload.Search) =>
+    search: ({workspaceId, formId, ...body}: Api.Submission.Payload.Search) =>
       client.submission
         .search({
           params: {workspaceId, formId},
@@ -126,16 +127,16 @@ export const submissionClient = (client: TsRestClient, baseUrl: string) => {
           },
         })
         .then(map200)
-        .then(CommonHelper.map(Ip.Submission.map)),
+        .then(Api.Paginate.map(Api.Submission.map)),
 
     remove: async ({
       workspaceId,
       answerIds,
       formId,
     }: {
-      workspaceId: Ip.WorkspaceId
-      answerIds: Ip.SubmissionId[]
-      formId: Ip.FormId
+      workspaceId: Api.WorkspaceId
+      answerIds: Api.SubmissionId[]
+      formId: Api.FormId
     }) => {
       return client.submission
         .remove({
@@ -145,7 +146,7 @@ export const submissionClient = (client: TsRestClient, baseUrl: string) => {
         .then(map204)
     },
 
-    updateValidation: ({workspaceId, formId, answerIds, status}: Ip.Submission.Payload.UpdateValidation) => {
+    updateValidation: ({workspaceId, formId, answerIds, status}: Api.Submission.Payload.UpdateValidation) => {
       return client.submission
         .updateValidation({
           params: {workspaceId, formId},
@@ -163,7 +164,7 @@ export const submissionClient = (client: TsRestClient, baseUrl: string) => {
       answerIds,
       question,
       answer,
-    }: Ip.Submission.Payload.Update<T, K>) => {
+    }: Api.Submission.Payload.Update<T, K>) => {
       return client.submission
         .updateAnswers({
           params: {workspaceId, formId},

@@ -1,15 +1,15 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 type Bytes = Uint8Array<ArrayBufferLike>
 
-export const mapGroupItem = <T extends Record<keyof Ip.Group.Item, any>>(_: T): Ip.Group.Item => _ as any
+export const mapGroupItem = <T extends Record<keyof Api.Group.Item, any>>(_: T): Api.Group.Item => _ as any
 
-export const mapGroup = <T extends Record<keyof Ip.Group, any>>(
+export const mapGroup = <T extends Record<keyof Api.Group, any>>(
   _: T,
-): Ip.Group & {
-  workspaceId: Ip.WorkspaceId
-  id: Ip.GroupId
-  items: Ip.Group.Item[]
+): Api.Group & {
+  workspaceId: Api.WorkspaceId
+  id: Api.GroupId
+  items: Api.Group.Item[]
 } => _ as any
 
 export const mapUser = <
@@ -25,8 +25,8 @@ export const mapUser = <
 >(
   _: T,
 ): T & {
-  id: Ip.UserId
-  email: Ip.User.Email
+  id: Api.UserId
+  email: Api.User.Email
   lastConnectedAt?: Date
   name?: string
   location?: string
@@ -36,4 +36,4 @@ export const mapUser = <
 
 export const mapAccess = <T extends {id: string; filters: any}>(
   _: T,
-): T & {id: Ip.AccessId; filters: Record<string, any>} => _ as any
+): T & {id: Api.AccessId; filters: Record<string, any>} => _ as any

@@ -1,5 +1,5 @@
 import {Obj} from '@axanc/ts-utils'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export namespace SchemaMetaHelper {
   export const metaKeys = [
@@ -23,7 +23,7 @@ export namespace SchemaMetaHelper {
 
   export const isMeta = (_: string) => metaKeys.includes(_ as any)
 
-  export const metaType: Record<Key, Ip.Form.QuestionType> = {
+  export const metaType: Record<Key, Api.Form.QuestionType> = {
     attachments: 'file',
     uuid: 'text',
     version: 'text',
@@ -64,10 +64,10 @@ export namespace SchemaMetaHelper {
     }
   }
 
-  export const getMetaAsQuestion = (labels: Labels): Ip.Form.Question[] => {
+  export const getMetaAsQuestion = (labels: Labels): Api.Form.Question[] => {
     return metaKeys.map(_ => {
       const type = metaType[_]
-      const q: Ip.Form.Question = {
+      const q: Api.Form.Question = {
         type,
         name: _,
         label: [labels[_] ?? _],
@@ -82,10 +82,10 @@ export namespace SchemaMetaHelper {
     })
   }
 
-  export const getMetaAsChoices = (labels: ChoicesLabel): Ip.Form.Choice[] => {
+  export const getMetaAsChoices = (labels: ChoicesLabel): Api.Form.Choice[] => {
     return Obj.keys(labels).flatMap(list_name => {
       return Obj.keys(labels[list_name]).map(_ => {
-        const c: Ip.Form.Choice = {
+        const c: Api.Form.Choice = {
           list_name,
           name: _,
           // $autovalue: _,

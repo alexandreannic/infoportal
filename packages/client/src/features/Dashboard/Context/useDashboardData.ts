@@ -2,7 +2,7 @@ import {Answers, DashboardContext} from '@/features/Dashboard/Context/DashboardC
 import {fnSwitch, Seq} from '@axanc/ts-utils'
 import {filterByColumn} from '@infoportal/client-datatable'
 import {subDays} from 'date-fns'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {isDate, PeriodHelper} from '@infoportal/common'
 import {SchemaInspector} from '@infoportal/form-helper'
 import {useCallback, useMemo, useRef} from 'react'
@@ -15,7 +15,7 @@ type Props = {
   data: Seq<Answers>
   schemaInspector: SchemaInspector<true>
   filters: DashboardContext['filter']['get']
-  dashboard: Ip.Dashboard
+  dashboard: Api.Dashboard
 }
 
 export function useDashboardFilteredDataCache({data, ...props}: Props) {
@@ -45,7 +45,7 @@ export function useDashboardFilteredDataCache({data, ...props}: Props) {
 
 function useFiltersFn({dashboard, schemaInspector, filters: dashboardFilters}: Omit<Props, 'data'>) {
   const byPeriod = useCallback(
-    (period: Ip.Period) => (row: Answers) => {
+    (period: Api.Period) => (row: Answers) => {
       return PeriodHelper.isDateIn(period, row.submissionTime)
     },
     [],
@@ -74,7 +74,7 @@ function useFiltersFn({dashboard, schemaInspector, filters: dashboardFilters}: O
   }, [byPeriodCurrent, deltaPeriod])
 
   const byWidgetFilter = useCallback(
-    (widgetFilter?: Ip.Dashboard.Widget.ConfigFilter) => {
+    (widgetFilter?: Api.Dashboard.Widget.ConfigFilter) => {
       return filterToFunction(schemaInspector, widgetFilter)
     },
     [schemaInspector],
@@ -122,11 +122,11 @@ function useFiltersFn({dashboard, schemaInspector, filters: dashboardFilters}: O
   }
 }
 
-const _filterCache = new WeakMap<Ip.Dashboard.Widget.ConfigFilter, undefined | ((row: any) => boolean | undefined)>()
+const _filterCache = new WeakMap<Api.Dashboard.Widget.ConfigFilter, undefined | ((row: any) => boolean | undefined)>()
 
 export function filterToFunction<T extends Record<string, any> = Record<string, any>>(
   schema: SchemaInspector<true>,
-  filter?: Ip.Dashboard.Widget.ConfigFilter,
+  filter?: Api.Dashboard.Widget.ConfigFilter,
 ): undefined | ((_: T) => boolean | undefined) {
   if (!filter?.questionName) return
 

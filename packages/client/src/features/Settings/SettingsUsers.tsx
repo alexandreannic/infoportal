@@ -9,7 +9,7 @@ import {UseQueryUser} from '@/core/query/useQueryUser'
 import {useSession} from '@/core/Session/SessionContext'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {settingsRoute} from '@/features/Settings/Settings'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useWorkspaceContext} from '@/features/Workspace/Workspace'
 import {UseQueryWorkspaceInvitation} from '@/core/query/workspace/useQueryWorkspaceInvitation.js'
 import {Icon} from '@mui/material'
@@ -21,9 +21,9 @@ export const settingsUsersRoute = createRoute({
   component: SettingsUsers,
 })
 
-type Data = Omit<Ip.User, 'id'> & {
-  userId?: Ip.UserId
-  invitationId?: Ip.Workspace.InvitationId
+type Data = Omit<Api.User, 'id'> & {
+  userId?: Api.UserId
+  invitationId?: Api.Workspace.InvitationId
   status: 'invitation' | 'user'
 }
 
@@ -32,7 +32,7 @@ function SettingsUsers() {
   const {user: connectedUser} = useSession()
   const {permission} = useWorkspaceContext()
   const {conf} = useAppSettings()
-  const {workspaceId} = settingsUsersRoute.useParams() as {workspaceId: Ip.WorkspaceId}
+  const {workspaceId} = settingsUsersRoute.useParams() as {workspaceId: Api.WorkspaceId}
   const navigate = useNavigate()
   const ctxSession = useSession()
   const queryUserUpdate = UseQueryUser.update(workspaceId)
@@ -40,7 +40,7 @@ function SettingsUsers() {
   const queryInvitation = UseQueryWorkspaceInvitation.search({workspaceId})
   const queryInvitationRemove = UseQueryWorkspaceInvitation.remove({workspaceId})
 
-  const connectAs = async (email: Ip.User.Email) => {
+  const connectAs = async (email: Api.User.Email) => {
     await ctxSession.connectAs.mutateAsync(email)
     await navigate({to: '/'})
   }
@@ -198,12 +198,12 @@ function SettingsUsers() {
                       queryUserUpdate.mutateAsync({id: _.userId!, accessLevel: res!})
                     }}
                     value={_.accessLevel}
-                    options={Obj.keys(Ip.AccessLevel)}
+                    options={Obj.keys(Api.AccessLevel)}
                   />
                 ),
                 value: _.accessLevel,
               }),
-              options: () => Obj.keys(Ip.AccessLevel).map(_ => ({value: _, label: _})),
+              options: () => Obj.keys(Api.AccessLevel).map(_ => ({value: _, label: _})),
             },
             {
               id: 'action',

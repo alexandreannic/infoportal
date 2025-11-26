@@ -1,9 +1,9 @@
-import {ApiClient} from '../ApiClient'
+import {HttpClient} from '../HttpClient'
 import {IpCacheData} from '@infoportal/common'
 import {Obj} from '@axanc/ts-utils'
 
 export class CacheSdk {
-  constructor(private client: ApiClient) {}
+  constructor(private client: HttpClient) {}
 
   readonly get = (): Promise<Record<string, IpCacheData<any>>> => {
     return this.client.get<Record<string, IpCacheData<any>>>(`/cache`).then(res => {

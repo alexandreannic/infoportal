@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {app, AppLogger} from '../../../index.js'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../../core/prismaMapper/PrismaMapper.js'
 
 export class FormAccessService {
@@ -14,9 +14,9 @@ export class FormAccessService {
     formId,
     user,
   }: {
-    formId?: Ip.FormId
-    workspaceId: Ip.WorkspaceId
-    user?: Ip.User
+    formId?: Api.FormId
+    workspaceId: Api.WorkspaceId
+    user?: Api.User
   }) => {
     return this.prisma.formAccess.findMany({
       distinct: ['id'],
@@ -46,9 +46,9 @@ export class FormAccessService {
     user,
     formId,
   }: {
-    formId?: Ip.FormId
-    workspaceId: Ip.WorkspaceId
-    user?: Ip.User
+    formId?: Api.FormId
+    workspaceId: Api.WorkspaceId
+    user?: Api.User
   }) => {
     return this.prisma.formAccess.findMany({
       include: {
@@ -88,10 +88,10 @@ export class FormAccessService {
     user,
     formId,
   }: {
-    workspaceId: Ip.WorkspaceId
-    formId?: Ip.FormId
-    user?: Ip.User
-  }): Promise<Ip.Access[]> => {
+    workspaceId: Api.WorkspaceId
+    formId?: Api.FormId
+    user?: Api.User
+  }): Promise<Api.Access[]> => {
     const [fromGroup, fromAccess] = await Promise.all([
       this.searchFromGroup({formId, workspaceId, user}),
       this.searchFromAccess({formId, workspaceId, user}),
@@ -102,17 +102,17 @@ export class FormAccessService {
         const accesses = _.group?.items.reduce((acc, curr) => {
           acc.set(curr.level, curr.level)
           return acc
-        }, new Map<Ip.AccessLevel, Ip.AccessLevel>())
+        }, new Map<Api.AccessLevel, Api.AccessLevel>())
         return {
           ..._,
-          level: accesses?.get('Admin') ?? accesses?.get('Write') ?? Ip.AccessLevel.Read,
+          level: accesses?.get('Admin') ?? accesses?.get('Write') ?? Api.AccessLevel.Read,
           groupName: _.group?.name,
         }
       }),
     ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()) as any
   }
 
-  readonly create = (payload: Ip.Access.Payload.Create): Promise<Ip.Access[]> => {
+  readonly create = (payload: Api.Access.Payload.Create): Promise<Api.Access[]> => {
     return Promise.all(
       (payload.job ?? [undefined]).map(job =>
         this.prisma.formAccess.create({
@@ -125,10 +125,10 @@ export class FormAccessService {
           },
         }),
       ),
-    ) as Promise<Ip.Access[]>
+    ) as Promise<Api.Access[]>
   }
 
-  readonly update = ({id, ...data}: Ip.Access.Payload.Update): Promise<Ip.Access> => {
+  readonly update = ({id, ...data}: Api.Access.Payload.Update): Promise<Api.Access> => {
     return this.prisma.formAccess
       .update({
         where: {id},
@@ -137,7 +137,7 @@ export class FormAccessService {
       .then(prismaMapper.access.mapAccess)
   }
 
-  readonly removeByFormId = ({formId}: {formId: Ip.FormId}) => {
+  readonly removeByFormId = ({formId}: {formId: Api.FormId}) => {
     return this.prisma.formAccess.deleteMany({
       where: {
         formId,
@@ -145,7 +145,7 @@ export class FormAccessService {
     })
   }
 
-  readonly remove = async ({deletedByEmail, id}: {deletedByEmail: string; id: Ip.AccessId}) => {
+  readonly remove = async ({deletedByEmail, id}: {deletedByEmail: string; id: Api.AccessId}) => {
     const access = await this.prisma.formAccess.findFirst({
       select: {
         email: true,

@@ -1,7 +1,7 @@
 import {AppConfig, appConfig} from '@/conf/AppConfig.js'
 import {KoboApiSdk} from '@/core/sdk/server/kobo/KoboApiSdk.js'
 import {Kobo} from 'kobo-sdk'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 import {Datatable} from '@/shared'
 
@@ -26,8 +26,8 @@ export const getKoboAttachmentUrl = ({
   formId,
   submissionId,
 }: {
-  formId: Ip.FormId
-  submissionId: Ip.SubmissionId
+  formId: Api.FormId
+  submissionId: Api.SubmissionId
   fileName?: string
   attachments: Kobo.Submission.Attachment[]
   conf?: AppConfig
@@ -51,8 +51,8 @@ export const KoboAttachedImg = ({
   submissionId,
   tooltipSize = 450,
 }: {
-  formId: Ip.FormId
-  submissionId: Ip.SubmissionId
+  formId: Api.FormId
+  submissionId: Api.SubmissionId
   size?: number
   tooltipSize?: number | null
   fileName?: string

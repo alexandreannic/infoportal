@@ -5,7 +5,7 @@ import {Core, Datatable} from '@/shared'
 import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import {useQuery} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 import {seq} from '@axanc/ts-utils'
 import {useIpToast} from '@/core/useToast.js'
@@ -16,8 +16,8 @@ export const SelectKoboForm = ({
   serverId,
   onAdded,
 }: {
-  workspaceId: Ip.WorkspaceId
-  serverId: Ip.ServerId
+  workspaceId: Api.WorkspaceId
+  serverId: Api.ServerId
   onAdded?: () => void
 }) => {
   const {api} = useAppSettings()

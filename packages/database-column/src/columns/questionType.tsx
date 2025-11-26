@@ -7,7 +7,7 @@ import {Btn, Txt} from '@infoportal/client-core'
 import {map} from '@axanc/ts-utils'
 import {KoboTypeIcon} from '../ui/KoboTypeIcon.js'
 import {removeHtml} from '@infoportal/common'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export class QuestionType {
   private static getValue({
@@ -40,7 +40,7 @@ export class QuestionType {
   static byQuestions({
     questions,
     ...props
-  }: {questions: Ip.Form.Question[]} & Pick<
+  }: {questions: Api.Form.Question[]} & Pick<
     ColumnQuestionProps,
     | 'isReadonly'
     | 'getRow'
@@ -61,7 +61,7 @@ export class QuestionType {
         choicesIndex: props.inspector.lookup.choicesIndex,
         ...props,
       })
-      const map: Partial<Record<Ip.Form.QuestionType, Datatable.Column.Props<Row>>> = {
+      const map: Partial<Record<Api.Form.QuestionType, Datatable.Column.Props<Row>>> = {
         // username: text(args()),
         // deviceid: text(args()),
         // end: date(args()),

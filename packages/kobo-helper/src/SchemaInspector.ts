@@ -1,14 +1,14 @@
 import {Seq, seq} from '@axanc/ts-utils'
 import {SchemaInspectorRepeatGroup} from './SchemaInspectorRepeatGroup.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {SchemaMetaHelper} from './SchemaMetaHelper.js'
 import {removeHtml} from '@infoportal/common'
 
 export interface SchemaInspectorLookup {
   group: SchemaInspectorRepeatGroup
-  choicesIndex: Record<string, Ip.Form.Choice[]>
-  questionIndex: Record<string, Ip.Form.Question | undefined>
-  getOptionsByQuestionName(qName: string): Seq<Ip.Form.Choice> | undefined
+  choicesIndex: Record<string, Api.Form.Choice[]>
+  questionIndex: Record<string, Api.Form.Question | undefined>
+  getOptionsByQuestionName(qName: string): Seq<Api.Form.Choice> | undefined
 }
 
 export interface SchemaInspectorTranslate {
@@ -18,7 +18,7 @@ export interface SchemaInspectorTranslate {
 }
 
 export class SchemaInspector<IncludeMeta extends boolean = false> {
-  static readonly ignoredColType = new Set<Ip.Form.QuestionType>(['end_group', 'end_repeat', 'deviceid'])
+  static readonly ignoredColType = new Set<Api.Form.QuestionType>(['end_group', 'end_repeat', 'deviceid'])
 
   static getLabel(q?: {name: string; label?: string[]} | undefined, langIndex: number = 0): string {
     if (!q) return ''
@@ -26,15 +26,15 @@ export class SchemaInspector<IncludeMeta extends boolean = false> {
   }
 
   constructor(
-    public readonly schema: Ip.Form.Schema,
+    public readonly schema: Api.Form.Schema,
     public readonly langIndex: number = 0,
     public readonly includeMeta: IncludeMeta = false as unknown as IncludeMeta,
   ) {}
 
   private _lookup?: SchemaInspectorLookup
   private _translate?: SchemaInspectorTranslate
-  private _schemaFlatAndSanitized?: Ip.Form.Question[]
-  private _schemaSanitized?: Ip.Form.Schema
+  private _schemaFlatAndSanitized?: Api.Form.Question[]
+  private _schemaSanitized?: Api.Form.Schema
 
   get lookup(): SchemaInspectorLookup {
     if (!this._lookup) this._lookup = this.buildLookup(this.schema)
@@ -51,13 +51,13 @@ export class SchemaInspector<IncludeMeta extends boolean = false> {
     return this._translate
   }
 
-  get schemaFlatAndSanitized(): Ip.Form.Question[] {
+  get schemaFlatAndSanitized(): Api.Form.Question[] {
     if (!this._schemaFlatAndSanitized)
       this._schemaFlatAndSanitized = SchemaInspector.sanitizeQuestions(this.lookup.group.questionsDepth0)
     return this._schemaFlatAndSanitized
   }
 
-  get schemaSanitized(): Ip.Form.Schema {
+  get schemaSanitized(): Api.Form.Schema {
     if (!this._schemaSanitized) {
       this._schemaSanitized = {
         ...this.schema,
@@ -72,7 +72,7 @@ export class SchemaInspector<IncludeMeta extends boolean = false> {
    * Does not mutate the current instance.
    */
   withMeta(labels: SchemaMetaHelper.Labels, choices: SchemaMetaHelper.ChoicesLabel): SchemaInspector<true> {
-    const upgradedSchema: Ip.Form.Schema = {
+    const upgradedSchema: Api.Form.Schema = {
       ...this.schema,
       survey: [...SchemaMetaHelper.getMetaAsQuestion(labels), ...this.schema.survey],
       choices: [...SchemaMetaHelper.getMetaAsChoices(choices), ...(this.schema.choices ?? [])],
@@ -87,7 +87,7 @@ export class SchemaInspector<IncludeMeta extends boolean = false> {
     return new SchemaInspector(this.schema, langIndex)
   }
 
-  private static sanitizeQuestions(questions: Ip.Form.Question[]): Ip.Form.Question[] {
+  private static sanitizeQuestions(questions: Api.Form.Question[]): Api.Form.Question[] {
     return questions
       .filter(
         _ =>
@@ -100,12 +100,12 @@ export class SchemaInspector<IncludeMeta extends boolean = false> {
       }))
   }
 
-  private buildLookup(schema: Ip.Form.Schema): SchemaInspectorLookup {
+  private buildLookup(schema: Api.Form.Schema): SchemaInspectorLookup {
     const groupHelper = new SchemaInspectorRepeatGroup(schema.survey)
-    const choicesIndex = seq(schema.choices ?? []).groupBy(_ => _.list_name) as Record<string, Seq<Ip.Form.Choice>>
+    const choicesIndex = seq(schema.choices ?? []).groupBy(_ => _.list_name) as Record<string, Seq<Api.Form.Choice>>
     const questionIndex = seq([...schema.survey])
       .compactBy('name')
-      .reduceObject<Record<string, Ip.Form.Question | undefined>>(_ => [_.name, _])
+      .reduceObject<Record<string, Api.Form.Question | undefined>>(_ => [_.name, _])
 
     const getOptionsByQuestionName = (qName: string) => {
       const listName = questionIndex[qName]?.select_from_list_name
@@ -126,7 +126,7 @@ export class SchemaInspector<IncludeMeta extends boolean = false> {
     langIndex,
     questionIndex,
   }: {
-    schema: Ip.Form.Schema
+    schema: Api.Form.Schema
     langIndex: number
     questionIndex: SchemaInspectorLookup['questionIndex']
   }): SchemaInspectorTranslate {

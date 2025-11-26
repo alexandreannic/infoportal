@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {SchemaInspector} from './SchemaInspector.js'
 
 export type KoboGroupInfo = {
@@ -6,22 +6,22 @@ export type KoboGroupInfo = {
   path: string
   pathArr: string[]
   depth: number
-  questions: Ip.Form.Question[]
+  questions: Api.Form.Question[]
 }
 
 export class SchemaInspectorRepeatGroup {
   static readonly $xpathSeparator = '/'
 
   /** Questions not inside any repeat */
-  readonly questionsDepth0: Ip.Form.Question[] = []
+  readonly questionsDepth0: Api.Form.Question[] = []
   readonly size: number
 
-  private readonly questionsByGroupPath: Record<string, Ip.Form.Question[]> = {}
+  private readonly questionsByGroupPath: Record<string, Api.Form.Question[]> = {}
   private readonly groupByPath: Record<string, KoboGroupInfo | undefined> = {}
   private readonly groupByName: Record<string, KoboGroupInfo | undefined> = {}
   private readonly groupByQuestionName: Record<string, KoboGroupInfo | undefined> = {}
 
-  constructor(survey: Ip.Form.Schema['survey']) {
+  constructor(survey: Api.Form.Schema['survey']) {
     const depthStack: string[] = []
 
     for (const q of survey) {

@@ -1,5 +1,5 @@
 import {initContract} from '@ts-rest/core'
-import {Ip} from '../../Api.js'
+import {Api} from '../../Api.js'
 import {map200, map204, TsRestClient} from '../../ApiClient.js'
 import {makeMeta, schema} from '../../helper/Schema.js'
 import {z} from 'zod'
@@ -10,7 +10,7 @@ export const dashboardContract = c.router({
   publish: {
     method: 'POST',
     path: '/dashboard/publish',
-    body: c.type<Ip.Dashboard.Payload.Publish>(),
+    body: c.type<Api.Dashboard.Payload.Publish>(),
     responses: {204: schema.emptyResult},
   },
   getPublished: {
@@ -20,7 +20,7 @@ export const dashboardContract = c.router({
       workspaceSlug: z.string(),
       dashboardSlug: z.string(),
     }),
-    responses: {200: z.any() as z.ZodType<Ip.DashboardWithSnapshot>},
+    responses: {200: z.any() as z.ZodType<Api.DashboardWithSnapshot>},
   },
   getProtectedSubmission: {
     method: 'POST',
@@ -29,7 +29,7 @@ export const dashboardContract = c.router({
       workspaceSlug: z.string(),
       dashboardSlug: z.string(),
     }),
-    responses: {200: z.any() as z.ZodType<Ip.Submission[]>},
+    responses: {200: z.any() as z.ZodType<Api.Submission[]>},
   },
   restorePublishedVersion: {
     method: 'POST',
@@ -46,7 +46,7 @@ export const dashboardContract = c.router({
     body: z.object({
       workspaceId: schema.workspaceId,
     }),
-    responses: {200: z.any() as z.ZodType<Ip.Dashboard[]>},
+    responses: {200: z.any() as z.ZodType<Api.Dashboard[]>},
   },
   checkSlug: {
     method: 'POST',
@@ -57,8 +57,8 @@ export const dashboardContract = c.router({
   create: {
     method: 'POST',
     path: `/dashboard`,
-    body: c.type<Ip.Dashboard.Payload.Create>(),
-    responses: {200: c.type<Ip.Dashboard>()},
+    body: c.type<Api.Dashboard.Payload.Create>(),
+    responses: {200: c.type<Api.Dashboard>()},
     metadata: makeMeta({
       access: {
         workspace: ['dashboard_canCreate'],
@@ -68,8 +68,8 @@ export const dashboardContract = c.router({
   update: {
     method: 'POST',
     path: `/dashboard/update`,
-    body: c.type<Ip.Dashboard.Payload.Update>(),
-    responses: {200: c.type<Ip.Dashboard>()},
+    body: c.type<Api.Dashboard.Payload.Update>(),
+    responses: {200: c.type<Api.Dashboard>()},
     metadata: makeMeta({
       access: {
         workspace: ['dashboard_canUpdate'],
@@ -79,7 +79,7 @@ export const dashboardContract = c.router({
   remove: {
     method: 'POST',
     path: `/dashboard/delete`,
-    body: c.type<Ip.Dashboard.Payload.Delete>(),
+    body: c.type<Api.Dashboard.Payload.Delete>(),
     responses: {204: schema.emptyResult},
     metadata: makeMeta({
       access: {
@@ -91,24 +91,24 @@ export const dashboardContract = c.router({
 
 export const dashboardClient = (client: TsRestClient) => {
   return {
-    search: (body: {workspaceId: Ip.WorkspaceId}) => {
+    search: (body: {workspaceId: Api.WorkspaceId}) => {
       return client.dashboard
         .search({body})
         .then(map200)
-        .then(_ => _.map(Ip.Dashboard.map))
+        .then(_ => _.map(Api.Dashboard.map))
     },
-    checkSlug: (body: {workspaceId: Ip.WorkspaceId; slug: string}) => {
+    checkSlug: (body: {workspaceId: Api.WorkspaceId; slug: string}) => {
       return client.dashboard.checkSlug({body}).then(map200)
     },
-    create: (body: Ip.Dashboard.Payload.Create) => {
-      return client.dashboard.create({body}).then(map200).then(Ip.Dashboard.map)
+    create: (body: Api.Dashboard.Payload.Create) => {
+      return client.dashboard.create({body}).then(map200).then(Api.Dashboard.map)
     },
-    update: (body: Ip.Dashboard.Payload.Update) => {
-      return client.dashboard.update({body}).then(map200).then(Ip.Dashboard.map)
+    update: (body: Api.Dashboard.Payload.Update) => {
+      return client.dashboard.update({body}).then(map200).then(Api.Dashboard.map)
     },
-    remove: (body: Ip.Dashboard.Payload.Delete) => client.dashboard.remove({body}).then(map204),
+    remove: (body: Api.Dashboard.Payload.Delete) => client.dashboard.remove({body}).then(map204),
 
-    publish: (body: Ip.Dashboard.Payload.Publish) => client.dashboard.publish({body}).then(map204),
+    publish: (body: Api.Dashboard.Payload.Publish) => client.dashboard.publish({body}).then(map204),
 
     getBySlug: (body: {workspaceSlug: string; dashboardSlug: string}) =>
       client.dashboard.getPublished({body}).then(map200),
@@ -117,9 +117,9 @@ export const dashboardClient = (client: TsRestClient) => {
       client.dashboard
         .getProtectedSubmission({body})
         .then(map200)
-        .then(_ => _.map(Ip.Submission.map)),
+        .then(_ => _.map(Api.Submission.map)),
 
-    restorePublishedVersion: (body: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
+    restorePublishedVersion: (body: {workspaceId: Api.WorkspaceId; id: Api.DashboardId}) => {
       return client.dashboard.restorePublishedVersion({body}).then(map204)
     },
   }

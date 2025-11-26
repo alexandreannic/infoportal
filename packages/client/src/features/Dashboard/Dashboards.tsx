@@ -6,7 +6,7 @@ import {createRoute} from '@tanstack/react-router'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {appConfig} from '@/conf/AppConfig'
 import {DashboardCreate} from '@/features/Dashboard/DashboardCreate'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {DashboardCard} from '@/features/Dashboard/DashboardCard'
 import {GridProps} from '@mui/system'
@@ -28,10 +28,10 @@ export function Dashboards() {
   const {conf} = useAppSettings()
   const {m} = useI18n()
   const params = dashboardsRoute.useParams()
-  const workspaceId = params.workspaceId as Ip.WorkspaceId
+  const workspaceId = params.workspaceId as Api.WorkspaceId
   const queryWorkspace = UseQueryWorkspace.getById(workspaceId)
   const queryDashboards = UseQueryDashboard.getAll({workspaceId})
-  const [urls, setUrls] = useState<Record<Ip.DashboardId, string>>({})
+  const [urls, setUrls] = useState<Record<Api.DashboardId, string>>({})
   // useEffect(() => {
   //   if (queryDashboards.data && queryWorkspace.data)
   //     buildDashboardScreenshot({
@@ -81,9 +81,9 @@ export function Dashboards() {
 }
 
 export async function screenshotMany(
-  items: {url: string; id: Ip.DashboardId}[],
-): Promise<Record<Ip.DashboardId, string>> {
-  const results: Record<Ip.DashboardId, string> = {}
+  items: {url: string; id: Api.DashboardId}[],
+): Promise<Record<Api.DashboardId, string>> {
+  const results: Record<Api.DashboardId, string> = {}
 
   for (const item of items) {
     const iframe = document.createElement('iframe')
@@ -131,14 +131,14 @@ async function buildDashboardScreenshot({
   workspace,
   dashboards,
 }: {
-  workspace: Ip.Workspace
+  workspace: Api.Workspace
   baseUrl: string
-  dashboards: Ip.Dashboard[]
+  dashboards: Api.Dashboard[]
 }) {
   return screenshotMany(
     dashboards.map(dashboard => {
       return {
-        url: new URL(Ip.Dashboard.buildPath(workspace, dashboard), baseUrl).toString(),
+        url: new URL(Api.Dashboard.buildPath(workspace, dashboard), baseUrl).toString(),
         id: dashboard.id,
       }
     }),

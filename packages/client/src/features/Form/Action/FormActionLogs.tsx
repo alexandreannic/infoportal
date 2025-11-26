@@ -1,5 +1,5 @@
 import {UseQueryFormActionLog} from '@/core/query/form/useQueryFormActionLog.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Box, Icon, styled, SxProps, Theme, useTheme} from '@mui/material'
 import {Core, Datatable} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'
@@ -22,8 +22,8 @@ export const formActionLogsRoute = createRoute({
 
 export function FormActionLogsRoute() {
   const params = formActionLogsRoute.useParams()
-  const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const formId = params.formId as Ip.FormId
+  const workspaceId = params.workspaceId as Api.WorkspaceId
+  const formId = params.formId as Api.FormId
   return <FormActionLogs workspaceId={workspaceId} formId={formId} />
 }
 
@@ -34,9 +34,9 @@ export function FormActionLogs({
   sx,
 }: {
   sx?: SxProps<Theme>
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
-  actionId?: Ip.Form.ActionId
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
+  actionId?: Api.Form.ActionId
 }) {
   const {m, formatDateTime} = useI18n()
   const t = useTheme()
@@ -109,7 +109,7 @@ export function FormActionLogs({
                       type: 'select_one',
                       id: 'actionId',
                       width: 180,
-                      render: (_: Ip.Form.Action.Log) => {
+                      render: (_: Api.Form.Action.Log) => {
                         const name = actionAsMap?.[_.actionId]?.name
                         return {
                           label: <Core.Txt sx={{fontWeight: '700'}}>{name}</Core.Txt>,

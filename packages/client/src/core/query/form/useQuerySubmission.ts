@@ -2,7 +2,7 @@ import {QueryClient, useMutation, useQuery, useQueryClient} from '@tanstack/reac
 import {useAppSettings} from '../../context/ConfigContext'
 import {KoboMapper, Submission} from '../../sdk/server/kobo/KoboMapper'
 import {queryKeys} from '../query.index'
-import {Ip, Paginate} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {produce} from 'immer'
 import {useIpToast} from '@/core/useToast'
 import {UseQuerySchema} from '@/core/query/form/useQuerySchema'
@@ -13,19 +13,22 @@ export class UseQuerySubmission {
     queryClient,
     submissionIds,
   }: {
-    submissionIds: Ip.SubmissionId[]
-    formId: Ip.FormId
-    workspaceId: Ip.WorkspaceId
+    submissionIds: Api.SubmissionId[]
+    formId: Api.FormId
+    workspaceId: Api.WorkspaceId
     queryClient: QueryClient
   }) {
-    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.submission(formId), (old = {data: [], total: 0}) => {
-      const idsToDelete = new Set(submissionIds)
-      const newData = old.data.filter(sub => !idsToDelete.has(sub.id))
-      return {
-        data: newData,
-        total: newData.length,
-      }
-    })
+    queryClient.setQueryData<Api.Paginate<Api.Submission>>(
+      queryKeys.submission(formId),
+      (old = {data: [], total: 0}) => {
+        const idsToDelete = new Set(submissionIds)
+        const newData = old.data.filter(sub => !idsToDelete.has(sub.id))
+        return {
+          data: newData,
+          total: newData.length,
+        }
+      },
+    )
   }
 
   static cacheInsert({
@@ -34,23 +37,26 @@ export class UseQuerySubmission {
     queryClient,
     submission,
   }: {
-    formId: Ip.FormId
-    workspaceId: Ip.WorkspaceId
+    formId: Api.FormId
+    workspaceId: Api.WorkspaceId
     queryClient: QueryClient
-    submission: Ip.Submission
+    submission: Api.Submission
   }) {
     const schema = UseQuerySchema.getInspector({workspaceId, formId, langIndex: 0}).data
     if (!schema) {
       console.error('Cannot get schema from store.')
       return
     }
-    const mapped = KoboMapper.mapSubmissionBySchema(schema.lookup.questionIndex, Ip.Submission.map(submission))
-    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.submission(formId), (old = {data: [], total: 0}) => {
-      return {
-        total: old.total + 1,
-        data: [...old.data, mapped],
-      }
-    })
+    const mapped = KoboMapper.mapSubmissionBySchema(schema.lookup.questionIndex, Api.Submission.map(submission))
+    queryClient.setQueryData<Api.Paginate<Api.Submission>>(
+      queryKeys.submission(formId),
+      (old = {data: [], total: 0}) => {
+        return {
+          total: old.total + 1,
+          data: [...old.data, mapped],
+        }
+      },
+    )
   }
 
   static cacheUpdateValidation({
@@ -59,23 +65,26 @@ export class UseQuerySubmission {
     submissionIds,
     status,
   }: {
-    status: Ip.Submission.Validation
+    status: Api.Submission.Validation
     queryClient: QueryClient
-    formId: Ip.FormId
-    submissionIds: Ip.SubmissionId[]
+    formId: Api.FormId
+    submissionIds: Api.SubmissionId[]
   }) {
     const queryKey = queryKeys.submission(formId)
-    const previousValue = queryClient.getQueryData<Ip.Paginate<Submission>>(queryKey)
-    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKeys.submission(formId), (old = {data: [], total: 0}) => {
-      return produce(old ?? {data: [], total: 0}, draft => {
-        const idsToUpdate = new Set(submissionIds)
-        for (const submission of draft.data) {
-          if (idsToUpdate.has(submission.id)) {
-            submission.validationStatus = status
+    const previousValue = queryClient.getQueryData<Api.Paginate<Submission>>(queryKey)
+    queryClient.setQueryData<Api.Paginate<Api.Submission>>(
+      queryKeys.submission(formId),
+      (old = {data: [], total: 0}) => {
+        return produce(old ?? {data: [], total: 0}, draft => {
+          const idsToUpdate = new Set(submissionIds)
+          for (const submission of draft.data) {
+            if (idsToUpdate.has(submission.id)) {
+              submission.validationStatus = status
+            }
           }
-        }
-      })
-    })
+        })
+      },
+    )
     return {previousValue}
   }
 
@@ -89,12 +98,12 @@ export class UseQuerySubmission {
     question: string
     answer: string
     queryClient: QueryClient
-    formId: Ip.FormId
-    submissionIds: Ip.SubmissionId[]
+    formId: Api.FormId
+    submissionIds: Api.SubmissionId[]
   }) {
     const queryKey = queryKeys.submission(formId)
-    const previousValue = queryClient.getQueryData<Ip.Paginate<Submission>>(queryKey)
-    queryClient.setQueryData<Ip.Paginate<Ip.Submission>>(queryKey, (old = {data: [], total: 0}) => {
+    const previousValue = queryClient.getQueryData<Api.Paginate<Submission>>(queryKey)
+    queryClient.setQueryData<Api.Paginate<Api.Submission>>(queryKey, (old = {data: [], total: 0}) => {
       return produce(old ?? {data: [], total: 0}, draft => {
         const idsToUpdate = new Set(submissionIds)
         for (const submission of draft.data) {
@@ -107,7 +116,7 @@ export class UseQuerySubmission {
     return {previousValue}
   }
 
-  static search({formId, workspaceId}: {formId?: Ip.FormId; workspaceId: Ip.WorkspaceId}) {
+  static search({formId, workspaceId}: {formId?: Api.FormId; workspaceId: Api.WorkspaceId}) {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     const querySchema = UseQuerySchema.getInspector({workspaceId, formId, langIndex: 0})
@@ -119,17 +128,17 @@ export class UseQuerySubmission {
         const answersPromise = apiv2.submission.search({workspaceId, formId: formId!})
         const schema = querySchema.data // ?? (await querySchema.refetch().then(r => r.data!))
         const answers = await answersPromise
-        return Paginate.map((_: Ip.Submission) => KoboMapper.mapSubmissionBySchema(schema!.lookup.questionIndex, _))(
-          answers,
-        )
+        return Api.Paginate.map((_: Api.Submission) =>
+          KoboMapper.mapSubmissionBySchema(schema!.lookup.questionIndex, _),
+        )(answers)
       },
     })
 
-    const set = (value: Ip.Paginate<Ip.Submission>) => {
+    const set = (value: Api.Paginate<Api.Submission>) => {
       queryClient.setQueryData(queryKeys.submission(formId), value)
     }
 
-    const find = (submissionId: Ip.SubmissionId): Ip.Submission | undefined => {
+    const find = (submissionId: Api.SubmissionId): Api.Submission | undefined => {
       return query.data?.data.find(_ => _.id === submissionId)
     }
 
@@ -144,7 +153,7 @@ export class UseQuerySubmission {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: (params: Ip.Submission.Payload.Submit) => apiv2.submission.submit(params),
+      mutationFn: (params: Api.Submission.Payload.Submit) => apiv2.submission.submit(params),
       onSuccess: (data, variables) => {
         queryClient.invalidateQueries({queryKey: queryKeys.submission(variables.formId)})
       },
@@ -155,7 +164,7 @@ export class UseQuerySubmission {
     const queryClient = useQueryClient()
     const {apiv2: api} = useAppSettings()
     return useMutation({
-      mutationFn: async (params: Ip.Submission.Payload.UpdateValidation) => {
+      mutationFn: async (params: Api.Submission.Payload.UpdateValidation) => {
         return api.submission.updateValidation(params)
       },
       onMutate: async ({formId, answerIds, status}) => {
@@ -182,7 +191,7 @@ export class UseQuerySubmission {
     const {toastSuccess, toastHttpError} = useIpToast()
     const {apiv2: api} = useAppSettings()
     return useMutation({
-      mutationFn: async (params: Ip.Submission.Payload.Update) => {
+      mutationFn: async (params: Api.Submission.Payload.Update) => {
         return api.submission.updateAnswers(params)
       },
       onMutate: async ({formId, answerIds, question, answer}) => {
@@ -211,13 +220,13 @@ export class UseQuerySubmission {
     const queryClient = useQueryClient()
     const {apiv2: api} = useAppSettings()
     return useMutation({
-      mutationFn: async ({workspaceId, formId, answerIds}: Ip.Submission.Payload.Remove) => {
+      mutationFn: async ({workspaceId, formId, answerIds}: Api.Submission.Payload.Remove) => {
         return api.submission.remove({workspaceId, formId, answerIds})
       },
       onMutate: async ({formId, answerIds}) => {
         await queryClient.cancelQueries({queryKey: queryKeys.submission(formId)})
-        const previousData = queryClient.getQueryData<Ip.Paginate<Submission>>(queryKeys.submission(formId))
-        queryClient.setQueryData<Ip.Paginate<Submission>>(queryKeys.submission(formId), old => {
+        const previousData = queryClient.getQueryData<Api.Paginate<Submission>>(queryKeys.submission(formId))
+        queryClient.setQueryData<Api.Paginate<Submission>>(queryKeys.submission(formId), old => {
           if (!old) return old
           const idsIndex = new Set(answerIds)
           return {

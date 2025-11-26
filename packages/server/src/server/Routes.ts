@@ -5,7 +5,7 @@ import {PrismaClient} from '@prisma/client'
 import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi.js'
 import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerUser} from './controller/ControllerUser.js'
-import {HttpError, Ip, ipContract, Meta} from '@infoportal/api-sdk'
+import {HttpError, Api, apiContract, Meta} from '@infoportal/api-sdk'
 import {ControllerProxy} from './controller/ControllerProxy.js'
 import {ControllerJsonStore} from './controller/ControllerJsonStore.js'
 import {ControllerKoboAnswerHistory} from './controller/kobo/ControllerKoboAnswerHistory.js'
@@ -95,7 +95,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
         if (!user) {
           throw new HttpError.Forbidden('user_not_allowed')
         }
-        if (options.adminOnly && user.accessLevel === Ip.AccessLevel.Admin) {
+        if (options.adminOnly && user.accessLevel === Api.AccessLevel.Admin) {
           throw new HttpError.Forbidden('user_not_admin')
         }
         next()
@@ -199,7 +199,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
 
   const s = initServer()
 
-  const tsRestRouter = s.router(ipContract, {
+  const tsRestRouter = s.router(apiContract, {
     workspace: {
       getMine: _ =>
         auth2(_)
@@ -713,8 +713,8 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   })
 
   function parseMetricsQs(
-    _: Partial<Record<keyof Ip.Metrics.Payload.Filter, string | string[]>>,
-  ): Ip.Metrics.Payload.Filter {
+    _: Partial<Record<keyof Api.Metrics.Payload.Filter, string | string[]>>,
+  ): Api.Metrics.Payload.Filter {
     const res = _ as any
     if (res.end) res.end = new Date(res.end)
     if (res.start) res.start = new Date(res.start)

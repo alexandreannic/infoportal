@@ -1,9 +1,9 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export type Session = {
   originalEmail?: string
-  user: Ip.User
-  workspaces: Ip.Workspace[]
+  user: Api.User
+  workspaces: Api.Workspace[]
 }
 
 export class SessionHelper {
@@ -11,7 +11,7 @@ export class SessionHelper {
     return {
       ..._,
       user: _.user,
-      workspaces: _.workspaces.map(Ip.Workspace.map),
+      workspaces: _.workspaces.map(Api.Workspace.map),
     }
   }
 }

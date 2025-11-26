@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client'
-import {Ip, Paginate} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../../core/prismaMapper/PrismaMapper.js'
 
 export class FormActionLogService {
@@ -11,7 +11,7 @@ export class FormActionLogService {
     limit = 200,
     offset,
     workspaceId,
-  }: Ip.Form.Action.Log.Payload.Search): Promise<Ip.Paginate<Ip.Form.Action.Log>> => {
+  }: Api.Form.Action.Log.Payload.Search): Promise<Api.Paginate<Api.Form.Action.Log>> => {
     return this.prisma.formActionLog
       .findMany({
         take: limit,
@@ -27,6 +27,6 @@ export class FormActionLogService {
         },
       })
       .then(_ => _.map(prismaMapper.form.mapFormActionLog))
-      .then(Paginate.make())
+      .then(Api.Paginate.make())
   }
 }

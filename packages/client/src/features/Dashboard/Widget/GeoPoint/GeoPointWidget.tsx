@@ -3,7 +3,7 @@ import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext
 import {WidgetCardPlaceholder} from '@/features/Dashboard/Widget/shared/WidgetCardPlaceholder'
 import {Core} from '@/shared'
 import {Box, useTheme} from '@mui/material'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useEffect, useMemo} from 'react'
 
 export const GeoPointWidget = ({
@@ -13,10 +13,10 @@ export const GeoPointWidget = ({
 }: {
   onEdit?: () => void
   isEditing?: boolean
-  widget: Ip.Dashboard.Widget
+  widget: Api.Dashboard.Widget
 }) => {
   const t = useTheme()
-  const config = widget.config as Ip.Dashboard.Widget.Config['GeoPoint']
+  const config = widget.config as Api.Dashboard.Widget.Config['GeoPoint']
 
   const getFilteredData = useDashboardContext(_ => _.data.getFilteredData)
   const filterFns = useDashboardContext(_ => _.data.filterFns)

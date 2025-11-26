@@ -1,6 +1,6 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {Controller, useFieldArray, useForm, UseFormReturn, useWatch} from 'react-hook-form'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import React, {useEffect} from 'react'
 import {
   getQuestionTypeByWidget,
@@ -19,8 +19,8 @@ export function LineChartSettings() {
   const {m} = useI18n()
   const t = useTheme()
   const {widget, onChange} = useWidgetSettingsContext()
-  const config = widget.config as Ip.Dashboard.Widget.Config['LineChart']
-  const form = useForm<Ip.Dashboard.Widget.Config['LineChart']>({
+  const config = widget.config as Api.Dashboard.Widget.Config['LineChart']
+  const form = useForm<Api.Dashboard.Widget.Config['LineChart']>({
     mode: 'onChange',
     defaultValues: config,
   })
@@ -69,7 +69,7 @@ export function LineChartSettings() {
   )
 }
 
-function Line({form, index}: {index: number; form: UseFormReturn<Ip.Dashboard.Widget.Config['LineChart']>}) {
+function Line({form, index}: {index: number; form: UseFormReturn<Api.Dashboard.Widget.Config['LineChart']>}) {
   const {m} = useI18n()
   const questionName = form.watch(`lines.${index}.questionName`)
 

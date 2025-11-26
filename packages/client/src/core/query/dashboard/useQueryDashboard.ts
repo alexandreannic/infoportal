@@ -1,15 +1,15 @@
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {queryKeys} from '@/core/query/query.index'
 import {usePendingMutation} from '@/core/query/usePendingMutation'
-import {ApiError} from '@/core/sdk/server/ApiClient'
+import {ApiError} from '@/core/sdk/server/HttpClient'
 import {useIpToast} from '@/core/useToast'
 import {useI18n} from '@infoportal/client-i18n'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 
 export class UseQueryDashboard {
-  static getAll = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+  static getAll = ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
     const {apiv2} = useAppSettings()
     const {toastAndThrowHttpError} = useIpToast()
     return useQuery({
@@ -18,7 +18,7 @@ export class UseQueryDashboard {
     })
   }
 
-  static publish = ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
+  static publish = ({workspaceId, id}: {workspaceId: Api.WorkspaceId; id: Api.DashboardId}) => {
     const {toastHttpError, toastSuccess} = useIpToast()
     const {apiv2} = useAppSettings()
     return useMutation({
@@ -30,7 +30,7 @@ export class UseQueryDashboard {
     })
   }
 
-  static restorePublishedVersion = ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
+  static restorePublishedVersion = ({workspaceId, id}: {workspaceId: Api.WorkspaceId; id: Api.DashboardId}) => {
     const {toastHttpError} = useIpToast()
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()
@@ -63,7 +63,7 @@ export class UseQueryDashboard {
     })
   }
 
-  static getById = ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
+  static getById = ({workspaceId, id}: {workspaceId: Api.WorkspaceId; id: Api.DashboardId}) => {
     const query = this.getAll({workspaceId})
     const data = useMemo(() => {
       return query.data?.find(_ => _.id === id)
@@ -74,23 +74,23 @@ export class UseQueryDashboard {
     }
   }
 
-  static create = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+  static create = ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
     const {apiv2} = useAppSettings()
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
-    return useMutation<Ip.Dashboard, ApiError, Omit<Ip.Dashboard.Payload.Create, 'workspaceId'>>({
+    return useMutation<Api.Dashboard, ApiError, Omit<Api.Dashboard.Payload.Create, 'workspaceId'>>({
       mutationFn: args => apiv2.dashboard.create({workspaceId, ...args}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),
       onError: toastHttpError,
     })
   }
 
-  static update = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+  static update = ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
     const {m} = useI18n()
     const {apiv2} = useAppSettings()
     const {toastError} = useIpToast()
     const queryClient = useQueryClient()
-    return usePendingMutation<Ip.Dashboard, ApiError, Omit<Ip.Dashboard.Payload.Update, 'workspaceId'>>({
+    return usePendingMutation<Api.Dashboard, ApiError, Omit<Api.Dashboard.Payload.Update, 'workspaceId'>>({
       getId: _ => _.id,
       mutationFn: args => apiv2.dashboard.update({workspaceId, ...args}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),
@@ -98,12 +98,12 @@ export class UseQueryDashboard {
     })
   }
 
-  static remove = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+  static remove = ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
     const {m} = useI18n()
     const {apiv2} = useAppSettings()
     const {toastError} = useIpToast()
     const queryClient = useQueryClient()
-    return usePendingMutation<void, ApiError, Omit<Ip.Dashboard.Payload.Delete, 'workspaceId'>>({
+    return usePendingMutation<void, ApiError, Omit<Api.Dashboard.Payload.Delete, 'workspaceId'>>({
       getId: _ => _.id,
       mutationFn: args => apiv2.dashboard.remove({workspaceId, ...args}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.dashboard(workspaceId)}),

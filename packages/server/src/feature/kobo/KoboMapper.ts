@@ -1,5 +1,5 @@
 import {Kobo} from 'kobo-sdk'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {fnSwitch} from '@axanc/ts-utils'
 
 export class KoboMapper {
@@ -19,34 +19,34 @@ export class KoboMapper {
   }
 
   static readonly mapValidation = {
-    fromKobo: (_: Kobo.Submission.Raw): undefined | Ip.Submission.Validation => {
+    fromKobo: (_: Kobo.Submission.Raw): undefined | Api.Submission.Validation => {
       if (_._validation_status?.uid)
         return fnSwitch(_._validation_status.uid, {
-          validation_status_on_hold: Ip.Submission.Validation.Pending,
-          validation_status_approved: Ip.Submission.Validation.Approved,
-          validation_status_not_approved: Ip.Submission.Validation.Rejected,
+          validation_status_on_hold: Api.Submission.Validation.Pending,
+          validation_status_approved: Api.Submission.Validation.Approved,
+          validation_status_not_approved: Api.Submission.Validation.Rejected,
           no_status: undefined,
         })
       if (_[this._IP_VALIDATION_STATUS_EXTRA]) {
-        return Ip.Submission.Validation[_._IP_VALIDATION_STATUS_EXTRA as keyof typeof Ip.Submission.Validation]
+        return Api.Submission.Validation[_._IP_VALIDATION_STATUS_EXTRA as keyof typeof Api.Submission.Validation]
       }
     },
     toKobo: (
-      _?: Ip.Submission.Validation,
+      _?: Api.Submission.Validation,
     ): {
-      _IP_VALIDATION_STATUS_EXTRA?: Ip.Submission.Validation
+      _IP_VALIDATION_STATUS_EXTRA?: Api.Submission.Validation
       _validation_status?: Kobo.Submission.Validation
     } => {
-      if (_ === Ip.Submission.Validation.Flagged || _ === Ip.Submission.Validation.UnderReview) {
+      if (_ === Api.Submission.Validation.Flagged || _ === Api.Submission.Validation.UnderReview) {
         return {[this._IP_VALIDATION_STATUS_EXTRA]: _}
       }
       return {
         _validation_status: fnSwitch(
           _!,
           {
-            [Ip.Submission.Validation.Pending]: Kobo.Submission.Validation.validation_status_on_hold,
-            [Ip.Submission.Validation.Approved]: Kobo.Submission.Validation.validation_status_approved,
-            [Ip.Submission.Validation.Rejected]: Kobo.Submission.Validation.validation_status_not_approved,
+            [Api.Submission.Validation.Pending]: Kobo.Submission.Validation.validation_status_on_hold,
+            [Api.Submission.Validation.Approved]: Kobo.Submission.Validation.validation_status_approved,
+            [Api.Submission.Validation.Rejected]: Kobo.Submission.Validation.validation_status_not_approved,
           },
           () => Kobo.Submission.Validation.no_status,
         ),

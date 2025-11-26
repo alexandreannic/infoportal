@@ -1,7 +1,7 @@
 import {Theme} from '@mui/material'
 import * as Datatable from '@infoportal/client-datatable'
 import {CellText} from '../input/CellText'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export function getChoicesColumns({
   t,
@@ -9,7 +9,7 @@ export function getChoicesColumns({
 }: {
   t: Theme
   translations: string[]
-}): Datatable.Column.Props<Ip.Form.Choice>[] {
+}): Datatable.Column.Props<Api.Form.Choice>[] {
   return [
     {
       id: 'list_name',
@@ -36,7 +36,7 @@ export function getChoicesColumns({
       },
     },
     ...translations.map((lang, i) => {
-      return Datatable.Column.make<Ip.Form.Choice>({
+      return Datatable.Column.make<Api.Form.Choice>({
         id: 'label:' + lang,
         head: 'label' + ':' + lang,
         width: 260,

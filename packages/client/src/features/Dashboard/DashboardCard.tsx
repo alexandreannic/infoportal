@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, useTheme} from '@mui/material'
 import {Core} from '@/shared'
@@ -14,8 +14,8 @@ export const DashboardCard = ({
   dashboard,
 }: {
   img: string
-  workspaceId: Ip.WorkspaceId
-  dashboard: Ip.Dashboard
+  workspaceId: Api.WorkspaceId
+  dashboard: Api.Dashboard
 }) => {
   const {m, formatDate} = useI18n()
   const t = useTheme()

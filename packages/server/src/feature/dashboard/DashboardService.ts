@@ -1,7 +1,7 @@
 import {Prisma, PrismaClient} from '@prisma/client'
 import {genShortid, slugify} from '@infoportal/common'
 import {SchemaMetaHelper, SchemaInspector} from '@infoportal/form-helper'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {FormService} from '../form/FormService.js'
 import {seq} from '@axanc/ts-utils'
@@ -12,7 +12,7 @@ export class DashboardService {
     private form = new FormService(prisma),
   ) {}
 
-  readonly getById = async ({id}: {id: Ip.DashboardId}): Promise<Ip.Dashboard | undefined> => {
+  readonly getById = async ({id}: {id: Api.DashboardId}): Promise<Api.Dashboard | undefined> => {
     return this.prisma.dashboard
       .findUnique({where: {id, deletedAt: null}})
       .then(_ => (_ ? prismaMapper.dashboard.mapDashboard(_) : undefined))
@@ -41,8 +41,8 @@ export class DashboardService {
       })
   }
 
-  readonly restorePublishedVersion = async ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.DashboardId}) => {
-    const snapshot: Ip.DashboardWithSnapshot['snapshot'] = await this.prisma.dashboard
+  readonly restorePublishedVersion = async ({workspaceId, id}: {workspaceId: Api.WorkspaceId; id: Api.DashboardId}) => {
+    const snapshot: Api.DashboardWithSnapshot['snapshot'] = await this.prisma.dashboard
       .findFirstOrThrow({select: {published: {select: {snapshot: true}}}, where: {id}})
       .then(_ => _.published?.snapshot)
       .catch(HttpError.throwNotFoundIfUndefined())
@@ -68,7 +68,7 @@ export class DashboardService {
       select: {sourceFormId: true, sections: {select: {widgets: {select: {type: true, config: true}}}}},
     })
     const widgets = dashboard.sections.flatMap(_ => _.widgets)
-    const schema = await this.form.getSchema({formId: dashboard.sourceFormId as Ip.FormId})
+    const schema = await this.form.getSchema({formId: dashboard.sourceFormId as Api.FormId})
     if (!schema) throw new HttpError.NotFound()
     const {metaKeys, questionNames} = this.collectDashboardQuestions({schema, widgets})
     const selectParts = [
@@ -92,39 +92,39 @@ export class DashboardService {
     widgets,
     schema,
   }: {
-    schema: Ip.Form.Schema
-    widgets: Pick<Ip.Dashboard.Widget, 'type' | 'config'>[]
+    schema: Api.Form.Schema
+    widgets: Pick<Api.Dashboard.Widget, 'type' | 'config'>[]
   }) => {
     const inspector = new SchemaInspector(schema)
     const keys = widgets
       .flatMap(_ => {
         switch (_.type) {
           case 'Card': {
-            const config = _.config as Ip.Dashboard.Widget.Config['Card']
+            const config = _.config as Api.Dashboard.Widget.Config['Card']
             return [config.questionName, config.filter?.questionName]
           }
           case 'BarChart': {
-            const config = _.config as Ip.Dashboard.Widget.Config['BarChart']
+            const config = _.config as Api.Dashboard.Widget.Config['BarChart']
             return [config.questionName]
           }
           case 'LineChart': {
-            const config = _.config as Ip.Dashboard.Widget.Config['LineChart']
+            const config = _.config as Api.Dashboard.Widget.Config['LineChart']
             return config.lines?.flatMap(_ => [_.questionName, _.filter?.questionName])
           }
           case 'GeoChart': {
-            const config = _.config as Ip.Dashboard.Widget.Config['GeoChart']
+            const config = _.config as Api.Dashboard.Widget.Config['GeoChart']
             return [config.questionName, config.filter?.questionName]
           }
           case 'GeoPoint': {
-            const config = _.config as Ip.Dashboard.Widget.Config['GeoPoint']
+            const config = _.config as Api.Dashboard.Widget.Config['GeoPoint']
             return [config.filter?.questionName, config.questionName]
           }
           case 'Table': {
-            const config = _.config as Ip.Dashboard.Widget.Config['Table']
+            const config = _.config as Api.Dashboard.Widget.Config['Table']
             return [config.column?.questionName, config.row?.questionName, config.filter?.questionName]
           }
           case 'PieChart': {
-            const config = _.config as Ip.Dashboard.Widget.Config['PieChart']
+            const config = _.config as Api.Dashboard.Widget.Config['PieChart']
             return [config.filter?.questionName, config.questionName]
           }
           default: {
@@ -141,14 +141,14 @@ export class DashboardService {
         if (!/^[a-zA-Z0-9_]+$/.test(_)) throw new HttpError.BadRequest(`Unsafe JSON key: ${_}`)
         return _
       })
-    const columnsAlways: (keyof Ip.Submission.Meta)[] = ['id', 'end', 'start', 'submissionTime']
+    const columnsAlways: (keyof Api.Submission.Meta)[] = ['id', 'end', 'start', 'submissionTime']
     return {
       metaKeys: seq([...columnsAlways, ...keys.filter(_ => SchemaMetaHelper.isMeta(_))]).distinct(_ => _),
       questionNames: keys.filter(_ => !SchemaMetaHelper.isMeta(_)),
     }
   }
 
-  readonly getAll = async ({workspaceId}: {workspaceId: Ip.WorkspaceId}): Promise<Ip.Dashboard[]> => {
+  readonly getAll = async ({workspaceId}: {workspaceId: Api.WorkspaceId}): Promise<Api.Dashboard[]> => {
     return this.prisma.dashboard
       .findMany({
         where: {workspaceId, deletedAt: null},
@@ -166,7 +166,7 @@ export class DashboardService {
     filters,
     theme,
     ...data
-  }: Ip.Dashboard.Payload.Update): Promise<Ip.Dashboard> => {
+  }: Api.Dashboard.Payload.Update): Promise<Api.Dashboard> => {
     return this.prisma.dashboard
       .update({
         where: {id},
@@ -183,7 +183,7 @@ export class DashboardService {
     id,
     workspaceId,
     publishedBy,
-  }: Ip.Dashboard.Payload.Publish & {publishedBy: Ip.User.Email}) => {
+  }: Api.Dashboard.Payload.Publish & {publishedBy: Api.User.Email}) => {
     const dashboard = await this.prisma.dashboard.findFirstOrThrow({where: {id}, select: {id: true, publishedId: true}})
     const snapshot = await this.prisma.dashboardSection.findMany({
       select: {id: true, title: true, description: true, widgets: true},
@@ -199,7 +199,7 @@ export class DashboardService {
     id,
     workspaceId,
     deletedBy,
-  }: Ip.Dashboard.Payload.Delete & {deletedBy: Ip.User.Email}): Promise<void> => {
+  }: Api.Dashboard.Payload.Delete & {deletedBy: Api.User.Email}): Promise<void> => {
     await this.prisma.dashboard.update({
       where: {id},
       data: {
@@ -209,7 +209,7 @@ export class DashboardService {
     })
   }
 
-  readonly create = async (data: Ip.Dashboard.Payload.Create & {createdBy: Ip.User.Email}): Promise<Ip.Dashboard> => {
+  readonly create = async (data: Api.Dashboard.Payload.Create & {createdBy: Api.User.Email}): Promise<Api.Dashboard> => {
     return this.prisma.dashboard
       .create({
         data: {

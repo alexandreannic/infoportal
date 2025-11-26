@@ -2,7 +2,7 @@ import {Core} from '@/shared'
 import {UseQueryFromAction} from '@/core/query/form/useQueryFromAction.js'
 import {useI18n} from '@infoportal/client-i18n'
 import {useIpToast} from '@/core/useToast.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
 
 export const FormActionRunBtn = ({
@@ -10,8 +10,8 @@ export const FormActionRunBtn = ({
   formId,
   ...props
 }: {
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
 } & Core.BtnProps) => {
   const {m} = useI18n()
   const queryRunAllActionByForm = UseQueryFromAction.runAllActionByForm(workspaceId, formId)

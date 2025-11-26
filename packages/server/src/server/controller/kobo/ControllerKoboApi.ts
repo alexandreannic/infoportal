@@ -5,7 +5,7 @@ import {KoboSdkGenerator} from '../../../feature/kobo/KoboSdkGenerator.js'
 import {KoboSyncServer} from '../../../feature/kobo/KoboSyncServer.js'
 import axios, {AxiosError} from 'axios'
 import {KoboFormService} from '../../../feature/kobo/KoboFormService.js'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {KoboFormIndex} from '../../../feature/kobo/KoboFormIndex.js'
 
 export class ControllerKoboApi {
@@ -30,7 +30,7 @@ export class ControllerKoboApi {
         serverId: yup.string().required(),
       })
       .validate(req.body)
-    const sdk = await this.koboSdkGenerator.getBy.accountId(serverId as Ip.ServerId)
+    const sdk = await this.koboSdkGenerator.getBy.accountId(serverId as Api.ServerId)
     const forms = await sdk.v2.form.getAll()
     res.send(forms)
   }
@@ -99,7 +99,7 @@ export class ControllerKoboApi {
       })
       .validate(req.params)
     const fileName = req.query.fileName
-    const formId = params.formId as Ip.FormId
+    const formId = params.formId as Api.FormId
     // TODO Cache this
     const koboSubmissionId = await this.pgClient.formSubmission
       .findUnique({

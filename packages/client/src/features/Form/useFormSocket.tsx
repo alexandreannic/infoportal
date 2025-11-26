@@ -3,15 +3,15 @@ import {useEffect, useRef, useState} from 'react'
 import {Socket} from 'socket.io-client'
 import {useQueryClient} from '@tanstack/react-query'
 import {IpEvent} from '@infoportal/common'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
 import {getAppSocket} from '@/core/socket'
 
-export const useFormSocket = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
+export const useFormSocket = ({formId, workspaceId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {
   const {conf} = useAppSettings()
   const queryClient = useQueryClient()
   const socketRef = useRef<Socket | null>(null)
-  const [connectedEmail, setConnectedEmails] = useState<Ip.User.Email[]>([])
+  const [connectedEmail, setConnectedEmails] = useState<Api.User.Email[]>([])
 
   useEffect(() => {
     const socket = getAppSocket(conf)

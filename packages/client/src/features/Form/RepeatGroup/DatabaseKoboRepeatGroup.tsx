@@ -5,7 +5,7 @@ import {map} from '@axanc/ts-utils'
 import {Theme, useTheme} from '@mui/material'
 import {FormDataFlattenRepeatGroup, SchemaInspector} from '@infoportal/form-helper'
 import {useMemo} from 'react'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {createRoute, Link, useNavigate} from '@tanstack/react-router'
 import {z} from 'zod'
 import {formRoute, useFormContext} from '@/features/Form/Form'
@@ -26,8 +26,8 @@ export const databaseKoboRepeatRoute = createRoute({
 
 function DatabaseKoboRepeatContainer() {
   const {workspaceId, formId, group} = databaseKoboRepeatRoute.useParams() as {
-    workspaceId: Ip.WorkspaceId
-    formId: Ip.FormId
+    workspaceId: Api.WorkspaceId
+    formId: Api.FormId
     group: string
   }
   const {id, index} = databaseKoboRepeatRoute.useSearch()
@@ -63,8 +63,8 @@ const DatabaseKoboRepeat = ({
 }: {
   id?: string
   index?: number
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
   group: string
   inspector: SchemaInspector
 }) => {
@@ -169,7 +169,7 @@ export function getColumnsForRepeatGroup({
   t,
 }: {
   groupName: string
-  formId: Ip.FormId
+  formId: Api.FormId
   inspector: SchemaInspector
   onRepeatGroupClick?: OnRepeatGroupClick
   m: Messages

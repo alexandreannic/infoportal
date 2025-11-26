@@ -4,7 +4,7 @@ import * as Core from '@infoportal/client-core'
 import {SelectSingle} from '@infoportal/client-core'
 import {useMemo} from 'react'
 import {appearances} from '../core/settings'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export const SelectAppearance = ({
   value,
@@ -12,7 +12,7 @@ export const SelectAppearance = ({
   questionType,
   ...props
 }: {
-  questionType?: Ip.Form.QuestionType
+  questionType?: Api.Form.QuestionType
   value?: string
   onChange: (_: string) => void
 } & Omit<Core.SelectSingleNullableProps, 'options' | 'value' | 'onChange'>) => {
@@ -38,7 +38,7 @@ export const CellSelectAppearance = ({
   sx,
   ...props
 }: Pick<BoxProps, 'sx'> & {
-  questionType?: Ip.Form.QuestionType
+  questionType?: Api.Form.QuestionType
   cellPointer: CellPointer
 }) => {
   const t = useTheme()

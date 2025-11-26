@@ -3,7 +3,7 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Core, Datatable} from '@/shared'
 import {UseQueryFormAccess} from '@/core/query/form/useQueryFormAccess'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useSession} from '@/core/Session/SessionContext'
 import {UseQueryUser} from '@/core/query/useQueryUser.js'
 import {useFormContext} from '@/features/Form/Form'
@@ -15,8 +15,8 @@ export const AccessTable = ({
   workspaceId,
   formId,
 }: {
-  formId: Ip.FormId
-  workspaceId: Ip.WorkspaceId
+  formId: Api.FormId
+  workspaceId: Api.WorkspaceId
   isAdmin?: boolean
   header?: ReactNode
 }) => {
@@ -29,7 +29,7 @@ export const AccessTable = ({
   const queryAccessRemove = UseQueryFormAccess.remove({workspaceId, formId})
   const querySchema = UseQuerySchema.getInspector({workspaceId, formId, langIndex})
   return (
-    <Datatable.Component<Ip.Access>
+    <Datatable.Component<Api.Access>
       id="access"
       getRowKey={_ => _.id}
       loading={queryAccess.isLoading || queryAccessUpdate.isPending}
@@ -80,20 +80,20 @@ export const AccessTable = ({
           id: 'level',
           head: m.accessLevel,
           type: 'select_one',
-          options: () => Obj.keys(Ip.AccessLevel).map(_ => ({value: _, label: _})),
+          options: () => Obj.keys(Api.AccessLevel).map(_ => ({value: _, label: _})),
           render: row => {
             if (!!row.groupName) return {value: undefined, label: ''}
             if (isAdmin)
               return {
                 value: row.level,
                 label: (
-                  <Core.SelectSingle<keyof typeof Ip.AccessLevel>
+                  <Core.SelectSingle<keyof typeof Api.AccessLevel>
                     value={row.level}
                     placeholder=""
                     onChange={_ => queryAccessUpdate.mutate({id: row.id, formId, level: _})}
                     hideNullOption
                     disabled={!!row.groupName}
-                    options={Obj.keys(Ip.AccessLevel)}
+                    options={Obj.keys(Api.AccessLevel)}
                   />
                 ),
               }
@@ -130,7 +130,7 @@ export const AccessTable = ({
                 head: '',
                 width: 40,
                 align: 'right',
-                renderQuick: (_: Ip.Access) => {
+                renderQuick: (_: Api.Access) => {
                   return (
                     <Datatable.IconBtn
                       disabled={_.email === user.email}

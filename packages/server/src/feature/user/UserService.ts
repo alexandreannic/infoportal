@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {UUID} from '@infoportal/common'
 import {app, AppLogger} from '../../index.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export class UserService {
@@ -50,18 +50,18 @@ export class UserService {
       .then(_ => _.map(prismaMapper.access.mapUser))
   }
 
-  readonly getUserByEmail = async (email: Ip.User.Email) => {
+  readonly getUserByEmail = async (email: Api.User.Email) => {
     return this.prisma.user.findUnique({where: {email}}).then(_ => _ ?? undefined)
   }
 
-  readonly getUserAvatarByEmail = async (email: Ip.User.Email): Promise<Buffer | undefined> => {
+  readonly getUserAvatarByEmail = async (email: Api.User.Email): Promise<Buffer | undefined> => {
     return this.getByEmail(email).then(_ => (_?.avatar ? Buffer.from(_.avatar) : undefined))
   }
 
   readonly updateByEmail = ({
     email,
     ...data
-  }: Omit<Ip.User.Payload.Update, 'id' | 'workspaceId'> & {email: Ip.User.Email}) => {
+  }: Omit<Api.User.Payload.Update, 'id' | 'workspaceId'> & {email: Api.User.Email}) => {
     return this.prisma.user
       .update({
         where: {email},
@@ -70,7 +70,7 @@ export class UserService {
       .then(prismaMapper.access.mapUser)
   }
 
-  readonly updateByUserId = ({workspaceId, id, ...data}: Ip.User.Payload.Update) => {
+  readonly updateByUserId = ({workspaceId, id, ...data}: Api.User.Payload.Update) => {
     return this.prisma.user
       .update({
         where: {id},
@@ -79,7 +79,7 @@ export class UserService {
       .then(prismaMapper.access.mapUser)
   }
 
-  readonly getDistinctJobs = async ({workspaceId}: {workspaceId: Ip.WorkspaceId}): Promise<string[]> => {
+  readonly getDistinctJobs = async ({workspaceId}: {workspaceId: Api.WorkspaceId}): Promise<string[]> => {
     const jobs = await this.prisma.user.findMany({
       select: {job: true},
       distinct: ['job'],
@@ -88,7 +88,7 @@ export class UserService {
     return jobs.map(job => job.job!)
   }
 
-  readonly getByEmail = (email: Ip.User.Email): Promise<Ip.User | undefined> => {
+  readonly getByEmail = (email: Api.User.Email): Promise<Api.User | undefined> => {
     return this.prisma.user.findFirst({where: {email}}).then(_ => (_ ? prismaMapper.access.mapUser(_) : undefined))
   }
 }

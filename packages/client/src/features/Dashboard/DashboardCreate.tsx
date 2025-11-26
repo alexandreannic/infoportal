@@ -7,7 +7,7 @@ import {useIpToast} from '@/core/useToast'
 import {UseQueryDashboard} from '@/core/query/dashboard/useQueryDashboard'
 import {useFetcher} from '@axanc/react-hooks'
 import {Core} from '@/shared'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryWorkspace} from '@/core/query/workspace/useQueryWorkspace'
 import {SwitchBox} from '@/shared/customInput/SwitchBox'
 import {SelectFormInput} from '@/shared/customInput/SelectFormInput'
@@ -15,7 +15,7 @@ import {SelectFormInput} from '@/shared/customInput/SelectFormInput'
 type Form = {
   slug: string
   name: string
-  sourceFormId: Ip.FormId
+  sourceFormId: Api.FormId
   isPublic: boolean
 }
 
@@ -23,13 +23,13 @@ type Context = {
   form: UseFormReturn<Form>
   stepperRef: RefObject<Core.StepperHandle | null>
   onClose: () => void
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
 }
 
 const Context = React.createContext<Context>({} as Context)
 const useContext = () => React.useContext(Context)
 
-export const DashboardCreate = ({workspaceId, onClose}: {workspaceId: Ip.WorkspaceId; onClose: () => void}) => {
+export const DashboardCreate = ({workspaceId, onClose}: {workspaceId: Api.WorkspaceId; onClose: () => void}) => {
   const {toastHttpError} = useIpToast()
   const {m} = useI18n()
 
@@ -167,7 +167,7 @@ function SelectInfoInfo() {
           disabled
           // slotProps={{notchedOutline: {sx: {border: 'none', borderRadius: '0', borderBottom: '1px dashed t.'}}}}
           label={m.dashboardLink}
-          value={new URL(Ip.Dashboard.buildPath(queryWorkspace.data, watch), conf.baseURL).toString()}
+          value={new URL(Api.Dashboard.buildPath(queryWorkspace.data, watch), conf.baseURL).toString()}
         />
       )}
       <SwitchBox {...form.register('isPublic')} size="small" label={m.public} icon="public" />

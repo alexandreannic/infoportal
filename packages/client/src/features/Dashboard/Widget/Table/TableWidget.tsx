@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import React, {useMemo} from 'react'
 import {useDashboardContext} from '@/features/Dashboard/Context/DashboardContext'
 import {Datatable} from '@/shared'
@@ -11,9 +11,9 @@ import {WidgetTitle} from '@/features/Dashboard/Widget/shared/WidgetTitle'
 
 type Data = {row: string; groups: Record<string, number>}
 
-const rangeToString = (range: Ip.Dashboard.Widget.NumberRange) => `${range.min} – ${range.max}`
+const rangeToString = (range: Api.Dashboard.Widget.NumberRange) => `${range.min} – ${range.max}`
 
-const mapToRange = (value: number, ranges?: Ip.Dashboard.Widget.NumberRange[]) => {
+const mapToRange = (value: number, ranges?: Api.Dashboard.Widget.NumberRange[]) => {
   const range = ranges?.find(r => value >= r.min && value <= r.max)
   return range ? rangeToString(range) : `${value}`
 }
@@ -24,8 +24,8 @@ const makeMapper = ({
   inspector,
 }: {
   inspector: SchemaInspector<any>
-  question: Ip.Form.Question
-  ranges?: Ip.Dashboard.Widget.NumberRange[]
+  question: Api.Form.Question
+  ranges?: Api.Dashboard.Widget.NumberRange[]
 }): ((value: string | number) => string) => {
   const type = inspector.lookup.questionIndex[question.name]?.type
   if (!type) return () => '?'
@@ -40,7 +40,7 @@ const sortByRanges = <T extends string | {row: string}>({
   getKey,
 }: {
   items: T[]
-  ranges?: Ip.Dashboard.Widget.NumberRange[]
+  ranges?: Api.Dashboard.Widget.NumberRange[]
   getKey?: (item: T) => string
 }): T[] => {
   if (!ranges?.length) return [...items].sort()
@@ -55,9 +55,9 @@ const sortByRanges = <T extends string | {row: string}>({
   })
 }
 
-export function TableWidget({widget}: {widget: Ip.Dashboard.Widget}) {
+export function TableWidget({widget}: {widget: Api.Dashboard.Widget}) {
   const t = useTheme()
-  const config = widget.config as Ip.Dashboard.Widget.Config['Table']
+  const config = widget.config as Api.Dashboard.Widget.Config['Table']
   const langIndex = useDashboardContext(_ => _.langIndex)
   const flattenRepeatGroupData = useDashboardContext(_ => _.flattenRepeatGroupData)
 

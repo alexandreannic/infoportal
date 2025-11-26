@@ -1,9 +1,9 @@
-import {ApiClient} from '@/core/sdk/server/ApiClient'
+import {HttpClient} from '@/core/sdk/server/HttpClient'
 import {UUID} from '@infoportal/common'
 import {Proxy} from '@/core/sdk/server/proxy/Proxy'
 
 export class ProxySdk {
-  constructor(private client: ApiClient) {}
+  constructor(private client: HttpClient) {}
 
   readonly create = (body: {name: string; slug: string; url: string}): Promise<Proxy> => {
     return this.client.put(`/proxy`, {body})

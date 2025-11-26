@@ -1,6 +1,6 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
-import {Ip} from '../../Api.js'
+import {Api} from '../../Api.js'
 import {map200, TsRestClient} from '../../ApiClient.js'
 import {schema} from '../../helper/Schema.js'
 
@@ -23,25 +23,25 @@ const filters = z.object({
 export const metricsContract = c.router({
   getSubmissionsBy: {
     method: 'GET',
-    path: '/:workspaceId/metrics/submission/:module',
+    path: '/:workspaceId/metrics/submission/:type',
     pathParams: c.type<{
-      workspaceId: Ip.WorkspaceId
-      type: Ip.Metrics.ByType
+      workspaceId: Api.WorkspaceId
+      type: Api.Metrics.ByType
     }>(),
     query: filters,
     responses: {
-      200: c.type<Ip.Metrics.CountByKey>(),
+      200: c.type<Api.Metrics.CountByKey>(),
     },
   },
   getUsersByDate: {
     method: 'GET',
     path: '/:workspaceId/metrics/users/by-date',
     pathParams: c.type<{
-      workspaceId: Ip.WorkspaceId
+      workspaceId: Api.WorkspaceId
     }>(),
     query: filters,
     responses: {
-      200: c.type<Ip.Metrics.CountUserByDate>(),
+      200: c.type<Api.Metrics.CountUserByDate>(),
     },
   },
 })
@@ -57,7 +57,7 @@ export const metricsClient = (client: TsRestClient, baseUrl: string) => ({
     workspaceId,
     type,
     ...query
-  }: {type: Ip.Metrics.ByType; workspaceId: Ip.WorkspaceId} & Ip.Metrics.Payload.Filter) => {
+  }: {type: Api.Metrics.ByType; workspaceId: Api.WorkspaceId} & Api.Metrics.Payload.Filter) => {
     return client.metrics
       .getSubmissionsBy({
         params: {workspaceId, type},
@@ -65,7 +65,7 @@ export const metricsClient = (client: TsRestClient, baseUrl: string) => ({
       })
       .then(map200)
   },
-  getUsersByDate: ({workspaceId, ...query}: {workspaceId: Ip.WorkspaceId} & Ip.Metrics.Payload.Filter) => {
+  getUsersByDate: ({workspaceId, ...query}: {workspaceId: Api.WorkspaceId} & Api.Metrics.Payload.Filter) => {
     return client.metrics
       .getUsersByDate({
         params: {workspaceId},

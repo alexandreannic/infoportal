@@ -5,7 +5,7 @@ import {
 } from '@/features/Dashboard/Context/useGetDataByRepeatGroup'
 import {seq} from '@axanc/ts-utils'
 import {useI18n} from '@infoportal/client-i18n'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {SchemaInspector} from '@infoportal/form-helper'
 import {Dispatch, ReactNode, SetStateAction, useMemo, useState} from 'react'
 import {createContext, useContextSelector} from 'use-context-selector'
@@ -14,21 +14,21 @@ import {UseDashboardFormEdit, useDashboardFormEdit} from './useDashboardFormEdit
 import {UseDashboardGridLayout, useDashboardGridLayout} from '@/features/Dashboard/Context/useDashboardGridLayout'
 
 // TODO this module could be globalized. It's maybe defined somewhere already
-export type Answers = Ip.Submission.Meta & Record<string, any>
+export type Answers = Api.Submission.Meta & Record<string, any>
 
 export type DashboardContext = {
   flattenRepeatGroupData: UseFlattenRepeatGroupData
   langIndex: number
   setLangIndex: Dispatch<SetStateAction<number>>
   filter: UseDashboardFilters
-  dataRange: Ip.Period
-  effectiveDataRange: Ip.Period
-  workspaceId: Ip.WorkspaceId
+  dataRange: Api.Period
+  effectiveDataRange: Api.Period
+  workspaceId: Api.WorkspaceId
   data: UseDashboardFilteredDataCache
-  dashboard: Ip.Dashboard
+  dashboard: Api.Dashboard
   schemaInspector: SchemaInspector<true>
-  widgetsBySection: Map<Ip.Dashboard.SectionId, Ip.Dashboard.Widget[]>
-  sections: Ip.Dashboard.Section[]
+  widgetsBySection: Map<Api.Dashboard.SectionId, Api.Dashboard.Widget[]>
+  sections: Api.Dashboard.Section[]
   updateForm: UseDashboardFormEdit
   gridLayout: UseDashboardGridLayout
 }
@@ -48,12 +48,12 @@ export const DashboardProvider = ({
   widgets,
   submissions,
 }: {
-  sections: Ip.Dashboard.Section[]
-  workspaceId: Ip.WorkspaceId
-  dashboard: Ip.Dashboard
-  schema: Ip.Form.Schema
-  widgets: Ip.Dashboard.Widget[]
-  submissions: Ip.Submission[]
+  sections: Api.Dashboard.Section[]
+  workspaceId: Api.WorkspaceId
+  dashboard: Api.Dashboard
+  schema: Api.Form.Schema
+  widgets: Api.Dashboard.Widget[]
+  submissions: Api.Submission[]
   children: ReactNode
 }) => {
   const {m} = useI18n()
@@ -92,7 +92,7 @@ export const DashboardProvider = ({
   })
 
   const widgetsBySection = useMemo(() => {
-    return seq(widgets).groupByToMap(_ => _.sectionId as Ip.Dashboard.SectionId)
+    return seq(widgets).groupByToMap(_ => _.sectionId as Api.Dashboard.SectionId)
   }, [widgets])
 
   const flattenRepeatGroupData = useFlattenRepeatGroupData(schemaInspectorWithMeta)

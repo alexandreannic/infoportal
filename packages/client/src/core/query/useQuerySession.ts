@@ -3,7 +3,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {queryKeys} from '@/core/query/query.index'
 import {Session} from '@/core/sdk/server/session/Session'
 import {useIpToast} from '@/core/useToast'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export const useQuerySession = () => {
   const {api} = useAppSettings()
@@ -31,7 +31,7 @@ export const useQuerySession = () => {
   })
 
   const connectAs = useMutation({
-    mutationFn: async (email: Ip.User.Email) => {
+    mutationFn: async (email: Api.User.Email) => {
       const session = await api.session.connectAs(email)
       return setSessionDataAndCache(session)
     },

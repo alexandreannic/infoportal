@@ -5,7 +5,7 @@ import {app, AppCacheKey, AppLogger} from '../../index.js'
 import {createdBySystem} from '../../core/DbInit.js'
 import {chunkify, seq} from '@axanc/ts-utils'
 import {SubmissionService} from '../form/submission/SubmissionService.js'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {appConf} from '../../core/conf/AppConf.js'
 import {previewList} from '../../helper/Utils.js'
 import {Kobo, KoboSubmissionFormatter} from 'kobo-sdk'
@@ -13,8 +13,8 @@ import {KoboMapper} from './KoboMapper.js'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export type KoboInsert = {
-  id: Ip.SubmissionId
-  formId: Ip.FormId
+  id: Api.SubmissionId
+  formId: Api.FormId
   originId: Kobo.SubmissionId
   // koboFormId: Kobo.FormId
   uuid: string
@@ -23,14 +23,14 @@ export type KoboInsert = {
   submissionTime: Date
   submittedBy?: string
   version?: string
-  validationStatus?: Ip.Submission.Validation
+  validationStatus?: Api.Submission.Validation
   validatedBy?: string
   lastValidatedTimestamp?: number
   geolocation: [number, number]
   answers: Record<string, any>
   attachments: Kobo.Submission.Attachment[]
   deletedAt?: Date
-  deletedBy?: Ip.User.Email
+  deletedBy?: Api.User.Email
 }
 
 export type KoboSyncServerResult = {
@@ -51,7 +51,7 @@ export class KoboSyncServer {
     private log: AppLogger = app.logger('KoboSyncServer'),
   ) {}
 
-  private static readonly mapAnswer = (formId: Ip.FormId, k: Kobo.Submission.Raw): KoboInsert => {
+  private static readonly mapAnswer = (formId: Api.FormId, k: Kobo.Submission.Raw): KoboInsert => {
     const {
       ['formhub/uuid']: formhubUuid,
       ['meta/instanceId']: instanceId,
@@ -112,18 +112,18 @@ export class KoboSyncServer {
       const answers = KoboSyncServer.mapAnswer(_.id, _answer)
       return this.service.create({
         // formId: _.id,
-        workspaceId: _.workspaceId as Ip.WorkspaceId,
+        workspaceId: _.workspaceId as Api.WorkspaceId,
         data: answers,
       })
     })
   }
 
-  readonly syncApiAnswersToDbAll = async (updatedBy: Ip.User.Email = createdBySystem) => {
+  readonly syncApiAnswersToDbAll = async (updatedBy: Api.User.Email = createdBySystem) => {
     const allForms = await this.prisma.formKoboInfo.findMany()
     this.log.info(`Synchronize kobo forms:`)
     for (const form of allForms) {
       try {
-        await this.syncApiAnswersToDbByForm({formId: form.formId as Ip.FormId, updatedBy})
+        await this.syncApiAnswersToDbByForm({formId: form.formId as Api.FormId, updatedBy})
       } catch (e) {
         console.error(e)
       }
@@ -134,7 +134,7 @@ export class KoboSyncServer {
   private info = (formId: string, message: string) => this.log.info(`${formId}: ${message}`)
   private debug = (formId: string, message: string) => this.log.debug(`${formId}: ${message}`)
 
-  readonly syncApiAnswersToDbByForm = async ({formId, updatedBy}: {formId: Ip.FormId; updatedBy?: Ip.User.Email}) => {
+  readonly syncApiAnswersToDbByForm = async ({formId, updatedBy}: {formId: Api.FormId; updatedBy?: Api.User.Email}) => {
     const koboFormId = await this.prisma.formKoboInfo
       .findFirst({select: {koboId: true}, where: {formId}})
       .then(_ => _?.koboId)
@@ -168,7 +168,7 @@ export class KoboSyncServer {
     }
   }
 
-  private readonly syncApiFormInfo = async ({formId, koboFormId}: {koboFormId: Kobo.FormId; formId: Ip.FormId}) => {
+  private readonly syncApiFormInfo = async ({formId, koboFormId}: {koboFormId: Kobo.FormId; formId: Api.FormId}) => {
     const sdk = await this.koboSdkGenerator.getBy.koboFormId(koboFormId)
     const schema = await sdk.v2.form.get({formId: koboFormId, use$autonameAsName: true})
     await Promise.all([
@@ -194,7 +194,7 @@ export class KoboSyncServer {
     formId,
     koboFormId,
   }: {
-    formId: Ip.FormId
+    formId: Api.FormId
     koboFormId: Kobo.FormId
   }): Promise<KoboSyncServerResult> => {
     const sdk = await this.koboSdkGenerator.getBy.koboFormId(koboFormId)

@@ -1,4 +1,4 @@
-import {ApiClient, RequestOption} from './ApiClient'
+import {HttpClient, RequestOption} from './HttpClient'
 import {KoboApiSdk} from './kobo/KoboApiSdk'
 import {Method} from 'axios'
 import {SessionSdk} from '@/core/sdk/server/session/SessionSdk'
@@ -11,7 +11,7 @@ import {DatabaseViewSdk} from '@/core/sdk/server/databaseView/DatabaseViewSdk'
 import {ImportFromXlsDataSdk} from '@/core/sdk/server/importXls/ImportFromXlsSdk'
 
 export class ApiSdk {
-  constructor(private client: ApiClient) {
+  constructor(private client: HttpClient) {
     this.session = new SessionSdk(client)
     this.kobo = {
       answerHistory: new KoboAnswerHistorySdk(this.client),

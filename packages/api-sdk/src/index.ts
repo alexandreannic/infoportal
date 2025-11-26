@@ -1,7 +1,5 @@
 export {apiContract} from './ApiContract.js'
-export {Ip} from './Api.js'
+export {Api} from './Api.js'
 export {ApiClient, buildApiClient} from './ApiClient.js'
 export {Meta} from './helper/Schema.js'
-export {Permission} from './module/permission/PermissionHelper.js'
-export {CommonHelper} from './module/common/CommonHelper.js'
 export {HttpError} from './HttpError.js'

@@ -2,14 +2,14 @@ import {useDialogs} from '@toolpad/core'
 import {DialogAnswerView} from '@/features/Form/dialogs/DialogAnswerView'
 import {DialogAnswerEdit} from '@/features/Form/dialogs/DialogAnswerEdit'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useFormContext} from '@/features/Form/Form'
 
 export interface OpenModalProps {
   submission: Submission
 }
 
-export const useKoboDialogs = ({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) => {
+export const useKoboDialogs = ({formId, workspaceId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {
   const dialogs = useDialogs()
   const schema = useFormContext(_ => _.inspector)
 

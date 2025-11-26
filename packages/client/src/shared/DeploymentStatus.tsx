@@ -1,17 +1,17 @@
 import {Icon as MuiIcon, IconProps, Theme, useTheme} from '@mui/material'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useI18n} from '@infoportal/client-i18n'
 
 export const deploymentStatusIcon = {
-  [Ip.Form.DeploymentStatus.deployed]: 'public',
-  [Ip.Form.DeploymentStatus.archived]: 'archive',
-  [Ip.Form.DeploymentStatus.draft]: 'stylus_note',
+  [Api.Form.DeploymentStatus.deployed]: 'public',
+  [Api.Form.DeploymentStatus.archived]: 'archive',
+  [Api.Form.DeploymentStatus.draft]: 'stylus_note',
 }
 
 export const deploymentStatusColor = (t: Theme) => ({
-  [Ip.Form.DeploymentStatus.deployed]: t.palette.success.main,
-  [Ip.Form.DeploymentStatus.archived]: t.palette.text.disabled,
-  [Ip.Form.DeploymentStatus.draft]: t.palette.text.disabled,
+  [Api.Form.DeploymentStatus.deployed]: t.palette.success.main,
+  [Api.Form.DeploymentStatus.archived]: t.palette.text.disabled,
+  [Api.Form.DeploymentStatus.draft]: t.palette.text.disabled,
 })
 
 export const DeploymentStatusIcon = ({
@@ -19,7 +19,7 @@ export const DeploymentStatusIcon = ({
   fontSize = 'small',
   sx,
   ...props
-}: IconProps & {status: Ip.Form.DeploymentStatus}) => {
+}: IconProps & {status: Api.Form.DeploymentStatus}) => {
   const t = useTheme()
   const {m} = useI18n()
   return (

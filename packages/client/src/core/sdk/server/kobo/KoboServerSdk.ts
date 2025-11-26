@@ -1,12 +1,12 @@
-import {ApiClient} from '../ApiClient'
+import {HttpClient} from '../HttpClient'
 import {KoboServer} from './KoboMapper'
 import {UUID} from '@infoportal/common'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export class KoboServerSdk {
-  constructor(private client: ApiClient) {}
+  constructor(private client: HttpClient) {}
 
-  readonly getAll = ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+  readonly getAll = ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
     return this.client.get<KoboServer[]>(`/${workspaceId}/kobo/server`)
   }
 
@@ -14,7 +14,7 @@ export class KoboServerSdk {
     return this.client.put<KoboServer>(`/${workspaceId}/kobo/server`, {body})
   }
 
-  readonly delete = ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: UUID}) => {
+  readonly delete = ({workspaceId, id}: {workspaceId: Api.WorkspaceId; id: UUID}) => {
     return this.client.delete<void>(`/${workspaceId}/kobo/server/${id}`)
   }
 }

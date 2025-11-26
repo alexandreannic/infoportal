@@ -1,10 +1,10 @@
 import {useAppSettings} from '@/core/context/ConfigContext.js'
 import {useQuery, useQueryClient} from '@tanstack/react-query'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {queryKeys} from '@/core/query/query.index.js'
 
 export class UseQueryFormActionReport {
-  static getRunning({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
+  static getRunning({formId, workspaceId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) {
     const queryClient = useQueryClient()
     const {apiv2} = useAppSettings()
     const queryKey = queryKeys.formActionReport(workspaceId, formId, 'live')
@@ -24,7 +24,7 @@ export class UseQueryFormActionReport {
     })
   }
 
-  static getByFormId({formId, workspaceId}: {workspaceId: Ip.WorkspaceId; formId: Ip.FormId}) {
+  static getByFormId({formId, workspaceId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) {
     const {apiv2} = useAppSettings()
     const queryKey = queryKeys.formActionReport(workspaceId, formId)
     return useQuery({

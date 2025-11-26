@@ -2,7 +2,7 @@ import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {schema} from '../../helper/Schema.js'
 import {map200, TsRestClient} from '../../ApiClient.js'
-import {Ip} from '../../Api.js'
+import {Api} from '../../Api.js'
 
 const c = initContract()
 
@@ -11,7 +11,7 @@ export const permissionContract = c.router({
     method: 'GET',
     path: '/permission',
     responses: {
-      200: c.type<Ip.Permission.Global>(),
+      200: c.type<Api.Permission.Global>(),
     },
   },
 
@@ -22,7 +22,7 @@ export const permissionContract = c.router({
       workspaceId: schema.workspaceId,
     }),
     responses: {
-      200: c.type<Ip.Permission.Workspace>(),
+      200: c.type<Api.Permission.Workspace>(),
     },
   },
 
@@ -34,7 +34,7 @@ export const permissionContract = c.router({
       formId: schema.formId,
     }),
     responses: {
-      200: c.type<Ip.Permission.Form>(),
+      200: c.type<Api.Permission.Form>(),
     },
   },
 })
@@ -42,9 +42,9 @@ export const permissionContract = c.router({
 export const permissionClient = (client: TsRestClient, baseUrl: string) => {
   return {
     getMineGlobal: () => client.permission.getMineGlobal().then(map200),
-    getMineByWorkspace: (params: {workspaceId: Ip.WorkspaceId}) =>
+    getMineByWorkspace: (params: {workspaceId: Api.WorkspaceId}) =>
       client.permission.getMineByWorkspace({params}).then(map200),
-    getMineByForm: (params: {formId: Ip.FormId; workspaceId: Ip.WorkspaceId}) =>
+    getMineByForm: (params: {formId: Api.FormId; workspaceId: Api.WorkspaceId}) =>
       client.permission.getMineByForm({params}).then(map200),
   }
 }

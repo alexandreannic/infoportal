@@ -14,7 +14,7 @@ import {useEffectFn} from '@axanc/react-hooks'
 import {useI18n} from '@infoportal/client-i18n'
 import {Box, Collapse, Icon, useTheme} from '@mui/material'
 import {createRoute, Link, Outlet, useNavigate} from '@tanstack/react-router'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import React, {useState} from 'react'
 import 'react-grid-layout/css/styles.css'
 import {DashboardTheme} from './DashboardTheme'
@@ -32,8 +32,8 @@ export function Dashboard() {
   const t = useTheme()
   const {m} = useI18n()
   const params = dashboardRoute.useParams()
-  const workspaceId = params.workspaceId as Ip.WorkspaceId
-  const dashboardId = params.dashboardId as Ip.DashboardId
+  const workspaceId = params.workspaceId as Api.WorkspaceId
+  const dashboardId = params.dashboardId as Api.DashboardId
   const {toastSuccess} = useIpToast()
 
   const dashboardUrl = useGetDashboardLink({workspaceId, dashboardId}).absolute ?? '...'

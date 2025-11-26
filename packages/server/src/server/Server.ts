@@ -4,7 +4,7 @@ import {getRoutes} from './Routes.js'
 import {app} from '../index.js'
 import {appConf, AppConf} from '../core/conf/AppConf.js'
 import {genUUID} from '@infoportal/common'
-import {HttpError, ipContract} from '@infoportal/api-sdk'
+import {apiContract, HttpError} from '@infoportal/api-sdk'
 import {PrismaClient} from '@prisma/client'
 import session from 'express-session'
 import {PrismaSessionStore} from '@quixo3/prisma-session-store'
@@ -105,7 +105,7 @@ export class Server {
       })
     const {tsRestRoutes, rawRoutes} = getRoutes(this.pgClient)
     this.server.use(rawRoutes)
-    createExpressEndpoints(ipContract, tsRestRoutes, this.server, {logInitialization: false})
+    createExpressEndpoints(apiContract, tsRestRoutes, this.server, {logInitialization: false})
     // this.server.use(Sentry.Handlers.errorHandler())
     this.server.use(this.errorHandler)
     const httpServer = this.server.listen(

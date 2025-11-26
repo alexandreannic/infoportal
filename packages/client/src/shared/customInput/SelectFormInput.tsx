@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import React, {useMemo, useState} from 'react'
 import {Asset, AssetIcon, AssetType} from '@/shared/Asset'
@@ -11,9 +11,9 @@ export function SelectFormInput({
   value,
   onChange,
 }: {
-  workspaceId: Ip.WorkspaceId
-  value: Ip.FormId
-  onChange: (_: Ip.FormId) => void
+  workspaceId: Api.WorkspaceId
+  value: Api.FormId
+  onChange: (_: Api.FormId) => void
 }) {
   const queryForms = UseQueryForm.getAccessibles(workspaceId)
   const assets = useMemo(() => {
@@ -25,7 +25,7 @@ export function SelectFormInput({
   return (
     <>
       {assets.length > 10 && <AppSidebarFilters assets={assets} onFilterChanges={setFilteredAsset} sx={{mb: 1}} />}
-      <Core.RadioGroup<Ip.FormId> dense sx={{height: 300, overflowY: 'scroll'}} value={value} onChange={onChange}>
+      <Core.RadioGroup<Api.FormId> dense sx={{height: 300, overflowY: 'scroll'}} value={value} onChange={onChange}>
         {filteredAsset.map(_ => (
           <Core.RadioGroupItem
             hideRadio

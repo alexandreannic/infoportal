@@ -62,7 +62,7 @@ export interface Detail {
 
 export type Method = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH'
 
-export class ApiClient {
+export class HttpClient {
   readonly postGetPdf: (url: string, options?: RequestOption) => Promise<Blob>
   readonly getPdf: (url: string, options?: RequestOption) => Promise<Blob>
   readonly baseUrl: string
@@ -82,7 +82,7 @@ export class ApiClient {
     this.baseUrl = baseUrl
 
     this.request = async (method: Method, url: string, options?: RequestOption) => {
-      const builtOptions = await ApiClient.buildOptions(options, headers, requestInterceptor)
+      const builtOptions = await HttpClient.buildOptions(options, headers, requestInterceptor)
       return client
         .request({
           method,
@@ -123,7 +123,7 @@ export class ApiClient {
      * TODO(Alex) Didn't find any way to download pdf with axios so I did it using fetch(), but it should exist.
      */
     const requestUsingFetchApi = async (method: Method, url: string, options?: RequestOption) => {
-      const builtOptions = await ApiClient.buildOptions(options, headers, requestInterceptor)
+      const builtOptions = await HttpClient.buildOptions(options, headers, requestInterceptor)
       return fetch(baseUrl + url + (options?.qs ? `?${qs.stringify(options.qs, {arrayFormat: 'repeat'})}` : ''), {
         method,
         headers: builtOptions?.headers,

@@ -5,7 +5,7 @@ import {SidebarItem} from '@/shared/Layout/Sidebar/index.js'
 import {Asset, AssetIcon} from '@/shared/Asset.js'
 import {Core} from '@/shared'
 import {ReactElement} from 'react'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {SidebarItemProps} from '@/shared/Layout/Sidebar/SidebarItem.js'
 import {DeploymentStatusIcon} from '@/shared/DeploymentStatus.js'
 
@@ -14,7 +14,7 @@ export const AppSidebarAsset = ({
   workspaceId,
   formItemSize,
 }: {
-  workspaceId: Ip.WorkspaceId
+  workspaceId: Api.WorkspaceId
   formItemSize: SidebarItemProps['size']
   asset: Asset
 }) => {

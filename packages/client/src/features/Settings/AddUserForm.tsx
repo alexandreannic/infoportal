@@ -1,14 +1,14 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {Regexp} from '@infoportal/common'
 import {Controller, useForm} from 'react-hook-form'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {Collapse} from '@mui/material'
 import {UseQueryWorkspaceInvitation} from '@/core/query/workspace/useQueryWorkspaceInvitation.js'
 import {Core} from '@/shared'
 
 type Form = {
-  email: Ip.User.Email
-  level: Ip.AccessLevel
+  email: Api.User.Email
+  level: Api.AccessLevel
 }
 
 export const AddUserForm = ({
@@ -17,13 +17,13 @@ export const AddUserForm = ({
   onSubmit,
   onClose,
 }: {
-  workspaceId: Ip.WorkspaceId
-  existingEmails?: Ip.User.Email[]
+  workspaceId: Api.WorkspaceId
+  existingEmails?: Api.User.Email[]
   onClose?: () => void
   onSubmit?: (_: Form) => Promise<any>
 }) => {
   const {m} = useI18n()
-  const form = useForm<Form>({mode: 'onChange', defaultValues: {email: '', level: Ip.AccessLevel.Read}})
+  const form = useForm<Form>({mode: 'onChange', defaultValues: {email: '', level: Api.AccessLevel.Read}})
   const queryInvitation = UseQueryWorkspaceInvitation.create(workspaceId)
 
   const submit = async (values: Form) => {
@@ -69,7 +69,7 @@ export const AddUserForm = ({
             value={value}
             onChange={_ => onChange({target: {value: _}})}
           >
-            {Object.keys(Ip.AccessLevel).map(_ => (
+            {Object.keys(Api.AccessLevel).map(_ => (
               <Core.RadioGroupItem value={_} title={_} />
             ))}
           </Core.RadioGroup>

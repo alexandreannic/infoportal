@@ -2,7 +2,7 @@ import {PrismaClient} from '@prisma/client'
 import {InferType} from 'yup'
 import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {UserService} from '../user/UserService.js'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 
 export type WorkspaceAccessCreate = InferType<typeof WorkspaceAccessService.schema.create>
@@ -18,15 +18,15 @@ export class WorkspaceAccessService {
     create: yup.object({
       workspaceId: yup.string().required(),
       email: yup.string().required(),
-      level: yup.mixed<Ip.AccessLevel>().oneOf(Object.values(Ip.AccessLevel)).required(),
+      level: yup.mixed<Api.AccessLevel>().oneOf(Object.values(Api.AccessLevel)).required(),
     }),
   }
 
   readonly create = async (
     {level, email, workspaceId}: WorkspaceAccessCreate,
-    createdBy: Ip.User.Email,
-  ): Promise<Ip.Workspace.Access> => {
-    const user = await this.userService.getByEmail(email as Ip.User.Email)
+    createdBy: Api.User.Email,
+  ): Promise<Api.Workspace.Access> => {
+    const user = await this.userService.getByEmail(email as Api.User.Email)
     if (!user) throw new HttpError.NotFound('User not found')
     const exists = await this.prisma.workspaceAccess.findFirst({
       select: {id: true},
@@ -48,8 +48,8 @@ export class WorkspaceAccessService {
   readonly searchInvitations = async ({
     workspaceId,
   }: {
-    workspaceId: Ip.WorkspaceId
-  }): Promise<Ip.Workspace.Invitation[]> => {
+    workspaceId: Api.WorkspaceId
+  }): Promise<Api.Workspace.Invitation[]> => {
     return this.prisma.workspaceInvitation
       .findMany({
         where: {workspaceId},
@@ -57,7 +57,7 @@ export class WorkspaceAccessService {
       .then(_ => _.map(prismaMapper.workspace.mapWorkspaceInvitation))
   }
 
-  readonly getByUser = async ({workspaceId, user}: {workspaceId: Ip.WorkspaceId; user: Ip.User}) => {
+  readonly getByUser = async ({workspaceId, user}: {workspaceId: Api.WorkspaceId; user: Api.User}) => {
     return this.prisma.workspaceAccess.findFirst({
       where: {workspaceId, user: {email: user.email}},
     })

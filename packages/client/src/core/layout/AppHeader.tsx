@@ -7,7 +7,7 @@ import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {Obj} from '@axanc/ts-utils'
 import {Badge, Box, BoxProps, Icon, MenuItem, Slide, useColorScheme, useTheme} from '@mui/material'
 import {Link, useNavigate} from '@tanstack/react-router'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryWorkspaceInvitation} from '@/core/query/workspace/useQueryWorkspaceInvitation.js'
 import {appConfig} from '@/conf/AppConfig.js'
 import React from 'react'
@@ -16,7 +16,7 @@ import {IpLogo} from '@/shared/logo/logo'
 import {ToggleSidebarButton} from '@/core/layout/ToggleSidebarButton'
 
 interface Props extends BoxProps {
-  workspaceId?: Ip.WorkspaceId
+  workspaceId?: Api.WorkspaceId
 }
 
 const lightThemeIcons = {

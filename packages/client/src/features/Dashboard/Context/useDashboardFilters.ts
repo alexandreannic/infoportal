@@ -1,16 +1,16 @@
 import {useCallback, useMemo, useState} from 'react'
 import {produce} from 'immer'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Obj} from '@axanc/ts-utils'
 
 export type Filters = {
-  period: Ip.Period
+  period: Api.Period
   questions: Record<string, undefined | string[]>
 }
 
 export type UseDashboardFilters = ReturnType<typeof useDashboardFilters>
 
-export const useDashboardFilters = ({defaultPeriod}: {defaultPeriod: Ip.Period}) => {
+export const useDashboardFilters = ({defaultPeriod}: {defaultPeriod: Api.Period}) => {
   const defaultFilters: Filters = {
     questions: {},
     period: {start: defaultPeriod.start, end: defaultPeriod.end},

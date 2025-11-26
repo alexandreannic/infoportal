@@ -2,7 +2,7 @@ import {SchemaInspector} from '@infoportal/form-helper'
 import {mapFor} from '@axanc/ts-utils'
 import {Messages} from '@infoportal/client-i18n'
 import {Theme} from '@mui/material'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Datatable} from '@/shared'
 import {buildDbColumns, colorRepeatedQuestionHeader, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
@@ -13,10 +13,10 @@ export type DatabaseDisplay = {
 }
 
 type DatabaseKoboDisplayProps = {
-  data: Ip.Submission[]
+  data: Api.Submission[]
   display: DatabaseDisplay
   inspector: SchemaInspector
-  formId: Ip.FormId
+  formId: Api.FormId
   onRepeatGroupClick?: OnRepeatGroupClick
   m: Messages
   t: Theme
@@ -47,7 +47,7 @@ export const databaseKoboDisplayBuilder = ({
                 questions: group.questions,
                 inspector: inspector,
                 onRepeatGroupClick,
-                getRow: (_: Ip.Submission) => _.answers[group.name]?.[repeat] ?? {},
+                getRow: (_: Api.Submission) => _.answers[group.name]?.[repeat] ?? {},
                 formId,
                 m,
                 t,

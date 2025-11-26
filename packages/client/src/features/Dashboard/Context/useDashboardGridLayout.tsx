@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useMemo} from 'react'
 import {ResponsiveProps} from 'react-grid-layout'
 
@@ -8,8 +8,8 @@ export type UseDashboardGridLayout = Pick<
 >
 
 export const useDashboardGridLayout = (
-  widgets: Ip.Dashboard.Widget[],
-  dashboard: Ip.Dashboard,
+  widgets: Api.Dashboard.Widget[],
+  dashboard: Api.Dashboard,
 ): UseDashboardGridLayout => {
   const spacing = dashboard.theme.spacing ?? 8
 

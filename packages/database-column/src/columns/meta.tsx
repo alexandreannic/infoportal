@@ -1,6 +1,6 @@
 import React from 'react'
 import {ColumnMetaProps, Row} from './type.js'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import * as Datatable from '@infoportal/client-datatable'
 import {Messages} from '@infoportal/client-i18n'
 import {StatusIcon} from '@infoportal/client-core'
@@ -76,14 +76,14 @@ export class Meta {
               <Datatable.IconBtn
                 tooltip={m.view}
                 children="visibility"
-                onClick={() => dialog.openView({submission: _ as Ip.Submission})}
+                onClick={() => dialog.openView({submission: _ as Api.Submission})}
               />
               {formType === 'smart' ? undefined : koboEditEnketoUrl && _.originId ? (
                 <Datatable.IconBtn
                   disabled={isReadonly}
                   tooltip={m.editKobo}
                   target="_blank"
-                  href={koboEditEnketoUrl(_.originId as Ip.SubmissionId)}
+                  href={koboEditEnketoUrl(_.originId as Api.SubmissionId)}
                   children="edit_square"
                 />
               ) : (
@@ -91,7 +91,7 @@ export class Meta {
                   disabled={isReadonly}
                   tooltip={m.editForm}
                   children="edit"
-                  onClick={() => dialog.openEdit({submission: _ as Ip.Submission})}
+                  onClick={() => dialog.openEdit({submission: _ as Api.Submission})}
                 />
               )}
             </>
@@ -106,7 +106,7 @@ export class Meta {
     label,
   }: {
     label: string
-    key: KeysOfType<Ip.Submission, Date>
+    key: KeysOfType<Api.Submission, Date>
   }): Datatable.Column.Props<Row> {
     return {
       id: key as string,
@@ -163,12 +163,12 @@ export class Meta {
       width: 60,
       type: 'select_one',
       render: (row: any) => {
-        const value: Ip.Submission.Validation = getRow(row).validationStatus
+        const value: Api.Submission.Validation = getRow(row).validationStatus
         return {
           export: value ? (m as any)[value] : Datatable.Utils.blank,
           value: value ?? Datatable.Utils.blank,
           option: value ? (m as any)[value] : Datatable.Utils.blank,
-          label: <StatusIcon type={Ip.Submission.validationToStatus[value]} />,
+          label: <StatusIcon type={Api.Submission.validationToStatus[value]} />,
         }
       },
     }

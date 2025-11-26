@@ -2,7 +2,7 @@ import {appConfig} from '@/conf/AppConfig'
 import {AppSettingsProvider, useAppSettings} from '@/core/context/ConfigContext'
 import {I18nProvider, useI18n} from '@infoportal/client-i18n'
 import {getMsalInstance} from '@/core/msal'
-import {ApiClient} from '@/core/sdk/server/ApiClient'
+import {HttpClient} from '@/core/sdk/server/HttpClient'
 import {ApiSdk} from '@/core/sdk/server/ApiSdk'
 import {SessionProvider} from '@/core/Session/SessionContext'
 import {CenteredContent, Core, Datatable} from '@/shared'
@@ -17,7 +17,7 @@ import {DialogsProvider} from '@toolpad/core'
 import React, {useEffect, useMemo} from 'react'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {defaultTheme} from '@/core/theme'
-import {buildIpClient, IpClient} from '@infoportal/api-sdk'
+import {ApiClient, buildApiClient} from '@infoportal/api-sdk'
 import {Outlet, useRouterState} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import {duration} from '@axanc/ts-utils'
@@ -26,12 +26,12 @@ import {LicenseInfo} from '@mui/x-license'
 LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
 const api = new ApiSdk(
-  new ApiClient({
+  new HttpClient({
     baseUrl: appConfig.apiURL,
   }),
 )
 
-const apiv2: IpClient = buildIpClient(appConfig.apiURL)
+const apiv2: ApiClient = buildApiClient(appConfig.apiURL)
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,7 +44,7 @@ const queryClient = new QueryClient({
 export const App = () => {
   return (
     <AppSettingsProvider api={api} apiv2={apiv2}>
-      <AppWithConfig/>
+      <AppWithConfig />
     </AppSettingsProvider>
   )
 }
@@ -64,23 +64,23 @@ const AppWithConfig = () => {
   return (
     <Core.Provide
       providers={[
-        _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns}/>,
-        _ => <ThemeProvider theme={defaultTheme} children={_}/>,
-        _ => <Core.ToastProvider children={_}/>,
-        _ => <CssBaseline children={_}/>,
-        _ => <I18nProvider children={_}/>,
-        _ => <MsalProvider children={_} instance={msal}/>,
-        _ => <QueryClientProvider client={queryClient} children={_}/>,
-        _ => <DialogsProvider children={_}/>,
-        _ => <SessionProvider children={_}/>,
+        _ => <LocalizationProvider children={_} dateAdapter={AdapterDateFns} />,
+        _ => <ThemeProvider theme={defaultTheme} children={_} />,
+        _ => <Core.ToastProvider children={_} />,
+        _ => <CssBaseline children={_} />,
+        _ => <I18nProvider children={_} />,
+        _ => <MsalProvider children={_} instance={msal} />,
+        _ => <QueryClientProvider client={queryClient} children={_} />,
+        _ => <DialogsProvider children={_} />,
+        _ => <SessionProvider children={_} />,
       ]}
     >
-      <TrackLocation/>
-      <AppWithBaseContext/>
+      <TrackLocation />
+      <AppWithBaseContext />
       {!settings.conf.production && (
         <>
-          <TanStackRouterDevtools/>
-          <ReactQueryDevtools initialIsOpen={false}/>
+          <TanStackRouterDevtools />
+          <ReactQueryDevtools initialIsOpen={false} />
         </>
       )}
     </Core.Provide>
@@ -104,7 +104,7 @@ const AppWithBaseContext = () => {
             alignItems: 'center',
           }}
         >
-          <IpLogo sx={{display: 'block', mb: 2}}/>
+          <IpLogo sx={{display: 'block', mb: 2}} />
           <Core.Txt size="title" block>
             {m.title}
           </Core.Txt>
@@ -124,7 +124,7 @@ const AppWithBaseContext = () => {
           <Datatable.Config
             children={_}
             defaultProps={{
-              renderEmptyState: <Core.Fender type="empty" size="normal" children={m.noDataAtm} sx={{my: 1}}/>,
+              renderEmptyState: <Core.Fender type="empty" size="normal" children={m.noDataAtm} sx={{my: 1}} />,
               rowHeight: 38,
               module: {
                 columnsResize: {enabled: false},
@@ -165,7 +165,7 @@ const AppWithBaseContext = () => {
         ),
       ]}
     >
-      <Outlet/>
+      <Outlet />
     </Core.Provide>
   )
 }

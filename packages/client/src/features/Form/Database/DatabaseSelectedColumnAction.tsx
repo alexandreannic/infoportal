@@ -2,7 +2,7 @@ import React, {useMemo} from 'react'
 import {Box, Icon, SxProps, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import {Obj} from '@axanc/ts-utils'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import * as Core from '@infoportal/client-core'
 import {SelectOption, StatusIcon} from '@infoportal/client-core'
 import {SchemaInspector} from '@infoportal/form-helper'
@@ -20,21 +20,21 @@ export const DatabaseSelectedColumnAction = ({
   columnId,
   inspector,
 }: {
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
   rowIds: string[]
   commonValue?: any
   columnId: string
   inspector: SchemaInspector
 }) => {
-  const validationColumnId: keyof Ip.Submission = 'validationStatus'
+  const validationColumnId: keyof Api.Submission = 'validationStatus'
   if (columnId === validationColumnId)
     return (
       <BulkUpdateValidation
         value={commonValue}
         workspaceId={workspaceId}
         formId={formId}
-        answerIds={rowIds as Ip.SubmissionId[]}
+        answerIds={rowIds as Api.SubmissionId[]}
       />
     )
   const question = inspector.lookup.questionIndex[columnId]
@@ -46,7 +46,7 @@ export const DatabaseSelectedColumnAction = ({
         workspaceId={workspaceId}
         formId={formId}
         question={question}
-        answerIds={rowIds as Ip.SubmissionId[]}
+        answerIds={rowIds as Api.SubmissionId[]}
         inspector={inspector}
       />
     )
@@ -60,10 +60,10 @@ export const BulkUpdateAnswer = ({
   ...props
 }: {
   value?: any
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
-  question: Ip.Form.Question
-  answerIds: Ip.SubmissionId[]
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
+  question: Api.Form.Question
+  answerIds: Api.SubmissionId[]
   inspector: SchemaInspector
 }) => {
   const query = UseQuerySubmission.update()
@@ -102,10 +102,10 @@ export const BulkUpdateValidation = ({
   value,
   ...props
 }: {
-  value?: Ip.Submission.Validation
-  workspaceId: Ip.WorkspaceId
-  formId: Ip.FormId
-  answerIds: Ip.SubmissionId[]
+  value?: Api.Submission.Validation
+  workspaceId: Api.WorkspaceId
+  formId: Api.FormId
+  answerIds: Api.SubmissionId[]
 }) => {
   const query = UseQuerySubmission.updateValidation()
   const {workspaceId, formId, answerIds} = props
@@ -134,11 +134,11 @@ export const BulkUpdateValidation = ({
           value={value}
           onChange={onChange}
           type="select_one"
-          options={Obj.values(Ip.Submission.Validation).map(_ => ({
+          options={Obj.values(Api.Submission.Validation).map(_ => ({
             value: _,
             children: (
               <>
-                <StatusIcon sx={{alignSelf: 'center', mr: 1}} type={Ip.Submission.validationToStatus[_]} />
+                <StatusIcon sx={{alignSelf: 'center', mr: 1}} type={Api.Submission.validationToStatus[_]} />
                 {_}
               </>
             ),

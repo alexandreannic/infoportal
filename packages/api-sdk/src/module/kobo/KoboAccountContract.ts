@@ -1,7 +1,7 @@
 import {initContract} from '@ts-rest/core'
 import {z} from 'zod'
 import {makeMeta, schema} from '../../helper/Schema.js'
-import {Ip} from '../../Api.js'
+import {Api} from '../../Api.js'
 import {map200, map204, TsRestClient} from '../../ApiClient.js'
 
 const c = initContract()
@@ -15,7 +15,7 @@ export const serverContract = c.router({
       id: schema.serverId,
     }),
     responses: {
-      200: z.any() as z.ZodType<Ip.Server | undefined>,
+      200: z.any() as z.ZodType<Api.Server | undefined>,
     },
     metadata: makeMeta({
       access: {
@@ -31,7 +31,7 @@ export const serverContract = c.router({
       workspaceId: schema.workspaceId,
     }),
     responses: {
-      200: c.type<Ip.Server[]>(),
+      200: c.type<Api.Server[]>(),
     },
     metadata: makeMeta({
       access: {
@@ -46,9 +46,9 @@ export const serverContract = c.router({
     pathParams: z.object({
       workspaceId: schema.workspaceId,
     }),
-    body: c.type<Omit<Ip.Server.Payload.Create, 'workspaceId'>>(),
+    body: c.type<Omit<Api.Server.Payload.Create, 'workspaceId'>>(),
     responses: {
-      200: c.type<Ip.Server>(),
+      200: c.type<Api.Server>(),
     },
     metadata: makeMeta({
       access: {
@@ -77,11 +77,11 @@ export const serverContract = c.router({
 
 export const serverClient = (client: TsRestClient, baseUrl: string) => {
   return {
-    get: (params: {id: Ip.ServerId; workspaceId: Ip.WorkspaceId}) => {
+    get: (params: {id: Api.ServerId; workspaceId: Api.WorkspaceId}) => {
       return client.server.get({params}).then(map200)
     },
 
-    getAll: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+    getAll: ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
       return client.server
         .getAll({
           params: {workspaceId},
@@ -89,7 +89,7 @@ export const serverClient = (client: TsRestClient, baseUrl: string) => {
         .then(map200)
     },
 
-    create: ({workspaceId, ...body}: Ip.Server.Payload.Create) => {
+    create: ({workspaceId, ...body}: Api.Server.Payload.Create) => {
       return client.server
         .create({
           params: {workspaceId},
@@ -98,7 +98,7 @@ export const serverClient = (client: TsRestClient, baseUrl: string) => {
         .then(map200)
     },
 
-    delete: ({workspaceId, id}: {workspaceId: Ip.WorkspaceId; id: Ip.ServerId}) => {
+    delete: ({workspaceId, id}: {workspaceId: Api.WorkspaceId; id: Api.ServerId}) => {
       return client.server
         .delete({
           params: {workspaceId, id},

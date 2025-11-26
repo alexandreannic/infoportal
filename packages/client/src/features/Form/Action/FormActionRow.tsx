@@ -1,4 +1,4 @@
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {Box, CircularProgress, Icon, Switch, Tooltip, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import {UseQueryFromAction} from '@/core/query/form/useQueryFromAction.js'
@@ -9,7 +9,7 @@ import {ReactNode} from 'react'
 import {styleUtils} from '@infoportal/client-core'
 import {UseQueryPermission} from '@/core/query/useQueryPermission.js'
 
-export function FormActionRow({action, workspaceId}: {workspaceId: Ip.WorkspaceId; action: Ip.Form.Action}) {
+export function FormActionRow({action, workspaceId}: {workspaceId: Api.WorkspaceId; action: Api.Form.Action}) {
   const t = useTheme()
   const {m, formatDate} = useI18n()
   const queryActionUpdate = UseQueryFromAction.update(workspaceId, action.formId)

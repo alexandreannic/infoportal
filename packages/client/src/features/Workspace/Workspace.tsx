@@ -5,7 +5,7 @@ import {createRoute, Outlet} from '@tanstack/react-router'
 import React, {createContext, useContext} from 'react'
 import {rootRoute} from '@/Router'
 import {Layout} from '@/shared/Layout/Layout'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {UseQueryWorkspace} from '@/core/query/workspace/useQueryWorkspace'
 import {UseQueryPermission} from '@/core/query/useQueryPermission'
 import {PageError} from '@/shared/PageError'
@@ -17,16 +17,16 @@ export const workspaceRoute = createRoute({
 })
 
 export type WorkspaceContext = {
-  workspaceId: Ip.WorkspaceId
-  workspace: Ip.Workspace
-  permission: Ip.Permission.Workspace
+  workspaceId: Api.WorkspaceId
+  workspace: Api.Workspace
+  permission: Api.Permission.Workspace
 }
 
 const Context = createContext<WorkspaceContext>({} as any)
 export const useWorkspaceContext = () => useContext<WorkspaceContext>(Context)
 
 function Workspace() {
-  const {workspaceId} = workspaceRoute.useParams() as {workspaceId: Ip.WorkspaceId}
+  const {workspaceId} = workspaceRoute.useParams() as {workspaceId: Api.WorkspaceId}
   const queryWorkspaceGet = UseQueryWorkspace.get()
   const queryPermission = UseQueryPermission.workspace({workspaceId})
   const workspace = queryWorkspaceGet.data?.find(_ => _.id === workspaceId)

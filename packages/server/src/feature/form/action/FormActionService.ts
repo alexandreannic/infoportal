@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client'
-import {HttpError, Ip} from '@infoportal/api-sdk'
+import {HttpError, Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../../core/prismaMapper/PrismaMapper.js'
 import {app, AppCacheKey} from '../../../index.js'
 
@@ -12,7 +12,7 @@ export class FormActionService {
   readonly create = async ({
     workspaceId,
     ...data
-  }: Ip.Form.Action.Payload.Create & {createdBy: Ip.User.Email}): Promise<Ip.Form.Action> => {
+  }: Api.Form.Action.Payload.Create & {createdBy: Api.User.Email}): Promise<Api.Form.Action> => {
     if (data.formId === data.targetFormId) {
       throw new HttpError.BadRequest(`A form action cannot reference itself.`)
     }
@@ -30,7 +30,7 @@ export class FormActionService {
     id,
     formId,
     ...data
-  }: Ip.Form.Action.Payload.Update & {createdBy: Ip.User.Email}): Promise<Ip.Form.Action> => {
+  }: Api.Form.Action.Payload.Update & {createdBy: Api.User.Email}): Promise<Api.Form.Action> => {
     const action = await this.prisma.formAction
       .update({
         data,
@@ -43,14 +43,14 @@ export class FormActionService {
     return action
   }
 
-  readonly getActivesByForm = ({formId}: {formId: Ip.FormId}): Promise<Ip.Form.Action[]> => {
+  readonly getActivesByForm = ({formId}: {formId: Api.FormId}): Promise<Api.Form.Action[]> => {
     return this.prisma.formAction
       .findMany({orderBy: {createdAt: 'desc'}, where: {formId, disabled: {not: true}, body: {not: null}}})
       .then(_ => _.filter(_ => !_.bodyErrors || _.bodyErrors == 0))
       .then(_ => _.map(prismaMapper.form.mapFormAction))
   }
 
-  readonly getByForm = ({formId}: {formId: Ip.FormId}): Promise<Ip.Form.Action[]> => {
+  readonly getByForm = ({formId}: {formId: Api.FormId}): Promise<Api.Form.Action[]> => {
     return this.prisma.formAction
       .findMany({orderBy: {createdAt: 'desc'}, where: {formId}})
       .then(_ => _.map(prismaMapper.form.mapFormAction))

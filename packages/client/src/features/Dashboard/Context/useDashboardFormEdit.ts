@@ -3,7 +3,7 @@ import {defaultThemeParams} from '@/core/theme'
 import {useEffectSkipFirst} from '@/shared/useEffectSkipFirst'
 import {useDebounce} from '@axanc/react-hooks'
 import {useTheme} from '@emotion/react'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {useForm, useWatch} from 'react-hook-form'
 
 export type UseDashboardFormEdit = ReturnType<typeof useDashboardFormEdit>
@@ -12,13 +12,13 @@ export const useDashboardFormEdit = ({
   workspaceId,
   dashboard,
 }: {
-  workspaceId: Ip.WorkspaceId
-  dashboard: Ip.Dashboard
+  workspaceId: Api.WorkspaceId
+  dashboard: Api.Dashboard
 }) => {
   const queryUpdate = UseQueryDashboard.update({workspaceId})
   const t = useTheme()
 
-  const form = useForm<Omit<Ip.Dashboard.Payload.Update, 'id' | 'workspaceId'>>({
+  const form = useForm<Omit<Api.Dashboard.Payload.Update, 'id' | 'workspaceId'>>({
     defaultValues: {
       name: dashboard.name,
       isPublic: dashboard.isPublic,

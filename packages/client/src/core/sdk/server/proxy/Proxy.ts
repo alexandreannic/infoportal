@@ -1,12 +1,12 @@
 import {UUID} from '@infoportal/common'
 import {AppConfig} from '@/conf/AppConfig'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export interface Proxy {
   id: UUID
   createdAt: Date
   expireAt?: Date
-  createdBy?: Ip.User.Email
+  createdBy?: Api.User.Email
   name: string
   slug: string
   url: string

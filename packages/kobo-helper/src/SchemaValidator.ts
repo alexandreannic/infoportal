@@ -1,5 +1,5 @@
 import {Obj, seq} from '@axanc/ts-utils'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 
 export type SchemaValidationErrorReport = {
   errors?: {
@@ -18,7 +18,7 @@ export type SchemaValidationErrorReport = {
 }
 
 export class SchemaValidator {
-  static readonly validate = (schema: Ip.Form.Schema): SchemaValidationErrorReport | undefined => {
+  static readonly validate = (schema: Api.Form.Schema): SchemaValidationErrorReport | undefined => {
     const report = {
       errors: {
         missingQuestionNames: [] as number[],

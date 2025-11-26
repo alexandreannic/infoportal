@@ -1,7 +1,7 @@
 import {Box, useTheme} from '@mui/material'
 import React, {memo} from 'react'
 import {Core} from '@/shared'
-import {Ip} from '@infoportal/api-sdk'
+import {Api} from '@infoportal/api-sdk'
 import {fnSwitch} from '@axanc/ts-utils'
 import {PieChartWidget} from '@/features/Dashboard/Widget/PieChart/PieChartWidget'
 import {BarChartWidget} from '@/features/Dashboard/Widget/BarChart/BarChartWidget'
@@ -22,10 +22,10 @@ export const Widget = memo(
     onClick,
     dashboard,
   }: {
-    dashboard: Ip.Dashboard
+    dashboard: Api.Dashboard
     status?: Status
-    widget: Ip.Dashboard.Widget
-    onClick?: (_: Ip.Dashboard.WidgetId) => void
+    widget: Api.Dashboard.Widget
+    onClick?: (_: Api.Dashboard.WidgetId) => void
   }) => {
     const t = useTheme()
     const content = (

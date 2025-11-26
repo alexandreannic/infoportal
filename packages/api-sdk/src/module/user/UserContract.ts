@@ -1,5 +1,5 @@
 import {initContract} from '@ts-rest/core'
-import {Ip} from '../../Api.js'
+import {Api} from '../../Api.js'
 import {map200, TsRestClient} from '../../ApiClient.js'
 import {z} from 'zod'
 import {schema} from '../../helper/Schema.js'
@@ -10,10 +10,10 @@ export const userContract = c.router({
   update: {
     method: 'PATCH',
     path: '/:workspaceId/user/:id',
-    pathParams: c.type<Pick<Ip.User.Payload.Update, 'workspaceId' | 'id'>>(),
-    body: c.type<Omit<Ip.User.Payload.Update, 'workspaceId' | 'id'>>(),
+    pathParams: c.type<Pick<Api.User.Payload.Update, 'workspaceId' | 'id'>>(),
+    body: c.type<Omit<Api.User.Payload.Update, 'workspaceId' | 'id'>>(),
     responses: {
-      200: c.type<Ip.User>(),
+      200: c.type<Api.User>(),
     },
   },
   search: {
@@ -23,7 +23,7 @@ export const userContract = c.router({
       workspaceId: schema.workspaceId,
     }),
     responses: {
-      200: c.type<Ip.User[]>(),
+      200: c.type<Api.User[]>(),
     },
   },
   getJobs: {
@@ -40,20 +40,20 @@ export const userContract = c.router({
 
 export const userClient = (client: TsRestClient, baseUrl: string) => {
   return {
-    getAvatarUrl: ({email}: {email: Ip.User.Email}) => {
+    getAvatarUrl: ({email}: {email: Api.User.Email}) => {
       return `${baseUrl}/user/avatar/${email}`
     },
-    update: ({id, workspaceId, ...body}: Ip.User.Payload.Update) => {
-      return client.user.update({params: {id, workspaceId}, body}).then(map200).then(Ip.User.map)
+    update: ({id, workspaceId, ...body}: Api.User.Payload.Update) => {
+      return client.user.update({params: {id, workspaceId}, body}).then(map200).then(Api.User.map)
     },
-    getJobs: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+    getJobs: ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
       return client.user.getJobs({params: {workspaceId}}).then(map200)
     },
-    search: ({workspaceId}: {workspaceId: Ip.WorkspaceId}) => {
+    search: ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
       return client.user
         .search({params: {workspaceId}})
         .then(map200)
-        .then(_ => _.map(Ip.User.map))
+        .then(_ => _.map(Api.User.map))
     },
   }
 }
