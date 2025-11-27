@@ -5,13 +5,12 @@ import {PrismaClient} from '@prisma/client'
 import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi.js'
 import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerUser} from './controller/ControllerUser.js'
-import {HttpError, Api, apiContract, Meta} from '@infoportal/api-sdk'
+import {Api, apiContract, HttpError, Meta} from '@infoportal/api-sdk'
 import {ControllerProxy} from './controller/ControllerProxy.js'
 import {ControllerJsonStore} from './controller/ControllerJsonStore.js'
 import {ControllerKoboAnswerHistory} from './controller/kobo/ControllerKoboAnswerHistory.js'
 import {ControllerCache} from './controller/ControllerCache.js'
 import {UserService} from '../feature/user/UserService.js'
-import {ControllerDatabaseView} from './controller/ControllerDatabaseView.js'
 import {ControllerKoboApiXlsImport} from './controller/kobo/ControllerKoboApiXlsImport.js'
 import {AuthRequest} from '../typings'
 import multer from 'multer'
@@ -38,6 +37,7 @@ import {FormActionReportService} from '../feature/form/action/FormActionReportSe
 import {DashboardService} from '../feature/dashboard/DashboardService.js'
 import {WidgetService} from '../feature/dashboard/WidgetService.js'
 import {SectionService} from '../feature/dashboard/SectionService.js'
+import {DatabaseView} from '../feature/databaseView/DatabaseView.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -64,7 +64,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const proxy = new ControllerProxy(prisma)
   const jsonStore = new ControllerJsonStore(prisma)
   const koboAnswerHistory = new ControllerKoboAnswerHistory(prisma)
-  const databaseView = new ControllerDatabaseView(prisma)
   const cacheController = new ControllerCache()
   const importData = new ControllerKoboApiXlsImport(prisma)
 
@@ -153,6 +152,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
 
   const workspace = new WorkspaceService(prisma)
   const workspaceAccess = new WorkspaceAccessService(prisma)
+  const databaseView = new DatabaseView(prisma)
   const workspaceInvitation = new WorkspaceInvitationService(prisma)
   const koboForm = new KoboFormService(prisma)
   const form = new FormService(prisma)
@@ -200,6 +200,33 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const s = initServer()
 
   const tsRestRouter = s.router(apiContract, {
+    databaseView: {
+      updateCol: _ =>
+        auth2(_)
+          .then(({body, req}) => databaseView.updateCol({...body, updatedBy: req.session.app.user.email}))
+          .then(ok200)
+          .catch(handleError),
+      search: _ =>
+        auth2(_)
+          .then(({body}) => databaseView.search(body))
+          .then(ok200)
+          .catch(handleError),
+      create: _ =>
+        auth2(_)
+          .then(({body}) => databaseView.create(body))
+          .then(ok200)
+          .catch(handleError),
+      update: _ =>
+        auth2(_)
+          .then(({body}) => databaseView.update(body))
+          .then(ok200)
+          .catch(handleError),
+      delete: _ =>
+        auth2(_)
+          .then(({body}) => databaseView.delete(body))
+          .then(ok200)
+          .catch(handleError),
+    },
     workspace: {
       getMine: _ =>
         auth2(_)
@@ -640,9 +667,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
             .catch(handleError),
         importLastKoboSchema: _ =>
           auth2(_)
-            .then(({req, params}) =>
-              formVersion.importLastKoboSchema({author: req.session.app.user.email, ...params}),
-            )
+            .then(({req, params}) => formVersion.importLastKoboSchema({author: req.session.app.user.email, ...params}))
             .then(ok200)
             .catch(handleError),
       },
@@ -757,12 +782,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     )
 
     r.post('/kobo-answer-history/search', safe(koboAnswerHistory.search))
-
-    r.post(`/database-view/:viewId/col/:colName`, auth(), safe(databaseView.updateCol))
-    r.post(`/database-view`, auth(), safe(databaseView.search))
-    r.put(`/database-view/:databaseId`, auth(), safe(databaseView.create))
-    r.post(`/database-view/:id`, auth(), safe(databaseView.update))
-    r.delete(`/database-view/:viewId`, auth(), safe(databaseView.delete))
 
     r.get('/user/avatar/:email', auth(), safe(new ControllerUser(prisma).avatar))
 

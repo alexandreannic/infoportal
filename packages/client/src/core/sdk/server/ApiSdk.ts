@@ -7,7 +7,6 @@ import {ProxySdk} from '@/core/sdk/server/proxy/ProxySdk'
 import {JsonStoreSdk} from '@/core/sdk/server/jsonStore/JsonStoreSdk'
 import {KoboAnswerHistorySdk} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistorySdk'
 import {CacheSdk} from '@/core/sdk/server/cache/CacheSdk'
-import {DatabaseViewSdk} from '@/core/sdk/server/databaseView/DatabaseViewSdk'
 import {ImportFromXlsDataSdk} from '@/core/sdk/server/importXls/ImportFromXlsSdk'
 
 export class ApiSdk {
@@ -18,7 +17,6 @@ export class ApiSdk {
       server: new KoboServerSdk(this.client),
     }
     this.koboApi = new KoboApiSdk(client)
-    this.databaseView = new DatabaseViewSdk(client)
     this.proxy = new ProxySdk(client)
     this.jsonStore = new JsonStoreSdk(client)
     this.cache = new CacheSdk(client)
@@ -43,7 +41,6 @@ export class ApiSdk {
     server: KoboServerSdk
   }
   readonly koboApi: KoboApiSdk
-  readonly databaseView: DatabaseViewSdk
   readonly proxy: ProxySdk
   readonly jsonStore: JsonStoreSdk
   readonly cache: CacheSdk

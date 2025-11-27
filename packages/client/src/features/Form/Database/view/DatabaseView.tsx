@@ -2,12 +2,12 @@ import {Box, Icon, SxProps, Theme, useTheme} from '@mui/material'
 import React, {useState} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {useForm} from 'react-hook-form'
-import {DatabaseViewVisibility} from '@/core/sdk/server/databaseView/DatabaseView'
 import {DatabaseViewInputRow} from '@/features/Form/Database/view/DatabaseViewInputRow'
 import {DatabaseViewDefaultName, UseDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
 import {useSession} from '@/core/Session/SessionContext'
 import {useFormContext} from '@/features/Form/Form'
 import {Core} from '@/shared'
+import {Api} from '@infoportal/api-sdk'
 
 interface FormCreate {
   name: string
@@ -31,7 +31,7 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
           key={view.id}
           readOnly={
             view.name === DatabaseViewDefaultName ||
-            (view.visibility === DatabaseViewVisibility.Sealed &&
+            (view.visibility === Api.DatabaseView.Visibility.Sealed &&
               view.createdBy !== session.user.email &&
               !permission.databaseview_manage)
           }
@@ -62,7 +62,7 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
                 ctx.asyncViewCreate
                   .call({
                     name: _.name,
-                    visibility: DatabaseViewVisibility.Private,
+                    visibility: Api.DatabaseView.Visibility.Private,
                   })
                   .then(() => formCreate.reset({name: ''}))
               })}

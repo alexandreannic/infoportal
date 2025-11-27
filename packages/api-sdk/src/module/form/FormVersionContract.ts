@@ -78,7 +78,7 @@ export const formVersionContract = c.router({
       workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
-    body: z.object({}),
+    body: z.void(),
     responses: {
       200: z.custom<Api.Form.Version>(),
     },
@@ -96,7 +96,7 @@ export const formVersionContract = c.router({
       workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
-    body: z.object({}),
+    body: z.void(),
     responses: {
       200: z.custom<Api.Form.Version>(),
     },
@@ -177,6 +177,7 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
       return client.form.version
         .deployLast({
           params: {workspaceId, formId},
+          body: undefined,
         })
         .then(map200)
     },
@@ -185,6 +186,7 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
       return client.form.version
         .importLastKoboSchema({
           params: {workspaceId, formId},
+          body: undefined,
         })
         .then(map200)
     },

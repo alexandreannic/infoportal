@@ -92,7 +92,7 @@ export const submissionContract = c.router({
       formId: schema.formId,
     }),
     body: z.object({
-      answers: z.record(z.any()),
+      answers: z.record(z.string(), z.any()),
       attachments: z.array(z.any()),
       geolocation: z.tuple([z.number(), z.number()]).optional(),
     }),

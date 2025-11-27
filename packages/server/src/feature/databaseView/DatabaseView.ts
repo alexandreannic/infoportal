@@ -1,11 +1,10 @@
-import {DatabaseViewVisibility, Prisma, PrismaClient} from '@prisma/client'
-import {UUID} from '@infoportal/common'
-import {HttpError, Api} from '@infoportal/api-sdk'
+import {PrismaClient} from '@prisma/client'
+import {Api, HttpError} from '@infoportal/api-sdk'
 
 export class DatabaseView {
   constructor(private prisma: PrismaClient) {}
 
-  readonly search = ({databaseId, email}: {email?: string; databaseId?: string}) => {
+  readonly search = ({databaseId, email}: Api.DatabaseView.Payload.Search) => {
     return this.prisma.databaseView.findMany({
       include: {details: true},
       where: {
@@ -13,7 +12,7 @@ export class DatabaseView {
         OR: [
           {
             visibility: {
-              in: [DatabaseViewVisibility.Public, DatabaseViewVisibility.Sealed],
+              in: [Api.DatabaseView.Visibility.Public, Api.DatabaseView.Visibility.Sealed],
             },
           },
           {
@@ -24,33 +23,31 @@ export class DatabaseView {
     })
   }
 
-  readonly create = async (data: Prisma.DatabaseViewCreateInput) => {
+  readonly create = async (data: Api.DatabaseView.Payload.Create) => {
     return this.prisma.databaseView.create({include: {details: true}, data: data})
   }
 
-  readonly update = ({id, ...data}: Partial<Omit<Prisma.DatabaseViewCreateInput, 'details'>>) => {
+  readonly update = ({id, ...data}: Api.DatabaseView.Payload.Update) => {
     return this.prisma.databaseView.update({data: data, where: {id}})
   }
 
-  readonly delete = async (id: UUID) => {
+  readonly delete = async ({id}: {id: Api.DatabaseViewId}) => {
     await this.prisma.databaseView.delete({where: {id: id}})
   }
 
   readonly updateCol = async ({
     viewId,
     updatedBy = 'unknown' as Api.User.Email,
-    body,
-  }: {
-    viewId: UUID
-    updatedBy?: Api.User.Email
-    body: Pick<Prisma.DatabaseViewColCreateInput, 'name' | 'width' | 'visibility'>
-  }) => {
+    name,
+    width,
+    visibility,
+  }: Api.DatabaseView.Payload.UpdateCol & {updatedBy?: Api.User.Email}) => {
     const view = await this.prisma.databaseView.findFirst({
       select: {visibility: true, createdBy: true},
       where: {id: viewId},
     })
     if (!view) throw new HttpError.NotFound(`DatabaseView ${viewId}.`)
-    if (view.visibility === DatabaseViewVisibility.Sealed && updatedBy !== view.createdBy)
+    if (view.visibility === Api.DatabaseView.Visibility.Sealed && updatedBy !== view.createdBy)
       throw new HttpError.Forbidden(`${updatedBy} cannot edit DatabaseView ${viewId}.`)
 
     await Promise.all([
@@ -67,18 +64,18 @@ export class DatabaseView {
         where: {
           name_viewId: {
             viewId,
-            name: body.name,
+            name,
           },
         },
         update: {
-          width: body.width,
-          visibility: body.visibility,
+          width,
+          visibility,
         },
         create: {
           viewId,
-          name: body.name,
-          width: body.width,
-          visibility: body.visibility,
+          name,
+          width,
+          visibility,
         },
       }),
     ])

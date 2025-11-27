@@ -1,8 +1,6 @@
-import {UUID} from '@infoportal/common'
 import {useCallback, useEffect, useMemo} from 'react'
 import {useAppSettings} from '@/core/context/ConfigContext'
 import {Seq, seq} from '@axanc/ts-utils'
-import {DatabaseView, DatabaseViewCol, DatabaseViewColVisibility, DatabaseViewVisibility,} from '@/core/sdk/server/databaseView/DatabaseView'
 import {useSession} from '@/core/Session/SessionContext'
 import {Api} from '@infoportal/api-sdk'
 import {useAsync, useFetcher, usePersistentState} from '@axanc/react-hooks'
@@ -13,7 +11,7 @@ export type UseDatabaseView = ReturnType<typeof useDatabaseView>
 export const DatabaseViewDefaultName = 'Default'
 
 export const useDatabaseView = (formId: Api.FormId) => {
-  const {api} = useAppSettings()
+  const {apiv2: api} = useAppSettings()
   const session = useSession()
   const [currentViewId, setCurrentViewId] = usePersistentState<string | undefined>(undefined, {
     storageKey: 'db-view' + formId,
@@ -24,7 +22,7 @@ export const useDatabaseView = (formId: Api.FormId) => {
     function initView() {
       if (!fetcherViews.get) return
       if (fetcherViews.get.length === 0) {
-        asyncViewCreate.call({name: DatabaseViewDefaultName, visibility: DatabaseViewVisibility.Public})
+        asyncViewCreate.call({name: DatabaseViewDefaultName, visibility: Api.DatabaseView.Visibility.Public})
       } else if (!currentViewId) {
         setCurrentViewId(fetcherViews.get[0].id)
       }
@@ -32,7 +30,7 @@ export const useDatabaseView = (formId: Api.FormId) => {
     [fetcherViews.get],
   )
 
-  const asyncViewDelete = useAsync((id: UUID) =>
+  const asyncViewDelete = useAsync((id: Api.DatabaseViewId) =>
     api.databaseView.delete(id).then(_ => {
       fetcherViews.set(_ => _?.filter(_ => _.id !== id))
     }),
@@ -44,21 +42,23 @@ export const useDatabaseView = (formId: Api.FormId) => {
     return match ?? fetcherViews.get[0]
   }, [currentViewId, fetcherViews.get])
 
-  const canUpdateView = (v: DatabaseView) =>
-    !!v && (v.visibility !== DatabaseViewVisibility.Sealed || v.createdBy === session.user.email)
+  const canUpdateView = (v: Api.DatabaseView) =>
+    !!v && (v.visibility !== Api.DatabaseView.Visibility.Sealed || v.createdBy === session.user.email)
 
-  const asyncViewUpdate = useAsync(async (view: DatabaseView, changes: Partial<Pick<DatabaseView, 'visibility'>>) => {
-    if (!canUpdateView(view)) return
-    api.databaseView.update({id: view.id, ...changes})
-    fetcherViews.set(_ => _?.map(_ => (_.id === view.id ? {..._, ...changes} : _)))
-  })
+  const asyncViewUpdate = useAsync(
+    async (view: Api.DatabaseView, changes: Partial<Pick<Api.DatabaseView, 'visibility'>>) => {
+      if (!canUpdateView(view)) return
+      api.databaseView.update({id: view.id, ...changes})
+      fetcherViews.set(_ => _?.map(_ => (_.id === view.id ? {..._, ...changes} : _)))
+    },
+  )
 
   const asyncColUpdate = async (
-    view: DatabaseView,
-    body: {name: string; visibility?: DatabaseViewColVisibility; width?: number},
+    view: Api.DatabaseView,
+    body: {name: string; visibility?: Api.DatabaseView.ColVisibility; width?: number},
   ) => {
     if (!canUpdateView(view)) return
-    api.databaseView.updateCol(view.id, body)
+    api.databaseView.updateCol({viewId: view.id, ...body})
     fetcherViews.set(views => {
       return views?.map(v => {
         if (v.id !== view.id) return v
@@ -75,13 +75,15 @@ export const useDatabaseView = (formId: Api.FormId) => {
     })
   }
 
-  const asyncViewCreate = useAsync(async (params: Pick<DatabaseView, 'name' | 'visibility'>) => {
+  const asyncViewCreate = useAsync(async (params: Pick<Api.DatabaseView, 'name' | 'visibility'>) => {
     const res = await api.databaseView.create({...params, databaseId: formId})
     fetcherViews.set(_ => [...(_ ?? []), res])
   })
 
   const hiddenColumns = useMemo(() => {
-    return currentView?.details?.filter(_ => _.visibility === DatabaseViewColVisibility.Hidden)?.map(_ => _.name) ?? []
+    return (
+      currentView?.details?.filter(_ => _.visibility === Api.DatabaseView.ColVisibility.Hidden)?.map(_ => _.name) ?? []
+    )
   }, [currentView])
 
   const colsById = useMemo(() => {
@@ -99,18 +101,18 @@ export const useDatabaseView = (formId: Api.FormId) => {
     (columns: string[]) => {
       if (!currentView) return
       const hidden = new Set(columns)
-      const touchedColumns: Seq<Pick<DatabaseViewCol, 'name' | 'visibility'>> = seq([
+      const touchedColumns: Seq<Pick<Api.DatabaseView.Col, 'name' | 'visibility'>> = seq([
         ...(currentView?.details ?? []),
         ...seq(columns)
           .filter(_ => !(currentView?.details.map(_ => _.name) ?? []).includes(_))
-          .map(_ => ({name: _, visibility: DatabaseViewColVisibility.Visible})),
+          .map(_ => ({name: _, visibility: Api.DatabaseView.ColVisibility.Visible})),
       ])
       const columnUpdates = touchedColumns
         .map(_ => {
-          if (_.visibility === DatabaseViewColVisibility.Hidden && !hidden.has(_.name))
-            return {name: _.name, visibility: DatabaseViewColVisibility.Visible}
-          if (_.visibility === DatabaseViewColVisibility.Visible && hidden.has(_.name))
-            return {name: _.name, visibility: DatabaseViewColVisibility.Hidden}
+          if (_.visibility === Api.DatabaseView.ColVisibility.Hidden && !hidden.has(_.name))
+            return {name: _.name, visibility: Api.DatabaseView.ColVisibility.Visible}
+          if (_.visibility === Api.DatabaseView.ColVisibility.Visible && hidden.has(_.name))
+            return {name: _.name, visibility: Api.DatabaseView.ColVisibility.Hidden}
           return
         })
         .compact()

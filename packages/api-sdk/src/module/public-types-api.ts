@@ -1,3 +1,4 @@
+export * from './database-view/DatabaseView.js'
 export * from './workspace/Workspace.js'
 export * from './form/Form.js'
 export * from './form/access/FormAccess.js'

@@ -20,6 +20,7 @@ import {formActionReportClient} from './module/form/action/FormActionReportContr
 import {dashboardClient} from './module/dashboard/DashboardContract.js'
 import {widgetClient} from './module/dashboard/DashboardWidgetContract.js'
 import {sectionClient} from './module/dashboard/DashboardSectionContract.js'
+import {databaseViewClient} from './module/database-view/DatabaseViewContract.js'
 
 export type ApiClient = ReturnType<typeof buildApiClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -33,6 +34,7 @@ const buildClient = (baseUrl: string) =>
 export const buildApiClient = (baseUrl: string) => {
   const client = buildClient(baseUrl)
   return {
+    databaseView: databaseViewClient(client),
     group: groupClient(client, baseUrl),
     workspace: {
       ...workspaceClient(client, baseUrl),

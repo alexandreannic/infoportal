@@ -18,12 +18,14 @@ import {formActionReportContract} from './module/form/action/FormActionReportCon
 import {dashboardContract} from './module/dashboard/DashboardContract.js'
 import {widgetContract} from './module/dashboard/DashboardWidgetContract.js'
 import {sectionContract} from './module/dashboard/DashboardSectionContract.js'
+import {databaseViewContract} from './module/database-view/DatabaseViewContract.js'
 
 export const apiContract = initContract().router({
   permission: permissionContract,
   server: serverContract,
   kobo: koboContract,
   group: groupContract,
+  databaseView: databaseViewContract,
   dashboard: {
     ...dashboardContract,
     section: sectionContract,

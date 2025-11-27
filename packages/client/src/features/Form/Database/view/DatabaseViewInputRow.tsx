@@ -1,10 +1,10 @@
 import {Box, Collapse, Radio} from '@mui/material'
-import {DatabaseView, DatabaseViewVisibility} from '@/core/sdk/server/databaseView/DatabaseView'
 import {useI18n} from '@infoportal/client-i18n'
 import {BtnConfirm} from '@/shared/BtnConfirm'
 import React from 'react'
 import {makeStyles} from 'tss-react/mui'
 import {Core} from '@/shared'
+import {Api} from '@infoportal/api-sdk'
 
 const useStyles = makeStyles<{open?: boolean}>()((t, {open}) => ({
   root: {
@@ -42,9 +42,9 @@ export const DatabaseViewInputRow = ({
 }: {
   readOnly?: boolean
   open?: boolean
-  view: DatabaseView
+  view: Api.DatabaseView
   checked?: boolean
-  onUpdate: (_: Pick<DatabaseView, 'visibility'>) => void
+  onUpdate: (_: Pick<Api.DatabaseView, 'visibility'>) => void
   onOpen: () => void
   onDelete: () => void
   onClick: () => void
@@ -78,7 +78,7 @@ export const DatabaseViewInputRow = ({
           <Core.Txt size="small" color="hint">
             {m.visibility}
           </Core.Txt>
-          <Core.SelectSingle<DatabaseViewVisibility>
+          <Core.SelectSingle<Api.DatabaseView.Visibility>
             disabled={readOnly}
             value={view.visibility}
             onChange={_ => onUpdate({visibility: _})}
@@ -86,19 +86,19 @@ export const DatabaseViewInputRow = ({
             hideNullOption
             options={[
               Core.SelectItem({
-                value: DatabaseViewVisibility.Public,
+                value: Api.DatabaseView.Visibility.Public,
                 icon: 'public',
                 title: m._datatable.viewPublic,
                 desc: m._datatable.viewPublicDesc,
               }),
               Core.SelectItem({
-                value: DatabaseViewVisibility.Sealed,
+                value: Api.DatabaseView.Visibility.Sealed,
                 icon: 'lock',
                 title: m._datatable.viewLock,
                 desc: m._datatable.viewLockDesc,
               }),
               Core.SelectItem({
-                value: DatabaseViewVisibility.Private,
+                value: Api.DatabaseView.Visibility.Private,
                 icon: 'visibility_off',
                 title: m._datatable.viewPrivate,
                 desc: m._datatable.viewPrivateDesc,
