@@ -1,4 +1,4 @@
-import {appConf, AppConf} from '../core/conf/AppConf.js'
+import {appConf, AppConf} from '../core/AppConf.js'
 // import * as Sentry from '@sentry/node'
 // import {ProfilingIntegration} from '@sentry/profiling-node'
 import {app} from '../index.js'

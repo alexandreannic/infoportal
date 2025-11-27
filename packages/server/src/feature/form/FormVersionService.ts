@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {app, AppCacheKey} from '../../index.js'
-import {appConf} from '../../core/conf/AppConf.js'
+import {appConf} from '../../core/AppConf.js'
 import {yup} from '../../helper/Utils.js'
 import {HttpError, Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'

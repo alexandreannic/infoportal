@@ -4,7 +4,7 @@ import {PrismaClient} from '@prisma/client'
 import {SessionService} from '../../feature/session/SessionService.js'
 import {HttpError, Api} from '@infoportal/api-sdk'
 import {isAuthenticated} from '../Routes.js'
-import {appConf} from '../../core/conf/AppConf.js'
+import {appConf} from '../../core/AppConf.js'
 
 export class ControllerSession {
   constructor(

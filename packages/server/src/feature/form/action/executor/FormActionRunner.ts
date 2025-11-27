@@ -9,7 +9,7 @@ import {FormActionErrorHandler} from './FormActionErrorHandler.js'
 import {Worker} from '@infoportal/form-action-runner'
 import {chunkify, seq} from '@axanc/ts-utils'
 import {PromisePool} from '@supercharge/promise-pool'
-import {appConf} from '../../../../core/conf/AppConf.js'
+import {appConf} from '../../../../core/AppConf.js'
 
 export class FormActionRunner {
   private liveReport = FormActionRunningReportManager.getInstance(this.prisma)

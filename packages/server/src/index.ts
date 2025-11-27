@@ -1,4 +1,4 @@
-import {AppConf, appConf} from './core/conf/AppConf.js'
+import {AppConf, appConf} from './core/AppConf.js'
 import {Server} from './server/Server.js'
 import {PrismaClient} from '@prisma/client'
 import {ScheduledTask} from './scheduledTask/ScheduledTask.js'

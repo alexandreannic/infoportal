@@ -1,7 +1,6 @@
 import {createRootRoute, createRouter, ErrorRouteComponent} from '@tanstack/react-router'
 import {settingsRoute} from './features/Settings/Settings'
 import {settingsUsersRoute} from '@/features/Settings/SettingsUsers'
-import {settingsProxyRoute} from '@/features/Settings/SettingsProxy'
 import {settingsCacheRoute} from '@/features/Settings/SettingsCache'
 import {formsRoute} from '@/features/Form/Forms'
 import {formRootRoute, formRoute} from '@/features/Form/Form'
@@ -58,7 +57,7 @@ const tsRoutes = [
         formActionsRoute.addChildren([formActionRoute, formActionLogsRoute, formActionReportsRoute]),
       ]),
     ]),
-    settingsRoute.addChildren([settingsGroupsRoute, settingsCacheRoute, settingsProxyRoute, settingsUsersRoute]),
+    settingsRoute.addChildren([settingsGroupsRoute, settingsCacheRoute, settingsUsersRoute]),
   ]),
 ]
 
