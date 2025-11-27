@@ -4,7 +4,6 @@ import {Method} from 'axios'
 import {SessionSdk} from '@/core/sdk/server/session/SessionSdk'
 import {KoboServerSdk} from '@/core/sdk/server/kobo/KoboServerSdk'
 import {ProxySdk} from '@/core/sdk/server/proxy/ProxySdk'
-import {JsonStoreSdk} from '@/core/sdk/server/jsonStore/JsonStoreSdk'
 import {CacheSdk} from '@/core/sdk/server/cache/CacheSdk'
 import {ImportFromXlsDataSdk} from '@/core/sdk/server/importXls/ImportFromXlsSdk'
 
@@ -16,7 +15,6 @@ export class ApiSdk {
     }
     this.koboApi = new KoboApiSdk(client)
     this.proxy = new ProxySdk(client)
-    this.jsonStore = new JsonStoreSdk(client)
     this.cache = new CacheSdk(client)
     this.importData = new ImportFromXlsDataSdk(client)
   }
@@ -39,7 +37,6 @@ export class ApiSdk {
   }
   readonly koboApi: KoboApiSdk
   readonly proxy: ProxySdk
-  readonly jsonStore: JsonStoreSdk
   readonly cache: CacheSdk
   readonly importData: ImportFromXlsDataSdk
 }

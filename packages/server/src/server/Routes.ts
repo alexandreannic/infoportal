@@ -7,7 +7,6 @@ import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerUser} from './controller/ControllerUser.js'
 import {Api, apiContract, HttpError, Meta} from '@infoportal/api-sdk'
 import {ControllerProxy} from './controller/ControllerProxy.js'
-import {ControllerJsonStore} from './controller/ControllerJsonStore.js'
 import {ControllerCache} from './controller/ControllerCache.js'
 import {UserService} from '../feature/user/UserService.js'
 import {ControllerKoboApiXlsImport} from './controller/kobo/ControllerKoboApiXlsImport.js'
@@ -62,7 +61,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const koboApi = new ControllerKoboApi(prisma)
   const session = new ControllerSession(prisma)
   const proxy = new ControllerProxy(prisma)
-  const jsonStore = new ControllerJsonStore(prisma)
   const cacheController = new ControllerCache()
   const importData = new ControllerKoboApiXlsImport(prisma)
 
@@ -789,10 +787,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     )
 
     r.get('/user/avatar/:email', auth(), safe(new ControllerUser(prisma).avatar))
-
-    r.get('/json-store/:key', auth(), safe(jsonStore.get))
-    r.put('/json-store', auth(), safe(jsonStore.set))
-    r.patch('/json-store', auth(), safe(jsonStore.update))
 
     r.get('/cache', cacheController.get)
     r.post('/cache/clear', cacheController.clear)
