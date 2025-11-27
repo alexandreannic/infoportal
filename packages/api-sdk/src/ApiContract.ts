@@ -19,6 +19,7 @@ import {dashboardContract} from './module/dashboard/DashboardContract.js'
 import {widgetContract} from './module/dashboard/DashboardWidgetContract.js'
 import {sectionContract} from './module/dashboard/DashboardSectionContract.js'
 import {databaseViewContract} from './module/database-view/DatabaseViewContract.js'
+import {submissionHistoryContract} from './module/submission/history/SubmissionHistoryContract.js'
 
 export const apiContract = initContract().router({
   permission: permissionContract,
@@ -36,7 +37,7 @@ export const apiContract = initContract().router({
     invitation: workspaceInvitationContract,
     access: workspaceAccessContract,
   },
-  submission: submissionContract,
+  submission: {...submissionContract, history: submissionHistoryContract},
   form: {
     ...formContract,
     access: formAccessContract,

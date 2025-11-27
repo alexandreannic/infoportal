@@ -4,7 +4,7 @@ import {Socket} from 'socket.io-client'
 import {useQueryClient} from '@tanstack/react-query'
 import {IpEvent} from '@infoportal/common'
 import {Api} from '@infoportal/api-sdk'
-import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
+import {UseQuerySubmission} from '@/core/query/submission/useQuerySubmission.js'
 import {getAppSocket} from '@/core/socket'
 
 export const useFormSocket = ({formId, workspaceId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {

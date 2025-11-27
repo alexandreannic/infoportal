@@ -22,8 +22,11 @@ export const queryKeys = {
     concat('dashboardBySlug', workspaceSlug, dashboardSlug),
   dashboard: (workspaceId?: Api.WorkspaceId, dashboardId?: Api.DashboardId) =>
     concat(workspaceId, 'dashboard', dashboardId),
-  dashboardSection: (workspaceId?: Api.WorkspaceId, dashboardId?: Api.DashboardId, sectionId?: Api.Dashboard.SectionId) =>
-    concat(workspaceId, 'dashboard', dashboardId, 'section', sectionId),
+  dashboardSection: (
+    workspaceId?: Api.WorkspaceId,
+    dashboardId?: Api.DashboardId,
+    sectionId?: Api.Dashboard.SectionId,
+  ) => concat(workspaceId, 'dashboard', dashboardId, 'section', sectionId),
   dashboardWidget: (workspaceId?: Api.WorkspaceId, dashboardId?: Api.DashboardId) =>
     concat(workspaceId, 'dashboard', dashboardId, 'widget'),
   // dashboardWidget: (
@@ -44,6 +47,7 @@ export const queryKeys = {
   formActionReport: (workspaceId?: Api.WorkspaceId, formId?: Api.FormId, rest?: string) =>
     concat(workspaceId, 'form', formId, 'action', 'report', rest),
   submission: (formId?: Api.FormId) => concat('submission', formId),
+  submissionHistory: (formId?: Api.FormId) => concat('submission-history', formId),
   schema: (workspaceId?: Api.WorkspaceId, formId?: Api.FormId) => concat('schema', workspaceId, formId),
   schemaByVersion: (workspaceId?: Api.WorkspaceId, formId?: Api.FormId, versionId?: Api.Form.VersionId) =>
     concat('schema', workspaceId, formId, 'version', versionId),

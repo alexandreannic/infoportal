@@ -7,7 +7,7 @@ import * as Core from '@infoportal/client-core'
 import {SelectOption, StatusIcon} from '@infoportal/client-core'
 import {SchemaInspector} from '@infoportal/form-helper'
 import * as Datatable from '@infoportal/client-datatable'
-import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
+import {UseQuerySubmission} from '@/core/query/submission/useQuerySubmission.js'
 import {editableColsType} from '@infoportal/database-column'
 
 export type KoboBulkUpdateType = typeof editableColsType extends Set<infer U> ? U : never

@@ -1,11 +1,11 @@
 import {QueryClient, useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
-import {useAppSettings} from '../../context/ConfigContext'
-import {KoboMapper, Submission} from '../../sdk/server/kobo/KoboMapper'
-import {queryKeys} from '../query.index'
+import {useAppSettings} from '../../context/ConfigContext.js'
+import {KoboMapper, Submission} from '../../sdk/server/kobo/KoboMapper.js'
+import {queryKeys} from '../query.index.js'
 import {Api} from '@infoportal/api-sdk'
 import {produce} from 'immer'
-import {useIpToast} from '@/core/useToast'
-import {UseQuerySchema} from '@/core/query/form/useQuerySchema'
+import {useIpToast} from '@/core/useToast.js'
+import {UseQuerySchema} from '@/core/query/form/useQuerySchema.js'
 
 export class UseQuerySubmission {
   static cacheRemove({

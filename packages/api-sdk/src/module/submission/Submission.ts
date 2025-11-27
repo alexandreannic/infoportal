@@ -5,6 +5,9 @@ import {User} from '../user/User.js'
 import {Brand, Geolocation, Pagination, Period, StateStatus, Uuid} from '../common/Common.js'
 import {FormId} from '../form/Form.js'
 import {WorkspaceId} from '../workspace/Workspace.js'
+import {z} from 'zod'
+import {SubmissionHistoryValidation} from './history/SubmissionHistoryValidation.js'
+import {Api} from '../../Api.js'
 
 export type Submission<T extends Record<string, any> = Record<string, any>> = Submission.Meta & {answers: T}
 export type SubmissionId = Brand<string, 'submissionId'>
@@ -95,6 +98,28 @@ export namespace Submission {
       workspaceId: WorkspaceId
       formId: FormId
       user?: User
+    }
+  }
+
+  export interface History {
+    id: string
+    answerIds: string[]
+    by: Api.User.Email
+    date: Date
+    type: 'answer' | 'delete'
+    property?: string
+    oldValue?: any
+    newValue?: any
+  }
+
+  export namespace History {
+    export namespace Payload {
+      export type Search = z.infer<typeof SubmissionHistoryValidation.search>
+    }
+    export const map = (_: any): History => {
+      console.log('MAP', _)
+      _.date = new Date(_.date)
+      return _
     }
   }
 }

@@ -1,5 +1,5 @@
 import {Messages, useI18n} from '@infoportal/client-i18n'
-import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
+import {UseQuerySubmission} from '@/core/query/submission/useQuerySubmission.js'
 import {Core, Datatable} from '@/shared'
 import {map} from '@axanc/ts-utils'
 import {Theme, useTheme} from '@mui/material'

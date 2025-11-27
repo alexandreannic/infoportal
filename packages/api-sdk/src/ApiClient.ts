@@ -21,6 +21,7 @@ import {dashboardClient} from './module/dashboard/DashboardContract.js'
 import {widgetClient} from './module/dashboard/DashboardWidgetContract.js'
 import {sectionClient} from './module/dashboard/DashboardSectionContract.js'
 import {databaseViewClient} from './module/database-view/DatabaseViewContract.js'
+import {submissionHistoryClient} from './module/submission/history/SubmissionHistoryContract.js'
 
 export type ApiClient = ReturnType<typeof buildApiClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -49,7 +50,10 @@ export const buildApiClient = (baseUrl: string) => {
     permission: permissionClient(client, baseUrl),
     server: serverClient(client, baseUrl),
     kobo: koboClient(client, baseUrl),
-    submission: submissionClient(client, baseUrl),
+    submission: {
+      ...submissionClient(client, baseUrl),
+      history: submissionHistoryClient(client),
+    },
     form: {
       ...formClient(client, baseUrl),
       access: formAccessClient(client, baseUrl),

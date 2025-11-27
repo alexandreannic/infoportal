@@ -1,5 +1,5 @@
 import {useI18n} from '@infoportal/client-i18n'
-import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
+import {UseQuerySubmission} from '@/core/query/submission/useQuerySubmission.js'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {Core, Datatable} from '@/shared'
 import {Page} from '@/shared/Page'

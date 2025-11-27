@@ -1,4 +1,4 @@
-import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
+import {UseQuerySubmission} from '@/core/query/submission/useQuerySubmission.js'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {DatabaseKoboTableProvider} from '@/features/Form/Database/DatabaseContext'
 import {DatabaseTableContent} from '@/features/Form/Database/DatabaseTableContent'

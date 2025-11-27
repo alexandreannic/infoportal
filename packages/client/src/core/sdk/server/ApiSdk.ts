@@ -5,7 +5,6 @@ import {SessionSdk} from '@/core/sdk/server/session/SessionSdk'
 import {KoboServerSdk} from '@/core/sdk/server/kobo/KoboServerSdk'
 import {ProxySdk} from '@/core/sdk/server/proxy/ProxySdk'
 import {JsonStoreSdk} from '@/core/sdk/server/jsonStore/JsonStoreSdk'
-import {KoboAnswerHistorySdk} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistorySdk'
 import {CacheSdk} from '@/core/sdk/server/cache/CacheSdk'
 import {ImportFromXlsDataSdk} from '@/core/sdk/server/importXls/ImportFromXlsSdk'
 
@@ -13,7 +12,6 @@ export class ApiSdk {
   constructor(private client: HttpClient) {
     this.session = new SessionSdk(client)
     this.kobo = {
-      answerHistory: new KoboAnswerHistorySdk(this.client),
       server: new KoboServerSdk(this.client),
     }
     this.koboApi = new KoboApiSdk(client)
@@ -37,7 +35,6 @@ export class ApiSdk {
   }
   readonly session: SessionSdk
   readonly kobo: {
-    answerHistory: KoboAnswerHistorySdk
     server: KoboServerSdk
   }
   readonly koboApi: KoboApiSdk

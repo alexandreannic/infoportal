@@ -8,7 +8,6 @@ import {ControllerUser} from './controller/ControllerUser.js'
 import {Api, apiContract, HttpError, Meta} from '@infoportal/api-sdk'
 import {ControllerProxy} from './controller/ControllerProxy.js'
 import {ControllerJsonStore} from './controller/ControllerJsonStore.js'
-import {ControllerKoboAnswerHistory} from './controller/kobo/ControllerKoboAnswerHistory.js'
 import {ControllerCache} from './controller/ControllerCache.js'
 import {UserService} from '../feature/user/UserService.js'
 import {ControllerKoboApiXlsImport} from './controller/kobo/ControllerKoboApiXlsImport.js'
@@ -38,6 +37,7 @@ import {DashboardService} from '../feature/dashboard/DashboardService.js'
 import {WidgetService} from '../feature/dashboard/WidgetService.js'
 import {SectionService} from '../feature/dashboard/SectionService.js'
 import {DatabaseView} from '../feature/databaseView/DatabaseView.js'
+import {SubmissionHistoryService} from '../feature/form/history/SubmissionHistoryService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -63,7 +63,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const session = new ControllerSession(prisma)
   const proxy = new ControllerProxy(prisma)
   const jsonStore = new ControllerJsonStore(prisma)
-  const koboAnswerHistory = new ControllerKoboAnswerHistory(prisma)
   const cacheController = new ControllerCache()
   const importData = new ControllerKoboApiXlsImport(prisma)
 
@@ -158,7 +157,8 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const form = new FormService(prisma)
   const formVersion = new FormVersionService(prisma)
   const formAccess = new FormAccessService(prisma)
-  const formSubmission = new SubmissionService(prisma)
+  const submission = new SubmissionService(prisma)
+  const submissionHistory = new SubmissionHistoryService(prisma)
   const server = new KoboAccountService(prisma)
   const group = new GroupService(prisma)
   const groupItem = new GroupItemService(prisma)
@@ -497,7 +497,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     },
     submission: {
       submit: ({params, body, req}) =>
-        formSubmission
+        submission
           .submit({
             ...params,
             ...body,
@@ -508,28 +508,28 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       updateAnswers: _ =>
         auth2(_)
           .then(({req, params, body}) =>
-            formSubmission.updateAnswers({...body, ...params, authorEmail: req.session.app?.user.email!}),
+            submission.updateAnswers({...body, ...params, authorEmail: req.session.app?.user.email!}),
           )
           .then(ok200)
           .catch(handleError),
       updateValidation: _ =>
         auth2(_)
           .then(({req, params, body}) =>
-            formSubmission.updateValidation({...body, ...params, authorEmail: req.session.app?.user.email!}),
+            submission.updateValidation({...body, ...params, authorEmail: req.session.app?.user.email!}),
           )
           .then(ok200)
           .catch(handleError),
       remove: _ =>
         auth2(_)
           .then(({req, params, body}) =>
-            formSubmission.remove({...body, ...params, authorEmail: req.session.app?.user.email!}),
+            submission.remove({...body, ...params, authorEmail: req.session.app?.user.email!}),
           )
           .then(ok204)
           .catch(handleError),
       search: _ =>
         auth2(_)
           .then(({req, params, body}) =>
-            formSubmission.searchAnswersByUsersAccess({
+            submission.searchAnswersByUsersAccess({
               ...body,
               ...params,
               user: req.session.app.user,
@@ -537,6 +537,13 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           )
           .then(ok200)
           .catch(handleError),
+      history: {
+        search: _ =>
+          auth2(_)
+            .then(({body}) => submissionHistory.search(body))
+            .then(ok200)
+            .catch(handleError),
+      },
     },
     form: {
       updateKoboConnexion: _ =>
@@ -780,8 +787,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       uploader.single('uf-import-answers'),
       safe(importData.handleFileUpload),
     )
-
-    r.post('/kobo-answer-history/search', safe(koboAnswerHistory.search))
 
     r.get('/user/avatar/:email', auth(), safe(new ControllerUser(prisma).avatar))
 

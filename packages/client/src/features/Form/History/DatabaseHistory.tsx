@@ -1,15 +1,13 @@
-import {useAppSettings} from '@/core/context/ConfigContext'
 import {useI18n} from '@infoportal/client-i18n'
-import {KoboAnswerHistory} from '@/core/sdk/server/kobo/answerHistory/KoboAnswerHistory'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {AppAvatar} from '@/shared/AppAvatar'
 import {Core, Datatable} from '@/shared'
 import {map} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
-import {useEffect} from 'react'
 import {createRoute} from '@tanstack/react-router'
-import {useFetcher} from '@axanc/react-hooks'
 import {TabContent} from '@/shared/Tab/TabContent.js'
+import {UseQuerySubmissionHistory} from '@/core/query/submission/useQuerySubmissionHistory.js'
+import {Api} from '@infoportal/api-sdk'
 
 export const databaseHistoryRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -21,14 +19,9 @@ function DatabaseHistory() {
   const {inspector, workspaceId, form} = useFormContext(_ => _)
   const t = useTheme()
   const {m, formatDateTime, formatLargeNumber, formatDate} = useI18n()
-  const {api} = useAppSettings()
-  const fetcher = useFetcher(() => api.kobo.answerHistory.search({formId: form.id}))
+  const queryHistory = UseQuerySubmissionHistory.search({workspaceId, formId: form.id})
 
-  useEffect(() => {
-    fetcher.fetch()
-  }, [])
-
-  const getAnswerTranslation = (row: KoboAnswerHistory, fn: (_: KoboAnswerHistory) => string) =>
+  const getAnswerTranslation = (row: Api.Submission.History, fn: (_: Api.Submission.History) => string) =>
     map(row.property, property => {
       const value: any = fn(row)
       if (!inspector) return value
@@ -70,8 +63,8 @@ function DatabaseHistory() {
         <Datatable.Component
           getRowKey={_ => _.id}
           // showExportBtn
-          loading={fetcher.loading}
-          data={fetcher.get?.data}
+          loading={queryHistory.isLoading}
+          data={queryHistory.data}
           contentProps={{sx: {maxHeight: 'calc(100vh - 156px)'}}}
           id={`kobo-answer-history${form.id}`}
           columns={[

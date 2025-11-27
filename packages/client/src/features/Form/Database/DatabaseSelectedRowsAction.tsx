@@ -3,7 +3,7 @@ import {Core} from '@/shared'
 import {useI18n} from '@infoportal/client-i18n'
 import {Api} from '@infoportal/api-sdk'
 import {Alert} from '@mui/material'
-import {UseQuerySubmission} from '@/core/query/form/useQuerySubmission'
+import {UseQuerySubmission} from '@/core/query/submission/useQuerySubmission.js'
 
 export const DatabaseSelectedRowsAction = ({
   formId,

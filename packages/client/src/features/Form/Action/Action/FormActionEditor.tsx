@@ -181,7 +181,7 @@ function FormActionEditorWithMonaco({
         }}
         beforeMount={monacoInstance => {
           monacoInstance.languages.typescript.typescriptDefaults.setCompilerOptions({
-            target: monaco.languages.typescript.ScriptTarget.ES2020,
+            target: 8, // monaco.languages.typescript.ScriptTarget.ES2020,
             strict: true,
             noEmit: true,
             allowNonTsExtensions: true,
