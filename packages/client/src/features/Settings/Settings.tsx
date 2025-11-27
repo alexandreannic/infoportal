@@ -1,16 +1,14 @@
 import {useI18n} from '@infoportal/client-i18n'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
-import {Icon, Tab, Tabs} from '@mui/material'
+import {Icon} from '@mui/material'
 import {useEffect} from 'react'
-import {createRoute, Link, Outlet, useMatches} from '@tanstack/react-router'
+import {createRoute, Outlet} from '@tanstack/react-router'
 import {Page} from '@/shared'
 import {useWorkspaceContext, workspaceRoute} from '@/features/Workspace/Workspace'
 import {settingsGroupsRoute} from '@/features/Settings/SettingsGroups'
-import {settingsProxyRoute} from '@/features/Settings/SettingsProxy'
 import {settingsUsersRoute} from '@/features/Settings/SettingsUsers'
 import {settingsCacheRoute} from '@/features/Settings/SettingsCache'
 import {useSession} from '@/core/Session/SessionContext'
-import {Api} from '@infoportal/api-sdk'
 import {TabLink, TabsLayout} from '@/shared/Tab/Tabs'
 
 export const settingsRoute = createRoute({
@@ -46,14 +44,6 @@ function Settings() {
             sx={{minHeight: 34, py: 1}}
             to={settingsGroupsRoute.fullPath}
             label={m.group}
-          />
-        )}
-        {permission.proxy_canRead && (
-          <TabLink
-            icon={<Icon>settings_input_antenna</Icon>}
-            sx={{minHeight: 34, py: 1}}
-            to={settingsProxyRoute.fullPath}
-            label={m.proxy}
           />
         )}
         {globalPermission?.cache_manage && (

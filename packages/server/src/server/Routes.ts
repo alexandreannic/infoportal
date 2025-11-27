@@ -6,7 +6,6 @@ import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi.js'
 import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerUser} from './controller/ControllerUser.js'
 import {Api, apiContract, HttpError, Meta} from '@infoportal/api-sdk'
-import {ControllerProxy} from './controller/ControllerProxy.js'
 import {ControllerCache} from './controller/ControllerCache.js'
 import {UserService} from '../feature/user/UserService.js'
 import {ControllerKoboApiXlsImport} from './controller/kobo/ControllerKoboApiXlsImport.js'
@@ -60,7 +59,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const main = new ControllerMain()
   const koboApi = new ControllerKoboApi(prisma)
   const session = new ControllerSession(prisma)
-  const proxy = new ControllerProxy(prisma)
   const cacheController = new ControllerCache()
   const importData = new ControllerKoboApiXlsImport(prisma)
 
@@ -760,12 +758,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.post('/session/connect-as-revert', auth(), safe(session.revertConnectAs))
     r.delete('/session', safe(session.logout))
     r.get('/session/me', safe(session.getMe))
-
-    r.get('/proxy/:slug', safe(proxy.redirect))
-    r.put('/proxy', auth({adminOnly: true}), safe(proxy.create))
-    r.post('/proxy/:id', auth({adminOnly: true}), safe(proxy.update))
-    r.delete('/proxy/:id', auth({adminOnly: true}), safe(proxy.delete))
-    r.get('/proxy', safe(proxy.search))
 
     r.post('/proxy-request', safe(main.proxy))
 

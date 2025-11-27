@@ -2,7 +2,6 @@ import {HttpClient, RequestOption} from './HttpClient'
 import {KoboApiSdk} from './kobo/KoboApiSdk'
 import {Method} from 'axios'
 import {SessionSdk} from '@/core/sdk/server/session/SessionSdk'
-import {ProxySdk} from '@/core/sdk/server/proxy/ProxySdk'
 import {CacheSdk} from '@/core/sdk/server/cache/CacheSdk'
 import {ImportFromXlsDataSdk} from '@/core/sdk/server/importXls/ImportFromXlsSdk'
 
@@ -10,7 +9,6 @@ export class ApiSdk {
   constructor(private client: HttpClient) {
     this.session = new SessionSdk(client)
     this.koboApi = new KoboApiSdk(client)
-    this.proxy = new ProxySdk(client)
     this.cache = new CacheSdk(client)
     this.importData = new ImportFromXlsDataSdk(client)
   }
@@ -29,7 +27,6 @@ export class ApiSdk {
   }
   readonly session: SessionSdk
   readonly koboApi: KoboApiSdk
-  readonly proxy: ProxySdk
   readonly cache: CacheSdk
   readonly importData: ImportFromXlsDataSdk
 }
