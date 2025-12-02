@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {app, AppCacheKey} from '../../../../index.js'
 import {IpEvent} from '@infoportal/common'
 import {HttpError, Api} from '@infoportal/api-sdk'

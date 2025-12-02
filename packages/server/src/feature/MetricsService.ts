@@ -1,4 +1,4 @@
-import {FormSubmission, Prisma, PrismaClient} from '@prisma/client'
+import {FormSubmission, Prisma, PrismaClient} from '@infoportal/prisma'
 import {Api} from '@infoportal/api-sdk'
 import {FormService} from './form/FormService.js'
 import {duration, fnSwitch, Seq, seq} from '@axanc/ts-utils'

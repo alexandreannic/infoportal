@@ -1,4 +1,4 @@
-import type * as Prisma from '@prisma/client'
+import * as Prisma from '@infoportal/prisma'
 
 export type Nullable<T> = {
   [P in keyof T]: T[P] | null

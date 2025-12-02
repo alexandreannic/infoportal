@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {app, AppCacheKey} from '../../index.js'
 import {appConf} from '../../core/AppConf.js'
 import {yup} from '../../helper/Utils.js'

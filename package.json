@@ -2,6 +2,7 @@
   "name": "infoportal",
   "requires": true,
   "scripts": {
+    "reset-npm": "find . -name \"node_modules\" -type d -prune -exec rm -rf {} + && rm package-lock.json && npm i",
     "format": "prettier --write \"**/*.{js,ts,tsx,json}\" --config .prettierrc --",
     "server": "npm run dev --workspace @infoportal/server",
     "client": "npm run dev --workspace @infoportal/client",

@@ -89,3 +89,5 @@ sessions/
 .idea/
 
 .DS_Store
+
+packages/prisma/src/generated/

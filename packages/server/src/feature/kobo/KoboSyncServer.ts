@@ -1,5 +1,5 @@
 import {genUUID, IpEvent, logPerformance, UUID} from '@infoportal/common'
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {KoboSdkGenerator} from './KoboSdkGenerator.js'
 import {app, AppCacheKey, AppLogger} from '../../index.js'
 import {createdBySystem} from '../../core/DbInit.js'

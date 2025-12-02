@@ -1,4 +1,4 @@
-import {Prisma, PrismaClient} from '@prisma/client'
+import {Prisma, PrismaClient} from '@infoportal/prisma'
 import {AppConf} from './AppConf.js'
 import {Api} from '@infoportal/api-sdk'
 

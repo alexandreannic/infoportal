@@ -1,5 +1,5 @@
 import {seq} from '@axanc/ts-utils'
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {PromisePool} from '@supercharge/promise-pool'
 import {Kobo, KoboClient} from 'kobo-sdk'
 import {appConf} from '../../core/AppConf.js'

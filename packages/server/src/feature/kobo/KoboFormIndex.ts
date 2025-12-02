@@ -1,6 +1,6 @@
 import {Kobo} from 'kobo-sdk'
 import {HttpError, Api} from '@infoportal/api-sdk'
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {app, AppCacheKey} from '../../index.js'
 import {duration, seq} from '@axanc/ts-utils'
 

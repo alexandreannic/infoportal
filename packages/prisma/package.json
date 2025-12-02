@@ -1,0 +1,19 @@
+{
+  "name": "@infoportal/prisma",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
+  "dependencies": {
+    "@prisma/client": "^7.0.1",
+    "prisma": "^7.0.1",
+    "dotenv": "^17.2.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "migrate": "npx prisma migrate dev",
+    "migrate-f": "prisma db push",
+    "generate": "prisma generate"
+  }
+}

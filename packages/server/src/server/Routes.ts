@@ -1,7 +1,6 @@
 import express, {NextFunction, Request, Response} from 'express'
 import {app, AppLogger} from '../index.js'
 import {ControllerMain} from './controller/ControllerMain.js'
-import {PrismaClient} from '@prisma/client'
 import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi.js'
 import {ControllerSession} from './controller/ControllerSession.js'
 import {ControllerUser} from './controller/ControllerUser.js'
@@ -36,6 +35,7 @@ import {WidgetService} from '../feature/dashboard/WidgetService.js'
 import {SectionService} from '../feature/dashboard/SectionService.js'
 import {DatabaseView} from '../feature/databaseView/DatabaseView.js'
 import {SubmissionHistoryService} from '../feature/form/history/SubmissionHistoryService.js'
+import {PrismaClient} from '../../../prisma/src'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user

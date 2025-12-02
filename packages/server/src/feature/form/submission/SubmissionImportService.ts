@@ -1,6 +1,6 @@
 import {SchemaInspector} from '@infoportal/form-helper'
 import xlsx from 'xlsx'
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {KoboSdkGenerator} from '../../kobo/KoboSdkGenerator.js'
 import {Obj, seq} from '@axanc/ts-utils'
 import lodash from 'lodash'

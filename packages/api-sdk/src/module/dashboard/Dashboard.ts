@@ -1,4 +1,4 @@
-import type * as Prisma from '@prisma/client'
+import type * as Prisma from '@infoportal/prisma'
 import {Brand} from '../common/Common.js'
 import {Form, FormId} from '../form/Form.js'
 import {Workspace, WorkspaceId} from '../workspace/Workspace.js'

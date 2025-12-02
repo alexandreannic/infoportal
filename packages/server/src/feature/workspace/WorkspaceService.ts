@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {slugify, genShortid, UUID} from '@infoportal/common'
 import {GroupService} from '../group/GroupService.js'
 import {FormAccessService} from '../form/access/FormAccessService.js'

@@ -1,6 +1,6 @@
 import {convertNumberIndexToLetter} from '@infoportal/common'
 import XlsxPopulate from 'xlsx-populate'
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {appConf} from '../../core/AppConf.js'
 import {Kobo} from 'kobo-sdk'
 import {KoboFormService} from './KoboFormService'

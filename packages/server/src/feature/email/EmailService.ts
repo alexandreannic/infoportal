@@ -1,6 +1,6 @@
 import {EmailClient} from './EmailClient.js'
 import {app} from '../../index.js'
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {FormService} from '../form/FormService.js'
 
 export enum EmailContext {
@@ -9,7 +9,7 @@ export enum EmailContext {
 
 export class EmailService {
   constructor(
-    private prisma = new PrismaClient(),
+    private prisma: PrismaClient,
     private form = new FormService(prisma),
     private event = app.event,
     private emailHelper = new EmailClient(prisma),

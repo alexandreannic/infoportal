@@ -1,5 +1,5 @@
 import * as cron from 'node-cron'
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {KoboSyncServer} from '../feature/kobo/KoboSyncServer.js'
 import {app} from '../index.js'
 import {appConf} from '../core/AppConf.js'

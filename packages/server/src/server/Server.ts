@@ -5,7 +5,6 @@ import {app} from '../index.js'
 import {appConf, AppConf} from '../core/AppConf.js'
 import {genUUID} from '@infoportal/common'
 import {apiContract, HttpError} from '@infoportal/api-sdk'
-import {PrismaClient} from '@prisma/client'
 import session from 'express-session'
 import {PrismaSessionStore} from '@quixo3/prisma-session-store'
 import cookieParser from 'cookie-parser'
@@ -17,6 +16,7 @@ import {createExpressEndpoints} from '@ts-rest/express'
 import {Server as SocketIOServer} from 'socket.io'
 import {PermissionService} from '../feature/PermissionService.js'
 import {Socket} from './Socket.js'
+import {PrismaClient} from '@infoportal/prisma'
 
 export class Server {
   constructor(

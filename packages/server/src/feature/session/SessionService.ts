@@ -1,4 +1,4 @@
-import {PrismaClient, User} from '@prisma/client'
+import {PrismaClient, User} from '@infoportal/prisma'
 import {app, AppLogger} from '../../index.js'
 import {AuthenticationProvider} from '@microsoft/microsoft-graph-client/src/IAuthenticationProvider'
 import {AuthenticationProviderOptions} from '@microsoft/microsoft-graph-client/src/IAuthenticationProviderOptions'

@@ -12,7 +12,7 @@ export function SelectFormInput({
   onChange,
 }: {
   workspaceId: Api.WorkspaceId
-  value: Api.FormId
+  value?: Api.FormId
   onChange: (_: Api.FormId) => void
 }) {
   const queryForms = UseQueryForm.getAccessibles(workspaceId)

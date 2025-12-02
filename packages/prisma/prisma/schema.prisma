@@ -1,13 +1,13 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-1.1.x"]
+  provider               = "prisma-client"
+  output                 = "../src/generated"
+  generatedFileExtension = "ts"
+  moduleFormat           = "esm"
+  importFileExtension    = "js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
-  // provider = "postgresql"
-  // url      = "postgresql://alexandreac:sieges78@localhost:5432/im-tools"
 }
 
 model Workspace {

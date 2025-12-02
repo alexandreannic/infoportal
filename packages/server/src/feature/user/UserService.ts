@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {UUID} from '@infoportal/common'
 import {app, AppLogger} from '../../index.js'
 import {Api} from '@infoportal/api-sdk'

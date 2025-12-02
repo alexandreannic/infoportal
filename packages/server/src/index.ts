@@ -1,6 +1,6 @@
 import {AppConf, appConf} from './core/AppConf.js'
 import {Server} from './server/Server.js'
-import {PrismaClient} from '@prisma/client'
+import {prisma} from '@infoportal/prisma'
 import {ScheduledTask} from './scheduledTask/ScheduledTask.js'
 import {IpCache, IpCacheApp, IpEventClient} from '@infoportal/common'
 import {duration} from '@axanc/ts-utils'
@@ -15,7 +15,7 @@ import {FormActionRunner} from './feature/form/action/executor/FormActionRunner.
 export type AppLogger = WinstonLogger
 
 export enum AppCacheKey {
-  AllowedFormIds= 'AllowedFormIds',
+  AllowedFormIds = 'AllowedFormIds',
   Users = 'Users',
   Meta = 'Meta',
   KoboAnswers = 'KoboAnswers',
@@ -75,9 +75,6 @@ export const app = App()
 const startApp = async (conf: AppConf) => {
   const log = app.logger('')
   log.info(`Logger level: ${appConf.logLevel}`)
-  const prisma = new PrismaClient({
-    // log: ['query']
-  })
   const init = async () => {
     const log = app.logger('')
     log.info(`Starting... v5.0`)
@@ -94,7 +91,7 @@ const startApp = async (conf: AppConf) => {
     // cluster.on('exit', (worker, code, signal) => {
     //   console.log(`Worker ${worker.process.pid} died`)
     // })
-    new EmailService().initializeListeners()
+    new EmailService(prisma).initializeListeners()
     new FormActionRunner(prisma).startListening()
     // await new KoboSyncServer(prisma).syncApiAnswersToDbAll()
     if (conf.production) {

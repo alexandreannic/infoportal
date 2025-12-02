@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {Api, HttpError} from '@infoportal/api-sdk'
 
 export class DatabaseView {

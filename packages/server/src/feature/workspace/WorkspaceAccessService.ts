@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {InferType} from 'yup'
 import {idParamsSchema, yup} from '../../helper/Utils.js'
 import {UserService} from '../user/UserService.js'

@@ -1,4 +1,4 @@
-import type * as Prisma from '@prisma/client'
+import type * as Prisma from '@infoportal/prisma'
 import {Kobo} from 'kobo-sdk'
 import {Defined} from 'yup'
 import {Brand, Pagination} from '../common/Common.js'

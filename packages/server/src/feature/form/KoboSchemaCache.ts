@@ -2,7 +2,7 @@ import {app, AppCacheKey} from '../../index.js'
 import {duration} from '@axanc/ts-utils'
 import {HttpError, Api} from '@infoportal/api-sdk'
 import {Kobo} from 'kobo-sdk'
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {KoboSdkGenerator} from '../kobo/KoboSdkGenerator.js'
 
 export class KoboSchemaCache {

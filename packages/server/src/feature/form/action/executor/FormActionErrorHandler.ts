@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {Logger} from '@infoportal/common'
 
 type Context = {formId?: string; actionId?: string; submissionId?: string}

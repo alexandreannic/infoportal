@@ -1,4 +1,4 @@
-import {Prisma, PrismaClient} from '@prisma/client'
+import {Prisma, PrismaClient} from '@infoportal/prisma'
 import {genShortid, slugify} from '@infoportal/common'
 import {SchemaMetaHelper, SchemaInspector} from '@infoportal/form-helper'
 import {HttpError, Api} from '@infoportal/api-sdk'

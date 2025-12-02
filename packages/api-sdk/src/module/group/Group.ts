@@ -1,4 +1,4 @@
-import type * as Prisma from '@prisma/client'
+import type * as Prisma from '@infoportal/prisma'
 import {User} from '../user/User.js'
 import {WorkspaceId} from '../workspace/Workspace.js'
 import {AccessLevel, Brand, Uuid} from '../common/Common.js'

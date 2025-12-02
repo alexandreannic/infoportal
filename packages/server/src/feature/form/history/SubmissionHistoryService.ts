@@ -1,4 +1,4 @@
-import {Prisma, PrismaClient} from '@prisma/client'
+import {Prisma, PrismaClient} from '@infoportal/prisma'
 import {app, AppLogger} from '../../../index.js'
 import {Obj, seq} from '@axanc/ts-utils'
 import {Kobo} from 'kobo-sdk'

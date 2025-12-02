@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {Request} from 'express'
 import {Api, HttpError} from '@infoportal/api-sdk'
 import {UserService} from './user/UserService.js'

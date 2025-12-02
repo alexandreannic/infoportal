@@ -1,4 +1,4 @@
-import {Prisma, PrismaClient} from '@prisma/client'
+import {Prisma, PrismaClient} from '@infoportal/prisma'
 import {KoboSdkGenerator} from '../../kobo/KoboSdkGenerator.js'
 import {duration, Obj, seq} from '@axanc/ts-utils'
 import {FormAccessService} from '../access/FormAccessService.js'

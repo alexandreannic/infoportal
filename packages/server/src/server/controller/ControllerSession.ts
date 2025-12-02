@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {SessionService} from '../../feature/session/SessionService.js'
 import {HttpError, Api} from '@infoportal/api-sdk'
 import {isAuthenticated} from '../Routes.js'

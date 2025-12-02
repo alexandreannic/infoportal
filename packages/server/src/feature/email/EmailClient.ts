@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'
 import {appConf} from '../../core/AppConf.js'
 import {app} from '../../index.js'
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {Api} from '@infoportal/api-sdk'
 
 export class EmailClient {

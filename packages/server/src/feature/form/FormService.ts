@@ -1,4 +1,4 @@
-import {Form, PrismaClient} from '@prisma/client'
+import {Form, PrismaClient} from '@infoportal/prisma'
 import {HttpError, Api} from '@infoportal/api-sdk'
 import {FormVersionService} from './FormVersionService.js'
 import {FormAccessService} from './access/FormAccessService.js'

@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@infoportal/prisma'
 import {format} from 'date-fns'
 import {Api} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
