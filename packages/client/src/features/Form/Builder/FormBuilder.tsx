@@ -55,7 +55,7 @@ function FormBuilder() {
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryVersion = useQueryVersion({workspaceId, formId})
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
-  const [showPreview, setShowPreview] = useState(false)
+  const [showPreview, setShowPreview] = useState(true)
 
   const versions = useMemo(() => {
     return {
