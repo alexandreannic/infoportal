@@ -35,13 +35,13 @@ export class FormService {
     if (!Api.Form.isConnectedToKobo(form))
       return this.prisma.formVersion
         .findFirst({
-          select: {schema: true},
+          select: {schemaJson: true},
           where: {
             formId,
             status: 'active',
           },
         })
-        .then(_ => _?.schema as any)
+        .then(_ => _?.schemaJson as any)
     return this.koboSchemaCache
       .get({refreshCacheIfMissing: true, formId: form.id as Api.FormId})
       .then(_ => (_ ? _.content : undefined))
@@ -55,13 +55,13 @@ export class FormService {
     formId: Api.FormId
   }): Promise<undefined | Api.Form.Schema> => {
     const _ = await this.prisma.formVersion.findFirst({
-      select: {schema: true},
+      select: {schemaJson: true},
       where: {
         formId,
         id: versionId,
       },
     })
-    return _?.schema as any
+    return _?.schemaJson as any
   }
 
   readonly create = async ({

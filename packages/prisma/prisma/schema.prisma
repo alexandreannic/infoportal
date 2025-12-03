@@ -132,7 +132,8 @@ model FormVersion {
   message    String?
   uploadedBy String
   createdAt  DateTime          @default(now())
-  schema     Json
+  schemaJson Json
+  schemaXml  String?
   status     FormVersionStatus @default(inactive)
   form       Form              @relation(fields: [formId], references: [id])
   formId     String
