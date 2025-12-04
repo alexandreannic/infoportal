@@ -182,6 +182,7 @@ export namespace Form {
       }
     }
   }
+  export type SchemaXml = Brand<string, 'schema_xml'>
   export namespace Schema {
     export type Validation = {
       status: 'error' | 'warning' | 'success'
@@ -193,7 +194,7 @@ export namespace Form {
   }
 
   export type VersionId = Brand<string, 'versionId'>
-  export type Version = Omit<Prisma.FormVersion, 'uploadedBy' | 'schema' | 'id'> & {
+  export type Version = Omit<Prisma.FormVersion, 'uploadedBy' | 'schemaJson' | 'schemaXml' | 'id'> & {
     uploadedBy: User.Email
     id: VersionId
   }

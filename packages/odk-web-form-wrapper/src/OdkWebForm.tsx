@@ -64,6 +64,12 @@ export function OdkWebForm({
         } as any
       }
       sx={{
+        '& .questions-card': {
+          background: 'none',
+        },
+        '& .questions-card >.p-card-body': {
+          padding: '0 !important',
+        },
         '& .powered-by-wrapper': {
           paddingTop: `calc(${t.vars.spacing} * 3) !important`,
           paddingBottom: `${t.vars.spacing} !important`,

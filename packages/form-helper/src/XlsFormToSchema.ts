@@ -1,9 +1,18 @@
 import {Api} from '@infoportal/api-sdk'
 import {Kobo} from 'kobo-sdk'
-import * as xlsx from 'xlsx'
+import {WorkBook} from 'xlsx'
 
+type XLSX = Awaited<Promise<typeof import('xlsx')>>
+let xlsxPromise: Promise<XLSX> | null = null
+export const importXlsx = () => {
+  if (!xlsxPromise) {
+    xlsxPromise = import('xlsx').then(mod => mod.default ?? mod)
+  }
+  return xlsxPromise
+}
 export class XlsFormToSchema {
-  static readonly convert = (filePath: string): Api.Form.Schema => {
+  static readonly convert = async (filePath: string): Promise<Api.Form.Schema> => {
+    const xlsx = await importXlsx()
     const workbook = xlsx.readFile(filePath)
     const sheetToJson = <T>(name: string): T[] => {
       const sheet = workbook.Sheets[name]
@@ -15,7 +24,7 @@ export class XlsFormToSchema {
     const choicesRaw = sheetToJson<Record<string, string>>('choices')
     const settings = settingsRaw[0]
 
-    const {translated, langs} = this.getTranslations(workbook)
+    const {translated, langs} = this.getTranslations(xlsx, workbook)
 
     const mergeTranslation = (question: Record<string, any>): any => {
       const newQuestion: any = {}
@@ -43,7 +52,7 @@ export class XlsFormToSchema {
     }
   }
 
-  private static getTranslations = (workbook: xlsx.WorkBook) => {
+  private static getTranslations = (xlsx: Awaited<NonNullable<typeof xlsxPromise>>, workbook: WorkBook) => {
     const headersRow = xlsx.utils.sheet_to_json<Record<string, any>>(workbook.Sheets['survey'], {
       header: 1,
       range: 0,

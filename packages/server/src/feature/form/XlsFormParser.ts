@@ -16,7 +16,7 @@ export class XlsFormParser {
     if (status === 'error') {
       return {status, ...output}
     }
-    const schema = XlsFormToSchema.convert(filePath)
+    const schema = await XlsFormToSchema.convert(filePath)
     return {...output, status, schema}
   }
 }

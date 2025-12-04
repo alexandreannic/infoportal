@@ -117,7 +117,7 @@ function FormBuilder() {
                   opacity: showPreview ? 1 : 0,
                 }}
               >
-                {showPreview && <FormBuilderPreview schema={queryLastVersion.data} />}
+                {showPreview && <FormBuilderPreview schemaXml={queryLastVersion.data?.xml} />}
               </Box>
             </Box>
           </Context.Provider>

@@ -56,7 +56,7 @@ export const formContract = c.router({
       versionId: schema.versionId,
     }),
     responses: {
-      200: z.any() as z.ZodType<Api.Form.Schema | undefined>,
+      200: z.any() as z.ZodType<{json: Api.Form.Schema; xml: Api.Form.SchemaXml} | undefined>,
     },
     metadata: makeMeta({
       access: {

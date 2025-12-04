@@ -1,0 +1,11 @@
+{
+  "name": "@infoportal/server-pyxform",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "venv:build": "python3 -m venv venv",
+    "venv:activate": "source venv/bin/activate",
+    "start": "uvicorn app:app --host 0.0.0.0 --port 8000 --reload",
+    "setup": "npm run venv:build && npm run venv:activate && npm start"
+  }
+}

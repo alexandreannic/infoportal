@@ -53,15 +53,22 @@ export class FormService {
   }: {
     versionId: Api.Form.VersionId
     formId: Api.FormId
-  }): Promise<undefined | Api.Form.Schema> => {
+  }): Promise<undefined | {json: Api.Form.Schema; xml: Api.Form.SchemaXml}> => {
     const _ = await this.prisma.formVersion.findFirst({
-      select: {schemaJson: true},
+      select: {schemaJson: true, schemaXml: true},
       where: {
         formId,
         id: versionId,
       },
     })
-    return _?.schemaJson as any
+    if (!_) return
+    if (_.schemaJson && !_.schemaXml) {
+      // TODO should not be needed anymore, but was relevant at the time of the creation of schemaXml column until all existing from get migrated.
+      const xml = await this.formVersion.getSchemaXml(_.schemaJson as Api.Form.Schema)
+      await this.prisma.formVersion.update({data: {schemaXml: xml}, where: {formId, id: versionId}})
+      _.schemaXml = xml
+    }
+    return {xml: _.schemaXml as Api.Form.SchemaXml, json: _?.schemaJson as Api.Form.Schema}
   }
 
   readonly create = async ({

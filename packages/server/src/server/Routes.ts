@@ -49,7 +49,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       try {
         await handler(req, res, next)
       } catch (err) {
-        log.error(req.url + '' + req.session.app?.user.email)
+        log.error('safe(): ' + req.url + '' + req.session.app?.user.email)
         next(err)
       }
     }
@@ -136,6 +136,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     const status = Array.from(statusMap.entries()).find(([ErrClass]) => e instanceof ErrClass)?.[1] ?? 500
 
     log.error(status + ':' + e.name + ' - ' + e.message)
+    console.error(e)
     return {
       status,
       body: {

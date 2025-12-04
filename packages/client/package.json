@@ -8,7 +8,6 @@
     "start": "vite preview"
   },
   "dependencies": {
-    "@infoportal/odk-web-form-wrapper": "1.0.0",
     "@axanc/react-hooks": "^1.14.2",
     "@axanc/ts-utils": "3.1.0",
     "@azure/msal-browser": "^4.9.0",
@@ -17,6 +16,7 @@
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@getodk/web-forms": "^0.17.0",
+    "@getodk/web-forms-wc": "github:alexandreannic/web-forms#webcomponent",
     "@googlemaps/markerclusterer": "^2.6.2",
     "@infoportal/api-sdk": "1.0.0",
     "@infoportal/client-core": "1.0.0",
@@ -25,6 +25,7 @@
     "@infoportal/common": "1.0.0",
     "@infoportal/database-column": "1.0.0",
     "@infoportal/form-helper": "1.0.0",
+    "@infoportal/odk-web-form-wrapper": "1.0.0",
     "@infoportal/xls-form-editor": "1.0.0",
     "@monaco-editor/react": "^4.7.0",
     "@mui/icons-material": "^7.1.2",

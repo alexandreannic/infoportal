@@ -1,5 +1,6 @@
 import {Api} from '@infoportal/api-sdk'
 import {Obj} from '@axanc/ts-utils'
+import {importXlsx} from './XlsFormToSchema.js'
 
 export type XlsFormMap = {
   survey: Record<string, any>[]
@@ -7,18 +8,13 @@ export type XlsFormMap = {
   settings: Record<string, any>
 }
 
-let _xlsx: any = null
-const getXlsx = async () => {
-  if (!_xlsx) _xlsx = await import('xlsx')
-  return _xlsx
+let fsPromise: Promise<typeof import('node:fs')> | null = null
+let pathPromise: Promise<typeof import('node:path')> | null = null
+const importPath = () => {
+  return (pathPromise ??= import('node:path'))
 }
-
-let _path: any = null
-let _fs: any = null
-const getNodeDeps = async () => {
-  if (!_path) _path = await import('path')
-  if (!_fs) _fs = await import('fs')
-  return {path: _path, fs: _fs}
+const importFs = () => {
+  return (fsPromise ??= import('node:fs'))
 }
 
 export class SchemaToXlsForm {
@@ -29,7 +25,7 @@ export class SchemaToXlsForm {
   }
 
   async asXlsx() {
-    const XLSX = await getXlsx()
+    const XLSX = await importXlsx()
     const wb = XLSX.utils.book_new()
 
     const surveySheet = XLSX.utils.json_to_sheet(this.table.survey)
@@ -46,14 +42,15 @@ export class SchemaToXlsForm {
   }
 
   async asBuffer() {
-    const XLSX = await getXlsx()
+    const XLSX = await importXlsx()
     const wb = await this.asXlsx()
     return XLSX.write(wb, {bookType: 'xlsx', type: 'buffer'})
   }
 
   async saveInDisk(outFilePath: string) {
-    const XLSX = await getXlsx()
-    const {path, fs} = await getNodeDeps()
+    const XLSX = await importXlsx()
+    const path = await importPath()
+    const fs = await importFs()
 
     const outDir = path.dirname(outFilePath)
     if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, {recursive: true})
