@@ -1,6 +1,10 @@
 import {useEffect, useRef, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
 import '@getodk/web-forms-wc'
+import {Api} from '@infoportal/api-sdk'
+import {SubmissionXmlToJson} from '@infoportal/form-helper'
+
+type Callback = (submission: {answers: Record<string, any>; attachments: File[]}, ev: any) => void
 
 export interface OdkWebFormProps {
   formXml: string
@@ -8,8 +12,9 @@ export interface OdkWebFormProps {
   missingResourceBehavior?: string
   submissionMaxSize?: number
   editInstance?: any
-  onSubmit?: (ev: any) => void
-  onSubmitChunked?: (ev: any) => void
+  onSubmit?: Callback
+  onSubmitChunked?: Callback
+  questionIndex: Record<string, Api.Form.Question | undefined>
 }
 
 declare module 'react/jsx-runtime' {
@@ -28,6 +33,7 @@ export function OdkWebForm({
   editInstance,
   onSubmit,
   onSubmitChunked,
+  questionIndex,
 }: OdkWebFormProps) {
   const [keyIndexToRemount, setKeyIndexToRemount] = useState(0)
 
@@ -45,6 +51,17 @@ export function OdkWebForm({
       editInstance,
     }
   }, [fetchFormAttachment, editInstance])
+
+  const handleCallback = (cb?: Callback) => async (e: any) => {
+    if (!cb) return
+    const res = e.detail[0]?.data[0]
+    if (!res) throw new Error('Cannot find submission data')
+    const file: File = res.instanceFile
+    const attachments = res.attachments
+    const xml = await file?.text()
+    const jsonSubmission = new SubmissionXmlToJson(questionIndex).convert(xml)
+    cb({answers: jsonSubmission, attachments}, e)
+  }
 
   return (
     <Box
@@ -87,8 +104,8 @@ export function OdkWebForm({
         form-xml={formXml}
         missing-resource-behavior={missingResourceBehavior}
         submission-max-size={submissionMaxSize?.toString()}
-        onsubmit={onSubmit}
-        onsubmitchunk={onSubmitChunked}
+        onsubmit={handleCallback(onSubmit)}
+        onsubmitchunk={handleCallback(onSubmitChunked)}
       />
     </Box>
   )

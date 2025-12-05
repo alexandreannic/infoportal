@@ -8,6 +8,8 @@
     "build": "tsc -b"
   },
   "dependencies": {
+    "@infoportal/form-helper": "1.0.0",
+    "@infoportal/api-sdk": "1.0.0",
     "@getodk/web-forms-wc": "github:alexandreannic/web-forms#webcomponent"
   },
   "peerDependencies": {

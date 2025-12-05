@@ -16,12 +16,11 @@
   "author": "",
   "license": "ISC",
   "description": "",
-  "devDependencies": {
-  },
   "dependencies": {
-    "@infoportal/common": "1.0.0",
-    "kobo-sdk": "^2.5.0",
     "@axanc/react-hooks": "^1.14.2",
-    "date-fns": "^4.1.0"
+    "@infoportal/common": "1.0.0",
+    "date-fns": "^4.1.0",
+    "fast-xml-parser": "^5.3.2",
+    "kobo-sdk": "^2.5.0"
   }
 }

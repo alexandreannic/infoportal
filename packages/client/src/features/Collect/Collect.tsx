@@ -21,6 +21,7 @@ function Collect() {
   const {workspaceId, formId} = collectRoute.useParams() as {workspaceId: Api.WorkspaceId; formId: Api.FormId}
   const {toastSuccess} = useIpToast()
   const querySubmit = UseQuerySubmission.submit()
+  const querySchemaInspector = UseQuerySchema.getInspector({workspaceId, formId, langIndex: 0})
   const querySchemaXml = UseQuerySchema.getXml({workspaceId, formId})
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const [geolocation, setGeolocation] = useState<Api.Geolocation>()
@@ -35,26 +36,21 @@ function Collect() {
     )
   }, [])
 
-  if (querySchemaXml.isPending) {
-    return
-  }
-
   return (
     <Page loading={querySchemaXml.isPending} width="xs">
       {querySchemaXml.data && queryForm.data && (
         <Core.Panel>
           <Core.PanelHead>{queryForm.data.name}</Core.PanelHead>
           <Core.PanelBody>
-            {querySchemaXml.data && (
-              <OdkWebForm formXml={querySchemaXml.data as string} onSubmit={_ => console.log('SUBMIT', _)} />
+            {querySchemaXml.data && querySchemaInspector.data && (
+              <OdkWebForm
+                questionIndex={querySchemaInspector.data.lookup.questionIndex}
+                formXml={querySchemaXml.data as string}
+                onSubmit={_ => {
+                  querySubmit.mutateAsync({formId, workspaceId, geolocation, ..._}).then(() => toastSuccess(''))
+                }}
+              />
             )}
-
-            {/*<XlsFormFiller*/}
-            {/*  onSubmit={_ =>*/}
-            {/*    querySubmit.mutateAsync({formId, workspaceId, geolocation, ..._}).then(() => toastSuccess(''))*/}
-            {/*  }*/}
-            {/*  survey={querySchemaXml.data as any}*/}
-            {/*/>*/}
           </Core.PanelBody>
         </Core.Panel>
       )}

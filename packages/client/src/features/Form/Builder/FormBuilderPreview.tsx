@@ -9,7 +9,7 @@ export const FormBuilderPreview = ({schemaXml}: {schemaXml?: Api.Form.SchemaXml}
   return (
     <Core.Panel>
       <Core.PanelBody sx={{p: 1}}>
-        {schemaXml && <OdkWebForm formXml={schemaXml as string} onSubmit={_ => console.log('SUBMIT', _)} />}
+        {schemaXml && <OdkWebForm questionIndex={{}} formXml={schemaXml as string} onSubmit={_ => alert('✅')} />}
       </Core.PanelBody>
     </Core.Panel>
   )

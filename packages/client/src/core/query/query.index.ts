@@ -52,7 +52,7 @@ export const queryKeys = {
     base: ['schema'] as const,
     workspace: (workspaceId: Api.WorkspaceId) => ['schema', workspaceId] as const,
     form: (workspaceId: Api.WorkspaceId, formId: Api.FormId) => ['schema', workspaceId, formId] as const,
-    xml: (workspaceId: Api.WorkspaceId, formId: Api.FormId) => ['schema', workspaceId, formId, 'xml'] as const,
+    formXml: (workspaceId: Api.WorkspaceId, formId: Api.FormId) => ['schema', workspaceId, formId, 'xml'] as const,
     version: (workspaceId: Api.WorkspaceId, formId: Api.FormId) => ['schema', workspaceId, formId, 'version'] as const,
     versionOne: (workspaceId: Api.WorkspaceId, formId: Api.FormId, versionId: Api.Form.VersionId) =>
       ['schema', workspaceId, formId, 'version', versionId] as const,
