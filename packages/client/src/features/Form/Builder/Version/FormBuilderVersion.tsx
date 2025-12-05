@@ -29,7 +29,7 @@ function FormBuilderVersion() {
   const queryDeployLast = useQueryVersion({workspaceId, formId}).deployLast
   const queryForm = UseQueryForm.get({workspaceId, formId})
 
-  const [versionVisible, setVersionVisible] = useState(5)
+  const [versionVisible, setVersionVisible] = useState(10)
 
   return (
     <FormBuilderBody>

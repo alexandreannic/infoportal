@@ -1,15 +1,15 @@
 import {Prisma, PrismaClient} from '@infoportal/prisma'
 import {genShortid, slugify} from '@infoportal/common'
-import {SchemaMetaHelper, SchemaInspector} from '@infoportal/form-helper'
-import {HttpError, Api} from '@infoportal/api-sdk'
+import {SchemaInspector, SchemaMetaHelper} from '@infoportal/form-helper'
+import {Api, HttpError} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
-import {FormService} from '../form/FormService.js'
 import {seq} from '@axanc/ts-utils'
+import {FormSchemaService} from '../form/FormSchemaService.js'
 
 export class DashboardService {
   constructor(
     private prisma: PrismaClient,
-    private form = new FormService(prisma),
+    private schema = new FormSchemaService(prisma),
   ) {}
 
   readonly getById = async ({id}: {id: Api.DashboardId}): Promise<Api.Dashboard | undefined> => {
@@ -68,7 +68,7 @@ export class DashboardService {
       select: {sourceFormId: true, sections: {select: {widgets: {select: {type: true, config: true}}}}},
     })
     const widgets = dashboard.sections.flatMap(_ => _.widgets)
-    const schema = await this.form.getSchema({formId: dashboard.sourceFormId as Api.FormId})
+    const schema = await this.schema.get({formId: dashboard.sourceFormId as Api.FormId})
     if (!schema) throw new HttpError.NotFound()
     const {metaKeys, questionNames} = this.collectDashboardQuestions({schema, widgets})
     const selectParts = [
@@ -209,7 +209,9 @@ export class DashboardService {
     })
   }
 
-  readonly create = async (data: Api.Dashboard.Payload.Create & {createdBy: Api.User.Email}): Promise<Api.Dashboard> => {
+  readonly create = async (
+    data: Api.Dashboard.Payload.Create & {createdBy: Api.User.Email},
+  ): Promise<Api.Dashboard> => {
     return this.prisma.dashboard
       .create({
         data: {

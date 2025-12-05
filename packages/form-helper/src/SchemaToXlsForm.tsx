@@ -79,9 +79,11 @@ export class SchemaToXlsForm {
   private static flattenRow =
     (schema: Api.Form.Schema) =>
     ({$kuid, ...row}: Record<string, any>): Record<string, any> => {
+      let translated = schema.translated ?? []
+      if (translated.length === 0) translated = ['constraint_message', 'hint', 'label']
       const out: Record<string, any> = {}
       for (const [key, value] of Obj.entries(row)) {
-        if (schema.translated.includes(key as any) && Array.isArray(value)) {
+        if (translated.includes(key as any) && Array.isArray(value)) {
           schema.translations.forEach((lang, i) => {
             out[`${key}:${lang}`] = value[i] ?? ''
           })

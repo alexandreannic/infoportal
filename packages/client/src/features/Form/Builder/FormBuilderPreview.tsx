@@ -8,8 +8,7 @@ export const FormBuilderPreview = ({schemaXml}: {schemaXml?: Api.Form.SchemaXml}
   const {m} = useI18n()
   return (
     <Core.Panel>
-      <Core.PanelHead>{m.preview}</Core.PanelHead>
-      <Core.PanelBody>
+      <Core.PanelBody sx={{p: 1}}>
         {schemaXml && <OdkWebForm formXml={schemaXml as string} onSubmit={_ => console.log('SUBMIT', _)} />}
       </Core.PanelBody>
     </Core.Panel>

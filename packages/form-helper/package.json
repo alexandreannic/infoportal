@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@infoportal/common": "1.0.0",
-    "kobo-sdk": "^2.4.1",
+    "kobo-sdk": "^2.5.0",
     "@axanc/react-hooks": "^1.14.2",
     "date-fns": "^4.1.0"
   }

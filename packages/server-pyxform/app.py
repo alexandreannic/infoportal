@@ -4,6 +4,7 @@ import tempfile
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import Response
 from pyxform import create_survey_from_xls
+from fastapi import HTTPException
 
 app = FastAPI()
 
@@ -17,6 +18,8 @@ async def get_xml(file: UploadFile = File(...)):
 
     try:
         xml_str = create_survey_from_xls(tmp_path).to_xml()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
         os.remove(tmp_path)
 

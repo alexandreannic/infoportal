@@ -64,6 +64,9 @@ export function OdkWebForm({
         } as any
       }
       sx={{
+        '& .odk-form .form-wrapper': {
+          padding: 0,
+        },
         '& .questions-card': {
           background: 'none',
         },

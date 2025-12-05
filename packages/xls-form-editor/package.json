@@ -17,7 +17,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "kobo-sdk": "^2.4.3",
+    "kobo-sdk": "^2.5.0",
     "@axanc/react-hooks": "^1.14.2",
     "@axanc/ts-utils": "3.1.0",
     "@infoportal/common": "1.0.0",

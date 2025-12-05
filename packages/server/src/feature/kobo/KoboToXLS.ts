@@ -3,19 +3,17 @@ import XlsxPopulate from 'xlsx-populate'
 import {PrismaClient} from '@infoportal/prisma'
 import {appConf} from '../../core/AppConf.js'
 import {Kobo} from 'kobo-sdk'
-import {KoboFormService} from './KoboFormService'
 import {fnSwitch, Obj, seq} from '@axanc/ts-utils'
 import {format} from 'date-fns'
 import {Api} from '@infoportal/api-sdk'
 import {app} from '../../index'
-import {FormService} from '../form/FormService'
+import {FormSchemaService} from '../form/FormSchemaService'
 
 /** @deprecated??*/
 export class KoboToXLS {
   constructor(
     private prisma: PrismaClient,
-    private form = new FormService(prisma),
-    private koboForm = new KoboFormService(prisma),
+    private schema = new FormSchemaService(prisma),
     private log = app.logger('KoboToXLS'),
   ) {}
 
@@ -41,7 +39,7 @@ export class KoboToXLS {
       'select_multiple',
       'date',
     ]
-    const koboFormDetails = await this.form.getSchema({formId})
+    const koboFormDetails = await this.schema.get({formId})
     if (!koboFormDetails) return
 
     const translated = langIndex !== undefined ? await this.translateForm({formId, langIndex, data}) : data
@@ -98,7 +96,7 @@ export class KoboToXLS {
       'date',
     ]
     const flatAnswers = data.map(({answers, ...meta}) => ({...meta, ...answers}))
-    const schema = await this.form.getSchema({formId})
+    const schema = await this.schema.get({formId})
     if (!schema) {
       this.log.warn(`[translateForm] Missing ${formId}`)
       return

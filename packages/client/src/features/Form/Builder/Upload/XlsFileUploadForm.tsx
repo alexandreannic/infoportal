@@ -209,7 +209,7 @@ function XlsFileUploadFormInner({
                               )}
                               <DiffView
                                 stepperRef={stepperRef}
-                                oldStr={schemaToString(removeSysKeys(querySchema.data?.json))}
+                                oldStr={schemaToString(removeSysKeys(querySchema.data))}
                                 newStr={schemaToString(validation.schema)}
                                 hasChanges={setSchemaHasChanges}
                                 sx={{mt: 1}}

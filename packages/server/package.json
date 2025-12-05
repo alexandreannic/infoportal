@@ -78,7 +78,7 @@
     "express-session": "^1.18.0",
     "fetch-cookie": "^2.1.0",
     "googleapis": "^148.0.0",
-    "kobo-sdk": "^2.4.3",
+    "kobo-sdk": "^2.5.0",
     "lodash.merge": "^4.6.2",
     "mssql": "^11.0.1",
     "multer": "^1.4.5-lts.1",

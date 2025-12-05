@@ -38,6 +38,7 @@ export type FormBuilderContext = {
   }
   showPreview: boolean
   setShowPreview: Dispatch<React.SetStateAction<boolean>>
+  queryLastVersionXml: ReturnType<(typeof UseQuerySchema)['getByVersionXml']>
   queryLastVersion: ReturnType<(typeof UseQuerySchema)['getByVersion']>
 }
 
@@ -66,6 +67,7 @@ function FormBuilder() {
     }
   }, [queryVersion.get.data])
 
+  const queryLastVersionXml = UseQuerySchema.getByVersionXml({workspaceId, formId, versionId: versions.last?.id})
   const queryLastVersion = UseQuerySchema.getByVersion({workspaceId, formId, versionId: versions.last?.id})
 
   return (
@@ -81,6 +83,7 @@ function FormBuilder() {
               versions,
               showPreview,
               setShowPreview,
+              queryLastVersionXml,
               queryLastVersion,
             }}
           >
@@ -93,8 +96,8 @@ function FormBuilder() {
                 display: 'flex',
                 overflowX: 'auto',
                 transition: 'all 0.4s ease',
-                '--right-width': showPreview ? '50%' : '0%',
-                '--left-width': showPreview ? '50%' : '100%',
+                '--right-width': showPreview ? '40%' : '0%',
+                '--left-width': showPreview ? '60%' : '100%',
               }}
             >
               <Box
@@ -117,7 +120,7 @@ function FormBuilder() {
                   opacity: showPreview ? 1 : 0,
                 }}
               >
-                {showPreview && <FormBuilderPreview schemaXml={queryLastVersion.data?.xml} />}
+                {showPreview && <FormBuilderPreview schemaXml={queryLastVersionXml.data} />}
               </Box>
             </Box>
           </Context.Provider>

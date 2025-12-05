@@ -8,10 +8,19 @@ import {SchemaInspector} from '@infoportal/form-helper'
 export class UseQuerySchema {
   static readonly get = ({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId?: Api.FormId}) => {
     const {apiv2} = useAppSettings()
-
     return useQuery({
-      queryKey: queryKeys.schema(workspaceId, formId),
-      queryFn: () => apiv2.form.getSchema({workspaceId, formId: formId!}),
+      queryKey: queryKeys.schema.form(workspaceId, formId!),
+      queryFn: () => apiv2.form.schema.get({workspaceId, formId: formId!}),
+      retry: false,
+      enabled: !!formId,
+    })
+  }
+
+  static readonly getXml = ({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId?: Api.FormId}) => {
+    const {apiv2} = useAppSettings()
+    return useQuery({
+      queryKey: queryKeys.schema.form(workspaceId, formId!),
+      queryFn: () => apiv2.form.schema.getXml({workspaceId, formId: formId!}),
       retry: false,
       enabled: !!formId,
     })
@@ -50,9 +59,28 @@ export class UseQuerySchema {
   }) => {
     const {apiv2} = useAppSettings()
     return useQuery({
-      queryKey: queryKeys.schemaByVersion(workspaceId, formId, versionId),
+      queryKey: queryKeys.schema.versionOne(workspaceId, formId, versionId!),
       queryFn: () => {
-        return apiv2.form.getSchemaByVersion({workspaceId, formId, versionId: versionId!})
+        return apiv2.form.schema.getByVersion({workspaceId, formId, versionId: versionId!})
+      },
+      enabled: !!versionId,
+    })
+  }
+
+  static readonly getByVersionXml = ({
+    workspaceId,
+    formId,
+    versionId,
+  }: {
+    workspaceId: Api.WorkspaceId
+    formId: Api.FormId
+    versionId?: Api.Form.VersionId
+  }) => {
+    const {apiv2} = useAppSettings()
+    return useQuery({
+      queryKey: queryKeys.schema.versionOneXml(workspaceId, formId, versionId!),
+      queryFn: () => {
+        return apiv2.form.schema.getByVersionXml({workspaceId, formId, versionId: versionId!})
       },
       enabled: !!versionId,
     })

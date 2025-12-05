@@ -20,6 +20,7 @@ import {widgetContract} from './module/dashboard/DashboardWidgetContract.js'
 import {sectionContract} from './module/dashboard/DashboardSectionContract.js'
 import {databaseViewContract} from './module/database-view/DatabaseViewContract.js'
 import {submissionHistoryContract} from './module/submission/history/SubmissionHistoryContract.js'
+import {formSchemaContract} from './module/form/FormSchemaContract.js'
 
 export const apiContract = initContract().router({
   permission: permissionContract,
@@ -42,6 +43,7 @@ export const apiContract = initContract().router({
     ...formContract,
     access: formAccessContract,
     version: formVersionContract,
+    schema: formSchemaContract,
     action: {
       ...formActionContract,
       log: formActionLogContract,

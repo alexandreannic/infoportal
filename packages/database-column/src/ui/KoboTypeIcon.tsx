@@ -27,6 +27,12 @@ const koboIconMap: Record<Api.Form.QuestionType, string> = {
   deviceid: '',
   end_group: '',
   end_repeat: '',
+  geoshape: 'map',
+  audio: 'mic',
+  barcode: 'barcode',
+  geotrace: 'route',
+  range: 'arrow_range',
+  video: 'videocam',
 }
 
 export const KoboTypeIcon = ({

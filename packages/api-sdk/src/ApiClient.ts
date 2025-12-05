@@ -22,6 +22,7 @@ import {widgetClient} from './module/dashboard/DashboardWidgetContract.js'
 import {sectionClient} from './module/dashboard/DashboardSectionContract.js'
 import {databaseViewClient} from './module/database-view/DatabaseViewContract.js'
 import {submissionHistoryClient} from './module/submission/history/SubmissionHistoryContract.js'
+import {formSchemaClient} from './module/form/FormSchemaContract.js'
 
 export type ApiClient = ReturnType<typeof buildApiClient>
 export type TsRestClient = ReturnType<typeof buildClient>
@@ -58,6 +59,7 @@ export const buildApiClient = (baseUrl: string) => {
       ...formClient(client, baseUrl),
       access: formAccessClient(client, baseUrl),
       version: formVersionClient(client, baseUrl),
+      schema: formSchemaClient(client),
       action: {
         ...formActionClient(client),
         log: formActionLogClient(client),

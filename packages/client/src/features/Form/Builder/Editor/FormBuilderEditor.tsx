@@ -24,7 +24,7 @@ function FormBuilderEditor() {
       {(queryDraftVersion.isSuccess || !versions.draft) && (
         <XlsFormEditor
           saving={queryVersion.isPending}
-          value={queryDraftVersion.data?.json}
+          value={queryDraftVersion.data}
           onCommit={_ => {
             queryVersion.mutateAsync({schemaJson: _})
           }}

@@ -35,36 +35,6 @@ export const formContract = c.router({
     }),
   },
 
-  getSchema: {
-    method: 'GET',
-    path: '/:workspaceId/form/:formId/schema',
-    pathParams: z.object({
-      workspaceId: schema.workspaceId,
-      formId: schema.formId,
-    }),
-    responses: {
-      200: z.any() as z.ZodType<Api.Form.Schema | undefined>,
-    },
-  },
-
-  getSchemaByVersion: {
-    method: 'GET',
-    path: '/:workspaceId/form/:formId/schema/:versionId',
-    pathParams: z.object({
-      workspaceId: schema.workspaceId,
-      formId: schema.formId,
-      versionId: schema.versionId,
-    }),
-    responses: {
-      200: z.any() as z.ZodType<{json: Api.Form.Schema; xml: Api.Form.SchemaXml} | undefined>,
-    },
-    metadata: makeMeta({
-      access: {
-        form: ['canGet'],
-      },
-    }),
-  },
-
   update: {
     method: 'PATCH',
     path: '/:workspaceId/form/:formId',
@@ -157,7 +127,6 @@ export const formContract = c.router({
     },
     metadata: makeMeta({
       access: {
-        // global: ['form_canGetAll'],
         workspace: ['form_canGetAll'],
       },
     }),
@@ -197,14 +166,6 @@ export const formClient = (client: TsRestClient, baseUrl: string) => {
         .getMine({params: {workspaceId}})
         .then(map200)
         .then(_ => _.map(Api.Form.map))
-    },
-
-    getSchemaByVersion: (params: {workspaceId: Api.WorkspaceId; formId: Api.FormId; versionId: Api.Form.VersionId}) => {
-      return client.form.getSchemaByVersion({params}).then(map200)
-    },
-
-    getSchema: (params: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {
-      return client.form.getSchema({params}).then(map200)
     },
 
     update: ({workspaceId, formId, ...body}: Api.Form.Payload.Update): Promise<Api.Form> => {

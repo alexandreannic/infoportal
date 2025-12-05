@@ -87,7 +87,6 @@ export class FormVersionService {
         where: {formId},
         orderBy: {version: 'desc'},
       })
-      console.log('schemaJson', schemaJson)
       const parsedSchema = SchemaParser.parse(schemaJson)
       const errors = SchemaValidator.validate(parsedSchema)?.errors
       const xml = await this.getSchemaXml(parsedSchema)
@@ -125,11 +124,7 @@ export class FormVersionService {
     })
   }
 
-  readonly getSchemaXml = async (schemaJson: Api.Form.Schema) => {
-    const res = await PyxFormClient.getXmlBySchema(schemaJson)
-    console.log(res)
-    return res
-  }
+  readonly getSchemaXml = PyxFormClient.getXmlBySchema
 
   readonly getVersions = ({formId}: {formId: Api.FormId}): Promise<Api.Form.Version[]> => {
     return this.prisma.formVersion
