@@ -66,6 +66,7 @@ export type FormContext = {
   formId: Api.FormId
   form: Api.Form
   inspector?: SchemaInspector
+  schemaXml?: Api.Form.SchemaXml
   permission: Api.Permission.Form
   langIndex: number
   setLangIndex: Dispatch<SetStateAction<number>>
@@ -85,6 +86,7 @@ function Form() {
   const [langIndex, setLangIndex] = useState(0)
 
   const querySchema = UseQuerySchema.getInspector({formId, workspaceId, langIndex})
+  const querySchemaXml = UseQuerySchema.getXml({formId, workspaceId})
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
 
@@ -127,6 +129,7 @@ function Form() {
           form: queryForm.data,
           inspector: querySchema.data,
           permission: queryPermission.data,
+          schemaXml: querySchemaXml.data,
         }}
       >
         <Outlet />

@@ -93,11 +93,11 @@ function DatabaseAnswerView() {
 
 export const DialogAnswerView = ({
   onClose,
-  payload: {schema, formId, submission, workspaceId},
+  payload: {schemaInspector, formId, submission, workspaceId},
 }: DialogProps<{
   workspaceId: Api.WorkspaceId
   formId: Api.FormId
-  schema: SchemaInspector
+  schemaInspector: SchemaInspector
   submission: Submission
 }>) => {
   const {m} = useI18n()
@@ -126,7 +126,7 @@ export const DialogAnswerView = ({
       <DialogContent>
         <KoboAnswerFormView
           workspaceId={workspaceId}
-          inspector={schema}
+          inspector={schemaInspector}
           formId={formId}
           showQuestionWithoutAnswer={showQuestionWithoutAnswer}
           answer={submission}

@@ -69,8 +69,9 @@ export const mapFormActionLog = <
   T extends {submission: any | null; id: string; actionId: string | null; details: string | null},
 >(
   _: T,
-): Defined<T & {submission?: Api.Submission; actionId?: Api.Form.ActionId; id: Api.Form.Action.LogId; details?: string}> =>
-  _ as any
+): Defined<
+  T & {submission?: Api.Submission; actionId?: Api.Form.ActionId; id: Api.Form.Action.LogId; details?: string}
+> => _ as any
 
 export const mapServer = <T extends {id: string; workspaceId: string}>(
   _: T,

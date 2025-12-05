@@ -4,6 +4,7 @@ import {DialogAnswerEdit} from '@/features/Form/dialogs/DialogAnswerEdit'
 import {Submission} from '@/core/sdk/server/kobo/KoboMapper'
 import {Api} from '@infoportal/api-sdk'
 import {useFormContext} from '@/features/Form/Form'
+import {UseQuerySubmission} from '@/core/query/submission/useQuerySubmission.js'
 
 export interface OpenModalProps {
   submission: Submission
@@ -11,16 +12,18 @@ export interface OpenModalProps {
 
 export const useKoboDialogs = ({formId, workspaceId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {
   const dialogs = useDialogs()
-  const schema = useFormContext(_ => _.inspector)
+  const schemaInspector = useFormContext(_ => _.inspector)
+  const schemaXml = useFormContext(_ => _.schemaXml)
+  const z = UseQuerySubmission.update()
 
   return {
     openView: (params: OpenModalProps) => {
-      if (!schema) return
-      dialogs.open(DialogAnswerView, {schema, workspaceId, formId, ...params})
+      if (!schemaInspector) return
+      dialogs.open(DialogAnswerView, {schemaInspector, workspaceId, formId, ...params})
     },
     openEdit: (params: OpenModalProps) => {
-      if (!schema) return
-      dialogs.open(DialogAnswerEdit, {inspector: schema, workspaceId, formId, ...params})
+      if (!schemaInspector || !schemaXml) return
+      dialogs.open(DialogAnswerEdit, {schemaInspector, schemaXml, workspaceId, formId, ...params})
     },
   }
 }
