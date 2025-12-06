@@ -64,21 +64,31 @@ export namespace Submission {
       answers: object
       geolocation?: Geolocation
     }
-    export type UpdateValidation = {
+
+    export type UpdateSingle = {
       formId: FormId
       workspaceId: WorkspaceId
-      answerIds: SubmissionId[]
+      submissionId: SubmissionId
+      answers: Record<string, any>
+    }
+
+    export type BulkUpdateValidation = {
+      formId: FormId
+      workspaceId: WorkspaceId
+      submissionIds: SubmissionId[]
       status: Validation
     }
+
     export type Remove = {
       formId: FormId
       workspaceId: WorkspaceId
-      answerIds: SubmissionId[]
+      submissionIds: SubmissionId[]
     }
-    export type Update<T extends Record<string, any> = any, K extends KeyOf<T> = any> = {
+
+    export type BulkUpdateQuestion<T extends Record<string, any> = any, K extends KeyOf<T> = any> = {
       formId: FormId
       workspaceId: WorkspaceId
-      answerIds: SubmissionId[]
+      submissionIds: SubmissionId[]
       question: K
       answer: T[K] | null
     }
@@ -103,7 +113,7 @@ export namespace Submission {
 
   export interface History {
     id: string
-    answerIds: string[]
+    submissionIds: string[]
     by: Api.User.Email
     date: Date
     type: 'answer' | 'delete'

@@ -14,7 +14,7 @@ export const useKoboDialogs = ({formId, workspaceId}: {workspaceId: Api.Workspac
   const dialogs = useDialogs()
   const schemaInspector = useFormContext(_ => _.inspector)
   const schemaXml = useFormContext(_ => _.schemaXml)
-  const z = UseQuerySubmission.update()
+  const z = UseQuerySubmission.bulkUpdateQuestion()
 
   return {
     openView: (params: OpenModalProps) => {
@@ -23,7 +23,14 @@ export const useKoboDialogs = ({formId, workspaceId}: {workspaceId: Api.Workspac
     },
     openEdit: (params: OpenModalProps) => {
       if (!schemaInspector || !schemaXml) return
-      dialogs.open(DialogAnswerEdit, {schemaInspector, schemaXml, workspaceId, formId, ...params})
+      dialogs.open(DialogAnswerEdit, {
+        schemaInspector,
+        schemaXml,
+        workspaceId,
+        formId,
+        onSubmit: async _ => console.log(_),
+        ...params,
+      })
     },
   }
 }

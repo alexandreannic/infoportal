@@ -37,6 +37,7 @@ import {DatabaseView} from '../feature/databaseView/DatabaseView.js'
 import {SubmissionHistoryService} from '../feature/form/history/SubmissionHistoryService.js'
 import {PrismaClient} from '../../../prisma/src'
 import {FormSchemaService} from '../feature/form/FormSchemaService.js'
+import {SubmissionUpdateService} from '../feature/form/submission/SubmissionUpdateService.js'
 
 export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
@@ -157,6 +158,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const formVersion = new FormVersionService(prisma)
   const formAccess = new FormAccessService(prisma)
   const submission = new SubmissionService(prisma)
+  const submissionUpdate = new SubmissionUpdateService(prisma)
   const submissionHistory = new SubmissionHistoryService(prisma)
   const server = new KoboAccountService(prisma)
   const group = new GroupService(prisma)
@@ -504,24 +506,30 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           })
           .then(ok200)
           .catch(handleError),
-      updateAnswers: _ =>
+      updateSingle: _ =>
         auth2(_)
-          .then(({req, params, body}) =>
-            submission.updateAnswers({...body, ...params, authorEmail: req.session.app?.user.email!}),
+          .then(({req, body}) => submissionUpdate.updateSingle({...body, authorEmail: req.session.app.user.email!}))
+          .then(ok200)
+          .catch(handleError),
+      bulkUpdateQuestion: _ =>
+        auth2(_)
+          .then(({req, body}) =>
+            submissionUpdate.bulkUpdateQuestion({...body, authorEmail: req.session.app.user.email!}),
           )
           .then(ok200)
           .catch(handleError),
-      updateValidation: _ =>
+      bulkUpdateValidation: _ =>
         auth2(_)
-          .then(({req, params, body}) =>
-            submission.updateValidation({...body, ...params, authorEmail: req.session.app?.user.email!}),
+          .then(({req, body}) =>
+            submissionUpdate.bulkUpdateValidation({...body, authorEmail: req.session.app.user.email!}),
           )
           .then(ok200)
           .catch(handleError),
+
       remove: _ =>
         auth2(_)
           .then(({req, params, body}) =>
-            submission.remove({...body, ...params, authorEmail: req.session.app?.user.email!}),
+            submissionUpdate.remove({...body, ...params, authorEmail: req.session.app.user.email!}),
           )
           .then(ok204)
           .catch(handleError),

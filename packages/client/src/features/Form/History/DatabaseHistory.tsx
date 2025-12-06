@@ -95,8 +95,8 @@ function DatabaseHistory() {
               align: 'right',
               render: _ => {
                 return {
-                  label: formatLargeNumber(_.answerIds.length),
-                  value: _.answerIds.length,
+                  label: formatLargeNumber(_.submissionIds.length),
+                  value: _.submissionIds.length,
                 }
               },
             },
@@ -107,7 +107,7 @@ function DatabaseHistory() {
               className: 'td-id',
               width: 140,
               head: m.id,
-              renderQuick: _ => _.answerIds?.join(' '),
+              renderQuick: _ => _.submissionIds?.join(' '),
             },
             {
               type: 'select_one',

@@ -34,7 +34,7 @@ export const DatabaseSelectedColumnAction = ({
         value={commonValue}
         workspaceId={workspaceId}
         formId={formId}
-        answerIds={rowIds as Api.SubmissionId[]}
+        submissionIds={rowIds as Api.SubmissionId[]}
       />
     )
   const question = inspector.lookup.questionIndex[columnId]
@@ -46,7 +46,7 @@ export const DatabaseSelectedColumnAction = ({
         workspaceId={workspaceId}
         formId={formId}
         question={question}
-        answerIds={rowIds as Api.SubmissionId[]}
+        submissionIds={rowIds as Api.SubmissionId[]}
         inspector={inspector}
       />
     )
@@ -63,11 +63,11 @@ export const BulkUpdateAnswer = ({
   workspaceId: Api.WorkspaceId
   formId: Api.FormId
   question: Api.Form.Question
-  answerIds: Api.SubmissionId[]
+  submissionIds: Api.SubmissionId[]
   inspector: SchemaInspector
 }) => {
-  const query = UseQuerySubmission.update()
-  const {workspaceId, formId, answerIds} = props
+  const query = UseQuerySubmission.bulkUpdateQuestion()
+  const {workspaceId, formId, submissionIds} = props
   return (
     <Datatable.AsyncInputWrapper
       value={value}
@@ -76,8 +76,8 @@ export const BulkUpdateAnswer = ({
       label={inspector.translate.question(question.name)}
       errorMsg={query.error?.message}
       onConfirm={answer => {
-        return query.mutateAsync({workspaceId, formId, answerIds, question: question.name, answer}).then(() => {
-          return {editedCount: answerIds.length}
+        return query.mutateAsync({workspaceId, formId, submissionIds, question: question.name, answer}).then(() => {
+          return {editedCount: submissionIds.length}
         })
       }}
       renderInput={({value, onChange}) => (
@@ -105,10 +105,10 @@ export const BulkUpdateValidation = ({
   value?: Api.Submission.Validation
   workspaceId: Api.WorkspaceId
   formId: Api.FormId
-  answerIds: Api.SubmissionId[]
+  submissionIds: Api.SubmissionId[]
 }) => {
-  const query = UseQuerySubmission.updateValidation()
-  const {workspaceId, formId, answerIds} = props
+  const query = UseQuerySubmission.bulkUpdateValidation()
+  const {workspaceId, formId, submissionIds} = props
   const {m} = useI18n()
   return (
     <Datatable.AsyncInputWrapper
@@ -122,11 +122,11 @@ export const BulkUpdateValidation = ({
           .mutateAsync({
             formId,
             status,
-            answerIds,
+            submissionIds,
             workspaceId,
           })
           .then(() => {
-            return {editedCount: answerIds.length}
+            return {editedCount: submissionIds.length}
           })
       }
       renderInput={({value, onChange}) => (

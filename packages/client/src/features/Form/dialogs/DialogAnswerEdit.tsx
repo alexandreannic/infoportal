@@ -24,7 +24,7 @@ export const DialogAnswerEdit = ({
   const formRef = useRef<XlsFormFillerHandle>(null)
   const {m} = useI18n()
   return (
-    <Dialog open={true}>
+    <Dialog open={true} maxWidth="md" fullWidth>
       <DialogTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
           <Link

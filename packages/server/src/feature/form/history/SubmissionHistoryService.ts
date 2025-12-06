@@ -9,7 +9,7 @@ import crypto from 'crypto'
 type Create = {
   authorEmail: Api.User.Email
   formId: Kobo.FormId
-  answerIds: Kobo.SubmissionId[]
+  submissionIds: Kobo.SubmissionId[]
 } & (
   | {
       type: 'answer'
@@ -51,20 +51,20 @@ export class SubmissionHistoryService {
       .then(_ => {
         return _.map(history => ({
           ...history,
-          answerIds: history.answers.map(_ => _.id),
+          submissionIds: history.answers.map(_ => _.id),
         }))
       })
       .then(Api.Paginate.wrap())
   }
 
   readonly create = async (props: Create) => {
-    const {authorEmail, formId, answerIds, type} = props
+    const {authorEmail, formId, submissionIds, type} = props
 
     // ---------------------- DELETE ----------------------
     if (type === 'delete') {
       return this.prisma.formSubmissionHistory.create({
         data: {
-          answers: {connect: answerIds.map(id => ({id}))},
+          answers: {connect: submissionIds.map(id => ({id}))},
           by: authorEmail,
           type,
           formId,
@@ -80,10 +80,10 @@ export class SubmissionHistoryService {
       property = props.property
 
       if (props.oldValue !== undefined) {
-        rows = answerIds.map(id => ({id, prev: props.oldValue}))
+        rows = submissionIds.map(id => ({id, prev: props.oldValue}))
       } else {
         const submissions = await this.prisma.formSubmission.findMany({
-          where: {id: {in: answerIds}},
+          where: {id: {in: submissionIds}},
           select: {id: true, answers: true},
         })
         rows = submissions.map(s => ({
@@ -97,7 +97,7 @@ export class SubmissionHistoryService {
       const validationKey: keyof Api.Submission.Meta = 'validationStatus'
       property = validationKey
       const submissions = await this.prisma.formSubmission.findMany({
-        where: {id: {in: answerIds}},
+        where: {id: {in: submissionIds}},
         select: {id: true, validationStatus: true},
       })
       rows = submissions.map(s => ({
