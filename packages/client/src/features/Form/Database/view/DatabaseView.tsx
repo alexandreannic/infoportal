@@ -1,4 +1,4 @@
-import {Box, Icon, SxProps, Theme, useTheme} from '@mui/material'
+import {Box, Icon, useTheme} from '@mui/material'
 import React, {useState} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {useForm} from 'react-hook-form'
@@ -8,12 +8,15 @@ import {useSession} from '@/core/Session/SessionContext'
 import {useFormContext} from '@/features/Form/Form'
 import {Core} from '@/shared'
 import {Api} from '@infoportal/api-sdk'
+import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
+import {DatabaseLeftPanelProps} from '@/features/Form/Database/DatabaseLeftPanel'
 
 interface FormCreate {
   name: string
 }
 
-export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?: SxProps<Theme>}) => {
+export const DatabaseViewEditor = ({onClose}: DatabaseLeftPanelProps<undefined>) => {
+  const ctx = useDatabaseKoboTableContext().view
   const {m} = useI18n()
   const permission = useFormContext(_ => _.permission)
   const [open, setOpen] = useState<string | undefined>(undefined)
@@ -21,9 +24,18 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
 
   const formCreate = useForm<FormCreate>()
   return (
-    <Box sx={{p: 1}}>
-      <Core.PanelTitle sx={{mb: 0.5}}>{m._datatable.view}</Core.PanelTitle>
-      <Core.Alert color="info" icon={<Icon>help</Icon>} sx={{mb: 1}} deletable="permanent" id="db-view-info">
+    <Core.Panel sx={{p: 1}}>
+      <Core.PanelTitle
+        sx={{mb: 0.5}}
+        action={
+          <Core.IconBtn onClick={onClose} sx={{marginLeft: 'auto'}}>
+            close
+          </Core.IconBtn>
+        }
+      >
+        {m._datatable.view}
+      </Core.PanelTitle>
+      <Core.Alert color="info" icon={<Icon>info</Icon>} sx={{mb: 1}} id="db-view-info">
         <b>Views</b> save your column visibility and width. They can be shared with other users.
       </Core.Alert>
       {ctx.fetcherViews.get?.map(view => (
@@ -70,7 +82,7 @@ export const DatabaseViewEditor = ({sx, view: ctx}: {view: UseDatabaseView; sx?:
           }
         />
       </Box>
-    </Box>
+    </Core.Panel>
   )
 }
 

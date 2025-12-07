@@ -24,6 +24,8 @@ import {formRoute, useFormContext} from '@/features/Form/Form'
 import {buildDbColumns} from '@infoportal/database-column'
 import {getKoboAttachmentUrl, KoboAttachedImg} from '@/core/KoboAttachmentUrl.js'
 import {SchemaInspector} from '@infoportal/form-helper'
+import {DatabaseLeftPanelProps, DatabaseLeftPanelState} from '@/features/Form/Database/DatabaseLeftPanel'
+import {SwitchBox} from '@/shared/customInput/SwitchBox'
 
 export const databaseAnswerViewRoute = createRoute({
   getParentRoute: () => formRoute,
@@ -91,21 +93,23 @@ function DatabaseAnswerView() {
   )
 }
 
-export const DialogAnswerView = ({
-  onClose,
-  payload: {schemaInspector, formId, submission, workspaceId},
-}: DialogProps<{
+export type DialogAnswerViewProps = {
   workspaceId: Api.WorkspaceId
   formId: Api.FormId
   schemaInspector: SchemaInspector
   submission: Submission
-}>) => {
+}
+
+export const AnswerView = ({
+  onClose,
+  payload: {schemaInspector, formId, submission, workspaceId},
+}: DatabaseLeftPanelProps<DialogAnswerViewProps>) => {
   const {m} = useI18n()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
 
   return (
-    <Dialog open={true}>
-      <DialogTitle>
+    <Core.Panel sx={{p: 1}}>
+      <Core.PanelTitle>
         <Box sx={{display: 'flex', alignItems: 'center'}}>
           <Link
             to="/$workspaceId/form/$formId/answer/$answerId"
@@ -115,27 +119,22 @@ export const DialogAnswerView = ({
             <Core.IconBtn color="primary">open_in_new</Core.IconBtn>
           </Link>
           {submission.id}
-          <Box sx={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
-            <Core.Txt sx={{fontSize: '1rem'}} color="hint">
-              {m._koboDatabase.showAllQuestions}
-            </Core.Txt>
-            <Switch value={showQuestionWithoutAnswer} onChange={e => setShowQuestionWithoutAnswer(e.target.checked)} />
-          </Box>
         </Box>
-      </DialogTitle>
-      <DialogContent>
-        <KoboAnswerFormView
-          workspaceId={workspaceId}
-          inspector={schemaInspector}
-          formId={formId}
-          showQuestionWithoutAnswer={showQuestionWithoutAnswer}
-          answer={submission}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Core.Btn onClick={() => onClose()}>{m.close}</Core.Btn>
-      </DialogActions>
-    </Dialog>
+      </Core.PanelTitle>
+      <SwitchBox
+        sx={{mb: 1}}
+        label={m._koboDatabase.showAllQuestions}
+        value={showQuestionWithoutAnswer}
+        onChange={e => setShowQuestionWithoutAnswer(e.target.checked)}
+      />
+      <KoboAnswerFormView
+        workspaceId={workspaceId}
+        inspector={schemaInspector}
+        formId={formId}
+        showQuestionWithoutAnswer={showQuestionWithoutAnswer}
+        answer={submission}
+      />
+    </Core.Panel>
   )
 }
 

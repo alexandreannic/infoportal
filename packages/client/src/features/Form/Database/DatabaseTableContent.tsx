@@ -9,7 +9,7 @@ import {DatabaseKoboSyncBtn} from '@/features/Form/Database/DatabaseKoboSyncBtn'
 import {DatabaseTableProps} from '@/features/Form/Database/DatabaseTable'
 import {generateEmptyXlsTemplate} from '@/features/Form/Database/generateEmptyXlsFile'
 import {databaseKoboDisplayBuilder} from '@/features/Form/Database/groupDisplay/DatabaseKoboDisplay'
-import {DatabaseViewBtn, DatabaseViewEditor} from '@/features/Form/Database/view/DatabaseView'
+import {DatabaseViewBtn} from '@/features/Form/Database/view/DatabaseView'
 import {Alert, AlertProps, Box, Icon, useTheme} from '@mui/material'
 import {FormDataFlattenRepeatGroup} from '@infoportal/form-helper'
 import {useMemo, useState} from 'react'
@@ -19,11 +19,10 @@ import {Api} from '@infoportal/api-sdk'
 import {AppAvatar, Core, Datatable} from '@/shared'
 import {useFormSocket} from '@/features/Form/useFormSocket'
 import {appConfig} from '@/conf/AppConfig.js'
-import {DatabaseToolbarContainer} from '@/features/Form/Database/DatabaseToolbarContainer.js'
+import {DatabaseLeftPanel, DatabaseLeftPanelState} from '@/features/Form/Database/DatabaseLeftPanel.js'
 import {useAsync} from '@axanc/react-hooks'
 import {buildDbColumns, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
-import {useKoboDialogs} from '@/features/Form/Database/useKoboDialogs'
 import {useFormContext} from '@/features/Form/Form'
 import {SelectLangIndex} from '@/shared/customInput/SelectLangIndex'
 import {DatabaseSelectedColumnAction} from '@/features/Form/Database/DatabaseSelectedColumnAction'
@@ -54,9 +53,10 @@ export const DatabaseTableContent = ({
   const navigate = useNavigate()
   const {langIndex, workspaceId, setLangIndex} = useFormContext(_ => _)
   const ctx = useDatabaseKoboTableContext()
-  const dialog = useKoboDialogs({workspaceId, formId: ctx.form.id})
+  const schemaXml = useFormContext(_ => _.schemaXml)
   const connectedUsers = useFormSocket({workspaceId, formId: ctx.form.id})
-  const [viewEditorOpen, setViewEditorOpen] = useState(false)
+
+  const [leftPanelState, setLeftPanelState] = useState<DatabaseLeftPanelState | undefined>()
 
   const flatData: Submission[] | undefined = useMemo(() => {
     if (ctx.groupDisplay.get.repeatAs !== 'rows' || ctx.groupDisplay.get.repeatGroupName === undefined) return ctx.data
@@ -106,7 +106,28 @@ export const DatabaseTableContent = ({
       isReadonly: !ctx.canEdit,
       koboEditEnketoUrl: ctx.koboEditEnketoUrl,
       m,
-      dialog,
+      onOpenView: _ =>
+        setLeftPanelState({
+          type: 'SUBMISSION_VIEW',
+          payload: {
+            formId: ctx.form.id,
+            workspaceId,
+            schemaInspector: ctx.inspector,
+            submission: _.submission,
+          },
+        }),
+      onOpenEdit: _ =>
+        setLeftPanelState({
+          type: 'SUBMISSION_EDIT',
+          payload: {
+            formId: ctx.form.id,
+            workspaceId,
+            schemaInspector: ctx.inspector,
+            submission: _.submission,
+            schemaXml: schemaXml!,
+            onSubmit: async _ => console.log(_),
+          },
+        }),
     })
     const colOriginId: Datatable.Column.Props<Api.Submission>[] = []
     if (ctx.form.type === 'kobo' || ctx.form.type === 'smart') {
@@ -139,13 +160,7 @@ export const DatabaseTableContent = ({
 
   return (
     <Box sx={{display: 'flex'}}>
-      <DatabaseToolbarContainer width={340} open={viewEditorOpen}>
-        {viewEditorOpen && (
-          <Core.Panel sx={{mr: 1}}>
-            <DatabaseViewEditor view={ctx.view} />
-          </Core.Panel>
-        )}
-      </DatabaseToolbarContainer>
+      <DatabaseLeftPanel state={leftPanelState} setState={setLeftPanelState} />
       <Core.Panel sx={{width: '100%', mb: 0}}>
         <Datatable.Component
           sx={{
@@ -168,7 +183,6 @@ export const DatabaseTableContent = ({
                 break
               }
             }
-            // onDataChange({})
           }}
           module={{
             columnsResize: {
@@ -237,7 +251,11 @@ export const DatabaseTableContent = ({
           data={flatData}
           header={params => (
             <>
-              <DatabaseViewBtn sx={{mr: 1}} view={ctx.view} onClick={() => setViewEditorOpen(_ => !_)} />
+              <DatabaseViewBtn
+                sx={{mr: 1}}
+                view={ctx.view}
+                onClick={() => setLeftPanelState({type: 'DATABASE_VIEWS'})}
+              />
               <SelectLangIndex
                 inspector={ctx.inspector}
                 sx={{maxWidth: 128, mr: 1}}

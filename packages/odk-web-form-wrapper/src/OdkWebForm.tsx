@@ -68,6 +68,7 @@ export function OdkWebForm({
       key={keyIndexToRemount}
       style={
         {
+          '--odk-question-font-size': '1rem',
           '--p-primary-500': t.vars.palette.primary.main,
           '--odk-font-family': t.typography.fontFamily as string,
           '--odk-muted-background-color': 'none',
@@ -81,6 +82,9 @@ export function OdkWebForm({
         } as any
       }
       sx={{
+        '& .question-container': {
+          padding: '0 .5rem .5rem .5rem',
+        },
         '& .odk-form .form-wrapper': {
           padding: 0,
         },

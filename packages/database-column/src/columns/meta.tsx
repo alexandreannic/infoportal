@@ -53,14 +53,15 @@ export class Meta {
   }
 
   static actions({
-    dialog,
+    onOpenEdit,
+    onOpenView,
     isReadonly,
     koboEditEnketoUrl,
     formType,
     m,
   }: Pick<
     ColumnMetaProps,
-    'dialog' | 'formType' | 'isReadonly' | 'koboEditEnketoUrl' | 'm'
+    'onOpenEdit' | 'onOpenView' | 'formType' | 'isReadonly' | 'koboEditEnketoUrl' | 'm'
   >): Datatable.Column.Props<Row> {
     return {
       group: metaGroup,
@@ -76,7 +77,7 @@ export class Meta {
               <Datatable.IconBtn
                 tooltip={m.view}
                 children="visibility"
-                onClick={() => dialog.openView({submission: _ as Api.Submission})}
+                onClick={() => onOpenView({submission: _ as Api.Submission})}
               />
               {formType === 'smart' ? undefined : koboEditEnketoUrl && _.originId ? (
                 <Datatable.IconBtn
@@ -91,7 +92,7 @@ export class Meta {
                   disabled={isReadonly}
                   tooltip={m.editForm}
                   children="edit"
-                  onClick={() => dialog.openEdit({submission: _ as Api.Submission})}
+                  onClick={() => onOpenEdit({submission: _ as Api.Submission})}
                 />
               )}
             </>

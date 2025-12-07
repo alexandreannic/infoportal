@@ -10,9 +10,10 @@ interface Props extends BoxProps {
   PanelTitleProps?: PanelTitleProps
 }
 
-export const PanelHead = ({icon, children, action, sx, PanelTitleProps, ...other}: Props) => {
+export const PanelHead = ({icon, className, children, action, sx, PanelTitleProps, ...other}: Props) => {
   return (
     <Box
+      className={'PanelHead ' + (className ?? '')}
       {...other}
       sx={{
         p: 2,
@@ -27,7 +28,7 @@ export const PanelHead = ({icon, children, action, sx, PanelTitleProps, ...other
         {icon && <Icon sx={{color: t => t.vars.palette.text.disabled, mr: 1}}>{icon}</Icon>}
         <div style={{flex: 1}}>{children}</div>
       </PanelTitle>
-      <Box sx={{marginLeft: 'auto'}}>{action}</Box>
+      {action && <Box sx={{marginLeft: 'auto'}}>{action}</Box>}
     </Box>
   )
 }

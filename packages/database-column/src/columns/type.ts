@@ -51,9 +51,7 @@ export type ColumnMetaProps = {
   getRow?: (_: any) => Row
   koboEditEnketoUrl?: (answerId: Api.SubmissionId) => string
   isReadonly?: boolean
-  dialog: {
-    openView: (_: {submission: Api.Submission<any>}) => void
-    openEdit: (_: {submission: Api.Submission<any>}) => void
-  }
+  onOpenView: (_: {submission: Api.Submission<any>}) => void
+  onOpenEdit: (_: {submission: Api.Submission<any>}) => void
   m: Messages
 }
