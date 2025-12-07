@@ -160,18 +160,18 @@ export class UseQuerySubmission {
     })
   }
 
-  static updateValidation = () => {
+  static bulkUpdateValidation = () => {
     const queryClient = useQueryClient()
     const {apiv2: api} = useAppSettings()
     return useMutation({
-      mutationFn: async (params: Api.Submission.Payload.UpdateValidation) => {
-        return api.submission.updateValidation(params)
+      mutationFn: async (params: Api.Submission.Payload.BulkUpdateValidation) => {
+        return api.submission.bulkUpdateValidation(params)
       },
-      onMutate: async ({formId, answerIds, status}) => {
+      onMutate: async ({formId, submissionIds, status}) => {
         return UseQuerySubmission.cacheUpdateValidation({
           formId,
           queryClient,
-          submissionIds: answerIds,
+          submissionIds,
           status,
         })
       },
@@ -186,18 +186,18 @@ export class UseQuerySubmission {
     })
   }
 
-  static readonly update = () => {
+  static readonly bulkUpdateQuestion = () => {
     const queryClient = useQueryClient()
     const {toastSuccess, toastHttpError} = useIpToast()
     const {apiv2: api} = useAppSettings()
     return useMutation({
-      mutationFn: async (params: Api.Submission.Payload.Update) => {
-        return api.submission.updateAnswers(params)
+      mutationFn: async (params: Api.Submission.Payload.BulkUpdateQuestion) => {
+        return api.submission.bulkUpdateQuestion(params)
       },
-      onMutate: async ({formId, answerIds, question, answer}) => {
+      onMutate: async ({formId, submissionIds, question, answer}) => {
         return UseQuerySubmission.cacheUpdate({
           formId,
-          submissionIds: answerIds,
+          submissionIds: submissionIds,
           queryClient,
           question,
           answer,
@@ -220,15 +220,15 @@ export class UseQuerySubmission {
     const queryClient = useQueryClient()
     const {apiv2: api} = useAppSettings()
     return useMutation({
-      mutationFn: async ({workspaceId, formId, answerIds}: Api.Submission.Payload.Remove) => {
-        return api.submission.remove({workspaceId, formId, answerIds})
+      mutationFn: async ({workspaceId, formId, submissionIds}: Api.Submission.Payload.Remove) => {
+        return api.submission.remove({workspaceId, formId, submissionIds})
       },
-      onMutate: async ({formId, answerIds}) => {
+      onMutate: async ({formId, submissionIds}) => {
         await queryClient.cancelQueries({queryKey: queryKeys.submission(formId)})
         const previousData = queryClient.getQueryData<Api.Paginate<Submission>>(queryKeys.submission(formId))
         queryClient.setQueryData<Api.Paginate<Submission>>(queryKeys.submission(formId), old => {
           if (!old) return old
-          const idsIndex = new Set(answerIds)
+          const idsIndex = new Set(submissionIds)
           return {
             ...old,
             data: old.data.filter(a => !idsIndex.has(a.id)),

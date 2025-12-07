@@ -26,7 +26,7 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Api.Workspa
     onSuccess: newVersion => {
       queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
       queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId, formId)})
-      queryClient.invalidateQueries({queryKey: queryKeys.schema(workspaceId, formId)})
+      queryClient.invalidateQueries({queryKey: queryKeys.schema.form(workspaceId, formId)})
       // queryClient.setQueryData<Return<'getByFormId'>>(queryKeys.version(workspaceId, formId), old =>
       //   (old ?? []).map(_ => (_.id === newVersion.id ? newVersion : _)),
       // )
@@ -53,22 +53,12 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Api.Workspa
     },
     onSuccess: newVersion => {
       queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
-    },
-    onError: toastHttpError,
-  })
-
-  const createNewVersion = useMutation({
-    mutationFn: async (body: Omit<Api.Form.Version.Payload.CreateNewVersion, 'formId'>) => {
-      return apiv2.form.version.createNewVersion({formId, ...body}).catch(toastAndThrowHttpError)
-    },
-    onSuccess: newVersion => {
-      queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
+      queryClient.invalidateQueries({queryKey: queryKeys.schema.versionOne(workspaceId, formId, newVersion.id)})
     },
     onError: toastHttpError,
   })
 
   return {
-    createNewVersion,
     importLastKoboSchema,
     deployLast,
     validateXls,
@@ -88,6 +78,7 @@ export class UseQueryVersion {
       },
       onSuccess: newVersion => {
         queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
+        queryClient.invalidateQueries({queryKey: queryKeys.schema.versionOne(workspaceId, formId, newVersion.id)})
       },
       onError: toastHttpError,
     })

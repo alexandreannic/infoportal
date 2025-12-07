@@ -12,9 +12,9 @@ import {FetchParams} from '@axanc/react-hooks'
 import {TabContent} from '@/shared/Tab/TabContent.js'
 import {SchemaInspector} from '@infoportal/form-helper'
 
-export const answersRoute = createRoute({
+export const submissionsRoute = createRoute({
   getParentRoute: () => formRoute,
-  path: 'answers',
+  path: 'submissions',
   component: DatabaseTableContainer,
 })
 

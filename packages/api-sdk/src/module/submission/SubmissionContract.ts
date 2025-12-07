@@ -21,15 +21,31 @@ export const submissionContract = c.router({
       200: c.type<Api.Paginate<Api.Submission>>(),
     },
   },
-  updateAnswers: {
-    method: 'PATCH',
-    path: '/:workspaceId/form/:formId/submission',
-    pathParams: z.object({
-      workspaceId: schema.workspaceId,
-      formId: schema.formId,
-    }),
+  updateSingle: {
+    method: 'POST',
+    path: '/form/submission/updateSingle',
     body: z.object({
-      answerIds: z.array(schema.submissionId).min(1),
+      formId: schema.formId,
+      workspaceId: schema.workspaceId,
+      submissionId: schema.submissionId,
+      answers: z.record(z.string(), z.any()),
+    }),
+    responses: {
+      200: c.type<Api.Submission>(),
+    },
+    metadata: makeMeta({
+      access: {
+        form: ['answers_canUpdate'],
+      },
+    }),
+  },
+  bulkUpdateQuestion: {
+    method: 'POST',
+    path: '/form/submission/bulkUpdateQuestion',
+    body: z.object({
+      formId: schema.formId,
+      workspaceId: schema.workspaceId,
+      submissionIds: z.array(schema.submissionId).min(1),
       question: z.string(),
       answer: z.any().nullable(),
     }),
@@ -42,15 +58,13 @@ export const submissionContract = c.router({
       },
     }),
   },
-  updateValidation: {
-    method: 'PATCH',
-    path: '/:workspaceId/form/:formId/submission/validation',
-    pathParams: z.object({
+  bulkUpdateValidation: {
+    method: 'POST',
+    path: '/form/submission/bulkUpdateValidation',
+    body: z.object({
       workspaceId: schema.workspaceId,
       formId: schema.formId,
-    }),
-    body: z.object({
-      answerIds: z.array(schema.submissionId).min(1),
+      submissionIds: z.array(schema.submissionId).min(1),
       status: z.enum(
         Obj.keys(Api.Submission.Validation) as [Api.Submission.Validation, ...Api.Submission.Validation[]],
       ),
@@ -72,7 +86,7 @@ export const submissionContract = c.router({
       formId: schema.formId,
     }),
     body: z.object({
-      answerIds: z.array(schema.submissionId).min(1),
+      submissionIds: z.array(schema.submissionId).min(1),
     }),
     responses: {
       204: schema.emptyResult,
@@ -131,45 +145,65 @@ export const submissionClient = (client: TsRestClient, baseUrl: string) => {
 
     remove: async ({
       workspaceId,
-      answerIds,
+      submissionIds,
       formId,
     }: {
       workspaceId: Api.WorkspaceId
-      answerIds: Api.SubmissionId[]
+      submissionIds: Api.SubmissionId[]
       formId: Api.FormId
     }) => {
       return client.submission
         .remove({
           params: {workspaceId, formId},
-          body: {answerIds},
+          body: {submissionIds},
         })
         .then(map204)
     },
 
-    updateValidation: ({workspaceId, formId, answerIds, status}: Api.Submission.Payload.UpdateValidation) => {
+    updateSingle: ({workspaceId, formId, submissionId, answers}: Api.Submission.Payload.UpdateSingle) => {
       return client.submission
-        .updateValidation({
-          params: {workspaceId, formId},
+        .updateSingle({
           body: {
-            answerIds: answerIds,
+            workspaceId,
+            formId,
+            submissionId,
+            answers,
+          },
+        })
+        .then(map200)
+    },
+
+    bulkUpdateValidation: ({
+      workspaceId,
+      formId,
+      submissionIds,
+      status,
+    }: Api.Submission.Payload.BulkUpdateValidation) => {
+      return client.submission
+        .bulkUpdateValidation({
+          body: {
+            workspaceId,
+            formId,
+            submissionIds,
             status,
           },
         })
         .then(map200)
     },
 
-    updateAnswers: <T extends Record<string, any>, K extends KeyOf<T>>({
+    bulkUpdateQuestion: <T extends Record<string, any>, K extends KeyOf<T>>({
       workspaceId,
       formId,
-      answerIds,
+      submissionIds,
       question,
       answer,
-    }: Api.Submission.Payload.Update<T, K>) => {
+    }: Api.Submission.Payload.BulkUpdateQuestion<T, K>) => {
       return client.submission
-        .updateAnswers({
-          params: {workspaceId, formId},
+        .bulkUpdateQuestion({
           body: {
-            answerIds: answerIds,
+            workspaceId,
+            formId,
+            submissionIds,
             question,
             answer,
           },

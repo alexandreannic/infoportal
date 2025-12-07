@@ -83,9 +83,9 @@ export class UseQueryForm {
       onSuccess: (data, formId) => {
         queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
         queryClient.removeQueries({queryKey: queryKeys.form(workspaceId, formId)})
-        queryClient.removeQueries({queryKey: queryKeys.schema(workspaceId, formId)})
         queryClient.removeQueries({queryKey: queryKeys.submission(formId)})
-        queryClient.removeQueries({queryKey: queryKeys.schemaByVersion(workspaceId, formId)})
+        queryClient.removeQueries({queryKey: queryKeys.schema.form(workspaceId, formId)})
+        queryClient.removeQueries({queryKey: queryKeys.schema.version(workspaceId, formId)})
       },
       onError: toastHttpError,
     })

@@ -7,11 +7,14 @@ import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {KoboSchemaCache} from './KoboSchemaCache.js'
 import {SchemaParser, SchemaValidator} from '@infoportal/form-helper'
 import {XlsFormParser} from './XlsFormParser.js'
+import {KoboSdkGenerator} from '../kobo/KoboSdkGenerator.js'
+import {PyxFormClient} from '../../core/PyxFormClient.js'
 
 export class FormVersionService {
   constructor(
     private prisma: PrismaClient,
     private koboSchemaCache = KoboSchemaCache.getInstance(prisma),
+    private koboSdk = KoboSdkGenerator.getSingleton(prisma),
     private log = app.logger('FormVersionService'),
     private conf = appConf,
   ) {}
@@ -86,8 +89,9 @@ export class FormVersionService {
       })
       const parsedSchema = SchemaParser.parse(schemaJson)
       const errors = SchemaValidator.validate(parsedSchema)?.errors
+      const xml = await this.getSchemaXml(parsedSchema)
       if (errors) throw new HttpError.BadRequest(JSON.stringify(errors))
-      if (latest && JSON.stringify(latest?.schema) === JSON.stringify(parsedSchema))
+      if (latest && JSON.stringify(latest?.schemaJson) === JSON.stringify(parsedSchema))
         throw new Error('No change in schema.')
       const schema = await (() => {
         if (latest?.status === 'draft') {
@@ -96,7 +100,8 @@ export class FormVersionService {
               id: latest.id,
             },
             data: {
-              schema: parsedSchema,
+              schemaJson: parsedSchema,
+              schemaXml: xml,
               ...rest,
             },
           })
@@ -107,7 +112,8 @@ export class FormVersionService {
               formId,
               status: 'draft',
               version: nextVersion,
-              schema: parsedSchema,
+              schemaJson: parsedSchema,
+              schemaXml: xml,
               ...rest,
             },
           })
@@ -118,13 +124,15 @@ export class FormVersionService {
     })
   }
 
+  readonly getSchemaXml = PyxFormClient.getXmlBySchema
+
   readonly getVersions = ({formId}: {formId: Api.FormId}): Promise<Api.Form.Version[]> => {
     return this.prisma.formVersion
       .findMany({
-        omit: {schema: true},
+        omit: {schemaJson: true, schemaXml: true},
         where: {formId},
       })
-      .then(_ => _.map(prismaMapper.form.mapVersion))
+      .then(_ => _.map(prismaMapper.form.mapVersion) as Api.Form.Version[])
   }
 
   readonly hasActiveVersion = ({formId}: {formId: Api.FormId}): Promise<boolean> => {

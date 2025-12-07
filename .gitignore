@@ -91,3 +91,6 @@ sessions/
 .DS_Store
 
 packages/prisma/src/generated/
+/packages/server-pyxform/venv/
+
+packages/server-pyxform/__pycache__/

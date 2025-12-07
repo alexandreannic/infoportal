@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.package.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "references": [
+    {
+      "path": "../form-helper"
+    },
+    {
+      "path": "../api-sdk"
+    }
+  ]
+}

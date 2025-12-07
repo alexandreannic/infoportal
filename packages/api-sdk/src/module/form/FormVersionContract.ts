@@ -9,13 +9,11 @@ const c = initContract()
 export const formVersionContract = c.router({
   validateXlsForm: {
     method: 'POST',
-    path: '/:workspaceId/form/:formId/schema/validate',
-    pathParams: z.object({
-      workspaceId: schema.workspaceId,
-      formId: schema.formId,
-    }),
+    path: '/form/version/validateXlsForm',
     contentType: 'multipart/form-data',
     body: c.type<{
+      workspaceId: Api.WorkspaceId
+      formId: Api.FormId
       file: File
     }>(),
     responses: {
@@ -30,13 +28,11 @@ export const formVersionContract = c.router({
 
   uploadXlsForm: {
     method: 'POST',
-    path: '/:workspaceId/form/:formId/schema',
+    path: '/form/version/uploadXlsForm',
     contentType: 'multipart/form-data',
-    pathParams: z.object({
-      workspaceId: schema.workspaceId,
-      formId: schema.formId,
-    }),
     body: c.type<{
+      workspaceId: Api.WorkspaceId
+      formId: Api.FormId
       file: File
       message?: string
     }>(),
@@ -51,16 +47,12 @@ export const formVersionContract = c.router({
   },
 
   getByFormId: {
-    method: 'GET',
-    path: '/:workspaceId/form/:formId/versions',
-    // pathParams: c.type<{
-    //   workspaceId: Api.WorkspaceId
-    //   formId: Api.FormId
-    // }>(),
-    pathParams: z.object({
-      workspaceId: schema.workspaceId,
-      formId: schema.formId,
-    }),
+    method: 'POST',
+    path: '/form/version/getByFormId',
+    body: c.type<{
+      workspaceId: Api.WorkspaceId
+      formId: Api.FormId
+    }>(),
     responses: {
       200: z.array(z.custom<Api.Form.Version>()),
     },
@@ -73,12 +65,11 @@ export const formVersionContract = c.router({
 
   deployLast: {
     method: 'POST',
-    path: '/:workspaceId/form/:formId/version',
-    pathParams: z.object({
-      workspaceId: schema.workspaceId,
-      formId: schema.formId,
-    }),
-    body: z.void(),
+    path: '/form/version/deployLast',
+    body: c.type<{
+      workspaceId: Api.WorkspaceId
+      formId: Api.FormId
+    }>(),
     responses: {
       200: z.custom<Api.Form.Version>(),
     },
@@ -91,12 +82,11 @@ export const formVersionContract = c.router({
 
   importLastKoboSchema: {
     method: 'POST',
-    path: '/:workspaceId/form/:formId/version/import-kobo',
-    pathParams: z.object({
-      workspaceId: schema.workspaceId,
-      formId: schema.formId,
-    }),
-    body: z.void(),
+    path: '/form/version/importLastKoboSchema',
+    body: c.type<{
+      workspaceId: Api.WorkspaceId
+      formId: Api.FormId
+    }>(),
     responses: {
       200: z.custom<Api.Form.Version>(),
     },
@@ -106,6 +96,7 @@ export const formVersionContract = c.router({
       },
     }),
   },
+
   createNewVersion: {
     method: 'POST',
     path: '/form/version/createNewVersion',
@@ -134,11 +125,7 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
     }) => {
       return client.form.version
         .validateXlsForm({
-          params: {
-            workspaceId,
-            formId,
-          },
-          body: {file: xlsFile},
+          body: {file: xlsFile, workspaceId, formId},
         })
         .then(map200)
     },
@@ -159,8 +146,7 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
       if (message) formData.append('message', message)
       return client.form.version
         .uploadXlsForm({
-          params: {formId, workspaceId},
-          body: formData,
+          body: {...formData, formId, workspaceId},
         })
         .then(map200)
     },
@@ -168,7 +154,7 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
     getByFormId: ({workspaceId, formId}: {formId: Api.FormId; workspaceId: Api.WorkspaceId}) => {
       return client.form.version
         .getByFormId({
-          params: {formId, workspaceId},
+          body: {formId, workspaceId},
         })
         .then(map200)
     },
@@ -176,8 +162,7 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
     deployLast: ({workspaceId, formId}: {formId: Api.FormId; workspaceId: Api.WorkspaceId}) => {
       return client.form.version
         .deployLast({
-          params: {workspaceId, formId},
-          body: undefined,
+          body: {workspaceId, formId},
         })
         .then(map200)
     },
@@ -185,8 +170,7 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
     importLastKoboSchema: ({workspaceId, formId}: {formId: Api.FormId; workspaceId: Api.WorkspaceId}) => {
       return client.form.version
         .importLastKoboSchema({
-          params: {workspaceId, formId},
-          body: undefined,
+          body: {workspaceId, formId},
         })
         .then(map200)
     },

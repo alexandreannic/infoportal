@@ -28,7 +28,7 @@ export const DatabaseSelectedRowsAction = ({
               .mutateAsync({
                 workspaceId,
                 formId,
-                answerIds: selectedIds,
+                submissionIds: selectedIds,
               })
               .then(close)
           }

@@ -271,7 +271,7 @@ export class KoboSyncServer {
         answersToUpdate.map(a => {
           // this.event.emit(IpEvent.KOBO_VALIDATION_EDITED_FROM_KOBO, {
           //   formId,
-          //   answerIds: [a.id],
+          //   submissionIds: [a.id],
           //   status: a.validationStatus,
           // })
           return this.prisma.formSubmission.updateMany({
@@ -310,7 +310,7 @@ export class KoboSyncServer {
         answersToUpdate.map(a => {
           // this.event.emit(IpEvent.KOBO_ANSWER_EDITED_FROM_KOBO, {
           //   formId,
-          //   answerIds: [a.id],
+          //   submissionIds: [a.id],
           //   answer: Util.getObjectDiff({
           //     before: previewsAnswersById[a.id],
           //     after: a.answers,

@@ -48,9 +48,17 @@ export const queryKeys = {
     concat(workspaceId, 'form', formId, 'action', 'report', rest),
   submission: (formId?: Api.FormId) => concat('submission', formId),
   submissionHistory: (formId?: Api.FormId) => concat('submission-history', formId),
-  schema: (workspaceId?: Api.WorkspaceId, formId?: Api.FormId) => concat('schema', workspaceId, formId),
-  schemaByVersion: (workspaceId?: Api.WorkspaceId, formId?: Api.FormId, versionId?: Api.Form.VersionId) =>
-    concat('schema', workspaceId, formId, 'version', versionId),
+  schema: {
+    base: ['schema'] as const,
+    workspace: (workspaceId: Api.WorkspaceId) => ['schema', workspaceId] as const,
+    form: (workspaceId: Api.WorkspaceId, formId: Api.FormId) => ['schema', workspaceId, formId] as const,
+    formXml: (workspaceId: Api.WorkspaceId, formId: Api.FormId) => ['schema', workspaceId, formId, 'xml'] as const,
+    version: (workspaceId: Api.WorkspaceId, formId: Api.FormId) => ['schema', workspaceId, formId, 'version'] as const,
+    versionOne: (workspaceId: Api.WorkspaceId, formId: Api.FormId, versionId: Api.Form.VersionId) =>
+      ['schema', workspaceId, formId, 'version', versionId] as const,
+    versionOneXml: (workspaceId: Api.WorkspaceId, formId: Api.FormId, versionId: Api.Form.VersionId) =>
+      ['schema', workspaceId, formId, 'version', versionId, 'xml'] as const,
+  },
   version: (workspaceId?: Api.WorkspaceId, formId?: Api.FormId) => concat('version', workspaceId, formId),
   user: (workspaceId?: Api.WorkspaceId) => concat('user', workspaceId),
   userJob: (workspaceId?: Api.WorkspaceId) => concat('userJob', workspaceId),
