@@ -2,14 +2,14 @@ import {Box, Icon, useTheme} from '@mui/material'
 import React, {useState} from 'react'
 import {useI18n} from '@infoportal/client-i18n'
 import {useForm} from 'react-hook-form'
-import {DatabaseViewInputRow} from '@/features/Form/Database/view/DatabaseViewInputRow'
-import {DatabaseViewDefaultName, UseDatabaseView} from '@/features/Form/Database/view/useDatabaseView'
+import {DatabaseViewInputRow} from '@/features/Form/Database/DatabaseView/DatabaseViewInputRow'
+import {DatabaseViewDefaultName, UseDatabaseView} from '@/features/Form/Database/DatabaseView/useDatabaseView'
 import {useSession} from '@/core/Session/SessionContext'
 import {useFormContext} from '@/features/Form/Form'
 import {Core} from '@/shared'
 import {Api} from '@infoportal/api-sdk'
 import {useDatabaseKoboTableContext} from '@/features/Form/Database/DatabaseContext'
-import {DatabaseLeftPanelProps} from '@/features/Form/Database/DatabaseLeftPanel'
+import {DatabaseLeftPanelProps} from '@/features/Form/Database/DatabaseLeftPanel/DatabaseLeftPanel'
 
 interface FormCreate {
   name: string

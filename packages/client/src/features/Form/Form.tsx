@@ -9,7 +9,7 @@ import {Api} from '@infoportal/api-sdk'
 import {SchemaInspector} from '@infoportal/form-helper'
 import {Page} from '@/shared'
 import {workspaceRoute} from '@/features/Workspace/Workspace'
-import {answersRoute} from '@/features/Form/Database/DatabaseTable'
+import {submissionsRoute} from '@/features/Form/Database/DatabaseTable'
 import {formSettingsRoute} from '@/features/Form/Settings/FormSettings'
 import {databaseHistoryRoute} from './History/DatabaseHistory'
 import {databaseAccessRoute} from './Access/DatabaseAccess'
@@ -53,7 +53,7 @@ export const useDefaultTabRedirect = ({
     if (isLoading) return
     if (currentFullPath == formRoute.fullPath) {
       if (isResolved) {
-        navigate({to: '/$workspaceId/form/$formId/answers', params: {workspaceId, formId}})
+        navigate({to: '/$workspaceId/form/$formId/submissions', params: {workspaceId, formId}})
       } else {
         navigate({to: '/$workspaceId/form/$formId/formCreator', params: {workspaceId, formId}})
       }
@@ -143,7 +143,7 @@ function Form() {
         <TabLink
           icon={<Icon>{appConfig.icons.dataTable}</Icon>}
           sx={{minHeight: 34, py: 1}}
-          to={answersRoute.fullPath}
+          to={submissionsRoute.fullPath}
           label={m.data}
           disabled={!schema && (!queryForm.data || !Api.Form.isKobo(queryForm.data))}
         />

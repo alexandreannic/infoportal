@@ -1,8 +1,8 @@
 import {Dispatch, SetStateAction, useCallback} from 'react'
 import {Box, Collapse, useTheme} from '@mui/material'
-import {DatabaseViewEditor} from '@/features/Form/Database/view/DatabaseView'
-import {DialogAnswerEdit, DialogAnswerEditProps} from '@/features/Form/dialogs/DialogAnswerEdit'
-import {AnswerView, DialogAnswerViewProps} from '@/features/Form/dialogs/AnswerView'
+import {DatabaseViewEditor} from '@/features/Form/Database/DatabaseView/DatabaseView'
+import {SubmissionEditorPanel, SubmissionEditorProps} from '@/features/Form/Database/DatabaseLeftPanel/SubmissionEditorPanel'
+import {SubmissionViewerPanel, DialogAnswerViewProps} from '@/features/Form/Database/DatabaseLeftPanel/SubmissionViewerPanel'
 
 export type DatabaseLeftPanelProps<T extends object | undefined> = {
   onClose: () => void
@@ -16,7 +16,7 @@ export type DatabaseLeftPanelState =
     }
   | {
       type: 'SUBMISSION_EDIT'
-      payload: DialogAnswerEditProps
+      payload: SubmissionEditorProps
     }
   | {
       type: 'DATABASE_VIEWS'
@@ -42,10 +42,10 @@ export const DatabaseLeftPanel = ({
               return <DatabaseViewEditor onClose={handleClose} payload={undefined} />
             }
             case 'SUBMISSION_VIEW': {
-              return <AnswerView onClose={handleClose} payload={state.payload} />
+              return <SubmissionViewerPanel onClose={handleClose} payload={state.payload} />
             }
             case 'SUBMISSION_EDIT': {
-              return <DialogAnswerEdit onClose={handleClose} payload={state.payload} />
+              return <SubmissionEditorPanel onClose={handleClose} payload={state.payload} />
             }
           }
         })()}

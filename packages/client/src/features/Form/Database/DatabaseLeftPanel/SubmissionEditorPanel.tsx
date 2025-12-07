@@ -5,9 +5,9 @@ import {Api} from '@infoportal/api-sdk'
 import {Link} from '@tanstack/react-router'
 import {Core} from '@/shared'
 import {OdkWebForm} from '@infoportal/odk-web-form-wrapper'
-import {DatabaseLeftPanelProps} from '@/features/Form/Database/DatabaseLeftPanel'
+import {DatabaseLeftPanelProps} from '@/features/Form/Database/DatabaseLeftPanel/DatabaseLeftPanel'
 
-export type DialogAnswerEditProps = {
+export type SubmissionEditorProps = {
   schemaInspector: SchemaInspector
   schemaXml: Api.Form.SchemaXml
   workspaceId: Api.WorkspaceId
@@ -16,10 +16,10 @@ export type DialogAnswerEditProps = {
   onSubmit: (_: {answers: Record<string, any>; attachments: File[]}) => Promise<void>
 }
 
-export const DialogAnswerEdit = ({
+export const SubmissionEditorPanel = ({
   onClose,
   payload: {schemaInspector, schemaXml, workspaceId, formId, submission, onSubmit},
-}: DatabaseLeftPanelProps<DialogAnswerEditProps>) => {
+}: DatabaseLeftPanelProps<SubmissionEditorProps>) => {
   return (
     <Core.Panel sx={{p: 1}}>
       <Core.PanelTitle
@@ -30,8 +30,8 @@ export const DialogAnswerEdit = ({
         }
       >
         <Link
-          to="/$workspaceId/form/$formId/answer/$answerId"
-          params={{workspaceId, formId, answerId: submission.id}}
+          to="/$workspaceId/form/$formId/submission/$submissionId"
+          params={{workspaceId, formId, submissionId: submission.id}}
           onClick={onClose}
         >
           <Core.IconBtn color="primary">open_in_new</Core.IconBtn>
@@ -43,16 +43,6 @@ export const DialogAnswerEdit = ({
         formXml={schemaXml as string}
         onSubmit={_ => onSubmit(_).then(onClose)}
       />
-      {/*<XlsFormFiller*/}
-      {/*  ref={formRef}*/}
-      {/*  answers={KoboMapper.unmapSubmissionBySchema(inspector.lookup.questionIndex, submission)}*/}
-      {/*  survey={inspector.schema as any}*/}
-      {/*  hideActions*/}
-      {/*  onSubmit={_ => {*/}
-      {/*    console.log('HERE')*/}
-      {/*    console.log(_)*/}
-      {/*  }}*/}
-      {/*/>*/}
     </Core.Panel>
   )
 }

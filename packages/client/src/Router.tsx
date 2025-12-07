@@ -13,10 +13,9 @@ import {workspaceRoute} from '@/features/Workspace/Workspace'
 import {App} from '@/App'
 import {collectRoute} from '@/features/Collect/Collect'
 import {overviewRoute} from '@/features/Overview/Overview.js'
-import {answersRoute} from '@/features/Form/Database/DatabaseTable'
+import {submissionsRoute} from '@/features/Form/Database/DatabaseTable'
 import {workspacesRoute} from '@/features/Workspace/Workspaces'
 import {newFormRoute} from '@/features/NewForm/NewForm'
-import {databaseAnswerViewRoute} from '@/features/Form/dialogs/AnswerView'
 import {settingsGroupsRoute} from '@/features/Settings/SettingsGroups'
 import {formActionRoute} from '@/features/Form/Action/Action/FormAction.js'
 import {formActionsRoute} from '@/features/Form/Action/FormActions.js'
@@ -30,6 +29,7 @@ import {dashboardRenderRoute} from '@/features/Dashboard/Render/DashboardRender'
 import {formBuilderVersionRoute} from '@/features/Form/Builder/Version/FormBuilderVersion'
 import {formBuilderXlsUploaderRoute} from '@/features/Form/Builder/Upload/XlsFileUploadForm'
 import {formBuilderEditorRoute} from '@/features/Form/Builder/Editor/FormBuilderEditor'
+import {submissionRoute} from '@/features/Form/Submission/Submission'
 
 export const rootRoute = createRootRoute({
   component: App,
@@ -49,8 +49,8 @@ const tsRoutes = [
       formRoute.addChildren([
         databaseAccessRoute,
         formBuilderRoute.addChildren([formBuilderVersionRoute, formBuilderXlsUploaderRoute, formBuilderEditorRoute]),
-        answersRoute,
-        databaseAnswerViewRoute,
+        submissionsRoute,
+        submissionRoute,
         databaseHistoryRoute,
         databaseKoboRepeatRoute,
         formSettingsRoute,
