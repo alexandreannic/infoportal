@@ -1,7 +1,7 @@
 import {Obj, seq} from '@axanc/ts-utils'
 import {Api} from '@infoportal/api-sdk'
 import {removeHtml} from '@infoportal/common'
-import {SchemaInspector} from './SchemaInspector.js'
+import {SchemaInspector} from '../schema/SchemaInspector.js'
 
 export class SchemaTsInterfaceBuilder {
   constructor(
