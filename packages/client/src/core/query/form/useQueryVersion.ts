@@ -33,20 +33,6 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Api.Workspa
     },
   })
 
-  const upload = useMutation({
-    mutationFn: async (params: Omit<Params<'uploadXlsForm'>, 'formId' | 'workspaceId'>) => {
-      return apiv2.form.version.uploadXlsForm({formId, workspaceId, ...params}).catch(toastAndThrowHttpError)
-    },
-    onSuccess: newVersion => {
-      queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
-      // queryClient.setQueryData<Return<'getByFormId'>>(queryKeys.version(workspaceId, formId), old => [
-      //   ...(old ?? []),
-      //   newVersion,
-      // ])
-    },
-    onError: toastHttpError,
-  })
-
   const importLastKoboSchema = useMutation({
     mutationFn: async () => {
       return apiv2.form.version.importLastKoboSchema({formId, workspaceId}).catch(toastAndThrowHttpError)
@@ -63,11 +49,29 @@ export const useQueryVersion = ({workspaceId, formId}: {workspaceId: Api.Workspa
     deployLast,
     validateXls,
     get,
-    upload,
   }
 }
 
 export class UseQueryVersion {
+  static readonly uploadXlsForm = ({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {
+    const {apiv2} = useAppSettings()
+    const queryClient = useQueryClient()
+    const {toastHttpError, toastAndThrowHttpError} = useIpToast()
+    return useMutation({
+      mutationFn: async (params: Omit<Params<'uploadXlsForm'>, 'formId' | 'workspaceId'>) => {
+        return apiv2.form.version.uploadXlsForm({formId, workspaceId, ...params}).catch(toastAndThrowHttpError)
+      },
+      onSuccess: newVersion => {
+        queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
+        // queryClient.setQueryData<Return<'getByFormId'>>(queryKeys.version(workspaceId, formId), old => [
+        //   ...(old ?? []),
+        //   newVersion,
+        // ])
+      },
+      onError: toastHttpError,
+    })
+  }
+
   static readonly createNewVersion = ({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId: Api.FormId}) => {
     const {apiv2} = useAppSettings()
     const queryClient = useQueryClient()

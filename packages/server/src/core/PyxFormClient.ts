@@ -1,18 +1,31 @@
 import {Api} from '@infoportal/api-sdk'
 import {SchemaToXlsForm} from '@infoportal/form-helper'
+import * as fs from 'node:fs'
 
 export class PyxFormClient {
-  static readonly getXmlBySchema = async (schema: Api.Form.Schema) => {
+  static readonly validateAndGetXmlBySchema = async (schema: Api.Form.Schema): Promise<Api.Form.Schema.Validation> => {
     const buffer = await SchemaToXlsForm.convert(schema).asBuffer()
-    await SchemaToXlsForm.convert(schema).saveInDisk('/Users/alex/Documents/Workspaces/infoportal/delme.xlsx')
+    return this.getXml(buffer)
+  }
 
+  static readonly valdiateAndGetXmlByFilePath = async (filePath: string): Promise<Api.Form.Schema.Validation> => {
+    const buffer = fs.readFileSync(filePath)
+    return this.getXml(buffer)
+  }
+
+  private static bufferToFormData = (buffer: NonSharedBuffer) => {
     const formData = new FormData()
-    const blob = new Blob([buffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    })
-    formData.append('file', blob, 'form.xlsx')
+    formData.append(
+      'file',
+      new Blob([buffer], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),
+      'form.xlsx',
+    )
+    return formData
+  }
 
-    const res = await fetch('http://localhost:8000/get-xml', {
+  private static readonly getXml = async (buffer: NonSharedBuffer): Promise<Api.Form.Schema.Validation> => {
+    const formData = this.bufferToFormData(buffer)
+    const res = await fetch('http://localhost:8000/validate-and-get-xml', {
       method: 'POST',
       body: formData,
     })
@@ -21,7 +34,6 @@ export class PyxFormClient {
       const text = await res.text()
       throw new Error(`Server error ${res.status}: ${text}`)
     }
-
-    return res.text()
+    return res.json()
   }
 }

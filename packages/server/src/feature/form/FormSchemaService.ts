@@ -1,14 +1,13 @@
 import {Api, HttpError} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
-import {FormVersionService} from './FormVersionService.js'
 import {KoboSchemaCache} from './KoboSchemaCache.js'
 import {PrismaClient} from '@infoportal/prisma'
 import {KoboSdkGenerator} from '../kobo/KoboSdkGenerator.js'
+import {PyxFormClient} from '../../core/PyxFormClient.js'
 
 export class FormSchemaService {
   constructor(
     private prisma: PrismaClient,
-    private formVersion = new FormVersionService(prisma),
     private koboSchemaCache = KoboSchemaCache.getInstance(prisma),
     private koboSdk = KoboSdkGenerator.getSingleton(prisma),
   ) {}
@@ -75,9 +74,13 @@ export class FormSchemaService {
         where: {formId, status, id: versionId},
       })
       .then(_ => _?.schemaJson as any)
-    const xml = await this.formVersion.getSchemaXml(json as Api.Form.Schema)
-    await this.prisma.formVersion.updateMany({data: {schemaXml: xml}, where: {formId, status: 'active'}})
-    return xml
+    const validation = await PyxFormClient.validateAndGetXmlBySchema(json as Api.Form.Schema)
+    if (validation.status === 'error' || !validation.schemaXml) throw new HttpError.BadRequest(validation.message)
+    await this.prisma.formVersion.updateMany({
+      data: {schemaXml: validation.schemaXml},
+      where: {formId, status: 'active'},
+    })
+    return validation
   }
 
   private readonly getBy = ({

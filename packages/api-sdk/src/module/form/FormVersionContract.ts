@@ -9,15 +9,17 @@ const c = initContract()
 export const formVersionContract = c.router({
   validateXlsForm: {
     method: 'POST',
-    path: '/form/version/validateXlsForm',
+    path: '/form/version/validateXlsForm/:workspaceId/:formId',
     contentType: 'multipart/form-data',
+    pathParams: z.object({
+      workspaceId: schema.workspaceId,
+      formId: schema.formId,
+    }),
     body: c.type<{
-      workspaceId: Api.WorkspaceId
-      formId: Api.FormId
       file: File
     }>(),
     responses: {
-      200: z.any() as z.ZodType<Api.Form.Schema.Validation>,
+      200: z.any() as z.ZodType<Api.Form.Schema.ValidationWithSchema>,
     },
     metadata: makeMeta({
       access: {
@@ -28,11 +30,13 @@ export const formVersionContract = c.router({
 
   uploadXlsForm: {
     method: 'POST',
-    path: '/form/version/uploadXlsForm',
+    path: '/form/version/uploadXlsForm/:workspaceId/:formId',
     contentType: 'multipart/form-data',
+    pathParams: z.object({
+      workspaceId: schema.workspaceId,
+      formId: schema.formId,
+    }),
     body: c.type<{
-      workspaceId: Api.WorkspaceId
-      formId: Api.FormId
       file: File
       message?: string
     }>(),
@@ -125,7 +129,8 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
     }) => {
       return client.form.version
         .validateXlsForm({
-          body: {file: xlsFile, workspaceId, formId},
+          body: {file: xlsFile},
+          params: {workspaceId, formId},
         })
         .then(map200)
     },
@@ -146,7 +151,8 @@ export const formVersionClient = (client: TsRestClient, baseUrl: string) => {
       if (message) formData.append('message', message)
       return client.form.version
         .uploadXlsForm({
-          body: {...formData, formId, workspaceId},
+          params: {formId, workspaceId},
+          body: formData,
         })
         .then(map200)
     },

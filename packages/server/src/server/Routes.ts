@@ -651,7 +651,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           handler: _ =>
             auth2(_)
               .then(ensureFile)
-              .then(({file}) => formVersion.validateAndParse(file.path))
+              .then(({file}) => formVersion.validateXlsForm(file.path))
               .then(ok200)
               .catch(handleError),
         },
@@ -660,11 +660,11 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           handler: _ =>
             auth2(_)
               .then(ensureFile)
-              .then(({req, body}) =>
+              .then(({file, req, params}) =>
                 formVersion.upload({
-                  ...body,
+                  ...params,
                   uploadedBy: req.session.app.user.email,
-                  file: req.file!,
+                  file,
                 }),
               )
               .then(ok200)

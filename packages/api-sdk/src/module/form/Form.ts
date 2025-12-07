@@ -189,7 +189,10 @@ export namespace Form {
       code: number
       message: string
       warnings?: string[]
-      schema?: any
+      schemaXml?: SchemaXml
+    }
+    export type ValidationWithSchema = Omit<Validation, 'schemaXml'> & {
+      schemaJson: Schema
     }
   }
 

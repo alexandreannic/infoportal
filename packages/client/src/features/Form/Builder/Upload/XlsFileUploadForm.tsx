@@ -2,7 +2,7 @@ import {Controller, useForm} from 'react-hook-form'
 import {DragDropFileInput} from '@/shared/DragDropFileInput'
 import React, {useMemo, useRef, useState} from 'react'
 import {Core} from '@/shared'
-import {useQueryVersion} from '@/core/query/form/useQueryVersion'
+import {UseQueryVersion, useQueryVersion} from '@/core/query/form/useQueryVersion'
 import {useI18n} from '@infoportal/client-i18n'
 import {Alert, AlertTitle, Box, CircularProgress, Icon, Skeleton} from '@mui/material'
 import {Api} from '@infoportal/api-sdk'
@@ -69,7 +69,8 @@ function XlsFileUploadFormInner({
     ...form
   } = useForm<Form>({defaultValues: {message: ''}, mode: 'onChange'})
   const queryVersion = useQueryVersion({workspaceId, formId})
-  const [validation, setValidation] = useState<Api.Form.Schema.Validation>()
+  const queryVersionUpload = UseQueryVersion.uploadXlsForm({workspaceId, formId})
+  const [validation, setValidation] = useState<Api.Form.Schema.ValidationWithSchema>()
   const stepperRef = useRef<Core.StepperHandle>(null)
   const [schemaHasChanges, setSchemaHasChanges] = useState<boolean | null>(null)
   const querySchema = UseQuerySchema.getByVersion({formId, workspaceId, versionId: lastSchema?.id})
@@ -82,7 +83,7 @@ function XlsFileUploadFormInner({
   const submit = async (values: Form) => {
     try {
       onSubmit?.(values)
-      await queryVersion.upload.mutateAsync(values)
+      await queryVersionUpload.mutateAsync(values)
       form.reset()
       navigate({to: '/$workspaceId/form/$formId/formCreator/version', params: {workspaceId, formId}})
       // stepperRef.current?.goTo(0)
@@ -96,7 +97,7 @@ function XlsFileUploadFormInner({
       <Box sx={{mt: 2, display: 'flex'}}>
         <Core.StepperBtnPrevious />
         <ImportBtn
-          loading={queryVersion.upload.isPending}
+          loading={queryVersionUpload.isPending}
           disabled={!isValid || !validation || validation.status === 'error' || (lastSchema && !schemaHasChanges)}
           sx={{mr: 1, alignSelf: 'flex-end'}}
         >
@@ -157,6 +158,8 @@ function XlsFileUploadFormInner({
                       <Alert severity="info" icon={<CircularProgress size={20} color="inherit" />}>
                         {m.validation}...
                       </Alert>
+                    ) : queryVersion.validateXls.error ? (
+                      <Alert severity="error">{m.anErrorOccurred}</Alert>
                     ) : (
                       validation && (
                         <>
@@ -210,7 +213,7 @@ function XlsFileUploadFormInner({
                               <DiffView
                                 stepperRef={stepperRef}
                                 oldStr={schemaToString(removeSysKeys(querySchema.data))}
-                                newStr={schemaToString(validation.schema)}
+                                newStr={schemaToString(validation.schemaJson)}
                                 hasChanges={setSchemaHasChanges}
                                 sx={{mt: 1}}
                               />

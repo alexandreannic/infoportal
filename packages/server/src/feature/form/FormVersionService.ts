@@ -2,19 +2,16 @@ import {PrismaClient} from '@infoportal/prisma'
 import {app, AppCacheKey} from '../../index.js'
 import {appConf} from '../../core/AppConf.js'
 import {yup} from '../../helper/Utils.js'
-import {HttpError, Api} from '@infoportal/api-sdk'
+import {Api, HttpError} from '@infoportal/api-sdk'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {KoboSchemaCache} from './KoboSchemaCache.js'
-import {SchemaParser, SchemaValidator} from '@infoportal/form-helper'
-import {XlsFormParser} from './XlsFormParser.js'
-import {KoboSdkGenerator} from '../kobo/KoboSdkGenerator.js'
+import {SchemaParser, SchemaValidator, XlsFormToSchema} from '@infoportal/form-helper'
 import {PyxFormClient} from '../../core/PyxFormClient.js'
 
 export class FormVersionService {
   constructor(
     private prisma: PrismaClient,
     private koboSchemaCache = KoboSchemaCache.getInstance(prisma),
-    private koboSdk = KoboSdkGenerator.getSingleton(prisma),
     private log = app.logger('FormVersionService'),
     private conf = appConf,
   ) {}
@@ -39,14 +36,19 @@ export class FormVersionService {
     formId: Api.FormId
     file: Express.Multer.File
   }) => {
-    const validation = await this.validateAndParse(file.path)
-    if (!validation.schema || validation.status === 'error') {
+    const validation = await PyxFormClient.valdiateAndGetXmlByFilePath(file.path)
+    if (!validation.schemaXml || validation.status === 'error') {
       throw new Error('Invalid XLSForm')
     }
-    return this.createNewVersion({fileName: file.filename, schemaJson: validation.schema, ...rest})
+    const schemaJson = await XlsFormToSchema.convert(file.path)
+    return this.createNewVersion({fileName: file.filename, schemaJson, ...rest})
   }
 
-  readonly validateAndParse = XlsFormParser.validateAndParse
+  readonly validateXlsForm = async (filePath: string): Promise<Api.Form.Schema.ValidationWithSchema> => {
+    const {schemaXml, ...validation} = await PyxFormClient.valdiateAndGetXmlByFilePath(filePath)
+    const schemaJson = await XlsFormToSchema.convert(filePath)
+    return {...validation, schemaJson}
+  }
 
   readonly deployLastDraft = async ({formId}: {formId: Api.FormId}) => {
     return this.prisma
@@ -89,10 +91,13 @@ export class FormVersionService {
       })
       const parsedSchema = SchemaParser.parse(schemaJson)
       const errors = SchemaValidator.validate(parsedSchema)?.errors
-      const xml = await this.getSchemaXml(parsedSchema)
+      const validation = await PyxFormClient.validateAndGetXmlBySchema(parsedSchema)
+
+      if (validation.status === 'error' || !validation.schemaXml) throw new HttpError.BadRequest(validation.message)
       if (errors) throw new HttpError.BadRequest(JSON.stringify(errors))
       if (latest && JSON.stringify(latest?.schemaJson) === JSON.stringify(parsedSchema))
         throw new Error('No change in schema.')
+
       const schema = await (() => {
         if (latest?.status === 'draft') {
           return tx.formVersion.update({
@@ -101,7 +106,7 @@ export class FormVersionService {
             },
             data: {
               schemaJson: parsedSchema,
-              schemaXml: xml,
+              schemaXml: validation.schemaXml,
               ...rest,
             },
           })
@@ -113,7 +118,7 @@ export class FormVersionService {
               status: 'draft',
               version: nextVersion,
               schemaJson: parsedSchema,
-              schemaXml: xml,
+              schemaXml: validation.schemaXml,
               ...rest,
             },
           })
@@ -123,8 +128,6 @@ export class FormVersionService {
       return prismaMapper.form.mapVersion({...schema, versions})
     })
   }
-
-  readonly getSchemaXml = PyxFormClient.getXmlBySchema
 
   readonly getVersions = ({formId}: {formId: Api.FormId}): Promise<Api.Form.Version[]> => {
     return this.prisma.formVersion
