@@ -22,6 +22,7 @@ import {Outlet, useRouterState} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import {duration} from '@axanc/ts-utils'
 import {LicenseInfo} from '@mui/x-license'
+import {HttpError, Api} from '@infoportal/api-sdk'
 
 LicenseInfo.setLicenseKey(appConfig.muiProLicenseKey ?? '')
 
@@ -36,6 +37,12 @@ const apiv2: ApiClient = buildApiClient(appConfig.apiURL)
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      retry: (failureCount, error) => {
+        if (error instanceof HttpError.Forbidden) {
+          return false
+        }
+        return failureCount < 4
+      },
       staleTime: duration(10, 'minute'),
     },
   },

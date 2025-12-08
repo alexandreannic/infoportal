@@ -41,10 +41,12 @@ export const Datatable = React.forwardRef(function <T extends Row>(
     },
   }))
 
-  if (!data) return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx} />
+  if (!data && props.loading)
+    return <DatatableSkeleton columns={props.columns.length} {...props.contentProps} sx={sx} />
+
   return (
     <DatatableErrorBoundary>
-      <Provider {...{...defaultProps, ...props}} rowHeight={rowHeight} data={data} tableRef={tableRef}>
+      <Provider {...{...defaultProps, ...props}} rowHeight={rowHeight} data={data ?? []} tableRef={tableRef}>
         {props.loading && <LinearProgress sx={{position: 'absolute', top: 0, right: 0, left: 0, height: 3}} />}
         <DatatableWithData sx={sx} />
       </Provider>
