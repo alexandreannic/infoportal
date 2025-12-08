@@ -1,9 +1,9 @@
 import React, {DetailedReactHTMLElement, HTMLAttributes, ReactNode, useMemo, useRef} from 'react'
 import {Resizable} from 'react-resizable'
-import {IconProps} from '@mui/material'
+import {BoxProps, IconProps} from '@mui/material'
 import {useCtx} from '../core/DatatableContext'
 import {DatatableHeadSections} from './DatatableHeadSections'
-import {Popup} from '../core/reducer'
+import {getColumnClassName, Popup} from '../core/reducer'
 import {TableIcon, TableIconBtn} from '../ui/TableIcon'
 import {Column} from '../core/types.js'
 
@@ -18,10 +18,7 @@ export const DatatableHead = (
   const filters = useCtx(_ => _.state.filters)
   const selectColumn = useCtx(_ => _.cellSelection.selectColumn)
 
-  const Cell = useMemo(() => {
-    if (moduleColumnsResize?.enabled) return ResizableCell
-    return ({children}: any) => <div className="dth">{children}</div>
-  }, [])
+  const Cell = useMemo(() => (moduleColumnsResize?.enabled ? ResizableCell : BasicCell), [moduleColumnsResize?.enabled])
 
   return (
     <div className="dthead" {...props}>
@@ -31,15 +28,16 @@ export const DatatableHead = (
       />
       <div className="dtrh">
         {columns.map((c, columnIndex) => (
-          <Cell key={c.id} width={colWidths[c.id]} onResize={width => dispatch({type: 'RESIZE', col: c.id, width})}>
-            <div
-              onClick={e => selectColumn(columnIndex, e)}
-              title={c.head}
-              style={{width: colWidths[c.id]}}
-              className={typeof c.className === 'string' ? c.className : undefined}
-            >
-              {c.head}
-            </div>
+          <Cell
+            onClick={e => selectColumn(columnIndex, e)}
+            title={c.head}
+            style={{width: colWidths[c.id]}}
+            className={'dth ' + getColumnClassName(c)}
+            key={c.id}
+            width={colWidths[c.id]}
+            onResize={width => dispatch({type: 'RESIZE', col: c.id, width})}
+          >
+            {c.head}
           </Cell>
         ))}
       </div>
@@ -92,11 +90,11 @@ const DatatableHeadTdBody = ({
           case 'select_multiple':
           case 'date':
           case 'number':
-            return <TableIconBtn children="bar_chart" onClick={e => onOpenStats(e)}/>
+            return <TableIconBtn children="bar_chart" onClick={e => onOpenStats(e)} />
         }
       })()}
       {column.type && (
-        <TableIconBtn color={active ? 'primary' : undefined} children="filter_alt" onClick={e => onOpenFilter(e)}/>
+        <TableIconBtn color={active ? 'primary' : undefined} children="filter_alt" onClick={e => onOpenFilter(e)} />
       )}
     </span>
   )
@@ -118,30 +116,38 @@ export const DatatableHeadIconByType = ({
 } & Pick<IconProps, 'sx' | 'color'>) => {
   switch (type) {
     case 'date':
-      return <DatatableHeadIcon children="event" tooltip={type}/>
+      return <DatatableHeadIcon children="event" tooltip={type} />
     case 'select_multiple':
-      return <DatatableHeadIcon children="check_box" tooltip={type}/>
+      return <DatatableHeadIcon children="check_box" tooltip={type} />
     case 'select_one':
-      return <DatatableHeadIcon children="radio_button_checked" tooltip={type}/>
+      return <DatatableHeadIcon children="radio_button_checked" tooltip={type} />
     case 'number':
-      return <DatatableHeadIcon children="tag" tooltip={type}/>
+      return <DatatableHeadIcon children="tag" tooltip={type} />
     case 'id':
-      return <DatatableHeadIcon children="key" tooltip={type} color="info"/>
+      return <DatatableHeadIcon children="key" tooltip={type} color="info" />
     case 'string':
-      return <DatatableHeadIcon children="short_text" tooltip={type}/>
+      return <DatatableHeadIcon children="short_text" tooltip={type} />
     default:
       return
   }
+}
+
+type CellProps = Pick<BoxProps, 'className' | 'onClick' | 'title' | 'style' | 'key'> & {
+  children: ReactNode
+}
+
+const BasicCell = (props: CellProps) => {
+  return <div className="dth" {...props} />
 }
 
 const ResizableCell = ({
   onResize,
   width,
   children,
-}: {
+  ...props
+}: CellProps & {
   width: number
   onResize: (_: number) => void
-  children: ReactNode
 }) => {
   const resizingRef = useRef(false)
   return (
@@ -162,6 +168,7 @@ const ResizableCell = ({
       onResize={(e, s) => {
         onResize(s.size.width)
       }}
+      {...props}
     >
       <div
         onClick={e => {

@@ -84,6 +84,14 @@ export function datatableReducer<T extends Row>() {
   }
 }
 
+export const getColumnClassName = (col: Column.InnerProps<any>) => {
+  let className = typeof col.className === 'string' ? col.className : ' '
+  if (col.stickyEnd) className += ' td-sticky-end'
+  if (col.type === 'number') className += ' td-right'
+  if (col.align) className += ' td-' + col.align
+  return className
+}
+
 const buildCachedData = <T extends Row>({
   data,
   columns,
@@ -98,11 +106,7 @@ const buildCachedData = <T extends Row>({
   const result: State<T>['cachedData'] = {}
   const classNameTdIndex: Record<string, string> = {}
   columns.forEach(col => {
-    let className = typeof col.className === 'string' ? col.className : ' '
-    if (col.stickyEnd) className += ' td-sticky-end'
-    if (col.type === 'number') className += ' td-right'
-    if (col.align) className += ' td-' + col.align
-    classNameTdIndex[col.id] = className
+    classNameTdIndex[col.id] = getColumnClassName(col)
   })
   dataIndexes.forEach(index => {
     const row = data[index]
