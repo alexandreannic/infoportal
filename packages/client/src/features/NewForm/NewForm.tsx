@@ -53,7 +53,7 @@ function NewForm() {
 
   return (
     <Page width="xs" sx={{minHeight: undefined}}>
-      <Core.PanelWBody>
+      <Core.PanelWBody title={m.newForm}>
         <Core.RadioGroup value={type} sx={{flex: 1}} inline onChange={setType}>
           {Obj.keys(Api.Form.Type).map(asset => (
             <Core.RadioGroupItem
@@ -64,7 +64,7 @@ function NewForm() {
                 <OptionBody
                   color={assetStyle.color[asset]}
                   icon={assetStyle.icon[asset]}
-                  label={m.formSource_[asset]}
+                  label={m.formSourceCreate_[asset]}
                 />
               }
               sx={{flex: 1}}

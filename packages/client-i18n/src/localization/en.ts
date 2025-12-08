@@ -418,6 +418,11 @@ export const en = Object.freeze({
       [Api.Form.Type.kobo]: 'Imported from KoboToolbox',
       [Api.Form.Type.internal]: 'Raw form',
     },
+    formSourceCreate_: {
+      [Api.Form.Type.smart]: 'Create a Smart Database',
+      [Api.Form.Type.kobo]: 'Imported from KoboToolbox',
+      [Api.Form.Type.internal]: 'Create New',
+    },
     changeAccount: 'Change account',
     addNewKoboAccount: 'Add new Kobo account',
     serverUrlV1: 'Server URL KC (API v1)',

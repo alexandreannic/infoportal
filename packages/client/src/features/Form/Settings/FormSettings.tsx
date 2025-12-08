@@ -3,10 +3,10 @@ import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import {formRoute, useFormContext} from '@/features/Form/Form'
 import {Core} from '@/shared'
 import {TabContent} from '@/shared/Tab/TabContent.js'
-import {Box, CircularProgress, Icon, Switch, useTheme} from '@mui/material'
+import {Box, Chip, CircularProgress, Icon, Switch, useTheme} from '@mui/material'
 import {createRoute, useNavigate} from '@tanstack/react-router'
 import {ReactNode} from 'react'
-import {assetStyle, Asset, AssetType} from '@/shared/Asset.js'
+import {assetStyle, Asset, AssetType, AssetIcon} from '@/shared/Asset.js'
 import {SelectFormCategory} from '@/shared/customInput/SelectFormCategory.js'
 import {Api} from '@infoportal/api-sdk'
 
@@ -84,6 +84,7 @@ export const SettingsRow = ({
 
 function FormSettings() {
   const {m} = useI18n()
+  const t = useTheme()
   const form = useFormContext(_ => _.form)
   const workspaceId = useFormContext(_ => _.workspaceId)
   const queryUpdate = UseQueryForm.update(workspaceId)
@@ -180,16 +181,38 @@ function FormSettings() {
               <Core.Modal
                 loading={queryRemove.pendingIds.has(form.id)}
                 title={m.deleteThisProject}
-                content={form.name}
+                content={
+                  <>
+                    <Box
+                      sx={{
+                        fontWeight: 'bold',
+                        mb: 1,
+                        py: 1,
+                        px: 2,
+                        border: '1px solid',
+                        borderColor: t.vars.palette.divider,
+                        borderRadius: 50,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <AssetIcon type={form.type as AssetType} sx={{mr: 1}} />
+                      {form.name}
+                    </Box>
+                    <Core.Alert severity="error" title={m.deleteThisProjectDesc} />
+                  </>
+                }
                 onConfirm={async (e, close) => {
                   await queryRemove.mutateAsync(form.id)
                   close()
                   navigate({to: '/$workspaceId/form/list', params: {workspaceId}})
                 }}
               >
-                <Core.Btn icon="delete" color="error" variant="outlined">
-                  {m.delete}
-                </Core.Btn>
+                <div>
+                  <Core.Btn icon="delete" color="error" variant="outlined">
+                    {m.delete}
+                  </Core.Btn>
+                </div>
               </Core.Modal>
             }
           />

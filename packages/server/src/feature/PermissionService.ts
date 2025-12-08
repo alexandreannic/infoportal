@@ -56,7 +56,7 @@ export class PermissionService {
     workspaceId?: Api.WorkspaceId
     formId?: Api.FormId
   }): Promise<boolean> {
-    if (!permissions) return false
+    if (!permissions || Object.keys(permissions).length === 0) return true
     if (permissions.global && (await this.canGlobal(user, permissions.global))) return true
     if (permissions.workspace) {
       if (!workspaceId) throw new HttpError.BadRequest('Missing workspaceId')

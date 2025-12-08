@@ -85,7 +85,7 @@ model FormKoboInfo {
   accountId String      @db.Uuid
   enketoUrl String?
   koboId    String
-  form      Form        @relation(fields: [formId], references: [id])
+  form      Form        @relation(fields: [formId], references: [id], onDelete: Cascade)
   formId    String      @unique @db.VarChar(32)
   deletedAt DateTime?
   deletedBy String?
