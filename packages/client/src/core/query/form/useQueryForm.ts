@@ -81,11 +81,14 @@ export class UseQueryForm {
       mutationFn: (formId: Api.FormId) => apiv2.form.remove({workspaceId, formId}),
       getId: _ => _,
       onSuccess: (data, formId) => {
-        queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
-        queryClient.removeQueries({queryKey: queryKeys.form(workspaceId, formId)})
-        queryClient.removeQueries({queryKey: queryKeys.submission(formId)})
-        queryClient.removeQueries({queryKey: queryKeys.schema.form(workspaceId, formId)})
-        queryClient.removeQueries({queryKey: queryKeys.schema.version(workspaceId, formId)})
+        setTimeout(() => {
+          // Wait for the next React tick to prevent refetch to occurs before the redirection leaving the current Form Page
+          queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)})
+          queryClient.removeQueries({queryKey: queryKeys.form(workspaceId, formId)})
+          queryClient.removeQueries({queryKey: queryKeys.submission(formId)})
+          queryClient.removeQueries({queryKey: queryKeys.schema.form(workspaceId, formId)})
+          queryClient.removeQueries({queryKey: queryKeys.schema.version(workspaceId, formId)})
+        })
       },
       onError: toastHttpError,
     })
