@@ -153,6 +153,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const databaseView = new DatabaseView(prisma)
   const workspaceInvitation = new WorkspaceInvitationService(prisma)
   const koboForm = new KoboFormService(prisma)
+  const koboAccount = new KoboAccountService(prisma)
   const form = new FormService(prisma)
   const schema = new FormSchemaService(prisma)
   const formVersion = new FormVersionService(prisma)
@@ -160,7 +161,6 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
   const submission = new SubmissionService(prisma)
   const submissionUpdate = new SubmissionUpdateService(prisma)
   const submissionHistory = new SubmissionHistoryService(prisma)
-  const server = new KoboAccountService(prisma)
   const group = new GroupService(prisma)
   const groupItem = new GroupItemService(prisma)
   const permission = new PermissionService(prisma, undefined, formAccess)
@@ -461,40 +461,42 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
           .then(ok200)
           .catch(handleError),
     },
-    server: {
-      delete: _ =>
-        auth2(_)
-          .then(({params}) => server.delete({id: params.id}))
-          .then(ok204)
-          .catch(handleError),
-      create: _ =>
-        auth2(_)
-          .then(({params, body}) => server.create({workspaceId: params.workspaceId, ...body}))
-          .then(ok200)
-          .catch(handleError),
-      getAll: _ =>
-        auth2(_)
-          .then(({params}) => server.getAll(params))
-          .then(ok200)
-          .catch(handleError),
-      get: _ =>
-        auth2(_)
-          .then(({params}) => server.get(params))
-          .then(okOrNotFound)
-          .catch(handleError),
-    },
+
     kobo: {
-      importFromKobo: _ =>
-        auth2(_)
-          .then(({req, body, params}) =>
-            koboForm.importFromKobo({
-              ...body,
-              uploadedBy: req.session.app?.user.email!,
-              workspaceId: params.workspaceId,
-            }),
-          )
-          .then(ok200)
-          .catch(handleError),
+      account: {
+        delete: _ =>
+          auth2(_)
+            .then(({params}) => koboAccount.delete({id: params.id}))
+            .then(ok204)
+            .catch(handleError),
+        create: _ =>
+          auth2(_)
+            .then(({params, body}) => koboAccount.create({workspaceId: params.workspaceId, ...body}))
+            .then(ok200)
+            .catch(handleError),
+        getAll: _ =>
+          auth2(_)
+            .then(({params}) => koboAccount.getAll(params))
+            .then(ok200)
+            .catch(handleError),
+        get: _ =>
+          auth2(_)
+            .then(({params}) => koboAccount.get(params))
+            .then(okOrNotFound)
+            .catch(handleError),
+      },
+      form: {
+        import: _ =>
+          auth2(_)
+            .then(({req, body}) =>
+              koboForm.import({
+                ...body,
+                uploadedBy: req.session.app?.user.email!,
+              }),
+            )
+            .then(ok200)
+            .catch(handleError),
+      },
     },
     submission: {
       submit: ({params, body, req}) =>
@@ -656,7 +658,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               .catch(handleError),
         },
         uploadXlsForm: {
-          middleware: [uploader.single('file')],
+          middleware: [uploader.single('fileimportFromKobo')],
           handler: _ =>
             auth2(_)
               .then(ensureFile)

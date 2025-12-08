@@ -10,7 +10,7 @@ import {KoboSchemaCache} from './KoboSchemaCache.js'
 export type FormServiceCreatePayload = Api.Form.Payload.Create & {
   kobo?: {
     formId: Kobo.FormId
-    accountId: Api.ServerId
+    accountId: Api.Kobo.AccountId
   }
   uploadedBy: Api.User.Email
   workspaceId: Api.WorkspaceId

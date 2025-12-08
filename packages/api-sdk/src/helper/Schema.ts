@@ -26,7 +26,7 @@ export const schema = (() => {
     versionId: z.string() as unknown as z.ZodType<Api.Form.VersionId>,
     groupId: z.string() as unknown as z.ZodType<Api.GroupId>,
     groupItemId: z.string() as unknown as z.ZodType<Api.Group.ItemId>,
-    serverId: z.string() as unknown as z.ZodType<Api.ServerId>,
+    serverId: z.string() as unknown as z.ZodType<Api.Kobo.AccountId>,
     formAccessId: z.string() as unknown as z.ZodType<Api.AccessId>,
     submissionId: z.string() as unknown as z.ZodType<Api.SubmissionId>,
     userEmail: z.string() as unknown as z.ZodType<Api.User.Email>,

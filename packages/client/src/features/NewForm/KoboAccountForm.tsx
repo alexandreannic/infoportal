@@ -8,7 +8,7 @@ import {useAppSettings} from '@/core/context/ConfigContext'
 import {Box, CardActions, CircularProgress, Dialog, DialogContent, DialogTitle, Icon, useTheme} from '@mui/material'
 import {ApiError} from '@/core/sdk/server/HttpClient'
 import {DialogProps} from '@toolpad/core'
-import {useQueryServers} from '@/core/query/useQueryServers'
+import {useQueryKoboAccounts} from '@/core/query/useQueryKoboAccounts'
 import {AccessFormSection} from '@/features/Access/AccessFormSection'
 import {Api} from '@infoportal/api-sdk'
 import {Core} from '@/shared'
@@ -54,11 +54,11 @@ export const KoboAccountForm = ({
 }: {
   loading?: boolean
   onCancel: () => void
-  onSubmit: (f: Api.Server.Payload.Create) => void
+  onSubmit: (f: Api.Kobo.Account.Payload.Create) => void
 }) => {
   const {m} = useI18n()
   const {api} = useAppSettings()
-  const form = useForm<Omit<Api.Server, 'id'>>({mode: 'onChange'})
+  const form = useForm<Omit<Api.Kobo.Account, 'id'>>({mode: 'onChange'})
   const [server, setServer] = useState<undefined | 'custom' | keyof typeof servers>('custom')
 
   const fetcherTest = useFetcher(() => {
@@ -205,7 +205,7 @@ export const KoboAccountForm = ({
   )
 }
 
-export const KoboServerFormDialog = ({
+export const KoboAccountFormDialog = ({
   open,
   onClose,
   payload,
@@ -213,7 +213,7 @@ export const KoboServerFormDialog = ({
   workspaceId: Api.WorkspaceId
 }>) => {
   const {m} = useI18n()
-  const queryCreate = useQueryServers(payload.workspaceId).create
+  const queryCreate = useQueryKoboAccounts(payload.workspaceId).create
   return (
     <Dialog
       open={open}

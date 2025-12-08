@@ -17,7 +17,7 @@ model Workspace {
   name            String
   slug            String                @unique
   sector          String?
-  koboServer      KoboServer[]
+  koboServer      KoboAccount[]
   form            Form[]
   groups          Group[]
   accessTokens    AccessToken[]
@@ -57,7 +57,7 @@ model WorkspaceAccess {
   @@unique([workspaceId, userId])
 }
 
-model KoboServer {
+model KoboAccount {
   id          String         @id @default(uuid()) @db.Uuid
   name        String
   url         String
@@ -81,12 +81,12 @@ enum FormType {
 }
 
 model FormKoboInfo {
-  server    KoboServer @relation(fields: [accountId], references: [id])
-  accountId String     @db.Uuid
+  server    KoboAccount @relation(fields: [accountId], references: [id])
+  accountId String      @db.Uuid
   enketoUrl String?
   koboId    String
-  form      Form       @relation(fields: [formId], references: [id])
-  formId    String     @unique @db.VarChar(32)
+  form      Form        @relation(fields: [formId], references: [id])
+  formId    String      @unique @db.VarChar(32)
   deletedAt DateTime?
   deletedBy String?
 

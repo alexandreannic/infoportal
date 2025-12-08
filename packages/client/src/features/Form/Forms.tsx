@@ -4,7 +4,7 @@ import {Page} from '@/shared/Page'
 import {seq} from '@axanc/ts-utils'
 import {Icon, useTheme} from '@mui/material'
 import {useEffect, useMemo} from 'react'
-import {useQueryServers} from '@/core/query/useQueryServers'
+import {useQueryKoboAccounts} from '@/core/query/useQueryKoboAccounts'
 import {UseQueryForm} from '@/core/query/form/useQueryForm'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
 import {createRoute, Link} from '@tanstack/react-router'
@@ -26,13 +26,13 @@ function Forms() {
   const {formatDate, m} = useI18n()
   const t = useTheme()
   const {setTitle} = useLayoutContext()
-  const queryServer = useQueryServers(workspaceId)
+  const queryKoboAccount = useQueryKoboAccounts(workspaceId)
   const queryForm = UseQueryForm.getAccessibles(workspaceId)
   const permissionWorkspace = UseQueryPermission.workspace({workspaceId})
 
-  const indexServers: Record<Api.ServerId, Api.Server> = useMemo(() => {
-    return seq(queryServer.getAll.data).groupByFirst(_ => _.id)
-  }, [queryServer.getAll.data])
+  const indexServers: Record<Api.Kobo.AccountId, Api.Kobo.Account> = useMemo(() => {
+    return seq(queryKoboAccount.getAll.data).groupByFirst(_ => _.id)
+  }, [queryKoboAccount.getAll.data])
 
   useEffect(() => {
     setTitle(m.selectADatabase)

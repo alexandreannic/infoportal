@@ -1,16 +1,6 @@
 import {Obj} from '@axanc/ts-utils'
 import {Api} from '@infoportal/api-sdk'
 
-/** @deprecated use from sdk*/
-export type KoboServer = {
-  id: string
-  name: string
-  url: string
-  urlV1: string
-  token: string
-  workspaceId: Api.WorkspaceId
-}
-
 export type SubmissionMappedType = string | string[] | Date | number | undefined
 
 export type SubmissionMapped = {

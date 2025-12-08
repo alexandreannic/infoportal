@@ -1,17 +1,17 @@
 import type * as Prisma from '@infoportal/prisma'
-import {Kobo} from 'kobo-sdk'
 import {Defined} from 'yup'
 import {Brand, Pagination} from '../common/Common.js'
 import {User} from '../user/User.js'
-import {ServerId} from '../kobo/KoboAccount.js'
 import {WorkspaceId} from '../workspace/Workspace.js'
 import {Submission} from '../submission/Submission.js'
 import {Api} from '../../Api.js'
+import {Kobo} from '../kobo/Kobo'
+import {Kobo as KoboSdk} from 'kobo-sdk'
 
 export type FormId = Form.Id
 export type Form = Prisma.Form & {
   id: FormId
-  kobo?: Form.KoboInfo
+  kobo?: Kobo.Form.Info
   category?: string
   deploymentStatus?: string
 }
@@ -24,11 +24,6 @@ export namespace Form {
     draft: 'draft',
   } as const
 
-  export type KoboInfo = Prisma.FormKoboInfo & {
-    accountId: ServerId
-    koboId: Kobo.FormId
-  }
-
   export const map = (_: Form): Form => {
     _.createdAt = new Date(_.createdAt)
     if (_.updatedAt) _.updatedAt = new Date(_.updatedAt)
@@ -38,7 +33,7 @@ export namespace Form {
 
   export const isConnectedToKobo = <
     T extends {
-      kobo?: Form.KoboInfo | null
+      kobo?: Kobo.Form.Info | null
     },
   >(
     _: T,
@@ -56,14 +51,14 @@ export namespace Form {
       default_language: string
     }>
     survey: Question[]
-    translated: Kobo.Form.Translated[]
+    translated: KoboSdk.Form.Translated[]
     translations: string[]
-    files?: Kobo.Form.File[]
+    files?: KoboSdk.Form.File[]
   }
 
-  export type Choice = Omit<Kobo.Form.Choice, '$autovalue'>
-  export type QuestionType = Kobo.Form.QuestionType
-  export type Question = Omit<Kobo.Form.Question, 'calculation' | '$autoname' | '$qpath'> & {
+  export type Choice = Omit<KoboSdk.Form.Choice, '$autovalue'>
+  export type QuestionType = KoboSdk.Form.QuestionType
+  export type Question = Omit<KoboSdk.Form.Question, 'calculation' | '$autoname' | '$qpath'> & {
     // Should be optional in kobo-sdk
     calculation?: string
   }
@@ -87,11 +82,6 @@ export namespace Form {
       workspaceId: WorkspaceId
       formId: FormId
       connected: boolean
-    }
-
-    export type Import = {
-      serverId: ServerId
-      uid: Kobo.FormId
     }
 
     export type Create = {

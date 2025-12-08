@@ -5,7 +5,7 @@ import {useIpToast} from '@/core/useToast'
 import {ApiError} from '@/core/sdk/server/HttpClient'
 import {Api} from '@infoportal/api-sdk'
 
-export const useQueryServers = (workspaceId: Api.WorkspaceId) => {
+export const useQueryKoboAccounts = (workspaceId: Api.WorkspaceId) => {
   const {apiv2} = useAppSettings()
   const queryClient = useQueryClient()
   const {toastAndThrowHttpError, toastHttpError} = useIpToast()
@@ -13,7 +13,7 @@ export const useQueryServers = (workspaceId: Api.WorkspaceId) => {
   const getAll = useQuery({
     queryKey: queryKeys.servers(workspaceId),
     queryFn: async () => {
-      const servers = await apiv2.server.getAll({workspaceId}).catch(toastAndThrowHttpError)
+      const servers = await apiv2.kobo.account.getAll({workspaceId}).catch(toastAndThrowHttpError)
       servers.forEach(s => {
         queryClient.setQueryData(queryKeys.server(workspaceId, s.id), s)
       })
@@ -21,9 +21,9 @@ export const useQueryServers = (workspaceId: Api.WorkspaceId) => {
     },
   })
 
-  const create = useMutation<Api.Server, ApiError, Api.Server.Payload.Create>({
+  const create = useMutation<Api.Kobo.Account, ApiError, Api.Kobo.Account.Payload.Create>({
     mutationFn: async args => {
-      return apiv2.server.create({...args, workspaceId})
+      return apiv2.kobo.account.create({...args, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.servers(workspaceId)}),
     onError: toastHttpError,
@@ -32,14 +32,20 @@ export const useQueryServers = (workspaceId: Api.WorkspaceId) => {
   return {getAll, create}
 }
 
-export const useQueryServer = ({workspaceId, serverId}: {workspaceId: Api.WorkspaceId; serverId: Api.ServerId}) => {
+export const useQueryKoboAccount = ({
+  workspaceId,
+  serverId,
+}: {
+  workspaceId: Api.WorkspaceId
+  serverId: Api.Kobo.AccountId
+}) => {
   const {apiv2} = useAppSettings()
   const {toastHttpError, toastAndThrowHttpError} = useIpToast()
   const queryClient = useQueryClient()
 
   const remove = useMutation({
     mutationFn: async () => {
-      return apiv2.server.delete({id: serverId, workspaceId})
+      return apiv2.kobo.account.delete({id: serverId, workspaceId})
     },
     onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.server(workspaceId, serverId)}),
     onError: toastHttpError,
@@ -47,7 +53,7 @@ export const useQueryServer = ({workspaceId, serverId}: {workspaceId: Api.Worksp
 
   const get = useQuery({
     queryKey: queryKeys.server(workspaceId, serverId),
-    queryFn: () => apiv2.server.get({workspaceId, id: serverId}).catch(toastAndThrowHttpError),
+    queryFn: () => apiv2.kobo.account.get({workspaceId, id: serverId}).catch(toastAndThrowHttpError),
   })
   return {get, remove}
 }

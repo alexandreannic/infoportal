@@ -2,8 +2,8 @@ import {HTTPStatusCode, initClient} from '@ts-rest/core'
 import {apiContract} from './ApiContract.js'
 import {formVersionClient} from './module/form/FormVersionContract.js'
 import {formClient} from './module/form/FormContract.js'
-import {serverClient} from './module/kobo/KoboAccountContract.js'
-import {koboClient} from './module/kobo/KoboContract.js'
+import {koboAccountClient} from './module/kobo/KoboAccountContract.js'
+import {koboFormClient} from './module/kobo/KoboFormContract.js'
 import {formAccessClient} from './module/form/access/FormAccessContract.js'
 import {permissionClient} from './module/permission/PermissionContract.js'
 import {workspaceClient} from './module/workspace/WorkspaceContract.js'
@@ -49,8 +49,10 @@ export const buildApiClient = (baseUrl: string) => {
       section: sectionClient(client),
     },
     permission: permissionClient(client, baseUrl),
-    server: serverClient(client, baseUrl),
-    kobo: koboClient(client, baseUrl),
+    kobo: {
+      account: koboAccountClient(client, baseUrl),
+      form: koboFormClient(client),
+    },
     submission: {
       ...submissionClient(client, baseUrl),
       history: submissionHistoryClient(client),

@@ -13,18 +13,18 @@ import {Link} from '@tanstack/react-router'
 
 export const SelectKoboForm = ({
   workspaceId,
-  serverId,
+  accountId,
   onAdded,
 }: {
   workspaceId: Api.WorkspaceId
-  serverId: Api.ServerId
+  accountId: Api.Kobo.AccountId
   onAdded?: () => void
 }) => {
   const {api} = useAppSettings()
   const {m, formatDate, formatLargeNumber} = useI18n()
   const t = useTheme()
   const {toastSuccess} = useIpToast()
-  const importFromKobo = UseQueryForm.importFromKobo(workspaceId)
+  const queryKoboImport = UseQueryForm.importFromKobo(workspaceId)
   const queryForms = UseQueryForm.getAccessibles(workspaceId)
 
   const formFromKoboMap = useMemo(() => {
@@ -35,8 +35,8 @@ export const SelectKoboForm = ({
   }, [queryForms.data])
 
   const queryKoboForms = useQuery({
-    queryKey: queryKeys.koboForm(serverId),
-    queryFn: () => api.koboApi.searchSchemas({serverId}),
+    queryKey: queryKeys.koboForm(accountId),
+    queryFn: () => api.koboApi.searchSchemas({serverId: accountId}),
   })
 
   return (
@@ -124,10 +124,10 @@ export const SelectKoboForm = ({
           renderQuick: form => (
             <Core.Btn
               size="small"
-              loading={importFromKobo.pendingIds.has(form.uid)}
+              loading={queryKoboImport.pendingIds.has(form.uid)}
               onClick={() =>
-                importFromKobo
-                  .mutateAsync({serverId, uid: form.uid})
+                queryKoboImport
+                  .mutateAsync({serverId: accountId, uid: form.uid})
                   .then(_ => {
                     return toastSuccess(m.successfullyAdded, {
                       action: (

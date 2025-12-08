@@ -6,7 +6,7 @@ import {map200, map204, TsRestClient} from '../../ApiClient.js'
 
 const c = initContract()
 
-export const serverContract = c.router({
+export const koboAccountContract = c.router({
   get: {
     method: 'GET',
     path: `/:workspaceId/kobo/server/:id`,
@@ -15,7 +15,7 @@ export const serverContract = c.router({
       id: schema.serverId,
     }),
     responses: {
-      200: z.any() as z.ZodType<Api.Server | undefined>,
+      200: z.any() as z.ZodType<Api.Kobo.Account | undefined>,
     },
     metadata: makeMeta({
       access: {
@@ -31,7 +31,7 @@ export const serverContract = c.router({
       workspaceId: schema.workspaceId,
     }),
     responses: {
-      200: c.type<Api.Server[]>(),
+      200: c.type<Api.Kobo.Account[]>(),
     },
     metadata: makeMeta({
       access: {
@@ -46,9 +46,9 @@ export const serverContract = c.router({
     pathParams: z.object({
       workspaceId: schema.workspaceId,
     }),
-    body: c.type<Omit<Api.Server.Payload.Create, 'workspaceId'>>(),
+    body: c.type<Omit<Api.Kobo.Account.Payload.Create, 'workspaceId'>>(),
     responses: {
-      200: c.type<Api.Server>(),
+      200: c.type<Api.Kobo.Account>(),
     },
     metadata: makeMeta({
       access: {
@@ -75,22 +75,22 @@ export const serverContract = c.router({
   },
 })
 
-export const serverClient = (client: TsRestClient, baseUrl: string) => {
+export const koboAccountClient = (client: TsRestClient, baseUrl: string) => {
   return {
-    get: (params: {id: Api.ServerId; workspaceId: Api.WorkspaceId}) => {
-      return client.server.get({params}).then(map200)
+    get: (params: {id: Api.Kobo.AccountId; workspaceId: Api.WorkspaceId}) => {
+      return client.kobo.account.get({params}).then(map200)
     },
 
     getAll: ({workspaceId}: {workspaceId: Api.WorkspaceId}) => {
-      return client.server
+      return client.kobo.account
         .getAll({
           params: {workspaceId},
         })
         .then(map200)
     },
 
-    create: ({workspaceId, ...body}: Api.Server.Payload.Create) => {
-      return client.server
+    create: ({workspaceId, ...body}: Api.Kobo.Account.Payload.Create) => {
+      return client.kobo.account
         .create({
           params: {workspaceId},
           body,
@@ -98,8 +98,8 @@ export const serverClient = (client: TsRestClient, baseUrl: string) => {
         .then(map200)
     },
 
-    delete: ({workspaceId, id}: {workspaceId: Api.WorkspaceId; id: Api.ServerId}) => {
-      return client.server
+    delete: ({workspaceId, id}: {workspaceId: Api.WorkspaceId; id: Api.Kobo.AccountId}) => {
+      return client.kobo.account
         .delete({
           params: {workspaceId, id},
         })

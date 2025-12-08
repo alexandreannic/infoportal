@@ -1,5 +1,5 @@
 import {duration} from '@axanc/ts-utils'
-import {KoboServer, PrismaClient} from '@infoportal/prisma'
+import {KoboAccount, PrismaClient} from '@infoportal/prisma'
 import {app, AppCacheKey} from '../../index.js'
 import {Api} from '@infoportal/api-sdk'
 import {Kobo, KoboClient} from 'kobo-sdk'
@@ -24,12 +24,12 @@ export class KoboSdkGenerator {
   ) {}
 
   readonly getServerBy = (() => {
-    const id = async (koboServerId: Api.ServerId): Promise<KoboServer> => {
-      return this.prisma.koboServer
-        .findFirstOrThrow({where: {id: koboServerId}})
-        .catch(() => this.prisma.koboServer.findFirstOrThrow())
+    const id = async (koboAccountId: Api.Kobo.AccountId): Promise<KoboAccount> => {
+      return this.prisma.koboAccount
+        .findFirstOrThrow({where: {id: koboAccountId}})
+        .catch(() => this.prisma.koboAccount.findFirstOrThrow())
     }
-    const formId = async (formId: Kobo.FormId): Promise<KoboServer> => {
+    const formId = async (formId: Kobo.FormId): Promise<KoboAccount> => {
       return this.getAccountId(formId).then(id)
     }
     return {formId, id}
@@ -48,7 +48,7 @@ export class KoboSdkGenerator {
       key: AppCacheKey.KoboClient,
       ttlMs: duration(7, 'day'),
       genIndex: _ => _ as string,
-      fn: async (serverId: Api.ServerId): Promise<KoboClient> => {
+      fn: async (serverId: Api.Kobo.AccountId): Promise<KoboClient> => {
         this.log.info(`Rebuilding KoboClient form server ${serverId}`)
         const server = await this.getServerBy.id(serverId)
         return this.buildSdk(server)
@@ -56,11 +56,11 @@ export class KoboSdkGenerator {
     }),
   }
 
-  private readonly getAccountId = async (koboId: Kobo.FormId): Promise<Api.ServerId> => {
+  private readonly getAccountId = async (koboId: Kobo.FormId): Promise<Api.Kobo.AccountId> => {
     return this.koboAccountIndex.getByKoboId(koboId)
   }
 
-  private readonly buildSdk = (server: KoboServer): KoboClient => {
+  private readonly buildSdk = (server: KoboAccount): KoboClient => {
     return new KoboClient({
       urlv1: server.urlV1 ?? '<TBD - Only used to submit into a form>',
       urlv2: server.url,

@@ -47,7 +47,7 @@ CREATE TABLE "WorkspaceAccess" (
 );
 
 -- CreateTable
-CREATE TABLE "KoboServer" (
+CREATE TABLE "KoboAccount" (
     "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "url" TEXT NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE "KoboServer" (
     "token" TEXT NOT NULL,
     "workspaceId" UUID,
 
-    CONSTRAINT "KoboServer_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "KoboAccount_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -424,10 +424,10 @@ ALTER TABLE "WorkspaceAccess" ADD CONSTRAINT "WorkspaceAccess_userId_fkey" FOREI
 ALTER TABLE "WorkspaceAccess" ADD CONSTRAINT "WorkspaceAccess_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "KoboServer" ADD CONSTRAINT "KoboServer_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "KoboAccount" ADD CONSTRAINT "KoboAccount_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "KoboForm" ADD CONSTRAINT "KoboForm_serverId_fkey" FOREIGN KEY ("serverId") REFERENCES "KoboServer"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "KoboForm" ADD CONSTRAINT "KoboForm_serverId_fkey" FOREIGN KEY ("serverId") REFERENCES "KoboAccount"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "KoboForm" ADD CONSTRAINT "KoboForm_activeVersionId_fkey" FOREIGN KEY ("activeVersionId") REFERENCES "FormSchema"("id") ON DELETE SET NULL ON UPDATE CASCADE;

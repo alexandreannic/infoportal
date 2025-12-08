@@ -44,9 +44,9 @@ export class UseQueryForm {
     const {apiv2} = useAppSettings()
     const {toastHttpError} = useIpToast()
     const queryClient = useQueryClient()
-    return usePendingMutation<Api.Form, ApiError, Api.Form.Payload.Import>({
+    return usePendingMutation<Api.Form, ApiError, Omit<Api.Kobo.Form.Payload.Import, 'workspaceId'>>({
       getId: _ => _.uid,
-      mutationFn: args => apiv2.kobo.importFromKobo({workspaceId, ...args}),
+      mutationFn: args => apiv2.kobo.form.import({workspaceId, ...args}),
       onSuccess: () => queryClient.invalidateQueries({queryKey: queryKeys.form(workspaceId)}),
       onError: toastHttpError,
     })

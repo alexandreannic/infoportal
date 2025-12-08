@@ -16,10 +16,10 @@ export const mapForm = <
 ): Defined<
   T & {
     id: Api.FormId
-    serverId?: Api.ServerId
+    serverId?: Api.Kobo.AccountId
     category?: string
     deploymentStatus?: string
-    kobo?: Api.Form.KoboInfo
+    kobo?: Api.Kobo.Form.Info
   }
 > => _ as any
 
@@ -31,7 +31,7 @@ export const mapKoboInfo = <
 >(
   _: T,
 ): Defined<T> & {
-  accountId?: Api.ServerId
+  accountId?: Api.Kobo.AccountId
   koboId?: Kobo.FormId
 } => _ as any
 
@@ -75,6 +75,6 @@ export const mapFormActionLog = <
 
 export const mapServer = <T extends {id: string; workspaceId: string}>(
   _: T,
-): T & {id: Api.ServerId; workspaceId: Api.WorkspaceId} => _ as any
+): T & {id: Api.Kobo.AccountId; workspaceId: Api.WorkspaceId} => _ as any
 
 export const mapSubmission = <T extends {id: string}>(_: T): Defined<Omit<T, 'id'> & {id: Api.SubmissionId}> => _ as any

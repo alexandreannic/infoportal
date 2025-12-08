@@ -3,9 +3,9 @@ import {useI18n} from '@infoportal/client-i18n'
 import {Box, Collapse, Icon} from '@mui/material'
 import {useEffect, useState} from 'react'
 import {useDialogs} from '@toolpad/core'
-import {KoboServerFormDialog} from '@/features/NewForm/KoboAccountForm'
+import {KoboAccountFormDialog} from '@/features/NewForm/KoboAccountForm'
 import {SelectKoboForm} from '@/features/NewForm/SelectKoboForm'
-import {useQueryServers} from '@/core/query/useQueryServers'
+import {useQueryKoboAccounts} from '@/core/query/useQueryKoboAccounts'
 import {Obj} from '@axanc/ts-utils'
 import {NewFormCreateInternal} from '@/features/NewForm/NewFormCreateInternal'
 import {useLayoutContext} from '@/shared/Layout/LayoutContext'
@@ -38,13 +38,13 @@ function NewForm() {
   const navigate = useNavigate()
 
   const [type, setType] = useState<Api.Form.Type>()
-  const [selectedServerId, setSelectedServerId] = useState<Api.ServerId>()
+  const [selectedServerId, setSelectedServerId] = useState<Api.Kobo.AccountId>()
 
   const queryForm = UseQueryForm.create(workspaceId)
-  const queryServer = useQueryServers(workspaceId)
+  const queryServer = useQueryKoboAccounts(workspaceId)
 
   const handleOpen = () => {
-    dialog.open(KoboServerFormDialog, {workspaceId})
+    dialog.open(KoboAccountFormDialog, {workspaceId})
   }
   useEffect(() => {
     setTitle(m.newForm)
@@ -123,7 +123,7 @@ function NewForm() {
                   <Collapse in={!!selectedServerId} mountOnEnter unmountOnExit>
                     <SelectKoboForm
                       workspaceId={workspaceId}
-                      serverId={selectedServerId!}
+                      accountId={selectedServerId!}
                       onAdded={() => queryServer.getAll.refetch()}
                     />
                   </Collapse>

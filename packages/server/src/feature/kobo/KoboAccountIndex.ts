@@ -20,7 +20,7 @@ export class KoboAccountIndex {
     private log = app.logger('KoboAccountIndex'),
   ) {}
 
-  private readonly getHot = async (): Promise<Record<Kobo.FormId, Api.ServerId>> => {
+  private readonly getHot = async (): Promise<Record<Kobo.FormId, Api.Kobo.AccountId>> => {
     return this.prisma.formKoboInfo
       .findMany({
         select: {koboId: true, accountId: true},
@@ -31,18 +31,18 @@ export class KoboAccountIndex {
           .compactBy('accountId')
           .groupByAndApply(
             _ => _.koboId,
-            _ => _[0].accountId as Api.ServerId,
+            _ => _[0].accountId as Api.Kobo.AccountId,
           )
       })
   }
 
   private readonly getCached = app.cache.request({
-    key: AppCacheKey.KoboServerIndex,
+    key: AppCacheKey.KoboAccountIndex,
     ttlMs: duration(7, 'day'),
     fn: this.getHot,
   })
 
-  readonly getByKoboId = async (koboFormId: Kobo.FormId): Promise<Api.ServerId> => {
+  readonly getByKoboId = async (koboFormId: Kobo.FormId): Promise<Api.Kobo.AccountId> => {
     const cache = await this.getCached()
     if (cache[koboFormId]) return cache[koboFormId]
     const now = Date.now()
@@ -50,7 +50,7 @@ export class KoboAccountIndex {
       this.lastCacheClear[koboFormId] = now
       const hot = await this.getHot()
       if (hot[koboFormId]) {
-        app.cache.clear(AppCacheKey.KoboServerIndex)
+        app.cache.clear(AppCacheKey.KoboAccountIndex)
       }
       return hot[koboFormId]
     }

@@ -36,9 +36,9 @@ export const queryKeys = {
   //   widgetId?: Api.Dashboard.WidgetId,
   // ) => concat(workspaceId, 'dashboard', dashboardId, 'section', sectionId, 'widget', widgetId),
 
-  koboForm: (serverId?: Api.ServerId) => concat('koboForm', serverId),
+  koboForm: (serverId?: Api.Kobo.AccountId) => concat('koboForm', serverId),
   servers: (workspaceId?: Api.WorkspaceId) => concat('servers', workspaceId),
-  server: (workspaceId?: Api.WorkspaceId, serverId?: Api.ServerId) => concat('server', workspaceId, serverId),
+  server: (workspaceId?: Api.WorkspaceId, serverId?: Api.Kobo.AccountId) => concat('server', workspaceId, serverId),
   form: (workspaceId: Api.WorkspaceId, formId?: Api.FormId) => concat('form', workspaceId, formId),
   formAccess: (workspaceId?: Api.WorkspaceId, formId?: Api.FormId) => concat('formAccess', workspaceId, formId),
   formAction: (workspaceId?: Api.WorkspaceId, id?: Api.FormId) => concat('form', workspaceId, 'action', id),

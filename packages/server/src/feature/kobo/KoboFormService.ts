@@ -25,7 +25,7 @@ export class KoboFormService {
     workspaceId,
   }: {
     schema: Kobo.Form
-    accountId: Api.ServerId
+    accountId: Api.Kobo.AccountId
     workspaceId: Api.WorkspaceId
     uploadedBy: Api.User.Email
   }): FormServiceCreatePayload => {
@@ -44,8 +44,8 @@ export class KoboFormService {
 
   static readonly HOOK_NAME = 'InfoPortal'
 
-  readonly importFromKobo = async (
-    payload: Api.Form.Payload.Import & {uploadedBy: Api.User.Email; workspaceId: Api.WorkspaceId},
+  readonly import = async (
+    payload: Api.Kobo.Form.Payload.Import & {uploadedBy: Api.User.Email; workspaceId: Api.WorkspaceId},
   ): Promise<Api.Form> => {
     const sdk = await this.koboSdk.getBy.accountId(payload.serverId)
     const schema = await sdk.v2.form.get({formId: payload.uid, use$autonameAsName: true})
@@ -71,7 +71,7 @@ export class KoboFormService {
       // }),
       this.createHookIfNotExists({sdk, koboFormId: payload.uid}),
     ])
-    this.cache.clear(AppCacheKey.KoboServerIndex)
+    this.cache.clear(AppCacheKey.KoboAccountIndex)
     this.cache.clear(AppCacheKey.KoboClient)
     return prismaMapper.form.mapForm(newFrom)
   }

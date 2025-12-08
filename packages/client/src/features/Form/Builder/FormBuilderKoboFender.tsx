@@ -1,7 +1,7 @@
 import {Alert, AlertTitle, Box, ButtonBase, ButtonBaseProps, Icon, useTheme} from '@mui/material'
 import {useI18n} from '@infoportal/client-i18n'
 import React from 'react'
-import {useQueryServer} from '@/core/query/useQueryServers'
+import {useQueryKoboAccount} from '@/core/query/useQueryKoboAccounts'
 import {Api} from '@infoportal/api-sdk'
 import {Core} from '@/shared'
 
@@ -34,7 +34,7 @@ const Button = ({href, label, icon, sx, ...props}: {href: string; label: string;
 }
 export const FormBuilderKoboFender = ({workspaceId, form}: {workspaceId: Api.WorkspaceId; form: Api.Form}) => {
   const {m} = useI18n()
-  const queryServer = useQueryServer({workspaceId, serverId: form.kobo!.accountId!}).get
+  const queryServer = useQueryKoboAccount({workspaceId, serverId: form.kobo!.accountId!}).get
 
   return (
     <Core.Panel loading={queryServer.isLoading}>

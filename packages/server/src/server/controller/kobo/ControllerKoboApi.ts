@@ -30,7 +30,7 @@ export class ControllerKoboApi {
         serverId: yup.string().required(),
       })
       .validate(req.body)
-    const sdk = await this.koboSdkGenerator.getBy.accountId(serverId as Api.ServerId)
+    const sdk = await this.koboSdkGenerator.getBy.accountId(serverId as Api.Kobo.AccountId)
     const forms = await sdk.v2.form.getAll()
     res.send(forms)
   }

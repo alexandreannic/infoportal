@@ -1,8 +1,8 @@
 import {formVersionContract} from './module/form/FormVersionContract.js'
 import {initContract} from '@ts-rest/core'
 import {formContract} from './module/form/FormContract.js'
-import {serverContract} from './module/kobo/KoboAccountContract.js'
-import {koboContract} from './module/kobo/KoboContract.js'
+import {koboAccountContract} from './module/kobo/KoboAccountContract.js'
+import {koboFormContract} from './module/kobo/KoboFormContract.js'
 import {formAccessContract} from './module/form/access/FormAccessContract.js'
 import {permissionContract} from './module/permission/PermissionContract.js'
 import {workspaceContract} from './module/workspace/WorkspaceContract.js'
@@ -24,8 +24,10 @@ import {formSchemaContract} from './module/form/FormSchemaContract.js'
 
 export const apiContract = initContract().router({
   permission: permissionContract,
-  server: serverContract,
-  kobo: koboContract,
+  kobo: {
+    form: koboFormContract,
+    account: koboAccountContract,
+  },
   group: groupContract,
   databaseView: databaseViewContract,
   dashboard: {
