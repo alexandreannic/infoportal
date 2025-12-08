@@ -47,7 +47,7 @@ const ConnectionChecker = ({status, err}: {err?: string; status: 'loading' | 'er
   }
 }
 
-export const KoboServerForm = ({
+export const KoboAccountForm = ({
   loading,
   onSubmit,
   onCancel,
@@ -101,7 +101,13 @@ export const KoboServerForm = ({
             pattern: Regexp.get.url,
           }}
           render={({field, fieldState}) => (
-            <Core.Input {...field} required label={m.serverUrlV1} error={fieldState.invalid} />
+            <Core.Input
+              {...field}
+              value={field.value ?? ''}
+              required
+              label={m.serverUrlV1}
+              error={fieldState.invalid}
+            />
           )}
         />
         <Controller
@@ -116,6 +122,7 @@ export const KoboServerForm = ({
             <Core.Input
               required
               {...field}
+              value={field.value ?? ''}
               label={m.serverUrlV2}
               error={fieldState.invalid}
             />
@@ -124,7 +131,7 @@ export const KoboServerForm = ({
       </AccessFormSection>
       <AccessFormSection icon="key" label={m.access} sxContent={{pb: 0}}>
         <Core.Txt block color="hint" size="small" gutterBottom>
-          <div>Can be found in your account settings.</div>
+          <div>{m.canBeFoundInYourAccountSettings}</div>
           {map(form.watch('url'), url => {
             if (url === '') return
             const link = url.replace(/\/+$/, '') + '/#/account/security'
@@ -208,11 +215,17 @@ export const KoboServerFormDialog = ({
   const {m} = useI18n()
   const queryCreate = useQueryServers(payload.workspaceId).create
   return (
-    <Dialog open={open} onClose={() => onClose()}>
+    <Dialog
+      open={open}
+      onClose={(_, reason) => {
+        if (reason === 'backdropClick' || reason === 'escapeKeyDown') return
+        onClose()
+      }}
+    >
       <DialogTitle>{m.addNewKoboAccount}</DialogTitle>
       <DialogContent>
         {queryCreate.error && <Core.Alert color="error" content={queryCreate.error.message} />}
-        <KoboServerForm
+        <KoboAccountForm
           loading={queryCreate.isPending}
           onCancel={onClose}
           onSubmit={_ => {

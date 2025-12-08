@@ -1,6 +1,6 @@
 import {DatabaseLeftPanelProps} from '@/features/Form/Database/DatabaseLeftPanel/DatabaseLeftPanel'
 import {useI18n} from '@infoportal/client-i18n'
-import {useState} from 'react'
+import React, {useState} from 'react'
 import {Box} from '@mui/material'
 import {Link} from '@tanstack/react-router'
 import {SwitchBox} from '@/shared/customInput/SwitchBox'
@@ -25,7 +25,13 @@ export const SubmissionViewerPanel = ({
 
   return (
     <Core.Panel sx={{p: 1}}>
-      <Core.PanelTitle>
+      <Core.PanelTitle
+        action={
+          <Core.IconBtn onClick={onClose} sx={{marginLeft: 'auto'}}>
+            close
+          </Core.IconBtn>
+        }
+      >
         <Box sx={{display: 'flex', alignItems: 'center'}}>
           <Link
             to="/$workspaceId/form/$formId/submission/$submissionId"

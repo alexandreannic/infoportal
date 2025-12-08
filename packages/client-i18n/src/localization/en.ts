@@ -105,6 +105,7 @@ export const en = Object.freeze({
     row: 'Row',
     name: 'Name',
     by: 'By',
+    canBeFoundInYourAccountSettings: 'Can be found in your account settings.',
     editor: 'Editor',
     upload: 'Upload',
     noAccess: 'No access',

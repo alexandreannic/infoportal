@@ -21,21 +21,17 @@ export const Input = React.forwardRef(
       InputLabelProps,
       id,
       helperText = '',
-      ...props
+      ...restProps
     }: InputProps,
     ref,
   ) => {
     // const id = useMemo(() => Math.random() + '', [])
     const inputElement = useRef<HTMLInputElement | null>(null)
     useEffect(() => {
-      if (props.autoFocus) inputElement?.current?.focus()
+      if (restProps.autoFocus) inputElement?.current?.focus()
     }, [])
-
     if (label) label = label + (label && required ? ' *' : '')
-    // const notch = !!props.value
-
     const muiSize = useMemo(() => (size === 'tiny' ? 'small' : size), [size])
-
     return (
       <FormControl size={muiSize} sx={{width: '100%', ...sx}} error={error} variant="outlined">
         {label && (
@@ -51,31 +47,22 @@ export const Input = React.forwardRef(
           size={muiSize}
           error={error}
           ref={ref}
-          {...props}
-          slotProps={
-            size === 'tiny'
-              ? {
-                  ...props.slotProps,
-                  input: {
-                    ...props.slotProps?.input,
-                    sx: {
-                      ...props.slotProps?.input?.sx,
-                      paddingTop: '6px',
-                      paddingBottom: '6px',
-                    },
-                  },
-                }
-              : {}
-          }
-          inputProps={{
-            ...props.inputProps,
-            ...(disableBrowserAutocomplete && {
-              ...props.inputProps,
-              autoComplete: 'nope',
-              form: {
-                autoComplete: 'off',
+          {...restProps}
+          slotProps={{
+            ...restProps.slotProps,
+            input: {
+              ...(restProps.slotProps?.input ?? {}),
+              sx: {
+                ...restProps.slotProps?.input?.sx,
+                ...(size === 'tiny' && {
+                  paddingTop: '6px',
+                  paddingBottom: '6px',
+                }),
               },
-            }),
+              ...(disableBrowserAutocomplete && {
+                autoComplete: 'nope',
+              }),
+            },
           }}
         />
 
