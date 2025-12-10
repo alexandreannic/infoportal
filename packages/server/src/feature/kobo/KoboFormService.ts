@@ -35,7 +35,8 @@ export class KoboFormService {
       deploymentStatus: schema.deployment_status,
       kobo: {
         accountId,
-        formId: schema.uid,
+        koboId: schema.uid,
+        enketoUrl: schema.deployment__links.offline_url,
       },
       uploadedBy: uploadedBy,
       workspaceId,
@@ -58,18 +59,9 @@ export class KoboFormService {
           workspaceId: payload.workspaceId,
         }),
       ),
-      // this.prisma.form.create({
-      //   include: {
-      //     kobo: true,
-      //   },
-      //   data: KoboFormService.apiToDb({
-      //     schema,
-      //     accountId: payload.serverId,
-      //     uploadedBy: payload.uploadedBy,
-      //     workspaceId: payload.workspaceId,
-      //   }),
-      // }),
-      this.createHookIfNotExists({sdk, koboFormId: payload.uid}),
+      this.createHookIfNotExists({sdk, koboFormId: payload.uid}).catch(() => {
+        // Silently fails. Still can be created later.
+      }),
     ])
     this.cache.clear(AppCacheKey.KoboAccountIndex)
     this.cache.clear(AppCacheKey.KoboClient)

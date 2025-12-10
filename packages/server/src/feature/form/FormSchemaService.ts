@@ -26,7 +26,7 @@ export class FormSchemaService {
     if (Api.Form.isConnectedToKobo(form)) {
       const sdk = await this.koboSdk.getBy.formId(formId)
       if (!sdk) throw new HttpError.NotFound(`koboSdk not found for formId ${formId}`)
-      const xml = await sdk.v2.form.getXml({formId: formId})
+      const xml = await sdk.v2.form.getXml({formId: form.kobo.koboId})
       return xml as Api.Form.SchemaXml
     }
     return this.getXmlBy({formId, status: 'active'})

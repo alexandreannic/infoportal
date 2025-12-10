@@ -1,16 +1,16 @@
 import {Form, PrismaClient} from '@infoportal/prisma'
-import {HttpError, Api} from '@infoportal/api-sdk'
+import {Api, HttpError} from '@infoportal/api-sdk'
 import {FormVersionService} from './FormVersionService.js'
 import {FormAccessService} from './access/FormAccessService.js'
 import {prismaMapper} from '../../core/prismaMapper/PrismaMapper.js'
 import {Kobo} from 'kobo-sdk'
 import {seq} from '@axanc/ts-utils'
-import {KoboSchemaCache} from './KoboSchemaCache.js'
 
 export type FormServiceCreatePayload = Api.Form.Payload.Create & {
   kobo?: {
-    formId: Kobo.FormId
+    koboId: Kobo.FormId
     accountId: Api.Kobo.AccountId
+    enketoUrl?: string
   }
   uploadedBy: Api.User.Email
   workspaceId: Api.WorkspaceId
@@ -21,7 +21,6 @@ export class FormService {
   constructor(
     private prisma: PrismaClient,
     private formVersion = new FormVersionService(prisma),
-    private koboSchemaCache = KoboSchemaCache.getInstance(prisma),
     private access = new FormAccessService(prisma),
     private formAccess = new FormAccessService(prisma),
   ) {}
@@ -48,10 +47,7 @@ export class FormService {
         workspaceId,
         kobo: kobo
           ? {
-              create: {
-                accountId: kobo.accountId,
-                koboId: kobo.formId,
-              },
+              create: kobo,
             }
           : undefined,
       },
