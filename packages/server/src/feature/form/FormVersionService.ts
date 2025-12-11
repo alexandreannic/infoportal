@@ -26,7 +26,7 @@ export class FormVersionService {
     }),
   }
 
-  readonly upload = async ({
+  readonly uploadXlsForm = async ({
     file,
     ...rest
   }: {
@@ -36,10 +36,6 @@ export class FormVersionService {
     formId: Api.FormId
     file: Express.Multer.File
   }) => {
-    const validation = await PyxFormClient.valdiateAndGetXmlByFilePath(file.path)
-    if (!validation.schemaXml || validation.status === 'error') {
-      throw new Error('Invalid XLSForm')
-    }
     const schemaJson = await XlsFormToSchema.convert(file.path)
     return this.createNewVersion({fileName: file.filename, schemaJson, ...rest})
   }

@@ -86,7 +86,7 @@ function Form() {
   const [langIndex, setLangIndex] = useState(0)
 
   const querySchema = UseQuerySchema.getInspector({formId, workspaceId, langIndex})
-  const querySchemaXml = UseQuerySchema.getXml({formId, workspaceId})
+  const querySchemaXml = UseQuerySchema.getXml({formId, workspaceId, disabled: !querySchema.data})
   const queryForm = UseQueryForm.get({workspaceId, formId})
   const queryPermission = UseQueryPermission.form({workspaceId, formId})
 

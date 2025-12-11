@@ -48,7 +48,7 @@ export class FormSchemaService {
   }: {
     versionId: Api.Form.VersionId
     formId: Api.FormId
-  }): Promise<undefined | Api.Form.Schema> => {
+  }): Promise<undefined | Api.Form.SchemaXml> => {
     return this.getXmlBy({formId, versionId})
   }
 
@@ -60,14 +60,14 @@ export class FormSchemaService {
     formId: Api.FormId
     status?: Api.Form.Version['status']
     versionId?: Api.Form.VersionId
-  }) => {
-    const maybeXml = await this.prisma.formVersion
-      .findFirst({
-        select: {schemaXml: true},
-        where: {formId, status, id: versionId},
-      })
-      .then(_ => _?.schemaXml as any)
-    if (maybeXml) return maybeXml
+  }): Promise<Api.Form.SchemaXml | undefined> => {
+    const maybeVersion = await this.prisma.formVersion.findFirst({
+      select: {schemaXml: true},
+      where: {formId, status, id: versionId},
+    })
+    if (!maybeVersion) return
+    const maybeXml = maybeVersion.schemaXml
+    if (maybeXml) return maybeXml as Api.Form.SchemaXml
     const json = await this.prisma.formVersion
       .findFirst({
         select: {schemaJson: true},
@@ -78,9 +78,9 @@ export class FormSchemaService {
     if (validation.status === 'error' || !validation.schemaXml) throw new HttpError.BadRequest(validation.message)
     await this.prisma.formVersion.updateMany({
       data: {schemaXml: validation.schemaXml},
-      where: {formId, status: 'active'},
+      where: {formId, status: 'active', id: versionId},
     })
-    return validation
+    return validation.schemaXml
   }
 
   private readonly getBy = ({

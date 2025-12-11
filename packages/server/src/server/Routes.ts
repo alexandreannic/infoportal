@@ -658,12 +658,12 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               .catch(handleError),
         },
         uploadXlsForm: {
-          middleware: [uploader.single('fileimportFromKobo')],
+          middleware: [uploader.single('file')],
           handler: _ =>
             auth2(_)
               .then(ensureFile)
               .then(({file, req, params}) =>
-                formVersion.upload({
+                formVersion.uploadXlsForm({
                   ...params,
                   uploadedBy: req.session.app.user.email,
                   file,

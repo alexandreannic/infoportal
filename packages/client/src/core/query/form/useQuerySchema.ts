@@ -16,13 +16,21 @@ export class UseQuerySchema {
     })
   }
 
-  static readonly getXml = ({workspaceId, formId}: {workspaceId: Api.WorkspaceId; formId?: Api.FormId}) => {
+  static readonly getXml = ({
+    workspaceId,
+    formId,
+    disabled,
+  }: {
+    workspaceId: Api.WorkspaceId
+    formId?: Api.FormId
+    disabled?: boolean
+  }) => {
     const {apiv2} = useAppSettings()
     return useQuery({
       queryKey: queryKeys.schema.formXml(workspaceId, formId!),
       queryFn: () => apiv2.form.schema.getXml({workspaceId, formId: formId!}),
       retry: false,
-      enabled: !!formId,
+      enabled: !disabled && !!formId,
     })
   }
 
