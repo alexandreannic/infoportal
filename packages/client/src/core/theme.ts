@@ -24,7 +24,7 @@ export type AppThemeParams = {
 }
 
 export const defaultThemeParams = {
-  colorPrimary: Core.colorPrimary['500'], // '#c9000a',
+  colorPrimary: Core.colorPrimary, // '#c9000a',
   colorSecondary: '#1a73e8',
   bgColor: undefined, //'#edf2faff',
   dark: false,
@@ -79,7 +79,7 @@ export const muiTheme = ({
           secondary: {main: colorSecondary},
           error: red,
           action: {
-            focus: Core.alphaVar(colorPrimary['500'], 0.1),
+            focus: Core.alphaVar(colorPrimary, 0.1),
             focusOpacity: 0.1,
           },
           background: {
@@ -98,7 +98,7 @@ export const muiTheme = ({
           secondary: {main: colorSecondary},
           error: red,
           action: {
-            focus: Core.alphaVar(colorPrimary['500'], 0.1),
+            focus: Core.alphaVar(colorPrimary, 0.1),
             focusOpacity: 0.1,
           },
           background: {

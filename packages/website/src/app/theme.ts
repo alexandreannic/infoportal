@@ -24,11 +24,11 @@ export const theme = createTheme({
       palette: {
         warning: orange,
         success: green,
-        primary: colorPrimary,
-        secondary: colorPrimary,
+        primary: {main: colorPrimary},
+        secondary: {main: colorPrimary},
         error: red,
         action: {
-          focus: alphaVar(colorPrimary['500'], 0.1),
+          focus: alphaVar(colorPrimary, 0.1),
           focusOpacity: 0.1,
         },
         background: {
