@@ -15,11 +15,15 @@ export type DialogAnswerViewProps = {
   formId: Api.FormId
   schemaInspector: SchemaInspector
   submission: Submission
+  onClose: () => void
 }
 export const SubmissionViewerPanel = ({
   onClose,
-  payload: {schemaInspector, formId, submission, workspaceId},
-}: DatabaseLeftPanelProps<DialogAnswerViewProps>) => {
+  schemaInspector,
+  formId,
+  submission,
+  workspaceId,
+}: DialogAnswerViewProps) => {
   const {m} = useI18n()
   const [showQuestionWithoutAnswer, setShowQuestionWithoutAnswer] = useState(false)
 

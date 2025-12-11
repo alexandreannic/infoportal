@@ -120,7 +120,7 @@ function FormBuilder() {
                   opacity: showPreview ? 1 : 0,
                 }}
               >
-                {showPreview && <FormBuilderPreview schemaXml={queryLastVersionXml.data} />}
+                {showPreview && <FormBuilderPreview formId={formId} schemaXml={queryLastVersionXml.data} />}
               </Box>
             </Box>
           </Context.Provider>

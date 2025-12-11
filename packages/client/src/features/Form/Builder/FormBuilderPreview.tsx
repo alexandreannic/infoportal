@@ -4,12 +4,14 @@ import {Core} from '@/shared'
 import {Api} from '@infoportal/api-sdk'
 import {OdkWebForm} from '@infoportal/odk-web-form-wrapper'
 
-export const FormBuilderPreview = ({schemaXml}: {schemaXml?: Api.Form.SchemaXml}) => {
+export const FormBuilderPreview = ({formId, schemaXml}: {formId: Api.FormId; schemaXml?: Api.Form.SchemaXml}) => {
   const {m} = useI18n()
   return (
     <Core.Panel>
       <Core.PanelBody sx={{p: 1}}>
-        {schemaXml && <OdkWebForm questionIndex={{}} formXml={schemaXml as string} onSubmit={_ => alert('✅')} />}
+        {schemaXml && (
+          <OdkWebForm formId={formId} questionIndex={{}} formXml={schemaXml as string} onSubmit={_ => alert('✅')} />
+        )}
       </Core.PanelBody>
     </Core.Panel>
   )

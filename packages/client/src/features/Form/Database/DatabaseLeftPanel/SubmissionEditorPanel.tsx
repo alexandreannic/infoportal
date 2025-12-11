@@ -5,7 +5,6 @@ import {Api} from '@infoportal/api-sdk'
 import {Link} from '@tanstack/react-router'
 import {Core} from '@/shared'
 import {OdkWebForm} from '@infoportal/odk-web-form-wrapper'
-import {DatabaseLeftPanelProps} from '@/features/Form/Database/DatabaseLeftPanel/DatabaseLeftPanel'
 
 export type SubmissionEditorProps = {
   schemaInspector: SchemaInspector
@@ -13,13 +12,19 @@ export type SubmissionEditorProps = {
   workspaceId: Api.WorkspaceId
   formId: Api.FormId
   submission: Submission
-  onSubmit: (_: {answers: Record<string, any>; attachments: File[]}) => Promise<void>
+  onSubmit: (_: {answers: Record<string, any>; attachments: File[]}) => Promise<any>
+  onClose: () => void
 }
 
 export const SubmissionEditorPanel = ({
   onClose,
-  payload: {schemaInspector, schemaXml, workspaceId, formId, submission, onSubmit},
-}: DatabaseLeftPanelProps<SubmissionEditorProps>) => {
+  schemaInspector,
+  schemaXml,
+  workspaceId,
+  formId,
+  submission,
+  onSubmit,
+}: SubmissionEditorProps) => {
   return (
     <Core.Panel sx={{p: 1}}>
       <Core.PanelTitle
@@ -39,6 +44,8 @@ export const SubmissionEditorPanel = ({
         {submission.id}
       </Core.PanelTitle>
       <OdkWebForm
+        formId={formId}
+        submission={submission}
         questionIndex={schemaInspector.lookup.questionIndex}
         formXml={schemaXml as string}
         onSubmit={_ => onSubmit(_).then(onClose)}

@@ -1,17 +1,20 @@
-import {useEffect, useRef, useState} from 'react'
+import {useCallback, useEffect, useMemo, useState} from 'react'
 import {Box, useTheme} from '@mui/material'
 import '@getodk/web-forms-wc'
 import {Api} from '@infoportal/api-sdk'
-import {SubmissionXmlToJson} from '@infoportal/form-helper'
+import {SubmissionXmlToJson, SubmissionJsonToXml} from '@infoportal/form-helper'
+import {EditInstanceOptions} from './EditInstance.js'
 
 type Callback = (submission: {answers: Record<string, any>; attachments: File[]}, ev: any) => void
 
 export interface OdkWebFormProps {
+  formId: Api.FormId
   formXml: string
   fetchFormAttachment?: (path: string) => Promise<Blob>
   missingResourceBehavior?: string
   submissionMaxSize?: number
-  editInstance?: any
+  submission?: Api.Submission
+  // editInstance?: EditInstanceOptions
   onSubmit?: Callback
   onSubmitChunked?: Callback
   questionIndex: Record<string, Api.Form.Question | undefined>
@@ -26,31 +29,45 @@ declare module 'react/jsx-runtime' {
 }
 
 export function OdkWebForm({
+  formId,
   formXml,
   fetchFormAttachment,
+  submission,
   missingResourceBehavior,
   submissionMaxSize = 5242880 * 2,
-  editInstance,
   onSubmit,
   onSubmitChunked,
   questionIndex,
 }: OdkWebFormProps) {
   const [keyIndexToRemount, setKeyIndexToRemount] = useState(0)
-
-  const ref = useRef<any>(undefined)
   const t = useTheme()
 
-  useEffect(() => {
-    setKeyIndexToRemount(_ => _ + 1)
-  }, [formXml])
+  const editInstance: EditInstanceOptions | undefined = useMemo(() => {
+    if (!submission) return
+    const xml = new SubmissionJsonToXml(formId, questionIndex).convert(submission)
+    return {
+      resolveInstance: () => xml,
+      attachmentFileNames: [],
+      resolveAttachment: () => {
+        // TODO
+        return {} as any
+      },
+    }
+  }, [submission])
 
   useEffect(() => {
-    if (!ref.current) return
-    ref.current.data = {
-      fetchFormAttachment,
-      editInstance,
-    }
-  }, [fetchFormAttachment, editInstance])
+    setKeyIndexToRemount(prev => prev + 1)
+  }, [formXml, submission])
+
+  const refCallback = useCallback(
+    (element: any) => {
+      if (element) {
+        element.editInstance = editInstance
+        element.fetchFormAttachment = fetchFormAttachment
+      }
+    },
+    [editInstance, fetchFormAttachment],
+  )
 
   const handleCallback = (cb?: Callback) => async (e: any) => {
     if (!cb) return
@@ -104,7 +121,7 @@ export function OdkWebForm({
       }}
     >
       <odk-webform
-        ref={ref}
+        ref={refCallback}
         form-xml={formXml}
         missing-resource-behavior={missingResourceBehavior}
         submission-max-size={submissionMaxSize?.toString()}

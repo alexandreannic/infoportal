@@ -92,11 +92,11 @@ export class UseQuerySubmission {
     queryClient,
     formId,
     submissionIds,
-    question,
-    answer,
+    update,
+    replace,
   }: {
-    question: string
-    answer: string
+    replace?: boolean
+    update: Record<string, any>
     queryClient: QueryClient
     formId: Api.FormId
     submissionIds: Api.SubmissionId[]
@@ -108,7 +108,8 @@ export class UseQuerySubmission {
         const idsToUpdate = new Set(submissionIds)
         for (const submission of draft.data) {
           if (idsToUpdate.has(submission.id)) {
-            submission.answers[question] = answer
+            if (replace) submission.answers = update
+            else submission.answers = {...(submission.answers ?? {}), ...update}
           }
         }
       })
@@ -199,8 +200,37 @@ export class UseQuerySubmission {
           formId,
           submissionIds: submissionIds,
           queryClient,
-          question,
-          answer,
+          update: {[question]: answer},
+        })
+      },
+      onError: (err, variables, context) => {
+        toastHttpError(err)
+        if (context?.previousValue) {
+          queryClient.setQueryData(queryKeys.submission(variables.formId), context.previousValue)
+        }
+        queryClient.invalidateQueries({queryKey: queryKeys.submission(variables.formId)})
+      },
+      // onSettled: (data, error, variables) => {
+      //   queryClient.invalidateQueries({queryKey: queryKeys.submission(variables.formId)})
+      // },
+    })
+  }
+
+  static readonly updateSingle = () => {
+    const queryClient = useQueryClient()
+    const {toastSuccess, toastHttpError} = useIpToast()
+    const {apiv2: api} = useAppSettings()
+    return useMutation({
+      mutationFn: async (params: Api.Submission.Payload.UpdateSingle) => {
+        return api.submission.updateSingle(params)
+      },
+      onMutate: async ({formId, submissionId, answers}) => {
+        return UseQuerySubmission.cacheUpdate({
+          formId,
+          submissionIds: [submissionId],
+          queryClient,
+          update: answers,
+          replace: true,
         })
       },
       onError: (err, variables, context) => {

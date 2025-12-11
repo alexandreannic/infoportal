@@ -2,9 +2,6 @@ import os
 import tempfile
 
 from fastapi import FastAPI, UploadFile, File
-from fastapi import HTTPException
-from fastapi.responses import Response
-from pyxform import create_survey_from_xls
 from pyxform.xls2xform import xls2xform_convert, get_xml_path
 
 app = FastAPI()
@@ -12,10 +9,17 @@ app = FastAPI()
 
 @app.post("/validate-and-get-xml")
 async def convert_with_cli_output(file: UploadFile = File(...)):
+    # Sanitize (optional but recommended)
+    original_name = os.path.basename(file.filename)
+
+    # Use original name + suffix
+    tmp_dir = tempfile.mkdtemp()
+    tmp_path = os.path.join(tmp_dir, original_name)
+
+    # Save uploaded file to that path
     content = await file.read()
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+    with open(tmp_path, "wb") as tmp:
         tmp.write(content)
-        tmp_path = tmp.name
 
     output_path = get_xml_path(tmp_path)
     response = {

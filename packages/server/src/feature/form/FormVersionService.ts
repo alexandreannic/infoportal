@@ -41,7 +41,10 @@ export class FormVersionService {
   }
 
   readonly validateXlsForm = async (filePath: string): Promise<Api.Form.Schema.ValidationWithSchema> => {
-    const {schemaXml, ...validation} = await PyxFormClient.valdiateAndGetXmlByFilePath(filePath)
+    const {schemaXml, ...validation} = await PyxFormClient.valdiateAndGetXmlByFilePath(
+      'we_dont_mind_formId_since_xml_wont_be_used' as Api.FormId,
+      filePath,
+    )
     const schemaJson = await XlsFormToSchema.convert(filePath)
     return {...validation, schemaJson}
   }
@@ -87,7 +90,7 @@ export class FormVersionService {
       })
       const parsedSchema = SchemaParser.parse(schemaJson)
       const errors = SchemaValidator.validate(parsedSchema)?.errors
-      const validation = await PyxFormClient.validateAndGetXmlBySchema(parsedSchema)
+      const validation = await PyxFormClient.validateAndGetXmlBySchema(formId, parsedSchema)
 
       if (validation.status === 'error' || !validation.schemaXml) throw new HttpError.BadRequest(validation.message)
       if (errors) throw new HttpError.BadRequest(JSON.stringify(errors))

@@ -155,6 +155,7 @@ export const en = Object.freeze({
     calculations: 'Calculations',
     value: 'Value',
     publish: 'Publish',
+    cannotEditWithoutSchema: 'Cannot edit without schema',
     addFilter: 'Add filter',
     addUser: 'Add user',
     percent: 'Percent',

@@ -135,7 +135,7 @@ model FormVersion {
   schemaJson Json
   schemaXml  String?
   status     FormVersionStatus @default(inactive)
-  form       Form              @relation(fields: [formId], references: [id])
+  form       Form              @relation(fields: [formId], references: [id], onDelete: Cascade)
   formId     String
 
   @@unique([formId, version])

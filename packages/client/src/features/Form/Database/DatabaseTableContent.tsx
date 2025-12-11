@@ -19,7 +19,10 @@ import {Api} from '@infoportal/api-sdk'
 import {AppAvatar, Core, Datatable} from '@/shared'
 import {useFormSocket} from '@/features/Form/useFormSocket'
 import {appConfig} from '@/conf/AppConfig.js'
-import {DatabaseLeftPanel, DatabaseLeftPanelState} from '@/features/Form/Database/DatabaseLeftPanel/DatabaseLeftPanel.js'
+import {
+  DatabaseLeftPanel,
+  DatabaseLeftPanelState,
+} from '@/features/Form/Database/DatabaseLeftPanel/DatabaseLeftPanel.js'
 import {useAsync} from '@axanc/react-hooks'
 import {buildDbColumns, OnRepeatGroupClick} from '@infoportal/database-column'
 import {getKoboAttachmentUrl} from '@/core/KoboAttachmentUrl.js'
@@ -110,9 +113,6 @@ export const DatabaseTableContent = ({
         setLeftPanelState({
           type: 'SUBMISSION_VIEW',
           payload: {
-            formId: ctx.form.id,
-            workspaceId,
-            schemaInspector: ctx.inspector,
             submission: _.submission,
           },
         }),
@@ -120,12 +120,7 @@ export const DatabaseTableContent = ({
         setLeftPanelState({
           type: 'SUBMISSION_EDIT',
           payload: {
-            formId: ctx.form.id,
-            workspaceId,
-            schemaInspector: ctx.inspector,
             submission: _.submission,
-            schemaXml: schemaXml!,
-            onSubmit: async _ => console.log(_),
           },
         }),
     })

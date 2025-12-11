@@ -135,7 +135,7 @@ function Form() {
         <Outlet />
       </Context.Provider>
     )
-  }, [queryForm.data, querySchema.data, queryPermission.data, workspaceId])
+  }, [queryForm.data, querySchema.data, querySchemaXml.data, formId, queryPermission.data, workspaceId])
 
   return (
     <Page width="full" fullHeight>

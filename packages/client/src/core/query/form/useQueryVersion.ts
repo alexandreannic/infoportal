@@ -63,6 +63,7 @@ export class UseQueryVersion {
       },
       onSuccess: newVersion => {
         queryClient.invalidateQueries({queryKey: queryKeys.version(workspaceId, formId)})
+        queryClient.invalidateQueries({queryKey: queryKeys.schema.form(workspaceId, formId)})
         // queryClient.setQueryData<Return<'getByFormId'>>(queryKeys.version(workspaceId, formId), old => [
         //   ...(old ?? []),
         //   newVersion,

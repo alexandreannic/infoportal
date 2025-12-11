@@ -74,7 +74,7 @@ export class FormSchemaService {
         where: {formId, status, id: versionId},
       })
       .then(_ => _?.schemaJson as any)
-    const validation = await PyxFormClient.validateAndGetXmlBySchema(json as Api.Form.Schema)
+    const validation = await PyxFormClient.validateAndGetXmlBySchema(formId, json as Api.Form.Schema)
     if (validation.status === 'error' || !validation.schemaXml) throw new HttpError.BadRequest(validation.message)
     await this.prisma.formVersion.updateMany({
       data: {schemaXml: validation.schemaXml},

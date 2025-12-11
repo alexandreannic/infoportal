@@ -14,9 +14,7 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     }
   },
   "references": [
@@ -39,17 +37,15 @@
       "path": "../xls-form-editor"
     },
     {
+      "path": "../odk-web-form-wrapper"
+    },
+    {
       "path": "../api-sdk"
     },
     {
       "path": "../common"
     }
   ],
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

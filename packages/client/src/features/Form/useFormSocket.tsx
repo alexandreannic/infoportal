@@ -31,8 +31,7 @@ export const useFormSocket = ({formId, workspaceId}: {workspaceId: Api.Workspace
         queryClient,
         formId,
         submissionIds: data.submissionIds,
-        question: data.question,
-        answer: data.answer,
+        update: {[data.question]: data.answer},
       })
     })
     socket.on(IpEvent.SUBMISSION_NEW, data => {

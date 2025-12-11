@@ -44,6 +44,7 @@ function Collect() {
           <Core.PanelBody>
             {querySchemaXml.data && querySchemaInspector.data && (
               <OdkWebForm
+                formId={formId}
                 questionIndex={querySchemaInspector.data.lookup.questionIndex}
                 formXml={querySchemaXml.data as string}
                 onSubmit={_ => {
