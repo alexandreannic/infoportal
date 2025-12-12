@@ -31,11 +31,19 @@ export class FormActionRunner {
     })
   }
 
-  private findActions = app.cache.request({
+  private findValidActions = app.cache.request({
     key: AppCacheKey.FormAction,
     genIndex: _ => _,
     fn: async (formId: Api.FormId) => {
-      return this.prisma.formAction.findMany({where: {targetFormId: formId}}).then(_ => _.map(Api.Form.Action.map))
+      return this.prisma.formAction
+        .findMany({
+          where: {
+            OR: [{bodyErrors: null}, {bodyErrors: 0}],
+            disabled: {not: true},
+            targetFormId: formId,
+          },
+        })
+        .then(_ => _.map(Api.Form.Action.map))
     },
   })
 
@@ -100,7 +108,7 @@ export class FormActionRunner {
     submission: Api.Submission
     formId: Api.FormId
   }) => {
-    const actions = await this.findActions(formId)
+    const actions = await this.findValidActions(formId)
     this.log.info(`Run ${actions.length} actions for ${formId}.`)
     return Promise.all(
       actions
