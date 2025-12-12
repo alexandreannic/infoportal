@@ -101,15 +101,16 @@ export const submissionContract = c.router({
   submit: {
     method: 'PUT',
     path: '/:workspaceId/form/:formId/submission',
+    contentType: 'multipart/form-data',
     pathParams: z.object({
       workspaceId: schema.workspaceId,
       formId: schema.formId,
     }),
-    body: z.object({
-      answers: z.record(z.string(), z.any()),
-      attachments: z.array(z.any()),
-      geolocation: z.tuple([z.number(), z.number()]).optional(),
-    }),
+    body: c.type<{
+      answers: Record<string, any>
+      geolocation?: [number, number]
+      file: File[]
+    }>(),
     responses: {
       200: c.type<Api.Submission>(),
     },
@@ -118,14 +119,26 @@ export const submissionContract = c.router({
 
 export const submissionClient = (client: TsRestClient, baseUrl: string) => {
   return {
-    submit: (params: Api.Submission.Payload.Submit) =>
-      client.submission
+    submit: (params: Api.Submission.Payload.Submit) => {
+      const fd = new FormData()
+      for (const file of params.attachments) fd.append('file', file)
+      fd.append('workspaceId', params.workspaceId)
+      fd.append('formId', params.formId)
+      fd.append('answers', JSON.stringify(params.answers))
+
+      if (params.geolocation) fd.append('geolocation', JSON.stringify(params.geolocation))
+
+      return client.submission
         .submit({
-          params,
-          body: params,
+          params: {
+            workspaceId: params.workspaceId,
+            formId: params.formId,
+          },
+          body: fd,
         })
         .then(map200)
-        .then(Api.Submission.map),
+        .then(Api.Submission.map)
+    },
 
     search: ({workspaceId, formId, ...body}: Api.Submission.Payload.Search) =>
       client.submission

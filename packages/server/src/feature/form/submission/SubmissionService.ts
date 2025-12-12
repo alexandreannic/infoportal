@@ -8,6 +8,7 @@ import {Util} from '../../../helper/Utils.js'
 import {genUUID, IpEvent, logPerformance} from '@infoportal/common'
 import {FormService} from '../FormService.js'
 import {nanoid} from 'nanoid'
+import {FileStorage} from '../../../core/fileStorage/FileStorage.js'
 
 export class SubmissionService {
   constructor(
@@ -15,8 +16,9 @@ export class SubmissionService {
     private form = new FormService(prisma),
     private access = new FormAccessService(prisma),
     private event = app.event,
-    private log = app.logger('KoboService'),
     private conf = appConf,
+    private fileStorage = FileStorage.getInstance(conf),
+    private log = app.logger('KoboService'),
   ) {}
 
   static readonly SUBMISSION_SELECT = {
@@ -189,14 +191,16 @@ export class SubmissionService {
         return undefined
       })
   }
+
   readonly submit = async (
-    props: Api.Submission.Payload.Submit & {
+    props: Omit<Api.Submission.Payload.Submit, 'attachments'> & {
       workspaceId: Api.WorkspaceId
       formId: Api.FormId
       author?: string
+      attachments: Express.Multer.File[]
     },
   ): Promise<Api.Submission> => {
-    const {formId, workspaceId} = props
+    const {formId, workspaceId, attachments} = props
     const form = await this.form.get(formId)
     const formVersion = await this.prisma.formVersion.findFirst({
       select: {version: true},
@@ -208,10 +212,33 @@ export class SubmissionService {
       throw new HttpError.BadRequest(`Cannot submit in a Kobo form. Submissions must be done in Kobo.`)
     if (form.type === 'smart') throw new HttpError.BadRequest(`Cannot manually submit in a Smart form.`)
     const isoCode = await this.getIsoFromGeopoint(props.geolocation)
-    return this.create({
+    const newSubmission = await this.create({
       workspaceId,
       data: SubmissionService.mapPayload({...props, version: 'v' + formVersion.version, isoCode}),
     })
+    await this.saveSubmissionAttachments({workspaceId, formId, submissionId: newSubmission.id, attachments})
+    return newSubmission
+  }
+
+  private readonly saveSubmissionAttachments = async ({
+    workspaceId,
+    formId,
+    submissionId,
+    attachments,
+  }: {
+    workspaceId: Api.WorkspaceId
+    formId: Api.FormId
+    submissionId: Api.SubmissionId
+    attachments: Express.Multer.File[]
+  }) => {
+    return Promise.all(
+      attachments.map(async attachment => {
+        return this.fileStorage.upload({
+          filePath: `/${formId}/${submissionId}/${attachment.originalname}`,
+          data: attachment.buffer,
+        })
+      }),
+    )
   }
 
   readonly create = async ({

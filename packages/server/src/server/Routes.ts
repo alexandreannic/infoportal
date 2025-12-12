@@ -43,7 +43,10 @@ export const isAuthenticated = (req: Request): req is AuthRequest => {
   return !!req.session.app && !!req.session.app.user
 }
 
-const uploader = multer({dest: 'uploads/'})
+const diskUploader = multer({dest: 'uploads/'})
+const memoryUploader = multer({
+  storage: multer.memoryStorage(),
+})
 
 export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Routes')) => {
   const safe = <T extends Request>(handler: (req: T, res: Response, next: NextFunction) => Promise<void>) => {
@@ -499,15 +502,20 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       },
     },
     submission: {
-      submit: ({params, body, req}) =>
-        submission
-          .submit({
-            ...params,
-            ...body,
-            author: req.session.app?.user?.email,
-          })
-          .then(ok200)
-          .catch(handleError),
+      submit: {
+        middleware: [memoryUploader.array('file')],
+        handler: ({params, body, req}) =>
+          submission
+            .submit({
+              ...params,
+              ...body,
+              answers: JSON.parse(body.answers as unknown as string),
+              attachments: req.files as unknown as Express.Multer.File[],
+              author: req.session.app?.user?.email,
+            })
+            .then(ok200)
+            .catch(handleError),
+      },
       updateSingle: _ =>
         auth2(_)
           .then(({req, body}) => submissionUpdate.updateSingle({...body, authorEmail: req.session.app.user.email!}))
@@ -649,7 +657,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
       },
       version: {
         validateXlsForm: {
-          middleware: [uploader.single('file')],
+          middleware: [diskUploader.single('file')],
           handler: _ =>
             auth2(_)
               .then(ensureFile)
@@ -658,7 +666,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
               .catch(handleError),
         },
         uploadXlsForm: {
-          middleware: [uploader.single('file')],
+          middleware: [diskUploader.single('file')],
           handler: _ =>
             auth2(_)
               .then(ensureFile)
@@ -787,7 +795,7 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     r.post(
       '/kobo-api/:formId/import-from-xls',
       auth(),
-      uploader.single('uf-import-answers'),
+      diskUploader.single('uf-import-answers'),
       safe(importData.handleFileUpload),
     )
 
