@@ -744,24 +744,18 @@ export const getRoutes = (prisma: PrismaClient, log: AppLogger = app.logger('Rou
     metrics: {
       getUsersByDate: _ =>
         auth2(_)
-          .then(({req, params, query}) =>
-            metrics.usersByDate({...params, user: req.session.app.user, ...parseMetricsQs(query)}),
-          )
+          .then(({req, body}) => metrics.usersByDate({user: req.session.app.user, ...body}))
           .then(ok200)
           .catch(handleError),
       getSubmissionsBy: _ =>
         auth2(_)
-          .then(({req, params, query}) =>
-            metrics.submissionsBy({...params, user: req.session.app.user, ...parseMetricsQs(query)}),
-          )
+          .then(({req, body}) => metrics.submissionsBy({user: req.session.app.user, ...body}))
           .then(ok200)
           .catch(handleError),
     },
   })
 
-  function parseMetricsQs(
-    _: Partial<Record<keyof Api.Metrics.Payload.Filter, string | string[]>>,
-  ): Api.Metrics.Payload.Filter {
+  function parseMetricsBody<T extends Api.Metrics.Payload.Filter>(_: Record<keyof Api.Metrics.Payload.Filter, any>): T {
     const res = _ as any
     if (res.end) res.end = new Date(res.end)
     if (res.start) res.start = new Date(res.start)

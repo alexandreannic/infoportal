@@ -25,7 +25,7 @@ export class MetricsService {
   private readonly getAllowedFormIds = app.cache.request({
     key: AppCacheKey.AllowedFormIds,
     ttlMs: duration(1, 'minute'),
-    genIndex: _ => _.user.email,
+    genIndex: _ => _.workspaceId + ':' + _.user.email,
     fn: (props: {workspaceId: Api.WorkspaceId; user: Api.User}): Promise<Seq<Api.FormId>> => {
       return this.form.getByUser(props).then(_ => seq(_).map(_ => _.id))
     },

@@ -127,7 +127,6 @@ export namespace Submission {
       export type Search = z.infer<typeof SubmissionHistoryValidation.search>
     }
     export const map = (_: any): History => {
-      console.log('MAP', _)
       _.date = new Date(_.date)
       return _
     }
